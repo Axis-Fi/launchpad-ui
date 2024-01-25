@@ -1,1 +1,7 @@
 @import "@repo/ui/style.css";
+
+@layer components {
+  w3m-button button {
+    color: white;
+  }
+}
