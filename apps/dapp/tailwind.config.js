@@ -7,6 +7,7 @@ export default {
     "../../packages/ui/src/**/*.{ts,tsx}",
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
+    "./src/stories/*.{tsx,ts}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
   ],
