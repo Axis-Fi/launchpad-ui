@@ -52,14 +52,14 @@ export default function ConnectButton() {
                   <Button variant="ghost" onClick={openChainModal}>
                     {chain.hasIcon ? (
                       <div
-                        className="w-6 h-6 rounded-full overflow-hidden"
+                        className="h-6 w-6 overflow-hidden rounded-full"
                         style={{
                           background: chain.iconBackground,
                         }}
                       >
                         {chain.iconUrl && (
                           <img
-                            className="w-6 h-6"
+                            className="h-6 w-6"
                             alt={chain.name ?? "Chain icon"}
                             src={chain.iconUrl}
                           />

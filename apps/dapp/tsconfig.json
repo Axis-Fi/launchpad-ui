@@ -1,8 +1,18 @@
 {
   "extends": "@repo/typescript-config/react-app.json",
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "components/*": ["src/components/*"],
+      "components": ["src/components/index"],
+      "config/*": ["src/config/*"],
+      "context/*": ["src/context/*"],
+      "modules/*": ["src/modules/*"],
+      "pages/*": ["src/pages/*"],
+      "loaders/*": ["src/loaders/*"]
+    }
+  },
   "references": [
     {
       "path": "./tsconfig.node.json"

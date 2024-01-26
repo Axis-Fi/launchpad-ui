@@ -1,7 +1,13 @@
 @import "@repo/ui/style.css";
 
+@layer base {
+  :root {
+    --background: 222 30% 8%;
+  }
+}
+
 @layer components {
-  w3m-button button {
-    color: white;
+  .container {
+    @apply mx-0 p-1;
   }
 }

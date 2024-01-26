@@ -6,21 +6,19 @@ import {
   connectorsForWallets,
   midnightTheme,
 } from "@rainbow-me/rainbowkit";
-
-import { activeChains } from "../config/chains";
-
 import {
   injectedWallet,
   rainbowWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
+import { activeChains } from "../config/chains";
 
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 
 export const connectors = connectorsForWallets(
   [
     {
-      groupName: "Recommended",
+      groupName: "Common",
       wallets: [injectedWallet, rainbowWallet, walletConnectWallet],
     },
   ],
