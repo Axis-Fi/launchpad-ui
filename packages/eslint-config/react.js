@@ -11,7 +11,7 @@ module.exports = {
   ],
   ignorePatterns: ["dist", ".eslintrc.*"],
   parser: "@typescript-eslint/parser",
-  //plugins: ["react-refresh"],
+  plugins: ["@typescript-eslint"],
   rules: {
     "react/prop-types": "off",
     //"react-refresh/only-export-components": [ "warn", { allowConstantExport: true }, ],

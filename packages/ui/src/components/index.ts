@@ -1,4 +1,7 @@
 export { Button, type ButtonProps } from "./button";
-export { Input, type InputProps } from "./input";
+export { BasicInput, type InputProps } from "./basic-input";
 
+export * from "./input";
+export * from "./label";
 export * from "./table";
+export * from "./navigation-menu";
