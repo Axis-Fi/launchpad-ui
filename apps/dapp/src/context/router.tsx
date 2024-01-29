@@ -7,6 +7,7 @@ import AuctionPage from "../pages/auction-page";
 import Dashboard from "pages/dashboard";
 import { AuctionList } from "../modules/auction/auction-list";
 import App from "src/App";
+import CreateAuctionPage from "pages/create-auction-page";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
@@ -17,7 +18,7 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/auction/:chainId/:id", element: <AuctionPage /> },
       { path: "/auctions", element: <AuctionList /> },
-      { path: "/create/auction", element: <AuctionList /> },
+      { path: "/create/auction", element: <CreateAuctionPage /> },
     ],
   },
 ]);

@@ -11,7 +11,6 @@ const mainnetConfig = {
   },
 };
 
-console.log({ blastSepolia });
 //Testnet Config
 export const testnets: [Chain, ...Chain[]] = [arbitrumGoerli, blastSepolia];
 const testnetConfig = {

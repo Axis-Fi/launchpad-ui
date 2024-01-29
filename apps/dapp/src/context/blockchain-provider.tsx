@@ -3,7 +3,7 @@ import { activeConfig } from "../config/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import WalletProvider, { connectors } from "./wallet-provider";
 
-const client = new QueryClient();
+const queryClient = new QueryClient();
 
 //@ts-expect-error type mismatch
 const wagmiConfig = createConfig({ ...activeConfig, connectors });
@@ -15,7 +15,7 @@ export function BlockchainProvider({
 }) {
   return (
     <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={client}>
+      <QueryClientProvider client={queryClient}>
         <WalletProvider>{children}</WalletProvider>
       </QueryClientProvider>
     </WagmiProvider>
