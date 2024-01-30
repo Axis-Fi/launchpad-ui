@@ -10,7 +10,9 @@ export default function Avatar(
   return (
     <AvatarRoot className="h-5 w-5">
       <AvatarImage width={12} src={props.src} alt={props.alt} />
-      <AvatarFallback>{props.alt?.substring(0, 3)}</AvatarFallback>
+      <AvatarFallback className="text-[8px]">
+        {props.alt?.substring(0, 3).toUpperCase()}
+      </AvatarFallback>
     </AvatarRoot>
   );
 }
