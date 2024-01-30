@@ -1,12 +1,11 @@
 import Navbar from "components/navbar";
 import ConnectButton from "./components/connect-button";
-
-import { BlockchainProvider } from "./context/blockchain-provider";
+import { Providers } from "./context/providers";
 import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <BlockchainProvider>
+    <Providers>
       <div className="mx-auto h-screen max-w-[1137px] py-4">
         <div className="mx-auto flex justify-between">
           <h1 className="w-1/3 text-4xl">Axis</h1>
@@ -19,7 +18,7 @@ function App() {
 
         <Outlet />
       </div>
-    </BlockchainProvider>
+    </Providers>
   );
 }
 

@@ -23,3 +23,10 @@ export const Labeled: Story = {
     label: "Amount",
   },
 };
+
+export const Tooltip: Story = {
+  args: {
+    label: "Amount",
+    tooltip: "Cool",
+  },
+};

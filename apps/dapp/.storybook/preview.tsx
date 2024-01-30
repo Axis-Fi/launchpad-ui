@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/react";
 import "@repo/ui/style.css";
+import { TooltipProvider } from "@repo/ui";
 
 const preview: Preview = {
   parameters: {
@@ -12,6 +13,13 @@ const preview: Preview = {
     },
     layout: "centered",
   },
+  decorators: [
+    (Story) => (
+      <TooltipProvider delayDuration={350}>
+        <Story />
+      </TooltipProvider>
+    ),
+  ],
 };
 
 export default preview;

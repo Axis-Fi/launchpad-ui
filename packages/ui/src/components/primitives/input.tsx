@@ -2,11 +2,12 @@ import * as React from "react";
 
 import { cn } from "@/utils";
 
-import { Label } from "./";
+import { Label } from "./label";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  tooltip?: React.ReactNode;
 }
 
 export function Input({ label, ...props }: InputProps) {
@@ -16,7 +17,9 @@ export function Input({ label, ...props }: InputProps) {
 
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor={props.id}>{label}</Label>
+      <Label htmlFor={props.id} tooltip={props.tooltip}>
+        {label}
+      </Label>
       <InputPrimitive {...props} />
     </div>
   );
