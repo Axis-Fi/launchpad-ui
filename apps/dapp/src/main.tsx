@@ -1,4 +1,6 @@
+import "./index.css";
 import "./polyfills.ts";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "./context/router.tsx";

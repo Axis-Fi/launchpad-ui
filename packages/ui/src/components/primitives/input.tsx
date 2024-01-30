@@ -2,10 +2,27 @@ import * as React from "react";
 
 import { cn } from "@/utils";
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+import { Label } from "./";
 
-const BasicInput = React.forwardRef<HTMLInputElement, InputProps>(
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+}
+
+export function Input({ label, ...props }: InputProps) {
+  if (!label) {
+    return <InputPrimitive {...props} />;
+  }
+
+  return (
+    <div className="grid w-full max-w-sm items-center gap-1.5">
+      <Label htmlFor={props.id}>{label}</Label>
+      <InputPrimitive {...props} />
+    </div>
+  );
+}
+
+const InputPrimitive = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
       <input
@@ -20,6 +37,6 @@ const BasicInput = React.forwardRef<HTMLInputElement, InputProps>(
     );
   },
 );
-BasicInput.displayName = "BasicInput";
+InputPrimitive.displayName = "BasicInput";
 
-export { BasicInput };
+export { InputPrimitive };

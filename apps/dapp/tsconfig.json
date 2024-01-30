@@ -10,7 +10,8 @@
       "context/*": ["src/context/*"],
       "modules/*": ["src/modules/*"],
       "pages/*": ["src/pages/*"],
-      "loaders/*": ["src/loaders/*"]
+      "loaders/*": ["src/loaders/*"],
+      "@/utils": ["../../packages/ui/src/utils.ts"]
     }
   },
   "references": [

@@ -6,7 +6,7 @@ const meta = {
   title: "Design System/Input",
   component: Input,
   args: {
-    placeholder: "Placeholder text",
+    placeholder: "Enter quantity to bid",
   },
 } satisfies Meta<typeof Input>;
 
@@ -20,6 +20,6 @@ export const Primary: Story = {
 
 export const Labeled: Story = {
   args: {
-    label: "Label",
+    label: "Amount",
   },
 };

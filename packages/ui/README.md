@@ -18,8 +18,3 @@ import { Button } from @repo/ui
 
 - [shadcn/ui](https://ui.shadcn.com/)
 - [tailwindcss](https://tailwindcss.com/)
-
-## Commands
-
-- `pnpm dev` - runs the dev server
-- `pnpm build` - builds out the components for production
