@@ -8,7 +8,7 @@ import {
 import * as SelectPrimitive from "@radix-ui/react-select";
 
 import { cn } from "@/utils";
-import Avatar from "./avatar";
+import { Avatar } from "./avatar";
 
 const SelectRoot = SelectPrimitive.Root;
 

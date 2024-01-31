@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { ComboBox } from "@repo/ui";
+import { DialogInput } from "@repo/ui";
 import { Primary as SelectStory } from "./Select.stories";
 
 const meta = {
-  title: "Design System/ComboBox",
-  component: ComboBox,
+  title: "Design System/DialogInput",
+  component: DialogInput,
   args: {
-    placeholder: "Select one",
+    triggerContent: "Click to Pick",
     options: SelectStory.args?.options,
   },
-} satisfies Meta<typeof ComboBox>;
+} satisfies Meta<typeof DialogInput>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

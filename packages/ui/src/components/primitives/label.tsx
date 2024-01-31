@@ -10,15 +10,14 @@ const labelVariants = cva(
   "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 );
 
-type LabelProps = {
-  tooltip?: React.ReactNode;
-};
+type LabelProps = React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
+  VariantProps<typeof labelVariants> & {
+    tooltip?: React.ReactNode;
+  };
 
 const Label = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
-    VariantProps<typeof labelVariants> &
-    LabelProps
+  LabelProps
 >(({ className, ...props }, ref) => {
   const label = (
     <LabelPrimitive.Root
@@ -46,4 +45,13 @@ const Label = React.forwardRef<
 
 Label.displayName = LabelPrimitive.Root.displayName;
 
-export { Label };
+function LabelWrapper(props: LabelProps & { content?: string }) {
+  return (
+    <div className="grid w-full max-w-sm items-center gap-1.5">
+      {props.content && <Label htmlFor={props.id}>{props.content}</Label>}
+      {props.children}
+    </div>
+  );
+}
+
+export { Label, LabelWrapper };

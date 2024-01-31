@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Dialog } from "@repo/ui";
 
-// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
   title: "Design System/Dialog",
   component: Dialog,
   args: {
-    triggerText: "Bid",
+    triggerContent: "Bid",
     title: "Confirm Bid",
     description: "This action cannot be undone",
     children: <div className="py-4 text-center">dialog content</div>,

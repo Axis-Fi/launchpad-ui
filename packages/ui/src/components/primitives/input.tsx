@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { cn } from "@/utils";
 
-import { Label } from "./label";
+import { LabelWrapper } from "./label";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -16,12 +16,9 @@ export function Input({ label, ...props }: InputProps) {
   }
 
   return (
-    <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor={props.id} tooltip={props.tooltip}>
-        {label}
-      </Label>
+    <LabelWrapper htmlFor={props.id} content={label}>
       <InputPrimitive {...props} />
-    </div>
+    </LabelWrapper>
   );
 }
 

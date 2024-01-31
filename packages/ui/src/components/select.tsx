@@ -6,9 +6,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Label,
+  LabelWrapper,
 } from "./primitives";
-import Avatar from "./primitives/avatar";
+import { Avatar } from "./primitives/avatar";
 
 export type SelectData = {
   value: string;
@@ -26,12 +26,11 @@ export type SelectProps = {
 
 /** Dropdown selector */
 export function Select(props: SelectProps) {
-  const [selected, setSelected] = React.useState<string>();
+  const [selected, setSelected] = React.useState<unknown>();
   const selectedImage = props.options.find((o) => o.value === selected)?.imgURL;
 
   return (
-    <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor={props.id}>{props.label}</Label>
+    <LabelWrapper htmlFor={props.id} content={props.label}>
       <SelectRoot
         onValueChange={(value) => {
           setSelected(value);
@@ -59,6 +58,6 @@ export function Select(props: SelectProps) {
           ))}
         </SelectContent>
       </SelectRoot>
-    </div>
+    </LabelWrapper>
   );
 }

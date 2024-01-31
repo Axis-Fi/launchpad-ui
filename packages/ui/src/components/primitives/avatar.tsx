@@ -4,12 +4,12 @@ import * as AvatarPrimitive from "@radix-ui/react-avatar";
 import { cn } from "@/utils";
 
 /** Displays a circular image or a fallback text*/
-export default function Avatar(
-  props: React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>,
-) {
+export function Avatar({
+  ...props
+}: React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>) {
   return (
-    <AvatarRoot className="h-5 w-5">
-      <AvatarImage width={12} src={props.src} alt={props.alt} />
+    <AvatarRoot className={cn("h-7 w-7", props.className)}>
+      <AvatarImage src={props.src} alt={props.alt} />
       <AvatarFallback className="text-[8px]">
         {props.alt?.substring(0, 3).toUpperCase()}
       </AvatarFallback>

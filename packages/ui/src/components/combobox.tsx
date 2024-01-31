@@ -21,36 +21,44 @@ export type ComboboxProps = {
   options: SelectData[];
   placeholder?: string;
   label?: string;
+  triggerElement?: React.ReactElement;
+  onChange?: (value: string) => void;
 };
 
+/** Dropdown select with search filter */
 export function ComboBox({
   options = [],
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & ComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
-  const current = options.find((o) => o.value === value);
+  const [value, setValue] = React.useState(props.defaultValue);
+  const current = options.find((o) => o.value === value?.toString());
+
+  const triggerElement = props.triggerElement ?? (
+    <div className="grid w-full max-w-sm items-center gap-1.5">
+      <Label htmlFor={props.id}>{props.label}</Label>
+      <Button
+        asChild={props.triggerElement}
+        id={props.id}
+        variant="outline"
+        role="combobox"
+        aria-expanded={open}
+        className="text-muted-foreground justify-between"
+      >
+        {value ? (
+          <IconedLabel label={current?.label} src={current?.imgURL} />
+        ) : (
+          props.placeholder ?? "Select..."
+        )}
+        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </div>
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Label htmlFor={props.id}>{props.label}</Label>
-          <Button
-            id={props.id}
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="justify-between"
-          >
-            {value ? (
-              <IconedLabel label={current?.label} src={current?.imgURL} />
-            ) : (
-              props.placeholder ?? "Select..."
-            )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </div>
+      <PopoverTrigger asChild={!props.triggerElement}>
+        {triggerElement}
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command
@@ -69,6 +77,7 @@ export function ComboBox({
                 key={o.value}
                 value={o.value}
                 onSelect={(currentValue) => {
+                  props.onChange?.(currentValue);
                   setValue(currentValue === value ? "" : currentValue);
                   setOpen(false);
                 }}
