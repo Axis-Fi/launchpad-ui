@@ -257,6 +257,12 @@ importers:
       cmdk:
         specifier: ^0.2.1
         version: 0.2.1(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+      date-fns:
+        specifier: ^3.3.1
+        version: 3.3.1
+      react-day-picker:
+        specifier: ^8.10.0
+        version: 8.10.0(date-fns@3.3.1)(react@18.2.0)
       tailwind-merge:
         specifier: ^2.2.1
         version: 2.2.1
@@ -18092,6 +18098,19 @@ packages:
       react: 18.2.0
       tween-functions: 1.2.0
     dev: true
+
+  /react-day-picker@8.10.0(date-fns@3.3.1)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-mz+qeyrOM7++1NCb1ARXmkjMkzWVh2GL9YiPbRjKe0zHccvekk4HE+0MPOZOrosn8r8zTHIIeOUXTmXRqmkRmg==,
+      }
+    peerDependencies:
+      date-fns: ^2.28.0 || ^3.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      date-fns: 3.3.1
+      react: 18.2.0
+    dev: false
 
   /react-devtools-core@4.28.5:
     resolution:

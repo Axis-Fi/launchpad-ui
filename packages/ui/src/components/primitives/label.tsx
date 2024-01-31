@@ -45,13 +45,22 @@ const Label = React.forwardRef<
 
 Label.displayName = LabelPrimitive.Root.displayName;
 
-function LabelWrapper(props: LabelProps & { content?: string }) {
+const LabelWrapper = React.forwardRef<
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  React.ComponentPropsWithRef<"div"> & { tooltip?: string }
+>((props, ref) => {
   return (
-    <div className="grid w-full max-w-sm items-center gap-1.5">
-      {props.content && <Label htmlFor={props.id}>{props.content}</Label>}
+    <div className="grid w-full max-w-sm items-center gap-1.5" {...props}>
+      {props.content && (
+        <Label htmlFor={props.id} tooltip={props.tooltip} ref={ref}>
+          {props.content}
+        </Label>
+      )}
       {props.children}
     </div>
   );
-}
+});
+
+LabelWrapper.displayName = "LabelWrapper";
 
 export { Label, LabelWrapper };
