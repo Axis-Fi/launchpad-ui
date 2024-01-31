@@ -16,25 +16,14 @@ export type DialogProps = React.PropsWithChildren & {
   description?: string;
   submitText?: string;
   cancelText?: string;
-  onSubmit?: (value: unknown) => void;
-  onValueChange?: (value: unknown) => void;
-  children?: React.ReactElement<{ onValueChange?: () => void }>;
+  onSubmit?: () => void;
 };
 
 export function Dialog(props: DialogProps) {
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState<React.ReactNode>();
-
-  const children = React.isValidElement(props.children)
-    ? React.cloneElement(props.children, {
-        onValueChange: (value: React.ReactNode) => setSelected(value),
-      })
-    : props.children;
-
-  const triggerContent = selected ?? props.triggerContent;
 
   const handleSubmit = () => {
-    props.onSubmit?.(selected);
+    props.onSubmit?.();
     setOpen(false);
   };
 
@@ -45,7 +34,7 @@ export function Dialog(props: DialogProps) {
           className="text-muted-foreground justify-start"
           variant="outline"
         >
-          {triggerContent}
+          {props.triggerContent}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -53,7 +42,7 @@ export function Dialog(props: DialogProps) {
           <DialogTitle>{props.title}</DialogTitle>
           <DialogDescription>{props.description}</DialogDescription>
         </DialogHeader>
-        {children}
+        {props.children}
         <DialogFooter className="flex gap-x-1 md:justify-around">
           {props.cancelText && (
             <Button className="w-1/2" variant="destructive" type="reset">

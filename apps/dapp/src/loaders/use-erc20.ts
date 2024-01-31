@@ -1,17 +1,19 @@
-import { Address, erc20Abi as abi } from "viem";
+import React from "react";
+import { Address, erc20Abi as abi, isAddress } from "viem";
 import { useReadContracts } from "wagmi";
 
 /** Reads ERC20 details onchain */
 export default function useERC20({
   chainId,
-  address,
+  address = "0x",
 }: {
   chainId: number;
-  address?: Address;
+  address: Address;
 }) {
   const contract = { abi, address, chainId };
 
   const response = useReadContracts({
+    query: { enabled: !!chainId && isAddress(address) },
     contracts: [
       { ...contract, functionName: "decimals" },
       { ...contract, functionName: "symbol" },
@@ -21,12 +23,14 @@ export default function useERC20({
 
   const [decimals, symbol, name] = response.data?.map((d) => d.result) ?? [];
 
+  const token = React.useMemo(
+    () => ({ decimals, symbol, name, address, chainId }),
+    [decimals, symbol, name, address, chainId],
+  );
+
   return {
-    status: response,
-    token: {
-      decimals,
-      symbol,
-      name,
-    },
+    response: response,
+    isError: response.data?.some((d) => d.error),
+    token,
   };
 }

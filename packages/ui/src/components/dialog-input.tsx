@@ -1,26 +1,32 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Dialog, DialogProps, LabelWrapper, SelectData } from "./";
 import { IconedLabel } from "./iconed-label";
 
-type DialogInputProps = DialogProps & {
+export type DialogInputProps = DialogProps & {
   label: string;
-  options?: SelectData[];
+  onSubmit?: (value: unknown) => void;
+  children?: React.ReactElement<{
+    onValueChange?: (value: unknown, display?: SelectData) => void;
+  }>;
 };
 
-export function DialogInput({ label, options, ...props }: DialogInputProps) {
-  const [selected, setSelected] = React.useState<React.ReactNode>();
+export function DialogInput({ label, ...props }: DialogInputProps) {
+  const [selected, setSelected] = React.useState<unknown>();
+  const [display, setDisplay] = React.useState<SelectData>();
+
+  const onValueChange = useCallback((value: unknown, display?: SelectData) => {
+    setSelected(value);
+    setDisplay(display);
+  }, []);
 
   const children = React.isValidElement(props.children)
     ? React.cloneElement(props.children, {
-        onValueChange: (value: React.ReactNode) => setSelected(value),
-        options,
+        onValueChange,
       })
     : props.children;
 
-  const current = options?.find((o) => o.value.toString() === selected);
-
-  const triggerContent = current ? (
-    <IconedLabel src={current.imgURL}>{current.label}</IconedLabel>
+  const triggerContent = display ? (
+    <IconedLabel src={display.imgURL} label={display.label} />
   ) : (
     props.triggerContent
   );
@@ -30,7 +36,7 @@ export function DialogInput({ label, options, ...props }: DialogInputProps) {
       <Dialog
         {...props}
         triggerContent={triggerContent}
-        onValueChange={(value) => setSelected(value)}
+        onSubmit={() => props.onSubmit?.(selected)}
       >
         {children}
       </Dialog>

@@ -10,4 +10,5 @@ export * from "./navigation-menu";
 export * from "./popover";
 export * from "./scroll-area";
 export * from "./select";
+export * from "./skeleton";
 export * from "./tooltip";

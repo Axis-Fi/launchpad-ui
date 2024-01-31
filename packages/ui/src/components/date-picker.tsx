@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./primitives";
 export type DatePickerProps = {
   content?: string;
   label?: string;
+  onChange?: (date?: Date) => void;
 } & CalendarProps;
 
 export function DatePicker({ content, label, ...props }: DatePickerProps) {
@@ -35,7 +36,10 @@ export function DatePicker({ content, label, ...props }: DatePickerProps) {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={(date) => setDate(date)}
+          onSelect={(date) => {
+            props.onChange?.(date);
+            setDate(date);
+          }}
           initialFocus
           fromDate={new Date()}
           {...props}

@@ -47,7 +47,8 @@ Label.displayName = LabelPrimitive.Root.displayName;
 
 const LabelWrapper = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithRef<"div"> & { tooltip?: string }
+  React.ComponentPropsWithRef<"div"> &
+    LabelProps & { tooltip?: React.ReactNode }
 >((props, ref) => {
   return (
     <div className="grid w-full max-w-sm items-center gap-1.5" {...props}>

@@ -16,7 +16,7 @@ export function Input({ label, ...props }: InputProps) {
   }
 
   return (
-    <LabelWrapper htmlFor={props.id} content={label}>
+    <LabelWrapper htmlFor={props.id} content={label} tooltip={props.tooltip}>
       <InputPrimitive {...props} />
     </LabelWrapper>
   );
