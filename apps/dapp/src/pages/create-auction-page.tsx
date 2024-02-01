@@ -1,4 +1,4 @@
-import { Checkbox, DatePicker, DialogInput, Input } from "@repo/ui";
+import { Checkbox, DatePicker, DialogInput, Input, Label } from "@repo/ui";
 import {
   AccordionContent,
   AccordionItem,
@@ -7,6 +7,8 @@ import {
 } from "@repo/ui";
 import { TokenPicker } from "components/token-picker";
 import { useCreateAuctionReducer } from "modules/auction/create-auction-reducer";
+import { Token } from "src/types";
+import { CreateAuctionSubmitter } from "./create-auction-submitter";
 
 //TODO: implement
 export default function CreateAuctionPage() {
@@ -25,11 +27,8 @@ export default function CreateAuctionPage() {
               title="Select Quote Token"
               label="Quote Token"
               triggerContent={"Select token"}
-              onSubmit={(value) =>
-                dispatch({
-                  type: actions.UPDATE_QUOTE_TOKEN,
-                  value: value as string,
-                })
+              onSubmit={(value?: Token) =>
+                value && dispatch({ type: actions.UPDATE_QUOTE_TOKEN, value })
               }
             >
               <TokenPicker />
@@ -50,11 +49,8 @@ export default function CreateAuctionPage() {
               title="Select Payout Token"
               label="Payout Token"
               triggerContent={"Select token"}
-              onSubmit={(value) =>
-                dispatch({
-                  type: actions.UPDATE_PAYOUT_TOKEN,
-                  value,
-                })
+              onSubmit={(value?: Token) =>
+                value && dispatch({ type: actions.UPDATE_PAYOUT_TOKEN, value })
               }
             >
               <TokenPicker />
@@ -110,13 +106,30 @@ export default function CreateAuctionPage() {
                       }
                     />
                   </div>
-                  <div className="flex">
-                    <Checkbox
-                      onChange={(e) => {
-                        console.log(e);
-                      }}
+                  <div className="flex w-full justify-center gap-x-2">
+                    <div className="flex items-center gap-x-2">
+                      <Checkbox
+                        className="h-4 w-4"
+                        onCheckedChange={(e) => {
+                          dispatch({
+                            type: actions.UPDATE_DERIVATIVE_VESTING,
+                            value: { isVested: !!e },
+                          });
+                        }}
+                      />
+                      <Label>Vested?</Label>
+                    </div>
+                    <Input
+                      type="number"
+                      disabled={!state.isVested}
+                      onChange={(e) =>
+                        dispatch({
+                          type: actions.UPDATE_DERIVATIVE_VESTING,
+                          value: { days: parseInt(e.target.value) },
+                        })
+                      }
+                      label="Vesting Days"
                     />
-                    <Input />
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -125,7 +138,7 @@ export default function CreateAuctionPage() {
         </div>
       </div>
 
-      <div className="mt-4 rounded-md border-b p-4">
+      <div className="mt-4 rounded-md p-4">
         <h2 className="text-center">Summary</h2>
         <div>
           <p>Quote: {state.quoteToken?.symbol} </p>
@@ -139,6 +152,8 @@ export default function CreateAuctionPage() {
           <p>Deadline: {state.deadline?.toString()}</p>
         </div>
       </div>
+
+      <CreateAuctionSubmitter state={state} />
     </div>
   );
 }

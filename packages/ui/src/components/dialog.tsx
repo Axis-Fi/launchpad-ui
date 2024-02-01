@@ -11,7 +11,10 @@ import {
 } from "./primitives/dialog";
 
 export type DialogProps = React.PropsWithChildren & {
-  triggerContent: React.ReactNode;
+  /** The text to be rendered on the trigger button */
+  triggerContent?: string;
+  /** An element to act as trigger for the modal */
+  triggerElement?: React.ReactNode;
   title?: string;
   description?: string;
   submitText?: string;
@@ -27,15 +30,14 @@ export function Dialog(props: DialogProps) {
     setOpen(false);
   };
 
+  const content = props.triggerElement ?? (
+    <Button variant="secondary">{props.triggerContent}</Button>
+  );
+
   return (
     <DialogRoot open={open} onOpenChange={() => setOpen((prev) => !prev)}>
       <DialogTrigger className="w-full max-w-sm" asChild>
-        <Button
-          className="text-muted-foreground justify-start"
-          variant="outline"
-        >
-          {props.triggerContent}
-        </Button>
+        {content}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

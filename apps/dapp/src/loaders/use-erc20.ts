@@ -29,7 +29,7 @@ export default function useERC20({
   );
 
   return {
-    response: response,
+    response,
     isError: response.data?.some((d) => d.error),
     token,
   };

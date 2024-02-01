@@ -9,6 +9,7 @@ import {
 import { activeChains } from "config/chains";
 import useERC20 from "loaders/use-erc20";
 import React from "react";
+import { Token } from "src/types";
 import { Address } from "viem";
 import { useChainId } from "wagmi";
 
@@ -17,7 +18,7 @@ export function TokenPicker({
   onChainChange,
 }: {
   onValueChange?: NonNullable<
-    DialogInputProps["children"]
+    DialogInputProps<Token>["children"]
   >["props"]["onValueChange"];
   onChainChange?: (chainId: number) => void;
 }) {
@@ -25,8 +26,8 @@ export function TokenPicker({
   const [newChain, setNewChain] = React.useState<number>();
 
   const chainId = useChainId();
-  const chain = activeChains.find(
-    (c) => c.id === Number(newChain) || c.id === chainId,
+  const chain = activeChains.find((c) =>
+    newChain ? c.id === Number(newChain) : c.id === chainId,
   );
 
   const { token, isError, response } = useERC20({
@@ -62,14 +63,14 @@ export function TokenPicker({
             label: c.name,
           }))}
           triggerElement={
-            <Avatar className="cursor-pointer" width={64} alt={chain?.name} />
+            <Avatar className="mb-4 cursor-pointer" alt={chain?.name} />
           }
         />
       </div>
 
       <div className="flex flex-col items-center justify-center pt-4">
         {isLoading && <Skeleton className="h-[20px] w-[80px]" />}
-        {isSuccess && <IconedLabel label={token.symbol ?? ""} />}
+        {isSuccess && <IconedLabel label={token.symbol?.toString() ?? ""} />}
         {isError && <h4>Token not found</h4>}
       </div>
     </div>

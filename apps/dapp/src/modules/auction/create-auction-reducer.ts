@@ -1,7 +1,7 @@
 import React from "react";
 import type { Token } from "src/types";
 
-type CreateAuctionState = {
+export type CreateAuctionState = {
   quoteToken?: Token;
   payoutToken?: Token;
   chainId?: number;
@@ -10,6 +10,8 @@ type CreateAuctionState = {
   deadline?: Date;
   hooks?: string;
   allowlist?: string;
+  isVested?: boolean;
+  vestingDays?: number;
 };
 
 enum Actions {
@@ -21,6 +23,7 @@ enum Actions {
   UPDATE_DEADLINE = "update_deadline",
   UPDATE_HOOKS = "update_hooks",
   UPDATE_ALLOWLIST = "update_allowlist",
+  UPDATE_DERIVATIVE_VESTING = "update_derivative_vesting",
 }
 
 type Action =
@@ -31,7 +34,11 @@ type Action =
   | { type: Actions.UPDATE_MIN_PRICE; value: number }
   | { type: Actions.UPDATE_DEADLINE; value: Date }
   | { type: Actions.UPDATE_HOOKS; value: string }
-  | { type: Actions.UPDATE_ALLOWLIST; value: string };
+  | { type: Actions.UPDATE_ALLOWLIST; value: string }
+  | {
+      type: Actions.UPDATE_DERIVATIVE_VESTING;
+      value: { isVested?: boolean; days?: number };
+    };
 
 const reducer = (
   state: CreateAuctionState,
@@ -74,7 +81,14 @@ const reducer = (
     }
 
     case Actions.UPDATE_ALLOWLIST: {
-      return { ...state, hooks: value };
+      return { ...state, allowlist: value };
+    }
+
+    case Actions.UPDATE_DERIVATIVE_VESTING: {
+      return {
+        ...state,
+        ...value,
+      };
     }
   }
 };
