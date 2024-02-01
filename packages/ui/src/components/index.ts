@@ -5,6 +5,7 @@ export * from "./date-picker";
 export * from "./dialog-input";
 export * from "./dialog";
 export * from "./iconed-label";
+export * from "./input-error";
 export * from "./select";
 export * from "./table";
 export * from "./tooltip";

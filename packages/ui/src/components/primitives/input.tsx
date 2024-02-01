@@ -3,21 +3,24 @@ import * as React from "react";
 import { cn } from "@/utils";
 
 import { LabelWrapper } from "./label";
+import { InputError } from "../input-error";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   tooltip?: React.ReactNode;
+  error?: string;
 }
 
-export function Input({ label, ...props }: InputProps) {
+export function Input({ label, error, ...props }: InputProps) {
   if (!label) {
     return <InputPrimitive {...props} />;
   }
 
   return (
     <LabelWrapper htmlFor={props.id} content={label} tooltip={props.tooltip}>
-      <InputPrimitive {...props} />
+      <InputPrimitive {...props} className={error ? "border-red-400" : ""} />
+      <InputError error={error} />
     </LabelWrapper>
   );
 }

@@ -1,10 +1,11 @@
 import React, { useCallback } from "react";
-import { Dialog, DialogProps, LabelWrapper, SelectData } from "./";
+import { Dialog, DialogProps, InputError, LabelWrapper, SelectData } from "./";
 import { IconedLabel } from "./iconed-label";
 
 export type DialogInputProps = DialogProps & {
   label: string;
   onSubmit?: (value: unknown) => void;
+  error?: string;
   children?: React.ReactElement<{
     onValueChange?: (value: unknown, display?: SelectData) => void;
   }>;
@@ -40,6 +41,7 @@ export function DialogInput({ label, ...props }: DialogInputProps) {
       >
         {children}
       </Dialog>
+      <InputError error={props.error} />
     </LabelWrapper>
   );
 }

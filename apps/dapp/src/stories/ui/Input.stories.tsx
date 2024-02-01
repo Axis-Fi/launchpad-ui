@@ -27,6 +27,10 @@ export const Labeled: Story = {
 export const Tooltip: Story = {
   args: {
     label: "Amount",
-    tooltip: "Cool",
+    tooltip: "GM.",
   },
+};
+
+export const Error: Story = {
+  args: { ...Tooltip.args, error: "This is an error message" },
 };

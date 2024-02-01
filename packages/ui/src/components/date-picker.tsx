@@ -1,16 +1,18 @@
 import * as React from "react";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/utils";
 import { Button, CalendarProps, LabelWrapper } from "./primitives";
 import { Calendar } from "./primitives";
 import { Popover, PopoverContent, PopoverTrigger } from "./primitives";
+import { InputError } from "./input-error";
 
 export type DatePickerProps = {
   content?: string;
   label?: string;
   onChange?: (date?: Date) => void;
+  error?: string;
 } & CalendarProps;
 
 export function DatePicker({ content, label, ...props }: DatePickerProps) {
@@ -30,6 +32,7 @@ export function DatePicker({ content, label, ...props }: DatePickerProps) {
             <CalendarIcon className="mr-2 h-4 w-4" />
             {date ? format(date, "PPP") : <span>{content}</span>}
           </Button>
+          <InputError error={props.error} />
         </LabelWrapper>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
@@ -41,7 +44,7 @@ export function DatePicker({ content, label, ...props }: DatePickerProps) {
             setDate(date);
           }}
           initialFocus
-          fromDate={new Date()}
+          fromDate={addDays(new Date(), 1)}
           {...props}
         />
       </PopoverContent>

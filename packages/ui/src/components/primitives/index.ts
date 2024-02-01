@@ -2,6 +2,7 @@ export * from "./accordion";
 export * from "./avatar";
 export * from "./button";
 export * from "./calendar";
+export * from "./checkbox";
 export * from "./command";
 export * from "./dialog";
 export * from "./input";
