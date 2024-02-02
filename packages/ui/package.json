@@ -14,8 +14,6 @@
     "./utils": "./src/utils.ts"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --external react",
-    "dev": "tsup src/index.ts --format esm --watch --dts --external react",
     "lint": "eslint . --max-warnings 0",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "component": "pnpm dlx shadcn-ui@latest add"
