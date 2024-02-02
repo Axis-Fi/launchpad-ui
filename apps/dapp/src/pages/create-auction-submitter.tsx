@@ -1,34 +1,43 @@
-import { Dialog } from "@repo/ui";
+import { Button, Tooltip } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
-import { CreateAuctionState } from "modules/auction/create-auction-reducer";
 import { useAccount } from "wagmi";
+import { CreateAuctionForm } from "./create-auction-page";
+import { useFormContext } from "react-hook-form";
+import { Address } from "viem";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 
-export function CreateAuctionSubmitter({
-  state,
-}: {
-  state: CreateAuctionState;
-}) {
+export function CreateAuctionSubmitter() {
   const { address } = useAccount();
-  console.log({ state });
+  const form = useFormContext<CreateAuctionForm>();
+  const { payoutToken, amount } = form.getValues();
 
-  const allowance = useAllowance({
+  const { isSufficientAllowance, execute, approveTx } = useAllowance({
     ownerAddress: address,
-    spenderAddress: "0x1F0b003674f05C140DC6e885066F4751EC4bFe20",
-    tokenAddress: state.payoutToken?.address,
-    decimals: state.payoutToken?.decimals,
-    chainId: state.chainId,
-    amount: state.amount,
+    spenderAddress: "0x",
+    tokenAddress: payoutToken?.address as Address,
+    decimals: payoutToken?.decimals,
+    chainId: payoutToken?.chainId,
+    amount: Number(amount),
   });
 
   return (
-    <div className="mt-4 flex justify-center">
-      <Dialog
-        onSubmit={() => allowance.execute()}
-        title="Confirm"
-        triggerContent="Create Auction"
-      >
-        Create Auction
-      </Dialog>
+    <div className="mt-4 flex flex-col items-center justify-center">
+      {!isSufficientAllowance ? (
+        <Button type="submit">Create Auction</Button>
+      ) : (
+        <div className="flex">
+          <Button disabled={approveTx.isLoading} onClick={() => execute()}>
+            {approveTx.isLoading ? "Waiting" : "Approve"}
+          </Button>
+          <Tooltip
+            content={`You need to allow the AuctionHouse contract to spend the configured amount of ${
+              payoutToken?.symbol ?? "the payout token"
+            }`}
+          >
+            <InfoCircledIcon className="ml-1 h-6 w-6" />
+          </Tooltip>
+        </div>
+      )}
     </div>
   );
 }

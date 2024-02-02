@@ -1,4 +1,5 @@
-import { Address, erc20Abi, parseUnits } from "viem";
+import { useEffect } from "react";
+import { Address, erc20Abi, formatUnits, parseUnits } from "viem";
 import {
   useReadContract,
   useWriteContract,
@@ -6,19 +7,19 @@ import {
 } from "wagmi";
 
 export type UseAllowanceProps = {
-  tokenAddress: Address;
-  chainId: number;
-  decimals: number;
-  ownerAddress: Address;
-  spenderAddress: Address;
-  amount: number;
+  tokenAddress?: Address;
+  chainId?: number;
+  decimals?: number;
+  ownerAddress?: Address;
+  spenderAddress?: Address;
+  amount?: number;
 };
 
 export const useAllowance = (args: UseAllowanceProps) => {
-  const { data: hash, ...approve } = useWriteContract();
+  const { data: hash, writeContract, ...approveRequest } = useWriteContract();
   const tx = useWaitForTransactionReceipt({ hash });
 
-  const allowance = useReadContract({
+  const { refetch: refetchAllowance, ...allowance } = useReadContract({
     abi: erc20Abi,
     chainId: args.chainId,
     address: args.tokenAddress,
@@ -33,24 +34,35 @@ export const useAllowance = (args: UseAllowanceProps) => {
     },
   });
 
-  const amountToApprove = args.amount
-    ? parseUnits(args.amount.toString(), args.decimals)
-    : 0n;
+  const amountToApprove =
+    args.amount && args.decimals
+      ? parseUnits(args.amount.toString(), args.decimals)
+      : 0n;
 
   const execute = () => {
-    approve.writeContract({
+    writeContract({
       abi: erc20Abi,
-      address: args.tokenAddress,
+      address: args.tokenAddress!,
       functionName: "approve",
-      args: [args.spenderAddress, amountToApprove],
+      args: [args.spenderAddress!, amountToApprove],
     });
   };
 
+  useEffect(() => {
+    if (tx.isSuccess) {
+      refetchAllowance();
+    }
+  }, [refetchAllowance, tx.isSuccess]);
+
+  const currentAllowance = allowance.data ?? 0n;
+
   return {
-    approve,
+    approveRequest,
     approveTx: tx,
-    execute,
     allowance,
-    currentAllowance: allowance.data,
+    execute,
+    currentAllowance,
+    isSufficientAllowance: currentAllowance >= amountToApprove,
+    formattedAllowance: formatUnits(currentAllowance, args.decimals ?? 18),
   };
 };

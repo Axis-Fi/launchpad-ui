@@ -5,6 +5,7 @@ import {
   Input,
   DialogInputProps,
   Skeleton,
+  LabelWrapper,
 } from "@repo/ui";
 import { activeChains } from "config/chains";
 import useERC20 from "loaders/use-erc20";
@@ -14,12 +15,12 @@ import { Address } from "viem";
 import { useChainId } from "wagmi";
 
 export function TokenPicker({
-  onValueChange,
+  onChange,
   onChainChange,
 }: {
-  onValueChange?: NonNullable<
+  onChange?: NonNullable<
     DialogInputProps<Token>["children"]
-  >["props"]["onValueChange"];
+  >["props"]["onChange"];
   onChainChange?: (chainId: number) => void;
 }) {
   const [address, setAddress] = React.useState<string>();
@@ -39,17 +40,19 @@ export function TokenPicker({
 
   React.useEffect(() => {
     if (isSuccess) {
-      onValueChange(token, { label: token.symbol });
+      onChange(token, { label: token.symbol });
     }
-  }, [isSuccess, onValueChange, token]);
+  }, [isSuccess, onChange, token]);
 
   return (
     <div>
       <div className="flex items-center gap-x-2 space-y-4">
-        <Input
-          label="Token Address"
-          onChange={(e) => setAddress(e.target.value)}
-        />
+        <LabelWrapper content="Token Address">
+          <Input
+            id="token-address"
+            onChange={(e) => setAddress(e.target.value)}
+          />
+        </LabelWrapper>
         <ComboBox
           label="Chain"
           defaultValue={chainId}
@@ -63,7 +66,7 @@ export function TokenPicker({
             label: c.name,
           }))}
           triggerElement={
-            <Avatar className="mb-4 cursor-pointer" alt={chain?.name} />
+            <Avatar className="cursor-pointer" alt={chain?.name} />
           }
         />
       </div>

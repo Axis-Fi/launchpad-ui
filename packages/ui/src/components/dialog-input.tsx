@@ -1,34 +1,33 @@
 import React, { useCallback } from "react";
-import {
-  Button,
-  Dialog,
-  DialogProps,
-  InputError,
-  LabelWrapper,
-  SelectData,
-} from "./";
+import { Button, Dialog, DialogProps, SelectData } from "./";
 import { IconedLabel } from "./iconed-label";
 
 export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
-  label: string;
   onSubmit?: (value?: T) => void;
+  onChange?: (value?: T) => void;
+  onBlur?: () => void;
   error?: string;
   children?: React.ReactElement<{
-    onValueChange?: (value: T, display?: SelectData) => void;
+    onChange?: (value: T, display?: SelectData) => void;
   }>;
 };
 
-export function DialogInput<T>({ label, ...props }: DialogInputProps<T>) {
+export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
   const [selected, setSelected] = React.useState<T>();
   const [display, setDisplay] = React.useState<SelectData>();
 
-  const onValueChange = useCallback((value: T, display?: SelectData) => {
-    setSelected(value);
-    setDisplay(display);
-  }, []);
+  const handleChange = useCallback(
+    (value: T, display?: SelectData) => {
+      setSelected(value);
+      setDisplay(display);
+
+      onChange?.(value);
+    },
+    [onChange],
+  );
 
   const children = React.isValidElement(props.children)
-    ? React.cloneElement(props.children, { onValueChange })
+    ? React.cloneElement(props.children, { onChange: handleChange })
     : props.children;
 
   const triggerContent = display ? (
@@ -38,19 +37,20 @@ export function DialogInput<T>({ label, ...props }: DialogInputProps<T>) {
   );
 
   return (
-    <LabelWrapper content={label}>
-      <Dialog
-        {...props}
-        triggerElement={
-          <Button variant="outline" className="flex w-full justify-start">
-            {triggerContent}
-          </Button>
-        }
-        onSubmit={() => props.onSubmit?.(selected)}
-      >
-        {children}
-      </Dialog>
-      <InputError error={props.error} />
-    </LabelWrapper>
+    <Dialog
+      {...props}
+      onOpenChange={(open) => !open && props.onBlur?.()}
+      triggerElement={
+        <Button
+          variant="outline"
+          className="text-muted-foreground flex w-full justify-start"
+        >
+          {triggerContent}
+        </Button>
+      }
+      onSubmit={() => props.onSubmit?.(selected)}
+    >
+      {children}
+    </Dialog>
   );
 }

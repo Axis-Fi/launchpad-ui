@@ -19,6 +19,7 @@ export type DialogProps = React.PropsWithChildren & {
   description?: string;
   submitText?: string;
   cancelText?: string;
+  onOpenChange?: (open: boolean) => void;
   onSubmit?: () => void;
 };
 
@@ -35,7 +36,13 @@ export function Dialog(props: DialogProps) {
   );
 
   return (
-    <DialogRoot open={open} onOpenChange={() => setOpen((prev) => !prev)}>
+    <DialogRoot
+      open={open}
+      onOpenChange={(open) => {
+        setOpen((prev) => !prev);
+        props.onOpenChange?.(open);
+      }}
+    >
       <DialogTrigger className="w-full max-w-sm" asChild>
         {content}
       </DialogTrigger>
@@ -54,10 +61,7 @@ export function Dialog(props: DialogProps) {
 
           <Button
             className="w-1/2"
-            onClick={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
+            onClick={() => handleSubmit()}
             type="submit"
           >
             {props.submitText ?? "Confirm"}

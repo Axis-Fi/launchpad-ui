@@ -1,4 +1,13 @@
-import { Checkbox, DatePicker, DialogInput, Input, Label } from "@repo/ui";
+import {
+  DatePicker,
+  DialogInput,
+  Form,
+  FormField,
+  FormItemWrapper,
+  Input,
+  Label,
+  Switch,
+} from "@repo/ui";
 import {
   AccordionContent,
   AccordionItem,
@@ -6,154 +15,180 @@ import {
   AccordionTrigger,
 } from "@repo/ui";
 import { TokenPicker } from "components/token-picker";
-import { useCreateAuctionReducer } from "modules/auction/create-auction-reducer";
-import { Token } from "src/types";
 import { CreateAuctionSubmitter } from "./create-auction-submitter";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-//TODO: implement
+const tokenSchema = z.object({
+  address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
+  chainId: z.coerce.number(),
+  decimals: z.coerce.number(),
+  symbol: z.string(),
+});
+
+const schema = z.object({
+  quoteToken: tokenSchema,
+  payoutToken: tokenSchema,
+  amount: z.string(),
+  minPrice: z.string(),
+  deadline: z.date(),
+  hooks: z.string().optional(),
+  allowlist: z.string().optional(),
+  isVested: z.boolean().optional(),
+  vesting: z.string().optional(),
+});
+
+export type CreateAuctionForm = z.infer<typeof schema>;
+
 export default function CreateAuctionPage() {
-  const { state, dispatch, actions } = useCreateAuctionReducer();
+  const form = useForm<CreateAuctionForm>({
+    resolver: zodResolver(schema),
+    mode: "onBlur",
+  });
 
-  const hasTokens = state.quoteToken && state.payoutToken;
+  //TODO: implement
+  const onSubmit = (values: CreateAuctionForm) => {
+    console.log({ values });
+  };
+
+  const [isVested] = form.watch(["isVested"]);
 
   return (
     <div className="pt-16">
       <h1>Create Auction</h1>
-      <div className="mt-4 flex justify-around rounded-md border-y p-4">
-        <div className="w-full space-y-4">
-          <h3>Configure</h3>
-          <div className="grid grid-cols-2 place-items-center gap-y-4">
-            <DialogInput
-              title="Select Quote Token"
-              label="Quote Token"
-              triggerContent={"Select token"}
-              onSubmit={(value?: Token) =>
-                value && dispatch({ type: actions.UPDATE_QUOTE_TOKEN, value })
-              }
-            >
-              <TokenPicker />
-            </DialogInput>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="mt-4 flex justify-around rounded-md border-y p-4">
+            <div className="w-full space-y-4">
+              <h3>Configure</h3>
+              <div className="grid w-full grid-cols-2 place-items-center gap-y-8">
+                <FormField
+                  name="quoteToken"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Quote Token">
+                      <DialogInput
+                        title="Select Quote Token"
+                        triggerContent={"Select token"}
+                        {...field}
+                      >
+                        <TokenPicker />
+                      </DialogInput>
+                    </FormItemWrapper>
+                  )}
+                />
 
-            <Input
-              type="number"
-              label="Amount"
-              onChange={(e) => {
-                dispatch({
-                  type: actions.UPDATE_AMOUNT,
-                  value: Number(e.target.value),
-                });
-              }}
-            />
+                <FormField
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Amount">
+                      <Input {...field} type="number" />
+                    </FormItemWrapper>
+                  )}
+                />
 
-            <DialogInput
-              title="Select Payout Token"
-              label="Payout Token"
-              triggerContent={"Select token"}
-              onSubmit={(value?: Token) =>
-                value && dispatch({ type: actions.UPDATE_PAYOUT_TOKEN, value })
-              }
-            >
-              <TokenPicker />
-            </DialogInput>
+                <FormField
+                  name="payoutToken"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Payout Token">
+                      <DialogInput
+                        title="Select Payout Token"
+                        triggerContent={"Select token"}
+                        {...field}
+                      >
+                        <TokenPicker />
+                      </DialogInput>
+                    </FormItemWrapper>
+                  )}
+                />
 
-            <DatePicker
-              id="deadline"
-              label="Deadline"
-              onChange={(date) => {
-                if (date) {
-                  dispatch({ type: actions.UPDATE_DEADLINE, value: date });
-                }
-              }}
-            />
-            <Input
-              id="min-price"
-              type="number"
-              label="Minimum Price"
-              onChange={(e) => {
-                dispatch({
-                  type: actions.UPDATE_MIN_PRICE,
-                  value: Number(e.target.value),
-                });
-              }}
-            />
+                <FormField
+                  control={form.control}
+                  name="minPrice"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Minimum Price">
+                      <Input type="number" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="deadline"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Deadline">
+                      <DatePicker {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+              </div>
+              <div>
+                <AccordionRoot type="single" collapsible>
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger className="justify-center text-xs font-semibold data-[state=closed]:before:content-['Show\00a0'] data-[state=open]:before:content-['Hide\00a0']">
+                      Optional Settings
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="grid grid-cols-2 place-items-center gap-y-4">
+                        <FormField
+                          name="hooks"
+                          render={({ field }) => (
+                            <FormItemWrapper className="order-1" label="Hooks">
+                              <Input {...field} />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          name="allowlist"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Allowlist"
+                              className="order-3"
+                            >
+                              <Input
+                                {...field}
+                                tooltip={"What is the allowlist"}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <div className="order-2 flex w-full max-w-sm items-center justify-start gap-x-2">
+                          <FormField
+                            name="isVested"
+                            render={({ field }) => (
+                              <FormItemWrapper className="mt-4 w-min">
+                                <div className="flex items-center gap-x-2">
+                                  <Switch onCheckedChange={field.onChange} />
+                                  <Label>Vested?</Label>
+                                </div>
+                              </FormItemWrapper>
+                            )}
+                          />
+
+                          <FormField
+                            name="vesting"
+                            render={({ field }) => (
+                              <FormItemWrapper label="Vesting Days">
+                                <Input
+                                  type="number"
+                                  disabled={!isVested}
+                                  {...field}
+                                />
+                              </FormItemWrapper>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </AccordionRoot>
+              </div>
+            </div>
           </div>
-          <div>
-            <AccordionRoot type="single" collapsible>
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="justify-center text-xs font-semibold data-[state=closed]:before:content-['Show\00a0'] data-[state=open]:before:content-['Hide\00a0']">
-                  Optional Settings
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="grid grid-cols-2 place-items-center gap-y-4">
-                    <Input
-                      tooltip="What are hooks"
-                      label="Hooks"
-                      onChange={(e) =>
-                        dispatch({
-                          type: actions.UPDATE_HOOKS,
-                          value: e.target.value,
-                        })
-                      }
-                    />
-                    <Input
-                      tooltip={"What is the allowlist"}
-                      label="Allowlist"
-                      onChange={(e) =>
-                        dispatch({
-                          type: actions.UPDATE_ALLOWLIST,
-                          value: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="flex w-full justify-center gap-x-2">
-                    <div className="flex items-center gap-x-2">
-                      <Checkbox
-                        className="h-4 w-4"
-                        onCheckedChange={(e) => {
-                          dispatch({
-                            type: actions.UPDATE_DERIVATIVE_VESTING,
-                            value: { isVested: !!e },
-                          });
-                        }}
-                      />
-                      <Label>Vested?</Label>
-                    </div>
-                    <Input
-                      type="number"
-                      disabled={!state.isVested}
-                      onChange={(e) =>
-                        dispatch({
-                          type: actions.UPDATE_DERIVATIVE_VESTING,
-                          value: { days: parseInt(e.target.value) },
-                        })
-                      }
-                      label="Vesting Days"
-                    />
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            </AccordionRoot>
-          </div>
-        </div>
-      </div>
 
-      <div className="mt-4 rounded-md p-4">
-        <h2 className="text-center">Summary</h2>
-        <div>
-          <p>Quote: {state.quoteToken?.symbol} </p>
-          <p>Amount: {state.amount}</p>
-          <p>
-            MinPrice: {state.minPrice}{" "}
-            {hasTokens
-              ? `${state.quoteToken?.symbol} per ${state.payoutToken?.symbol}`
-              : ""}
-          </p>
-          <p>Deadline: {state.deadline?.toString()}</p>
-        </div>
-      </div>
-
-      <CreateAuctionSubmitter state={state} />
+          <CreateAuctionSubmitter />
+        </form>
+      </Form>
     </div>
   );
 }

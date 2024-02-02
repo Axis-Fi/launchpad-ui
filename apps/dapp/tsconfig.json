@@ -1,6 +1,7 @@
 {
   "extends": "@repo/typescript-config/react-app.json",
   "include": ["src"],
+  "exclude": ["./src/**/*.stories.tsx"],
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
@@ -11,7 +12,10 @@
       "modules/*": ["src/modules/*"],
       "pages/*": ["src/pages/*"],
       "loaders/*": ["src/loaders/*"],
-      "@/utils": ["../../packages/ui/src/utils.ts"]
+      "@/utils": ["../../packages/ui/src/utils.ts"],
+      "@/components/primitives/*": [
+        "../../packages/ui/src/components/primitives/*"
+      ]
     }
   },
   "references": [

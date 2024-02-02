@@ -12,4 +12,6 @@ export * from "./popover";
 export * from "./scroll-area";
 export * from "./select";
 export * from "./skeleton";
+export * from "./switch";
 export * from "./tooltip";
+export * from "./form";

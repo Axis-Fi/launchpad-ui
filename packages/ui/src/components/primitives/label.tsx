@@ -10,14 +10,13 @@ const labelVariants = cva(
   "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 );
 
-type LabelProps = React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
-  VariantProps<typeof labelVariants> & {
-    tooltip?: React.ReactNode;
-  };
+export type LabelProps = VariantProps<typeof labelVariants> & {
+  tooltip?: React.ReactNode;
+};
 
 const Label = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
-  LabelProps
+  LabelProps & React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
 >(({ className, ...props }, ref) => {
   const label = (
     <LabelPrimitive.Root
@@ -48,6 +47,7 @@ Label.displayName = LabelPrimitive.Root.displayName;
 const LabelWrapper = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   React.ComponentPropsWithRef<"div"> &
+    React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
     LabelProps & { tooltip?: React.ReactNode }
 >((props, ref) => {
   return (

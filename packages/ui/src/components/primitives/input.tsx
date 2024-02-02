@@ -2,9 +2,6 @@ import * as React from "react";
 
 import { cn } from "@/utils";
 
-import { LabelWrapper } from "./label";
-import { InputError } from "../input-error";
-
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -12,20 +9,7 @@ export interface InputProps
   error?: string;
 }
 
-export function Input({ label, error, ...props }: InputProps) {
-  if (!label) {
-    return <InputPrimitive {...props} />;
-  }
-
-  return (
-    <LabelWrapper htmlFor={props.id} content={label} tooltip={props.tooltip}>
-      <InputPrimitive {...props} className={error ? "border-red-400" : ""} />
-      <InputError error={error} />
-    </LabelWrapper>
-  );
-}
-
-const InputPrimitive = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
       <input
@@ -40,6 +24,6 @@ const InputPrimitive = React.forwardRef<HTMLInputElement, InputProps>(
     );
   },
 );
-InputPrimitive.displayName = "BasicInput";
+Input.displayName = "Input";
 
-export { InputPrimitive };
+export { Input };
