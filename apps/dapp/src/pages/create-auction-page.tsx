@@ -7,15 +7,14 @@ import {
   Input,
   Label,
   Switch,
-} from "@repo/ui";
-import {
   AccordionContent,
   AccordionItem,
   AccordionRoot,
   AccordionTrigger,
 } from "@repo/ui";
+
 import { TokenPicker } from "components/token-picker";
-import { CreateAuctionSubmitter } from "./create-auction-submitter";
+import { CreateAuctionSubmitter } from "modules/auction/create-auction-submitter";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

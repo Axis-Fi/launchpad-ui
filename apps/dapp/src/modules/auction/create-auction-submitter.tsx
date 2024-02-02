@@ -1,10 +1,10 @@
-import { Button, Tooltip } from "@repo/ui";
-import { useAllowance } from "loaders/use-allowance";
 import { useAccount } from "wagmi";
-import { CreateAuctionForm } from "./create-auction-page";
 import { useFormContext } from "react-hook-form";
 import { Address } from "viem";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { Button, Tooltip } from "@repo/ui";
+import { useAllowance } from "loaders/use-allowance";
+import { CreateAuctionForm } from "pages/create-auction-page";
 
 export function CreateAuctionSubmitter() {
   const { address } = useAccount();
