@@ -7,20 +7,22 @@ import { ThemeToggle } from "../components/ThemeToggle";
 ---
 
 <script>
-  const btnContainer = document.getElementById("main-button-container");
   const button = document.getElementById("main-button");
-  const container = document.getElementById("main-container");
+  const container = document.getElementById("card-container");
 
   let show = false;
-  let className = "translate-x-[49vw]";
+  let initialCardClass = "translate-x-[54vw]";
+  let initialButtonClass = "translate-x-[47vw]";
+
   button?.addEventListener("click", () => {
     console.log("show");
     show = !show;
     if (show) {
-      container?.classList.remove(className);
-      button?.classList.add();
+      container?.classList.remove(initialCardClass);
+      button?.classList.remove(initialButtonClass);
     } else {
-      container?.classList.add(className);
+      container?.classList.add(initialCardClass);
+      button?.classList.add(initialButtonClass);
     }
   });
 </script>
@@ -31,19 +33,19 @@ import { ThemeToggle } from "../components/ThemeToggle";
     <div class="max-w-screen p-1 w-full flex justify-end">
       <ThemeToggle client:load />
     </div>
-    <div
-      id="main-container"
-      class="flex w-full h-full items-center transition-all duration-700"
-    >
-      <div class="w-screen">
-        <div
-          id="main-button"
-          class="max-w-40 max-h-40 flex flex-col justify-center h-full"
-        >
+    <div id="main-container" class="flex w-full h-full items-center">
+      <div
+        id="main-button"
+        class="w-screen translate-x-[47vw] transition-all duration-700"
+      >
+        <div class="max-w-40 max-h-40 flex flex-col justify-center h-full">
           <img class="cursor-pointer p-8" src="/logo.svg" />
         </div>
       </div>
-      <div class="w-[120vw] pr-4">
+      <div
+        id="card-container"
+        class="w-[120vw] pr-4 translate-x-[54vw] transition-all duration-700"
+      >
         <div
           class="flex flex-col justify-between orange-grad py-6 px-8 h-[94vh] rounded-md"
         >
@@ -51,7 +53,7 @@ import { ThemeToggle } from "../components/ThemeToggle";
             <h1 class="text-9xl font-aeonfono font-medium leading-tight">
               Axis is here
             </h1>
-            <p class="text-5xl font-aeonfono font-light mt-4">
+            <p class="text-5xl font-aeonfono mt-4">
               We are building DeFi’s future <br /> with auction-based primitives.
             </p>
           </div>
