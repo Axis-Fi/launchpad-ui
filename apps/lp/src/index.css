@@ -1,1 +1,11 @@
 @import "@repo/ui/style.css";
+
+@layer components {
+  .grad-theme-switcher {
+    background-image: linear-gradient(
+      hsla(220, 88%, 71%, 1),
+      hsla(201, 88%, 71%, 1),
+      hsla(79, 88%, 71%, 1)
+    );
+  }
+}

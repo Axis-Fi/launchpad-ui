@@ -2,14 +2,79 @@
 import "../index.css";
 
 import Layout from "../layouts/Layout.astro";
+import ThemeDetector from "../theme-detector.astro";
+import { ThemeToggle } from "../components/ThemeToggle";
 ---
 
+<script>
+  const btnContainer = document.getElementById("main-button-container");
+  const button = document.getElementById("main-button");
+  const container = document.getElementById("main-container");
+
+  let show = false;
+  let className = "translate-x-[49vw]";
+  button?.addEventListener("click", () => {
+    console.log("show");
+    show = !show;
+    if (show) {
+      container?.classList.remove(className);
+      button?.classList.add();
+    } else {
+      container?.classList.add(className);
+    }
+  });
+</script>
+
+<ThemeDetector />
 <Layout title="Welcome to Axis">
-  <main>
-    <div class="max-w-[1137px] mt-8 w-full flex justify-center m-auto gap-4">
-      <h1 class="text-4xl">
-        Welcome to <span class="text-gradient">Axis</span>
-      </h1>
+  <main class="h-screen overflow-y-none flex flex-col items-end">
+    <div class="max-w-screen p-1 w-full flex justify-end">
+      <ThemeToggle client:load />
+    </div>
+    <div
+      id="main-container"
+      class="flex w-full h-full items-center transition-all duration-700"
+    >
+      <div class="w-screen">
+        <div
+          id="main-button"
+          class="max-w-40 max-h-40 flex flex-col justify-center h-full"
+        >
+          <img class="cursor-pointer p-8" src="/logo.svg" />
+        </div>
+      </div>
+      <div class="w-[120vw] pr-4">
+        <div
+          class="flex flex-col justify-between orange-grad py-6 px-8 h-[94vh] rounded-md"
+        >
+          <div>
+            <h1 class="text-9xl font-aeonfono font-medium leading-tight">
+              Axis is here
+            </h1>
+            <p class="text-5xl font-aeonfono font-light mt-4">
+              We are building DeFi’s future <br /> with auction-based primitives.
+            </p>
+          </div>
+          <p class="text-xl font-medium">
+            Our first product will revolutionize the launchpad sector and mark a
+            new era of smart token launches.<br /> Introducing a unique sealed-bid
+            auction system, Axis Launch ensures projects and users benefit from a
+            <br />
+            private bidding process, a level playing field, and enhanced control
+            over auction and pricing dynamics.<br /><br />Axis Origin, our
+            sealed-bid auction system, initiates a new era of smart token
+            launches. By preserving privacy <br />for bidders, the dynamic
+            shifts from competitive to strategic bidding and leads to superior
+            price discovery.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-screen px-4 w-full flex justify-end">
+      <div class="flex gap-x-2 text-xs">
+        <p>contact</p>
+        <p>social</p>
+      </div>
     </div>
   </main>
 </Layout>
