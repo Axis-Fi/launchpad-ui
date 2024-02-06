@@ -6,11 +6,11 @@
   "license": "MIT",
   "files": [
     "src/**",
-    "src/global.css"
+    "src/style.css"
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./style.css": "./src/global.css",
+    "./style.css": "./src/style.css",
     "./utils": "./src/utils.ts"
   },
   "scripts": {

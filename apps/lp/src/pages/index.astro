@@ -2,14 +2,81 @@
 import "../index.css";
 
 import Layout from "../layouts/Layout.astro";
+import ThemeDetectorScript from "src/components/ThemeDetector.astro";
+import Card from "src/components/Card.astro";
+import AxisLogo from "src/components/AxisLogo.astro";
+import ThemeToggle from "src/components/ThemeToggle.astro";
+import AxisWordmark from "src/components/AxisWordmark.astro";
+import Footer from "src/components/Footer.astro";
 ---
 
-<Layout title="Welcome to Axis">
-  <main>
-    <div class="max-w-[1137px] mt-8 w-full flex justify-center m-auto gap-4">
-      <h1 class="text-4xl">
-        Welcome to <span class="text-gradient">Axis</span>
-      </h1>
+<Layout title="Axis Finance">
+  <main
+    class="h-screen min-h-screen overflow-hidden flex flex-col justify-between items-end font-aeonfono antialiased"
+  >
+    <div
+      id="header"
+      class="max-w-screen h-10 xl:h-14 px-4 w-full items-center justify-end lg:translate-x-40 transition-all duration-700 lg:flex hidden"
+    >
+      <ThemeToggle />
     </div>
+    <div id="main-container" class="flex flex-col w-full h-full items-center">
+      <div
+        id="logo-container"
+        class="w-full h-full flex lg:translate-y-0 justify-center items-center transition-all duration-700"
+      >
+        <div class="flex flex-col justify-center h-full">
+          <div
+            class="wordmark-glow transition-all duration-300 cursor-pointer p-20"
+          >
+            <AxisWordmark />
+
+            <AxisLogo src="/logo.svg" />
+          </div>
+        </div>
+      </div>
+      <div
+        id="card-container"
+        class="absolute lg:w-[58vw] translate-y-[80vh] pt-6 lg:translate-y-0 lg:translate-x-[57.7vw] xl:pt-8 px-2 lg:px-0 lg:pr-4 top-32 lg:top-10 md:right-1 transition-all duration-700"
+      >
+        <Card />
+
+        <Footer className="lg:hidden my-8" />
+      </div>
+    </div>
+    <Footer className="hidden lg:flex mb-2" />
   </main>
 </Layout>
+
+<ThemeDetectorScript />
+<script>
+  const logo = document.getElementById("logo-container");
+  const card = document.getElementById("card-container");
+  const header = document.getElementById("header");
+  const footer = document.getElementsByClassName("footer");
+  const wordmark = document.getElementById("axis-wordmark");
+  const logoEle = document.getElementById("axis-logo");
+
+  const cardClass = ["translate-y-[80vh]", "lg:translate-x-[57.7vw]"];
+  const logoClass = ["-translate-y-[40vh]", "lg:-translate-x-[47vw]"];
+  const navClass = "lg:translate-x-40";
+  const imageClass = "opacity-0";
+  let show = false;
+
+  logo?.addEventListener("click", () => {
+    show = !show;
+    if (show) {
+      [header, ...footer].map((e) => e?.classList.remove(navClass));
+      card?.classList.remove(...cardClass);
+      logo?.classList.add(...logoClass);
+      logoEle?.classList.remove(imageClass);
+      wordmark?.classList.add(imageClass);
+    } else {
+      [header, ...footer].map((e) => e?.classList.add(navClass));
+      card?.classList.add(...cardClass);
+      logo?.classList.remove(...logoClass);
+      logoEle?.classList.add(imageClass);
+      wordmark?.classList.remove(imageClass);
+    }
+  });
+</script>

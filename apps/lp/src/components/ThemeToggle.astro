@@ -1,0 +1,17 @@
+<button
+  class="grad-theme-switcher h-6 w-6 rounded-full transition-all hover:h-8 hover:w-8"
+></button>
+<script>
+  const isDark = document.documentElement.classList.contains("dark");
+  const isDarkPrefered = window.matchMedia(
+    "(prefers-color-scheme: dark)",
+  ).matches;
+
+  if (isDarkPrefered && !isDark) document.documentElement.classList.add("dark");
+
+  const [btn] = document.getElementsByClassName("grad-theme-switcher");
+  btn.addEventListener("click", () => {
+    const isDark = document.documentElement.classList.contains("dark");
+    document.documentElement.classList[isDark ? "remove" : "add"]("dark");
+  });
+</script>

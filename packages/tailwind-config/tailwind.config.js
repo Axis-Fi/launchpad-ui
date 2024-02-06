@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
+const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   darkMode: ["class"],
@@ -16,8 +18,18 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        "axis-light": "hsl(var(--axis-light))",
+        "axis-light-mid": "hsl(var(--axis-light-mid))",
+        "axis-dark": "hsl(var(--axis-dark))",
+        "axis-dark-mid": "hsl(var(--axis-dark-mid))",
+        "axis-blue": "hsl(var(--axis-blue))",
+        "axis-teal": "hsl(var(--axis-teal))",
+        "axis-green": "hsl(var(--axis-green))",
+        "axis-orange": "hsl(var(--axis-orange))",
+        "axis-red": "hsl(var(--axis-red))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -65,6 +77,12 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      fontFamily: {
+        sans: ["AeonikPro", ...defaultTheme.fontFamily.sans],
+        mono: [...defaultTheme.fontFamily.mono],
+        aeonpro: ["AeonikPro", ...defaultTheme.fontFamily.sans],
+        aeonfono: ["AeonikFono", ...defaultTheme.fontFamily.sans],
       },
     },
   },
