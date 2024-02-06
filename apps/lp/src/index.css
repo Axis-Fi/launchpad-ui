@@ -22,6 +22,7 @@
   .bg-card {
     position: relative;
     z-index: 1;
+    background-size: cover;
 
     background-image: linear-gradient(
         hsla(79, 88%, 71%, 0.94),
@@ -39,6 +40,7 @@
     transition: opacity 0.5s linear;
     opacity: 0;
 
+    background-size: cover;
     background-image: linear-gradient(
         hsla(61, 72%, 86%, 0.94),
         hsla(68, 98%, 82%, 0.94),
@@ -52,6 +54,7 @@
   }
 
   .dark .bg-card {
+    background-repeat: repeat;
     background-image: linear-gradient(
         hsla(11, 100%, 63%, 0.94),
         hsla(32, 99%, 66%, 0.94),
@@ -61,10 +64,11 @@
   }
 
   .dark .bg-card::before {
+    width: 100%;
     background-image: linear-gradient(
-        hsla(40, 100%, 77%, 0.94),
-        hsla(32, 99%, 66%, 0.94),
-        hsla(11, 100%, 63%, 0.94)
+        hsla(40, 100%, 77%, 0.9),
+        hsla(32, 99%, 66%, 0.9),
+        hsla(11, 100%, 63%, 0.9)
       ),
       url("/noise.svg");
   }
