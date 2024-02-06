@@ -51,6 +51,7 @@
     --foreground: var(--axis-dark);
     --background: var(--axis-dark);
 
+    --primary: var(--axis-red);
     --secondary-foreground: var(--axis-dark-mid);
   }
 }
