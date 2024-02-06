@@ -7,6 +7,9 @@
     --axis-light: 60 19% 95%;
     --axis-dark: 288 8% 12%;
 
+    --axis-light-mid: 60 10% 60%;
+    --axis-dark-mid: 290 9% 40%;
+
     --axis-blue: 222 81% 69%;
     --axis-teal: 206 83% 71%;
     --axis-green: 78 85% 71%;
@@ -22,11 +25,11 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: var(--axis-orange);
+    --primary: var(--axis-green);
     --primary-foreground: var(--axis-dark);
 
     --secondary: var(--axis-red);
-    --secondary-foreground: var(--axis-dark);
+    --secondary-foreground: var(--axis-light-mid);
 
     --muted: 288 8% 12%;
     --muted-foreground: 60 5% 50%;
@@ -45,8 +48,10 @@
   }
 
   .dark {
-    --foreground: var(--axis-light);
+    --foreground: var(--axis-dark);
     --background: var(--axis-dark);
+
+    --secondary-foreground: var(--axis-dark-mid);
   }
 }
 

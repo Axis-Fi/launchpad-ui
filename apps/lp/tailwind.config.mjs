@@ -6,5 +6,6 @@ export default {
   content: [
     "../../packages/ui/src/**/*.{ts,tsx,js,jsx}",
     "./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}",
+    "./public/**/*.svg",
   ],
 };

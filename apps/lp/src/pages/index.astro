@@ -2,81 +2,89 @@
 import "../index.css";
 
 import Layout from "../layouts/Layout.astro";
-import ThemeDetector from "../theme-detector.astro";
-import { ThemeToggle } from "../components/ThemeToggle";
+import ThemeDetectorScript from "src/components/ThemeDetector.astro";
+import Card from "src/components/Card.astro";
+import AxisLogo from "src/components/AxisLogo.astro";
+import ThemeToggle from "src/components/ThemeToggle.astro";
+import AxisWordmark from "src/components/AxisWordmark.astro";
 ---
 
-<script>
-  const button = document.getElementById("main-button");
-  const container = document.getElementById("card-container");
-
-  let show = false;
-  let initialCardClass = "translate-x-[54vw]";
-  let initialButtonClass = "translate-x-[47vw]";
-
-  button?.addEventListener("click", () => {
-    console.log("show");
-    show = !show;
-    if (show) {
-      container?.classList.remove(initialCardClass);
-      button?.classList.remove(initialButtonClass);
-    } else {
-      container?.classList.add(initialCardClass);
-      button?.classList.add(initialButtonClass);
-    }
-  });
-</script>
-
-<ThemeDetector />
+<ThemeDetectorScript />
 <Layout title="Welcome to Axis">
-  <main class="h-screen overflow-y-none flex flex-col items-end">
-    <div class="max-w-screen p-1 w-full flex justify-end">
-      <ThemeToggle client:load />
+  <main
+    class="h-screen min-h-screen overflow-hidden flex flex-col justify-between items-end font-aeonfono"
+  >
+    <div
+      id="header"
+      class="max-w-screen h-14 px-4 w-full items-center justify-end lg:translate-x-40 transition-all duration-700 lg:flex hidden"
+    >
+      <ThemeToggle />
     </div>
-    <div id="main-container" class="flex w-full h-full items-center">
+    <div id="main-container" class="flex flex-col w-full h-full items-center">
       <div
-        id="main-button"
-        class="w-screen translate-x-[47vw] transition-all duration-700"
+        id="logo-container"
+        class="w-full h-full flex lg:translate-y-0 justify-center items-center transition-all duration-700"
       >
-        <div class="max-w-40 max-h-40 flex flex-col justify-center h-full">
-          <img class="cursor-pointer p-8" src="/logo.svg" />
+        <div
+          class="flex flex-col justify-center h-full wordmark-glow transition-all duration-300"
+        >
+          <AxisWordmark />
+
+          <AxisLogo
+            className="cursor-pointer p-8 relative bottom-28 opacity-0 transition-all duration-700"
+            src="/logo.svg"
+          />
         </div>
       </div>
       <div
         id="card-container"
-        class="w-[120vw] pr-4 translate-x-[54vw] transition-all duration-700"
+        class="absolute lg:w-[58vw] translate-y-[93vh] py-6 lg:translate-y-0 lg:translate-x-[57.7vw] lg:pt-8 lg:pb-6 px-2 lg:px-0 lg:pr-4 top-32 lg:top-10 md:right-1 transition-all duration-700"
       >
+        <Card />
         <div
-          class="flex flex-col justify-between orange-grad py-6 px-8 h-[94vh] rounded-md"
+          id="footer"
+          class="max-w-screen lg:h-14 mt-4 lg:px-4 w-full flex items-end lg:items-end justify-end lg:translate-x-40 transition-all duration-700"
         >
-          <div>
-            <h1 class="text-9xl font-aeonfono font-medium leading-tight">
-              Axis is here
-            </h1>
-            <p class="text-5xl font-aeonfono mt-4">
-              We are building DeFi’s future <br /> with auction-based primitives.
-            </p>
+          <div
+            class="flex justify-center lg:justify-end w-full gap-x-6 text-sm uppercase bg-secondary-foreground/5 text-secondary-foreground rounded-md lg:bg-inherit"
+          >
+            <a><p>social</p></a>
+            <a><p>contact</p></a>
           </div>
-          <p class="text-xl font-medium">
-            Our first product will revolutionize the launchpad sector and mark a
-            new era of smart token launches.<br /> Introducing a unique sealed-bid
-            auction system, Axis Launch ensures projects and users benefit from a
-            <br />
-            private bidding process, a level playing field, and enhanced control
-            over auction and pricing dynamics.<br /><br />Axis Origin, our
-            sealed-bid auction system, initiates a new era of smart token
-            launches. By preserving privacy <br />for bidders, the dynamic
-            shifts from competitive to strategic bidding and leads to superior
-            price discovery.
-          </p>
         </div>
-      </div>
-    </div>
-    <div class="max-w-screen px-4 w-full flex justify-end">
-      <div class="flex gap-x-2 text-xs">
-        <p>contact</p>
-        <p>social</p>
       </div>
     </div>
   </main>
 </Layout>
+
+<script>
+  const logo = document.getElementById("logo-container");
+  const card = document.getElementById("card-container");
+  const header = document.getElementById("header");
+  const footer = document.getElementById("footer");
+  const wordmark = document.getElementById("axis-wordmark");
+  const logoEle = document.getElementById("axis-logo");
+
+  console.log({ wordmark, logoEle });
+  const cardClass = ["translate-y-[93vh]", "lg:translate-x-[57.7vw]"];
+  const logoClass = ["-translate-y-[40vh]", "lg:-translate-x-[47vw]"];
+  const navClass = "lg:translate-x-40";
+  let show = false;
+
+  logo?.addEventListener("click", () => {
+    show = !show;
+    if (show) {
+      [header, footer].map((e) => e?.classList.remove(navClass));
+      card?.classList.remove(...cardClass);
+      logo?.classList.add(...logoClass);
+      logoEle?.classList.remove("opacity-0");
+      wordmark?.classList.add("opacity-0");
+    } else {
+      [header, footer].map((e) => e?.classList.add(navClass));
+      card?.classList.add(...cardClass);
+      logo?.classList.remove(...logoClass);
+      logoEle?.classList.add("opacity-0");
+      wordmark?.classList.remove("opacity-0");
+    }
+  });
+</script>

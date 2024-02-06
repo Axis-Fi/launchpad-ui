@@ -1,9 +1,44 @@
----
-interface Props {
-  title: string;
-  subtitle: string;
-  body: string;
-}
+<div
+  class="flex flex-col px-2 gap-y-12 lg:gap-y-0 lg:justify-between bg-card lg:py-6 lg:px-8 lg:h-[87vh] rounded-md overflow-y-scroll group"
+>
+  <div>
+    <h1 class="text-[80px] lg:text-9xl font-aeonfono font-medium leading-none">
+      Axis is here
+    </h1>
+    <p class="text-2xl lg:text-5xl font-aeonfono font-light mt-4">
+      We are building DeFi’s future <br class="hidden lg:block" /> with auction-based
+      primitives.
+    </p>
+  </div>
+  <div class="flex lg:flex-col flex-col-reverse pb-2">
+    <div
+      class="uppercase lg:self-end py-2 lg:px-3 items-center tease-banner rounded-md flex gap-x-1 text-background font-aeonpro lg:tracking-wide opacity-100 group-hover:opacity-100 transition-all duration-700 lg:opacity-0 mt-2"
+    >
+      <svg
+        width="16"
+        height="17"
+        viewBox="0 0 16 17"
+        class="ml-1"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="stroke-background"
+          d="M7.96759 0.5L7.96759 8.49994M15 12.5368L7.96759 8.49994M1 12.4999L7.96759 8.49994M7.96759 8.49994L15 4.46319M7.96759 8.49994L7.96759 16.5M7.96759 8.49994L1 4.50009"
+        ></path>
+      </svg>
 
-const { href, title, body } = Astro.props;
----
+      Coming soon to blast testnet
+    </div>
+    <p class="text-sm lg:text-xl font-medium font-aeonpro leading-7">
+      Our first product will revolutionize the launchpad sector and mark a new
+      era of smart token launches.<br /> Introducing a unique sealed-bid auction
+      system, Axis Launch ensures projects and users benefit from a
+      <br />
+      private bidding process, a level playing field, and enhanced control over auction
+      and pricing dynamics.<br /><br />Axis Origin, our sealed-bid auction
+      system, initiates a new era of smart token launches. By preserving privacy <br
+      />for bidders, the dynamic shifts from competitive to strategic bidding
+      and leads to superior price discovery.
+    </p>
+  </div>
+</div>

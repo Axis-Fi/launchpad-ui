@@ -21,15 +21,15 @@ module.exports = {
 
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-
         "axis-light": "hsl(var(--axis-light))",
-        "axis-dark": "hsl(var(--axis-light))",
+        "axis-light-mid": "hsl(var(--axis-light-mid))",
+        "axis-dark": "hsl(var(--axis-dark))",
+        "axis-dark-mid": "hsl(var(--axis-dark-mid))",
         "axis-blue": "hsl(var(--axis-blue))",
         "axis-teal": "hsl(var(--axis-teal))",
         "axis-green": "hsl(var(--axis-green))",
         "axis-orange": "hsl(var(--axis-orange))",
         "axis-red": "hsl(var(--axis-red))",
-
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
