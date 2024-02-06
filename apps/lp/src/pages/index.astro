@@ -19,7 +19,7 @@ const description =
   >
     <div
       id="header"
-      class="max-w-screen h-14 px-4 w-full items-center justify-end lg:translate-x-40 transition-all duration-700 lg:flex hidden"
+      class="max-w-screen h-10 xl:h-14 px-4 w-full items-center justify-end lg:translate-x-40 transition-all duration-700 lg:flex hidden"
     >
       <ThemeToggle />
     </div>
@@ -33,20 +33,17 @@ const description =
         >
           <AxisWordmark />
 
-          <AxisLogo
-            className="cursor-pointer p-8 relative bottom-28 opacity-0 transition-all duration-700"
-            src="/logo.svg"
-          />
+          <AxisLogo src="/logo.svg" />
         </div>
       </div>
       <div
         id="card-container"
-        class="absolute lg:w-[58vw] translate-y-[80vh] py-6 lg:translate-y-0 lg:translate-x-[57.7vw] lg:pt-8 lg:pb-6 px-2 lg:px-0 lg:pr-4 top-32 lg:top-10 md:right-1 transition-all duration-700"
+        class="absolute lg:w-[58vw] translate-y-[80vh] pt-6 lg:translate-y-0 lg:translate-x-[57.7vw] xl:pt-8 px-2 lg:px-0 lg:pr-4 top-32 lg:top-10 md:right-1 transition-all duration-700"
       >
         <Card />
         <div
           id="footer"
-          class="max-w-screen lg:h-14 mt-4 lg:px-4 w-full flex items-end lg:items-end justify-end lg:translate-x-40 transition-all duration-700"
+          class="max-w-screen mt-4 lg:px-4 w-full flex items-end lg:items-end justify-end lg:translate-x-40 transition-all duration-700"
         >
           <div
             class="flex justify-center lg:justify-end w-full gap-x-6 text-sm uppercase bg-secondary-foreground/5 text-secondary-foreground rounded-md lg:bg-inherit"
