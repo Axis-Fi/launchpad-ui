@@ -62,10 +62,11 @@
 
   .dark .bg-card::before {
     background-image: linear-gradient(
-      hsla(40, 100%, 77%, 0.94),
-      hsla(32, 99%, 66%, 0.94),
-      hsla(11, 100%, 63%, 0.94)
-    );
+        hsla(40, 100%, 77%, 0.94),
+        hsla(32, 99%, 66%, 0.94),
+        hsla(11, 100%, 63%, 0.94)
+      ),
+      url("/noise.svg");
   }
 
   .tease-banner {

@@ -5,5 +5,5 @@
         @media (prefers-color-scheme: dark) {
             path { fill: #FFF; }
         }
-    </style>
+</style>
 </svg>
