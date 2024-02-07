@@ -1,0 +1,405 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Cloak provides a simple key management API for RSA key pairs. It allows users to create a key pair where the private key will only be revealed after a certain time. The time is determined by the conclusion of an auction that the key is mapped to based on observations of blockchain events.",
+    "title": "Cloak Key Management API",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "description": "Local",
+      "url": "http://localhost:8080"
+    },
+    {
+      "description": "Testnet",
+      "url": "https://cloak-api-testnet.up.railway.app"
+    },
+    {
+      "description": "Mainnet",
+      "url": "https://cloak-api-mainnet.up.railway.app"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Routes for creating keys and retrieving them when revealed",
+      "name": "Keys"
+    },
+    {
+      "description": "Routes for viewing supported configurations",
+      "name": "Configs"
+    }
+  ],
+  "paths": {
+    "/new_key_pair": {
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The public key modulus",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Key pair created successfully"
+          },
+          "500": {
+            "description": "Failed to generate key pair or insert it into the database."
+          }
+        },
+        "summary": "Create a new 1024-bit RSA key pair with public expononent 65537. Returns the public key modulus.",
+        "tags": ["Keys"]
+      }
+    },
+    "/public_key/{lot_id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "The ID of a chain the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-chain-id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The address of the auction house contract the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-auction-house",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The lot ID to retrive the public key modulus for",
+            "explode": false,
+            "in": "path",
+            "name": "lot_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The public key modulus for the RSA key pair",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Public key modulus retrieved successfully"
+          },
+          "500": {
+            "description": "Failed to retrieve public key modulus from the database. May indicate that the key for the lot is not stored in the database."
+          }
+        },
+        "summary": "Retrieve the public key modulus for a given lot ID.",
+        "tags": ["Keys"]
+      }
+    },
+    "/private_key/{lot_id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "The ID of a chain the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-chain-id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The address of the auction house contract the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-auction-house",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The lot ID to retrive the private key for",
+            "explode": false,
+            "in": "path",
+            "name": "lot_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The private key exponent for the RSA key pair",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Private key retrieved successfully"
+          },
+          "500": {
+            "description": "Failed to retrieve private key modulus from the database. May indicate that the key for the lot is not stored in the database or that the key cannot be revealed yet."
+          }
+        },
+        "summary": "Retrieve the private key for a given lot ID. The private key will only be revealed after the auction for the lot has concluded. If an auction is cancelled, the private key will not be revealed.",
+        "tags": ["Keys"]
+      }
+    },
+    "/decrypts/{lot_id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "The ID of a chain the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-chain-id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The address of the auction house contract the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-auction-house",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The lot ID to retrive the next decrypts for",
+            "explode": false,
+            "in": "path",
+            "name": "lot_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Decrypt"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "A list of the next decrypts needed for the lot"
+          },
+          "500": {
+            "description": "Failed to retrieve decrypts from the database. May indicate that the key for the lot is not stored in the database or that the key cannot be revealed yet."
+          }
+        },
+        "summary": "Retrieve a list of the next decrypts needed for a given lot ID. Decrypts will only be revealed after the auction for the lot has concluded. If an auction is cancelled, decrypts will not be revealed.",
+        "tags": ["Keys"]
+      }
+    },
+    "/configs": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Config"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "An array containing Config records."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "500": {
+            "description": "Failed to get Configs or failed to serialize response."
+          }
+        },
+        "summary": "Gets all chain configurations supported by the API.",
+        "tags": ["Configs"]
+      }
+    },
+    "/configs/chain/{chain_id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "The chain ID to retrive the configurations for",
+            "explode": false,
+            "in": "path",
+            "name": "chain_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Config"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "An array containing Config records."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "500": {
+            "description": "Failed to get Configs or failed to serialize response."
+          }
+        },
+        "summary": "Gets all supported configurations for the specified chain.",
+        "tags": ["Configs"]
+      }
+    },
+    "/configs/auction_modules": {
+      "get": {
+        "parameters": [
+          {
+            "description": "The ID of a chain",
+            "explode": false,
+            "in": "header",
+            "name": "x-chain-id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The address of the auction house contract the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-auction-house",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "description": "Auction Module Veecode.",
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The supported auction modules for the provided configuration."
+          },
+          "500": {
+            "description": "Failed to get auction modules or failed to serialize response."
+          }
+        },
+        "summary": "Gets the supported auction modules for the provided configuration.",
+        "tags": ["Configs"]
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "ConfigArrayResponse": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/Config"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "description": "An array containing Config records."
+      },
+      "DecryptArrayResponse": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "items": {
+                "$ref": "#/components/schemas/Decrypt"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "description": "A list of the next decrypts needed for the lot"
+      }
+    },
+    "schemas": {
+      "Config": {
+        "description": "An API service Config object",
+        "properties": {
+          "chain_id": {
+            "description": "The Config's chain_id",
+            "type": "integer"
+          },
+          "auction_house": {
+            "description": "The Config's Auction House contract address",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Decrypt": {
+        "description": "A decrypt object for a bid",
+        "properties": {
+          "amount_out": {
+            "description": "The decrypted amount out value of the bid as a uint256",
+            "type": "string"
+          },
+          "seed": {
+            "description": "The seed used to ciphertext as a bytes32",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  }
+}
