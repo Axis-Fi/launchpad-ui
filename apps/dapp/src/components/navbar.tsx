@@ -8,8 +8,8 @@ import {
 import { NavLink } from "react-router-dom";
 
 const links = [
-  { title: "Create", href: "/create/auction" },
   { title: "Auctions", href: "/auctions" },
+  { title: "Create", href: "/create/auction" },
   { title: "Dashboard", href: "/dashboard" },
 ];
 

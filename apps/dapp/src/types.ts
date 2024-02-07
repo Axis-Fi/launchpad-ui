@@ -19,8 +19,8 @@ export type Auction = {
   id: number;
   status: AuctionStatus;
   chainId: number;
-  quoteToken: string;
-  payoutToken: string;
+  quoteToken: Token;
+  payoutToken: Token;
   deadline: number;
   capacity: number;
 };

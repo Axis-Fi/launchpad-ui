@@ -54,8 +54,8 @@ export default function CreateAuctionPage() {
   const [isVested] = form.watch(["isVested"]);
 
   return (
-    <div className="pt-16">
-      <h1>Create Auction</h1>
+    <div className="pt-10">
+      <h1 className="text-6xl">Create Auction</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="mt-4 flex justify-around rounded-md border-y p-4">

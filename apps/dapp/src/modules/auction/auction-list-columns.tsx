@@ -5,12 +5,14 @@ import type { Auction } from "src/types";
 export const columns: ColumnDef<Auction>[] = [
   {
     accessorKey: "quoteToken",
+    accessorFn: (row) => row.quoteToken.symbol,
     header: ({ column }) => (
       <SortButton column={column}>Quote Token</SortButton>
     ),
   },
   {
     accessorKey: "payoutToken",
+    accessorFn: (row) => row.payoutToken.symbol,
     header: ({ column }) => (
       <SortButton column={column}>Payout Token</SortButton>
     ),
@@ -22,5 +24,8 @@ export const columns: ColumnDef<Auction>[] = [
   {
     accessorKey: "capacity",
     header: ({ column }) => <SortButton column={column}>Capacity</SortButton>,
+  },
+  {
+    accessorKey: "status",
   },
 ];
