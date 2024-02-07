@@ -1,11 +1,11 @@
-import { Auctions } from "../modules/auction/auction-list-columns";
+import type { Auction } from "src/types";
 
-const data: Auctions[] = [
+const data: Auction[] = [
   {
     id: 1,
     chainId: 420,
     quoteToken: "DAI",
-    payoutToken: "OHM",
+    payoutToken: "TEX",
     capacity: 100000000,
     deadline: 123412341,
   },
@@ -13,7 +13,23 @@ const data: Auctions[] = [
     id: 2,
     chainId: 1,
     quoteToken: "USDC",
-    payoutToken: "GMX",
+    payoutToken: "JEM",
+    capacity: 100000,
+    deadline: 123413341,
+  },
+  {
+    id: 3,
+    chainId: 1,
+    quoteToken: "USDT",
+    payoutToken: "OIT",
+    capacity: 100000,
+    deadline: 123413341,
+  },
+  {
+    id: 4,
+    chainId: 1,
+    quoteToken: "WBTC",
+    payoutToken: "AFX",
     capacity: 100000,
     deadline: 123413341,
   },

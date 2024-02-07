@@ -5,6 +5,7 @@ export * from "./calendar";
 export * from "./checkbox";
 export * from "./command";
 export * from "./dialog";
+export * from "./dropdown-menu";
 export * from "./input";
 export * from "./label";
 export * from "./navigation-menu";

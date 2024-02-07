@@ -1,16 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { SortButton } from "components/sort-button";
+import type { Auction } from "src/types";
 
-export type Auctions = {
-  id: number;
-  chainId: number;
-  quoteToken: string;
-  payoutToken: string;
-  deadline: number;
-  capacity: number;
-};
-
-export const columns: ColumnDef<Auctions>[] = [
+export const columns: ColumnDef<Auction>[] = [
   {
     accessorKey: "quoteToken",
     header: ({ column }) => (

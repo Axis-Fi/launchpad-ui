@@ -21,13 +21,13 @@
     --foreground: var(--axis-dark);
     --background: var(--axis-light);
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: var(--axis-dark);
+    --card-foreground: var(--axis-light);
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: var(--axis-dark);
+    --popover-foreground: var(--axis-light);
 
-    --primary: var(--axis-green);
+    --primary: var(--axis-orange);
     --primary-foreground: var(--axis-dark);
 
     --secondary: var(--axis-red);
@@ -39,8 +39,8 @@
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: var(--axis-red);
+    --destructive-foreground: var(--axis-light);
 
     --border: var(--axis-orange);
     --input: var(--axis-orange);
@@ -50,10 +50,12 @@
   }
 
   .dark {
-    --foreground: var(--axis-dark);
+    --foreground: var(--axis-light);
     --background: var(--axis-dark);
 
     --primary: var(--axis-red);
+    --primary-foreground: var(--axis-light);
+
     --secondary-foreground: var(--axis-dark-mid);
   }
 }

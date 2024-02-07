@@ -4,6 +4,27 @@
   a {
     @apply cursor-pointer;
   }
+
+  :root {
+    --foreground: var(--axis-dark);
+    --background: var(--axis-light);
+
+    --primary: var(--axis-green);
+    --primary-foreground: var(--axis-dark);
+
+    --secondary: var(--axis-red);
+    --secondary-foreground: var(--axis-light-mid);
+
+    --border: var(--axis-orange);
+  }
+
+  .dark {
+    --foreground: var(--axis-dark);
+    --background: var(--axis-dark);
+
+    --primary: var(--axis-red);
+    --secondary-foreground: var(--axis-dark-mid);
+  }
 }
 
 @layer components {

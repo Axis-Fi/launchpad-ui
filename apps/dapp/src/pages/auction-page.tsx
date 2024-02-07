@@ -7,12 +7,17 @@ export default function AuctionPage() {
   const { getAuction } = useAuctions();
   const auction = getAuction(params.chainId, params.id);
 
+  if (!auction) throw new Error("Auction not found");
+
   return (
     <div>
-      <h1>
-        Auction {params.chainId}:{params.id}
-      </h1>
-      {auction?.quoteToken}
+      <div className="flex">
+        <div>
+          <h1 className="my-12 text-8xl">{auction?.quoteToken} Auction</h1>
+          {auction?.quoteToken}
+        </div>
+        <div>{auction?.status}</div>
+      </div>
     </div>
   );
 }

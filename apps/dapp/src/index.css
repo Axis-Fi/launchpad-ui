@@ -1,7 +1,1 @@
 @import "@repo/ui/style.css";
-
-@layer base {
-  :root {
-    --background: 222 30% 8%;
-  }
-}
