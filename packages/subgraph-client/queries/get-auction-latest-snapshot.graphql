@@ -1,0 +1,37 @@
+query getAuctionLatestSnapshot($lotId: String!) {
+  auctionLotSnapshots(
+    orderBy: blockNumber
+    orderDirection: desc
+    where: { lot: $lotId }
+    first: 1
+  ) {
+    id
+    blockNumber
+    blockTimestamp
+    capacity
+    purchased
+    sold
+    transactionHash
+    lot {
+      capacity
+      capacityInQuote
+      conclusion
+      curator
+      lotId
+      owner
+      start
+      baseToken {
+        address
+        decimals
+        symbol
+        name
+      }
+      quoteToken {
+        address
+        decimals
+        name
+        symbol
+      }
+    }
+  }
+}

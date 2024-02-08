@@ -2,7 +2,7 @@
   "name": "@repo/subgraph-client",
   "version": "1.0.0",
   "description": "",
-  "main": ".graphclient/index.ts",
+  "main": "src/generated/index.ts",
   "scripts": {
     "build": "graphclient build"
   },
@@ -10,6 +10,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@graphprotocol/client-cli": "3.0.0"
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript-react-query": "^6.1.0",
+    "@parcel/watcher": "^2.4.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "@graphql-typed-document-node/core": "^3.2.0",
+    "graphql": "^16.8.1"
   }
 }
