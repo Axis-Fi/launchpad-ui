@@ -2,7 +2,7 @@
   "name": "@repo/subgraph-client",
   "version": "1.0.0",
   "description": "",
-  "main": ".graphclientrc/index.ts",
+  "main": ".graphclient/index.ts",
   "scripts": {
     "build": "graphclient build"
   },
