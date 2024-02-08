@@ -1,6 +1,6 @@
 import { useGetAuctionsQuery } from "@repo/subgraph-client";
 import { Auction } from "src/types";
-import { getChainId } from "./subgraphHelper";
+import { getChainId, getStatus } from "./subgraphHelper";
 
 export type AuctionsResult = {
   result: Auction[];
@@ -14,7 +14,7 @@ export function useAuctions(): AuctionsResult {
     result: (data?.auctionCreateds ?? []).map((auction) => ({
       ...auction,
       chainId: getChainId(auction.chain),
-      status: "created", // TODO determine status
+      status: getStatus(auction.start, auction.conclusion, auction.capacity),
     })),
     isLoading: isLoading,
   };

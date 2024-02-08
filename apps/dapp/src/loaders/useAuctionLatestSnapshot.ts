@@ -3,26 +3,21 @@ import {
   useGetAuctionLatestSnapshotQuery,
 } from "@repo/subgraph-client";
 import { useQueries } from "@tanstack/react-query";
-import { getChainId } from "./subgraphHelper";
+import { getChainId, getStatus } from "./subgraphHelper";
 import { AuctionStatus } from "src/types";
 
-export type AuctionLotSnapshot =
-  GetAuctionLatestSnapshotQuery["auctionLotSnapshots"][0] & {
-    chainId: number;
-    status: AuctionStatus;
-  };
+type AuctionLotSnapshotRaw =
+  GetAuctionLatestSnapshotQuery["auctionLotSnapshots"][0];
+
+export type AuctionLotSnapshot = AuctionLotSnapshotRaw & {
+  chainId: number;
+  status: AuctionStatus;
+};
 
 export type AuctionLotSnapshotResult = {
   result?: AuctionLotSnapshot;
   isLoading: boolean;
 };
-
-type AuctionLotSnapshotRaw =
-  GetAuctionLatestSnapshotQuery["auctionLotSnapshots"][0];
-
-function _getStatus(record: AuctionLotSnapshotRaw): AuctionStatus {
-  return "created";
-}
 
 export function useAuctionLatestSnapshot(
   lotId?: string,
@@ -44,7 +39,11 @@ export function useAuctionLatestSnapshot(
     result: {
       ...record,
       chainId: getChainId(record.lot.chain),
-      status: _getStatus(record),
+      status: getStatus(
+        record.lot.start,
+        record.lot.conclusion,
+        record.capacity,
+      ),
     },
     isLoading: isLoading,
   };
@@ -80,7 +79,11 @@ export function useAuctionsLatestSnapshot(
       result: {
         ...record,
         chainId: getChainId(record.lot.chain),
-        status: _getStatus(record),
+        status: getStatus(
+          record.lot.start,
+          record.lot.conclusion,
+          record.capacity,
+        ),
       },
       isLoading: query.isLoading,
     };
