@@ -1,25 +1,42 @@
+import { axisContracts } from "@repo/contracts";
 import { Button, Input, LabelWrapper } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
 import React from "react";
 import { Auction } from "src/types";
-import { useAccount } from "wagmi";
+import { Address } from "viem";
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 
 export function AuctionLive({ auction }: { auction: Auction }) {
   const [maxPrice, setMaxPrice] = React.useState<number>();
   const [amount, setAmount] = React.useState<number>();
   const { address } = useAccount();
+  const contracts = axisContracts[auction.chainId];
+
+  const bid = useWriteContract();
+
+  const bidReceipt = useWaitForTransactionReceipt({ hash: bid.data });
 
   const { isSufficientAllowance, approveTx, execute } = useAllowance({
     ownerAddress: address,
-    spenderAddress: "0x",
-    tokenAddress: auction.quoteToken.address,
-    decimals: auction.quoteToken.decimals,
+    spenderAddress: contracts.auctionHouse.address,
+    tokenAddress: auction.quoteToken.address as Address,
+    decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
     amount: Number(amount),
   });
 
-  const handleSubmit = () => {
-    maxPrice;
+  const handleBid = () => {
+    bid.writeContract({
+      address: contracts.auctionHouse.address,
+      //@ts-expect-error ABI is currently blank
+      abi: contracts.auctionHouse.abi,
+      functionName: "bid",
+      args: [amount, maxPrice],
+    });
   };
 
   return (
@@ -39,7 +56,7 @@ export function AuctionLive({ auction }: { auction: Auction }) {
           />
         </LabelWrapper>
         {isSufficientAllowance ? (
-          <Button onClick={handleSubmit} className="self-end">
+          <Button onClick={handleBid} className="self-end">
             Bid
           </Button>
         ) : (
@@ -50,6 +67,10 @@ export function AuctionLive({ auction }: { auction: Auction }) {
           </div>
         )}
       </div>
+
+      {bidReceipt.isLoading && <p>Loading... </p>}
+      {bid.isError && <p>{bidReceipt.error?.message}</p>}
+      {bidReceipt.isSuccess && <p>Success!</p>}
     </div>
   );
 }

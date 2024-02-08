@@ -5,15 +5,18 @@ import { InfoCircledIcon } from "@radix-ui/react-icons";
 import { Button, Tooltip } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
 import { CreateAuctionForm } from "pages/create-auction-page";
+import { axisContracts } from "@repo/contracts";
 
 export function CreateAuctionSubmitter() {
   const { address } = useAccount();
   const form = useFormContext<CreateAuctionForm>();
   const { payoutToken, amount } = form.getValues();
 
+  const contracts = axisContracts[payoutToken?.chainId];
+
   const { isSufficientAllowance, execute, approveTx } = useAllowance({
     ownerAddress: address,
-    spenderAddress: "0x",
+    spenderAddress: contracts?.auctionHouse?.address,
     tokenAddress: payoutToken?.address as Address,
     decimals: payoutToken?.decimals,
     chainId: payoutToken?.chainId,

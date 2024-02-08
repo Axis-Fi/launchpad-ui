@@ -18,6 +18,9 @@ import { CreateAuctionSubmitter } from "modules/auction/create-auction-submitter
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { cloakClient } from "src/services/cloak";
+import { useWriteContract } from "wagmi";
+import { axisContracts } from "@repo/contracts";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -46,18 +49,32 @@ export default function CreateAuctionPage() {
     mode: "onBlur",
   });
 
-  //TODO: implement
-  const onSubmit = (values: CreateAuctionForm) => {
-    console.log({ values });
-  };
+  const [isVested, payoutToken] = form.watch(["isVested", "payoutToken"]);
 
-  const [isVested] = form.watch(["isVested"]);
+  const contracts = axisContracts[payoutToken?.chainId];
+  const createAuction = useWriteContract();
+
+  const handleCreation = async (values: CreateAuctionForm) => {
+    const keypair = await cloakClient.keysApi.newKeyPairPost();
+
+    if (!keypair) throw new Error("Unable to generate keypair");
+
+    //TODO: implement
+    createAuction.writeContract({
+      //@ts-expect-error abi not implemented
+      abi: contracts.auctionHouse.abi,
+      address: contracts.auctionHouse.address,
+      functionName: "",
+      //TODO: implement
+      args: [values, keypair],
+    });
+  };
 
   return (
     <div className="pt-10">
       <h1 className="text-6xl">Create Auction</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(handleCreation)}>
           <div className="mt-4 flex justify-around rounded-md border-y p-4">
             <div className="w-full space-y-4">
               <h3>Configure</h3>
