@@ -16,7 +16,12 @@ const config: CodegenConfig = {
       config: {
         reactQueryVersion: 5,
         fetcher: {
-          endpoint: ENDPOINT,
+          endpoint: `${ENDPOINT}`,
+          fetchParams: {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
         },
         strictScalars: true,
         skipTypename: true,
