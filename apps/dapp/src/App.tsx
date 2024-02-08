@@ -10,7 +10,9 @@ function App() {
       <div className="font-aeonfono mx-auto h-screen max-w-[1137px] py-4">
         <div className="mx-auto flex justify-between">
           <div className="w-1/3 text-4xl">
-            <img className="h-12 w-12" src="/favicon.svg" />
+            <a href="/#/">
+              <img className="h-12 w-12" src="/favicon.svg" />
+            </a>
           </div>
           <Navbar />
 

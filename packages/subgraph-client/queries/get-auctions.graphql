@@ -1,0 +1,26 @@
+query getAuctions {
+  auctionCreateds {
+    id
+    auctionRef
+    blockNumber
+    blockTimestamp
+    curator
+    derivativeRef
+    lotId
+    owner
+    transactionHash
+    wrapDerivative
+    quoteToken {
+      address
+      decimals
+      name
+      symbol
+    }
+    baseToken {
+      address
+      decimals
+      symbol
+      name
+    }
+  }
+}

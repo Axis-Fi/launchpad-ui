@@ -18,6 +18,7 @@
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@repo/subgraph-client": "workspace:*",
     "@tanstack/react-query": "^5.17.19",
     "@tanstack/react-table": "^8.11.7",
     "date-fns": "^3.3.1",

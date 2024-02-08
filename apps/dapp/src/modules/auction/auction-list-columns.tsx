@@ -5,7 +5,7 @@ import type { Auction } from "src/types";
 export const columns: ColumnDef<Auction>[] = [
   {
     accessorKey: "quoteToken",
-    accessorFn: (row) => row.quoteToken.symbol,
+    accessorFn: (row) => row.payoutToken.symbol,
     header: ({ column }) => (
       <SortButton column={column}>Quote Token</SortButton>
     ),
