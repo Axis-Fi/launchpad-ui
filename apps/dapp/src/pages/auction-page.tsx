@@ -7,7 +7,10 @@ import {
   AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
-import { useGetAuctionEventsQuery, useGetAuctionLatestSnapshotQuery } from "@repo/subgraph-client";
+import {
+  useGetAuctionEventsQuery,
+  useGetAuctionLatestSnapshotQuery,
+} from "@repo/subgraph-client";
 
 const statuses: Record<
   AuctionStatus,
@@ -28,7 +31,10 @@ export default function AuctionPage() {
     lotId: params.id || "",
   });
 
-  if (auctionResults === undefined || auctionResults.auctionCreateds.length === 0) {
+  if (
+    auctionResults === undefined ||
+    auctionResults.auctionCreateds.length === 0
+  ) {
     throw new Error("Auction not found");
   }
 
