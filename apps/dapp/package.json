@@ -21,6 +21,7 @@
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@repo/contracts": "workspace:*",
     "@tanstack/react-query": "^5.17.19",
     "@tanstack/react-query-devtools": "^5.18.1",
     "@tanstack/react-table": "^8.11.7",

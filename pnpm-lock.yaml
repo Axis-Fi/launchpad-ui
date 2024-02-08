@@ -29,6 +29,9 @@ importers:
       "@rainbow-me/rainbowkit":
         specifier: 2.0.0-beta.2
         version: 2.0.0-beta.2(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)(viem@2.5.0)(wagmi@2.5.2)
+      "@repo/contracts":
+        specifier: workspace:*
+        version: link:../../packages/contracts
       "@repo/eslint-config":
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -186,6 +189,12 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
+
+  packages/contracts:
+    dependencies:
+      "@repo/eslint-config":
+        specifier: workspace:*
+        version: link:../eslint-config
 
   packages/eslint-config:
     dependencies:
