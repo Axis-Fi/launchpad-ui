@@ -7,10 +7,8 @@ import {
   AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
-import {
-  useGetAuctionEventsQuery,
-  useGetAuctionLatestSnapshotQuery,
-} from "@repo/subgraph-client";
+import { useAuction } from "loaders/useAuction";
+import { useAuctionLatestSnapshot } from "loaders/useAuctionLatestSnapshot";
 
 const statuses: Record<
   AuctionStatus,
@@ -27,29 +25,17 @@ const statuses: Record<
 export default function AuctionPage() {
   const params = useParams();
 
-  const { data: auctionResults } = useGetAuctionEventsQuery({
-    lotId: params.id || "",
-  });
-
+  const auction = useAuction(params.id);
   if (
-    auctionResults === undefined ||
-    auctionResults.auctionCreateds.length === 0
+    !auction
   ) {
     throw new Error("Auction not found");
   }
 
-  const auction = auctionResults.auctionCreateds[0];
-
-  // Get the snapshots if you want capacity at a particular time
-  const { data: snapshots } = useGetAuctionLatestSnapshotQuery({
-    lotId: auction.id,
-  });
-
-  if (snapshots === undefined || snapshots.auctionLotSnapshots.length === 0) {
+  const snapshot = useAuctionLatestSnapshot(params.id);
+  if (!snapshot) {
     throw new Error("No snapshot");
   }
-
-  const snapshot = snapshots.auctionLotSnapshots[0];
 
   const auctionStatus = "Live"; // Need to do this in-app, as it's hard to do in the subgraph. Check the start/conclusion/capacity variables from the latest snapshot.
 

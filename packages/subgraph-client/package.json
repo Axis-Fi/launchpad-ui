@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/generated/index.ts",
   "scripts": {
-    "build": "graphclient build"
+    "build": "graphql-codegen"
   },
   "keywords": [],
   "author": "",
