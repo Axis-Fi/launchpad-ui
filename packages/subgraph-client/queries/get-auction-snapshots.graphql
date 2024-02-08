@@ -14,6 +14,7 @@ query getAuctionSnapshots($lotId: String!) {
     lot {
       capacity
       capacityInQuote
+      chain
       conclusion
       curator
       lotId

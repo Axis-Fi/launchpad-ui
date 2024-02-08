@@ -26,9 +26,7 @@ export default function AuctionPage() {
   const params = useParams();
 
   const auction = useAuction(params.id);
-  if (
-    !auction
-  ) {
+  if (!auction) {
     throw new Error("Auction not found");
   }
 

@@ -11,6 +11,7 @@ query getAuctionEvents($lotId: BigInt!) {
     blockTimestamp
     capacity
     capacityInQuote
+    chain
     conclusion
     curator
     derivativeRef
