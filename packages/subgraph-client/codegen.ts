@@ -1,12 +1,17 @@
 import { CodegenConfig } from '@graphql-codegen/cli'
 
+const ENDPOINT = 'https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.4';
+
 const config: CodegenConfig = {
-    schema: 'https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.4',
+    schema: ENDPOINT,
     documents: ['queries/**/*.graphql'],
     generates: {
-        './src/generated/': {
-            preset: 'client',
+        './src/generated/index.ts': {
+            plugins: ['typescript', 'typescript-operations', 'typescript-react-query'],
             config: {
+                fetcher: {
+                    endpoint: ENDPOINT,
+                },
                 strictScalars: true,
                 skipTypename: true,
                 scalars: {

@@ -1,58 +1,84 @@
-query getAuctionEvents($lotId: String!) {
-  auctionCancelleds(
-    orderBy: blockNumber
-    orderDirection: asc
-    where: { lot: $lotId }
+query getAuctionEvents($lotId: BigInt!) {
+  auctionCreateds(
+    orderBy: blockNumber,
+    orderDirection: asc,
+    where: { lotId: $lotId },
+    first: 1
   ) {
     id
+    auctionRef
     blockNumber
     blockTimestamp
-    transactionHash
-  }
-  bids(orderBy: blockNumber, orderDirection: asc, where: { lot: $lotId }) {
-    id
-    blockNumber
-    blockTimestamp
-    transactionHash
-    bidId
-    bidder
-    amount
-  }
-  cancelBids(
-    orderBy: blockNumber
-    orderDirection: asc
-    where: { lot: $lotId }
-  ) {
-    id
-    blockNumber
-    blockTimestamp
-    transactionHash
-    bid {
-      bidId
-    }
-    bidder
-  }
-  curateds(orderBy: blockNumber, orderDirection: asc, where: { lot: $lotId }) {
-    id
-    blockNumber
-    blockTimestamp
-    transactionHash
+    capacity
+    capacityInQuote
+    conclusion
     curator
-  }
-  purchases(orderBy: blockNumber, orderDirection: asc, where: { lot: $lotId }) {
-    id
-    blockNumber
-    blockTimestamp
+    derivativeRef
+    lotId
+    owner
+    start
     transactionHash
-    buyer
-    referrer
-    amount
-    payout
-  }
-  settles(orderBy: blockNumber, orderDirection: asc, where: { lot: $lotId }) {
-    id
-    blockNumber
-    blockTimestamp
-    transactionHash
+    wrapDerivative
+    quoteToken {
+      address
+      decimals
+      name
+      symbol
+    }
+    baseToken {
+      address
+      decimals
+      symbol
+      name
+    }
+    cancelled {
+      id
+      blockNumber
+      blockTimestamp
+      transactionHash
+    }
+    bids {
+      id
+      blockNumber
+      blockTimestamp
+      transactionHash
+      bidId
+      bidder
+      amount
+    }
+    cancelledBids {
+      id
+      blockNumber
+      blockTimestamp
+      transactionHash
+      bid {
+        bidId
+      }
+      bidder
+
+    }
+    curated {
+      id
+      blockNumber
+      blockTimestamp
+      transactionHash
+      curator
+    }
+    purchases {
+      id
+      blockNumber
+      blockTimestamp
+      transactionHash
+      buyer
+      referrer
+      amount
+      payout
+    }
+    settle {
+      id
+      blockNumber
+      blockTimestamp
+      transactionHash
+    }
   }
 }

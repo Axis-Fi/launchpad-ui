@@ -6,7 +6,7 @@ const subgraph = getBuiltGraphSDK();
 export default function useAuctions() {
   const { data, ...query } = useQuery({
     queryKey: ["auctions"],
-    queryFn: () => subgraph.getAuctions(),
+    queryFn: () => subgraph.GetAuctions(),
   });
 
   const auctions = data?.auctionCreateds ?? [];
@@ -18,3 +18,5 @@ export default function useAuctions() {
       auctions.find((a) => a.id === id),
   };
 }
+
+// TODO this can probably be removed
