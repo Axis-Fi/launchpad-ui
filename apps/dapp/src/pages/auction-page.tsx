@@ -25,17 +25,20 @@ const statuses: Record<
 export default function AuctionPage() {
   const params = useParams();
 
-  const auction = useAuction(params.id);
-  if (!auction) {
-    throw new Error("Auction not found");
+  const { result: auction, isLoading: isAuctionLoading } = useAuction(
+    params.id,
+  );
+
+  const { result: snapshot, isLoading: isSnapshotLoading } =
+    useAuctionLatestSnapshot(params.id);
+
+  if (isAuctionLoading || isSnapshotLoading) {
+    return <div>Loading...</div>;
   }
 
-  const snapshot = useAuctionLatestSnapshot(params.id);
-  if (!snapshot) {
-    throw new Error("No snapshot");
+  if (!auction || !snapshot) {
+    return <div>Auction not found</div>;
   }
-
-  const auctionStatus = "Live"; // Need to do this in-app, as it's hard to do in the subgraph. Check the start/conclusion/capacity variables from the latest snapshot.
 
   const AuctionElement = statuses[auction.status];
 
@@ -48,7 +51,7 @@ export default function AuctionPage() {
           </h1>
         </div>
 
-        <h2>{auctionStatus}</h2>
+        <h2>{auction.status}</h2>
       </div>
       <div className="rounded-sm border p-2">
         <AuctionElement auction={auction} />
