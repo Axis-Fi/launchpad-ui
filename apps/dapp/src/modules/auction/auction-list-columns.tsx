@@ -1,25 +1,25 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { SortButton } from "components/sort-button";
-import { AuctionLotSnapshot } from "loaders/useAuctionLatestSnapshot";
+import { Auction } from "src/types";
 
-export const columns: ColumnDef<AuctionLotSnapshot>[] = [
+export const columns: ColumnDef<Auction>[] = [
   {
     accessorKey: "quoteToken",
-    accessorFn: (row) => row.lot.quoteToken.symbol,
+    accessorFn: (row) => row.quoteToken.symbol,
     header: ({ column }) => (
       <SortButton column={column}>Quote Token</SortButton>
     ),
   },
   {
     accessorKey: "baseToken",
-    accessorFn: (row) => row.lot.baseToken.symbol,
+    accessorFn: (row) => row.baseToken.symbol,
     header: ({ column }) => (
       <SortButton column={column}>Payout Token</SortButton>
     ),
   },
   {
     accessorKey: "deadline",
-    accessorFn: (row) => row.lot.conclusion,
+    accessorFn: (row) => row.conclusion,
     header: ({ column }) => <SortButton column={column}>Deadline</SortButton>,
   },
   {
