@@ -19,7 +19,8 @@ export const columns: ColumnDef<Auction>[] = [
   },
   {
     accessorKey: "deadline",
-    accessorFn: (row) => row.conclusion,
+    accessorFn: (row) =>
+      new Date(Number(row.conclusion) * 1000).toLocaleString(),
     header: ({ column }) => <SortButton column={column}>Deadline</SortButton>,
   },
   {
