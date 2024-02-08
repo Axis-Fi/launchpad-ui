@@ -1,0 +1,58 @@
+query MyQuery($lotId: String!) {
+  auctionCancelleds(
+    orderBy: blockNumber
+    orderDirection: asc
+    where: { lot: $lotId }
+  ) {
+    id
+    blockNumber
+    blockTimestamp
+    transactionHash
+  }
+  bids(orderBy: blockNumber, orderDirection: asc, where: { lot: $lotId }) {
+    id
+    blockNumber
+    blockTimestamp
+    transactionHash
+    bidId
+    bidder
+    amount
+  }
+  cancelBids(
+    orderBy: blockNumber
+    orderDirection: asc
+    where: { lot: $lotId }
+  ) {
+    id
+    blockNumber
+    blockTimestamp
+    transactionHash
+    bid {
+      bidId
+    }
+    bidder
+  }
+  curateds(orderBy: blockNumber, orderDirection: asc, where: { lot: $lotId }) {
+    id
+    blockNumber
+    blockTimestamp
+    transactionHash
+    curator
+  }
+  purchases(orderBy: blockNumber, orderDirection: asc, where: { lot: $lotId }) {
+    id
+    blockNumber
+    blockTimestamp
+    transactionHash
+    buyer
+    referrer
+    amount
+    payout
+  }
+  settles(orderBy: blockNumber, orderDirection: asc, where: { lot: $lotId }) {
+    id
+    blockNumber
+    blockTimestamp
+    transactionHash
+  }
+}

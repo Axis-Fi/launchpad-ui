@@ -1,13 +1,17 @@
 query getAuctions {
-  auctionCreateds {
+  auctionCreateds(orderBy: blockNumber, orderDirection: asc) {
     id
     auctionRef
     blockNumber
     blockTimestamp
+    capacity
+    capacityInQuote
+    conclusion
     curator
     derivativeRef
     lotId
     owner
+    start
     transactionHash
     wrapDerivative
     quoteToken {
