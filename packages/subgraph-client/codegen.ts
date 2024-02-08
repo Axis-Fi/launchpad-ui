@@ -14,6 +14,7 @@ const config: CodegenConfig = {
         "typescript-react-query",
       ],
       config: {
+        reactQueryVersion: 5,
         fetcher: {
           endpoint: ENDPOINT,
         },
