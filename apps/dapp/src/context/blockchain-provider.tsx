@@ -2,6 +2,7 @@ import { WagmiProvider, createConfig } from "wagmi";
 import { activeConfig } from "../config/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import WalletProvider, { connectors } from "./wallet-provider";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ export function BlockchainProvider({
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <WalletProvider>{children}</WalletProvider>
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </WagmiProvider>
   );
