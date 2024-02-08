@@ -1,4 +1,4 @@
-query MyQuery($lotId: String!) {
+query getAuctionEvents($lotId: String!) {
   auctionCancelleds(
     orderBy: blockNumber
     orderDirection: asc

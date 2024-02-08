@@ -6,7 +6,7 @@ const subgraph = getBuiltGraphSDK();
 export default function useAuctions() {
   const { data, ...query } = useQuery({
     queryKey: ["auctions"],
-    queryFn: () => subgraph.GetAuctions(),
+    queryFn: () => subgraph.getAuctions(),
   });
 
   const auctions = data?.auctionCreateds ?? [];
