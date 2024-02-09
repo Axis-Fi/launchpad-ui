@@ -8,7 +8,6 @@ import {
   AuctionSettled,
 } from "modules/auction/status";
 import { useAuction } from "loaders/useAuction";
-import { useAuctionLatestSnapshot } from "loaders/useAuctionLatestSnapshot";
 
 const statuses: Record<
   AuctionStatus,
@@ -29,14 +28,11 @@ export default function AuctionPage() {
     params.id,
   );
 
-  const { result: snapshot, isLoading: isSnapshotLoading } =
-    useAuctionLatestSnapshot(params.id);
-
-  if (isAuctionLoading || isSnapshotLoading) {
+  if (isAuctionLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!auction || !snapshot) {
+  if (!auction) {
     return <div>Auction not found</div>;
   }
 

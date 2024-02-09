@@ -1,4 +1,4 @@
-import { AuctionLotSnapshot, GetAuctionsQuery } from "@repo/subgraph-client";
+import { GetAuctionLotQuery, GetAuctionLotsQuery } from "@repo/subgraph-client";
 import { Address } from "viem";
 
 export type Token = {
@@ -16,12 +16,12 @@ export type AuctionStatus =
   | "decrypted"
   | "settled";
 
-export type Auction = GetAuctionsQuery["auctionCreateds"][0] & {
+export type Auction = GetAuctionLotsQuery["auctionLots"][0] & {
   chainId: number;
   status: AuctionStatus;
 };
 
-export type AuctionSnapshot = AuctionLotSnapshot & {
+export type AuctionWithEvents = GetAuctionLotQuery["auctionLots"][0] & {
   chainId: number;
   status: AuctionStatus;
 };

@@ -7,8 +7,6 @@ export function AuctionList() {
   const navigate = useNavigate();
   const { result: auctions } = useAuctions();
 
-  // TODO fetch latest snapshot for each auction
-
   // TODO show loading indicator
 
   return (

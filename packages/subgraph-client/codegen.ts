@@ -1,7 +1,7 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
 
 const ENDPOINT =
-  "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.5";
+  "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.9";
 
 const config: CodegenConfig = {
   schema: ENDPOINT,
@@ -22,6 +22,9 @@ const config: CodegenConfig = {
               "Content-Type": "application/json",
             },
           },
+        },
+        namingConvention: {
+          enumValues: "change-case-all#titleCase", // Avoids conflicts with enum values, e.g. AuctionLot_OrderBy
         },
         strictScalars: true,
         skipTypename: true,

@@ -1,31 +1,118 @@
-query getAuctions {
-  auctionCreateds(orderBy: blockNumber, orderDirection: asc) {
-    id
+fragment AuctionLotFragment on AuctionLot {
     auctionRef
-    blockNumber
-    blockTimestamp
     capacity
+    capacityInitial
     capacityInQuote
     chain
     conclusion
+    createdBlockNumber
+    createdBlockTimestamp
+    createdTransactionHash
     curator
+    curatorApproved
     derivativeRef
+    id
+    lastUpdatedBlockNumber
+    lastUpdatedBlockTimestamp
+    lastUpdatedTransactionHash
     lotId
     owner
+    purchased
+    sold
     start
-    transactionHash
     wrapDerivative
+    baseToken {
+      address
+      decimals
+      symbol
+      name
+    }
     quoteToken {
       address
       decimals
       name
       symbol
     }
-    baseToken {
-      address
-      decimals
-      symbol
-      name
+}
+
+query getAuctionLots {
+  auctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
+    ...AuctionLotFragment
+  }
+}
+
+query getAuctionLot($lotId: BigInt!) {
+  auctionLots(orderBy: createdBlockNumber,
+    orderDirection: asc,
+    where: { lotId: $lotId }, first: 1) {
+    ...AuctionLotFragment
+    created {
+      blockNumber
+      blockTimestamp
+      id
+      transactionHash
+    }
+    cancelled {
+      blockNumber
+      blockTimestamp
+      id
+      transactionHash
+    }
+    bids {
+      amount
+      bidder
+      bidId
+      blockNumber
+      blockTimestamp
+      id
+      transactionHash
+    }
+    cancelledBids {
+      blockNumber
+      blockTimestamp
+      id
+      transactionHash
+      bid {
+        bidId
+        bidder
+        amount
+      }
+    }
+    bidsDecrypted {
+      amountIn
+      amountOut
+      blockNumber
+      blockTimestamp
+      id
+      transactionHash
+      bid {
+        bidId
+        bidder
+        amount
+      }
+    }
+    purchases {
+      amount
+      blockNumber
+      blockTimestamp
+      buyer
+      id
+      payout
+      referrer
+      transactionHash
+    }
+    settle {
+      blockNumber
+      blockTimestamp
+      id
+      transactionHash
+    }
+    curated {
+      blockNumber
+      blockTimestamp
+      curator
+      id
+      transactionHash
     }
   }
 }

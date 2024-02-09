@@ -1,27 +1,22 @@
-import {
-  GetAuctionsQuery,
-  useGetAuctionEventsQuery,
-} from "@repo/subgraph-client";
-import { Auction } from "src/types";
+import { useGetAuctionLotQuery } from "@repo/subgraph-client";
+import { AuctionWithEvents } from "src/types";
 import { getChainId, getStatus } from "./subgraphHelper";
 
-type AuctionRaw = GetAuctionsQuery["auctionCreateds"][0];
-
 export type AuctionResult = {
-  result?: Auction;
+  result?: AuctionWithEvents;
   isLoading: boolean;
 };
 
 export function useAuction(lotId?: string): AuctionResult {
-  const { data, isLoading } = useGetAuctionEventsQuery({ lotId: lotId || "" });
-  if (data === undefined || data.auctionCreateds.length === 0) {
+  const { data, isLoading } = useGetAuctionLotQuery({ lotId: lotId || "" });
+  if (data === undefined || data.auctionLots.length === 0) {
     return {
       result: undefined,
       isLoading: isLoading,
     };
   }
 
-  const record = data.auctionCreateds[0];
+  const record = data.auctionLots[0];
 
   return {
     result: {
