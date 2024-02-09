@@ -16,32 +16,32 @@ import Footer from "src/components/Footer.astro";
   >
     <div
       id="header"
-      class="max-w-screen h-10 xl:h-14 px-4 w-full items-center justify-end lg:translate-x-40 transition-all duration-700 lg:flex hidden"
+      class="max-w-screen h-10 xl:h-14 px-4 w-full items-center justify-end lg:translate-x-40 transition-all duration-1000 lg:flex hidden"
     >
       <ThemeToggle />
     </div>
     <div id="main-container" class="flex flex-col w-full h-full items-center">
       <div
         id="logo-container"
-        class="w-full h-full flex lg:translate-y-0 justify-center items-center transition-all duration-700"
+        class="w-full h-full flex lg:translate-y-0 justify-center items-center transition-all duration-1000"
       >
         <div class="flex flex-col justify-center h-full">
           <div
-            class="wordmark-glow transition-all duration-300 cursor-pointer p-20"
+            class="wordmark-glow transition-all duration-1000 cursor-pointer p-20"
           >
             <AxisWordmark />
 
-            <AxisLogo src="/logo.svg" />
+            <AxisLogo />
           </div>
         </div>
       </div>
       <div
         id="card-container"
-        class="absolute lg:w-[58vw] translate-y-[80vh] pt-6 lg:translate-y-0 lg:translate-x-[57.7vw] xl:pt-8 px-2 lg:px-0 lg:pr-4 top-32 lg:top-10 md:right-1 transition-all duration-700"
+        class="absolute lg:w-[58vw] translate-y-[80vh] pt-6 lg:translate-y-0 lg:translate-x-[57.7vw] xl:pt-8 px-2 lg:px-0 lg:pr-4 top-32 lg:top-10 md:right-1 transition-all duration-1000"
       >
         <Card />
 
-        <Footer className="lg:hidden my-8" />
+        <Footer className="lg:hidden mt-2 mb-8" />
       </div>
     </div>
     <Footer className="hidden lg:flex mb-2" />

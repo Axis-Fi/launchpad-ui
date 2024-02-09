@@ -110,6 +110,14 @@
     filter: drop-shadow(2px 2px 8px rgba(86, 73, 89, 1));
   }
 
+  .footer-link:hover {
+    @apply text-[#70705C];
+  }
+
+  .dark .footer-link:hover {
+    @apply text-[#CFC8D0];
+  }
+
   .axis-logo path,
   rect {
     @apply fill-secondary-foreground stroke-secondary-foreground;
