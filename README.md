@@ -5,14 +5,13 @@ Monorepo for Axis Finance Frontend Apps using [turbo](https://turbo.build/repo)
 ## Setup
 
 - `pnpm install` - Install dependencies for all packages
-- `pnpm build` - Build all packages locally
 
 ### Other Useful Commands
 
+- `pnpm build` - Build all packages
 - `pnpm dev` - Run all packages locally
 - `pnpm dev --filter=<project_name>` - Run a specific package locally
 - `pnpm storybook` - Runs storybook locally
-
 - `pnpm lint` - Lint all packages
 - `pnpm format` - Format all packages
 - `pnpm clean` - Clean up all `node_modules` and `dist` folders (runs each package's clean script)
