@@ -5,9 +5,11 @@ import { useAuctions } from "loaders/useAuctions";
 
 export function AuctionList() {
   const navigate = useNavigate();
-  const { result: auctions } = useAuctions();
+  const { result: auctions, isLoading } = useAuctions();
 
-  // TODO show loading indicator
+  if (isLoading) {
+    return <div className="w-full py-10">Loading...</div>;
+  }
 
   return (
     <div className="w-full py-10">
