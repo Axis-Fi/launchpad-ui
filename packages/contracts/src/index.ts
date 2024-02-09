@@ -1,1 +1,7 @@
-export * from "./contract-map";
+import abis from "./abis";
+import { addressesPerChain } from "./addresses";
+
+export const axisContracts = {
+  addresses: addressesPerChain,
+  abis,
+};

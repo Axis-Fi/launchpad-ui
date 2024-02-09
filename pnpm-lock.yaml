@@ -195,6 +195,9 @@ importers:
       "@repo/eslint-config":
         specifier: workspace:*
         version: link:../eslint-config
+      "@wagmi/cli":
+        specifier: ^2.1.0
+        version: 2.1.0
 
   packages/eslint-config:
     dependencies:
@@ -9611,6 +9614,42 @@ packages:
       }
     dev: false
 
+  /@wagmi/cli@2.1.0:
+    resolution:
+      {
+        integrity: sha512-K735NE+DIFrPF01V3RpbcKmhkEalgQahEE5Ttvrt+DUo3kEnjP9bmILZvBwr7F1o1jdOpZjJGPZVj1ZMFcTl3g==,
+      }
+    hasBin: true
+    peerDependencies:
+      typescript: ">=5"
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      abitype: 0.9.8(zod@3.22.4)
+      bundle-require: 4.0.2(esbuild@0.19.7)
+      cac: 6.7.14
+      change-case: 4.1.2
+      chokidar: 3.5.3
+      dedent: 0.7.0
+      dotenv: 16.4.1
+      dotenv-expand: 10.0.0
+      esbuild: 0.19.7
+      execa: 6.1.0
+      find-up: 6.3.0
+      fs-extra: 10.1.0
+      globby: 13.2.2
+      ora: 6.3.1
+      pathe: 1.1.2
+      picocolors: 1.0.0
+      prettier: 3.1.1
+      viem: 2.0.0(zod@3.22.4)
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
   /@wagmi/connectors@4.1.10(@types/react@18.2.48)(@wagmi/core@2.6.1)(react-dom@18.2.0)(react-native@0.73.2)(react@18.2.0)(typescript@5.3.3)(viem@2.5.0):
     resolution:
       {
@@ -10230,6 +10269,23 @@ packages:
       tslib: 1.14.1
     dev: true
 
+  /abitype@0.10.0(zod@3.22.4):
+    resolution:
+      {
+        integrity: sha512-QvMHEUzgI9nPj9TWtUGnS2scas80/qaL5PBxGdwWhhvzqXfOph+IEiiiWrzuisu3U3JgDQVruW9oLbJoQ3oZ3A==,
+      }
+    peerDependencies:
+      typescript: ">=5.0.4"
+      zod: ^3 >=3.22.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      zod:
+        optional: true
+    dependencies:
+      zod: 3.22.4
+    dev: false
+
   /abitype@0.9.8(typescript@5.3.3):
     resolution:
       {
@@ -10245,6 +10301,23 @@ packages:
         optional: true
     dependencies:
       typescript: 5.3.3
+    dev: false
+
+  /abitype@0.9.8(zod@3.22.4):
+    resolution:
+      {
+        integrity: sha512-puLifILdm+8sjyss4S+fsUN09obiT1g2YW6CtcQF+QDzxR0euzgEB29MZujC6zMk2a6SVmtttq1fc6+YFA7WYQ==,
+      }
+    peerDependencies:
+      typescript: ">=5.0.4"
+      zod: ^3 >=3.19.1
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      zod:
+        optional: true
+    dependencies:
+      zod: 3.22.4
     dev: false
 
   /abitype@1.0.0(typescript@5.3.3):
@@ -11466,7 +11539,6 @@ packages:
     dependencies:
       esbuild: 0.19.7
       load-tsconfig: 0.2.5
-    dev: true
 
   /busboy@1.6.0:
     resolution:
@@ -11499,7 +11571,6 @@ packages:
         integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==,
       }
     engines: { node: ">=8" }
-    dev: true
 
   /call-bind@1.0.5:
     resolution:
@@ -11554,7 +11625,6 @@ packages:
     dependencies:
       pascal-case: 3.1.2
       tslib: 2.6.2
-    dev: true
 
   /camelcase-css@2.0.1:
     resolution:
@@ -11607,7 +11677,6 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.2
       upper-case-first: 2.0.2
-    dev: true
 
   /ccount@2.0.1:
     resolution:
@@ -11725,7 +11794,6 @@ packages:
       sentence-case: 3.0.4
       snake-case: 3.0.4
       tslib: 2.6.2
-    dev: true
 
   /character-entities-html4@2.1.0:
     resolution:
@@ -12355,7 +12423,6 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.2
       upper-case: 2.0.2
-    dev: true
 
   /constants-browserify@1.0.0:
     resolution:
@@ -12749,6 +12816,13 @@ packages:
       mimic-response: 3.1.0
     dev: false
     optional: true
+
+  /dedent@0.7.0:
+    resolution:
+      {
+        integrity: sha512-Q6fKUPqnAHAyhiUgFU7BUzLiv0kd8saH9al7tnu5Q/okj6dnupxyTgFIBjVzJATdfIAm9NAsvXNzjaKa+bxVyA==,
+      }
+    dev: false
 
   /deep-eql@4.1.3:
     resolution:
@@ -13171,7 +13245,6 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.6.2
-    dev: true
 
   /dotenv-expand@10.0.0:
     resolution:
@@ -13179,7 +13252,6 @@ packages:
         integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==,
       }
     engines: { node: ">=12" }
-    dev: true
 
   /dotenv@16.4.1:
     resolution:
@@ -13187,7 +13259,6 @@ packages:
         integrity: sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==,
       }
     engines: { node: ">=12" }
-    dev: true
 
   /dset@3.1.3:
     resolution:
@@ -14024,6 +14095,24 @@ packages:
       signal-exit: 3.0.7
       strip-final-newline: 2.0.0
 
+  /execa@6.1.0:
+    resolution:
+      {
+        integrity: sha512-QVWlX2e50heYJcCPG0iWtf8r0xjEYfz/OYLGDYH+IyjWezzPNxz63qNFOu0l4YftGWuizFVZHHs8PrLU5p2IDA==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      cross-spawn: 7.0.3
+      get-stream: 6.0.1
+      human-signals: 3.0.1
+      is-stream: 3.0.0
+      merge-stream: 2.0.0
+      npm-run-path: 5.2.0
+      onetime: 6.0.0
+      signal-exit: 3.0.7
+      strip-final-newline: 3.0.0
+    dev: false
+
   /execa@8.0.1:
     resolution:
       {
@@ -14456,6 +14545,17 @@ packages:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
+  /find-up@6.3.0:
+    resolution:
+      {
+        integrity: sha512-v2ZsoEuVHYy8ZIlYqwPe/39Cy+cFDzp4dXPaxNvkEuouymu+2Jbz0PxpKarJHYJTmv2HWT3O382qY8l4jMWthw==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      locate-path: 7.2.0
+      path-exists: 5.0.0
+    dev: false
+
   /find-yarn-workspace-root2@1.2.16:
     resolution:
       {
@@ -14586,7 +14686,6 @@ packages:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.1
-    dev: true
 
   /fs-extra@11.1.1:
     resolution:
@@ -14943,6 +15042,20 @@ packages:
       ignore: 5.3.0
       merge2: 1.4.1
       slash: 3.0.0
+
+  /globby@13.2.2:
+    resolution:
+      {
+        integrity: sha512-Y1zNGV+pzQdh7H39l9zgB4PJqjRNqydvdYCDG4HFXM4XuvSaQQlEc91IU1yALL8gUTDomgBAfz3XJdmUS+oo0w==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      dir-glob: 3.0.1
+      fast-glob: 3.3.2
+      ignore: 5.3.0
+      merge2: 1.4.1
+      slash: 4.0.0
+    dev: false
 
   /globrex@0.1.2:
     resolution:
@@ -15318,7 +15431,6 @@ packages:
     dependencies:
       capital-case: 1.0.4
       tslib: 2.6.2
-    dev: true
 
   /hermes-estree@0.15.0:
     resolution:
@@ -15507,6 +15619,14 @@ packages:
         integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==,
       }
     engines: { node: ">=10.17.0" }
+
+  /human-signals@3.0.1:
+    resolution:
+      {
+        integrity: sha512-rQLskxnM/5OCldHo+wNXbpVgDn5A17CUoKX+7Sokwaknlq7CdSnphy0W39GU8dw59XiCXmFXDg4fRuckQRKewQ==,
+      }
+    engines: { node: ">=12.20.0" }
+    dev: false
 
   /human-signals@5.0.0:
     resolution:
@@ -16855,7 +16975,6 @@ packages:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
-    dev: true
 
   /jsonify@0.0.1:
     resolution:
@@ -17102,7 +17221,6 @@ packages:
         integrity: sha512-IXO6OCs9yg8tMKzfPZ1YmheJbZCiEsnBdcB03l0OcfK9prKnJb96siuHCr5Fl37/yo9DnKU+TLpxzTUspw9shg==,
       }
     engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
-    dev: true
 
   /load-yaml-file@0.2.0:
     resolution:
@@ -17144,6 +17262,16 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       p-locate: 5.0.0
+
+  /locate-path@7.2.0:
+    resolution:
+      {
+        integrity: sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      p-locate: 6.0.0
+    dev: false
 
   /lodash.debounce@4.0.8:
     resolution:
@@ -17298,7 +17426,6 @@ packages:
       }
     dependencies:
       tslib: 2.6.2
-    dev: true
 
   /lru-cache@10.1.0:
     resolution:
@@ -18730,7 +18857,6 @@ packages:
     dependencies:
       lower-case: 2.0.2
       tslib: 2.6.2
-    dev: true
 
   /nocache@3.0.4:
     resolution:
@@ -19218,6 +19344,24 @@ packages:
       strip-ansi: 6.0.1
       wcwidth: 1.0.1
 
+  /ora@6.3.1:
+    resolution:
+      {
+        integrity: sha512-ERAyNnZOfqM+Ao3RAvIXkYh5joP220yf59gVe2X/cI6SiCxIdi4c9HZKZD8R6q/RDXEje1THBju6iExiSsgJaQ==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      chalk: 5.3.0
+      cli-cursor: 4.0.0
+      cli-spinners: 2.9.2
+      is-interactive: 2.0.0
+      is-unicode-supported: 1.3.0
+      log-symbols: 5.1.0
+      stdin-discarder: 0.1.0
+      strip-ansi: 7.1.0
+      wcwidth: 1.0.1
+    dev: false
+
   /ora@7.0.1:
     resolution:
       {
@@ -19276,6 +19420,16 @@ packages:
     dependencies:
       yocto-queue: 0.1.0
 
+  /p-limit@4.0.0:
+    resolution:
+      {
+        integrity: sha512-5b0R4txpzjPWVw/cXXUResoD4hb6U/x9BH08L7nw+GN1sezDzPdxeRvpc9c433fZhBan/wusjbCsqwqm4EIBIQ==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      yocto-queue: 1.0.0
+    dev: false
+
   /p-limit@5.0.0:
     resolution:
       {
@@ -19312,6 +19466,16 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       p-limit: 3.1.0
+
+  /p-locate@6.0.0:
+    resolution:
+      {
+        integrity: sha512-wPrq66Llhl7/4AGC6I+cqxT07LhXvWL08LNXz1fENOw0Ap4sRZZ/gZpTTJ5jpurzzzfS2W/Ge9BY3LgLjCShcw==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      p-limit: 4.0.0
+    dev: false
 
   /p-map@4.0.0:
     resolution:
@@ -19371,7 +19535,6 @@ packages:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.6.2
-    dev: true
 
   /parent-module@1.0.1:
     resolution:
@@ -19465,7 +19628,6 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.6.2
-    dev: true
 
   /path-browserify@1.0.1:
     resolution:
@@ -19482,7 +19644,6 @@ packages:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.6.2
-    dev: true
 
   /path-exists@3.0.0:
     resolution:
@@ -19497,6 +19658,14 @@ packages:
         integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==,
       }
     engines: { node: ">=8" }
+
+  /path-exists@5.0.0:
+    resolution:
+      {
+        integrity: sha512-RjhtfwJOxzcFmNOi6ltcbcu4Iu+FL3zEj83dk4kAS+fVpTxXLO1b38RvJgT/0QwvV/L3aY9TAnyv0EOqW4GoMQ==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dev: false
 
   /path-is-absolute@1.0.1:
     resolution:
@@ -21693,7 +21862,6 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.2
       upper-case-first: 2.0.2
-    dev: true
 
   /serialize-error@2.1.0:
     resolution:
@@ -21918,6 +22086,14 @@ packages:
       }
     engines: { node: ">=8" }
 
+  /slash@4.0.0:
+    resolution:
+      {
+        integrity: sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==,
+      }
+    engines: { node: ">=12" }
+    dev: false
+
   /slice-ansi@2.1.0:
     resolution:
       {
@@ -21984,7 +22160,6 @@ packages:
     dependencies:
       dot-case: 3.0.4
       tslib: 2.6.2
-    dev: true
 
   /socket.io-client@4.7.4(bufferutil@4.0.8)(utf-8-validate@6.0.3):
     resolution:
@@ -23783,7 +23958,6 @@ packages:
         integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==,
       }
     engines: { node: ">= 10.0.0" }
-    dev: true
 
   /unixify@1.0.0:
     resolution:
@@ -23914,7 +24088,6 @@ packages:
       }
     dependencies:
       tslib: 2.6.2
-    dev: true
 
   /upper-case@2.0.2:
     resolution:
@@ -23923,7 +24096,6 @@ packages:
       }
     dependencies:
       tslib: 2.6.2
-    dev: true
 
   /uqr@0.1.2:
     resolution:
@@ -24201,6 +24373,31 @@ packages:
       abitype: 0.9.8(typescript@5.3.3)
       isows: 1.0.3(ws@8.13.0)
       typescript: 5.3.3
+      ws: 8.13.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+    dev: false
+
+  /viem@2.0.0(zod@3.22.4):
+    resolution:
+      {
+        integrity: sha512-WYPwVAs/wrQE1Li9mgHMZaZTnRZuyPJMauIhnpZKeZgtx7f+bWU3uvVSR5kxTf1aBFdaTuRc/umzX2ucQUurnA==,
+      }
+    peerDependencies:
+      typescript: ">=5.0.4"
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      "@adraffy/ens-normalize": 1.10.0
+      "@noble/curves": 1.2.0
+      "@noble/hashes": 1.3.2
+      "@scure/bip32": 1.3.2
+      "@scure/bip39": 1.2.1
+      abitype: 0.10.0(zod@3.22.4)
+      isows: 1.0.3(ws@8.13.0)
       ws: 8.13.0
     transitivePeerDependencies:
       - bufferutil
