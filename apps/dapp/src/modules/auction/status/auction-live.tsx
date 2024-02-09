@@ -13,8 +13,10 @@ import {
 export function AuctionLive({ auction }: { auction: Auction }) {
   const [maxPrice, setMaxPrice] = React.useState<number>();
   const [amount, setAmount] = React.useState<number>();
-  const { address } = useAccount();
+  const { address } = useAccount(); // TODO add support for different recipient
   const contracts = axisContracts[auction.chainId];
+
+  const referrer = "0x0"; // TODO referrer (e.g. frontend) address
 
   const bid = useWriteContract();
 
@@ -29,13 +31,16 @@ export function AuctionLive({ auction }: { auction: Auction }) {
     amount: Number(amount),
   });
 
+  const auctionData = ""; // TODO using auction public key, encode the desired amount out
+
+  // TODO Permit2 signature
+
   const handleBid = () => {
     bid.writeContract({
-      address: contracts.auctionHouse.address,
-      //@ts-expect-error ABI is currently blank
       abi: contracts.auctionHouse.abi,
+      address: contracts.auctionHouse.address,
       functionName: "bid",
-      args: [amount, maxPrice],
+      args: [auction.lotId, address, referrer, amount, auctionData, "", ""], // TODO needs to be a BidParams struct
     });
   };
 

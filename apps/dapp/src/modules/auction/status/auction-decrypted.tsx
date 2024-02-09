@@ -10,12 +10,16 @@ export function AuctionDecrypted({ auction }: { auction: Auction }) {
 
   const isLoading = decrypt.isPending || decryptReceipt.isLoading;
 
+  // TODO fetch a batch of bids to decrypt (getNextBidsToDecrypt), decrypt off-chain, pass back to contract (decryptAndSortBids). Repeat until none left.
+
+  const decryptedBids: unknown[] = []; // LocalSealedBidBatchAuction.Decrypt[]
+
   const handleDecryption = () => {
     decrypt.writeContract({
-      address: contract.auctionHouse.address,
-      //@ts-expect-error abi is blank
-      abi: contract.auctionHouse.abi,
-      //TODO: implement call
+      abi: contract.localSealedBidBatchAuction.abi,
+      address: contract.localSealedBidBatchAuction.address,
+      functionName: "decryptAndSortBids",
+      args: [auction.lotId, decryptedBids],
     });
   };
 

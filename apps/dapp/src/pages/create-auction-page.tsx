@@ -59,13 +59,11 @@ export default function CreateAuctionPage() {
 
     if (!keypair) throw new Error("Unable to generate keypair");
 
-    //TODO: implement
     createAuction.writeContract({
       abi: contracts.auctionHouse.abi,
       address: contracts.auctionHouse.address,
-      functionName: "",
-      //TODO: implement
-      args: [values, keypair],
+      functionName: "auction",
+      args: [values, keypair], // TODO need to pass (RoutingParams, AuctionParams)
     });
   };
 

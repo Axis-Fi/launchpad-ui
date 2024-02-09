@@ -12,11 +12,11 @@ export function AuctionSettled({ auction }: { auction: Auction }) {
   const isLoading = refund.isPending || refundReceipt.isLoading;
 
   const handleRefund = () => {
-    //TODO: implement call
     refund.writeContract({
-      address: contracts.auctionHouse.address,
-      //@ts-expect-error abi is blank
       abi: contracts.auctionHouse.abi,
+      address: contracts.auctionHouse.address,
+      functionName: "settle",
+      args: [auction.lotId],
     });
   };
 
