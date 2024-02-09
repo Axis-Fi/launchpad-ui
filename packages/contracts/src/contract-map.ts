@@ -1,4 +1,8 @@
-import { AxisContractAddresses, AxisContracts } from "./types";
+import {
+  AxisContractAddresses,
+  AxisContractNames,
+  AxisContracts,
+} from "./types";
 import abis from "./abis";
 import { addressesPerChain } from "./addresses";
 
@@ -10,8 +14,8 @@ function mapAbis(addresses: AxisContractAddresses) {
     (acc, name) => ({
       ...acc,
       [name]: {
-        address: addresses[name],
-        abi: abis[name],
+        address: addresses[name as AxisContractNames],
+        abi: abis[name as AxisContractNames],
       },
     }),
     {},
@@ -19,7 +23,9 @@ function mapAbis(addresses: AxisContractAddresses) {
 }
 
 function mapContractsByChain() {
-  const chains = Object.keys(addressesPerChain);
+  const chains = Object.keys(addressesPerChain).map((chainId) =>
+    Number(chainId),
+  );
 
   return chains.reduce((acc, chainId) => {
     return {
