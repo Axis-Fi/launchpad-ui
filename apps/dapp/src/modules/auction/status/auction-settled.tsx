@@ -1,6 +1,7 @@
 import { axisContracts } from "@repo/contracts";
 import { Button } from "@repo/ui";
 import { Auction } from "src/types";
+import { parseUnits } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 export function AuctionSettled({ auction }: { auction: Auction }) {
@@ -11,12 +12,14 @@ export function AuctionSettled({ auction }: { auction: Auction }) {
 
   const isLoading = refund.isPending || refundReceipt.isLoading;
 
+  // TODO TBD when we will automatically refund bids
+
   const handleRefund = () => {
     refund.writeContract({
       abi: axisContracts.abis.auctionHouse,
       address: axisAddresses.auctionHouse,
       functionName: "settle",
-      args: [auction.lotId],
+      args: [parseUnits(auction.lotId, 0)],
     });
   };
 

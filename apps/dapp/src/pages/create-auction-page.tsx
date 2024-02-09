@@ -21,6 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { cloakClient } from "src/services/cloak";
 import { useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
+import { encodeAbiParameters, getAddress, toHex, zeroAddress } from "viem";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -37,8 +38,11 @@ const schema = z.object({
   deadline: z.date(),
   hooks: z.string().optional(),
   allowlist: z.string().optional(),
+  allowlistParams: z.string().optional(),
   isVested: z.boolean().optional(),
   vesting: z.string().optional(),
+  curator: z.string().optional(),
+  vestingExpiry: z.date().optional(),
 });
 
 export type CreateAuctionForm = z.infer<typeof schema>;
@@ -63,9 +67,37 @@ export default function CreateAuctionPage() {
       abi: axisContracts.abis.auctionHouse,
       address: axisAddresses.auctionHouse,
       functionName: "auction",
-      args: [values, keypair], // TODO need to pass (RoutingParams, AuctionParams)
+      args: [
+        {
+          auctionType: toHex("LSBBA"),
+          baseToken: getAddress(values.payoutToken.address),
+          quoteToken: getAddress(values.quoteToken.address),
+          curator: !values.curator ? zeroAddress : getAddress(values.curator),
+          hooks: !values.hooks ? zeroAddress : getAddress(values.hooks),
+          allowlist: !values.allowlist
+            ? zeroAddress
+            : getAddress(values.allowlist),
+          allowlistParams: !values.allowlistParams
+            ? toHex("")
+            : toHex(values.allowlistParams),
+          payoutData: toHex(""),
+          derivativeType: !values.isVested ? toHex("") : toHex("LIV"),
+          derivativeParams: !values.vestingExpiry
+            ? toHex("")
+            : encodeAbiParameters(
+                [{ name: "expiry", type: "48" }],
+                [{ expiry: values.vestingExpiry.getTime() / 1000 }],
+              ),
+        },
+        //@ts-expect-error file is WIP
+        {
+          // TODO AuctionParams
+        },
+      ],
     });
   };
+
+  // TODO add expiry timestamp when vesting
 
   return (
     <div className="pt-10">
@@ -147,7 +179,12 @@ export default function CreateAuctionPage() {
                           name="hooks"
                           render={({ field }) => (
                             <FormItemWrapper className="order-1" label="Hooks">
-                              <Input {...field} />
+                              <Input
+                                {...field}
+                                tooltip={
+                                  "What is the address of the hook contract"
+                                }
+                              />
                             </FormItemWrapper>
                           )}
                         />
@@ -160,11 +197,29 @@ export default function CreateAuctionPage() {
                             >
                               <Input
                                 {...field}
-                                tooltip={"What is the allowlist"}
+                                tooltip={
+                                  "What is the address of the allowlist contract"
+                                }
                               />
                             </FormItemWrapper>
                           )}
                         />
+                        <FormField
+                          name="curator"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Curator"
+                              className="order-3"
+                            >
+                              <Input
+                                {...field}
+                                tooltip={
+                                  "What is the address of the auction curator"
+                                }
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />{" "}
                         <div className="order-2 flex w-full max-w-sm items-center justify-start gap-x-2">
                           <FormField
                             name="isVested"

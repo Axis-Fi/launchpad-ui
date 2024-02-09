@@ -1,34 +1,31 @@
 import { axisContracts } from "@repo/contracts";
 import { Button } from "@repo/ui";
 import { Auction } from "src/types";
+import { parseUnits } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 export function AuctionDecrypted({ auction }: { auction: Auction }) {
   const axisAddresses = axisContracts.addresses[auction.chainId];
-  const decrypt = useWriteContract();
-  const decryptReceipt = useWaitForTransactionReceipt({ hash: decrypt.data });
+  const settle = useWriteContract();
+  const decryptReceipt = useWaitForTransactionReceipt({ hash: settle.data });
 
-  const isLoading = decrypt.isPending || decryptReceipt.isLoading;
+  const isLoading = settle.isPending || decryptReceipt.isLoading;
 
-  // TODO fetch a batch of bids to decrypt (getNextBidsToDecrypt), decrypt off-chain, pass back to contract (decryptAndSortBids). Repeat until none left.
-
-  const decryptedBids: unknown[] = []; // LocalSealedBidBatchAuction.Decrypt[]
-
-  const handleDecryption = () => {
-    decrypt.writeContract({
-      abi: axisContracts.abis.localSealedBidBatchAuction,
-      address: axisAddresses.localSealedBidBatchAuction,
-      functionName: "decryptAndSortBids",
-      args: [auction.lotId, decryptedBids],
+  const handleSettle = () => {
+    settle.writeContract({
+      abi: axisContracts.abis.auctionHouse,
+      address: axisAddresses.auctionHouse,
+      functionName: "settle",
+      args: [parseUnits(auction.lotId, 0)],
     });
   };
 
   return (
     <div className="flex justify-center">
-      <Button onClick={handleDecryption}>Settle Auction</Button>
+      <Button onClick={handleSettle}>Settle Auction</Button>
 
       {isLoading && <p>Loading... </p>}
-      {decrypt.isError && <p>{decrypt.error?.message}</p>}
+      {settle.isError && <p>{settle.error?.message}</p>}
       {decryptReceipt.isSuccess && <p>Success!</p>}
     </div>
   );

@@ -3,7 +3,7 @@ import { Button, Input, LabelWrapper } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
 import React from "react";
 import { Auction } from "src/types";
-import { Address } from "viem";
+import { Address, parseUnits, toHex } from "viem";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -32,6 +32,14 @@ export function AuctionLive({ auction }: { auction: Auction }) {
     amount: Number(amount),
   });
 
+  if (!address) {
+    return <p>Connect wallet</p>;
+  }
+
+  if (!amount) {
+    return <p>Missing data</p>;
+  }
+
   const auctionData = ""; // TODO using auction public key, encode the desired amount out
 
   // TODO Permit2 signature
@@ -41,7 +49,20 @@ export function AuctionLive({ auction }: { auction: Auction }) {
       abi: axisContracts.abis.auctionHouse,
       address: axisAddresses.auctionHouse,
       functionName: "bid",
-      args: [auction.lotId, address, referrer, amount, auctionData, "", ""], // TODO needs to be a BidParams struct
+      args: [
+        {
+          lotId: parseUnits(auction.lotId, 0),
+          recipient: address,
+          referrer: referrer,
+          amount: parseUnits(
+            amount.toString(),
+            Number(auction.quoteToken.decimals),
+          ),
+          auctionData: toHex(auctionData),
+          allowlistProof: toHex(""),
+          permit2Data: toHex(""),
+        },
+      ],
     });
   };
 
