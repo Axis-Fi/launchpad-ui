@@ -27,11 +27,19 @@ import Footer from "src/components/Footer.astro";
       >
         <div class="flex flex-col justify-center h-full">
           <div
-            class="wordmark-glow transition-all duration-1000 cursor-pointer p-20"
+            class="wordmark-glow transition-all duration-1000 cursor-pointer flex justify-center items-center"
           >
-            <AxisWordmark />
+            <div class="relative left-4 lg:left-9">
+              <AxisWordmark />
+            </div>
 
-            <AxisLogo />
+            <div
+              class="max-w-10 lg:max-w-20 flex justify-center items-center w-full"
+            >
+              <div class="w-full relative right-24 lg:right-14">
+                <AxisLogo />
+              </div>
+            </div>
           </div>
         </div>
       </div>
