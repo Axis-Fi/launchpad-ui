@@ -22,6 +22,13 @@ export interface DecryptsLotIdGetRequest {
   lotId: number;
 }
 
+export interface EncryptLotIdPostRequest {
+  xChainId: number;
+  xAuctionHouse: string;
+  lotId: number;
+  body: string;
+}
+
 export interface PrivateKeyLotIdGetRequest {
   xChainId: number;
   xAuctionHouse: string;
@@ -121,6 +128,110 @@ export class KeysApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<Array<Decrypt>> {
     const response = await this.decryptsLotIdGetRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
+   * Encrypt a bid for a given lot ID. The bid will be encrypted using the public key modulus for the lot and a randomized seed.
+   */
+  async encryptLotIdPostRaw(
+    requestParameters: EncryptLotIdPostRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<string>> {
+    if (
+      requestParameters.xChainId === null ||
+      requestParameters.xChainId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "xChainId",
+        "Required parameter requestParameters.xChainId was null or undefined when calling encryptLotIdPost.",
+      );
+    }
+
+    if (
+      requestParameters.xAuctionHouse === null ||
+      requestParameters.xAuctionHouse === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "xAuctionHouse",
+        "Required parameter requestParameters.xAuctionHouse was null or undefined when calling encryptLotIdPost.",
+      );
+    }
+
+    if (
+      requestParameters.lotId === null ||
+      requestParameters.lotId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "lotId",
+        "Required parameter requestParameters.lotId was null or undefined when calling encryptLotIdPost.",
+      );
+    }
+
+    if (
+      requestParameters.body === null ||
+      requestParameters.body === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "body",
+        "Required parameter requestParameters.body was null or undefined when calling encryptLotIdPost.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    if (
+      requestParameters.xChainId !== undefined &&
+      requestParameters.xChainId !== null
+    ) {
+      headerParameters["x-chain-id"] = String(requestParameters.xChainId);
+    }
+
+    if (
+      requestParameters.xAuctionHouse !== undefined &&
+      requestParameters.xAuctionHouse !== null
+    ) {
+      headerParameters["x-auction-house"] = String(
+        requestParameters.xAuctionHouse,
+      );
+    }
+
+    const response = await this.request(
+      {
+        path: `/encrypt/{lot_id}`.replace(
+          `{${"lot_id"}}`,
+          encodeURIComponent(String(requestParameters.lotId)),
+        ),
+        method: "POST",
+        headers: headerParameters,
+        query: queryParameters,
+        body: requestParameters.body as any,
+      },
+      initOverrides,
+    );
+
+    if (this.isJsonMime(response.headers.get("content-type"))) {
+      return new runtime.JSONApiResponse<string>(response);
+    } else {
+      return new runtime.TextApiResponse(response) as any;
+    }
+  }
+
+  /**
+   * Encrypt a bid for a given lot ID. The bid will be encrypted using the public key modulus for the lot and a randomized seed.
+   */
+  async encryptLotIdPost(
+    requestParameters: EncryptLotIdPostRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<string> {
+    const response = await this.encryptLotIdPostRaw(
       requestParameters,
       initOverrides,
     );

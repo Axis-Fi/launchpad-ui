@@ -12,7 +12,7 @@
     },
     {
       "description": "Testnet",
-      "url": "https://cloak-api-testnet.up.railway.app"
+      "url": "https://api-testnet-d2e7.up.railway.app"
     },
     {
       "description": "Mainnet",
@@ -222,6 +222,75 @@
           }
         },
         "summary": "Retrieve a list of the next decrypts needed for a given lot ID. Decrypts will only be revealed after the auction for the lot has concluded. If an auction is cancelled, decrypts will not be revealed.",
+        "tags": ["Keys"]
+      }
+    },
+    "/encrypt/{lot_id}": {
+      "post": {
+        "parameters": [
+          {
+            "description": "The ID of a chain the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-chain-id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The address of the auction house contract the auction is on",
+            "explode": false,
+            "in": "header",
+            "name": "x-auction-house",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The lot ID to encrypt the bid for",
+            "explode": false,
+            "in": "path",
+            "name": "lot_id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "The bid amount to encrypt as a U256 byte string",
+                "type": "string"
+              }
+            }
+          },
+          "description": "The bid amount to encrypt",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "The encrypted bid",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Bid encrypted successfully"
+          },
+          "500": {
+            "description": "Failed to encrypt bid. May indicate that the key for the lot is not stored in the database or that the key cannot be revealed yet."
+          }
+        },
+        "summary": "Encrypt a bid for a given lot ID. The bid will be encrypted using the public key modulus for the lot and a randomized seed.",
         "tags": ["Keys"]
       }
     },
