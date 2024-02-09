@@ -4,7 +4,7 @@ import { Auction } from "src/types";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 export function AuctionSettled({ auction }: { auction: Auction }) {
-  const contracts = axisContracts[auction.chainId];
+  const axisAddresses = axisContracts.addresses[auction.chainId];
 
   const refund = useWriteContract();
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
@@ -13,8 +13,8 @@ export function AuctionSettled({ auction }: { auction: Auction }) {
 
   const handleRefund = () => {
     refund.writeContract({
-      abi: contracts.auctionHouse.abi,
-      address: contracts.auctionHouse.address,
+      abi: axisContracts.abis.auctionHouse,
+      address: axisAddresses.auctionHouse,
       functionName: "settle",
       args: [auction.lotId],
     });

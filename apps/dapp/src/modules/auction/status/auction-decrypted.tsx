@@ -4,7 +4,7 @@ import { Auction } from "src/types";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 export function AuctionDecrypted({ auction }: { auction: Auction }) {
-  const contract = axisContracts[auction.chainId];
+  const axisAddresses = axisContracts.addresses[auction.chainId];
   const decrypt = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: decrypt.data });
 
@@ -16,8 +16,8 @@ export function AuctionDecrypted({ auction }: { auction: Auction }) {
 
   const handleDecryption = () => {
     decrypt.writeContract({
-      abi: contract.localSealedBidBatchAuction.abi,
-      address: contract.localSealedBidBatchAuction.address,
+      abi: axisContracts.abis.localSealedBidBatchAuction,
+      address: axisAddresses.localSealedBidBatchAuction,
       functionName: "decryptAndSortBids",
       args: [auction.lotId, decryptedBids],
     });

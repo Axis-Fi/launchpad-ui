@@ -12,11 +12,11 @@ export function CreateAuctionSubmitter() {
   const form = useFormContext<CreateAuctionForm>();
   const { payoutToken, amount } = form.getValues();
 
-  const contracts = axisContracts[payoutToken?.chainId];
+  const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
 
   const { isSufficientAllowance, execute, approveTx } = useAllowance({
     ownerAddress: address,
-    spenderAddress: contracts?.auctionHouse?.address,
+    spenderAddress: axisAddresses?.auctionHouse,
     tokenAddress: payoutToken?.address as Address,
     decimals: payoutToken?.decimals,
     chainId: payoutToken?.chainId,

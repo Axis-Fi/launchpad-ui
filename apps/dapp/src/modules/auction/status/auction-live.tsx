@@ -12,9 +12,10 @@ import {
 
 export function AuctionLive({ auction }: { auction: Auction }) {
   const [maxPrice, setMaxPrice] = React.useState<number>();
+  maxPrice; //
   const [amount, setAmount] = React.useState<number>();
   const { address } = useAccount(); // TODO add support for different recipient
-  const contracts = axisContracts[auction.chainId];
+  const axisAddresses = axisContracts.addresses[auction.chainId];
 
   const referrer = "0x0"; // TODO referrer (e.g. frontend) address
 
@@ -24,7 +25,7 @@ export function AuctionLive({ auction }: { auction: Auction }) {
 
   const { isSufficientAllowance, approveTx, execute } = useAllowance({
     ownerAddress: address,
-    spenderAddress: contracts.auctionHouse.address,
+    spenderAddress: axisAddresses.auctionHouse,
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
@@ -37,8 +38,8 @@ export function AuctionLive({ auction }: { auction: Auction }) {
 
   const handleBid = () => {
     bid.writeContract({
-      abi: contracts.auctionHouse.abi,
-      address: contracts.auctionHouse.address,
+      abi: axisContracts.abis.auctionHouse,
+      address: axisAddresses.auctionHouse,
       functionName: "bid",
       args: [auction.lotId, address, referrer, amount, auctionData, "", ""], // TODO needs to be a BidParams struct
     });

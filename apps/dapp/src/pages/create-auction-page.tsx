@@ -51,7 +51,7 @@ export default function CreateAuctionPage() {
 
   const [isVested, payoutToken] = form.watch(["isVested", "payoutToken"]);
 
-  const contracts = axisContracts[payoutToken?.chainId];
+  const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
   const createAuction = useWriteContract();
 
   const handleCreation = async (values: CreateAuctionForm) => {
@@ -60,8 +60,8 @@ export default function CreateAuctionPage() {
     if (!keypair) throw new Error("Unable to generate keypair");
 
     createAuction.writeContract({
-      abi: contracts.auctionHouse.abi,
-      address: contracts.auctionHouse.address,
+      abi: axisContracts.abis.auctionHouse,
+      address: axisAddresses.auctionHouse,
       functionName: "auction",
       args: [values, keypair], // TODO need to pass (RoutingParams, AuctionParams)
     });

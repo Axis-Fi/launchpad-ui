@@ -10,24 +10,24 @@ export function AuctionConcluded({ auction }: { auction: Auction }) {
   const { data: client } = useWalletClient();
   const publicClient = usePublicClient();
 
-  const contracts = axisContracts[auction.chainId];
+  const axisAddresses = axisContracts.addresses[auction.chainId];
 
   const decryptLot = useMutation({
     mutationFn: async () => {
       if (!client) throw new Error("Wallet must be connected");
 
       const bids = await cloakClient.keysApi.decryptsLotIdGet({
-        xAuctionHouse: contracts.auctionHouse.address,
+        xAuctionHouse: axisAddresses.auctionHouse,
         xChainId: auction.chainId,
         lotId: Number(auction.lotId),
       });
 
       if (!bids.length) throw new Error("Unable to find bids");
 
+      //@ts-expect-error abi is blank
       const request = await simulateContract(client, {
-        address: contracts.auctionHouse.address,
-        //@ts-expect-error abi is blank
-        abi: contracts.auctionHouse.address,
+        abi: axisContracts.abis.auctionHouse,
+        address: axisAddresses.auctionHouse,
         functionName: "bid",
       });
 
