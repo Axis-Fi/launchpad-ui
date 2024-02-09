@@ -61,7 +61,6 @@ export default function CreateAuctionPage() {
 
     //TODO: implement
     createAuction.writeContract({
-      //@ts-expect-error abi not implemented
       abi: contracts.auctionHouse.abi,
       address: contracts.auctionHouse.address,
       functionName: "",

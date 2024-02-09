@@ -11,5 +11,5 @@ export type AxisContractAbis = Record<AxisContractNames, unknown>;
 
 export type AxisContracts = Record<
   number,
-  Record<AxisContractNames, { address: Address; abi: unknown }>
+  Record<AxisContractNames, { address: Address; abi: unknown[] }>
 >;
