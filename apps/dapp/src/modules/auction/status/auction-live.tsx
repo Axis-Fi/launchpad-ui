@@ -3,6 +3,7 @@ import { Button, Input, LabelWrapper } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
 import React from "react";
 import { Auction } from "src/types";
+import { cloakClient } from "src/services/cloak";
 import { Address, parseUnits, toHex } from "viem";
 import {
   useAccount,
@@ -13,7 +14,7 @@ import {
 export function AuctionLive({ auction }: { auction: Auction }) {
   const [maxPrice, setMaxPrice] = React.useState<number>();
   maxPrice; //
-  const [amount, setAmount] = React.useState<number>();
+  const [amount, setAmount] = React.useState<number>(0);
   const { address } = useAccount(); // TODO add support for different recipient
   const axisAddresses = axisContracts.addresses[auction.chainId];
 
@@ -36,15 +37,28 @@ export function AuctionLive({ auction }: { auction: Auction }) {
     return <p>Connect wallet</p>;
   }
 
-  if (!amount) {
-    return <p>Missing data</p>;
-  }
-
-  const auctionData = ""; // TODO using auction public key, encode the desired amount out
+  // if (!amount) {
+  //   return <p>Missing data</p>;
+  // }
 
   // TODO Permit2 signature
 
-  const handleBid = () => {
+  const handleBid = async () => {
+    // Calculate and encrypt the minAmountOut
+    const minAmountOut = maxPrice === undefined ? 0 : amount / maxPrice; // TODO decimal scaling and error handling
+
+    console.log("minAmountOut", minAmountOut);
+
+    const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
+      xChainId: auction.chainId,
+      xAuctionHouse: axisAddresses.auctionHouse,
+      lotId: parseInt(auction.lotId),
+      body: toHex(minAmountOut),
+    });
+
+    console.log("encryptedAmountOut", encryptedAmountOut);
+
+    // Submit the bid to the contract
     bid.writeContract({
       abi: axisContracts.abis.auctionHouse,
       address: axisAddresses.auctionHouse,
@@ -58,7 +72,7 @@ export function AuctionLive({ auction }: { auction: Auction }) {
             amount.toString(),
             Number(auction.quoteToken.decimals),
           ),
-          auctionData: toHex(auctionData),
+          auctionData: encryptedAmountOut,
           allowlistProof: toHex(""),
           permit2Data: toHex(""),
         },

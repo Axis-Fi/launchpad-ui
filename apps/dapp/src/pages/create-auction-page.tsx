@@ -59,9 +59,9 @@ export default function CreateAuctionPage() {
   const createAuction = useWriteContract();
 
   const handleCreation = async (values: CreateAuctionForm) => {
-    const keypair = await cloakClient.keysApi.newKeyPairPost();
+    const publicKey = await cloakClient.keysApi.newKeyPairPost();
 
-    if (!keypair) throw new Error("Unable to generate keypair");
+    if (!publicKey) throw new Error("Unable to generate RSA keypair");
 
     createAuction.writeContract({
       abi: axisContracts.abis.auctionHouse,
