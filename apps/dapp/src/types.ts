@@ -4,9 +4,10 @@ import { Address } from "viem";
 export type Token = {
   chainId: number;
   address: Address;
-  decimals: number;
+  decimals: string;
   symbol: string;
   name: string;
+  logoURL?: string;
 };
 
 export type AuctionStatus =
@@ -16,10 +17,17 @@ export type AuctionStatus =
   | "decrypted"
   | "settled";
 
+export type AuctionSocialAssets = {
+  description?: string;
+  name?: string;
+};
+
 export type Auction = GetAuctionLotsQuery["auctionLots"][0] & {
   chainId: number;
   status: AuctionStatus;
-};
+  baseToken: Token;
+  quoteToken: Token;
+} & AuctionSocialAssets;
 
 export type AuctionWithEvents = GetAuctionLotQuery["auctionLots"][0] & {
   chainId: number;

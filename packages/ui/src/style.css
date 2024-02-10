@@ -12,8 +12,6 @@
     --axis-light-mid: 60 10% 60%;
     --axis-dark-mid: 290 9% 40%;
 
-    --axis-grey: 288 8% 12%;
-
     --axis-blue: 222 81% 69%;
     --axis-teal: 206 83% 71%;
     --axis-green: 78 85% 71%;
@@ -21,25 +19,25 @@
     --axis-red: 13 87% 60%;
 
     --foreground: var(--axis-light);
-    --background: #000000;
+    --background: 0 0% 0%;
 
     --primary: var(--axis-orange);
     --primary-foreground: var(--axis-dark);
 
-    --card: var(--axis-grey);
+    --card: var(--axis-dark);
     --card-foreground: var(--axis-light);
 
-    --popover: var(--axis-grey);
+    --popover: var(--axis-dark);
     --popover-foreground: var(--axis-light);
 
-    --secondary: var(--axis-grey);
+    --secondary: var(--axis-dark);
     --secondary-foreground: var(--axis-light);
 
-    --muted: 288 8% 12%;
+    --muted: var(--background);
     --muted-foreground: 60 5% 50%;
 
-    --accent: var(--axis-light-mid);
-    --accent-foreground: 210 40% 98%;
+    --accent: var(--axis-blue);
+    --accent-foreground: var(--axis-dark);
 
     --destructive: var(--axis-red);
     --destructive-foreground: var(--axis-light);
@@ -133,7 +131,7 @@
   }
 
   h4 {
-    @apply text-xl font-semibold;
+    @apply text-xl;
   }
 
   p {

@@ -9,3 +9,17 @@
     @apply font-aeonpro;
   }
 }
+
+@layer components {
+  .bg-axis-orange-grad {
+    background-image: linear-gradient(
+      hsla(11, 100%, 63%, 0.74),
+      hsla(32, 99%, 66%, 0.64),
+      hsla(40, 100%, 77%, 0.74)
+    );
+  }
+
+  .auction-progress {
+    clip-path: xywh(0 3px 100% 75% round 0% 0);
+  }
+}
