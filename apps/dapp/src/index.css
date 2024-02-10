@@ -4,4 +4,8 @@
   body {
     @apply bg-black;
   }
+
+  input {
+    @apply font-aeonpro;
+  }
 }

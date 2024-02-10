@@ -8,8 +8,8 @@ function App() {
   const navigate = useNavigate();
   return (
     <Providers>
-      <div className="font-aeonfono mx-auto h-screen max-w-[1137px] py-2">
-        <div className="mx-auto flex justify-between">
+      <div className="mx-auto max-w-[1300px]">
+        <div className="mx-auto flex max-h-[88px] justify-between py-6">
           <div className="flex cursor-pointer items-center gap-x-4 text-4xl">
             <div className="flex gap-x-2" onClick={() => navigate("/#/")}>
               <img width={80} height={26} src="/images/wordmark.svg" />
@@ -28,7 +28,9 @@ function App() {
             <ConnectButton />
           </div>
         </div>
+      </div>
 
+      <div className="font-aeonfono mx-auto max-w-[1137px]">
         <Outlet />
       </div>
     </Providers>
