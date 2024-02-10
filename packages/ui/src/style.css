@@ -36,7 +36,7 @@
     --muted: 288 8% 12%;
     --muted-foreground: 60 5% 50%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: var(--axis-light-mid);
     --accent-foreground: 210 40% 98%;
 
     --destructive: var(--axis-red);
@@ -53,8 +53,8 @@
     --foreground: var(--axis-light);
     --background: var(--axis-dark);
 
-    --primary: var(--axis-red);
-    --primary-foreground: var(--axis-light);
+    --primary: var(--axis-orange);
+    --primary-foreground: var(--axis-dark);
 
     --secondary-foreground: var(--axis-dark-mid);
   }

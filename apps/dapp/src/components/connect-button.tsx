@@ -34,11 +34,7 @@ export default function ConnectButton() {
           >
             {(() => {
               if (!connected) {
-                return (
-                  <Button variant="secondary" onClick={openConnectModal}>
-                    Connect Wallet
-                  </Button>
-                );
+                return <Button onClick={openConnectModal}>Connect</Button>;
               }
               if (chain.unsupported) {
                 return (
@@ -48,7 +44,12 @@ export default function ConnectButton() {
                 );
               }
               return (
-                <div className="flex gap-1">
+                <div className="flex">
+                  <Button variant="outline" onClick={openAccountModal}>
+                    {account.displayName}
+                    {/*account.displayBalance ? ` (${account.displayBalance})` : ""*/}
+                  </Button>
+
                   <Button variant="ghost" onClick={openChainModal}>
                     {chain.hasIcon ? (
                       <div
@@ -68,10 +69,6 @@ export default function ConnectButton() {
                     ) : (
                       chain.name
                     )}
-                  </Button>
-                  <Button variant="secondary" onClick={openAccountModal}>
-                    {account.displayName}
-                    {/*account.displayBalance ? ` (${account.displayBalance})` : ""*/}
                   </Button>
                 </div>
               );

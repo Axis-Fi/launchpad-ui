@@ -1,1 +1,7 @@
 @import "@repo/ui/style.css";
+
+@layer base {
+  body {
+    @apply bg-black;
+  }
+}

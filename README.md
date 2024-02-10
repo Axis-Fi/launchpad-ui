@@ -2,9 +2,11 @@
 
 Monorepo for Axis Finance Frontend Apps using [turbo](https://turbo.build/repo)
 
-## Setup
+## Dev Setup
 
-- `pnpm install` - Install dependencies for all packages
+- run `pnpm install` to Install dependencies for all packages
+- Setup `.env` on dapp repo
+- run `pnpm dev --filter=dapp`
 
 ### Other Useful Commands
 
