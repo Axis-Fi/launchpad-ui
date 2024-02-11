@@ -1,6 +1,7 @@
 import { axisContracts } from "@repo/contracts";
 import { Button, Input, LabelWrapper } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
+import { useReferral } from "loaders/use-referral";
 import React from "react";
 import { Auction } from "src/types";
 import { cloakClient } from "src/services/cloak";
@@ -18,7 +19,7 @@ export function AuctionLive({ auction }: { auction: Auction }) {
   const { address } = useAccount(); // TODO add support for different recipient
   const axisAddresses = axisContracts.addresses[auction.chainId];
 
-  const referrer = "0x0"; // TODO referrer (e.g. frontend) address
+  const referrer = useReferral();
 
   const bid = useWriteContract();
 
@@ -57,6 +58,8 @@ export function AuctionLive({ auction }: { auction: Auction }) {
     });
 
     console.log("encryptedAmountOut", encryptedAmountOut);
+
+    console.log("referrer", referrer);
 
     // Submit the bid to the contract
     bid.writeContract({
