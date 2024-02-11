@@ -24,10 +24,7 @@ export default function Navbar() {
                 {({ isActive }) => (
                   <Button
                     variant="link"
-                    className={cn(
-                      "px-2 uppercase tracking-wider",
-                      isActive && "text-primary",
-                    )}
+                    className={cn("px-2 uppercase", isActive && "text-primary")}
                   >
                     {l.title}
                   </Button>

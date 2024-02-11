@@ -2,11 +2,15 @@
 
 @layer base {
   body {
-    @apply bg-black;
+    @apply font-aeonfono bg-black;
   }
 
   input {
     @apply font-aeonpro;
+  }
+
+  a svg {
+    @apply transition-all;
   }
 }
 
@@ -21,5 +25,9 @@
 
   .auction-progress {
     clip-path: xywh(0 3px 100% 75% round 0% 0);
+  }
+
+  .mask {
+    mask-image: linear-gradient(hsla(0, 0%, 0%, 1), transparent);
   }
 }

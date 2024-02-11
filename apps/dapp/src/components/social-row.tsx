@@ -1,4 +1,4 @@
-import { DiscordLogoIcon, TwitterLogoIcon, GlobeIcon } from "@repo/ui";
+import { Link, DiscordLogoIcon, TwitterLogoIcon, GlobeIcon } from "@repo/ui";
 
 export type SocialURLs = {
   discord?: string;
@@ -6,28 +6,24 @@ export type SocialURLs = {
   homepage?: string;
 };
 
-const SocialLink = (props: React.ComponentPropsWithoutRef<"a">) => (
-  <a {...props} target="_blank" rel={props.rel ?? "noreferrer"} />
-);
-
 export function SocialRow(props: SocialURLs) {
   return (
     <div className="flex items-center gap-x-4">
       {props.twitter && (
-        <SocialLink href={props.discord}>
-          <TwitterLogoIcon className="hover:text-[#1DA1F2] " />
-        </SocialLink>
+        <Link href={props.discord}>
+          <TwitterLogoIcon className="hover:text-[#1DA1F2]" />
+        </Link>
       )}
 
       {props.discord && (
-        <SocialLink href={props.discord}>
+        <Link href={props.discord}>
           <DiscordLogoIcon className="hover:text-[#7289da]" />
-        </SocialLink>
+        </Link>
       )}
       {props.homepage && (
-        <SocialLink href={props.discord}>
-          <GlobeIcon className="hover:text-primary" />
-        </SocialLink>
+        <Link href={props.discord}>
+          <GlobeIcon className="hover:text-primary transition-all" />
+        </Link>
       )}
     </div>
   );

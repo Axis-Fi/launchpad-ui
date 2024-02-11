@@ -1,17 +1,35 @@
-import { Button } from "@repo/ui";
+import { IconnedInput, cn } from "@repo/ui";
+import { useAuctions } from "loaders/useAuctions";
+import { SearchIcon } from "lucide-react";
+import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
+import { useNavigate } from "react-router-dom";
 
-//TODO: implement
 export default function AuctionListPage() {
-  return (
-    <div>
-      <h1>Blind Auctions</h1>
+  const navigate = useNavigate();
+  const { result: auctions, isLoading } = useAuctions();
 
-      <div className="flex justify-between">
+  return (
+    <div className="mt-5">
+      <h1 className="mb-12">Blind Auctions</h1>
+
+      <div className="flex items-center justify-between">
         <h3>Liquidity Bootstrapping</h3>
-        <div>
-          <Button>Search</Button>
-          <Button>Sort</Button>
-        </div>
+        <IconnedInput
+          icon={<SearchIcon />}
+          className="placeholder:text-foreground "
+          placeholder="Search"
+        />
+      </div>
+      <div className={cn("mt-4 grid grid-cols-3 gap-4", isLoading && "mask")}>
+        {isLoading
+          ? [...new Array(6)].map((_e, i) => <AuctionCardLoading key={i} />)
+          : auctions.map((a) => (
+              <AuctionCard
+                key={a.chainId + a.id}
+                auction={a}
+                onClickView={() => navigate(`/auction/${a.chainId}/${a.id}`)}
+              />
+            ))}
       </div>
     </div>
   );

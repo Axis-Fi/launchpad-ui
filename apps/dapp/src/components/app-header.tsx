@@ -1,19 +1,28 @@
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import ConnectButton from "./connect-button";
 import Navbar from "./navbar";
-import { ThemeSwitcher } from "@repo/ui";
+import { Button } from "@repo/ui";
+import { useNavigate } from "react-router-dom";
 
 export function AppHeader() {
+  const navigate = useNavigate();
   return (
-    <div className="mx-auto flex justify-between">
-      <div className="flex w-1/3 items-center gap-x-2 text-4xl">
-        <img width={80} height={26} src="/images/wordmark.svg" />
-        <img width={30} height={26} src="/images/logo.svg" />
+    <div className="mx-auto flex max-h-[88px] justify-between py-6">
+      <div className="flex cursor-pointer items-center gap-x-4 text-4xl">
+        <div className="flex gap-x-2" onClick={() => navigate("/#/")}>
+          <img width={80} height={26} src="/images/wordmark.svg" />
+          <img width={30} height={26} src="/images/logo.svg" />
+        </div>
+        <Navbar />
       </div>
-      <Navbar />
 
-      <div className="flex w-1/3 items-center justify-end gap-x-2">
+      <div className="flex items-center justify-end gap-x-2">
+        <Button
+          onClick={() => navigate("/create/auction")}
+          className="uppercase"
+        >
+          Create Auction
+        </Button>
         <ConnectButton />
-        <ThemeSwitcher />
       </div>
     </div>
   );

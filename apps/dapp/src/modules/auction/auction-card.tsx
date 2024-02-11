@@ -1,4 +1,4 @@
-import { Avatar, Button, Progress } from "@repo/ui";
+import { cn, Avatar, Button, Progress, Skeleton } from "@repo/ui";
 import { SocialRow, SocialURLs } from "components/social-row";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowRightIcon } from "lucide-react";
@@ -6,7 +6,8 @@ import { Auction } from "src/types";
 
 type AuctionCardProps = {
   auction: Auction;
-  socials: SocialURLs;
+  socials?: SocialURLs;
+  onClickView?: (auction: Auction) => void;
 } & React.ComponentPropsWithoutRef<"div">;
 
 export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
@@ -16,12 +17,25 @@ export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
     new Date().getTime() / 1000,
   );
 
-  const remainingTime = formatDistanceToNow(new Date(1710105964 * 1000));
+  const remainingTime = formatDistanceToNow(
+    new Date(Number(auction.conclusion) * 1000),
+  );
+
+  const statusColor =
+    auction.status === "concluded" ? "bg-axis-dark-mid" : "bg-axis-green";
 
   return (
-    <div className="bg-secondary w-full max-w-[400px] p-2" {...props}>
+    <div
+      className="bg-secondary w-full max-w-[400px] rounded-sm p-2"
+      {...props}
+    >
       <div className="flex justify-between">
-        <p className="bg-axis-green text-background rounded-full px-2 py-0.5 text-sm uppercase">
+        <p
+          className={cn(
+            "text-background rounded-full px-2 py-0.5 text-sm uppercase",
+            statusColor,
+          )}
+        >
           {auction.status}
         </p>
         <SocialRow {...socials} />
@@ -37,18 +51,28 @@ export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
           <p>{auction.baseToken.name}</p>
         </div>
         <Progress
-          className="auction-progress mt-4 self-end"
+          className="auction-progress relative mt-4 w-[100%] self-end"
           value={progress > 100 ? 100 : progress}
         />
       </div>
       <div className="font-aeonfono mt-2 text-center ">
-        <h4 className="leading-none">{remainingTime}</h4>
-        <p className="leading-none">Remaining</p>
+        {auction.status === "concluded" ? (
+          <h4>Auction has ended</h4>
+        ) : (
+          <>
+            <h4 className="leading-none">{remainingTime}</h4>
+            <p className="leading-none">Remaining</p>
+          </>
+        )}
         <p className="mt-4 text-left leading-5">{auction.description}</p>
       </div>
 
       <div className="mt-4 flex justify-center">
-        <Button variant="outline" className="mx-auto">
+        <Button
+          onClick={() => props.onClickView?.(auction)}
+          variant="outline"
+          className="mx-auto"
+        >
           View Auction <ArrowRightIcon className="w-5" />
         </Button>
       </div>
@@ -63,5 +87,20 @@ function calculatePercentage(
 ) {
   return (
     ((Number(current) - Number(start)) / (Number(end) - Number(start))) * 100
+  );
+}
+
+export function AuctionCardLoading() {
+  return (
+    <div className="bg-secondary h-[240px] max-w-[390px] rounded-sm p-2">
+      <div className="flex justify-between">
+        <Skeleton className="h-6 w-32 rounded-full" />
+        <Skeleton className="h-6 w-32 rounded-full" />
+      </div>
+      <Skeleton className="mt-4 h-20 w-full" />
+      <div className="flex flex-col items-center justify-around">
+        <Skeleton className="mt-4 h-20 w-full" />
+      </div>
+    </div>
   );
 }
