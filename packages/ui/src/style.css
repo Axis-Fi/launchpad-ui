@@ -33,8 +33,8 @@
     --secondary: var(--axis-dark);
     --secondary-foreground: var(--axis-light);
 
-    --muted: var(--background);
-    --muted-foreground: 60 5% 50%;
+    --muted: var(--axis-dark);
+    --muted-foreground: var(--axis-foreground);
 
     --accent: var(--axis-blue);
     --accent-foreground: var(--axis-dark);

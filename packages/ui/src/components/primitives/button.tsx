@@ -18,7 +18,7 @@ const buttonVariants = cva(
           "border border-foreground shadow-sm hover:bg-primary hover:text-primary-foreground hover:border-primary",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:text-accent-foreground",
+        ghost: "hover:text-primary",
         link: "text-foreground underline-offset-4 hover:text-primary/80 tracking-wider",
         input: "border rounded-md",
       },

@@ -9,6 +9,10 @@
     @apply font-aeonpro;
   }
 
+  a {
+    @apply cursor-pointer;
+  }
+
   a svg {
     @apply transition-all;
   }
