@@ -8,4 +8,4 @@ export default {
   auctionHouse,
   localSealedBidBatchAuction,
   linearVesting,
-};
+} as const;

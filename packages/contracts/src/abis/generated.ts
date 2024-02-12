@@ -7,7 +7,7 @@ export const auctionHouseAbi = [
     stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
-      { name: "protocol_", internalType: "address", type: "address" },
+      { name: "owner_", internalType: "address", type: "address" },
       { name: "permit2_", internalType: "address", type: "address" },
     ],
   },
@@ -116,8 +116,22 @@ export const auctionHouseAbi = [
   {
     stateMutability: "nonpayable",
     type: "function",
+    inputs: [{ name: "reference_", internalType: "Veecode", type: "bytes7" }],
+    name: "claimModuleGas",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [{ name: "token_", internalType: "address", type: "address" }],
     name: "claimRewards",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [],
+    name: "claimYieldAndGas",
     outputs: [],
   },
   {
@@ -733,7 +747,9 @@ export const linearVestingAbi = [
   {
     stateMutability: "nonpayable",
     type: "constructor",
-    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+    ],
   },
   {
     stateMutability: "nonpayable",
