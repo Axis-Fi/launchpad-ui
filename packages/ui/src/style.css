@@ -123,7 +123,7 @@
   }
 
   h2 {
-    @apply border-b pb-2 text-3xl font-semibold first:mt-0;
+    @apply border-b pb-2 text-3xl font-semibold no-underline first:mt-0;
   }
 
   h3 {
@@ -135,7 +135,7 @@
   }
 
   p {
-    @apply leading-7;
+    /*@apply leading-7; */
   }
 }
 

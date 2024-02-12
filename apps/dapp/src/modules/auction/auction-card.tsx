@@ -1,14 +1,15 @@
-import { cn, Avatar, Button, Progress, Skeleton } from "@repo/ui";
+import { Avatar, Button, Progress, Skeleton } from "@repo/ui";
 import { SocialRow, SocialURLs } from "components/social-row";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowRightIcon } from "lucide-react";
 import { Auction } from "src/types";
+import { AuctionStatusChip } from "./auction-status-chip";
 
 type AuctionCardProps = {
   auction: Auction;
   socials?: SocialURLs;
   onClickView?: (auction: Auction) => void;
-} & React.ComponentPropsWithoutRef<"div">;
+} & React.HTMLAttributes<HTMLDivElement>;
 
 export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
   const progress = calculatePercentage(
@@ -21,24 +22,14 @@ export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
     new Date(Number(auction.conclusion) * 1000),
   );
 
-  const statusColor =
-    auction.status === "concluded" ? "bg-axis-dark-mid" : "bg-axis-green";
-
   return (
     <div
       className="bg-secondary w-full max-w-[400px] rounded-sm p-2"
       {...props}
     >
       <div className="flex justify-between">
-        <p
-          className={cn(
-            "text-background rounded-full px-2 py-0.5 text-sm uppercase",
-            statusColor,
-          )}
-        >
-          {auction.status}
-        </p>
-        <SocialRow {...socials} />
+        <AuctionStatusChip status={auction.status} />
+        <SocialRow {...socials} className="h-6" />
       </div>
 
       <div className="bg-axis-orange-grad mt-2 flex flex-col rounded-md pt-6 ">
@@ -92,14 +83,14 @@ function calculatePercentage(
 
 export function AuctionCardLoading() {
   return (
-    <div className="bg-secondary h-[240px] max-w-[390px] rounded-sm p-2">
+    <div className="bg-secondary h-[220px] max-w-[390px] rounded-sm p-2">
       <div className="flex justify-between">
         <Skeleton className="h-6 w-32 rounded-full" />
         <Skeleton className="h-6 w-32 rounded-full" />
       </div>
       <Skeleton className="mt-4 h-20 w-full" />
       <div className="flex flex-col items-center justify-around">
-        <Skeleton className="mt-4 h-20 w-full" />
+        <Skeleton className="mt-4 h-14 w-full" />
       </div>
     </div>
   );
