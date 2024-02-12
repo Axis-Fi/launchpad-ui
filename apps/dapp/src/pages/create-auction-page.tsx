@@ -80,74 +80,78 @@ export default function CreateAuctionPage() {
   const [isVested, payoutToken] = form.watch(["isVested", "payoutToken"]);
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
-  const { isPending, writeContract, ...createAuctionProps } =
-    useWriteContract();
+  const createAuction = useWriteContract();
 
-  // TODO handle displaying errors from createAuctionProps.error
-  if (createAuctionProps.error) {
-    console.error("Error during submission:", createAuctionProps.error);
-  }
-
+  // TODO if there is no approval, this will still execute in addition to the approval tx
   const handleCreation = async (values: CreateAuctionForm) => {
     const publicKey = await cloakClient.keysApi.newKeyPairPost();
 
     if (!publicKey) throw new Error("Unable to generate RSA keypair");
     if (!isHex(publicKey)) throw new Error("Invalid keypair");
 
-    writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
-      functionName: "auction",
-      args: [
-        {
-          auctionType: toKeycode("LSBBA"),
-          baseToken: getAddress(values.payoutToken.address),
-          quoteToken: getAddress(values.quoteToken.address),
-          curator: !values.curator ? zeroAddress : getAddress(values.curator),
-          hooks: !values.hooks ? zeroAddress : getAddress(values.hooks),
-          allowlist: !values.allowlist
-            ? zeroAddress
-            : getAddress(values.allowlist),
-          allowlistParams: !values.allowlistParams
-            ? toHex("")
-            : toHex(values.allowlistParams),
-          payoutData: toHex(""), // TODO remove this after new deployment
-          derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
-          derivativeParams: !values.vestingDuration
-            ? toHex("")
-            : encodeAbiParameters(
-                [{ name: "expiry", type: "uint48" }],
-                [
-                  getTimestamp(values.deadline) +
-                    getDuration(Number(values.vestingDuration)),
-                ],
-              ),
+    createAuction.writeContract(
+      {
+        abi: axisContracts.abis.auctionHouse,
+        address: axisAddresses.auctionHouse,
+        functionName: "auction",
+        args: [
+          {
+            auctionType: toKeycode("LSBBA"),
+            baseToken: getAddress(values.payoutToken.address),
+            quoteToken: getAddress(values.quoteToken.address),
+            curator: !values.curator ? zeroAddress : getAddress(values.curator),
+            hooks: !values.hooks ? zeroAddress : getAddress(values.hooks),
+            allowlist: !values.allowlist
+              ? zeroAddress
+              : getAddress(values.allowlist),
+            allowlistParams: !values.allowlistParams
+              ? toHex("")
+              : toHex(values.allowlistParams),
+            payoutData: toHex(""), // TODO remove this after new deployment
+            derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
+            derivativeParams:
+              !values.isVested || !values.vestingDuration
+                ? toHex("")
+                : encodeAbiParameters(
+                    [{ name: "expiry", type: "uint48" }],
+                    [
+                      getTimestamp(values.deadline) +
+                        getDuration(Number(values.vestingDuration)),
+                    ],
+                  ),
+          },
+          {
+            start: getTimestamp(values.start),
+            duration:
+              getTimestamp(values.deadline) - getTimestamp(values.start),
+            capacityInQuote: false, // Disabled for LSBBA
+            capacity: parseUnits(values.capacity, values.payoutToken.decimals),
+            implParams: encodeAbiParameters(
+              [
+                { name: "minFillPercent", type: "uint24" },
+                { name: "minBidPercent", type: "uint24" },
+                { name: "minimumPrice", type: "uint256" },
+                {
+                  name: "publicKeyModulus",
+                  type: "bytes",
+                },
+              ],
+              [
+                getPercentage(Number(values.minFillPercent)),
+                getPercentage(Number(values.minBidPercent)),
+                parseUnits(values.minPrice, values.payoutToken.decimals),
+                publicKey,
+              ],
+            ),
+          },
+        ],
+      },
+      {
+        onError: (error) => {
+          console.error("Error during submission:", error);
         },
-        {
-          start: getTimestamp(values.start),
-          duration: getTimestamp(values.deadline) - getTimestamp(values.start),
-          capacityInQuote: false, // Disabled for LSBBA
-          capacity: parseUnits(values.capacity, values.payoutToken.decimals),
-          implParams: encodeAbiParameters(
-            [
-              { name: "minFillPercent", type: "uint24" },
-              { name: "minBidPercent", type: "uint24" },
-              { name: "minimumPrice", type: "uint256" },
-              {
-                name: "publicKeyModulus",
-                type: "bytes",
-              },
-            ],
-            [
-              getPercentage(Number(values.minFillPercent)),
-              getPercentage(Number(values.minBidPercent)),
-              parseUnits(values.minPrice, values.payoutToken.decimals),
-              publicKey,
-            ],
-          ),
-        },
-      ],
-    });
+      },
+    );
     console.log("submitted");
   };
 
@@ -364,7 +368,7 @@ export default function CreateAuctionPage() {
             </div>
           </div>
 
-          <CreateAuctionSubmitter isPending={isPending} />
+          <CreateAuctionSubmitter isPending={createAuction.isPending} />
         </form>
       </Form>
     </div>
