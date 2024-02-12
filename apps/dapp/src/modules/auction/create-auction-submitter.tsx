@@ -14,7 +14,7 @@ type SubmitterProps = {
 export function CreateAuctionSubmitter({ isPending }: SubmitterProps) {
   const { address } = useAccount();
   const form = useFormContext<CreateAuctionForm>();
-  const { payoutToken, capacity: amount } = form.getValues();
+  const [payoutToken, amount] = form.watch(["payoutToken", "capacity"]);
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
 
