@@ -7,10 +7,6 @@ import {
   Input,
   Label,
   Switch,
-  AccordionContent,
-  AccordionItem,
-  AccordionRoot,
-  AccordionTrigger,
 } from "@repo/ui";
 
 import { TokenPicker } from "components/token-picker";
@@ -63,6 +59,11 @@ const schema = z.object({
     .regex(/^(0x)?[0-9a-fA-F]{40}$/)
     .optional(),
   vestingDuration: z.string().optional(),
+  twitter: z.string().optional(),
+  discord: z.string().optional(),
+  website: z.string().optional(),
+  description: z.string().optional(),
+  tokenLogo: z.string().optional(),
 });
 
 export type CreateAuctionForm = z.infer<typeof schema>;
@@ -171,13 +172,14 @@ export default function CreateAuctionPage() {
 
   return (
     <div className="pt-10">
-      <h1 className="text-6xl">Create Auction</h1>
+      <h1 className="text-6xl">Create Your Auction</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleCreation)}>
-          <div className="mt-4 flex justify-around rounded-md border-y p-4">
+          <div className="mt-4 flex justify-around rounded-md p-4">
             <div className="w-full space-y-4">
-              <h3>Configure</h3>
-              <div className="grid w-full grid-cols-2 place-items-center gap-y-8">
+              <div className="grid grid-flow-row grid-cols-2 place-items-center ">
+                <h3 className="form-div ">1 Tokens</h3>
+                <div />
                 <FormField
                   name="quoteToken"
                   render={({ field }) => (
@@ -192,18 +194,6 @@ export default function CreateAuctionPage() {
                       >
                         <TokenPicker />
                       </DialogInput>
-                    </FormItemWrapper>
-                  )}
-                />
-
-                <FormField
-                  name="capacity"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Capacity"
-                      tooltip="The capacity of the auction lot in terms of the payout token"
-                    >
-                      <Input {...field} type="number" />
                     </FormItemWrapper>
                   )}
                 />
@@ -226,6 +216,20 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
+                <h3 className="form-div">2 Quantity</h3>
+                <div />
+                <FormField
+                  name="capacity"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Capacity"
+                      tooltip="The capacity of the auction lot in terms of the payout token"
+                    >
+                      <Input {...field} type="number" />
+                    </FormItemWrapper>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="minPrice"
@@ -239,12 +243,15 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
+                <h3 className="form-div">3 Auction Guard Rails</h3>
+                <div />
+
                 <FormField
                   control={form.control}
                   name="minFillPercent"
                   render={({ field }) => (
                     <FormItemWrapper
-                      label="Minimum Capacity Filled"
+                      label="Minimum Filled Percentage"
                       tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                     >
                       <Input type="number" {...field} />
@@ -265,6 +272,9 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
+                <h3 className="form-div">4 Schedule</h3>
+                <div />
+
                 <FormField
                   control={form.control}
                   name="start"
@@ -273,7 +283,7 @@ export default function CreateAuctionPage() {
                       label="Start"
                       tooltip="The start date/time of the auction lot"
                     >
-                      <DatePicker {...field} />
+                      <DatePicker time {...field} />
                     </FormItemWrapper>
                   )}
                 />
@@ -286,96 +296,134 @@ export default function CreateAuctionPage() {
                       label="Deadline"
                       tooltip="The ending date/time of the auction lot"
                     >
-                      <DatePicker {...field} />
+                      <DatePicker time {...field} />
                     </FormItemWrapper>
                   )}
                 />
+
+                <h3 className="form-div">5 Metadata</h3>
+                <div />
+
+                <FormField
+                  control={form.control}
+                  name="tokenLogo"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Payout Token Logo"
+                      tooltip="A URL to the Payout token logo"
+                    >
+                      <Input type="percent" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="website"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Website">
+                      <Input type="percent" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+                <div className="col-span-2 mt-4" />
+                <FormField
+                  control={form.control}
+                  name="twitter"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Twitter">
+                      <Input type="percent" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="discord"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Discord">
+                      <Input type="percent" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+                <div className="col-span-2 mt-4" />
               </div>
               <div>
-                <AccordionRoot type="single" collapsible>
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger className="justify-center text-xs font-semibold data-[state=closed]:before:content-['Show\00a0'] data-[state=open]:before:content-['Hide\00a0']">
-                      Optional Settings
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="grid grid-cols-2 place-items-center gap-y-4">
-                        <FormField
-                          name="hooks"
-                          render={({ field }) => (
-                            <FormItemWrapper
-                              className="order-1"
-                              label="Hooks"
-                              tooltip={"The address of the hook contract"}
-                            >
-                              <Input
-                                {...field}
-                                // TODO validate using isAddress
-                              />
-                            </FormItemWrapper>
-                          )}
+                {/*TODO: Fix this*/}
+                <h3 className="form-div ml-[82px]">6 Optional Settings</h3>
+                <div className="grid grid-cols-2 place-items-center gap-y-4">
+                  <FormField
+                    name="hooks"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        className="order-1"
+                        label="Hooks"
+                        tooltip={"The address of the hook contract"}
+                      >
+                        <Input
+                          {...field}
+                          // TODO validate using isAddress
                         />
-                        <FormField
-                          name="allowlist"
-                          render={({ field }) => (
-                            <FormItemWrapper
-                              label="Allowlist"
-                              className="order-3"
-                              tooltip={"The address of the allowlist contract"}
-                            >
-                              <Input
-                                {...field}
-                                // TODO validate using isAddress
-                              />
-                            </FormItemWrapper>
-                          )}
+                      </FormItemWrapper>
+                    )}
+                  />
+                  <FormField
+                    name="allowlist"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Allowlist"
+                        className="order-3"
+                        tooltip={"The address of the allowlist contract"}
+                      >
+                        <Input
+                          {...field}
+                          // TODO validate using isAddress
                         />
-                        <FormField
-                          name="curator"
-                          render={({ field }) => (
-                            <FormItemWrapper
-                              label="Curator"
-                              className="order-3"
-                              tooltip={"The address of the auction curator"}
-                            >
-                              <Input
-                                {...field}
-                                // TODO validate using isAddress
-                              />
-                            </FormItemWrapper>
-                          )}
-                        />{" "}
-                        <div className="order-2 flex w-full max-w-sm items-center justify-start gap-x-2">
-                          <FormField
-                            name="isVested"
-                            render={({ field }) => (
-                              <FormItemWrapper className="mt-4 w-min">
-                                <div className="flex items-center gap-x-2">
-                                  <Switch onCheckedChange={field.onChange} />
-                                  <Label>Vested?</Label>
-                                </div>
-                              </FormItemWrapper>
-                            )}
-                          />
+                      </FormItemWrapper>
+                    )}
+                  />
+                  <FormField
+                    name="curator"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Curator"
+                        className="order-3"
+                        tooltip={"The address of the auction curator"}
+                      >
+                        <Input
+                          {...field}
+                          // TODO validate using isAddress
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />{" "}
+                  <div className="order-2 flex w-full max-w-sm items-center justify-start gap-x-2">
+                    <FormField
+                      name="isVested"
+                      render={({ field }) => (
+                        <FormItemWrapper className="mt-4 w-min">
+                          <div className="flex items-center gap-x-2">
+                            <Switch onCheckedChange={field.onChange} />
+                            <Label>Vested?</Label>
+                          </div>
+                        </FormItemWrapper>
+                      )}
+                    />
 
-                          <FormField
-                            name="vestingDuration"
-                            render={({ field }) => (
-                              <FormItemWrapper label="Vesting Days">
-                                <Input
-                                  type="number"
-                                  disabled={!isVested}
-                                  required={isVested}
-                                  // TODO validation
-                                  {...field}
-                                />
-                              </FormItemWrapper>
-                            )}
+                    <FormField
+                      name="vestingDuration"
+                      render={({ field }) => (
+                        <FormItemWrapper label="Vesting Days">
+                          <Input
+                            type="number"
+                            disabled={!isVested}
+                            required={isVested}
+                            // TODO validation
+                            {...field}
                           />
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </AccordionRoot>
+                        </FormItemWrapper>
+                      )}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

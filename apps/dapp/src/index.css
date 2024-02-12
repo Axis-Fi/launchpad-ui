@@ -34,4 +34,8 @@
   .mask {
     mask-image: linear-gradient(hsla(0, 0%, 0%, 1), transparent);
   }
+
+  .form-div {
+    @apply mt-8 w-full max-w-sm;
+  }
 }
