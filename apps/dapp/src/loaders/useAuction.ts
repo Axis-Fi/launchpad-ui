@@ -1,9 +1,18 @@
-import { useGetAuctionLotQuery } from "@repo/subgraph-client";
-import { AuctionWithEvents } from "src/types";
+import {
+  GetAuctionLotQuery,
+  useGetAuctionLotQuery,
+} from "@repo/subgraph-client";
 import { getChainId, getStatus } from "./subgraphHelper";
 
+type RawAuctionResult = GetAuctionLotQuery["auctionLots"][0];
+
+type RawAuctionWithEventsResult = {
+  chainId: number;
+  status: string;
+} & RawAuctionResult;
+
 export type AuctionResult = {
-  result?: AuctionWithEvents;
+  result?: RawAuctionWithEventsResult;
   isLoading: boolean;
 };
 
