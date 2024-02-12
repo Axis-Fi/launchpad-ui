@@ -15,6 +15,7 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
+      { path: "/", element: <AuctionListPage /> },
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/auction/:chainId/:id", element: <AuctionPage /> },
       { path: "/auctions", element: <AuctionListPage /> },

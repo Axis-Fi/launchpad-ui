@@ -14,6 +14,7 @@ const links = [
 ];
 
 export default function Navbar() {
+  const isRoot = window.location.hash === "#/";
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -24,7 +25,11 @@ export default function Navbar() {
                 {({ isActive }) => (
                   <Button
                     variant="link"
-                    className={cn("px-2 uppercase", isActive && "text-primary")}
+                    className={cn(
+                      "px-2 uppercase",
+                      (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
+                        "text-primary",
+                    )}
                   >
                     {l.title}
                   </Button>

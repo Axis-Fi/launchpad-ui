@@ -11,6 +11,9 @@ import { useAuction } from "loaders/useAuction";
 import { ArrowLeft } from "lucide-react";
 import { Avatar, Button } from "@repo/ui";
 import { SocialRow } from "components/social-row";
+import { ProjectInfoCard } from "modules/auction/project-info-card";
+import { ContractAddressCard } from "modules/auction/contract-address-card";
+import { axisContracts } from "@repo/contracts";
 
 const statuses: Record<
   AuctionStatus,
@@ -40,6 +43,7 @@ export default function AuctionPage() {
     return <div>Auction not found</div>;
   }
 
+  const contracts = axisContracts.addresses[auction.chainId];
   const AuctionElement = statuses[auction.status];
 
   return (
@@ -64,6 +68,16 @@ export default function AuctionPage() {
       <div className="mt-5">
         <AuctionElement auction={auction} />
       </div>
+
+      <ProjectInfoCard className="mt-6 w-[50%]" auction={auction} />
+      <ContractAddressCard
+        className="mt-12"
+        addresses={[
+          [auction.baseToken.symbol, auction.baseToken.address],
+          [auction.quoteToken.symbol, auction.quoteToken.address],
+          ["Auction House", contracts.auctionHouse],
+        ]}
+      />
     </div>
   );
 }
