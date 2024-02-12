@@ -1,13 +1,21 @@
-import { ConfigsApi, KeysApi } from ".";
+import cloakServers from "config/cloak-servers";
+import { ConfigsApi, Configuration, KeysApi } from ".";
+import { environment } from "config/environment";
+
+const { url: serverUrl } =
+  cloakServers[environment.current] ?? cloakServers.testing;
+
+const config = new Configuration({
+  basePath: serverUrl,
+});
 
 class CloakClient {
   keysApi: KeysApi;
   configsApi: ConfigsApi;
 
   constructor() {
-    //TODO: add server/environment distinction
-    this.keysApi = new KeysApi();
-    this.configsApi = new ConfigsApi();
+    this.keysApi = new KeysApi(config);
+    this.configsApi = new ConfigsApi(config);
   }
 }
 
