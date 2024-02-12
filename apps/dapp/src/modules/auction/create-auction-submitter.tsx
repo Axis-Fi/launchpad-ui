@@ -7,7 +7,11 @@ import { useAllowance } from "loaders/use-allowance";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { axisContracts } from "@repo/contracts";
 
-export function CreateAuctionSubmitter() {
+type SubmitterProps = {
+  isPending: boolean;
+};
+
+export function CreateAuctionSubmitter({ isPending }: SubmitterProps) {
   const { address } = useAccount();
   const form = useFormContext<CreateAuctionForm>();
   const { payoutToken, capacity: amount } = form.getValues();
@@ -28,7 +32,9 @@ export function CreateAuctionSubmitter() {
   return (
     <div className="mt-4 flex flex-col items-center justify-center">
       {!isSufficientAllowance ? (
-        <Button type="submit">Create Auction</Button>
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Confirming..." : "Create Auction"}
+        </Button>
       ) : (
         <div className="flex">
           <Button disabled={approveTx.isLoading} onClick={() => execute()}>

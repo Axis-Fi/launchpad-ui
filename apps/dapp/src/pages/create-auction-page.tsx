@@ -67,6 +67,10 @@ const schema = z.object({
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
+function toKeycode(keycode: string): `0x${string}` {
+  return toHex(keycode, { size: 5 });
+}
+
 export default function CreateAuctionPage() {
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
@@ -76,7 +80,13 @@ export default function CreateAuctionPage() {
   const [isVested, payoutToken] = form.watch(["isVested", "payoutToken"]);
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
-  const createAuction = useWriteContract();
+  const { isPending, writeContract, ...createAuctionProps } =
+    useWriteContract();
+
+  // TODO handle displaying errors from createAuctionProps.error
+  if (createAuctionProps.error) {
+    console.error("Error during submission:", createAuctionProps.error);
+  }
 
   const handleCreation = async (values: CreateAuctionForm) => {
     const publicKey = await cloakClient.keysApi.newKeyPairPost();
@@ -84,13 +94,13 @@ export default function CreateAuctionPage() {
     if (!publicKey) throw new Error("Unable to generate RSA keypair");
     if (!isHex(publicKey)) throw new Error("Invalid keypair");
 
-    createAuction.writeContract({
+    writeContract({
       abi: axisContracts.abis.auctionHouse,
       address: axisAddresses.auctionHouse,
       functionName: "auction",
       args: [
         {
-          auctionType: toHex("LSBBA"),
+          auctionType: toKeycode("LSBBA"),
           baseToken: getAddress(values.payoutToken.address),
           quoteToken: getAddress(values.quoteToken.address),
           curator: !values.curator ? zeroAddress : getAddress(values.curator),
@@ -102,7 +112,7 @@ export default function CreateAuctionPage() {
             ? toHex("")
             : toHex(values.allowlistParams),
           payoutData: toHex(""), // TODO remove this after new deployment
-          derivativeType: !values.isVested ? toHex("") : toHex("LIV"),
+          derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
           derivativeParams: !values.vestingDuration
             ? toHex("")
             : encodeAbiParameters(
@@ -138,7 +148,10 @@ export default function CreateAuctionPage() {
         },
       ],
     });
+    console.log("submitted");
   };
+
+  // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
 
   return (
     <div className="pt-10">
@@ -351,7 +364,7 @@ export default function CreateAuctionPage() {
             </div>
           </div>
 
-          <CreateAuctionSubmitter />
+          <CreateAuctionSubmitter isPending={isPending} />
         </form>
       </Form>
     </div>
