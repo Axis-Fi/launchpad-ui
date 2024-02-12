@@ -1,38 +1,38 @@
 fragment AuctionLotFragment on AuctionLot {
-    auctionRef
-    capacity
-    capacityInitial
-    capacityInQuote
-    chain
-    conclusion
-    createdBlockNumber
-    createdBlockTimestamp
-    createdTransactionHash
-    curator
-    curatorApproved
-    derivativeRef
-    id
-    lastUpdatedBlockNumber
-    lastUpdatedBlockTimestamp
-    lastUpdatedTransactionHash
-    lotId
-    owner
-    purchased
-    sold
-    start
-    wrapDerivative
-    baseToken {
-      address
-      decimals
-      symbol
-      name
-    }
-    quoteToken {
-      address
-      decimals
-      name
-      symbol
-    }
+  auctionRef
+  capacity
+  capacityInitial
+  capacityInQuote
+  chain
+  conclusion
+  createdBlockNumber
+  createdBlockTimestamp
+  createdTransactionHash
+  curator
+  curatorApproved
+  derivativeRef
+  id
+  lastUpdatedBlockNumber
+  lastUpdatedBlockTimestamp
+  lastUpdatedTransactionHash
+  lotId
+  owner
+  purchased
+  sold
+  start
+  wrapDerivative
+  baseToken {
+    address
+    decimals
+    symbol
+    name
+  }
+  quoteToken {
+    address
+    decimals
+    name
+    symbol
+  }
 }
 
 query getAuctionLots {
@@ -42,9 +42,12 @@ query getAuctionLots {
 }
 
 query getAuctionLot($lotId: BigInt!) {
-  auctionLots(orderBy: createdBlockNumber,
-    orderDirection: asc,
-    where: { lotId: $lotId }, first: 1) {
+  auctionLots(
+    orderBy: createdBlockNumber
+    orderDirection: asc
+    where: { lotId: $lotId }
+    first: 1
+  ) {
     ...AuctionLotFragment
     created {
       blockNumber
@@ -67,7 +70,7 @@ query getAuctionLot($lotId: BigInt!) {
       id
       transactionHash
     }
-    cancelledBids {
+    refundedBids {
       blockNumber
       blockTimestamp
       id
