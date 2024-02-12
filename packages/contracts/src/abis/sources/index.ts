@@ -1,7 +1,7 @@
 import catalogue from "./Catalogue.json";
-import auctionHouse from "./AuctionHouse.json";
-import localSealedBidBatchAuction from "./LocalSealedBidBatchAuction.json";
-import linearVesting from "./LinearVesting.json";
+import auctionHouse from "./BlastAuctionHouse.json";
+import localSealedBidBatchAuction from "./BlastLSBBA.json";
+import linearVesting from "./BlastLinearVesting.json";
 
 export default {
   catalogue,

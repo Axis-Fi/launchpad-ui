@@ -15,14 +15,24 @@
       "type": "function",
       "name": "auctionHouse",
       "inputs": [],
-      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "getRouting",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        }
       ],
       "outputs": [
         {
@@ -35,7 +45,11 @@
               "type": "bytes7",
               "internalType": "Veecode"
             },
-            { "name": "owner", "type": "address", "internalType": "address" },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            },
             {
               "name": "baseToken",
               "type": "address",
@@ -85,72 +99,154 @@
       "type": "function",
       "name": "hasEnded",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        }
       ],
-      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "isLive",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        }
       ],
-      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "maxAmountAccepted",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        }
       ],
-      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "maxPayout",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        }
       ],
-      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "payoutFor",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "amount_", "type": "uint256", "internalType": "uint256" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "amount_",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
       ],
-      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "priceFor",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "payout_", "type": "uint256", "internalType": "uint256" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "payout_",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
       ],
-      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "remainingCapacity",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        }
       ],
-      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "error",
       "name": "InvalidVeecode",
       "inputs": [
-        { "name": "veecode_", "type": "bytes7", "internalType": "Veecode" }
+        {
+          "name": "veecode_",
+          "type": "bytes7",
+          "internalType": "Veecode"
+        }
       ]
     }
   ],
@@ -177,7 +273,9 @@
   },
   "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"auctionHouse_\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"Veecode\",\"name\":\"veecode_\",\"type\":\"bytes7\"}],\"name\":\"InvalidVeecode\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"auctionHouse\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"}],\"name\":\"getRouting\",\"outputs\":[{\"components\":[{\"internalType\":\"Veecode\",\"name\":\"auctionReference\",\"type\":\"bytes7\"},{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"contract ERC20\",\"name\":\"baseToken\",\"type\":\"address\"},{\"internalType\":\"contract ERC20\",\"name\":\"quoteToken\",\"type\":\"address\"},{\"internalType\":\"contract IHooks\",\"name\":\"hooks\",\"type\":\"address\"},{\"internalType\":\"contract IAllowlist\",\"name\":\"allowlist\",\"type\":\"address\"},{\"internalType\":\"Veecode\",\"name\":\"derivativeReference\",\"type\":\"bytes7\"},{\"internalType\":\"bytes\",\"name\":\"derivativeParams\",\"type\":\"bytes\"},{\"internalType\":\"bool\",\"name\":\"wrapDerivative\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"prefunding\",\"type\":\"uint256\"}],\"internalType\":\"struct Auctioneer.Routing\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"}],\"name\":\"hasEnded\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"}],\"name\":\"isLive\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"}],\"name\":\"maxAmountAccepted\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"}],\"name\":\"maxPayout\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"uint256\",\"name\":\"amount_\",\"type\":\"uint256\"}],\"name\":\"payoutFor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"uint256\",\"name\":\"payout_\",\"type\":\"uint256\"}],\"name\":\"priceFor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"}],\"name\":\"remainingCapacity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"getRouting(uint96)\":{\"details\":\"The function reverts if:             - The lot ID is invalid\",\"params\":{\"lotId_\":\"ID of the auction lot\"},\"returns\":{\"_0\":\"routing Routing information for the auction lot\"}},\"isLive(uint96)\":{\"details\":\"Auctions that have been created, but not yet started will return false\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"auctionHouse()\":{\"notice\":\"Address of the AuctionHouse contract\"},\"getRouting(uint96)\":{\"notice\":\"Gets the routing information for a given lot ID\"},\"isLive(uint96)\":{\"notice\":\"Returns whether the auction is currently accepting bids or purchases\"}},\"notice\":\"Contract that provides view functions for Auctions\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/Catalogue.sol\":\"Catalogue\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@prb/test/=lib/prb-math/node_modules/@prb/test/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":prb-math/=lib/prb-math/src/\",\":solady/=lib/solady/\",\":solmate/=lib/solmate/src/\"]},\"sources\":{\"lib/solmate/src/auth/Owned.sol\":{\"keccak256\":\"0xfedb27d14c508342c33eb067c9a02eabcdb0f9dcf93b04ded1001f580d12d0ea\",\"license\":\"AGPL-3.0-only\",\"urls\":[\"bzz-raw://1ff52bbee698b9cf9e4574615e6550be0887ccf355f6571e23d6f25b332e79b4\",\"dweb:/ipfs/QmVorA2apojVRStzS7h8aFccR3Uv32G6HVtBtFHZrE7YXx\"]},\"lib/solmate/src/tokens/ERC20.sol\":{\"keccak256\":\"0xcdfd8db76b2a3415620e4d18cc5545f3d50de792dbf2c3dd5adb40cbe6f94b10\",\"license\":\"AGPL-3.0-only\",\"urls\":[\"bzz-raw://57b3ab70cde374af1cf2c9888636e8de6cf660f087b1c9abd805e9271e19fa35\",\"dweb:/ipfs/QmNrLDBAHYFjpjSd12jerm1AdBkDqEYUUaXgnT854BUZ97\"]},\"lib/solmate/src/tokens/ERC6909.sol\":{\"keccak256\":\"0x222fa6aa11ad6a16ddc290ed8f1543737e936c2b93274165bf814abdd7033ba8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8c76192498632149b3c56b4b15e07abfa06afc1920ed8c15915573d8e16b0750\",\"dweb:/ipfs/QmeRiHRdTRcALfha3CEtvCPzLQztNqywhMLFEHdwHrG1Ls\"]},\"lib/solmate/src/utils/ReentrancyGuard.sol\":{\"keccak256\":\"0xb282dd78aa7375d6b200b9a5d8dd214b2e5df1004f8217a4b4c2b07f0c5bfd01\",\"license\":\"AGPL-3.0-only\",\"urls\":[\"bzz-raw://5fca62eb8d3dbd2b3b7e4bb051f6da16f4d0ff9cee61c39cebb80f031f6a8800\",\"dweb:/ipfs/QmbrsXPK91iBFwHKwJs2HLRud2KzMoBDRiWYMUtyV5H57j\"]},\"lib/solmate/src/utils/SafeTransferLib.sol\":{\"keccak256\":\"0x6ab948013c2c7ca6351e593600425b0ec6df9035320280c678e735bce16e996b\",\"license\":\"AGPL-3.0-only\",\"urls\":[\"bzz-raw://2ab977d0eeb2bf458f9798250215c646d2f3b1f90b5a7e2b506fdf3335c0f060\",\"dweb:/ipfs/QmYPRoPhNtBAmCSq7imN1scMVpKNQvMTpoqab3tXUx5Tnv\"]},\"src/Catalogue.sol\":{\"keccak256\":\"0x24d4c6e7b498fccb7db11c9d8ac5907cfc65640f2de225afc4589233611444bb\",\"license\":\"APGL-3.0\",\"urls\":[\"bzz-raw://885b5618637a1667c41aaeefe4d0dc04ce606328a1b5a462bfbb023feda88b16\",\"dweb:/ipfs/QmbqJzabMrxtiysPDegg8cmuhpzBgar3gxUfZfcUUvZrM5\"]},\"src/bases/Auctioneer.sol\":{\"keccak256\":\"0x1154491443645ace205fa91aa32f344723f7caec2c8286d569519366dd8322c2\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://f3e3bee132bef7d609c8fedfd8a5e88f44192507733276e8b57b47a20457b1d2\",\"dweb:/ipfs/QmXUewD6TPf1Bv6xkapXGK59t4QXGLXZPJqL3e3XfDmQfN\"]},\"src/bases/FeeManager.sol\":{\"keccak256\":\"0xff9cde692cc5ab2e94c7a1f0e106e21d5089b7533d3a3718bf1b62b11add0eca\",\"license\":\"APGL-3.0\",\"urls\":[\"bzz-raw://ae869bc01e3fc7fc6b97826fdc4163588707497e06db4a6c7388708e569da884\",\"dweb:/ipfs/QmNyJTtM27P7ceeuB22pRChPxBg5jJggsx9SE5jREEhbZQ\"]},\"src/interfaces/IAllowlist.sol\":{\"keccak256\":\"0x2c4b4b204719bd36e587bfd5195bc8b729a43c74da381fe955393318ed0d1c9f\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://f22a42b24148dc1672cbfdf378e6fb443b8610ba7b8fe53033eba447d22ea8ac\",\"dweb:/ipfs/QmPonBca86MbZWvvmsccFQo7zrwTrji1dt95VxM5YtLi3V\"]},\"src/interfaces/IHooks.sol\":{\"keccak256\":\"0x909d81d98a8f7f9d3dea4bdb2e154a51424e5cb6087d1e78ce7d77aa6cb7e08d\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://152336571bd6183c8342b5587ada033127bcddbceb022a0617cd7d2091318c5b\",\"dweb:/ipfs/QmV66vxdAEK3pB2K75wueeuyu9Mrvsr4tvSqxmF7xN7vcB\"]},\"src/lib/ERC6909Metadata.sol\":{\"keccak256\":\"0x4631f1571b8eb669bb1367d161f6de35ff7afcef2a5007d33e25d463e9523290\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://5af265820ff0da10bc649cf187cbe79dd56d12e4be7982db1a267d15b8de2d95\",\"dweb:/ipfs/QmQhhbESLfii6njrptzS1Bb1krPZykpF2JdYr4mfVXjWWs\"]},\"src/lib/Transfer.sol\":{\"keccak256\":\"0xaff64d823979e82cdb28908c879d44b7c74827837ad870e5e1f43f3ffe4c2283\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://2870ca697514d57bfb71b36b4cf28e4e3e016d431f6a3a968681762e3aac3555\",\"dweb:/ipfs/QmTKeD3UwGT9BP8SiXYXwa8n8YFv2CkKdtonpCajpJUWvY\"]},\"src/lib/permit2/interfaces/IPermit2.sol\":{\"keccak256\":\"0x240e896f81a7c9574930db416bb25e58a321b5949cfa840f3d183bd8fef72da9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://97cb0d04e9fa3b11c5b38f7b645e1c6ff149b5af225a6a209993f2590a42a67e\",\"dweb:/ipfs/QmSN7Dau9dzMA47SPf5pWRRDDdYKW8RhXcmUbmaguSvGQL\"]},\"src/modules/Auction.sol\":{\"keccak256\":\"0x2c7b09da664c248980c854bb3b9f752882faa0cfb3f818c230eefea3dd53844e\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://261b9e9791047c10a2bd4c37bae502b4d18cb263d3cc01f8f6391550a61ca844\",\"dweb:/ipfs/QmRJpKvyAbNy1PQUtMipESg8Z39eLRyig1NGVatkBAJumN\"]},\"src/modules/Condenser.sol\":{\"keccak256\":\"0xec138b6e6daa7aed9caf550c02fca60300aab1ff84668541e7bfdfb5263c8f69\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://e92eeb5e5a7531dc603260713c8cbd244334790e9a6fa43942b4c1a459c309c7\",\"dweb:/ipfs/QmeBC1RVZCsemLCtAUSJn9ybo5ecbnnPGB27A6MfSHogtj\"]},\"src/modules/Derivative.sol\":{\"keccak256\":\"0xc1b7c3c09730e87f08b3ba78b121ca29559ca4eee38959db203438ef517de99f\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://13bdb42083849e84bf99cd2f3f3f2fe7aceaf2b074d5caad5e48d40985f9220c\",\"dweb:/ipfs/QmNeH62KeGbCQyQxW6uX2JkKBY8wyuQTd7qoDXJm6uDXdV\"]},\"src/modules/Modules.sol\":{\"keccak256\":\"0xa69ab6b42ed92a6a97c8f3a2d17c3e36d885aff34a4210e11f16c7c7041c0727\",\"license\":\"AGPL-3.0\",\"urls\":[\"bzz-raw://285114aaa1f2c5bd8ac4e0e0d9ecaefba59512fc60e4f3780f0ea77078f8d9d7\",\"dweb:/ipfs/QmW72Py2BFvWBJqgwcYVvccXjAiHcx3wYWHAWPp7DtAmjq\"]}},\"version\":1}",
   "metadata": {
-    "compiler": { "version": "0.8.19+commit.7dd6d404" },
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
     "language": "Solidity",
     "output": {
       "abi": [
@@ -194,7 +292,11 @@
         },
         {
           "inputs": [
-            { "internalType": "Veecode", "name": "veecode_", "type": "bytes7" }
+            {
+              "internalType": "Veecode",
+              "name": "veecode_",
+              "type": "bytes7"
+            }
           ],
           "type": "error",
           "name": "InvalidVeecode"
@@ -205,12 +307,20 @@
           "type": "function",
           "name": "auctionHouse",
           "outputs": [
-            { "internalType": "address", "name": "", "type": "address" }
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" }
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
@@ -277,77 +387,145 @@
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" }
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
           "name": "hasEnded",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" }
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
           "name": "isLive",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" }
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
           "name": "maxAmountAccepted",
           "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" }
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" }
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
           "name": "maxPayout",
           "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" }
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
-            { "internalType": "uint256", "name": "amount_", "type": "uint256" }
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount_",
+              "type": "uint256"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
           "name": "payoutFor",
           "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" }
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
-            { "internalType": "uint256", "name": "payout_", "type": "uint256" }
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
+            {
+              "internalType": "uint256",
+              "name": "payout_",
+              "type": "uint256"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
           "name": "priceFor",
           "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" }
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" }
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
           "name": "remainingCapacity",
           "outputs": [
-            { "internalType": "uint256", "name": "", "type": "uint256" }
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
           ]
         }
       ],
@@ -356,7 +534,9 @@
         "methods": {
           "getRouting(uint96)": {
             "details": "The function reverts if:             - The lot ID is invalid",
-            "params": { "lotId_": "ID of the auction lot" },
+            "params": {
+              "lotId_": "ID of the auction lot"
+            },
             "returns": {
               "_0": "routing Routing information for the auction lot"
             }
@@ -392,9 +572,16 @@
         "solady/=lib/solady/",
         "solmate/=lib/solmate/src/"
       ],
-      "optimizer": { "enabled": true, "runs": 200 },
-      "metadata": { "bytecodeHash": "ipfs" },
-      "compilationTarget": { "src/Catalogue.sol": "Catalogue" },
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/Catalogue.sol": "Catalogue"
+      },
       "evmVersion": "paris",
       "libraries": {}
     },
@@ -1322,7 +1509,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [
@@ -1565,7 +1755,10 @@
                           "typeIdentifier": "t_bytes_memory_ptr",
                           "typeString": "bytes memory"
                         },
-                        { "typeIdentifier": "t_bool", "typeString": "bool" },
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
                         {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -1804,7 +1997,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [
@@ -1946,7 +2142,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "id": 46806,
                       "name": "getRouting",
@@ -2139,7 +2338,10 @@
                           "typeIdentifier": "t_userDefinedValueType$_Keycode_$51590",
                           "typeString": "Keycode"
                         },
-                        { "typeIdentifier": "t_bool", "typeString": "bool" },
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
                         {
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
@@ -2551,7 +2753,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [
@@ -2693,7 +2898,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "id": 46861,
                       "name": "getRouting",
@@ -2964,7 +3172,10 @@
                             "typeIdentifier": "t_userDefinedValueType$_Keycode_$51590",
                             "typeString": "Keycode"
                           },
-                          { "typeIdentifier": "t_bool", "typeString": "bool" },
+                          {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
                           {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -3201,7 +3412,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [
@@ -3304,7 +3518,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "id": 46904,
@@ -3503,7 +3720,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [
@@ -3645,7 +3865,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "id": 46932,
                       "name": "getRouting",
@@ -3726,7 +3949,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "id": 46938,
@@ -3897,7 +4123,10 @@
                             "typeIdentifier": "t_userDefinedValueType$_Keycode_$51590",
                             "typeString": "Keycode"
                           },
-                          { "typeIdentifier": "t_bool", "typeString": "bool" },
+                          {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
                           {
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
@@ -4107,7 +4336,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [
@@ -4210,7 +4442,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "id": 46975,
@@ -4415,7 +4650,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [
@@ -4518,7 +4756,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "id": 46998,
@@ -4717,7 +4958,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [
@@ -4820,7 +5064,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "id": 47021,
