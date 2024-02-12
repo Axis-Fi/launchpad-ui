@@ -83,6 +83,8 @@ export default function CreateAuctionPage() {
   const createAuction = useWriteContract();
 
   // TODO if there is no approval, this will still execute in addition to the approval tx
+  // TODO handle/display errors
+  // TODO fix state of submit button during creation
   const handleCreation = async (values: CreateAuctionForm) => {
     const publicKey = await cloakClient.keysApi.newKeyPairPost();
 
@@ -107,7 +109,6 @@ export default function CreateAuctionPage() {
             allowlistParams: !values.allowlistParams
               ? toHex("")
               : toHex(values.allowlistParams),
-            payoutData: toHex(""), // TODO remove this after new deployment
             derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
             derivativeParams:
               !values.isVested || !values.vestingDuration
@@ -128,19 +129,30 @@ export default function CreateAuctionPage() {
             capacity: parseUnits(values.capacity, values.payoutToken.decimals),
             implParams: encodeAbiParameters(
               [
-                { name: "minFillPercent", type: "uint24" },
-                { name: "minBidPercent", type: "uint24" },
-                { name: "minimumPrice", type: "uint256" },
                 {
-                  name: "publicKeyModulus",
-                  type: "bytes",
+                  components: [
+                    { name: "minFillPercent", type: "uint24" },
+                    { name: "minBidPercent", type: "uint24" },
+                    { name: "minimumPrice", type: "uint256" },
+                    {
+                      name: "publicKeyModulus",
+                      type: "bytes",
+                    },
+                  ],
+                  name: "AuctionDataParams",
+                  type: "tuple",
                 },
               ],
               [
-                getPercentage(Number(values.minFillPercent)),
-                getPercentage(Number(values.minBidPercent)),
-                parseUnits(values.minPrice, values.payoutToken.decimals),
-                publicKey,
+                {
+                  minFillPercent: getPercentage(Number(values.minFillPercent)),
+                  minBidPercent: getPercentage(Number(values.minBidPercent)),
+                  minimumPrice: parseUnits(
+                    values.minPrice,
+                    values.payoutToken.decimals,
+                  ),
+                  publicKeyModulus: publicKey,
+                },
               ],
             ),
           },

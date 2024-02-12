@@ -8,6 +8,7 @@ export const auctionHouseAbi = [
     type: "constructor",
     inputs: [
       { name: "owner_", internalType: "address", type: "address" },
+      { name: "protocol_", internalType: "address", type: "address" },
       { name: "permit2_", internalType: "address", type: "address" },
     ],
   },
@@ -39,7 +40,6 @@ export const auctionHouseAbi = [
             type: "address",
           },
           { name: "allowlistParams", internalType: "bytes", type: "bytes" },
-          { name: "payoutData", internalType: "bytes", type: "bytes" },
           { name: "derivativeType", internalType: "Keycode", type: "bytes5" },
           { name: "derivativeParams", internalType: "bytes", type: "bytes" },
         ],
@@ -101,16 +101,6 @@ export const auctionHouseAbi = [
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "cancel",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "bidId_", internalType: "uint96", type: "uint96" },
-    ],
-    name: "cancelBid",
     outputs: [],
   },
   {
@@ -302,6 +292,16 @@ export const auctionHouseAbi = [
     ],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "refundBid",
+    outputs: [],
+  },
+  {
     stateMutability: "view",
     type: "function",
     inputs: [
@@ -437,21 +437,6 @@ export const auctionHouseAbi = [
     anonymous: false,
     inputs: [
       { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
-      { name: "bidId", internalType: "uint96", type: "uint96", indexed: true },
-      {
-        name: "bidder",
-        internalType: "address",
-        type: "address",
-        indexed: true,
-      },
-    ],
-    name: "CancelBid",
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
       {
         name: "curator",
         internalType: "address",
@@ -539,6 +524,21 @@ export const auctionHouseAbi = [
       },
     ],
     name: "Purchase",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
+      { name: "bidId", internalType: "uint96", type: "uint96", indexed: true },
+      {
+        name: "bidder",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+    ],
+    name: "RefundBid",
   },
   {
     type: "event",
@@ -1424,17 +1424,6 @@ export const localSealedBidBatchAuctionAbi = [
     outputs: [],
   },
   {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "bidId_", internalType: "uint96", type: "uint96" },
-      { name: "caller_", internalType: "address", type: "address" },
-    ],
-    name: "cancelBid",
-    outputs: [{ name: "bidAmount", internalType: "uint256", type: "uint256" }],
-  },
-  {
     stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
@@ -1723,6 +1712,17 @@ export const localSealedBidBatchAuctionAbi = [
     ],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId_", internalType: "uint96", type: "uint96" },
+      { name: "bidder_", internalType: "address", type: "address" },
+    ],
+    name: "refundBid",
+    outputs: [{ name: "bidAmount", internalType: "uint256", type: "uint256" }],
+  },
+  {
     stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
@@ -1824,6 +1824,7 @@ export const localSealedBidBatchAuctionAbi = [
   { type: "error", inputs: [], name: "Auction_NotLive" },
   { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
   { type: "error", inputs: [], name: "Auction_WrongState" },
+  { type: "error", inputs: [], name: "Bid_WrongState" },
   {
     type: "error",
     inputs: [{ name: "parent_", internalType: "address", type: "address" }],

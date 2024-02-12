@@ -1133,7 +1133,7 @@
       }
     },
     "immutableReferences": {
-      "52422": [
+      "52586": [
         {
           "start": 678,
           "length": 32
@@ -1143,13 +1143,13 @@
           "length": 32
         }
       ],
-      "54432": [
+      "54662": [
         {
           "start": 6217,
           "length": 32
         }
       ],
-      "54435": [
+      "54665": [
         {
           "start": 6987,
           "length": 32
@@ -2715,40 +2715,40 @@
   },
   "ast": {
     "absolutePath": "src/blast/modules/derivatives/BlastLinearVesting.sol",
-    "id": 48392,
+    "id": 48542,
     "exportedSymbols": {
-      "BlastGas": [48345],
-      "BlastLinearVesting": [48391],
-      "LinearVesting": [56041]
+      "BlastGas": [48495],
+      "BlastLinearVesting": [48541],
+      "LinearVesting": [56271]
     },
     "nodeType": "SourceUnit",
     "src": "38:355:37",
     "nodes": [
       {
-        "id": 48370,
+        "id": 48520,
         "nodeType": "PragmaDirective",
         "src": "38:23:37",
         "nodes": [],
         "literals": ["solidity", "0.8", ".19"]
       },
       {
-        "id": 48372,
+        "id": 48522,
         "nodeType": "ImportDirective",
         "src": "63:72:37",
         "nodes": [],
         "absolutePath": "src/modules/derivatives/LinearVesting.sol",
         "file": "src/modules/derivatives/LinearVesting.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 48392,
-        "sourceUnit": 56042,
+        "scope": 48542,
+        "sourceUnit": 56272,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 48371,
+              "id": 48521,
               "name": "LinearVesting",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 56041,
+              "referencedDeclaration": 56271,
               "src": "71:13:37",
               "typeDescriptions": {}
             },
@@ -2758,23 +2758,23 @@
         "unitAlias": ""
       },
       {
-        "id": 48374,
+        "id": 48524,
         "nodeType": "ImportDirective",
         "src": "136:56:37",
         "nodes": [],
         "absolutePath": "src/blast/modules/BlastGas.sol",
         "file": "src/blast/modules/BlastGas.sol",
         "nameLocation": "-1:-1:-1",
-        "scope": 48392,
-        "sourceUnit": 48346,
+        "scope": 48542,
+        "sourceUnit": 48496,
         "symbolAliases": [
           {
             "foreign": {
-              "id": 48373,
+              "id": 48523,
               "name": "BlastGas",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 48345,
+              "referencedDeclaration": 48495,
               "src": "144:8:37",
               "typeDescriptions": {}
             },
@@ -2784,17 +2784,17 @@
         "unitAlias": ""
       },
       {
-        "id": 48391,
+        "id": 48541,
         "nodeType": "ContractDefinition",
         "src": "194:198:37",
         "nodes": [
           {
-            "id": 48390,
+            "id": 48540,
             "nodeType": "FunctionDefinition",
             "src": "300:90:37",
             "nodes": [],
             "body": {
-              "id": 48389,
+              "id": 48539,
               "nodeType": "Block",
               "src": "388:2:37",
               "nodes": [],
@@ -2806,11 +2806,11 @@
               {
                 "arguments": [
                   {
-                    "id": 48383,
+                    "id": 48533,
                     "name": "auctionHouse_",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 48380,
+                    "referencedDeclaration": 48530,
                     "src": "349:13:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2818,14 +2818,14 @@
                     }
                   }
                 ],
-                "id": 48384,
+                "id": 48534,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 48382,
+                  "id": 48532,
                   "name": "LinearVesting",
                   "nameLocations": ["335:13:37"],
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 56041,
+                  "referencedDeclaration": 56271,
                   "src": "335:13:37"
                 },
                 "nodeType": "ModifierInvocation",
@@ -2834,11 +2834,11 @@
               {
                 "arguments": [
                   {
-                    "id": 48386,
+                    "id": 48536,
                     "name": "auctionHouse_",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
-                    "referencedDeclaration": 48380,
+                    "referencedDeclaration": 48530,
                     "src": "373:13:37",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2846,14 +2846,14 @@
                     }
                   }
                 ],
-                "id": 48387,
+                "id": 48537,
                 "kind": "baseConstructorSpecifier",
                 "modifierName": {
-                  "id": 48385,
+                  "id": 48535,
                   "name": "BlastGas",
                   "nameLocations": ["364:8:37"],
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 48345,
+                  "referencedDeclaration": 48495,
                   "src": "364:8:37"
                 },
                 "nodeType": "ModifierInvocation",
@@ -2863,17 +2863,17 @@
             "name": "",
             "nameLocation": "-1:-1:-1",
             "parameters": {
-              "id": 48381,
+              "id": 48531,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 48380,
+                  "id": 48530,
                   "mutability": "mutable",
                   "name": "auctionHouse_",
                   "nameLocation": "320:13:37",
                   "nodeType": "VariableDeclaration",
-                  "scope": 48390,
+                  "scope": 48540,
                   "src": "312:21:37",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2882,7 +2882,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 48379,
+                    "id": 48529,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "312:7:37",
@@ -2898,12 +2898,12 @@
               "src": "311:23:37"
             },
             "returnParameters": {
-              "id": 48388,
+              "id": 48538,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "388:0:37"
             },
-            "scope": 48391,
+            "scope": 48541,
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
@@ -2913,43 +2913,43 @@
         "baseContracts": [
           {
             "baseName": {
-              "id": 48375,
+              "id": 48525,
               "name": "LinearVesting",
               "nameLocations": ["225:13:37"],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 56041,
+              "referencedDeclaration": 56271,
               "src": "225:13:37"
             },
-            "id": 48376,
+            "id": 48526,
             "nodeType": "InheritanceSpecifier",
             "src": "225:13:37"
           },
           {
             "baseName": {
-              "id": 48377,
+              "id": 48527,
               "name": "BlastGas",
               "nameLocations": ["240:8:37"],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 48345,
+              "referencedDeclaration": 48495,
               "src": "240:8:37"
             },
-            "id": 48378,
+            "id": 48528,
             "nodeType": "InheritanceSpecifier",
             "src": "240:8:37"
           }
         ],
         "canonicalName": "BlastLinearVesting",
-        "contractDependencies": [56181],
+        "contractDependencies": [56411],
         "contractKind": "contract",
         "fullyImplemented": true,
         "linearizedBaseContracts": [
-          48391, 48345, 56041, 51584, 52506, 48477, 44261, 51575
+          48541, 48495, 56271, 51748, 52670, 48627, 44261, 51739
         ],
         "name": "BlastLinearVesting",
         "nameLocation": "203:18:37",
-        "scope": 48392,
+        "scope": 48542,
         "usedErrors": [
-          51391, 52406, 52409, 52414, 54405, 54407, 54409, 54411, 54415
+          51555, 52570, 52573, 52578, 54635, 54637, 54639, 54641, 54645
         ]
       }
     ],
