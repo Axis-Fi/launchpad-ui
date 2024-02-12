@@ -21,7 +21,7 @@ export function DatePicker({ content, ...props }: DatePickerProps) {
     <Popover onOpenChange={(open) => !open && props.onBlur?.()}>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
+          variant="input"
           className={cn(
             "w-full max-w-sm justify-start text-left font-normal",
             !date && "text-muted-foreground",

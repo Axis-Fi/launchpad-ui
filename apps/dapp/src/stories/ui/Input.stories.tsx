@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Input } from "@repo/ui";
+import { IconnedInput, Input, GlobeIcon } from "@repo/ui";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -18,19 +18,13 @@ export const Primary: Story = {
   args: {},
 };
 
-export const Labeled: Story = {
-  args: {
-    label: "Amount",
-  },
+export const WithIcon: Story = {
+  render: () => <IconnedInput icon={<GlobeIcon className="h-6 w-6" />} />,
 };
 
-export const Tooltip: Story = {
+export const Large: Story = {
   args: {
-    label: "Amount",
-    tooltip: "GM.",
+    variant: "lg",
+    placeholder: "0.00",
   },
-};
-
-export const Error: Story = {
-  args: { ...Tooltip.args, error: "This is an error message" },
 };

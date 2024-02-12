@@ -7,26 +7,37 @@ import { useAllowance } from "loaders/use-allowance";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { axisContracts } from "@repo/contracts";
 
-export function CreateAuctionSubmitter() {
+type SubmitterProps = {
+  isPending: boolean;
+};
+
+export function CreateAuctionSubmitter({ isPending }: SubmitterProps) {
   const { address } = useAccount();
   const form = useFormContext<CreateAuctionForm>();
-  const { payoutToken, amount } = form.getValues();
+  const [payoutToken, amount] = form.watch(["payoutToken", "capacity"]);
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
 
-  const { isSufficientAllowance, execute, approveTx } = useAllowance({
-    ownerAddress: address,
-    spenderAddress: axisAddresses?.auctionHouse,
-    tokenAddress: payoutToken?.address as Address,
-    decimals: payoutToken?.decimals,
-    chainId: payoutToken?.chainId,
-    amount: Number(amount),
-  });
+  // TODO check that loading state works
+  const { isSufficientAllowance, execute, approveTx, isLoading } = useAllowance(
+    {
+      ownerAddress: address,
+      spenderAddress: axisAddresses?.auctionHouse,
+      tokenAddress: payoutToken?.address as Address,
+      decimals: payoutToken?.decimals,
+      chainId: payoutToken?.chainId,
+      amount: Number(amount),
+    },
+  );
 
   return (
     <div className="mt-4 flex flex-col items-center justify-center">
-      {!isSufficientAllowance ? (
-        <Button type="submit">Create Auction</Button>
+      {isLoading ? (
+        <Button disabled>Loading...</Button>
+      ) : isSufficientAllowance ? (
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Confirming..." : "Create Auction"}
+        </Button>
       ) : (
         <div className="flex">
           <Button disabled={approveTx.isLoading} onClick={() => execute()}>

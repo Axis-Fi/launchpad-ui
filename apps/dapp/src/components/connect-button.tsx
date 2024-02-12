@@ -1,5 +1,5 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
-import { Button } from "@repo/ui";
+import { Avatar, Button } from "@repo/ui";
 
 export default function ConnectButton() {
   return (
@@ -10,17 +10,11 @@ export default function ConnectButton() {
         openAccountModal,
         openChainModal,
         openConnectModal,
-        authenticationStatus,
         mounted,
       }) => {
-        // Note: If your app doesn't use authentication, you
-        // can remove all 'authenticationStatus' checks
-        const ready = mounted && authenticationStatus !== "loading";
-        const connected =
-          ready &&
-          account &&
-          chain &&
-          (!authenticationStatus || authenticationStatus === "authenticated");
+        // Removed authentication stuff https://www.rainbowkit.com/docs/authentication
+        const ready = mounted;
+        const connected = ready && account && chain;
         return (
           <div
             {...(!ready && {
@@ -34,11 +28,7 @@ export default function ConnectButton() {
           >
             {(() => {
               if (!connected) {
-                return (
-                  <Button variant="secondary" onClick={openConnectModal}>
-                    Connect Wallet
-                  </Button>
-                );
+                return <Button onClick={openConnectModal}>Connect</Button>;
               }
               if (chain.unsupported) {
                 return (
@@ -48,30 +38,25 @@ export default function ConnectButton() {
                 );
               }
               return (
-                <div className="flex gap-1">
-                  <Button variant="ghost" onClick={openChainModal}>
-                    {chain.hasIcon ? (
-                      <div
-                        className="h-6 w-6 overflow-hidden rounded-full"
-                        style={{
-                          background: chain.iconBackground,
-                        }}
-                      >
-                        {chain.iconUrl && (
-                          <img
-                            className="h-6 w-6"
-                            alt={chain.name ?? "Chain icon"}
-                            src={chain.iconUrl}
-                          />
-                        )}
-                      </div>
-                    ) : (
-                      chain.name
-                    )}
-                  </Button>
-                  <Button variant="secondary" onClick={openAccountModal}>
+                <div className="flex items-center gap-x-1">
+                  <Button variant="outline" onClick={openAccountModal}>
                     {account.displayName}
                     {/*account.displayBalance ? ` (${account.displayBalance})` : ""*/}
+                  </Button>
+
+                  <Button variant="ghost" size="icon" onClick={openChainModal}>
+                    <div
+                      className="h-7 w-7 overflow-hidden rounded-full"
+                      style={{
+                        background: chain.iconBackground,
+                      }}
+                    >
+                      <Avatar
+                        className="hover:text-primary h-7 w-7"
+                        alt={chain.name ?? "???"}
+                        src={chain.iconUrl}
+                      />
+                    </div>
                   </Button>
                 </div>
               );

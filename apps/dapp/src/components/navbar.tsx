@@ -4,27 +4,32 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  cn,
 } from "@repo/ui";
 import { NavLink } from "react-router-dom";
 
 const links = [
   { title: "Auctions", href: "/auctions" },
-  { title: "Create", href: "/create/auction" },
   { title: "Dashboard", href: "/dashboard" },
 ];
 
 export default function Navbar() {
+  const isRoot = window.location.hash === "#/";
   return (
     <NavigationMenu>
       <NavigationMenuList>
         {links.map((l) => (
           <NavigationMenuItem key={l.href}>
-            <NavigationMenuLink>
+            <NavigationMenuLink asChild>
               <NavLink to={l.href}>
                 {({ isActive }) => (
                   <Button
                     variant="link"
-                    className={isActive ? "underline" : ""}
+                    className={cn(
+                      "px-2 uppercase",
+                      (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
+                        "text-primary",
+                    )}
                   >
                     {l.title}
                   </Button>

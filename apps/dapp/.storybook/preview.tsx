@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/react";
 import "@repo/ui/style.css";
+import "../src/index.css";
 import { TooltipProvider } from "@repo/ui";
 
 const preview: Preview = {

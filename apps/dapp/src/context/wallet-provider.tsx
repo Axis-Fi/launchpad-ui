@@ -31,6 +31,12 @@ export default function WalletProvider(props: PropsWithChildren) {
       appInfo={{
         appName: "Axis Finance",
         learnMoreUrl: "https://docs.axis.finance",
+        disclaimer: () => (
+          <p>
+            This application is in beta, Axis is not resposible for the loss of
+            your funds. Thread carefully.
+          </p>
+        ),
       }}
       //@ts-expect-error typg mismatch
       chains={activeChains}

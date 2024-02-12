@@ -5,6 +5,8 @@ interface ImportMeta {
 }
 
 interface ImportMetaEnv {
+  readonly VITE_ENVIRONMENT: string;
   readonly VITE_TESTNET: string;
+
   readonly VITE_WALLETCONNECT_PROJECT_ID: string;
 }

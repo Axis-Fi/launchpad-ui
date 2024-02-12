@@ -1,6 +1,11 @@
 import { http } from "wagmi";
-import { Chain, arbitrumGoerli, blastSepolia, mainnet } from "viem/chains";
+import { Chain, blastSepolia, mainnet } from "viem/chains";
 import { environment } from "./environment";
+
+const rpcURLs = {
+  [blastSepolia.id]:
+    "https://broken-magical-hill.blast-sepolia.quiknode.pro/3bdd9ff197592ef9652987ef7dcf549e759c713d/",
+};
 
 //Mainnet Config
 export const mainnets: [Chain, ...Chain[]] = [mainnet];
@@ -12,12 +17,11 @@ const mainnetConfig = {
 };
 
 //Testnet Config
-export const testnets: [Chain, ...Chain[]] = [arbitrumGoerli, blastSepolia];
+export const testnets: [Chain, ...Chain[]] = [blastSepolia];
 const testnetConfig = {
   chains: testnets,
   transports: {
-    [blastSepolia.id]: http(""),
-    [arbitrumGoerli.id]: http(""),
+    [blastSepolia.id]: http(rpcURLs[blastSepolia.id]),
   },
 };
 

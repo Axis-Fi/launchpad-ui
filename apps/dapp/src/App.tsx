@@ -1,28 +1,19 @@
-import Navbar from "components/navbar";
-import ConnectButton from "./components/connect-button";
 import { Providers } from "./context/providers";
 import { Outlet } from "react-router-dom";
-import { ThemeSwitcher } from "@repo/ui";
+import { AppFooter } from "components/app-footer";
+import { AppHeader } from "components/app-header";
 
 function App() {
   return (
     <Providers>
-      <div className="font-aeonfono mx-auto h-screen max-w-[1137px] py-4">
-        <div className="mx-auto flex justify-between">
-          <div className="w-1/3 text-4xl">
-            <a href="/#/">
-              <img className="h-12 w-12" src="/favicon.svg" />
-            </a>
-          </div>
-          <Navbar />
-
-          <div className="flex w-1/3 items-center justify-end gap-x-2">
-            <ConnectButton />
-            <ThemeSwitcher />
+      <div className="mx-auto flex h-screen max-w-[1300px] flex-col justify-between">
+        <div>
+          <AppHeader />
+          <div className="mx-auto w-full max-w-[1137px]">
+            <Outlet />
           </div>
         </div>
-
-        <Outlet />
+        <AppFooter />
       </div>
     </Providers>
   );

@@ -1,5 +1,5 @@
 import { axisContracts } from "@repo/contracts";
-import { Button, Input, LabelWrapper } from "@repo/ui";
+import { InfoLabel } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
 import { useReferral } from "loaders/use-referral";
 import React from "react";
@@ -11,6 +11,9 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { AuctionInputCard } from "../auction-input-card";
+import { AuctionBidInput } from "../auction-bid-input";
+import { AuctionInfoCard } from "../auction-info-card";
 
 export function AuctionLive({ auction }: { auction: Auction }) {
   const [maxPrice, setMaxPrice] = React.useState<number>();
@@ -25,7 +28,11 @@ export function AuctionLive({ auction }: { auction: Auction }) {
 
   const bidReceipt = useWaitForTransactionReceipt({ hash: bid.data });
 
-  const { isSufficientAllowance, approveTx, execute } = useAllowance({
+  const {
+    isSufficientAllowance,
+    approveTx,
+    execute: approveCapacity,
+  } = useAllowance({
     ownerAddress: address,
     spenderAddress: axisAddresses.auctionHouse,
     tokenAddress: auction.quoteToken.address as Address,
@@ -69,7 +76,7 @@ export function AuctionLive({ auction }: { auction: Auction }) {
       args: [
         {
           lotId: parseUnits(auction.lotId, 0),
-          recipient: address,
+          recipient: address as Address,
           referrer: referrer,
           amount: parseUnits(
             amount.toString(),
@@ -83,38 +90,43 @@ export function AuctionLive({ auction }: { auction: Auction }) {
     });
   };
 
-  return (
-    <div>
-      <div className="flex gap-x-2">
-        <LabelWrapper content="Max Price">
-          <Input
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-            type="number"
-          />
-        </LabelWrapper>
+  const handleSubmit = () => {
+    isSufficientAllowance ? handleBid() : approveCapacity();
+  };
 
-        <LabelWrapper content="Amount">
-          <Input
-            type="number"
-            onChange={(e) => setAmount(Number(e.target.value))}
-          />
-        </LabelWrapper>
-        {isSufficientAllowance ? (
-          <Button onClick={handleBid} className="self-end">
-            Bid
-          </Button>
-        ) : (
-          <div className="flex self-end">
-            <Button disabled={approveTx.isLoading} onClick={() => execute()}>
-              {approveTx.isLoading ? "Waiting" : "Approve"}
-            </Button>
-          </div>
-        )}
+  return (
+    <div className="flex justify-between">
+      <div className="w-1/2">
+        <AuctionInfoCard>
+          <InfoLabel label="Minimum Bid" value="??" />
+          <InfoLabel label="Creator" value="??" />
+        </AuctionInfoCard>
       </div>
 
-      {bidReceipt.isLoading && <p>Loading... </p>}
-      {bid.isError && <p>{bidReceipt.error?.message}</p>}
-      {bidReceipt.isSuccess && <p>Success!</p>}
+      <div className="w-[40%]">
+        <AuctionInputCard
+          submitText={
+            isSufficientAllowance
+              ? "Bid"
+              : approveTx.isLoading
+                ? "Confirming..."
+                : "Approve"
+          }
+          auction={auction}
+          onClick={handleSubmit}
+        >
+          <AuctionBidInput
+            onChangeAmountIn={(e) => setAmount(Number(e.target.value))}
+            onChangeMinAmountOut={(e) => setMaxPrice(Number(e.target.value))}
+            auction={auction}
+          />
+        </AuctionInputCard>
+
+        {bidReceipt.isLoading && <p>Confirming transaction...</p>}
+        {bid.isError && <p>{bid.error?.message}</p>}
+        {bidReceipt.isError && <p>{bidReceipt.error?.message}</p>}
+        {bidReceipt.isSuccess && <p>Success!</p>}
+      </div>
     </div>
   );
 }

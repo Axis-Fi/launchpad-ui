@@ -1,1 +1,37 @@
 @import "@repo/ui/style.css";
+
+@layer base {
+  body {
+    @apply font-aeonfono bg-black;
+  }
+
+  input {
+    @apply font-aeonpro;
+  }
+
+  a {
+    @apply cursor-pointer;
+  }
+
+  a svg {
+    @apply transition-all;
+  }
+}
+
+@layer components {
+  .bg-axis-orange-grad {
+    background-image: linear-gradient(
+      hsla(11, 100%, 63%, 0.74),
+      hsla(32, 99%, 66%, 0.64),
+      hsla(40, 100%, 77%, 0.74)
+    );
+  }
+
+  .auction-progress {
+    clip-path: xywh(0 3px 100% 75% round 0% 0);
+  }
+
+  .mask {
+    mask-image: linear-gradient(hsla(0, 0%, 0%, 1), transparent);
+  }
+}

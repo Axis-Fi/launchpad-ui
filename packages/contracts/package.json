@@ -10,5 +10,8 @@
   "dependencies": {
     "@repo/eslint-config": "workspace:*",
     "@wagmi/cli": "^2.1.0"
+  },
+  "scripts": {
+    "build": "wagmi generate"
   }
 }

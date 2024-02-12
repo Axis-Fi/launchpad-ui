@@ -21,7 +21,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { cloakClient } from "src/services/cloak";
 import { useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
-import { encodeAbiParameters, getAddress, toHex, zeroAddress } from "viem";
+import {
+  encodeAbiParameters,
+  getAddress,
+  isHex,
+  parseUnits,
+  toHex,
+  zeroAddress,
+} from "viem";
+import { getDuration, getTimestamp } from "loaders/dateHelper";
+import { getPercentage } from "loaders/numberHelper";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -33,19 +42,34 @@ const tokenSchema = z.object({
 const schema = z.object({
   quoteToken: tokenSchema,
   payoutToken: tokenSchema,
-  amount: z.string(),
+  capacity: z.string(),
+  minFillPercent: z.string(),
+  minBidPercent: z.string(),
   minPrice: z.string(),
+  start: z.date(),
   deadline: z.date(),
-  hooks: z.string().optional(),
-  allowlist: z.string().optional(),
+  hooks: z
+    .string()
+    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+    .optional(),
+  allowlist: z
+    .string()
+    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+    .optional(),
   allowlistParams: z.string().optional(),
   isVested: z.boolean().optional(),
-  vesting: z.string().optional(),
-  curator: z.string().optional(),
-  vestingExpiry: z.date().optional(),
+  curator: z
+    .string()
+    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+    .optional(),
+  vestingDuration: z.string().optional(),
 });
 
 export type CreateAuctionForm = z.infer<typeof schema>;
+
+function toKeycode(keycode: string): `0x${string}` {
+  return toHex(keycode, { size: 5 });
+}
 
 export default function CreateAuctionPage() {
   const form = useForm<CreateAuctionForm>({
@@ -58,46 +82,92 @@ export default function CreateAuctionPage() {
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
   const createAuction = useWriteContract();
 
+  // TODO if there is no approval, this will still execute in addition to the approval tx
+  // TODO handle/display errors
+  // TODO fix state of submit button during creation
   const handleCreation = async (values: CreateAuctionForm) => {
     const publicKey = await cloakClient.keysApi.newKeyPairPost();
 
     if (!publicKey) throw new Error("Unable to generate RSA keypair");
+    if (!isHex(publicKey)) throw new Error("Invalid keypair");
 
-    createAuction.writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
-      functionName: "auction",
-      args: [
-        {
-          auctionType: toHex("LSBBA"),
-          baseToken: getAddress(values.payoutToken.address),
-          quoteToken: getAddress(values.quoteToken.address),
-          curator: !values.curator ? zeroAddress : getAddress(values.curator),
-          hooks: !values.hooks ? zeroAddress : getAddress(values.hooks),
-          allowlist: !values.allowlist
-            ? zeroAddress
-            : getAddress(values.allowlist),
-          allowlistParams: !values.allowlistParams
-            ? toHex("")
-            : toHex(values.allowlistParams),
-          payoutData: toHex(""),
-          derivativeType: !values.isVested ? toHex("") : toHex("LIV"),
-          derivativeParams: !values.vestingExpiry
-            ? toHex("")
-            : encodeAbiParameters(
-                [{ name: "expiry", type: "48" }],
-                [{ expiry: values.vestingExpiry.getTime() / 1000 }],
-              ),
+    createAuction.writeContract(
+      {
+        abi: axisContracts.abis.auctionHouse,
+        address: axisAddresses.auctionHouse,
+        functionName: "auction",
+        args: [
+          {
+            auctionType: toKeycode("LSBBA"),
+            baseToken: getAddress(values.payoutToken.address),
+            quoteToken: getAddress(values.quoteToken.address),
+            curator: !values.curator ? zeroAddress : getAddress(values.curator),
+            hooks: !values.hooks ? zeroAddress : getAddress(values.hooks),
+            allowlist: !values.allowlist
+              ? zeroAddress
+              : getAddress(values.allowlist),
+            allowlistParams: !values.allowlistParams
+              ? toHex("")
+              : toHex(values.allowlistParams),
+            derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
+            derivativeParams:
+              !values.isVested || !values.vestingDuration
+                ? toHex("")
+                : encodeAbiParameters(
+                    [{ name: "expiry", type: "uint48" }],
+                    [
+                      getTimestamp(values.deadline) +
+                        getDuration(Number(values.vestingDuration)),
+                    ],
+                  ),
+          },
+          {
+            start: getTimestamp(values.start),
+            duration:
+              getTimestamp(values.deadline) - getTimestamp(values.start),
+            capacityInQuote: false, // Disabled for LSBBA
+            capacity: parseUnits(values.capacity, values.payoutToken.decimals),
+            implParams: encodeAbiParameters(
+              [
+                {
+                  components: [
+                    { name: "minFillPercent", type: "uint24" },
+                    { name: "minBidPercent", type: "uint24" },
+                    { name: "minimumPrice", type: "uint256" },
+                    {
+                      name: "publicKeyModulus",
+                      type: "bytes",
+                    },
+                  ],
+                  name: "AuctionDataParams",
+                  type: "tuple",
+                },
+              ],
+              [
+                {
+                  minFillPercent: getPercentage(Number(values.minFillPercent)),
+                  minBidPercent: getPercentage(Number(values.minBidPercent)),
+                  minimumPrice: parseUnits(
+                    values.minPrice,
+                    values.payoutToken.decimals,
+                  ),
+                  publicKeyModulus: publicKey,
+                },
+              ],
+            ),
+          },
+        ],
+      },
+      {
+        onError: (error) => {
+          console.error("Error during submission:", error);
         },
-        //@ts-expect-error file is WIP
-        {
-          // TODO AuctionParams
-        },
-      ],
-    });
+      },
+    );
+    console.log("submitted");
   };
 
-  // TODO add expiry timestamp when vesting
+  // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
 
   return (
     <div className="pt-10">
@@ -111,7 +181,10 @@ export default function CreateAuctionPage() {
                 <FormField
                   name="quoteToken"
                   render={({ field }) => (
-                    <FormItemWrapper label="Quote Token">
+                    <FormItemWrapper
+                      label="Quote Token"
+                      tooltip="The token that bidders will place bids in"
+                    >
                       <DialogInput
                         title="Select Quote Token"
                         triggerContent={"Select token"}
@@ -124,9 +197,12 @@ export default function CreateAuctionPage() {
                 />
 
                 <FormField
-                  name="amount"
+                  name="capacity"
                   render={({ field }) => (
-                    <FormItemWrapper label="Amount">
+                    <FormItemWrapper
+                      label="Capacity"
+                      tooltip="The capacity of the auction lot in terms of the payout token"
+                    >
                       <Input {...field} type="number" />
                     </FormItemWrapper>
                   )}
@@ -135,7 +211,10 @@ export default function CreateAuctionPage() {
                 <FormField
                   name="payoutToken"
                   render={({ field }) => (
-                    <FormItemWrapper label="Payout Token">
+                    <FormItemWrapper
+                      label="Payout Token"
+                      tooltip="The token that successful bidders will be paid in"
+                    >
                       <DialogInput
                         title="Select Payout Token"
                         triggerContent={"Select token"}
@@ -151,8 +230,50 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="minPrice"
                   render={({ field }) => (
-                    <FormItemWrapper label="Minimum Price">
+                    <FormItemWrapper
+                      label="Minimum Payout Token Price"
+                      tooltip="The minimum marginal price required for the auction lot to settle"
+                    >
                       <Input type="number" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="minFillPercent"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Minimum Capacity Filled"
+                      tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
+                    >
+                      <Input type="number" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="minBidPercent"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Minimum Bid Size / Capacity"
+                      tooltip="Each bid will need to be greater than or equal to this percentage of the capacity"
+                    >
+                      <Input type="percent" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="start"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Start"
+                      tooltip="The start date/time of the auction lot"
+                    >
+                      <DatePicker {...field} />
                     </FormItemWrapper>
                   )}
                 />
@@ -161,7 +282,10 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="deadline"
                   render={({ field }) => (
-                    <FormItemWrapper label="Deadline">
+                    <FormItemWrapper
+                      label="Deadline"
+                      tooltip="The ending date/time of the auction lot"
+                    >
                       <DatePicker {...field} />
                     </FormItemWrapper>
                   )}
@@ -178,12 +302,14 @@ export default function CreateAuctionPage() {
                         <FormField
                           name="hooks"
                           render={({ field }) => (
-                            <FormItemWrapper className="order-1" label="Hooks">
+                            <FormItemWrapper
+                              className="order-1"
+                              label="Hooks"
+                              tooltip={"The address of the hook contract"}
+                            >
                               <Input
                                 {...field}
-                                tooltip={
-                                  "What is the address of the hook contract"
-                                }
+                                // TODO validate using isAddress
                               />
                             </FormItemWrapper>
                           )}
@@ -194,12 +320,11 @@ export default function CreateAuctionPage() {
                             <FormItemWrapper
                               label="Allowlist"
                               className="order-3"
+                              tooltip={"The address of the allowlist contract"}
                             >
                               <Input
                                 {...field}
-                                tooltip={
-                                  "What is the address of the allowlist contract"
-                                }
+                                // TODO validate using isAddress
                               />
                             </FormItemWrapper>
                           )}
@@ -210,12 +335,11 @@ export default function CreateAuctionPage() {
                             <FormItemWrapper
                               label="Curator"
                               className="order-3"
+                              tooltip={"The address of the auction curator"}
                             >
                               <Input
                                 {...field}
-                                tooltip={
-                                  "What is the address of the auction curator"
-                                }
+                                // TODO validate using isAddress
                               />
                             </FormItemWrapper>
                           )}
@@ -234,12 +358,14 @@ export default function CreateAuctionPage() {
                           />
 
                           <FormField
-                            name="vesting"
+                            name="vestingDuration"
                             render={({ field }) => (
                               <FormItemWrapper label="Vesting Days">
                                 <Input
                                   type="number"
                                   disabled={!isVested}
+                                  required={isVested}
+                                  // TODO validation
                                   {...field}
                                 />
                               </FormItemWrapper>
@@ -254,7 +380,7 @@ export default function CreateAuctionPage() {
             </div>
           </div>
 
-          <CreateAuctionSubmitter />
+          <CreateAuctionSubmitter isPending={createAuction.isPending} />
         </form>
       </Form>
     </div>

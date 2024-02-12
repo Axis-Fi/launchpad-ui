@@ -18,8 +18,11 @@
     --axis-orange: 33 90% 65%;
     --axis-red: 13 87% 60%;
 
-    --foreground: var(--axis-dark);
-    --background: var(--axis-light);
+    --foreground: var(--axis-light);
+    --background: 0 0% 0%;
+
+    --primary: var(--axis-orange);
+    --primary-foreground: var(--axis-dark);
 
     --card: var(--axis-dark);
     --card-foreground: var(--axis-light);
@@ -27,37 +30,26 @@
     --popover: var(--axis-dark);
     --popover-foreground: var(--axis-light);
 
-    --primary: var(--axis-orange);
-    --primary-foreground: var(--axis-dark);
+    --secondary: var(--axis-dark);
+    --secondary-foreground: var(--axis-light);
 
-    --secondary: var(--axis-red);
-    --secondary-foreground: var(--axis-light-mid);
+    --muted: var(--axis-dark);
+    --muted-foreground: var(--axis-foreground);
 
-    --muted: 288 8% 12%;
-    --muted-foreground: 60 5% 50%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: var(--axis-blue);
+    --accent-foreground: var(--axis-dark);
 
     --destructive: var(--axis-red);
     --destructive-foreground: var(--axis-light);
 
-    --border: var(--axis-orange);
-    --input: var(--axis-orange);
-    --ring: 212.7 26.8% 83.9%;
+    --border: var(--axis-light);
+    --input: var(--axis-light);
+    --ring: var(--axis-light);
 
     --radius: 0.5rem;
   }
 
-  .dark {
-    --foreground: var(--axis-light);
-    --background: var(--axis-dark);
-
-    --primary: var(--axis-red);
-    --primary-foreground: var(--axis-light);
-
-    --secondary-foreground: var(--axis-dark-mid);
-  }
+  /*.dark { }*/
 }
 
 /* CSS Reset */
@@ -122,24 +114,28 @@
   }
 
   /*prettier-ignore*/
-  h2, h3, h4 {
+  h1, h2, h3, h4 {
     @apply scroll-m-20 tracking-tight;
   }
 
+  h1 {
+    @apply text-4xl lg:text-5xl;
+  }
+
   h2 {
-    @apply border-b pb-2 text-3xl font-semibold first:mt-0;
+    @apply border-b pb-2 text-3xl font-semibold no-underline first:mt-0;
   }
 
   h3 {
-    @apply text-2xl font-semibold;
+    @apply text-2xl;
   }
 
   h4 {
-    @apply text-xl font-semibold;
+    @apply text-xl;
   }
 
   p {
-    @apply leading-7;
+    /*@apply leading-7; */
   }
 }
 

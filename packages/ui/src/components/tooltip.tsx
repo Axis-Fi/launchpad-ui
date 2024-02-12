@@ -7,7 +7,9 @@ export function Tooltip(
 ) {
   return (
     <TooltipRoot>
-      <TooltipTrigger>{props.children}</TooltipTrigger>
+      <TooltipTrigger onClick={(e) => e.preventDefault()}>
+        {props.children}
+      </TooltipTrigger>
       <TooltipContent className="max-w-xs">
         <p>{props.content}</p>
       </TooltipContent>
