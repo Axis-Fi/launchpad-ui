@@ -12,7 +12,7 @@ import { formatDistanceToNow } from "date-fns";
 
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {
-    submitText: string;
+    submitText: string | React.ReactNode;
   };
 
 export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
@@ -40,9 +40,12 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
       </CardHeader>
       <CardContent>{props.children}</CardContent>
       <CardFooter>
-        <Button className="w-full" onClick={props.onClick}>
-          {props.submitText}
-        </Button>
+        {/*TODO: improve this*/}
+        {props.submitText && props.onClick && (
+          <Button className="w-full" onClick={props.onClick}>
+            {props.submitText}
+          </Button>
+        )}
       </CardFooter>
     </CardRoot>
   );
