@@ -9,6 +9,7 @@ import {
 import { PropsWithAuction } from ".";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { formatDistanceToNow } from "date-fns";
+import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {
@@ -40,12 +41,13 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
       </CardHeader>
       <CardContent>{props.children}</CardContent>
       <CardFooter>
-        {/*TODO: improve this*/}
-        {props.submitText && props.onClick && (
-          <Button className="w-full" onClick={props.onClick}>
-            {props.submitText}
-          </Button>
-        )}
+        <RequiresWalletConnection>
+          {props.submitText && props.onClick && (
+            <Button className="w-full" onClick={props.onClick}>
+              {props.submitText}
+            </Button>
+          )}
+        </RequiresWalletConnection>
       </CardFooter>
     </CardRoot>
   );

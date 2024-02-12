@@ -6,6 +6,7 @@ import { Button, Tooltip } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { axisContracts } from "@repo/contracts";
+import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 type SubmitterProps = {
   isPending: boolean;
@@ -32,26 +33,28 @@ export function CreateAuctionSubmitter({ isPending }: SubmitterProps) {
 
   return (
     <div className="mt-4 flex flex-col items-center justify-center">
-      {isLoading ? (
-        <Button disabled>Loading...</Button>
-      ) : isSufficientAllowance ? (
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Confirming..." : "Create Auction"}
-        </Button>
-      ) : (
-        <div className="flex">
-          <Button disabled={approveTx.isLoading} onClick={() => execute()}>
-            {approveTx.isLoading ? "Waiting" : "Approve"}
+      <RequiresWalletConnection>
+        {isLoading ? (
+          <Button disabled>Loading...</Button>
+        ) : isSufficientAllowance ? (
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Confirming..." : "Create Auction"}
           </Button>
-          <Tooltip
-            content={`You need to allow the AuctionHouse contract to spend the configured amount of ${
-              payoutToken?.symbol ?? "the payout token"
-            }`}
-          >
-            <InfoCircledIcon className="ml-1 h-6 w-6" />
-          </Tooltip>
-        </div>
-      )}
+        ) : (
+          <div className="flex">
+            <Button disabled={approveTx.isLoading} onClick={() => execute()}>
+              {approveTx.isLoading ? "Waiting" : "Approve"}
+            </Button>
+            <Tooltip
+              content={`You need to allow the AuctionHouse contract to spend the configured amount of ${
+                payoutToken?.symbol ?? "the payout token"
+              }`}
+            >
+              <InfoCircledIcon className="ml-1 h-6 w-6" />
+            </Tooltip>
+          </div>
+        )}
+      </RequiresWalletConnection>
     </div>
   );
 }

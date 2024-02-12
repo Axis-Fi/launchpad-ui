@@ -41,11 +41,6 @@ export function AuctionLive({ auction }: { auction: SubgraphAuction }) {
     amount: Number(quoteTokenAmount),
   });
 
-  // TODO handle no wallet connection
-  if (!address) {
-    return <p>Connect wallet</p>;
-  }
-
   // TODO Permit2 signature
 
   const handleBid = async () => {

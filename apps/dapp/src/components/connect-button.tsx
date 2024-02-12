@@ -17,6 +17,7 @@ export default function ConnectButton() {
         const connected = ready && account && chain;
         return (
           <div
+            className="w-full"
             {...(!ready && {
               "aria-hidden": true,
               style: {
@@ -28,7 +29,11 @@ export default function ConnectButton() {
           >
             {(() => {
               if (!connected) {
-                return <Button onClick={openConnectModal}>Connect</Button>;
+                return (
+                  <Button className="w-full" onClick={openConnectModal}>
+                    CONNECT
+                  </Button>
+                );
               }
               if (chain.unsupported) {
                 return (
