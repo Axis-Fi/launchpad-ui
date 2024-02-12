@@ -1,8 +1,9 @@
 import { axisContracts } from "@repo/contracts";
 import { InfoLabel } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
+import { useReferral } from "loaders/use-referral";
 import React from "react";
-import { Auction } from "src/types";
+import { cloakClient } from "src/services/cloak";
 import { Address, parseUnits, toHex } from "viem";
 import {
   useAccount,
@@ -12,15 +13,16 @@ import {
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
+import { SubgraphAuction } from "loaders/subgraphTypes";
 
-export function AuctionLive({ auction }: { auction: Auction }) {
-  /* eslint-disable-next-line */
-  const [minAmountOut, setMinAmountOut] = React.useState<number>(0);
-  const [amountIn, setAmountIn] = React.useState<number>(0);
+export function AuctionLive({ auction }: { auction: SubgraphAuction }) {
+  const [baseTokenAmount, setBaseTokenAmount] = React.useState<number>(0);
+  baseTokenAmount; //
+  const [quoteTokenAmount, setQuoteTokenAmount] = React.useState<number>(0);
   const { address } = useAccount(); // TODO add support for different recipient
   const axisAddresses = axisContracts.addresses[auction.chainId];
 
-  const referrer = "0x0"; // TODO referrer (e.g. frontend) address
+  const referrer = useReferral();
 
   const bid = useWriteContract();
 
@@ -36,14 +38,36 @@ export function AuctionLive({ auction }: { auction: Auction }) {
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
-    amount: Number(amountIn),
+    amount: Number(quoteTokenAmount),
   });
 
-  const auctionData = ""; // TODO using auction public key, encode the desired amount out
+  // TODO handle no wallet connection
+  if (!address) {
+    return <p>Connect wallet</p>;
+  }
 
   // TODO Permit2 signature
 
-  const handleBid = () => {
+  const handleBid = async () => {
+    // Amount out needs to be a uint256
+    const baseTokenAmountOut = parseUnits(
+      baseTokenAmount.toString(),
+      Number(auction.baseToken.decimals),
+    );
+    console.log("baseTokenAmountOut", baseTokenAmountOut.toString());
+
+    const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
+      xChainId: auction.chainId,
+      xAuctionHouse: axisAddresses.auctionHouse,
+      lotId: parseInt(auction.lotId),
+      body: baseTokenAmountOut.toString(),
+    });
+
+    console.log("encryptedAmountOut", encryptedAmountOut);
+
+    console.log("referrer", referrer);
+
+    // Submit the bid to the contract
     bid.writeContract({
       abi: axisContracts.abis.auctionHouse,
       address: axisAddresses.auctionHouse,
@@ -54,10 +78,10 @@ export function AuctionLive({ auction }: { auction: Auction }) {
           recipient: address as Address,
           referrer: referrer,
           amount: parseUnits(
-            amountIn?.toString() ?? "0",
+            quoteTokenAmount.toString(),
             Number(auction.quoteToken.decimals),
           ),
-          auctionData: toHex(auctionData),
+          auctionData: encryptedAmountOut,
           allowlistProof: toHex(""),
           permit2Data: toHex(""),
         },
@@ -91,9 +115,11 @@ export function AuctionLive({ auction }: { auction: Auction }) {
           onClick={handleSubmit}
         >
           <AuctionBidInput
-            onChangeAmountIn={(e) => setAmountIn(Number(e.target.value))}
+            onChangeAmountIn={(e) =>
+              setQuoteTokenAmount(Number(e.target.value))
+            }
             onChangeMinAmountOut={(e) =>
-              setMinAmountOut(Number(e.target.value))
+              setBaseTokenAmount(Number(e.target.value))
             }
             auction={auction}
           />

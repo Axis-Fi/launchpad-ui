@@ -140,7 +140,7 @@ export class KeysApi extends runtime.BaseAPI {
   async encryptLotIdPostRaw(
     requestParameters: EncryptLotIdPostRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<string>> {
+  ): Promise<runtime.ApiResponse<`0x{string}`>> {
     if (
       requestParameters.xChainId === null ||
       requestParameters.xChainId === undefined
@@ -218,7 +218,7 @@ export class KeysApi extends runtime.BaseAPI {
     );
 
     if (this.isJsonMime(response.headers.get("content-type"))) {
-      return new runtime.JSONApiResponse<string>(response);
+      return new runtime.JSONApiResponse<`0x{string}`>(response);
     } else {
       return new runtime.TextApiResponse(response) as any;
     }
@@ -230,7 +230,7 @@ export class KeysApi extends runtime.BaseAPI {
   async encryptLotIdPost(
     requestParameters: EncryptLotIdPostRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<string> {
+  ): Promise<`0x{string}`> {
     const response = await this.encryptLotIdPostRaw(
       requestParameters,
       initOverrides,
