@@ -27,11 +27,9 @@ export function CreateAuctionSubmitter({ isPending }: SubmitterProps) {
     amount: Number(amount),
   });
 
-  // TODO disable button is validation has not passed
-
   return (
     <div className="mt-4 flex flex-col items-center justify-center">
-      {!isSufficientAllowance ? (
+      {isSufficientAllowance ? (
         <Button type="submit" disabled={isPending}>
           {isPending ? "Confirming..." : "Create Auction"}
         </Button>
