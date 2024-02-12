@@ -64,5 +64,6 @@ export const useAllowance = (args: UseAllowanceProps) => {
     currentAllowance,
     isSufficientAllowance: currentAllowance >= amountToApprove,
     formattedAllowance: formatUnits(currentAllowance, args.decimals ?? 18),
+    isLoading: allowance.isLoading,
   };
 };
