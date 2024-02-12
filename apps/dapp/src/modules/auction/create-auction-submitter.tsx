@@ -10,7 +10,7 @@ import { axisContracts } from "@repo/contracts";
 export function CreateAuctionSubmitter() {
   const { address } = useAccount();
   const form = useFormContext<CreateAuctionForm>();
-  const { payoutToken, amount } = form.getValues();
+  const { payoutToken, capacity: amount } = form.getValues();
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
 
@@ -22,6 +22,8 @@ export function CreateAuctionSubmitter() {
     chainId: payoutToken?.chainId,
     amount: Number(amount),
   });
+
+  // TODO disable button is validation has not passed
 
   return (
     <div className="mt-4 flex flex-col items-center justify-center">
