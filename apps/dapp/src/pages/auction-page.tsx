@@ -14,6 +14,7 @@ import { SocialRow } from "components/social-row";
 import { ProjectInfoCard } from "modules/auction/project-info-card";
 import { ContractAddressCard } from "modules/auction/contract-address-card";
 import { axisContracts } from "@repo/contracts";
+import { Address } from "viem";
 
 const statuses: Record<
   AuctionStatus,
@@ -73,8 +74,8 @@ export default function AuctionPage() {
       <ContractAddressCard
         className="mt-12"
         addresses={[
-          [auction.baseToken.symbol, auction.baseToken.address],
-          [auction.quoteToken.symbol, auction.quoteToken.address],
+          [auction.baseToken.symbol, auction.baseToken.address as Address],
+          [auction.quoteToken.symbol, auction.quoteToken.address as Address],
           ["Auction House", contracts.auctionHouse],
         ]}
       />
