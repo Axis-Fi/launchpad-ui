@@ -1,5 +1,4 @@
 import { Button, IconnedInput, cn } from "@repo/ui";
-import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useAuctions } from "loaders/useAuctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
 import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
@@ -28,7 +27,7 @@ export default function AuctionListPage() {
               <AuctionCard
                 key={a.chainId + a.id}
                 //socials={} TODO: add socials
-                auction={a as SubgraphAuctionWithEvents} //TODO: make sure this is correct
+                auction={a}
                 onClickView={() => navigate(`/auction/${a.chainId}/${a.id}`)}
               />
             ))}

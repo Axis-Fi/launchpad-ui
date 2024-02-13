@@ -68,15 +68,13 @@ const schema = z.object({
   // Metadata
   name: z.string(),
   description: z.string(),
-  projectLogo: z.string().optional(),
-  twitter: z.string().optional(),
-  discord: z.string().optional(),
-  website: z.string().optional(),
-  farcaster: z.string().optional(),
-  payoutTokenLogo: z.string().optional(),
+  projectLogo: z.string().url().optional(),
+  twitter: z.string().url().optional(),
+  discord: z.string().url().optional(),
+  website: z.string().url().optional(),
+  farcaster: z.string().url().optional(),
+  payoutTokenLogo: z.string().url().optional(),
 });
-
-// TODO validate that links are URLs
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
@@ -216,8 +214,6 @@ export default function CreateAuctionPage() {
   };
 
   // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
-
-  // TODO arrange fields
 
   return (
     <div className="pb-20 pt-10">

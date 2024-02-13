@@ -1,15 +1,14 @@
 import { Link } from "@repo/ui";
-import { Auction } from "src/types";
 import { ArrowUpRightIcon } from "lucide-react";
+import { PropsWithAuction } from ".";
 
 export function ProjectInfoCard({
   auction,
   ...props
-}: {
-  auction: Auction;
-} & React.HTMLAttributes<HTMLDivElement>) {
+}: PropsWithAuction & React.HTMLAttributes<HTMLDivElement>) {
   const description =
-    auction.description ?? "No description found for this project.";
+    auction.auctionInfo?.description ??
+    "No description found for this project.";
 
   return (
     <div className={props.className}>
