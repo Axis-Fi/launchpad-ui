@@ -31,7 +31,6 @@ import { getDuration, getTimestamp } from "loaders/dateHelper";
 import { getPercentage } from "loaders/numberHelper";
 import { AuctionInfo } from "src/types";
 
-import { storeData } from "loaders/ipfs";
 import { formatDate, dateMath } from "../utils/date";
 
 const tokenSchema = z.object({
@@ -94,13 +93,7 @@ export default function CreateAuctionPage() {
     defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken, ...percents] = form.watch([
-    "isVested",
-    "payoutToken",
-    "minFillPercent",
-    "minBidPercent",
-  ]);
-  console.log({ percents });
+  const [isVested, payoutToken] = form.watch(["isVested", "payoutToken"]);
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
   const createAuction = useWriteContract();
@@ -110,7 +103,9 @@ export default function CreateAuctionPage() {
   // TODO fix state of submit button during creation
   const handleCreation = async (values: CreateAuctionForm) => {
     // Create an object to store additional information about the auction
+    /* eslint-disable-next-line */
     const auctionInfo: AuctionInfo = {
+      //TODO reenable info query
       name: values.name,
       description: values.description,
       links: {
@@ -123,9 +118,9 @@ export default function CreateAuctionPage() {
       },
     };
 
-    // Store the auction info
-    const auctionInfoAddress = await storeData(auctionInfo);
-    console.log("Auction info address: ", auctionInfoAddress);
+    // // Store the auction info
+    // const auctionInfoAddress = await storeData(auctionInfo);
+    // console.log("Auction info address: ", auctionInfoAddress);
 
     // Get the public key
     const publicKey = await cloakClient.keysApi.newKeyPairPost();
@@ -424,6 +419,7 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="projectLogo"
@@ -431,6 +427,7 @@ export default function CreateAuctionPage() {
                     <FormItemWrapper
                       label="Project Logo"
                       tooltip="A URL to the project logo"
+                      className="mt-6"
                     >
                       <Input
                         placeholder="https://your-dao.link/tokenjpeg.svg"
@@ -447,6 +444,7 @@ export default function CreateAuctionPage() {
                     <FormItemWrapper
                       label="Payout Token Logo"
                       tooltip="A URL to the Payout token logo"
+                      className="mt-6"
                     >
                       <Input
                         placeholder="https://your-dao.link/jpeg.svg"
@@ -460,7 +458,7 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="website"
                   render={({ field }) => (
-                    <FormItemWrapper label="Website">
+                    <FormItemWrapper className="mt-6" label="Website">
                       <Input
                         type="url"
                         placeholder="https://your-dao.link"
@@ -473,7 +471,7 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="twitter"
                   render={({ field }) => (
-                    <FormItemWrapper label="X/Twitter">
+                    <FormItemWrapper className="mt-6" label="X/Twitter">
                       <Input
                         placeholder="https://x.com/your-dao"
                         type="url"
@@ -486,7 +484,7 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="farcaster"
                   render={({ field }) => (
-                    <FormItemWrapper label="Farcaster">
+                    <FormItemWrapper className="mt-6" label="Farcaster">
                       <Input
                         type="url"
                         placeholder="https://farcaster.xyz/your-dao"
@@ -499,7 +497,7 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="discord"
                   render={({ field }) => (
-                    <FormItemWrapper label="Discord">
+                    <FormItemWrapper className="mt-6" label="Discord">
                       <Input
                         type="url"
                         placeholder="https://discord.gg/your-dao"

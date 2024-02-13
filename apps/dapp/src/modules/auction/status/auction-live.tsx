@@ -4,9 +4,10 @@ import { useAllowance } from "loaders/use-allowance";
 import { useReferral } from "loaders/use-referral";
 import React from "react";
 import { cloakClient } from "src/services/cloak";
-import { Address, parseUnits, toHex } from "viem";
+import { Address, formatUnits, parseUnits, toHex } from "viem";
 import {
   useAccount,
+  useBalance,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
@@ -16,6 +17,7 @@ import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "..";
 
 export function AuctionLive({ auction }: PropsWithAuction) {
+  const account = useAccount();
   const [baseTokenAmount, setBaseTokenAmount] = React.useState<number>(0);
   const [quoteTokenAmount, setQuoteTokenAmount] = React.useState<number>(0);
   const { address } = useAccount(); // TODO add support for different recipient
@@ -27,10 +29,17 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   const bidReceipt = useWaitForTransactionReceipt({ hash: bid.data });
 
+  const balance = useBalance({
+    address: account.address,
+    token: auction.quoteToken.address as Address,
+    chainId: auction.chainId,
+  });
+
   const {
     isSufficientAllowance,
     approveTx,
     execute: approveCapacity,
+    allowance,
   } = useAllowance({
     ownerAddress: address,
     spenderAddress: axisAddresses.auctionHouse,
@@ -39,6 +48,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     chainId: auction.chainId,
     amount: Number(quoteTokenAmount),
   });
+
+  React.useEffect(() => {
+    if (bidReceipt.isSuccess) {
+      balance.refetch();
+      allowance.refetch();
+    }
+  }, [bidReceipt.isSuccess]);
 
   // TODO Permit2 signature
 
@@ -87,6 +103,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     isSufficientAllowance ? handleBid() : approveCapacity();
   };
 
+  const formattedBalance = formatUnits(
+    balance.data?.value ?? 0n,
+    balance.data?.decimals ?? 0,
+  );
+
+  const isValidInput = baseTokenAmount && quoteTokenAmount;
+
+  console.log({ bid, bidReceipt, approveTx });
   return (
     <div className="flex justify-between">
       <div className="w-1/2">
@@ -95,13 +119,26 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             label="Capacity"
             value={`${auction.capacity} ${auction.baseToken.symbol}`}
           />
-          <InfoLabel label="Bids so far" value={auction.bids.length} />
           <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
+          <InfoLabel label="Total Bids" value={auction.bids.length} />
+          <InfoLabel
+            label="Total Bid Amount"
+            value={`${auction.bids.reduce(
+              (total, b) => total + Number(b.amount),
+              0,
+            )} ${auction.quoteToken.symbol}`}
+          />
         </AuctionInfoCard>
       </div>
 
       <div className="w-[40%]">
         <AuctionInputCard
+          disabled={
+            !isValidInput ||
+            approveTx.isLoading ||
+            bidReceipt.isLoading ||
+            bid.isPending
+          }
           submitText={
             isSufficientAllowance
               ? "Bid"
@@ -113,12 +150,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           onClick={handleSubmit}
         >
           <AuctionBidInput
-            onChangeAmountIn={(e) =>
-              setQuoteTokenAmount(Number(e.target.value))
-            }
-            onChangeMinAmountOut={(e) =>
-              setBaseTokenAmount(Number(e.target.value))
-            }
+            balance={formattedBalance}
+            onChangeAmountIn={(e) => setQuoteTokenAmount(Number(e))}
+            onChangeMinAmountOut={(e) => setBaseTokenAmount(Number(e))}
             auction={auction}
           />
         </AuctionInputCard>

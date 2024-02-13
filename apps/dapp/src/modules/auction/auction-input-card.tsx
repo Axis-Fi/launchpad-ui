@@ -14,6 +14,7 @@ import { RequiresWalletConnection } from "components/requires-wallet-connection"
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {
     submitText: string | React.ReactNode;
+    disabled?: boolean;
   };
 
 export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
@@ -43,7 +44,11 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
       <CardFooter>
         <RequiresWalletConnection>
           {props.submitText && props.onClick && (
-            <Button className="w-full" onClick={props.onClick}>
+            <Button
+              className="w-full"
+              disabled={props.disabled}
+              onClick={props.onClick}
+            >
               {props.submitText}
             </Button>
           )}
