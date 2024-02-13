@@ -3,6 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
+import { Address, fromBytes, fromHex } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 // TODO fetch a batch of bids to decrypt (getNextBidsToDecrypt), decrypt off-chain, pass back to contract (decryptAndSortBids). Repeat until none left.
@@ -26,15 +27,22 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
   const decrypt = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: decrypt.data });
 
+  const nextBids =
+    nextBidsQuery.data?.map((d) => ({
+      ...d,
+      amountOut: fromHex(d.amountOut as Address, "bigint"),
+      seed: fromBytes(new Uint32Array(d.seed), "hex"),
+    })) ?? [];
+
   const handleDecryption = () => {
     decrypt.writeContract({
       address: contracts.localSealedBidBatchAuction,
       abi: axisContracts.abis.localSealedBidBatchAuction,
       functionName: "decryptAndSortBids",
-      //@ts-expect-error TS is failing to infer but type is correct?
-      args: [BigInt(auction.lotId), nextBidsQuery.data], //TODO: is this the correct type/value?
+      args: [BigInt(auction.lotId), nextBids],
     });
   };
+  console.log({ decrypt });
 
   useEffect(() => {
     if (decryptReceipt.isSuccess && !nextBidsQuery.isRefetching) {
@@ -44,8 +52,6 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
 
   return {
     nextBids: nextBidsQuery,
-    bidsLeft: 1234, //TODO: check if we can get this value
-    totalBids: 3234, //TODO: check if we can get this value
     decryptTx: decrypt,
     decryptReceipt,
     handleDecryption,

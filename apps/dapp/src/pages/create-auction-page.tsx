@@ -32,6 +32,7 @@ import { getPercentage } from "loaders/numberHelper";
 import { AuctionInfo } from "src/types";
 
 import { formatDate, dateMath } from "@repo/ui";
+import { storeData } from "loaders/ipfs";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -118,9 +119,9 @@ export default function CreateAuctionPage() {
       },
     };
 
-    // // Store the auction info
-    // const auctionInfoAddress = await storeData(auctionInfo);
-    // console.log("Auction info address: ", auctionInfoAddress);
+    // Store the auction info
+    const auctionInfoAddress = await storeData(auctionInfo);
+    console.log("Auction info address: ", auctionInfoAddress);
 
     // Get the public key
     const publicKey = await cloakClient.keysApi.newKeyPairPost();
