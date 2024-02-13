@@ -462,7 +462,6 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-                <div className="col-span-2 mt-4" />
                 <FormField
                   control={form.control}
                   name="twitter"
@@ -472,7 +471,6 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-                <div className="col-span-2 mt-4" />
                 <FormField
                   control={form.control}
                   name="farcaster"
@@ -499,7 +497,6 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-                <div className="col-span-2 mt-4" />
               </div>
               <div>
                 {/*TODO: Fix this*/}
