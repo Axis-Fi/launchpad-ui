@@ -1,23 +1,24 @@
+import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
+import type { AppRouter } from "@repo/ipfs-api";
+
 import { AuctionInfo } from "src/types";
 
+const trpc = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: "http://localhost:4000",
+    }),
+  ],
+});
+
 export async function storeAuctionInfo(auctionInfo: AuctionInfo) {
-    const response = await fetch("/ipfs", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(auctionInfo),
-    });
+  const response = await trpc.storeAuctionInfo.mutate(auctionInfo);
 
-    const body = await response.json();
-    if (!body.hash) {
-        throw new Error("Failed to store auction info");
-    }
-
-    return body.hash;
+  return response;
 }
 
 export async function getAuctionInfo(hash: string) {
-    const response = await fetch(`/ipfs?hash=${hash}`);
-    return await response.json() as AuctionInfo;
+  const response = await trpc.getAuctionInfo.query(hash);
+
+  return response as AuctionInfo;
 }

@@ -2,22 +2,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import tsconfigPaths from "vite-tsconfig-paths";
-import type { Plugin } from 'vite';
-import type { Adapter } from 'vite-plugin-mix';
-import mixPlugin from "vite-plugin-mix";
-
-interface MixConfig {
-  handler: string;
-  adapter?: Adapter | undefined;
-}
-
-type MixPlugin = (config: MixConfig) => Plugin;
-
-interface Mix {
-  default: MixPlugin;
-}
-
-const mix = (mixPlugin as unknown as Mix).default;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -25,8 +9,5 @@ export default defineConfig({
     react(),
     tsconfigPaths(),
     nodePolyfills({ globals: { Buffer: true } }),
-    mix({
-      handler: "src/services/ipfs/index.ts",
-    })
   ],
 });
