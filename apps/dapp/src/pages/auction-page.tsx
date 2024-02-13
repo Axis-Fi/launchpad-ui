@@ -16,6 +16,7 @@ import { axisContracts } from "@repo/contracts";
 import { Address } from "viem";
 import { PageHeader } from "components/page-header";
 import { AuctionInfoCard } from "modules/auction/auction-info-card";
+import { AuctionBidsCard } from "modules/auction/auction-bids";
 
 const statuses: Record<
   AuctionStatus,
@@ -72,6 +73,12 @@ export default function AuctionPage() {
           [auction.quoteToken.symbol, auction.quoteToken.address as Address],
           ["Auction House", contracts.auctionHouse],
         ]}
+      />
+      <AuctionBidsCard
+        className="mt-12"
+        encryptedBids={auction.bids}
+        decryptedBids={auction.bidsDecrypted}
+        isLoading={isAuctionLoading}
       />
     </div>
   );

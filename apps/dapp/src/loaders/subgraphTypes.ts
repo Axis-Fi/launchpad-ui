@@ -13,3 +13,9 @@ export type SubgraphAuction = {
   chainId: number;
   status: AuctionStatus;
 } & RawSubgraphAuction;
+
+export type SubgraphAuctionEncryptedBid =
+  RawSubgraphAuctionWithEvents["bids"][0];
+
+export type SubgraphAuctionDecryptedBid =
+  RawSubgraphAuctionWithEvents["bidsDecrypted"][0];
