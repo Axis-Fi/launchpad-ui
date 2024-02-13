@@ -19,6 +19,7 @@ import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { getData } from "loaders/ipfs";
 import { PropsWithAuction } from "modules/auction";
+import { getAuctionInfo } from "loaders/useAuctionInfo";
 
 const statuses: Record<
   AuctionStatus,
@@ -50,7 +51,7 @@ export default function AuctionPage() {
 
   // TODO get auction info from IPFS. Shift into useQuery/hook?
   /* eslint-disable-next-line */
-  const auctionInfo = getData("hash") as AuctionInfo;
+  // const auctionInfo = await getAuctionInfo("hash");
 
   return (
     <div>
