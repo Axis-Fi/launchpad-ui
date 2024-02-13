@@ -47,7 +47,7 @@ export default function AuctionPage() {
   const contracts = axisContracts.addresses[auction.chainId];
   const AuctionElement = statuses[auction.status];
 
-  // TODO get auction info from IPFS. Shift into hook?
+  // TODO get auction info from IPFS. Shift into useQuery/hook?
   const auctionInfo = getData("hash") as AuctionInfo;
 
   console.log({ auction });
