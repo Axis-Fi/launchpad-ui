@@ -17,11 +17,13 @@ export function useAuctions(): AuctionsResult {
     enabled: isSuccess,
     queryFn: () => {
       return Promise.all(
-        data?.auctionLots.map(async (auction) => {
-          //@ts-expect-error type not implemented
-          const auctionInfo = await getAuctionInfo(auction.created.infoHash);
-          return { id: auction.id, auctionInfo };
-        }) ?? [],
+        data?.auctionLots
+          .filter((a) => a.created?.infoHash)
+          .map(async (auction) => {
+            //@ts-expect-error type not implemented
+            const auctionInfo = await getAuctionInfo(auction.created.infoHash);
+            return { id: auction.id, auctionInfo };
+          }) ?? [],
       );
     },
   });

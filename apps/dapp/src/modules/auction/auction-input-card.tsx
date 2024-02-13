@@ -14,6 +14,7 @@ import { RequiresWalletConnection } from "components/requires-wallet-connection"
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {
     submitText: string | React.ReactNode;
+    disabled?: boolean;
   };
 
 export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
@@ -22,6 +23,7 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
   );
 
   const isConcluded = auction.status === "concluded";
+  const isCreated = auction.status === "created";
 
   return (
     <CardRoot className="bg-foreground text-secondary w-full">
@@ -31,7 +33,7 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
           isConcluded && "justify-end",
         )}
       >
-        {!isConcluded && (
+        {!isConcluded && !isCreated && (
           <div className="pt-4">
             <p>Ends In</p>
             <h1>{remainingTime}</h1>
@@ -43,7 +45,11 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
       <CardFooter>
         <RequiresWalletConnection>
           {props.submitText && props.onClick && (
-            <Button className="w-full" onClick={props.onClick}>
+            <Button
+              className="w-full"
+              disabled={props.disabled}
+              onClick={props.onClick}
+            >
               {props.submitText}
             </Button>
           )}

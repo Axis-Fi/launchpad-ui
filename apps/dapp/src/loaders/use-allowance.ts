@@ -19,7 +19,7 @@ export const useAllowance = (args: UseAllowanceProps) => {
   const { data: hash, writeContract, ...approveRequest } = useWriteContract();
   const tx = useWaitForTransactionReceipt({ hash });
 
-  const { refetch: refetchAllowance, ...allowance } = useReadContract({
+  const allowance = useReadContract({
     abi: erc20Abi,
     chainId: args.chainId,
     address: args.tokenAddress,
@@ -50,9 +50,9 @@ export const useAllowance = (args: UseAllowanceProps) => {
 
   useEffect(() => {
     if (tx.isSuccess) {
-      refetchAllowance();
+      allowance.refetch();
     }
-  }, [refetchAllowance, tx.isSuccess]);
+  }, [allowance.refetch, tx.isSuccess]);
 
   const currentAllowance = allowance.data ?? 0n;
 

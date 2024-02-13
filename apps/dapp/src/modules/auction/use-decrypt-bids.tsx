@@ -3,6 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
+import { Address, fromBytes, fromHex } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 // TODO fetch a batch of bids to decrypt (getNextBidsToDecrypt), decrypt off-chain, pass back to contract (decryptAndSortBids). Repeat until none left.
@@ -11,7 +12,7 @@ import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
   const contracts = axisContracts.addresses[auction.chainId];
 
-  const nextBids = useQuery({
+  const nextBidsQuery = useQuery({
     queryKey: ["decrypt", auction.id, auction.chainId],
     queryFn: () =>
       cloakClient.keysApi.decryptsLotIdGet({
@@ -21,30 +22,36 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
       }),
     placeholderData: keepPreviousData,
   });
+  console.log({ nextBids: nextBidsQuery });
 
   const decrypt = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: decrypt.data });
+
+  const nextBids =
+    nextBidsQuery.data?.map((d) => ({
+      ...d,
+      amountOut: fromHex(d.amountOut as Address, "bigint"),
+      seed: fromBytes(new Uint32Array(d.seed), "hex"),
+    })) ?? [];
 
   const handleDecryption = () => {
     decrypt.writeContract({
       address: contracts.localSealedBidBatchAuction,
       abi: axisContracts.abis.localSealedBidBatchAuction,
       functionName: "decryptAndSortBids",
-      //@ts-expect-error TS is failing to infer but type is correct?
-      args: [BigInt(auction.lotId), nextBids.data], //TODO: is this the correct type/value?
+      args: [BigInt(auction.lotId), nextBids],
     });
   };
+  console.log({ decrypt });
 
   useEffect(() => {
-    if (decryptReceipt.isSuccess && !nextBids.isRefetching) {
-      nextBids.refetch();
+    if (decryptReceipt.isSuccess && !nextBidsQuery.isRefetching) {
+      nextBidsQuery.refetch();
     }
-  }, [decryptReceipt.isSuccess, nextBids]);
+  }, [decryptReceipt.isSuccess, nextBidsQuery]);
 
   return {
-    nextBids,
-    bidsLeft: 1234, //TODO: check if we can get this value
-    totalBids: 3234, //TODO: check if we can get this value
+    nextBids: nextBidsQuery,
     decryptTx: decrypt,
     decryptReceipt,
     handleDecryption,

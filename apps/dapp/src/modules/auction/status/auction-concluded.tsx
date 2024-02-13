@@ -21,6 +21,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     new Date(Number(auction.createdBlockTimestamp) * 1000),
   );
 
+  console.log({ next: decrypt.nextBids });
   return (
     <div>
       <div className="flex justify-between">
@@ -54,6 +55,13 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             </div>
           </AuctionInputCard>
 
+          {decrypt.nextBids.isFetching && <p>API - NextBids: Loading</p>}
+          {decrypt.nextBids.isError && (
+            <p>
+              API:{" "}
+              {decrypt.nextBids.error.message || decrypt.nextBids.error.name}
+            </p>
+          )}
           {decrypt.decryptTx.isPending && <p>Confirming transaction...</p>}
           {decrypt.decryptTx.isError && (
             <p>{decrypt.decryptTx.error?.message}</p>

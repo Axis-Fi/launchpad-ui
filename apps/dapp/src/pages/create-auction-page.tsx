@@ -94,13 +94,7 @@ export default function CreateAuctionPage() {
     defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken, ...percents] = form.watch([
-    "isVested",
-    "payoutToken",
-    "minFillPercent",
-    "minBidPercent",
-  ]);
-  console.log({ percents });
+  const [isVested, payoutToken] = form.watch(["isVested", "payoutToken"]);
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
   const createAuction = useWriteContract();
@@ -110,7 +104,9 @@ export default function CreateAuctionPage() {
   // TODO fix state of submit button during creation
   const handleCreation = async (values: CreateAuctionForm) => {
     // Create an object to store additional information about the auction
+    /* eslint-disable-next-line */
     const auctionInfo: AuctionInfo = {
+      //TODO reenable info query
       name: values.name,
       description: values.description,
       links: {
@@ -220,9 +216,9 @@ export default function CreateAuctionPage() {
       <h1 className="text-6xl">Create Your Auction</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleCreation)}>
-          <div className="mt-4 flex justify-around rounded-md p-4">
+          <div className="mx-auto mt-4 flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
-              <div className="grid grid-flow-row grid-cols-2 place-items-center ">
+              <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
                 <h3 className="form-div ">1 Tokens</h3>
                 <div />
                 <FormField
@@ -368,7 +364,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
-                        content={formatDate.full(new Date())}
+                        content={formatDate.fullLocal(new Date())}
                         {...field}
                       />
                     </FormItemWrapper>
@@ -385,7 +381,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
-                        content={formatDate.full(
+                        content={formatDate.fullLocal(
                           dateMath.addDays(new Date(), 7),
                         )}
                         {...field}
@@ -405,7 +401,7 @@ export default function CreateAuctionPage() {
                       label="Name"
                       tooltip="The project or auction name"
                     >
-                      <Input type="text" {...field} />
+                      <Input placeholder="YourDAO" type="text" {...field} />
                     </FormItemWrapper>
                   )}
                 />
@@ -415,12 +411,16 @@ export default function CreateAuctionPage() {
                   render={({ field }) => (
                     <FormItemWrapper
                       label="Description"
-                      tooltip="The description of the auction"
+                      tooltip="The description of your auction or project"
                     >
-                      <Input type="text" {...field} />
+                      <Input
+                        placeholder="A short description of your project"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="projectLogo"
@@ -428,8 +428,13 @@ export default function CreateAuctionPage() {
                     <FormItemWrapper
                       label="Project Logo"
                       tooltip="A URL to the project logo"
+                      className="mt-6"
                     >
-                      <Input type="url" {...field} />
+                      <Input
+                        placeholder="https://your-dao.link/tokenjpeg.svg"
+                        type="url"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -440,6 +445,7 @@ export default function CreateAuctionPage() {
                     <FormItemWrapper
                       label="Payout Token Logo"
                       tooltip="A URL to the Payout token logo"
+                      className="mt-6"
                     >
                       <Input
                         placeholder="https://your-dao.link/jpeg.svg"
@@ -453,7 +459,7 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="website"
                   render={({ field }) => (
-                    <FormItemWrapper label="Website">
+                    <FormItemWrapper className="mt-6" label="Website">
                       <Input
                         type="url"
                         placeholder="https://your-dao.link"
@@ -462,22 +468,24 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-                <div className="col-span-2 mt-4" />
                 <FormField
                   control={form.control}
                   name="twitter"
                   render={({ field }) => (
-                    <FormItemWrapper label="Twitter">
-                      <Input type="url" {...field} />
+                    <FormItemWrapper className="mt-6" label="X/Twitter">
+                      <Input
+                        placeholder="https://x.com/your-dao"
+                        type="url"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
-                <div className="col-span-2 mt-4" />
                 <FormField
                   control={form.control}
                   name="farcaster"
                   render={({ field }) => (
-                    <FormItemWrapper label="Farcaster">
+                    <FormItemWrapper className="mt-6" label="Farcaster">
                       <Input
                         type="url"
                         placeholder="https://farcaster.xyz/your-dao"
@@ -490,7 +498,7 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="discord"
                   render={({ field }) => (
-                    <FormItemWrapper label="Discord">
+                    <FormItemWrapper className="mt-6" label="Discord">
                       <Input
                         type="url"
                         placeholder="https://discord.gg/your-dao"
@@ -499,35 +507,17 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-                <div className="col-span-2 mt-4" />
               </div>
               <div>
                 {/*TODO: Fix this*/}
                 <h3 className="form-div ml-[82px]">6 Optional Settings</h3>
-                <div className="grid grid-cols-2 place-items-center gap-y-4">
+                <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
                     name="hooks"
                     render={({ field }) => (
                       <FormItemWrapper
-                        className="order-1"
                         label="Hooks"
                         tooltip={"The address of the hook contract"}
-                      >
-                        <Input
-                          {...field}
-                          placeholder={trimAddress("0x0000000")}
-                          // TODO validate using isAddress
-                        />
-                      </FormItemWrapper>
-                    )}
-                  />
-                  <FormField
-                    name="allowlist"
-                    render={({ field }) => (
-                      <FormItemWrapper
-                        label="Allowlist"
-                        className="order-3"
-                        tooltip={"The address of the allowlist contract"}
                       >
                         <Input
                           {...field}
@@ -542,7 +532,6 @@ export default function CreateAuctionPage() {
                     render={({ field }) => (
                       <FormItemWrapper
                         label="Curator"
-                        className="order-3"
                         tooltip={"The address of the auction curator"}
                       >
                         <Input
@@ -553,7 +542,7 @@ export default function CreateAuctionPage() {
                       </FormItemWrapper>
                     )}
                   />{" "}
-                  <div className="order-2 flex w-full max-w-sm items-center justify-start gap-x-2">
+                  <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
                     <FormField
                       name="isVested"
                       render={({ field }) => (
@@ -582,6 +571,21 @@ export default function CreateAuctionPage() {
                       )}
                     />
                   </div>
+                  <FormField
+                    name="allowlist"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Allowlist"
+                        tooltip={"The address of the allowlist contract"}
+                      >
+                        <Input
+                          {...field}
+                          placeholder={trimAddress("0x0000000")}
+                          // TODO validate using isAddress
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />
                 </div>
               </div>
             </div>

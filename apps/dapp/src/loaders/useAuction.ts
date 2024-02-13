@@ -24,21 +24,22 @@ export function useAuction(lotId?: string): AuctionResult {
     console.warn("Auction info hash not found. Using dummy.");
   }
 
+  const enabled = !!auction && !!auction?.created?.infoHash;
   const { data: auctionInfo, ...infoQuery } = useQuery({
-    enabled: !!auction,
+    enabled,
     queryKey: ["auction-info", auction?.id],
     queryFn: () =>
       // @ts-expect-error type not implemented
       getAuctionInfo(
         auction?.created.infoHash ||
-          "QmSKBCWL2qvCCruAeMpp8eRnrc58e6gPrZfDTQGrcxZLJQ",
+        "QmSKBCWL2qvCCruAeMpp8eRnrc58e6gPrZfDTQGrcxZLJQ",
       ), // TODO remove hard-coding
   });
 
-  if (!auction) {
+  if (!auction || data?.auctionLots.length === 0) {
     return {
       result: undefined,
-      isLoading: isLoading || infoQuery.isLoading,
+      isLoading: isLoading || infoQuery.isLoading || infoQuery.isPending,
       ...query,
     };
   }

@@ -1,5 +1,4 @@
 import { IconedLabel, Input } from "@repo/ui";
-import { ChangeEventHandler } from "react";
 import React from "react";
 import { PropsWithAuction } from ".";
 
@@ -10,32 +9,32 @@ const formatRate = new Intl.NumberFormat("en-US", {
 
 export function AuctionBidInput({
   auction,
-  balance = 0,
+  balance = "0",
   ...props
 }: {
-  balance?: number;
-  onChangeAmountIn: ChangeEventHandler<HTMLInputElement>;
-  onChangeMinAmountOut: ChangeEventHandler<HTMLInputElement>;
+  balance?: string;
+  onChangeAmountIn: (value: string) => void;
+  onChangeMinAmountOut: (value: string) => void;
 } & PropsWithAuction) {
   const [amount, setAmount] = React.useState<number>(0);
   const [minAmountOut, setMinAmountOut] = React.useState<number>(0);
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(Number(e.target.value));
-    props.onChangeAmountIn(e);
+  const handleAmountChange = (value: string) => {
+    setAmount(Number(value));
+    props.onChangeAmountIn(value);
   };
 
-  const handleMinAmountOutChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMinAmountOut(Number(e.target.value));
-    props.onChangeMinAmountOut(e);
+  const handleMinAmountOutChange = (value: string) => {
+    setMinAmountOut(Number(value));
+    props.onChangeMinAmountOut(value);
   };
 
   const rate = amount / minAmountOut;
   const formattedRate = isFinite(rate) ? formatRate(rate) : "?";
 
   return (
-    <div className="flex flex-col gap-y-2">
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-0">
+    <div className="text-foreground flex flex-col gap-y-2">
+      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
         <div>
           <p className="mb-1">You pay</p>
           <IconedLabel
@@ -44,13 +43,16 @@ export function AuctionBidInput({
           />
           <Input
             type="number"
-            onChange={handleAmountChange}
+            onChange={(e) => handleAmountChange(e.target.value)}
             variant="lg"
-            className="w-full"
+            className="mt-1 w-full"
             placeholder="0.00"
           />
         </div>
-        <div className="flex w-full flex-col items-end justify-end">
+        <div
+          className="flex w-full cursor-pointer flex-col items-end justify-end"
+          onClick={() => handleAmountChange(balance)}
+        >
           <p className="text-foreground/50">
             Balance:{" "}
             <p className="text-foreground inline">
@@ -60,18 +62,18 @@ export function AuctionBidInput({
         </div>
       </div>
 
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-0">
+      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
         <div>
-          <p className="mb-1">You pay</p>
+          <p className="mb-1">You get</p>
           <IconedLabel
             src={auction.quoteToken.logoURL}
             label={auction.quoteToken.symbol}
           />
           <Input
             type="number"
-            onChange={handleMinAmountOutChange}
+            onChange={(e) => handleMinAmountOutChange(e.target.value)}
             variant="lg"
-            className="w-full"
+            className="mt-1 w-full"
             placeholder="0.00"
           />
         </div>
