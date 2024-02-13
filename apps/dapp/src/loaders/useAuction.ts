@@ -5,7 +5,7 @@ import {
 import { getChainId, getStatus } from "./subgraphHelper";
 import { SubgraphAuctionWithEvents } from "./subgraphTypes";
 import { useQuery } from "@tanstack/react-query";
-import { getData } from "./ipfs";
+import { getAuctionInfo } from "./useAuctionInfo";
 
 export type AuctionResult = {
   result?: SubgraphAuctionWithEvents;
@@ -24,7 +24,7 @@ export function useAuction(lotId?: string): AuctionResult {
     enabled: !!auction,
     queryKey: ["auction-info", auction?.id],
     //@ts-expect-error type not implemented
-    queryFn: () => getData(auction.created?.infoHash),
+    queryFn: () => getAuctionInfo(auction.created?.infoHash),
   });
 
   if (!auction || data.auctionLots.length === 0) {

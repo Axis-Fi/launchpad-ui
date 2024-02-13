@@ -31,7 +31,6 @@ import { getDuration, getTimestamp } from "loaders/dateHelper";
 import { getPercentage } from "loaders/numberHelper";
 import { AuctionInfo } from "src/types";
 
-import { storeData } from "loaders/ipfs";
 import { formatDate, dateMath } from "../utils/date";
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
 
