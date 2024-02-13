@@ -5,12 +5,13 @@ let pinataClient: PinataClient;
 
 function getPinataClient() {
   if (!pinataClient) {
-    if (!process.env.VITE_PINATA_JWT_KEY) {
-      throw new Error("Missing VITE_PINATA_JWT_KEY");
+    const jwtKey = process.env.PINATA_JWT_KEY;
+    if (!jwtKey) {
+      throw new Error("Missing PINATA_JWT_KEY");
     }
 
     pinataClient = new PinataClient({
-      pinataJWTKey: process.env.VITE_PINATA_JWT_KEY,
+      pinataJWTKey: jwtKey,
     });
   }
 
@@ -46,9 +47,9 @@ export async function storeData(object: unknown): Promise<string> {
  * @returns
  */
 export async function getData(address: string): Promise<unknown> {
-  const gateway = process.env.VITE_PINATA_GATEWAY;
+  const gateway = process.env.PINATA_GATEWAY;
   if (!gateway) {
-    throw new Error("Missing VITE_PINATA_GATEWAY");
+    throw new Error("Missing PINATA_GATEWAY");
   }
 
   // Replace the trailing slash in the URL

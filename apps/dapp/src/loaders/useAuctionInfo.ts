@@ -6,7 +6,7 @@ import { AuctionInfo } from "src/types";
 const trpc = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: "http://localhost:4000",
+      url: "http://localhost:4000/trpc",
     }),
   ],
 });

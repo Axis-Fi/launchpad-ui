@@ -23,7 +23,7 @@ export const appRouter = t.router({
     .output(auctionInfoType)
     .query(async (opts) => {
       const { input } = opts;
-      console.log("input = ", input);
+      console.log("Fetching IPFS hash:", input.hash);
 
       // Retrieve the object from IPFS
       const response = await getData(input.hash);
@@ -39,10 +39,10 @@ export const appRouter = t.router({
     )
     .mutation(async (opts) => {
       const { input } = opts;
-      console.log("input = ", input);
 
       // Store the object in IPFS
       const ipfsHash = await storeData(input);
+      console.log("Stored object at IPFS hash:", ipfsHash);
 
       return {
         hash: ipfsHash,

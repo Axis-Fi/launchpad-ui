@@ -13,12 +13,14 @@ export type AuctionResult = {
 };
 
 export function useAuction(lotId?: string): AuctionResult {
-  const { data, isLoading, ...query } = useGetAuctionLotQuery(
-    { lotId: lotId || "" },
-    { placeholderData: {} as GetAuctionLotQuery },
-  );
+  const { data, isLoading, ...query } = useGetAuctionLotQuery({
+    lotId: lotId || "",
+  });
 
-  const auction = data?.auctionLots[0];
+  const auction =
+    !data || !data.auctionLots || data.auctionLots.length == 0
+      ? undefined
+      : data.auctionLots[0];
 
   const { data: auctionInfo, ...infoQuery } = useQuery({
     enabled: !!auction,
@@ -29,10 +31,10 @@ export function useAuction(lotId?: string): AuctionResult {
     // queryFn: () => getAuctionInfo(auction.created.infoHash),
   });
 
-  if (!auction || data.auctionLots.length === 0) {
+  if (!auction) {
     return {
       result: undefined,
-      isLoading: isLoading, // TODO should this not consider auction-info status?
+      isLoading: isLoading || infoQuery.isLoading, // TODO should this not consider auction-info status?
       ...query,
     };
   }
