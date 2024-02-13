@@ -19,3 +19,6 @@ export type SubgraphAuctionEncryptedBid =
 
 export type SubgraphAuctionDecryptedBid =
   RawSubgraphAuctionWithEvents["bidsDecrypted"][0];
+
+export type SubgraphAuctionRefundedBid =
+  RawSubgraphAuctionWithEvents["refundedBids"][0];

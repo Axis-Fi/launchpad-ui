@@ -78,6 +78,7 @@ export default function AuctionPage() {
         className="mt-12"
         encryptedBids={auction.bids}
         decryptedBids={auction.bidsDecrypted}
+        refundedBids={auction.refundedBids}
         isLoading={isAuctionLoading}
       />
     </div>

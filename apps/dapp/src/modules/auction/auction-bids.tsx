@@ -2,17 +2,20 @@ import { Skeleton } from "@repo/ui";
 import {
   SubgraphAuctionDecryptedBid,
   SubgraphAuctionEncryptedBid,
+  SubgraphAuctionRefundedBid,
 } from "loaders/subgraphTypes";
 
 type AuctionBidsCard = {
   encryptedBids: SubgraphAuctionEncryptedBid[];
   decryptedBids: SubgraphAuctionDecryptedBid[];
+  refundedBids: SubgraphAuctionRefundedBid[];
   isLoading?: boolean;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export function AuctionBidsCard({
   encryptedBids,
   decryptedBids,
+  refundedBids,
   isLoading,
   ...props
 }: AuctionBidsCard) {
@@ -22,6 +25,7 @@ export function AuctionBidsCard({
   // - quote token amount
   // - "encrypted" base token amount out for each bid (skeleton?)
   // - reveal the decrypted base token amount if there is a matching decrypted bid
+  // - display if the bid is refunded (search for it in the refundedBids prop using the bidId)
 
   return (
     <div {...props}>
