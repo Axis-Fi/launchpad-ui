@@ -41,7 +41,7 @@ export function DatePicker({ content, ...props }: DatePickerProps) {
           variant="input"
           className={cn(
             "w-full max-w-sm justify-start text-left font-normal",
-            !date && "text-muted-foreground",
+            !date && "text-foreground/50",
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
