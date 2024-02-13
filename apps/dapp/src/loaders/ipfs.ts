@@ -1,4 +1,5 @@
 import PinataClient from "@pinata/sdk";
+import { AuctionInfo } from "src/types";
 
 let pinataClient: PinataClient;
 
@@ -39,7 +40,7 @@ export async function storeData(object: unknown): Promise<string> {
  * @param address
  * @returns
  */
-export async function getData(address: string): Promise<unknown> {
+export async function getData(address: string): Promise<AuctionInfo> {
   if (!import.meta.env.VITE_PINATA_GATEWAY) {
     throw new Error("Missing VITE_PINATA_GATEWAY");
   }

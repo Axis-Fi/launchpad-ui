@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { AuctionInfo, AuctionStatus } from "src/types";
+import { AuctionStatus } from "src/types";
 import {
   AuctionConcluded,
   AuctionCreated,
@@ -17,9 +17,7 @@ import { Address } from "viem";
 import { PageHeader } from "components/page-header";
 import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
-import { getData } from "loaders/ipfs";
 import { PropsWithAuction } from "modules/auction";
-import { getAuctionInfo } from "loaders/useAuctionInfo";
 
 const statuses: Record<
   AuctionStatus,
@@ -49,10 +47,6 @@ export default function AuctionPage() {
   const contracts = axisContracts.addresses[auction.chainId];
   const AuctionElement = statuses[auction.status];
 
-  // TODO get auction info from IPFS. Shift into useQuery/hook?
-  /* eslint-disable-next-line */
-  // const auctionInfo = await getAuctionInfo("hash");
-
   return (
     <div>
       <PageHeader />
@@ -61,12 +55,14 @@ export default function AuctionPage() {
           <Avatar
             className="size-12 text-lg"
             alt={auction.baseToken.symbol}
-            src={auction.baseToken.logoURL}
+            src={auction.auctionInfo?.links?.payoutTokenLogo}
           />
           <h1 className="text-[40px]">{auction.baseToken.name}</h1>
         </div>
-        {/*TODO: Figure out socials*/}
-        <SocialRow className="gap-x-2" />
+        <SocialRow
+          className="gap-x-2"
+          {...(auction.auctionInfo?.links ?? {})}
+        />
       </div>
       <div className="mt-5">
         <AuctionElement auction={auction} />

@@ -1,6 +1,11 @@
-import { useGetAuctionLotQuery } from "@repo/subgraph-client";
+import {
+  GetAuctionLotQuery,
+  useGetAuctionLotQuery,
+} from "@repo/subgraph-client";
 import { getChainId, getStatus } from "./subgraphHelper";
 import { SubgraphAuctionWithEvents } from "./subgraphTypes";
+import { useQuery } from "@tanstack/react-query";
+import { getData } from "./ipfs";
 
 export type AuctionResult = {
   result?: SubgraphAuctionWithEvents;
@@ -8,22 +13,35 @@ export type AuctionResult = {
 };
 
 export function useAuction(lotId?: string): AuctionResult {
-  const { data, isLoading } = useGetAuctionLotQuery({ lotId: lotId || "" });
-  if (data === undefined || data.auctionLots.length === 0) {
+  const { data, isLoading, ...query } = useGetAuctionLotQuery(
+    { lotId: lotId || "" },
+    { placeholderData: {} as GetAuctionLotQuery },
+  );
+
+  const auction = data?.auctionLots[0];
+
+  const { data: auctionInfo, ...infoQuery } = useQuery({
+    enabled: !!auction,
+    queryKey: ["auction-info", auction?.id],
+    //@ts-expect-error type not implemented
+    queryFn: () => getData(auction.created?.infoHash),
+  });
+
+  if (!auction || data.auctionLots.length === 0) {
     return {
       result: undefined,
       isLoading: isLoading,
+      ...query,
     };
   }
 
-  const record = data.auctionLots[0];
-
   return {
     result: {
-      ...record,
-      chainId: getChainId(record.chain),
-      status: getStatus(record.start, record.conclusion, record.capacity),
+      ...auction,
+      chainId: getChainId(auction.chain),
+      status: getStatus(auction.start, auction.conclusion, auction.capacity),
+      auctionInfo,
     },
-    isLoading: isLoading,
+    isLoading: isLoading || infoQuery.isLoading,
   };
 }

@@ -1,5 +1,5 @@
 import { Avatar, Button, Progress, Skeleton } from "@repo/ui";
-import { SocialRow, SocialURLs } from "components/social-row";
+import { SocialRow } from "components/social-row";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowRightIcon } from "lucide-react";
 import { Auction } from "src/types";
@@ -7,12 +7,11 @@ import { AuctionStatusChip } from "./auction-status-chip";
 import { PropsWithAuction } from ".";
 
 type AuctionCardProps = {
-  socials?: SocialURLs;
   onClickView?: (auction: Auction) => void;
 } & React.HTMLAttributes<HTMLDivElement> &
   PropsWithAuction;
 
-export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
+export function AuctionCard({ auction, ...props }: AuctionCardProps) {
   const progress = calculatePercentage(
     auction.start,
     auction.conclusion,
@@ -30,14 +29,14 @@ export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
     >
       <div className="flex justify-between">
         <AuctionStatusChip status={auction.status} />
-        <SocialRow {...socials} className="h-6" />
+        <SocialRow {...(auction.auctionInfo?.links ?? {})} className="h-6" />
       </div>
 
       <div className="bg-axis-orange-grad mt-2 flex flex-col rounded-md pt-6 ">
         <div className="flex items-center gap-x-1 px-4">
           <Avatar
             className="text-md h-12 w-12"
-            src={auction.baseToken.logoURL}
+            src={auction.auctionInfo?.links?.payoutTokenLogo}
             alt={auction.baseToken.symbol}
           />
           <p>{auction.baseToken.name}</p>
@@ -56,7 +55,9 @@ export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
             <p className="leading-none">Remaining</p>
           </>
         )}
-        <p className="mt-4 text-left leading-5">{auction.description}</p>
+        <p className="mt-4 text-left leading-5">
+          {auction.auctionInfo?.description}
+        </p>
       </div>
 
       <div className="mt-4 flex justify-center">
