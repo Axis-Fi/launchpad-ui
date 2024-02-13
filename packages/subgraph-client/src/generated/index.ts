@@ -23,7 +23,7 @@ export type Incremental<T> =
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
     const res = await fetch(
-      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.10",
+      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.12",
       {
         method: "POST",
         ...{ headers: { "Content-Type": "application/json" } },
