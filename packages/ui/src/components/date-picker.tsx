@@ -1,5 +1,5 @@
 import * as React from "react";
-import { addDays, format, isBefore } from "date-fns";
+import { addHours, format, isBefore } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/utils";
@@ -45,7 +45,7 @@ export function DatePicker({ content, ...props }: DatePickerProps) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>{content}</span>}
+          {date ? format(date, "yyyy-MM-dd HH:mm") : <span>{content}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-auto flex-col items-center p-0">
@@ -58,14 +58,15 @@ export function DatePicker({ content, ...props }: DatePickerProps) {
             setDate(date);
           }}
           initialFocus
-          fromDate={addDays(new Date(), 1)}
+          fromDate={addHours(new Date(), 1)} // 1 hour from now
           {...props}
         />
         {props.time && (
           <Input
             className="pb-4 text-center text-2xl"
             variant="lg"
-            placeholder="00:00"
+            placeholder="00:00" // TODO add fromDate value here
+            // TODO does not set the time
             value={time}
             onChange={setTime}
           />
