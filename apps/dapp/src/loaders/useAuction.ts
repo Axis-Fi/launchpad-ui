@@ -19,13 +19,20 @@ export function useAuction(lotId?: string): AuctionResult {
       ? undefined
       : data.auctionLots[0];
 
+  // @ts-expect-error type not implemented
+  if (!auction?.created.infoHash) {
+    console.warn("Auction info hash not found. Using dummy.");
+  }
+
   const { data: auctionInfo, ...infoQuery } = useQuery({
     enabled: !!auction,
     queryKey: ["auction-info", auction?.id],
     queryFn: () =>
-      getAuctionInfo("QmSKBCWL2qvCCruAeMpp8eRnrc58e6gPrZfDTQGrcxZLJQ"), // TODO remove hard-coding
-    // @ts-expect-error type not implemented
-    // queryFn: () => getAuctionInfo(auction.created.infoHash),
+      // @ts-expect-error type not implemented
+      getAuctionInfo(
+        auction?.created.infoHash ||
+          "QmSKBCWL2qvCCruAeMpp8eRnrc58e6gPrZfDTQGrcxZLJQ",
+      ), // TODO remove hard-coding
   });
 
   if (!auction) {
