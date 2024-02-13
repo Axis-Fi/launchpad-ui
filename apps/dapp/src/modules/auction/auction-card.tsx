@@ -11,7 +11,11 @@ type AuctionCardProps = {
 } & React.HTMLAttributes<HTMLDivElement> &
   PropsWithAuction;
 
-export function AuctionCard({ auction, ...props }: AuctionCardProps) {
+export function AuctionCard({
+  auction,
+  onClickView,
+  ...props
+}: AuctionCardProps) {
   const progress = calculatePercentage(
     auction.start,
     auction.conclusion,
@@ -62,7 +66,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
 
       <div className="mt-4 flex justify-center">
         <Button
-          onClick={() => props.onClickView?.(auction)}
+          onClick={() => onClickView?.(auction)}
           variant="outline"
           className="mx-auto"
         >

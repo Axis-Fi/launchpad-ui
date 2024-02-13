@@ -20,8 +20,9 @@ export function useAuction(lotId?: string): AuctionResult {
 
   const [auction] = data?.auctionLots ?? [];
 
+  const enabled = !!auction && !!auction?.created?.infoHash;
   const { data: auctionInfo, ...infoQuery } = useQuery({
-    enabled: !!auction,
+    enabled,
     queryKey: ["auction-info", auction?.id],
     //@ts-expect-error type not implemented
     queryFn: () => getData(auction.created?.infoHash),
