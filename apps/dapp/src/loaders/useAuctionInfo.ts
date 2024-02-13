@@ -11,14 +11,16 @@ const trpc = createTRPCProxyClient<AppRouter>({
   ],
 });
 
-export async function storeAuctionInfo(auctionInfo: AuctionInfo) {
+export async function storeAuctionInfo(
+  auctionInfo: AuctionInfo,
+): Promise<string> {
   const response = await trpc.storeAuctionInfo.mutate(auctionInfo);
 
-  return response;
+  return response.hash;
 }
 
 export async function getAuctionInfo(hash: string) {
-  const response = await trpc.getAuctionInfo.query(hash);
+  const response = await trpc.getAuctionInfo.query({ hash });
 
   return response as AuctionInfo;
 }

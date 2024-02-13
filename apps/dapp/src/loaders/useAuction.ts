@@ -23,14 +23,16 @@ export function useAuction(lotId?: string): AuctionResult {
   const { data: auctionInfo, ...infoQuery } = useQuery({
     enabled: !!auction,
     queryKey: ["auction-info", auction?.id],
-    //@ts-expect-error type not implemented
-    queryFn: () => getAuctionInfo(auction.created?.infoHash),
+    queryFn: () =>
+      getAuctionInfo("QmSKBCWL2qvCCruAeMpp8eRnrc58e6gPrZfDTQGrcxZLJQ"), // TODO remove hard-coding
+    // @ts-expect-error type not implemented
+    // queryFn: () => getAuctionInfo(auction.created.infoHash),
   });
 
   if (!auction || data.auctionLots.length === 0) {
     return {
       result: undefined,
-      isLoading: isLoading,
+      isLoading: isLoading, // TODO should this not consider auction-info status?
       ...query,
     };
   }
