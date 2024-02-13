@@ -46,6 +46,7 @@ export default function AuctionPage() {
   const contracts = axisContracts.addresses[auction.chainId];
   const AuctionElement = statuses[auction.status];
 
+  console.log({ auction });
   return (
     <div>
       <PageHeader />

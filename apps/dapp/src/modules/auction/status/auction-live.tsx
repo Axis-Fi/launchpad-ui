@@ -1,5 +1,5 @@
 import { axisContracts } from "@repo/contracts";
-import { InfoLabel } from "@repo/ui";
+import { InfoLabel, trimAddress } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
 import { useReferral } from "loaders/use-referral";
 import React from "react";
@@ -17,7 +17,6 @@ import { SubgraphAuction } from "loaders/subgraphTypes";
 
 export function AuctionLive({ auction }: { auction: SubgraphAuction }) {
   const [baseTokenAmount, setBaseTokenAmount] = React.useState<number>(0);
-  baseTokenAmount; //
   const [quoteTokenAmount, setQuoteTokenAmount] = React.useState<number>(0);
   const { address } = useAccount(); // TODO add support for different recipient
   const axisAddresses = axisContracts.addresses[auction.chainId];
@@ -92,8 +91,12 @@ export function AuctionLive({ auction }: { auction: SubgraphAuction }) {
     <div className="flex justify-between">
       <div className="w-1/2">
         <AuctionInfoCard>
-          <InfoLabel label="Minimum Bid" value="??" />
-          <InfoLabel label="Creator" value="??" />
+          <InfoLabel
+            label="Capacity"
+            value={`${auction.capacity} ${auction.baseToken.symbol}`}
+          />
+          <InfoLabel label="Bids so far" value={auction.bids.length} />
+          <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
         </AuctionInfoCard>
       </div>
 
