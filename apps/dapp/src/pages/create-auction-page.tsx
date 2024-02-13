@@ -6,6 +6,7 @@ import {
   FormItemWrapper,
   Input,
   Label,
+  Slider,
   Switch,
 } from "@repo/ui";
 
@@ -39,8 +40,8 @@ const schema = z.object({
   quoteToken: tokenSchema,
   payoutToken: tokenSchema,
   capacity: z.string(),
-  minFillPercent: z.string(),
-  minBidPercent: z.string(),
+  minFillPercent: z.array(z.number()),
+  minBidPercent: z.array(z.number()),
   minPrice: z.string(),
   start: z.date(),
   deadline: z.date(),
@@ -146,8 +147,10 @@ export default function CreateAuctionPage() {
               ],
               [
                 {
-                  minFillPercent: getPercentage(Number(values.minFillPercent)),
-                  minBidPercent: getPercentage(Number(values.minBidPercent)),
+                  minFillPercent: getPercentage(
+                    Number(values.minFillPercent[0]),
+                  ),
+                  minBidPercent: getPercentage(Number(values.minBidPercent[0])),
                   minimumPrice: parseUnits(
                     values.minPrice,
                     values.payoutToken.decimals,
@@ -171,7 +174,7 @@ export default function CreateAuctionPage() {
   // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
 
   return (
-    <div className="pt-10">
+    <div className="pb-20 pt-10">
       <h1 className="text-6xl">Create Your Auction</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleCreation)}>
@@ -254,7 +257,19 @@ export default function CreateAuctionPage() {
                       label="Minimum Filled Percentage"
                       tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                     >
-                      <Input type="number" {...field} />
+                      <>
+                        <Input value={(field.value?.[0] ?? 50) + " " + "%"} />
+                        <Slider
+                          {...field}
+                          className="cursor-pointer pt-2"
+                          max={100}
+                          defaultValue={[50]}
+                          value={field.value}
+                          onValueChange={(v) => {
+                            field.onChange(v);
+                          }}
+                        />
+                      </>
                     </FormItemWrapper>
                   )}
                 />
@@ -267,7 +282,19 @@ export default function CreateAuctionPage() {
                       label="Minimum Bid Size / Capacity"
                       tooltip="Each bid will need to be greater than or equal to this percentage of the capacity"
                     >
-                      <Input type="percent" {...field} />
+                      <>
+                        <Input value={(field.value?.[0] ?? 5) + " " + "%"} />
+                        <Slider
+                          {...field}
+                          className="cursor-pointer pt-2"
+                          max={100}
+                          defaultValue={[5]}
+                          value={field.value}
+                          onValueChange={(v) => {
+                            field.onChange(v);
+                          }}
+                        />
+                      </>
                     </FormItemWrapper>
                   )}
                 />

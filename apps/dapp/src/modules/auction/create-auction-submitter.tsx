@@ -32,7 +32,7 @@ export function CreateAuctionSubmitter({ isPending }: SubmitterProps) {
   );
 
   return (
-    <div className="mt-4 flex flex-col items-center justify-center">
+    <div className="mt-20 flex flex-col items-center justify-center">
       <RequiresWalletConnection>
         {isLoading ? (
           <Button disabled>Loading...</Button>

@@ -35,7 +35,7 @@ export function AuctionBidInput({
 
   return (
     <div className="flex flex-col gap-y-2">
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
+      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-0">
         <div>
           <p className="mb-1">You pay</p>
           <IconedLabel
@@ -46,7 +46,7 @@ export function AuctionBidInput({
             type="number"
             onChange={handleAmountChange}
             variant="lg"
-            className="mt-1 w-full"
+            className="w-full"
             placeholder="0.00"
           />
         </div>
@@ -60,7 +60,7 @@ export function AuctionBidInput({
         </div>
       </div>
 
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
+      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-0">
         <div>
           <p className="mb-1">You pay</p>
           <IconedLabel
@@ -71,7 +71,7 @@ export function AuctionBidInput({
             type="number"
             onChange={handleMinAmountOutChange}
             variant="lg"
-            className="mt-1 w-full"
+            className="w-full"
             placeholder="0.00"
           />
         </div>

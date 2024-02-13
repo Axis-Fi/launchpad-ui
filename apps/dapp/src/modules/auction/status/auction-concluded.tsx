@@ -13,8 +13,12 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     (total, b) => total + Number(b.amount),
     0,
   );
-  const distance = formatDistanceToNow(
+  const auctionEndDistance = formatDistanceToNow(
     new Date(Number(auction.conclusion) * 1000),
+  );
+
+  const auctionStartDistance = formatDistanceToNow(
+    new Date(Number(auction.createdBlockTimestamp) * 1000),
   );
 
   return (
@@ -26,7 +30,8 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             label="Total Bid Amount"
             value={totalBidAmount + " " + auction.quoteToken.symbol}
           />
-          <InfoLabel label="Ended" value={`${distance} ago`} />
+          <InfoLabel label="Started" value={`${auctionStartDistance} ago`} />
+          <InfoLabel label="Ended" value={`${auctionEndDistance} ago`} />
         </AuctionInfoCard>
         <div className="w-[40%]">
           <AuctionInputCard
@@ -36,14 +41,14 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
           >
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
               <div>
-                <h1 className="text-4xl">{decrypt.bidsLeft}</h1>
-                <p>Bids left</p>
+                <h1 className="text-4xl">{auction.bidsDecrypted.length}</h1>
+                <p>Bids Decrypted</p>
               </div>
 
               <p className="text-6xl">/</p>
 
               <div>
-                <h1 className="text-4xl">{decrypt.totalBids}</h1>
+                <h1 className="text-4xl">{auction.bids.length}</h1>
                 <p>Total Bids</p>
               </div>
             </div>
