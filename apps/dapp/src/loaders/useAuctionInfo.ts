@@ -2,11 +2,16 @@ import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "@repo/ipfs-api";
 
 import { AuctionInfo } from "src/types";
+import ipfsServers from "config/ipfs-servers";
+import { environment } from "config/environment";
+
+const { url: serverUrl } =
+  ipfsServers[environment.current] ?? ipfsServers.development;
 
 const trpc = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: "http://localhost:4000/trpc",
+      url: `${serverUrl}/trpc`,
     }),
   ],
 });
