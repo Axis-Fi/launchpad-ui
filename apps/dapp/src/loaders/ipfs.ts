@@ -9,7 +9,9 @@ function getPinataClient() {
     }
 
     // TODO shift behind API or domain-lock
-    pinataClient = new PinataClient({ pinataJWTKey: import.meta.env.VITE_PINATA_JWT_KEY });
+    pinataClient = new PinataClient({
+      pinataJWTKey: import.meta.env.VITE_PINATA_JWT_KEY,
+    });
   }
 
   return pinataClient;
@@ -43,7 +45,12 @@ export async function getData(address: string): Promise<unknown> {
   }
 
   // Replace the trailing slash in the URL
-  const gateway = import.meta.env.VITE_PINATA_GATEWAY[import.meta.env.VITE_PINATA_GATEWAY.length - 1] === '/' ? import.meta.env.VITE_PINATA_GATEWAY.slice(0, -1) : import.meta.env.VITE_PINATA_GATEWAY;
+  const gateway =
+    import.meta.env.VITE_PINATA_GATEWAY[
+      import.meta.env.VITE_PINATA_GATEWAY.length - 1
+    ] === "/"
+      ? import.meta.env.VITE_PINATA_GATEWAY.slice(0, -1)
+      : import.meta.env.VITE_PINATA_GATEWAY;
 
   const response = await fetch(`${gateway}/ipfs/${address}`);
 
