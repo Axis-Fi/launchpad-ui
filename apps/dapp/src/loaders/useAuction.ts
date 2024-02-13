@@ -1,7 +1,4 @@
-import {
-  GetAuctionLotQuery,
-  useGetAuctionLotQuery,
-} from "@repo/subgraph-client";
+import { useGetAuctionLotQuery } from "@repo/subgraph-client";
 import { getChainId, getStatus } from "./subgraphHelper";
 import { SubgraphAuctionWithEvents } from "./subgraphTypes";
 import { useQuery } from "@tanstack/react-query";
@@ -34,7 +31,7 @@ export function useAuction(lotId?: string): AuctionResult {
   if (!auction) {
     return {
       result: undefined,
-      isLoading: isLoading || infoQuery.isLoading, // TODO should this not consider auction-info status?
+      isLoading: isLoading || infoQuery.isLoading,
       ...query,
     };
   }
