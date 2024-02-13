@@ -7,14 +7,14 @@ export default {
   },
   testing: {
     description: "Testing",
-    url: "",
+    url: "https://ipfs-api-staging.onrender.com",
   },
   staging: {
     description: "Staging",
-    url: "",
+    url: "https://ipfs-api-staging.onrender.com",
   },
   production: {
     description: "Production",
-    url: "",
+    url: "https://axisfi-ipfs-api.onrender.com",
   },
 } as Record<Environment, { description: string; url: string }>;

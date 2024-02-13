@@ -6,7 +6,7 @@ import ipfsServers from "config/ipfs-servers";
 import { environment } from "config/environment";
 
 const { url: serverUrl } =
-  ipfsServers[environment.current] ?? ipfsServers.development;
+  ipfsServers[environment.current] ?? ipfsServers.staging;
 
 const trpc = createTRPCProxyClient<AppRouter>({
   links: [
