@@ -27,6 +27,9 @@ import {
 } from "viem";
 import { getDuration, getTimestamp } from "loaders/dateHelper";
 import { getPercentage } from "loaders/numberHelper";
+import { AuctionInfo } from "src/types";
+
+import { getData, storeData } from "loaders/ipfs";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -59,12 +62,18 @@ const schema = z.object({
     .regex(/^(0x)?[0-9a-fA-F]{40}$/)
     .optional(),
   vestingDuration: z.string().optional(),
+  // Metadata
+  name: z.string(),
+  description: z.string(),
+  projectLogo: z.string().optional(),
   twitter: z.string().optional(),
   discord: z.string().optional(),
   website: z.string().optional(),
-  description: z.string().optional(),
-  tokenLogo: z.string().optional(),
+  farcaster: z.string().optional(),
+  payoutTokenLogo: z.string().optional(),
 });
+
+// TODO validate that links are URLs
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
@@ -87,10 +96,31 @@ export default function CreateAuctionPage() {
   // TODO handle/display errors
   // TODO fix state of submit button during creation
   const handleCreation = async (values: CreateAuctionForm) => {
+    // Create an object to store additional information about the auction
+    const auctionInfo: AuctionInfo = {
+      name: values.name,
+      description: values.description,
+      links: {
+        projectLogo: values.projectLogo,
+        payoutTokenLogo: values.payoutTokenLogo,
+        website: values.website,
+        twitter: values.twitter,
+        discord: values.discord,
+        farcaster: values.farcaster,
+      },
+    };
+
+    // Store the auction info
+    const auctionInfoAddress = await storeData(auctionInfo);
+    console.log("Auction info address: ", auctionInfoAddress);
+
+    // Get the public key
     const publicKey = await cloakClient.keysApi.newKeyPairPost();
 
     if (!publicKey) throw new Error("Unable to generate RSA keypair");
     if (!isHex(publicKey)) throw new Error("Invalid keypair");
+
+    // TODO add auction info IPFS hash to the auction params
 
     createAuction.writeContract(
       {
@@ -169,6 +199,8 @@ export default function CreateAuctionPage() {
   };
 
   // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
+
+  // TODO arrange fields
 
   return (
     <div className="pt-10">
@@ -277,7 +309,7 @@ export default function CreateAuctionPage() {
 
                 <FormField
                   control={form.control}
-                  name="start"
+                  name="start" // TODO needs to be in the future (even if by a few seconds)
                   render={({ field }) => (
                     <FormItemWrapper
                       label="Start"
@@ -306,13 +338,49 @@ export default function CreateAuctionPage() {
 
                 <FormField
                   control={form.control}
-                  name="tokenLogo"
+                  name="name"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Name"
+                      tooltip="The project or auction name"
+                    >
+                      <Input type="text" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Description"
+                      tooltip="The description of the auction"
+                    >
+                      <Input type="text" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="projectLogo"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Project Logo"
+                      tooltip="A URL to the project logo"
+                    >
+                      <Input type="url" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="payoutTokenLogo"
                   render={({ field }) => (
                     <FormItemWrapper
                       label="Payout Token Logo"
                       tooltip="A URL to the Payout token logo"
                     >
-                      <Input type="percent" {...field} />
+                      <Input type="url" {...field} />
                     </FormItemWrapper>
                   )}
                 />
@@ -321,7 +389,7 @@ export default function CreateAuctionPage() {
                   name="website"
                   render={({ field }) => (
                     <FormItemWrapper label="Website">
-                      <Input type="percent" {...field} />
+                      <Input type="url" {...field} />
                     </FormItemWrapper>
                   )}
                 />
@@ -331,7 +399,17 @@ export default function CreateAuctionPage() {
                   name="twitter"
                   render={({ field }) => (
                     <FormItemWrapper label="Twitter">
-                      <Input type="percent" {...field} />
+                      <Input type="url" {...field} />
+                    </FormItemWrapper>
+                  )}
+                />
+                <div className="col-span-2 mt-4" />
+                <FormField
+                  control={form.control}
+                  name="farcaster"
+                  render={({ field }) => (
+                    <FormItemWrapper label="Farcaster">
+                      <Input type="url" {...field} />
                     </FormItemWrapper>
                   )}
                 />
@@ -340,7 +418,7 @@ export default function CreateAuctionPage() {
                   name="discord"
                   render={({ field }) => (
                     <FormItemWrapper label="Discord">
-                      <Input type="percent" {...field} />
+                      <Input type="url" {...field} />
                     </FormItemWrapper>
                   )}
                 />

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Auction, AuctionStatus } from "src/types";
+import { Auction, AuctionInfo, AuctionStatus } from "src/types";
 import {
   AuctionConcluded,
   AuctionCreated,
@@ -17,6 +17,7 @@ import { Address } from "viem";
 import { PageHeader } from "components/page-header";
 import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
+import { getData } from "loaders/ipfs";
 
 const statuses: Record<
   AuctionStatus,
@@ -45,6 +46,9 @@ export default function AuctionPage() {
 
   const contracts = axisContracts.addresses[auction.chainId];
   const AuctionElement = statuses[auction.status];
+
+  // TODO get auction info from IPFS. Shift into hook?
+  const auctionInfo = getData("hash") as AuctionInfo;
 
   console.log({ auction });
   return (

@@ -33,3 +33,17 @@ export type AuctionWithEvents = {
   chainId: number;
   status: AuctionStatus;
 } & Auction;
+
+export type AuctionInfo = {
+  name?: string;
+  description?: string;
+  links?: {
+    projectLogo?: string;
+    website?: string;
+    twitter?: string;
+    discord?: string;
+    farcaster?: string;
+    payoutTokenLogo?: string;
+    [key: string]: string | undefined;
+  };
+};

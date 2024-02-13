@@ -14,13 +14,14 @@
     "generate:openapi": "pnpm dlx @openapitools/openapi-generator-cli generate -i ./src/config/cloak-openapi.json -g typescript-fetch -o ./src/services/cloak/generated/"
   },
   "dependencies": {
+    "@pinata/sdk": "^2.1.0",
     "@rainbow-me/rainbowkit": "2.0.0-beta.2",
+    "@repo/contracts": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/subgraph-client": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
-    "@repo/contracts": "workspace:*",
     "@tanstack/react-query": "^5.17.19",
     "@tanstack/react-query-devtools": "^5.18.1",
     "@tanstack/react-table": "^8.11.7",

@@ -9,4 +9,7 @@ interface ImportMetaEnv {
   readonly VITE_TESTNET: string;
 
   readonly VITE_WALLETCONNECT_PROJECT_ID: string;
+
+  readonly VITE_PINATA_JWT_KEY: string;
+  readonly VITE_PINATA_GATEWAY: string;
 }
