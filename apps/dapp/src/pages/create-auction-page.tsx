@@ -405,7 +405,7 @@ export default function CreateAuctionPage() {
                       label="Name"
                       tooltip="The project or auction name"
                     >
-                      <Input type="text" {...field} />
+                      <Input placeholder="YourDAO" type="text" {...field} />
                     </FormItemWrapper>
                   )}
                 />
@@ -415,9 +415,12 @@ export default function CreateAuctionPage() {
                   render={({ field }) => (
                     <FormItemWrapper
                       label="Description"
-                      tooltip="The description of the auction"
+                      tooltip="The description of your auction or project"
                     >
-                      <Input type="text" {...field} />
+                      <Input
+                        placeholder="A short description of your project"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -429,7 +432,11 @@ export default function CreateAuctionPage() {
                       label="Project Logo"
                       tooltip="A URL to the project logo"
                     >
-                      <Input type="url" {...field} />
+                      <Input
+                        placeholder="https://your-dao.link/tokenjpeg.svg"
+                        type="url"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -466,8 +473,12 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="twitter"
                   render={({ field }) => (
-                    <FormItemWrapper label="Twitter">
-                      <Input type="url" {...field} />
+                    <FormItemWrapper label="X/Twitter">
+                      <Input
+                        placeholder="https://x.com/your-dao"
+                        type="url"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
