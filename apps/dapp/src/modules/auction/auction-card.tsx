@@ -4,12 +4,13 @@ import { formatDistanceToNow } from "date-fns";
 import { ArrowRightIcon } from "lucide-react";
 import { Auction } from "src/types";
 import { AuctionStatusChip } from "./auction-status-chip";
+import { PropsWithAuction } from ".";
 
 type AuctionCardProps = {
-  auction: Auction;
   socials?: SocialURLs;
   onClickView?: (auction: Auction) => void;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & React.HTMLAttributes<HTMLDivElement> &
+  PropsWithAuction;
 
 export function AuctionCard({ auction, socials, ...props }: AuctionCardProps) {
   const progress = calculatePercentage(

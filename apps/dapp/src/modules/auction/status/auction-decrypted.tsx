@@ -1,12 +1,12 @@
 import { axisContracts } from "@repo/contracts";
 import { InfoLabel } from "@repo/ui";
-import { Auction } from "src/types";
 import { parseUnits } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
+import { PropsWithAuction } from "..";
 
-export function AuctionDecrypted({ auction }: { auction: Auction }) {
+export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const axisAddresses = axisContracts.addresses[auction.chainId];
   const settle = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: settle.data });

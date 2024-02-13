@@ -1,15 +1,18 @@
-import type { Auction } from "src/types";
 import { useDecryptBids } from "../use-decrypt-bids";
 import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { formatDistanceToNow } from "date-fns";
+import { PropsWithAuction } from "..";
 
-export function AuctionConcluded({ auction }: { auction: Auction }) {
+export function AuctionConcluded({ auction }: PropsWithAuction) {
   const decrypt = useDecryptBids(auction);
 
-  const totalRaised = auction.purchased; //TODO: doublecheck subgraph;
-  const totalBids = 42069;
+  const totalBids = auction?.bids.length;
+  const totalBidAmount = auction.bids?.reduce(
+    (total, b) => total + Number(b.amount),
+    0,
+  );
   const distance = formatDistanceToNow(
     new Date(Number(auction.conclusion) * 1000),
   );
@@ -20,8 +23,8 @@ export function AuctionConcluded({ auction }: { auction: Auction }) {
         <AuctionInfoCard className="w-1/2">
           <InfoLabel label="Total Bids" value={totalBids} />
           <InfoLabel
-            label="Total Raised"
-            value={totalRaised + " " + auction.baseToken.symbol}
+            label="Total Bid Amount"
+            value={totalBidAmount + " " + auction.quoteToken.symbol}
           />
           <InfoLabel label="Ended" value={`${distance} ago`} />
         </AuctionInfoCard>

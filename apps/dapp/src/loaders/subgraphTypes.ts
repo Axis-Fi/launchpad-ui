@@ -1,5 +1,5 @@
 import { GetAuctionLotQuery, GetAuctionLotsQuery } from "@repo/subgraph-client";
-import { AuctionStatus } from "src/types";
+import { Token, AuctionStatus } from "src/types";
 
 type RawSubgraphAuctionWithEvents = GetAuctionLotQuery["auctionLots"][0];
 type RawSubgraphAuction = GetAuctionLotsQuery["auctionLots"][0];
@@ -7,6 +7,8 @@ type RawSubgraphAuction = GetAuctionLotsQuery["auctionLots"][0];
 export type SubgraphAuctionWithEvents = {
   chainId: number;
   status: AuctionStatus;
+  baseToken: Token;
+  quoteToken: Token;
 } & RawSubgraphAuctionWithEvents;
 
 export type SubgraphAuction = {

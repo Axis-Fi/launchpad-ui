@@ -1,8 +1,8 @@
-import { Auction } from "src/types";
+import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 
+//TODO: move this
 export type PropsWithAuction = {
-  auction: Auction;
+  auction: SubgraphAuctionWithEvents;
 };
 
-export * from "./auction-list-columns";
 export * from "./create-auction-submitter";

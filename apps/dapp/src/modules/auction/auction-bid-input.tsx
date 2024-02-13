@@ -1,7 +1,7 @@
-import { Auction } from "src/types";
 import { IconedLabel, Input } from "@repo/ui";
 import { ChangeEventHandler } from "react";
 import React from "react";
+import { PropsWithAuction } from ".";
 
 const formatRate = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 4,
@@ -13,11 +13,10 @@ export function AuctionBidInput({
   balance = 0,
   ...props
 }: {
-  auction: Auction;
   balance?: number;
   onChangeAmountIn: ChangeEventHandler<HTMLInputElement>;
   onChangeMinAmountOut: ChangeEventHandler<HTMLInputElement>;
-}) {
+} & PropsWithAuction) {
   const [amount, setAmount] = React.useState<number>(0);
   const [minAmountOut, setMinAmountOut] = React.useState<number>(0);
 
@@ -40,7 +39,7 @@ export function AuctionBidInput({
         <div>
           <p className="mb-1">You pay</p>
           <IconedLabel
-            src={auction.quoteToken.logoURL}
+            src={auction.quoteToken?.logoURL}
             label={auction.quoteToken.symbol}
           />
           <Input

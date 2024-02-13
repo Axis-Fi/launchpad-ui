@@ -7,7 +7,7 @@ import { Button, CalendarProps, Input } from "./primitives";
 import { Calendar } from "./primitives";
 import { Popover, PopoverContent, PopoverTrigger } from "./primitives";
 import { useTimeInput } from "..";
-import { addTimeToDate } from "@/date-math";
+import { addTimeToDate } from "../date-math";
 
 export type DatePickerProps = {
   content?: string;

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Auction, AuctionStatus } from "src/types";
+import { AuctionStatus } from "src/types";
 import {
   AuctionConcluded,
   AuctionCreated,
@@ -17,10 +17,11 @@ import { Address } from "viem";
 import { PageHeader } from "components/page-header";
 import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
+import { PropsWithAuction } from "modules/auction";
 
 const statuses: Record<
   AuctionStatus,
-  (props: { auction: Auction }) => JSX.Element
+  (props: PropsWithAuction) => JSX.Element
 > = {
   created: AuctionCreated,
   live: AuctionLive,
