@@ -38,6 +38,13 @@ fragment AuctionLotFragment on AuctionLot {
 query getAuctionLots {
   auctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
     ...AuctionLotFragment
+    created {
+      blockNumber
+      blockTimestamp
+      id
+      transactionHash
+      infoHash
+    }
   }
 }
 

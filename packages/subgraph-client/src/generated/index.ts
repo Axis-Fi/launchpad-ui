@@ -2435,6 +2435,13 @@ export type GetAuctionLotsQuery = {
     sold: string;
     start: string;
     wrapDerivative: boolean;
+    created: {
+      blockNumber: string;
+      blockTimestamp: string;
+      id: string;
+      transactionHash: string;
+      infoHash: string;
+    };
     baseToken: {
       address: string;
       decimals: string;
@@ -2596,6 +2603,13 @@ export const GetAuctionLotsDocument = `
     query getAuctionLots {
   auctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
     ...AuctionLotFragment
+    created {
+      blockNumber
+      blockTimestamp
+      id
+      transactionHash
+      infoHash
+    }
   }
 }
     ${AuctionLotFragmentFragmentDoc}`;
