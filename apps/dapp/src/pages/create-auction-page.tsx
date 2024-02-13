@@ -216,9 +216,9 @@ export default function CreateAuctionPage() {
       <h1 className="text-6xl">Create Your Auction</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleCreation)}>
-          <div className="mt-4 flex justify-around rounded-md p-4">
+          <div className="mx-auto mt-4 flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
-              <div className="grid grid-flow-row grid-cols-2 place-items-center ">
+              <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
                 <h3 className="form-div ">1 Tokens</h3>
                 <div />
                 <FormField
@@ -511,30 +511,13 @@ export default function CreateAuctionPage() {
               <div>
                 {/*TODO: Fix this*/}
                 <h3 className="form-div ml-[82px]">6 Optional Settings</h3>
-                <div className="grid grid-cols-2 place-items-center gap-y-4">
+                <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
                     name="hooks"
                     render={({ field }) => (
                       <FormItemWrapper
-                        className="order-1"
                         label="Hooks"
                         tooltip={"The address of the hook contract"}
-                      >
-                        <Input
-                          {...field}
-                          placeholder={trimAddress("0x0000000")}
-                          // TODO validate using isAddress
-                        />
-                      </FormItemWrapper>
-                    )}
-                  />
-                  <FormField
-                    name="allowlist"
-                    render={({ field }) => (
-                      <FormItemWrapper
-                        label="Allowlist"
-                        className="order-3"
-                        tooltip={"The address of the allowlist contract"}
                       >
                         <Input
                           {...field}
@@ -549,7 +532,6 @@ export default function CreateAuctionPage() {
                     render={({ field }) => (
                       <FormItemWrapper
                         label="Curator"
-                        className="order-3"
                         tooltip={"The address of the auction curator"}
                       >
                         <Input
@@ -560,7 +542,7 @@ export default function CreateAuctionPage() {
                       </FormItemWrapper>
                     )}
                   />{" "}
-                  <div className="order-2 flex w-full max-w-sm items-center justify-start gap-x-2">
+                  <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
                     <FormField
                       name="isVested"
                       render={({ field }) => (
@@ -589,6 +571,21 @@ export default function CreateAuctionPage() {
                       )}
                     />
                   </div>
+                  <FormField
+                    name="allowlist"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Allowlist"
+                        tooltip={"The address of the allowlist contract"}
+                      >
+                        <Input
+                          {...field}
+                          placeholder={trimAddress("0x0000000")}
+                          // TODO validate using isAddress
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />
                 </div>
               </div>
             </div>
