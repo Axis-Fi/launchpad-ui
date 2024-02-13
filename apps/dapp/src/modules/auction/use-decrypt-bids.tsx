@@ -11,7 +11,7 @@ import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
   const contracts = axisContracts.addresses[auction.chainId];
 
-  const nextBids = useQuery({
+  const nextBidsQuery = useQuery({
     queryKey: ["decrypt", auction.id, auction.chainId],
     queryFn: () =>
       cloakClient.keysApi.decryptsLotIdGet({
@@ -21,6 +21,7 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
       }),
     placeholderData: keepPreviousData,
   });
+  console.log({ nextBids: nextBidsQuery });
 
   const decrypt = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: decrypt.data });
@@ -31,18 +32,18 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
       abi: axisContracts.abis.localSealedBidBatchAuction,
       functionName: "decryptAndSortBids",
       //@ts-expect-error TS is failing to infer but type is correct?
-      args: [BigInt(auction.lotId), nextBids.data], //TODO: is this the correct type/value?
+      args: [BigInt(auction.lotId), nextBidsQuery.data], //TODO: is this the correct type/value?
     });
   };
 
   useEffect(() => {
-    if (decryptReceipt.isSuccess && !nextBids.isRefetching) {
-      nextBids.refetch();
+    if (decryptReceipt.isSuccess && !nextBidsQuery.isRefetching) {
+      nextBidsQuery.refetch();
     }
-  }, [decryptReceipt.isSuccess, nextBids]);
+  }, [decryptReceipt.isSuccess, nextBidsQuery]);
 
   return {
-    nextBids,
+    nextBids: nextBidsQuery,
     bidsLeft: 1234, //TODO: check if we can get this value
     totalBids: 3234, //TODO: check if we can get this value
     decryptTx: decrypt,
