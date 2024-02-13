@@ -1,0 +1,5 @@
+// Used to prevent stories from compiling
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["src/**/*.stories.*"]
+}

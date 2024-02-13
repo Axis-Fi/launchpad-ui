@@ -13,9 +13,9 @@ import {
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
-import { SubgraphAuction } from "loaders/subgraphTypes";
+import { PropsWithAuction } from "..";
 
-export function AuctionLive({ auction }: { auction: SubgraphAuction }) {
+export function AuctionLive({ auction }: PropsWithAuction) {
   const [baseTokenAmount, setBaseTokenAmount] = React.useState<number>(0);
   const [quoteTokenAmount, setQuoteTokenAmount] = React.useState<number>(0);
   const { address } = useAccount(); // TODO add support for different recipient

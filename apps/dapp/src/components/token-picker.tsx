@@ -1,13 +1,11 @@
 import {
-  Avatar,
-  ComboBox,
   IconedLabel,
   Input,
   DialogInputProps,
   Skeleton,
   LabelWrapper,
 } from "@repo/ui";
-import { activeChains } from "config/chains";
+//import { activeChains } from "config/chains";
 import useERC20 from "loaders/use-erc20";
 import React from "react";
 import { Token } from "src/types";
@@ -16,7 +14,6 @@ import { useChainId } from "wagmi";
 
 export function TokenPicker({
   onChange,
-  onChainChange,
 }: {
   onChange?: NonNullable<
     DialogInputProps<Token>["children"]
@@ -24,12 +21,10 @@ export function TokenPicker({
   onChainChange?: (chainId: number) => void;
 }) {
   const [address, setAddress] = React.useState<string>();
-  const [newChain, setNewChain] = React.useState<number>();
+  //const [newChain, setNewChain] = React.useState<number>();
 
   const chainId = useChainId();
-  const chain = activeChains.find((c) =>
-    newChain ? c.id === Number(newChain) : c.id === chainId,
-  );
+  //const chain = activeChains.find((c) => newChain ? c.id === Number(newChain) : c.id === chainId,);
 
   const { token, isError, response } = useERC20({
     address: address as Address,
@@ -50,25 +45,27 @@ export function TokenPicker({
         <LabelWrapper content="Token Address">
           <Input
             id="token-address"
+            placeholder="Paste token address"
             onChange={(e) => setAddress(e.target.value)}
           />
         </LabelWrapper>
-        <ComboBox
-          label="Chain"
-          defaultValue={chainId}
-          onChange={(value) => {
-            const chainId = Number(value);
-            setNewChain(chainId);
-            onChainChange?.(chainId);
-          }}
-          options={activeChains.map((c) => ({
-            value: c.id.toString(),
-            label: c.name,
-          }))}
-          triggerElement={
-            <Avatar className="cursor-pointer" alt={chain?.name} />
-          }
-        />
+        {/* Chain picker is not need for testnet deployment */}
+        {/* <ComboBox */}
+        {/*   label="Chain" */}
+        {/*   defaultValue={chainId} */}
+        {/*   onChange={(value) => { */}
+        {/*     const chainId = Number(value); */}
+        {/*     setNewChain(chainId); */}
+        {/*     onChainChange?.(chainId); */}
+        {/*   }} */}
+        {/*   options={activeChains.map((c) => ({ */}
+        {/*     value: c.id.toString(), */}
+        {/*     label: c.name, */}
+        {/*   }))} */}
+        {/*   triggerElement={ */}
+        {/*     <Avatar className="cursor-pointer" alt={chain?.name} /> */}
+        {/*   } */}
+        {/* /> */}
       </div>
 
       <div className="flex flex-col items-center justify-center pt-4">

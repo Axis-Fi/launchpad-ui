@@ -33,8 +33,8 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
       >
         {!isConcluded && (
           <div className="pt-4">
-            <h1>{remainingTime}</h1>
             <p>Ends In</p>
+            <h1>{remainingTime}</h1>
           </div>
         )}
         <AuctionStatusChip status={auction.status} className="self-start" />

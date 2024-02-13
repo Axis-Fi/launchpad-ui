@@ -15,6 +15,7 @@ export * from "./progress";
 export * from "./scroll-area";
 export * from "./select";
 export * from "./skeleton";
+export * from "./slider";
 export * from "./switch";
 export * from "./tooltip";
 export * from "./textarea";

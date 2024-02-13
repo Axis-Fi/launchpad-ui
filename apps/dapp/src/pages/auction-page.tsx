@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Auction, AuctionInfo, AuctionStatus } from "src/types";
+import { AuctionInfo, AuctionStatus } from "src/types";
 import {
   AuctionConcluded,
   AuctionCreated,
@@ -18,10 +18,11 @@ import { PageHeader } from "components/page-header";
 import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { getData } from "loaders/ipfs";
+import { PropsWithAuction } from "modules/auction";
 
 const statuses: Record<
   AuctionStatus,
-  (props: { auction: Auction }) => JSX.Element
+  (props: PropsWithAuction) => JSX.Element
 > = {
   created: AuctionCreated,
   live: AuctionLive,
@@ -48,9 +49,9 @@ export default function AuctionPage() {
   const AuctionElement = statuses[auction.status];
 
   // TODO get auction info from IPFS. Shift into useQuery/hook?
+  /* eslint-disable-next-line */
   const auctionInfo = getData("hash") as AuctionInfo;
 
-  console.log({ auction });
   return (
     <div>
       <PageHeader />

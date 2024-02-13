@@ -6,7 +6,9 @@ import {
   FormItemWrapper,
   Input,
   Label,
+  Slider,
   Switch,
+  trimAddress,
 } from "@repo/ui";
 
 import { TokenPicker } from "components/token-picker";
@@ -29,7 +31,8 @@ import { getDuration, getTimestamp } from "loaders/dateHelper";
 import { getPercentage } from "loaders/numberHelper";
 import { AuctionInfo } from "src/types";
 
-import { getData, storeData } from "loaders/ipfs";
+import { storeData } from "loaders/ipfs";
+import { formatDate, dateMath } from "../utils/date";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -42,8 +45,8 @@ const schema = z.object({
   quoteToken: tokenSchema,
   payoutToken: tokenSchema,
   capacity: z.string(),
-  minFillPercent: z.string(),
-  minBidPercent: z.string(),
+  minFillPercent: z.array(z.number()),
+  minBidPercent: z.array(z.number()),
   minPrice: z.string(),
   start: z.date(),
   deadline: z.date(),
@@ -81,13 +84,25 @@ function toKeycode(keycode: string): `0x${string}` {
   return toHex(keycode, { size: 5 });
 }
 
+const auctionDefaultValues = {
+  minFillPercent: [50],
+  minBidPercent: [5],
+};
+
 export default function CreateAuctionPage() {
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
+    defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken] = form.watch(["isVested", "payoutToken"]);
+  const [isVested, payoutToken, ...percents] = form.watch([
+    "isVested",
+    "payoutToken",
+    "minFillPercent",
+    "minBidPercent",
+  ]);
+  console.log({ percents });
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
   const createAuction = useWriteContract();
@@ -176,8 +191,10 @@ export default function CreateAuctionPage() {
               ],
               [
                 {
-                  minFillPercent: getPercentage(Number(values.minFillPercent)),
-                  minBidPercent: getPercentage(Number(values.minBidPercent)),
+                  minFillPercent: getPercentage(
+                    Number(values.minFillPercent[0]),
+                  ),
+                  minBidPercent: getPercentage(Number(values.minBidPercent[0])),
                   minimumPrice: parseUnits(
                     values.minPrice,
                     values.payoutToken.decimals,
@@ -203,7 +220,7 @@ export default function CreateAuctionPage() {
   // TODO arrange fields
 
   return (
-    <div className="pt-10">
+    <div className="pb-20 pt-10">
       <h1 className="text-6xl">Create Your Auction</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleCreation)}>
@@ -257,7 +274,7 @@ export default function CreateAuctionPage() {
                       label="Capacity"
                       tooltip="The capacity of the auction lot in terms of the payout token"
                     >
-                      <Input {...field} type="number" />
+                      <Input {...field} placeholder="1,000,000" type="number" />
                     </FormItemWrapper>
                   )}
                 />
@@ -270,7 +287,7 @@ export default function CreateAuctionPage() {
                       label="Minimum Payout Token Price"
                       tooltip="The minimum marginal price required for the auction lot to settle"
                     >
-                      <Input type="number" {...field} />
+                      <Input placeholder="1" type="number" {...field} />
                     </FormItemWrapper>
                   )}
                 />
@@ -286,7 +303,26 @@ export default function CreateAuctionPage() {
                       label="Minimum Filled Percentage"
                       tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                     >
-                      <Input type="number" {...field} />
+                      <>
+                        <Input
+                          disabled
+                          className="disabled:opacity-100"
+                          value={`${
+                            field.value?.[0] ??
+                            auctionDefaultValues.minFillPercent
+                          }%`}
+                        />
+                        <Slider
+                          {...field}
+                          className="cursor-pointer pt-2"
+                          max={100}
+                          defaultValue={auctionDefaultValues.minFillPercent}
+                          value={field.value}
+                          onValueChange={(v) => {
+                            field.onChange(v);
+                          }}
+                        />
+                      </>
                     </FormItemWrapper>
                   )}
                 />
@@ -299,7 +335,26 @@ export default function CreateAuctionPage() {
                       label="Minimum Bid Size / Capacity"
                       tooltip="Each bid will need to be greater than or equal to this percentage of the capacity"
                     >
-                      <Input type="percent" {...field} />
+                      <>
+                        <Input
+                          disabled
+                          className="disabled:opacity-100"
+                          value={`${
+                            field.value?.[0] ??
+                            auctionDefaultValues.minBidPercent
+                          }%`}
+                        />
+                        <Slider
+                          {...field}
+                          className="cursor-pointer pt-2"
+                          max={100}
+                          defaultValue={auctionDefaultValues.minBidPercent}
+                          value={field.value}
+                          onValueChange={(v) => {
+                            field.onChange(v);
+                          }}
+                        />
+                      </>
                     </FormItemWrapper>
                   )}
                 />
@@ -315,7 +370,11 @@ export default function CreateAuctionPage() {
                       label="Start"
                       tooltip="The start date/time of the auction lot"
                     >
-                      <DatePicker time {...field} />
+                      <DatePicker
+                        time
+                        content={formatDate.full(new Date())}
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -328,7 +387,13 @@ export default function CreateAuctionPage() {
                       label="Deadline"
                       tooltip="The ending date/time of the auction lot"
                     >
-                      <DatePicker time {...field} />
+                      <DatePicker
+                        time
+                        content={formatDate.full(
+                          dateMath.addDays(new Date(), 7),
+                        )}
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -380,7 +445,11 @@ export default function CreateAuctionPage() {
                       label="Payout Token Logo"
                       tooltip="A URL to the Payout token logo"
                     >
-                      <Input type="url" {...field} />
+                      <Input
+                        placeholder="https://your-dao.link/jpeg.svg"
+                        type="url"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -389,7 +458,11 @@ export default function CreateAuctionPage() {
                   name="website"
                   render={({ field }) => (
                     <FormItemWrapper label="Website">
-                      <Input type="url" {...field} />
+                      <Input
+                        type="url"
+                        placeholder="https://your-dao.link"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -409,7 +482,11 @@ export default function CreateAuctionPage() {
                   name="farcaster"
                   render={({ field }) => (
                     <FormItemWrapper label="Farcaster">
-                      <Input type="url" {...field} />
+                      <Input
+                        type="url"
+                        placeholder="https://farcaster.xyz/your-dao"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -418,7 +495,11 @@ export default function CreateAuctionPage() {
                   name="discord"
                   render={({ field }) => (
                     <FormItemWrapper label="Discord">
-                      <Input type="url" {...field} />
+                      <Input
+                        type="url"
+                        placeholder="https://discord.gg/your-dao"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -438,6 +519,7 @@ export default function CreateAuctionPage() {
                       >
                         <Input
                           {...field}
+                          placeholder={trimAddress("0x0000000")}
                           // TODO validate using isAddress
                         />
                       </FormItemWrapper>
@@ -453,6 +535,7 @@ export default function CreateAuctionPage() {
                       >
                         <Input
                           {...field}
+                          placeholder={trimAddress("0x0000000")}
                           // TODO validate using isAddress
                         />
                       </FormItemWrapper>
@@ -468,6 +551,7 @@ export default function CreateAuctionPage() {
                       >
                         <Input
                           {...field}
+                          placeholder={trimAddress("0x0000000")}
                           // TODO validate using isAddress
                         />
                       </FormItemWrapper>
@@ -492,6 +576,7 @@ export default function CreateAuctionPage() {
                         <FormItemWrapper label="Vesting Days">
                           <Input
                             type="number"
+                            placeholder="7"
                             disabled={!isVested}
                             required={isVested}
                             // TODO validation

@@ -1,7 +1,7 @@
-import { Auction } from "src/types";
 import { IconedLabel, Input } from "@repo/ui";
 import { ChangeEventHandler } from "react";
 import React from "react";
+import { PropsWithAuction } from ".";
 
 const formatRate = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 4,
@@ -13,11 +13,10 @@ export function AuctionBidInput({
   balance = 0,
   ...props
 }: {
-  auction: Auction;
   balance?: number;
   onChangeAmountIn: ChangeEventHandler<HTMLInputElement>;
   onChangeMinAmountOut: ChangeEventHandler<HTMLInputElement>;
-}) {
+} & PropsWithAuction) {
   const [amount, setAmount] = React.useState<number>(0);
   const [minAmountOut, setMinAmountOut] = React.useState<number>(0);
 
@@ -36,18 +35,18 @@ export function AuctionBidInput({
 
   return (
     <div className="flex flex-col gap-y-2">
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
+      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-0">
         <div>
           <p className="mb-1">You pay</p>
           <IconedLabel
-            src={auction.quoteToken.logoURL}
+            src={auction.quoteToken?.logoURL}
             label={auction.quoteToken.symbol}
           />
           <Input
             type="number"
             onChange={handleAmountChange}
             variant="lg"
-            className="mt-1 w-full"
+            className="w-full"
             placeholder="0.00"
           />
         </div>
@@ -61,7 +60,7 @@ export function AuctionBidInput({
         </div>
       </div>
 
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
+      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-0">
         <div>
           <p className="mb-1">You pay</p>
           <IconedLabel
@@ -72,7 +71,7 @@ export function AuctionBidInput({
             type="number"
             onChange={handleMinAmountOutChange}
             variant="lg"
-            className="mt-1 w-full"
+            className="w-full"
             placeholder="0.00"
           />
         </div>

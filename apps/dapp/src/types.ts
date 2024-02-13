@@ -1,12 +1,11 @@
 import { GetAuctionLotsQuery } from "@repo/subgraph-client";
-import { Address } from "viem";
 
 export type Token = {
-  chainId: number;
-  address: Address;
+  address: string;
   decimals: string;
   symbol: string;
   name: string;
+  chainId?: number;
   logoURL?: string;
 };
 
