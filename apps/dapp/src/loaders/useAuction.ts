@@ -18,7 +18,7 @@ export function useAuction(lotId?: string): AuctionResult {
     { placeholderData: {} as GetAuctionLotQuery },
   );
 
-  const auction = data?.auctionLots[0];
+  const [auction] = data?.auctionLots ?? [];
 
   const { data: auctionInfo, ...infoQuery } = useQuery({
     enabled: !!auction,
@@ -27,10 +27,10 @@ export function useAuction(lotId?: string): AuctionResult {
     queryFn: () => getData(auction.created?.infoHash),
   });
 
-  if (!auction || data.auctionLots.length === 0) {
+  if (!auction || data?.auctionLots.length === 0) {
     return {
       result: undefined,
-      isLoading: isLoading,
+      isLoading: isLoading || infoQuery.isLoading || infoQuery.isPending,
       ...query,
     };
   }
