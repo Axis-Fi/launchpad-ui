@@ -54,6 +54,7 @@ query getAuctionLot($lotId: BigInt!) {
       blockTimestamp
       id
       transactionHash
+      infoHash
     }
     cancelled {
       blockNumber

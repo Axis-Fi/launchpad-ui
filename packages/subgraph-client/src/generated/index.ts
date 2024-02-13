@@ -23,7 +23,7 @@ export type Incremental<T> =
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
     const res = await fetch(
-      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.12",
+      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.13",
       {
         method: "POST",
         ...{ headers: { "Content-Type": "application/json" } },
@@ -173,6 +173,7 @@ export type AuctionCreated = {
   blockNumber: Scalars["BigInt"]["output"];
   blockTimestamp: Scalars["BigInt"]["output"];
   id: Scalars["Bytes"]["output"];
+  infoHash: Scalars["String"]["output"];
   lot: AuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
 };
@@ -207,6 +208,26 @@ export type AuctionCreated_Filter = {
   id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
   id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
   id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  infoHash?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  infoHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_not?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  infoHash_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  infoHash_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<AuctionLot_Filter>;
   lot_contains?: InputMaybe<Scalars["String"]["input"]>;
@@ -245,6 +266,7 @@ export enum AuctionCreated_OrderBy {
   blockNumber = "blockNumber",
   blockTimestamp = "blockTimestamp",
   Id = "id",
+  infoHash = "infoHash",
   Lot = "lot",
   lot__auctionRef = "lot__auctionRef",
   Lot__capacity = "lot__capacity",
@@ -629,6 +651,7 @@ export enum AuctionLot_OrderBy {
   created__blockNumber = "created__blockNumber",
   created__blockTimestamp = "created__blockTimestamp",
   Created__id = "created__id",
+  created__infoHash = "created__infoHash",
   created__transactionHash = "created__transactionHash",
   Curated = "curated",
   curated__blockNumber = "curated__blockNumber",
@@ -2460,6 +2483,7 @@ export type GetAuctionLotQuery = {
       blockTimestamp: string;
       id: string;
       transactionHash: string;
+      infoHash: string;
     };
     cancelled?: {
       blockNumber: string;
@@ -2615,6 +2639,7 @@ export const GetAuctionLotDocument = `
       blockTimestamp
       id
       transactionHash
+      infoHash
     }
     cancelled {
       blockNumber
