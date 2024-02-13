@@ -64,7 +64,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       baseTokenAmount.toString(),
       Number(auction.baseToken.decimals),
     );
-    console.log("baseTokenAmountOut", baseTokenAmountOut.toString());
 
     const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
       xChainId: auction.chainId,
@@ -72,10 +71,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       lotId: parseInt(auction.lotId),
       body: baseTokenAmountOut.toString(),
     });
-
-    console.log("encryptedAmountOut", encryptedAmountOut);
-
-    console.log("referrer", referrer);
 
     // Submit the bid to the contract
     bid.writeContract({
@@ -110,7 +105,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   const isValidInput = baseTokenAmount && quoteTokenAmount;
 
-  console.log({ bid, bidReceipt, approveTx });
   return (
     <div className="flex justify-between">
       <div className="w-1/2">

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { addHours, format, isBefore } from "date-fns";
+import { addHours, isBefore } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/utils";
@@ -7,7 +7,7 @@ import { Button, CalendarProps, Input } from "./primitives";
 import { Calendar } from "./primitives";
 import { Popover, PopoverContent, PopoverTrigger } from "./primitives";
 import { useTimeInput } from "..";
-import { addTimeToDate } from "../date-math";
+import { addTimeToDate, formatDate } from "@/helpers";
 
 export type DatePickerProps = {
   content?: string;
@@ -32,7 +32,7 @@ export function DatePicker({ content, ...props }: DatePickerProps) {
       setDate(fullDate);
       props.onChange?.(fullDate);
     }
-  }, [props.time, time]);
+  }, [props.time, time, date]);
 
   return (
     <Popover onOpenChange={(open) => !open && props.onBlur?.()}>
@@ -45,7 +45,7 @@ export function DatePicker({ content, ...props }: DatePickerProps) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "yyyy-MM-dd HH:mm") : <span>{content}</span>}
+          {date ? formatDate.fullLocal(date) : <span>{content}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-auto flex-col items-center p-0">

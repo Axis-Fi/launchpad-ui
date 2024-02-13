@@ -31,7 +31,7 @@ import { getDuration, getTimestamp } from "loaders/dateHelper";
 import { getPercentage } from "loaders/numberHelper";
 import { AuctionInfo } from "src/types";
 
-import { formatDate, dateMath } from "../utils/date";
+import { formatDate, dateMath } from "@repo/ui";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -363,7 +363,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
-                        content={formatDate.full(new Date())}
+                        content={formatDate.fullLocal(new Date())}
                         {...field}
                       />
                     </FormItemWrapper>
@@ -380,7 +380,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
-                        content={formatDate.full(
+                        content={formatDate.fullLocal(
                           dateMath.addDays(new Date(), 7),
                         )}
                         {...field}
