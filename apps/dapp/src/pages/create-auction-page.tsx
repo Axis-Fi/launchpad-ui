@@ -129,8 +129,6 @@ export default function CreateAuctionPage() {
     if (!publicKey) throw new Error("Unable to generate RSA keypair");
     if (!isHex(publicKey)) throw new Error("Invalid keypair");
 
-    // TODO add auction info IPFS hash to the auction params
-
     createAuction.writeContract(
       {
         abi: axisContracts.abis.auctionHouse,
