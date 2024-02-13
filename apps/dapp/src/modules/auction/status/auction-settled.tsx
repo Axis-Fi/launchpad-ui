@@ -1,13 +1,18 @@
 import { axisContracts } from "@repo/contracts";
 import { InfoLabel } from "@repo/ui";
 import { parseUnits } from "viem";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  //useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "..";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const axisAddresses = axisContracts.addresses[auction.chainId];
+  //const { address } = useAccount();
 
   const refund = useWriteContract();
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
@@ -16,6 +21,10 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
 
   const bidId = 0n; //TODO: how to best get these
   const isUserRefundable = false;
+
+  // const refundableBids = auction.bids.filter((b) =>
+  //   b.bidder.includes(address?.toLowerCase() ?? ""),
+  // );
 
   // TODO TBD when we will automatically refund bids
 

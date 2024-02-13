@@ -23,6 +23,7 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
   );
 
   const isConcluded = auction.status === "concluded";
+  const isCreated = auction.status === "created";
 
   return (
     <CardRoot className="bg-foreground text-secondary w-full">
@@ -32,7 +33,7 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
           isConcluded && "justify-end",
         )}
       >
-        {!isConcluded && (
+        {!isConcluded && !isCreated && (
           <div className="pt-4">
             <p>Ends In</p>
             <h1>{remainingTime}</h1>
