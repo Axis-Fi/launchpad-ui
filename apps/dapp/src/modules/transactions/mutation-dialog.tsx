@@ -26,8 +26,8 @@ export type MutationScreens = Record<
 export type MutationDialogProps = {
   onConfirm: () => void;
   mutation: UseWaitForTransactionReceiptReturnType;
-  screens: MutationScreens;
   triggerContent: string | React.ReactNode;
+  screens?: MutationScreens;
   submitText?: string;
 } & MutationDialogElementProps;
 
@@ -55,32 +55,34 @@ export function MutationDialog({
   const showFooter = status === "idle";
 
   return (
-    <div>
-      <DialogRoot>
-        <DialogTrigger>
-          <Button>{props.triggerContent}</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader className="text-2xl">{title}</DialogHeader>
-          <Component
-            error={mutation.error}
-            hash={props.hash}
-            chainId={props.chainId}
-          />
+    <DialogRoot>
+      <DialogTrigger className="w-full ">
+        <Button className="w-full max-w-sm">{props.triggerContent}</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader className="text-2xl">{title}</DialogHeader>
+        <Component
+          error={mutation?.error}
+          hash={props.hash}
+          chainId={props.chainId}
+        />
 
-          <DialogFooter className="flex ">
-            {showFooter && (
-              <Button
-                type="submit"
-                className="mx-auto w-full max-w-sm"
-                onClick={props.onConfirm}
-              >
-                {props.submitText ?? "CONFIRM"}
-              </Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
-    </div>
+        <DialogFooter className="flex">
+          {showFooter && (
+            <Button
+              type="submit"
+              className="mx-auto w-full max-w-sm"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                props.onConfirm();
+              }}
+            >
+              {props.submitText ?? "CONFIRM"}
+            </Button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 }
