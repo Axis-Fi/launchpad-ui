@@ -78,7 +78,6 @@ export function MutationDialog({
               onClick={(e) => {
                 console.log("preventing");
                 e.preventDefault();
-                e.stopPropagation();
                 props.onConfirm();
               }}
             >

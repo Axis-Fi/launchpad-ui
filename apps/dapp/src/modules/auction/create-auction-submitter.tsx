@@ -7,6 +7,7 @@ import { useAllowance } from "loaders/use-allowance";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { axisContracts } from "@repo/contracts";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
+import { LoadingIndicator } from "components/loading-indicator";
 
 type SubmitterProps = React.PropsWithChildren;
 
@@ -38,7 +39,13 @@ export function CreateAuctionSubmitter({ children }: SubmitterProps) {
               disabled={approveTx.isLoading}
               onClick={() => execute()}
             >
-              {approveTx.isLoading ? "Waiting" : "Approve"}
+              {approveTx.isLoading ? (
+                <>
+                  Waiting <LoadingIndicator />
+                </>
+              ) : (
+                "Approve"
+              )}
             </Button>
             <Tooltip
               content={`You need to allow the AuctionHouse contract to spend the configured amount of ${

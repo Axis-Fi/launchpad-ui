@@ -6,6 +6,7 @@ import {
 } from "loaders/subgraphTypes";
 import { PropsWithAuction } from ".";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { trimCurrency } from "src/utils/currency";
 
 const column = createColumnHelper<
   SubgraphAuctionEncryptedBid & {
@@ -32,7 +33,7 @@ const cols = [
     header: "Amount In",
     enableSorting: true,
     cell: (info) =>
-      `${Number(info.getValue()).toFixed(2)} ${
+      `${trimCurrency(info.getValue())} ${
         info.row.original.auction.quoteToken.symbol
       }`,
   }),
@@ -41,10 +42,9 @@ const cols = [
     enableSorting: true,
     cell: (info) => {
       const size = Math.random() * 80 + 60;
-      return info.getValue() ? (
-        `${Number(info.getValue()).toFixed(2)} ${
-          info.row.original.auction.baseToken.symbol
-        }`
+      const value = info.getValue();
+      return value ? (
+        `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
       ) : (
         <div
           className="w-30 bg-foreground h-5"

@@ -100,12 +100,8 @@ function AuctionPageLoading() {
     <div className="mask">
       <PageHeader />
       <div>
-        <div className="bg-secondary rounded-sm p-4">
-          <div className="flex items-center gap-x-1">
-            <Skeleton className="size-12 rounded-full" />
-            <h1>Loading...</h1>
-          </div>
-          <Skeleton className="mt-2 h-4 w-16" />
+        <div className="bg-secondary rounded-sm p-4 ">
+          <Skeleton className="h-22 mt-20 w-full" />
         </div>
 
         <div className="mt-5">

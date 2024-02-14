@@ -39,3 +39,18 @@
     @apply mt-8 w-full max-w-sm;
   }
 }
+
+@layer utilities {
+  .loading-indicator {
+    animation: rotateAnimation 4s linear infinite; /* Adjust duration and animation timing as needed */
+  }
+
+  @keyframes rotateAnimation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

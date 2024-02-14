@@ -1,4 +1,5 @@
 import { Button, DropdownChecker, IconnedInput, cn } from "@repo/ui";
+import { LoadingIndicator } from "components/loading-indicator";
 import { useAuctions } from "loaders/useAuctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
 import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
@@ -26,6 +27,7 @@ export default function AuctionListPage() {
   return (
     <div className="mt-5">
       <h1 className="mb-12">Origin</h1>
+      <LoadingIndicator />
 
       <div className="flex items-center justify-between">
         <h3>Sealed-Bid Auctions</h3>
