@@ -1,12 +1,26 @@
-import { Button, IconnedInput, cn } from "@repo/ui";
+import { Button, DropdownChecker, IconnedInput, cn } from "@repo/ui";
 import { useAuctions } from "loaders/useAuctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
 import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const options = [
+  { value: "created", label: "Created" },
+  { value: "live", label: "Live" },
+  { value: "concluded", label: "Concluded" },
+  { value: "decrypted", label: "Decrypted" },
+  { value: "settle", label: "Settled" },
+];
+
 export default function AuctionListPage() {
+  const [filters, setFilters] = useState<string[]>([]);
   const navigate = useNavigate();
   const { result: auctions, isLoading } = useAuctions();
+
+  const filteredAuctions = filters.length
+    ? auctions.filter((a) => filters.includes(a.status))
+    : auctions;
 
   return (
     <div className="mt-5">
@@ -14,16 +28,29 @@ export default function AuctionListPage() {
 
       <div className="flex items-center justify-between">
         <h3>Liquidity Bootstrapping</h3>
-        <IconnedInput
-          icon={<SearchIcon />}
-          className="placeholder:text-foreground"
-          placeholder="Search"
-        />
+        <div className="flex gap-x-2">
+          <DropdownChecker
+            setFilters={setFilters}
+            filters={filters}
+            options={options}
+            label="Auction Status"
+          />
+          <IconnedInput
+            icon={<SearchIcon />}
+            className="placeholder:text-foreground"
+            placeholder="Search"
+          />
+        </div>
       </div>
+      {!filteredAuctions.length && (
+        <div className="flex h-[400px] w-full items-center justify-center">
+          <h3>There arent any auctions in this state </h3>
+        </div>
+      )}
       <div className={cn("mt-4 grid grid-cols-3 gap-4", isLoading && "mask")}>
         {isLoading
           ? [...new Array(6)].map((_e, i) => <AuctionCardLoading key={i} />)
-          : auctions.map((a) => (
+          : filteredAuctions.map((a) => (
               <AuctionCard
                 key={a.chainId + a.id}
                 //socials={} TODO: add socials
