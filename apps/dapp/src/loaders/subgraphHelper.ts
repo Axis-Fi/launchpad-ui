@@ -13,15 +13,15 @@ export function getChainId(chainName: string): number {
   return chainId;
 }
 
-export function getStatus(
+export function getAuctionStatus(
   start: string,
   conclusion: string,
   capacity: string,
 ): AuctionStatus {
-  return getStatusWithBids(start, conclusion, capacity, false, 0, 0, 0);
+  return getAuctionStatusWithBids(start, conclusion, capacity, false, 0, 0, 0);
 }
 
-export function getStatusWithBids(
+export function getAuctionStatusWithBids(
   start: string,
   conclusion: string,
   capacity: string,

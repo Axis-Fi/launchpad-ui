@@ -1,5 +1,5 @@
 import { useGetAuctionLotQuery } from "@repo/subgraph-client";
-import { getChainId, getStatusWithBids } from "./subgraphHelper";
+import { getChainId, getAuctionStatusWithBids } from "./subgraphHelper";
 import { SubgraphAuctionWithEvents } from "./subgraphTypes";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./useAuctionInfo";
@@ -34,7 +34,7 @@ export function useAuction(lotId?: string): AuctionResult {
     };
   }
 
-  const status = getStatusWithBids(
+  const status = getAuctionStatusWithBids(
     auction.start,
     auction.conclusion,
     auction.capacity,
