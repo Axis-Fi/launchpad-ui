@@ -25,6 +25,8 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     new Date(Number(auction.createdBlockTimestamp) * 1000),
   );
 
+  const disableButton = totalBids === 0 || decrypt.decryptTx.isPending;
+
   return (
     <div>
       <div className="flex justify-between">
@@ -43,9 +45,11 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             onClick={decrypt.handleDecryption}
             submitText="Decrypt"
             showTrigger={true}
+            disabled={disableButton}
             TriggerElement={(props: Partial<MutationDialogProps>) => (
               <MutationDialog
                 {...props}
+                disabled={disableButton}
                 chainId={auction.chainId}
                 hash={decrypt.decryptTx.data!}
                 triggerContent={"Decrypt"}
