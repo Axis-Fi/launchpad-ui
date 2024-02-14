@@ -63,7 +63,8 @@ export function DatePicker({
             setDate(date);
           }}
           initialFocus
-          fromDate={!placeholderDate ? new Date() : placeholderDate}
+          placeholderDate={!placeholderDate ? new Date() : placeholderDate}
+          fromDate={new Date()}
           {...props}
         />
         {props.time && (
