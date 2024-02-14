@@ -31,6 +31,7 @@ export type MutationDialogProps = {
   screens?: MutationScreens;
   submitText?: string;
   error?: UseMutationResult["error"];
+  disabled?: boolean;
 } & MutationDialogElementProps;
 
 const defaultScreens: MutationScreens = {
@@ -53,15 +54,17 @@ export function MutationDialog({
   const allScreens = { ...defaultScreens, ...screens };
   const status = props.error ? "error" : props.hash ? mutation.status : "idle";
 
-  const error = props.error ?? mutation.error;
+  const error = props.error ?? mutation?.error;
 
   const { Component, title } = allScreens[status];
   const showFooter = status === "idle";
 
   return (
     <DialogRoot>
-      <DialogTrigger className="w-full ">
-        <Button className="w-full max-w-sm">{props.triggerContent}</Button>
+      <DialogTrigger className="w-full " disabled={props.disabled}>
+        <Button className="w-full max-w-sm" disabled={props.disabled}>
+          {props.triggerContent}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="text-2xl">{title}</DialogHeader>
@@ -73,6 +76,7 @@ export function MutationDialog({
               type="submit"
               className="mx-auto w-full max-w-sm"
               onClick={(e) => {
+                console.log("preventing");
                 e.preventDefault();
                 e.stopPropagation();
                 props.onConfirm();

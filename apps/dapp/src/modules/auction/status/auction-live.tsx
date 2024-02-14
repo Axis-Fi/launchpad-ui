@@ -19,6 +19,7 @@ import {
   MutationDialog,
   MutationDialogProps,
 } from "modules/transactions/mutation-dialog";
+import { useMutation } from "@tanstack/react-query";
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const account = useAccount();
@@ -61,21 +62,30 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   }, [bidReceipt.isSuccess]);
 
   // TODO Permit2 signature
+  //
+
+  const bidDependenciesMutation = useMutation({
+    mutationFn: async () => {
+      const baseTokenAmountOut = parseUnits(
+        baseTokenAmount.toString(),
+        Number(auction.baseToken.decimals),
+      );
+
+      // TODO consider giving a state update on the encryption process
+      const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
+        xChainId: auction.chainId,
+        xAuctionHouse: axisAddresses.auctionHouse,
+        lotId: parseInt(auction.lotId),
+        body: baseTokenAmountOut.toString(),
+      });
+
+      return encryptedAmountOut;
+    },
+  });
 
   const handleBid = async () => {
     // Amount out needs to be a uint256
-    const baseTokenAmountOut = parseUnits(
-      baseTokenAmount.toString(),
-      Number(auction.baseToken.decimals),
-    );
-
-    // TODO consider giving a state update on the encryption process
-    const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
-      xChainId: auction.chainId,
-      xAuctionHouse: axisAddresses.auctionHouse,
-      lotId: parseInt(auction.lotId),
-      body: baseTokenAmountOut.toString(),
-    });
+    const encryptedAmountOut = await bidDependenciesMutation.mutateAsync();
 
     // Submit the bid to the contract
     bid.writeContract({
@@ -147,12 +157,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           }
           auction={auction}
           onClick={handleSubmit}
-          showTrigger={approveTx.isSuccess}
+          showTrigger={approveTx.isSuccess || isSufficientAllowance}
           TriggerElement={(props: Partial<MutationDialogProps>) => (
             <MutationDialog
               {...props}
               chainId={auction.chainId}
               hash={bid.data}
+              error={bidDependenciesMutation.error}
               triggerContent={"Bid"}
             />
           )}

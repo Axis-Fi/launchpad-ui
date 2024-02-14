@@ -44,40 +44,52 @@ const tokenSchema = z.object({
   symbol: z.string(),
 });
 
-const schema = z.object({
-  quoteToken: tokenSchema,
-  payoutToken: tokenSchema,
-  capacity: z.string(),
-  minFillPercent: z.array(z.number()),
-  minBidPercent: z.array(z.number()),
-  minPrice: z.string(),
-  start: z.date().min(addMinutes(new Date(), 5)),
-  deadline: z.date().min(addDays(addMinutes(new Date(), 5), 1)), // TODO should be 1 day after the start time
-  hooks: z
-    .string()
-    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-    .optional(),
-  allowlist: z
-    .string()
-    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-    .optional(),
-  allowlistParams: z.string().optional(),
-  isVested: z.boolean().optional(),
-  curator: z
-    .string()
-    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-    .optional(),
-  vestingDuration: z.string().optional(),
-  // Metadata
-  name: z.string(),
-  description: z.string(),
-  projectLogo: z.string().url().optional(),
-  twitter: z.string().url().optional(),
-  discord: z.string().url().optional(),
-  website: z.string().url().optional(),
-  farcaster: z.string().url().optional(),
-  payoutTokenLogo: z.string().url().optional(),
-});
+const schema = z
+  .object({
+    quoteToken: tokenSchema,
+    payoutToken: tokenSchema,
+    capacity: z.string(),
+    minFillPercent: z.array(z.number()),
+    minBidPercent: z.array(z.number()),
+    minPrice: z.string(),
+    start: z.date().min(addMinutes(new Date(), 5)),
+    deadline: z.date().min(addDays(addMinutes(new Date(), 5), 1)),
+    hooks: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    allowlist: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    allowlistParams: z.string().optional(),
+    isVested: z.boolean().optional(),
+    curator: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    vestingDuration: z.string().optional(),
+    // Metadata
+    name: z.string(),
+    description: z.string(),
+    projectLogo: z.string().url().optional(),
+    twitter: z.string().url().optional(),
+    discord: z.string().url().optional(),
+    website: z.string().url().optional(),
+    farcaster: z.string().url().optional(),
+    payoutTokenLogo: z.string().url().optional(),
+  })
+  .refine((data) => {
+    // If vesting is enabled, vesting duration is required
+    if (data.isVested && !data.vestingDuration) {
+      return false;
+    }
+
+    // Deadline needs to be at least 1 day after the start
+    if (addDays(data.start, 1) > data.deadline) {
+      return false;
+    }
+  });
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
@@ -112,7 +124,6 @@ export default function CreateAuctionPage() {
   const createDependenciesMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
-        //TODO reenable info query
         name: values.name,
         description: values.description,
         links: {
@@ -127,12 +138,12 @@ export default function CreateAuctionPage() {
 
       // Store the auction info
       const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
-      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS");
+      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS"); // TODO display error
 
       // Get the public key
       const publicKey = await cloakClient.keysApi.newKeyPairPost();
 
-      if (!isHex(publicKey)) throw new Error("Invalid or no keypair received");
+      if (!isHex(publicKey)) throw new Error("Invalid or no keypair received"); // TODO display error
 
       return { publicKey, auctionInfoAddress };
     },
@@ -146,7 +157,7 @@ export default function CreateAuctionPage() {
     if (createDependenciesMutation.isError) {
       throw new Error(
         "Unable to create auction due to dependent mutation error",
-      );
+      ); // TODO display error
     }
 
     createAuction.writeContract(
@@ -225,8 +236,6 @@ export default function CreateAuctionPage() {
       },
     );
   };
-
-  // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
 
   const onSubmit = form.handleSubmit(handleCreation);
 
@@ -388,7 +397,7 @@ export default function CreateAuctionPage() {
 
                 <FormField
                   control={form.control}
-                  name="start" // TODO needs to be in the future (even if by a few seconds)
+                  name="start"
                   render={({ field }) => (
                     <FormItemWrapper
                       label="Start"
@@ -543,7 +552,6 @@ export default function CreateAuctionPage() {
                 />
               </div>
               <div>
-                {/*TODO: Fix this*/}
                 <h3 className="form-div">6 Optional Settings</h3>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
@@ -556,7 +564,6 @@ export default function CreateAuctionPage() {
                         <Input
                           {...field}
                           placeholder={trimAddress("0x0000000")}
-                          // TODO validate using isAddress
                         />
                       </FormItemWrapper>
                     )}
@@ -571,7 +578,6 @@ export default function CreateAuctionPage() {
                         <Input
                           {...field}
                           placeholder={trimAddress("0x0000000")}
-                          // TODO validate using isAddress
                         />
                       </FormItemWrapper>
                     )}
@@ -598,7 +604,6 @@ export default function CreateAuctionPage() {
                             placeholder="7"
                             disabled={!isVested}
                             required={isVested}
-                            // TODO validation
                             {...field}
                           />
                         </FormItemWrapper>
@@ -615,7 +620,6 @@ export default function CreateAuctionPage() {
                         <Input
                           {...field}
                           placeholder={trimAddress("0x0000000")}
-                          // TODO validate using isAddress
                         />
                       </FormItemWrapper>
                     )}
