@@ -50,7 +50,7 @@ const schema = z.object({
   minBidPercent: z.array(z.number()),
   minPrice: z.string(),
   start: z.date().min(addMinutes(new Date(), 5)),
-  deadline: z.date().min(addDays(addMinutes(new Date(), 5), 1)),
+  deadline: z.date().min(addDays(addMinutes(new Date(), 5), 1)), // TODO should be 1 day after the start time
   hooks: z
     .string()
     .regex(/^(0x)?[0-9a-fA-F]{40}$/)
