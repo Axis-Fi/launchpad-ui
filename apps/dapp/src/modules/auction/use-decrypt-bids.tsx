@@ -21,15 +21,14 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
         lotId: Number(auction.lotId),
       }),
     placeholderData: keepPreviousData,
+    enabled: auction.bids.length < auction.bidsDecrypted.length,
   });
-  console.log({ nextBids: nextBidsQuery });
 
   const decrypt = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: decrypt.data });
 
   const nextBids =
     nextBidsQuery.data?.map((d) => ({
-      ...d,
       amountOut: fromHex(d.amountOut as Address, "bigint"),
       seed: fromBytes(new Uint32Array(d.seed), "hex"),
     })) ?? [];
@@ -42,7 +41,6 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
       args: [BigInt(auction.lotId), nextBids],
     });
   };
-  console.log({ decrypt });
 
   useEffect(() => {
     if (decryptReceipt.isSuccess && !nextBidsQuery.isRefetching) {

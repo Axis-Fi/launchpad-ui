@@ -1,31 +1,29 @@
-import { Skeleton } from "@repo/ui";
+import { BlockExplorerLink } from "components/blockexplorer-link";
 import { Address } from "viem";
 
 type ContractAddressCard = {
   addresses: Array<[string, Address]>;
-  isLoading?: boolean;
+  chainId: number;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export function ContractAddressCard({
   addresses,
-  isLoading,
+  chainId,
   ...props
 }: ContractAddressCard) {
+  if (!chainId) throw new Error("No chainId provided");
+
   return (
     <div {...props}>
       <h3>Contract Addresses</h3>
       <div className="mt-2">
-        {isLoading ? (
-          <Skeleton className="h-40 w-full" />
-        ) : (
-          addresses.map(([name, address]) => (
-            <div key={address} className="flex">
-              <p>
-                {name}: {address}
-              </p>
-            </div>
-          ))
-        )}
+        {addresses.map(([name, address]) => (
+          <div key={address}>
+            <p className="flex gap-x-1">
+              {name}: <BlockExplorerLink chainId={chainId} address={address} />
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

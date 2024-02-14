@@ -33,6 +33,13 @@ fragment AuctionLotFragment on AuctionLot {
     name
     symbol
   }
+  created {
+    blockNumber
+    blockTimestamp
+    id
+    transactionHash
+    infoHash
+  }
 }
 
 query getAuctionLots {
@@ -56,13 +63,6 @@ query getAuctionLot($lotId: BigInt!) {
     first: 1
   ) {
     ...AuctionLotFragment
-    created {
-      blockNumber
-      blockTimestamp
-      id
-      transactionHash
-      infoHash
-    }
     cancelled {
       blockNumber
       blockTimestamp

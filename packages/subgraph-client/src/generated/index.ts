@@ -2407,6 +2407,13 @@ export type AuctionLotFragmentFragment = {
     name: string;
     symbol: string;
   };
+  created: {
+    blockNumber: string;
+    blockTimestamp: string;
+    id: string;
+    transactionHash: string;
+    infoHash: string;
+  };
 };
 
 export type GetAuctionLotsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2454,6 +2461,13 @@ export type GetAuctionLotsQuery = {
       name: string;
       symbol: string;
     };
+    created: {
+      blockNumber: string;
+      blockTimestamp: string;
+      id: string;
+      transactionHash: string;
+      infoHash: string;
+    };
   }>;
 };
 
@@ -2485,13 +2499,6 @@ export type GetAuctionLotQuery = {
     sold: string;
     start: string;
     wrapDerivative: boolean;
-    created: {
-      blockNumber: string;
-      blockTimestamp: string;
-      id: string;
-      transactionHash: string;
-      infoHash: string;
-    };
     cancelled?: {
       blockNumber: string;
       blockTimestamp: string;
@@ -2558,6 +2565,13 @@ export type GetAuctionLotQuery = {
       name: string;
       symbol: string;
     };
+    created: {
+      blockNumber: string;
+      blockTimestamp: string;
+      id: string;
+      transactionHash: string;
+      infoHash: string;
+    };
   }>;
 };
 
@@ -2596,6 +2610,13 @@ export const AuctionLotFragmentFragmentDoc = `
     decimals
     name
     symbol
+  }
+  created {
+    blockNumber
+    blockTimestamp
+    id
+    transactionHash
+    infoHash
   }
 }
     `;
@@ -2648,13 +2669,6 @@ export const GetAuctionLotDocument = `
     first: 1
   ) {
     ...AuctionLotFragment
-    created {
-      blockNumber
-      blockTimestamp
-      id
-      transactionHash
-      infoHash
-    }
     cancelled {
       blockNumber
       blockTimestamp

@@ -17,7 +17,7 @@ export default function ConnectButton() {
         const connected = ready && account && chain;
         return (
           <div
-            className="w-full"
+            className="w-full max-w-md"
             {...(!ready && {
               "aria-hidden": true,
               style: {

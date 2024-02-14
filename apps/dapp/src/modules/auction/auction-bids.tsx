@@ -1,24 +1,12 @@
-import { Skeleton } from "@repo/ui";
-import {
-  SubgraphAuctionDecryptedBid,
-  SubgraphAuctionEncryptedBid,
-  SubgraphAuctionRefundedBid,
-} from "loaders/subgraphTypes";
+import { BidList } from "./bid-list";
+import { PropsWithAuction } from ".";
 
 type AuctionBidsCard = {
-  encryptedBids: SubgraphAuctionEncryptedBid[];
-  decryptedBids: SubgraphAuctionDecryptedBid[];
-  refundedBids: SubgraphAuctionRefundedBid[];
   isLoading?: boolean;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & React.HTMLAttributes<HTMLDivElement> &
+  PropsWithAuction;
 
-export function AuctionBidsCard({
-  encryptedBids,
-  decryptedBids,
-  refundedBids,
-  isLoading,
-  ...props
-}: AuctionBidsCard) {
+export function AuctionBidsCard({ auction, ...props }: AuctionBidsCard) {
   // TODO: implement bids card
   // - table of bids
   // - bidder
@@ -31,17 +19,7 @@ export function AuctionBidsCard({
     <div {...props}>
       <h3>Bids</h3>
       <div className="mt-2">
-        {isLoading ? (
-          <Skeleton className="h-40 w-full" />
-        ) : (
-          encryptedBids.map((bid) => (
-            <div key={bid.bidId} className="flex">
-              <p>
-                {bid.bidder}: {bid.amount}
-              </p>
-            </div>
-          ))
-        )}
+        <BidList auction={auction} />
       </div>
     </div>
   );

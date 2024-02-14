@@ -508,7 +508,7 @@ export default function CreateAuctionPage() {
               </div>
               <div>
                 {/*TODO: Fix this*/}
-                <h3 className="form-div ml-[82px]">6 Optional Settings</h3>
+                <h3 className="form-div">6 Optional Settings</h3>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
                     name="hooks"
@@ -547,7 +547,7 @@ export default function CreateAuctionPage() {
                         <FormItemWrapper className="mt-4 w-min">
                           <div className="flex items-center gap-x-2">
                             <Switch onCheckedChange={field.onChange} />
-                            <Label>Vested?</Label>
+                            <Label>Vested</Label>
                           </div>
                         </FormItemWrapper>
                       )}

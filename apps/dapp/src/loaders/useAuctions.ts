@@ -18,7 +18,7 @@ export function useAuctions(): AuctionsResult {
     queryFn: () => {
       return Promise.all(
         data?.auctionLots
-          .filter((a) => a.created?.infoHash)
+          //.filter((a) => a.created?.infoHash)
           .map(async (auction) => {
             const auctionInfo = await getAuctionInfo(auction.created.infoHash);
             return { id: auction.id, auctionInfo };
