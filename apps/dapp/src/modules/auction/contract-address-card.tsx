@@ -18,7 +18,7 @@ export function ContractAddressCard({
       <h3>Contract Addresses</h3>
       <div className="mt-2">
         {addresses.map(([name, address]) => (
-          <div key={address}>
+          <div key={`${name}-${address}`}>
             <p className="flex gap-x-1">
               {name}: <BlockExplorerLink chainId={chainId} address={address} />
             </p>

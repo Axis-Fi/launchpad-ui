@@ -46,7 +46,6 @@ export default function AuctionPage() {
 
   const contracts = axisContracts.addresses[auction.chainId];
   const AuctionElement = statuses[auction.status];
-  console.log({ auction });
 
   return (
     <div>
@@ -74,8 +73,14 @@ export default function AuctionPage() {
         <ContractAddressCard
           chainId={auction.chainId}
           addresses={[
-            [auction.baseToken.symbol, auction.baseToken.address as Address],
-            [auction.quoteToken.symbol, auction.quoteToken.address as Address],
+            [
+              `Payout (${auction.baseToken.symbol})`,
+              auction.baseToken.address as Address,
+            ],
+            [
+              `Quote (${auction.quoteToken.symbol})`,
+              auction.quoteToken.address as Address,
+            ],
             ["Auction House", contracts.auctionHouse],
           ]}
         />
