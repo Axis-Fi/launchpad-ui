@@ -20,6 +20,7 @@ import {
   MutationDialogProps,
 } from "modules/transactions/mutation-dialog";
 import { useMutation } from "@tanstack/react-query";
+import { LoadingIndicator } from "components/loading-indicator";
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const account = useAccount();
@@ -149,11 +150,16 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             bid.isPending
           }
           submitText={
-            isSufficientAllowance
-              ? "Bid"
-              : approveTx.isLoading
-                ? "Confirming..."
-                : "Approve"
+            isSufficientAllowance ? (
+              "Bid"
+            ) : approveTx.isLoading ? (
+              <div>
+                Waiting confirmation...
+                <LoadingIndicator />
+              </div>
+            ) : (
+              "Approve"
+            )
           }
           auction={auction}
           onClick={handleSubmit}

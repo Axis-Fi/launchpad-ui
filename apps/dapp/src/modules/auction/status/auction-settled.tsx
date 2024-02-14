@@ -9,6 +9,7 @@ import {
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "..";
+import { trimCurrency } from "src/utils/currency";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const axisAddresses = axisContracts.addresses[auction.chainId];
@@ -21,13 +22,25 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
 
   const bidId = 0n; //TODO: how to best get these
   const isUserRefundable = false;
+  const tokenAmounts = auction.bidsDecrypted
+    .filter((b) => Number(b.amountOut) > 0)
+    .reduce(
+      (total, b) => {
+        total.in += Number(b.amountIn);
+        total.out += Number(b.amountOut);
+        return total;
+      },
+      { in: 0, out: 0 },
+    );
 
   //TODO: add a refundable bid table
   // const refundableBids = auction.bids.filter((b) =>
   //   b.bidder.includes(address?.toLowerCase() ?? ""),
   // );
 
-  // TODO TBD when we will automatically refund bids
+  const uniqueBidders = auction.bids
+    .map((b) => b.bidder)
+    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
 
   const handleRefund = () => {
     refund.writeContract({
@@ -39,11 +52,22 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   };
   console.log({ auction });
 
+  const rate = trimCurrency(tokenAmounts.in / tokenAmounts.out);
+
   return (
     <div className="flex justify-between">
       <AuctionInfoCard>
-        <InfoLabel label="Total Raised" value={0} />
-        <InfoLabel label="Rate" value={0} />
+        <InfoLabel
+          label="Total Raised"
+          value={`${tokenAmounts.in} ${auction.quoteToken.symbol}`}
+        />
+        <InfoLabel
+          label="Rate"
+          value={`${rate} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
+        />
+
+        <InfoLabel label="Total Bids" value={auction.bids.length} />
+        <InfoLabel label="Unique Participants" value={uniqueBidders} />
       </AuctionInfoCard>
       <div className="w-[40%]">
         {/* @ts-expect-error TODO: remove, slapped for preview*/}
