@@ -4,6 +4,10 @@ import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { formatDistanceToNow } from "date-fns";
 import { PropsWithAuction } from "..";
+import {
+  MutationDialog,
+  MutationDialogProps,
+} from "modules/transactions/mutation-dialog";
 
 export function AuctionConcluded({ auction }: PropsWithAuction) {
   const decrypt = useDecryptBids(auction);
@@ -21,7 +25,6 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     new Date(Number(auction.createdBlockTimestamp) * 1000),
   );
 
-  console.log({ next: decrypt.nextBids });
   return (
     <div>
       <div className="flex justify-between">
@@ -36,9 +39,18 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
         </AuctionInfoCard>
         <div className="w-[40%]">
           <AuctionInputCard
+            auction={auction}
             onClick={decrypt.handleDecryption}
             submitText="Decrypt"
-            auction={auction}
+            showTrigger={true}
+            TriggerElement={(props: Partial<MutationDialogProps>) => (
+              <MutationDialog
+                {...props}
+                chainId={auction.chainId}
+                hash={decrypt.decryptTx.data!}
+                triggerContent={"Decrypt"}
+              />
+            )}
           >
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
               <div>

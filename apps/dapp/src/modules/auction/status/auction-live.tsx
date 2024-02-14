@@ -15,6 +15,10 @@ import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "..";
+import {
+  MutationDialog,
+  MutationDialogProps,
+} from "modules/transactions/mutation-dialog";
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const account = useAccount();
@@ -143,6 +147,15 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           }
           auction={auction}
           onClick={handleSubmit}
+          showTrigger={approveTx.isSuccess}
+          TriggerElement={(props: Partial<MutationDialogProps>) => (
+            <MutationDialog
+              {...props}
+              chainId={auction.chainId}
+              hash={bid.data}
+              triggerContent={"Bid"}
+            />
+          )}
         >
           <AuctionBidInput
             balance={formattedBalance}

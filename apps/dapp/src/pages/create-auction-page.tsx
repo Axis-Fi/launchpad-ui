@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cloakClient } from "src/services/cloak";
-import { useWriteContract } from "wagmi";
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import {
   encodeAbiParameters,
@@ -34,6 +34,8 @@ import { AuctionInfo } from "src/types";
 import { formatDate, dateMath } from "../utils/date";
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
 import { addDays, addHours, addMinutes } from "date-fns";
+import { MutationDialog } from "modules/transactions/mutation-dialog";
+import { useMutation } from "@tanstack/react-query";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -95,39 +97,57 @@ export default function CreateAuctionPage() {
     defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken] = form.watch(["isVested", "payoutToken"]);
+  const [isVested, payoutToken, chainId] = form.watch([
+    "isVested",
+    "payoutToken",
+    "quoteToken.chainId",
+  ]);
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
   const createAuction = useWriteContract();
+  const createTxReceipt = useWaitForTransactionReceipt({
+    hash: createAuction.data,
+  });
 
-  // TODO handle/display errors
-  // TODO fix state of submit button during creation
+  const createDependenciesMutation = useMutation({
+    mutationFn: async (values: CreateAuctionForm) => {
+      const auctionInfo: AuctionInfo = {
+        //TODO reenable info query
+        name: values.name,
+        description: values.description,
+        links: {
+          projectLogo: values.projectLogo,
+          payoutTokenLogo: values.payoutTokenLogo,
+          website: values.website,
+          twitter: values.twitter,
+          discord: values.discord,
+          farcaster: values.farcaster,
+        },
+      };
+
+      // Store the auction info
+      const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
+      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS");
+
+      // Get the public key
+      const publicKey = await cloakClient.keysApi.newKeyPairPost();
+
+      if (!isHex(publicKey)) throw new Error("Invalid or no keypair received");
+
+      return { publicKey, auctionInfoAddress };
+    },
+  });
+
   const handleCreation = async (values: CreateAuctionForm) => {
-    // Create an object to store additional information about the auction
-    /* eslint-disable-next-line */
-    const auctionInfo: AuctionInfo = {
-      //TODO reenable info query
-      name: values.name,
-      description: values.description,
-      links: {
-        projectLogo: values.projectLogo,
-        payoutTokenLogo: values.payoutTokenLogo,
-        website: values.website,
-        twitter: values.twitter,
-        discord: values.discord,
-        farcaster: values.farcaster,
-      },
-    };
+    /* eslint-disable-next-line */ //TODO: use infoAddress
+    const { publicKey, auctionInfoAddress } =
+      await createDependenciesMutation.mutateAsync(values);
 
-    // Store the auction info
-    const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
-    console.log("Auction info address: ", auctionInfoAddress);
-
-    // Get the public key
-    const publicKey = await cloakClient.keysApi.newKeyPairPost();
-
-    if (!publicKey) throw new Error("Unable to generate RSA keypair");
-    if (!isHex(publicKey)) throw new Error("Invalid keypair");
+    if (createDependenciesMutation.isError) {
+      throw new Error(
+        "Unable to create auction due to dependent mutation error",
+      );
+    }
 
     createAuction.writeContract(
       {
@@ -206,11 +226,15 @@ export default function CreateAuctionPage() {
     );
   };
 
+  // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
+
+  const onSubmit = form.handleSubmit(handleCreation);
+
   return (
     <div className="pb-20 pt-10">
       <h1 className="text-6xl">Create Your Auction</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleCreation)}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="mx-auto mt-4 flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
               <div>
@@ -601,7 +625,16 @@ export default function CreateAuctionPage() {
             </div>
           </div>
 
-          <CreateAuctionSubmitter isPending={createAuction.isPending} />
+          <CreateAuctionSubmitter>
+            <MutationDialog
+              submitText="DEPLOY AUCTION"
+              triggerContent="DEPLOY AUCTION"
+              hash={createAuction.data}
+              chainId={chainId}
+              mutation={createTxReceipt}
+              onConfirm={onSubmit}
+            />
+          </CreateAuctionSubmitter>
         </form>
       </Form>
     </div>
