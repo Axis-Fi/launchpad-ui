@@ -32,7 +32,9 @@ const cols = [
     header: "Amount In",
     enableSorting: true,
     cell: (info) =>
-      `${info.getValue()} ${info.row.original.auction.quoteToken.symbol}`,
+      `${Number(info.getValue()).toFixed(2)} ${
+        info.row.original.auction.quoteToken.symbol
+      }`,
   }),
   column.accessor("amountOut", {
     header: "Amount Out",
@@ -40,7 +42,9 @@ const cols = [
     cell: (info) => {
       const size = Math.random() * 80 + 60;
       return info.getValue() ? (
-        `${info.getValue()} ${info.row.original.auction.baseToken.symbol}`
+        `${Number(info.getValue()).toFixed(2)} ${
+          info.row.original.auction.baseToken.symbol
+        }`
       ) : (
         <div
           className="w-30 bg-foreground h-5"

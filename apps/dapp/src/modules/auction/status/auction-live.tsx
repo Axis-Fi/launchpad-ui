@@ -65,6 +65,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       Number(auction.baseToken.decimals),
     );
 
+    // TODO consider giving a state update on the encryption process
     const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
       xChainId: auction.chainId,
       xAuctionHouse: axisAddresses.auctionHouse,
