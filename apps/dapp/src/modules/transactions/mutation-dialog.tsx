@@ -53,7 +53,7 @@ export function MutationDialog({
   const allScreens = { ...defaultScreens, ...screens };
   const status = props.error ? "error" : props.hash ? mutation.status : "idle";
 
-  const error = props.error ?? mutation.error;
+  const error = props.error ?? mutation?.error;
 
   const { Component, title } = allScreens[status];
   const showFooter = status === "idle";
@@ -73,6 +73,7 @@ export function MutationDialog({
               type="submit"
               className="mx-auto w-full max-w-sm"
               onClick={(e) => {
+                console.log("preventing");
                 e.preventDefault();
                 e.stopPropagation();
                 props.onConfirm();
