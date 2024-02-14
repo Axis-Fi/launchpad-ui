@@ -161,6 +161,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           TriggerElement={(props: Partial<MutationDialogProps>) => (
             <MutationDialog
               {...props}
+              mutation={bidReceipt}
               chainId={auction.chainId}
               /* @ts-expect-error TODO: remove this expect*/
               hash={bid.data}
