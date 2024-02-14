@@ -35,6 +35,7 @@ import { formatDate, dateMath } from "../utils/date";
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { MutationDialog } from "modules/transactions/mutation-dialog";
+import { useMutation } from "@tanstack/react-query";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -108,34 +109,45 @@ export default function CreateAuctionPage() {
     hash: createAuction.data,
   });
 
-  // TODO handle/display errors
-  // TODO fix state of submit button during creation
+  const createDependenciesMutation = useMutation({
+    mutationFn: async (values: CreateAuctionForm) => {
+      const auctionInfo: AuctionInfo = {
+        //TODO reenable info query
+        name: values.name,
+        description: values.description,
+        links: {
+          projectLogo: values.projectLogo,
+          payoutTokenLogo: values.payoutTokenLogo,
+          website: values.website,
+          twitter: values.twitter,
+          discord: values.discord,
+          farcaster: values.farcaster,
+        },
+      };
+
+      // Store the auction info
+      const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
+      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS");
+
+      // Get the public key
+      const publicKey = await cloakClient.keysApi.newKeyPairPost();
+
+      if (!isHex(publicKey)) throw new Error("Invalid or no keypair received");
+
+      return { publicKey, auctionInfoAddress };
+    },
+  });
+
   const handleCreation = async (values: CreateAuctionForm) => {
-    // Create an object to store additional information about the auction
-    /* eslint-disable-next-line */
-    const auctionInfo: AuctionInfo = {
-      //TODO reenable info query
-      name: values.name,
-      description: values.description,
-      links: {
-        projectLogo: values.projectLogo,
-        payoutTokenLogo: values.payoutTokenLogo,
-        website: values.website,
-        twitter: values.twitter,
-        discord: values.discord,
-        farcaster: values.farcaster,
-      },
-    };
+    /* eslint-disable-next-line */ //TODO: use infoAddress
+    const { publicKey, auctionInfoAddress } =
+      await createDependenciesMutation.mutateAsync(values);
 
-    // Store the auction info
-    const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
-    console.log("Auction info address: ", auctionInfoAddress);
-
-    // Get the public key
-    const publicKey = await cloakClient.keysApi.newKeyPairPost();
-
-    if (!publicKey) throw new Error("Unable to generate RSA keypair");
-    if (!isHex(publicKey)) throw new Error("Invalid keypair");
+    if (createDependenciesMutation.isError) {
+      throw new Error(
+        "Unable to create auction due to dependent mutation error",
+      );
+    }
 
     createAuction.writeContract(
       {
@@ -222,7 +234,7 @@ export default function CreateAuctionPage() {
     <div className="pb-20 pt-10">
       <h1 className="text-6xl">Create Your Auction</h1>
       <Form {...form}>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="mx-auto mt-4 flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
               <div>

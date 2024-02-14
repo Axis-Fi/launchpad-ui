@@ -40,7 +40,7 @@
     --accent-foreground: var(--axis-dark);
 
     --destructive: var(--axis-red);
-    --destructive-foreground: var(--axis-light);
+    --destructive-foreground: var(--axis-dark);
 
     --border: var(--axis-light);
     --input: var(--axis-light);

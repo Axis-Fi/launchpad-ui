@@ -11,6 +11,7 @@ import {
 } from "@repo/ui";
 import React from "react";
 import { WaitForTransactionReceiptErrorType } from "wagmi/actions";
+import { UseMutationResult } from "@tanstack/react-query";
 
 export type MutationDialogElementProps = {
   chainId: number;
@@ -29,6 +30,7 @@ export type MutationDialogProps = {
   triggerContent: string | React.ReactNode;
   screens?: MutationScreens;
   submitText?: string;
+  error?: UseMutationResult["error"];
 } & MutationDialogElementProps;
 
 const defaultScreens: MutationScreens = {
@@ -49,7 +51,9 @@ export function MutationDialog({
   ...props
 }: MutationDialogProps) {
   const allScreens = { ...defaultScreens, ...screens };
-  const status = props.hash ? mutation.status : "idle";
+  const status = props.error ? "error" : props.hash ? mutation.status : "idle";
+
+  const error = props.error ?? mutation.error;
 
   const { Component, title } = allScreens[status];
   const showFooter = status === "idle";
@@ -61,11 +65,7 @@ export function MutationDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="text-2xl">{title}</DialogHeader>
-        <Component
-          error={mutation?.error}
-          hash={props.hash}
-          chainId={props.chainId}
-        />
+        <Component error={error} hash={props.hash} chainId={props.chainId} />
 
         <DialogFooter className="flex">
           {showFooter && (
