@@ -20,7 +20,7 @@ export function getStatus(
 ): AuctionStatus {
   // If capacity is 0, the auction is finished
   if (Number(capacity) == 0) {
-    return "concluded";
+    return "settled";
   }
 
   // If before the start date, the auction has been created but is not live

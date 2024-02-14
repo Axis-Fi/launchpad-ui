@@ -22,18 +22,17 @@ export function AuctionInputCard({ auction, ...props }: AuctionInputCardProps) {
     new Date(Number(auction.conclusion) * 1000),
   );
 
-  const isConcluded = auction.status === "concluded";
-  const isCreated = auction.status === "created";
+  const isLive = auction.status === "live";
 
   return (
     <CardRoot className="bg-foreground text-secondary w-full">
       <CardHeader
         className={cn(
           "flex-row items-center justify-between pt-2",
-          isConcluded && "justify-end",
+          !isLive && "justify-end",
         )}
       >
-        {!isConcluded && !isCreated && (
+        {isLive && (
           <div className="pt-4">
             <p>Ends In</p>
             <h1>{remainingTime}</h1>
