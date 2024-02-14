@@ -150,7 +150,6 @@ export default function CreateAuctionPage() {
   });
 
   const handleCreation = async (values: CreateAuctionForm) => {
-    /* eslint-disable-next-line */ //TODO: use infoAddress
     const { publicKey, auctionInfoAddress } =
       await createDependenciesMutation.mutateAsync(values);
 
@@ -227,6 +226,7 @@ export default function CreateAuctionPage() {
               ],
             ),
           },
+          auctionInfoAddress,
         ],
       },
       {

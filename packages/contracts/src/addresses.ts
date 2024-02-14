@@ -1,10 +1,10 @@
 import type { AxisContractAddresses } from "./types";
 
 const blastSepolia: AxisContractAddresses = {
-  auctionHouse: "0x00000000AD4dd7bC9077e3894225840fE1bfd6eC",
-  catalogue: "0x101b502D216d27cb342e9686A2B34A1cD19B2F75",
-  localSealedBidBatchAuction: "0xc20918b09dE9708d2A7997dfFc3c5ACB34d4a15b",
-  linearVesting: "0x0e4996960731Fec8E7C9DBbD51383fC71174DD88",
+  auctionHouse: "0x00000000cB3c2A36dEF5Be4d3A674280eFC33498",
+  catalogue: "0x0A0BA689D2D72D3f376293c534AF299B3C6Dac85",
+  localSealedBidBatchAuction: "0xcE56d3E3E145b44597B61E99c64cb82FB209Da04",
+  linearVesting: "0x32A7b69B9F42F0CD6306Bd897ae2664AF0eFBAbd",
 };
 
 export const addressesPerChain: Record<number, AxisContractAddresses> = {
