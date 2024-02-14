@@ -100,7 +100,6 @@ export default function CreateAuctionPage() {
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
   const createAuction = useWriteContract();
 
-  // TODO if there is no approval, this will still execute in addition to the approval tx
   // TODO handle/display errors
   // TODO fix state of submit button during creation
   const handleCreation = async (values: CreateAuctionForm) => {
@@ -205,7 +204,6 @@ export default function CreateAuctionPage() {
         },
       },
     );
-    console.log("submitted");
   };
 
   return (
