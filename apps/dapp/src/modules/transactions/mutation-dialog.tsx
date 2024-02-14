@@ -21,7 +21,7 @@ export type MutationDialogElementProps = {
 
 export type MutationScreens = Record<
   Partial<UseWaitForTransactionReceiptReturnType["status"] | "idle">,
-  { Component: React.FC<MutationDialogElementProps>; title?: string }
+  { Component: React.FC<Partial<MutationDialogElementProps>>; title?: string }
 >;
 
 export type MutationDialogProps = {

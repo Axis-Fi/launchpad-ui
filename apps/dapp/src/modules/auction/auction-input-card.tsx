@@ -17,7 +17,7 @@ type AuctionInputCardProps = PropsWithAuction &
     submitText: string | React.ReactNode;
     disabled?: boolean;
     showTrigger?: boolean;
-    TriggerElement: typeof MutationDialog;
+    TriggerElement?: typeof MutationDialog;
   };
 
 export function AuctionInputCard({

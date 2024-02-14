@@ -1,5 +1,5 @@
 import { axisContracts } from "@repo/contracts";
-import { InfoLabel, trimAddress } from "@repo/ui";
+import { Button, InfoLabel, trimAddress } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
 import { useReferral } from "loaders/use-referral";
 import React from "react";
@@ -15,12 +15,11 @@ import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "..";
-import {
-  MutationDialog,
-  MutationDialogProps,
-} from "modules/transactions/mutation-dialog";
+import { MutationDialog } from "modules/transactions/mutation-dialog";
 import { useMutation } from "@tanstack/react-query";
 import { LoadingIndicator } from "components/loading-indicator";
+import { RequiresWalletConnection } from "components/requires-wallet-connection";
+import { LockIcon } from "lucide-react";
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const account = useAccount();
@@ -149,40 +148,66 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             bidReceipt.isLoading ||
             bid.isPending
           }
-          submitText={
-            isSufficientAllowance ? (
-              "Bid"
-            ) : approveTx.isLoading ? (
-              <div>
-                Waiting confirmation...
-                <LoadingIndicator />
-              </div>
-            ) : (
-              "Approve"
-            )
-          }
           auction={auction}
           onClick={handleSubmit}
-          showTrigger={approveTx.isSuccess || isSufficientAllowance}
-          TriggerElement={(props: Partial<MutationDialogProps>) => (
-            <MutationDialog
-              {...props}
-              mutation={bidReceipt}
-              chainId={auction.chainId}
-              /* @ts-expect-error TODO: remove this expect*/
-              hash={bid.data}
-              /* @ts-expect-error TODO: remove this expect*/
-              error={bidDependenciesMutation.error}
-              triggerContent={"Bid"}
-            />
-          )}
         >
-          <AuctionBidInput
-            balance={formattedBalance}
-            onChangeAmountIn={(e) => setQuoteTokenAmount(Number(e))}
-            onChangeMinAmountOut={(e) => setBaseTokenAmount(Number(e))}
-            auction={auction}
-          />
+          <>
+            <AuctionBidInput
+              balance={formattedBalance}
+              onChangeAmountIn={(e) => setQuoteTokenAmount(Number(e))}
+              onChangeMinAmountOut={(e) => setBaseTokenAmount(Number(e))}
+              auction={auction}
+            />
+            <RequiresWalletConnection>
+              <div className="mt-4 w-full">
+                {!isSufficientAllowance ? (
+                  <Button className="w-full" onClick={() => approveCapacity()}>
+                    {isSufficientAllowance ? (
+                      "Bid"
+                    ) : approveTx.isLoading ? (
+                      <div className="flex">
+                        Waiting confirmation...
+                        <LoadingIndicator />
+                      </div>
+                    ) : (
+                      "Approve"
+                    )}
+                  </Button>
+                ) : (
+                  <MutationDialog
+                    onConfirm={() => handleBid()}
+                    mutation={bidReceipt}
+                    chainId={auction.chainId}
+                    /* @ts-expect-error TODO: remove this expect*/
+                    hash={bid.data}
+                    /* @ts-expect-error TODO: remove this expect*/
+                    error={bidDependenciesMutation.error}
+                    triggerContent={"Bid"}
+                    screens={{
+                      idle: {
+                        Component: () => (
+                          <div className="text-center">
+                            You&apos;re about to place a bid of{" "}
+                            {quoteTokenAmount} {auction.quoteToken.symbol}
+                          </div>
+                        ),
+                        title: "Confirm Bid",
+                      },
+                      success: {
+                        Component: () => (
+                          <div className="flex justify-center text-center">
+                            <LockIcon className="mr-1" />
+                            Bid encrypted and stored successfully!
+                          </div>
+                        ),
+                        title: "Transaction Confirmed",
+                      },
+                    }}
+                  />
+                )}
+              </div>
+            </RequiresWalletConnection>
+          </>
         </AuctionInputCard>
 
         {bidReceipt.isLoading && <p>Confirming transaction...</p>}
