@@ -15,6 +15,7 @@ export type DialogProps = React.PropsWithChildren & {
   triggerContent?: string;
   /** An element to act as trigger for the modal */
   triggerElement?: React.ReactNode;
+  submitContent?: React.ReactNode;
   title?: string;
   description?: string;
   submitText?: string;
@@ -43,7 +44,7 @@ export function Dialog(props: DialogProps) {
         props.onOpenChange?.(open);
       }}
     >
-      <DialogTrigger className="w-full max-w-sm" asChild>
+      <DialogTrigger className="hover:bg-primary/80 w-full max-w-sm" asChild>
         {content}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

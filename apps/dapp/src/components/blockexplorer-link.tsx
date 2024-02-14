@@ -9,11 +9,13 @@ export function BlockExplorerLink({
   address,
   trim,
   icon = true,
+  ...props
 }: {
   chainId: number;
   address: string | Address;
   trim?: boolean;
   icon?: boolean;
+  showName?: boolean;
 }) {
   const chain = activeChains.find((c) => c.id === chainId);
 
@@ -21,12 +23,13 @@ export function BlockExplorerLink({
   const blockExplorer = getBlockExplorer(chain);
 
   return (
-    <Link
-      className="group-hover:text-primary group flex items-center transition-all"
-      href={blockExplorer.url + address}
-    >
-      {trim ? trimAddress(address, 6) : address}
-      {icon && <ArrowUpRightIcon className="group size-6" />}
+    <Link className="flex items-center " href={blockExplorer.url + address}>
+      {trim
+        ? trimAddress(address, 6)
+        : props.showName
+          ? blockExplorer.name
+          : address}
+      {icon && <ArrowUpRightIcon className="size-6 " />}
     </Link>
   );
 }

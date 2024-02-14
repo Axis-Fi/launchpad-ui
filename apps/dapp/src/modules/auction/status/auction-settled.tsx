@@ -22,6 +22,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   const bidId = 0n; //TODO: how to best get these
   const isUserRefundable = false;
 
+  //TODO: add a refundable bid table
   // const refundableBids = auction.bids.filter((b) =>
   //   b.bidder.includes(address?.toLowerCase() ?? ""),
   // );
