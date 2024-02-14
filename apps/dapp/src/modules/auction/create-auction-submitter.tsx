@@ -19,19 +19,25 @@ export function CreateAuctionSubmitter({ isPending }: SubmitterProps) {
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
 
-  const { isSufficientAllowance, execute, approveTx } = useAllowance({
-    ownerAddress: address,
-    spenderAddress: axisAddresses?.auctionHouse,
-    tokenAddress: payoutToken?.address as Address,
-    decimals: payoutToken?.decimals,
-    chainId: payoutToken?.chainId,
-    amount: Number(amount),
-  });
+  const { isSufficientAllowance, isLoading, execute, approveTx } = useAllowance(
+    {
+      ownerAddress: address,
+      spenderAddress: axisAddresses?.auctionHouse,
+      tokenAddress: payoutToken?.address as Address,
+      decimals: payoutToken?.decimals,
+      chainId: payoutToken?.chainId,
+      amount: Number(amount),
+    },
+  );
 
   return (
     <div className="mt-20 flex flex-col items-center justify-center">
       <RequiresWalletConnection>
-        {isSufficientAllowance ? (
+        {isLoading ? (
+          <Button className="w-full max-w-md" disabled>
+            Loading...
+          </Button>
+        ) : isSufficientAllowance ? (
           <Button
             type="submit"
             className="w-full max-w-md"
