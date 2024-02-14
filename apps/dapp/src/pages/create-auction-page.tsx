@@ -208,8 +208,6 @@ export default function CreateAuctionPage() {
     console.log("submitted");
   };
 
-  // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
-
   return (
     <div className="pb-20 pt-10">
       <h1 className="text-6xl">Create Your Auction</h1>
@@ -217,6 +215,19 @@ export default function CreateAuctionPage() {
         <form onSubmit={form.handleSubmit(handleCreation)}>
           <div className="mx-auto mt-4 flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
+              <div>
+                Creating an auction will involve the following:
+                <ol>
+                  <li>
+                    If necessary, authorising the spending of the payout token
+                  </li>
+                  <li>
+                    Pre-funding the auction with the payout token and capacity
+                    selected
+                  </li>
+                </ol>
+              </div>
+
               <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
                 <h3 className="form-div ">1 Tokens</h3>
                 <div />

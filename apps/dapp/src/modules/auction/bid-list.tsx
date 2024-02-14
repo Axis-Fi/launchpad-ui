@@ -75,5 +75,15 @@ export function BidList(props: PropsWithAuction) {
 
   const allBids = [...mappedBids];
 
-  return <DataTable emptyText="No bids yet " columns={cols} data={allBids} />;
+  return (
+    <DataTable
+      emptyText={
+        props.auction.status == "created" || props.auction.status == "live"
+          ? "No bids yet"
+          : "No bids received"
+      }
+      columns={cols}
+      data={allBids}
+    />
+  );
 }
