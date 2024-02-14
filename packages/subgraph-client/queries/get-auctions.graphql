@@ -16,6 +16,7 @@ fragment AuctionLotFragment on AuctionLot {
   lastUpdatedBlockTimestamp
   lastUpdatedTransactionHash
   lotId
+  maxBidId
   owner
   purchased
   sold
@@ -70,6 +71,7 @@ query getAuctionLot($lotId: BigInt!) {
       blockTimestamp
       id
       transactionHash
+      status
     }
     refundedBids {
       blockNumber

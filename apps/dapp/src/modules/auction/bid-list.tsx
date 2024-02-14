@@ -57,11 +57,20 @@ const cols = [
       );
     },
   }),
+  column.accessor("status", {
+    header: "Status",
+    enableSorting: true,
+    cell: (info) => info.getValue(),
+  }),
 ];
 
 export function BidList(props: PropsWithAuction) {
   const encrypted = props.auction?.bids ?? [];
   const decrypted = props.auction?.bidsDecrypted ?? [];
+
+  // TODO add button triggering a modal to refund a bid if:
+  // - auction is live && bid status is not refunded
+  // - auction is settled && bid status is not won and not refunded
 
   const mappedBids = encrypted.map((bid) => {
     const decryptedBid = decrypted.find(
@@ -71,6 +80,7 @@ export function BidList(props: PropsWithAuction) {
     return decryptedBid
       ? {
           ...decryptedBid.bid,
+          status: bid.status,
           amountOut: decryptedBid.amountOut,
           auction: props.auction,
         }
