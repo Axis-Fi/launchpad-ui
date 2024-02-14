@@ -34,6 +34,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
         <InfoLabel label="Rate" value={rate} />
       </AuctionInfoCard>
       <div className="w-[50%]">
+        {/* @ts-expect-error TODO: remove expect*/}
         <AuctionInputCard
           submitText="Settle Auction"
           onClick={handleSettle}

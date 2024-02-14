@@ -14,7 +14,8 @@
       "@/utils": ["../../packages/ui/src/utils.ts"],
       "@/components/primitives/*": [
         "../../packages/ui/src/components/primitives/*"
-      ]
+      ],
+      "@/components": ["../../packages/ui/src/components/index.ts"]
     }
   },
   "references": [

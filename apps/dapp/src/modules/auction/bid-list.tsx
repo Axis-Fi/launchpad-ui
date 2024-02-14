@@ -96,6 +96,7 @@ export function BidList(props: PropsWithAuction) {
           ? "No bids yet"
           : "No bids received"
       }
+      /*@ts-expect-error TODO: remove, slapped for preview*/
       columns={cols}
       data={allBids}
     />

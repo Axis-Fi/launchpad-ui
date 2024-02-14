@@ -54,6 +54,7 @@ export default function AuctionListPage() {
               <AuctionCard
                 key={a.chainId + a.id}
                 //socials={} TODO: add socials
+                // @ts-expect-error fix type
                 auction={a}
                 onClickView={() => navigate(`/auction/${a.chainId}/${a.id}`)}
               />

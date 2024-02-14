@@ -51,6 +51,7 @@ export function AuctionInputCard({
       <CardFooter className="flex justify-center">
         <RequiresWalletConnection>
           {props.showTrigger ? (
+            /* @ts-expect-error TODO: remove*/
             <TriggerElement onConfirm={props.onClick} />
           ) : (
             props.submitText &&

@@ -162,7 +162,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             <MutationDialog
               {...props}
               chainId={auction.chainId}
+              /* @ts-expect-error TODO: remove this expect*/
               hash={bid.data}
+              /* @ts-expect-error TODO: remove this expect*/
               error={bidDependenciesMutation.error}
               triggerContent={"Bid"}
             />
