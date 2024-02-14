@@ -72,6 +72,7 @@ export default function AuctionPage() {
       <div className="mt-8 flex justify-between gap-x-4">
         <ProjectInfoCard className="w-[50%]" auction={auction} />
         <ContractAddressCard
+          chainId={auction.chainId}
           addresses={[
             [auction.baseToken.symbol, auction.baseToken.address as Address],
             [auction.quoteToken.symbol, auction.quoteToken.address as Address],
