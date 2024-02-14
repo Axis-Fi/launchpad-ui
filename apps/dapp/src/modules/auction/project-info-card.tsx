@@ -14,7 +14,10 @@ export function ProjectInfoCard({
     <div className={props.className}>
       <div className="mb-2 flex justify-between">
         <h3>About {auction.baseToken.name}</h3>
-        <Link className="text-primary flex items-end" href="">
+        <Link
+          className="text-primary flex items-end"
+          href={auction.auctionInfo?.links?.website}
+        >
           GO TO WEBSITE
           <ArrowUpRightIcon className="inline" />
         </Link>

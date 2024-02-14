@@ -25,6 +25,7 @@ export function AuctionCard({
   const remainingTime = formatDistanceToNow(
     new Date(Number(auction.conclusion) * 1000),
   );
+  console.log({ auction });
 
   return (
     <div

@@ -18,9 +18,8 @@ export function useAuctions(): AuctionsResult {
     queryFn: () => {
       return Promise.all(
         data?.auctionLots
-          .filter((a) => a.created?.infoHash)
+          //.filter((a) => a.created?.infoHash)
           .map(async (auction) => {
-            //@ts-expect-error type not implemented
             const auctionInfo = await getData(auction.created.infoHash);
             return { id: auction.id, auctionInfo };
           }) ?? [],
@@ -34,7 +33,8 @@ export function useAuctions(): AuctionsResult {
       ...auction,
       chainId: getChainId(auction.chain),
       status: getStatus(auction.start, auction.conclusion, auction.capacity),
-      auctionInfo: infos.data?.find((info) => info.id === auction.id),
+      auctionInfo: infos.data?.find((info) => info.id === auction.id)
+        ?.auctionInfo,
     })),
     isLoading: isLoading,
   };
