@@ -19,31 +19,33 @@ export function CreateAuctionSubmitter({ isPending }: SubmitterProps) {
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
 
-  // TODO check that loading state works
-  const { isSufficientAllowance, execute, approveTx, isLoading } = useAllowance(
-    {
-      ownerAddress: address,
-      spenderAddress: axisAddresses?.auctionHouse,
-      tokenAddress: payoutToken?.address as Address,
-      decimals: payoutToken?.decimals,
-      chainId: payoutToken?.chainId,
-      amount: Number(amount),
-    },
-  );
+  const { isSufficientAllowance, execute, approveTx } = useAllowance({
+    ownerAddress: address,
+    spenderAddress: axisAddresses?.auctionHouse,
+    tokenAddress: payoutToken?.address as Address,
+    decimals: payoutToken?.decimals,
+    chainId: payoutToken?.chainId,
+    amount: Number(amount),
+  });
 
-  console.log({ payoutToken });
   return (
     <div className="mt-20 flex flex-col items-center justify-center">
       <RequiresWalletConnection>
-        {isLoading ? (
-          <Button disabled>Loading...</Button>
-        ) : isSufficientAllowance ? (
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Confirming..." : "Create Auction"}
+        {isSufficientAllowance ? (
+          <Button
+            type="submit"
+            className="w-full max-w-md"
+            disabled={isPending}
+          >
+            {isPending ? "Confirming..." : "DEPLOY AUCTION"}
           </Button>
         ) : (
           <div className="flex">
-            <Button disabled={approveTx.isLoading} onClick={() => execute()}>
+            <Button
+              className="w-full max-w-md"
+              disabled={approveTx.isLoading}
+              onClick={() => execute()}
+            >
               {approveTx.isLoading ? "Waiting" : "Approve"}
             </Button>
             <Tooltip

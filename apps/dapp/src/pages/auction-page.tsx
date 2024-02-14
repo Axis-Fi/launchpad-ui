@@ -68,20 +68,20 @@ export default function AuctionPage() {
         <AuctionElement auction={auction} />
       </div>
 
-      <ProjectInfoCard className="mt-6 w-[50%]" auction={auction} />
-      <ContractAddressCard
-        className="mt-12"
-        addresses={[
-          [auction.baseToken.symbol, auction.baseToken.address as Address],
-          [auction.quoteToken.symbol, auction.quoteToken.address as Address],
-          ["Auction House", contracts.auctionHouse],
-        ]}
-      />
+      <div className="mt-8 flex justify-between gap-x-4">
+        <ProjectInfoCard className="w-[50%]" auction={auction} />
+        <ContractAddressCard
+          addresses={[
+            [auction.baseToken.symbol, auction.baseToken.address as Address],
+            [auction.quoteToken.symbol, auction.quoteToken.address as Address],
+            ["Auction House", contracts.auctionHouse],
+          ]}
+        />
+      </div>
+
       <AuctionBidsCard
         className="mt-12"
-        encryptedBids={auction.bids}
-        decryptedBids={auction.bidsDecrypted}
-        refundedBids={auction.refundedBids}
+        auction={auction}
         isLoading={isAuctionLoading}
       />
     </div>

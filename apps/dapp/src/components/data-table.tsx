@@ -25,11 +25,13 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onClickRow?: (row: Row<TData>) => void;
+  emptyText?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  emptyText,
   ...props
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -71,7 +73,6 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="cursor-pointer"
                   onClick={() => props.onClickRow?.(row)}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -90,7 +91,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {emptyText ?? "No results"}
                 </TableCell>
               </TableRow>
             )}
