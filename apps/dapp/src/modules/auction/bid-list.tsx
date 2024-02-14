@@ -5,6 +5,7 @@ import {
   SubgraphAuctionWithEvents,
 } from "loaders/subgraphTypes";
 import { PropsWithAuction } from ".";
+import { BlockExplorerLink } from "components/blockexplorer-link";
 
 const column = createColumnHelper<
   SubgraphAuctionEncryptedBid & {
@@ -17,7 +18,14 @@ const cols = [
   column.accessor("bidder", {
     header: "Bidder",
     enableSorting: true,
-    cell: (info) => info.getValue(),
+    cell: (info) => (
+      <BlockExplorerLink
+        chainId={info.row.original.auction.chainId}
+        address={info.getValue()}
+        icon={false}
+        trim
+      />
+    ),
   }),
 
   column.accessor("amount", {

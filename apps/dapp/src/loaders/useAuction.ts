@@ -1,11 +1,8 @@
-import {
-  GetAuctionLotQuery,
-  useGetAuctionLotQuery,
-} from "@repo/subgraph-client";
+import { useGetAuctionLotQuery } from "@repo/subgraph-client";
 import { getChainId, getStatus } from "./subgraphHelper";
 import { SubgraphAuctionWithEvents } from "./subgraphTypes";
 import { useQuery } from "@tanstack/react-query";
-import { getData } from "./ipfs";
+import { getAuctionInfo } from "./useAuctionInfo";
 
 export type AuctionResult = {
   result?: SubgraphAuctionWithEvents;
@@ -13,19 +10,20 @@ export type AuctionResult = {
 };
 
 export function useAuction(lotId?: string): AuctionResult {
-  const { data, isLoading, ...query } = useGetAuctionLotQuery(
-    { lotId: lotId || "" },
-    { placeholderData: {} as GetAuctionLotQuery },
-  );
+  const { data, isLoading, ...query } = useGetAuctionLotQuery({
+    lotId: lotId || "",
+  });
 
-  const [auction] = data?.auctionLots ?? [];
+  const auction =
+    !data || !data.auctionLots || data.auctionLots.length == 0
+      ? undefined
+      : data.auctionLots[0];
 
-  const enabled = !!auction && !!auction?.created?.infoHash;
+  const enabled = !!auction && !!auction?.created.infoHash;
   const { data: auctionInfo, ...infoQuery } = useQuery({
     enabled,
     queryKey: ["auction-info", auction?.id],
-    //@ts-expect-error type not implemented
-    queryFn: () => getData(auction.created?.infoHash),
+    queryFn: () => getAuctionInfo(auction?.created.infoHash || ""),
   });
 
   if (!auction || data?.auctionLots.length === 0) {

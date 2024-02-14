@@ -31,8 +31,8 @@ import { getDuration, getTimestamp } from "loaders/dateHelper";
 import { getPercentage } from "loaders/numberHelper";
 import { AuctionInfo } from "src/types";
 
-import { formatDate, dateMath } from "@repo/ui";
-import { storeData } from "loaders/ipfs";
+import { formatDate, dateMath } from "../utils/date";
+import { storeAuctionInfo } from "loaders/useAuctionInfo";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -120,7 +120,7 @@ export default function CreateAuctionPage() {
     };
 
     // Store the auction info
-    const auctionInfoAddress = await storeData(auctionInfo);
+    const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
     console.log("Auction info address: ", auctionInfoAddress);
 
     // Get the public key
@@ -128,8 +128,6 @@ export default function CreateAuctionPage() {
 
     if (!publicKey) throw new Error("Unable to generate RSA keypair");
     if (!isHex(publicKey)) throw new Error("Invalid keypair");
-
-    // TODO add auction info IPFS hash to the auction params
 
     createAuction.writeContract(
       {
