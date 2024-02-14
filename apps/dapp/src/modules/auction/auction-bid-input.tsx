@@ -66,8 +66,8 @@ export function AuctionBidInput({
         <div>
           <p className="mb-1">You get</p>
           <IconedLabel
-            src={auction.quoteToken.logoURL}
-            label={auction.quoteToken.symbol}
+            src={auction.baseToken.logoURL}
+            label={auction.baseToken.symbol}
           />
           <Input
             type="number"
