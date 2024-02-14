@@ -27,10 +27,10 @@ export interface Decrypt {
   amountOut?: string;
   /**
    * The seed used to ciphertext as a bytes32
-   * @type {string}
+   * @type {Array<number>}
    * @memberof Decrypt
    */
-  seed?: string;
+  seed?: Array<number>;
 }
 
 /**

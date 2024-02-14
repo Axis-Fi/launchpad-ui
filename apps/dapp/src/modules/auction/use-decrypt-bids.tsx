@@ -3,7 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
-import { Address, fromBytes, fromHex } from "viem";
+import { Address, ByteArray, fromHex, toHex } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 // TODO fetch a batch of bids to decrypt (getNextBidsToDecrypt), decrypt off-chain, pass back to contract (decryptAndSortBids). Repeat until none left.
@@ -21,7 +21,7 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
         lotId: Number(auction.lotId),
       }),
     placeholderData: keepPreviousData,
-    enabled: auction.bids.length < auction.bidsDecrypted.length,
+    enabled: auction.bids.length > auction.bidsDecrypted.length,
   });
 
   const decrypt = useWriteContract();
@@ -30,7 +30,7 @@ export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
   const nextBids =
     nextBidsQuery.data?.map((d) => ({
       amountOut: fromHex(d.amountOut as Address, "bigint"),
-      seed: fromBytes(new Uint32Array(d.seed), "hex"),
+      seed: toHex(d.seed as ByteArray),
     })) ?? [];
 
   const handleDecryption = () => {

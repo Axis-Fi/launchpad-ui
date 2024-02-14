@@ -64,7 +64,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
           )}
           {decrypt.decryptTx.isPending && <p>Confirming transaction...</p>}
           {decrypt.decryptTx.isError && (
-            <p>{decrypt.decryptTx.error?.message}</p>
+            <p>Txn: {decrypt.decryptTx.error?.message}</p>
           )}
           {decrypt.decryptTx.isSuccess && <p>Success!</p>}
         </div>
