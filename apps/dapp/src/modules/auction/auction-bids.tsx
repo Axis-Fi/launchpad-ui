@@ -6,7 +6,11 @@ type AuctionBidsCard = {
 } & React.HTMLAttributes<HTMLDivElement> &
   PropsWithAuction;
 
-export function AuctionBidsCard({ auction, ...props }: AuctionBidsCard) {
+export function AuctionBidsCard({
+  auction,
+  isLoading,
+  ...props
+}: AuctionBidsCard) {
   // TODO: implement bids card
   // - table of bids
   // - bidder

@@ -55,9 +55,9 @@ export function AuctionBidInput({
         >
           <p className="text-foreground/50">
             Balance:{" "}
-            <p className="text-foreground inline">
+            <span className="text-foreground inline">
               {balance} {auction.quoteToken.symbol}
-            </p>
+            </span>
           </p>
         </div>
       </div>
@@ -80,10 +80,10 @@ export function AuctionBidInput({
         <div className="flex w-full flex-col items-end justify-end">
           <p className="text-foreground/50">
             Rate:{" "}
-            <p className="text-foreground inline">
+            <span className="text-foreground inline">
               {formattedRate} {auction.quoteToken.symbol}/
               {auction.baseToken.symbol}
-            </p>
+            </span>
           </p>
         </div>
       </div>
