@@ -18,9 +18,31 @@ export function getStatus(
   conclusion: string,
   capacity: string,
 ): AuctionStatus {
+  return getStatusWithBids(start, conclusion, capacity, false, 0, 0, 0);
+}
+
+export function getStatusWithBids(
+  start: string,
+  conclusion: string,
+  capacity: string,
+  settled: boolean,
+  bids: number,
+  bidsDecrypted: number,
+  refundedBids: number,
+): AuctionStatus {
+  // If the auction is settled, it is settled
+  if (settled) {
+    return "settled";
+  }
+
+  // If the number of bids is equal to the number of decrypted bids, the auction is decrypted
+  if (bids > 0 && bids === bidsDecrypted + refundedBids) {
+    return "decrypted";
+  }
+
   // If capacity is 0, the auction is finished
   if (Number(capacity) == 0) {
-    return "settled";
+    return "concluded";
   }
 
   // If before the start date, the auction has been created but is not live

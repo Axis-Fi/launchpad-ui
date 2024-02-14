@@ -12,7 +12,7 @@ export type AuctionsResult = {
 export function useAuctions(): AuctionsResult {
   const { data, isLoading, isSuccess } = useGetAuctionLotsQuery();
 
-  // TODO can't check if auction is concluded or decrypted here since the bids aren't available on this query
+  // TODO can't check if auction is concluded or decrypted here since the bids aren't available on this query. Consider adding events to the auction query (though the query results may become too large)
 
   const infos = useQuery({
     queryKey: ["all-auction-info"],
