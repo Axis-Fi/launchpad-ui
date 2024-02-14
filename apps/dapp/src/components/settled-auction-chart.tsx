@@ -1,11 +1,12 @@
 import {
-  CartesianGrid,
-  Line,
+  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
+  Tooltip,
   XAxis,
   YAxis,
+  ZAxis,
 } from "recharts";
 import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useAuction } from "loaders/useAuction";
@@ -13,6 +14,7 @@ import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 
+/* eslint-disable-next-line */
 const useChartData = (auction: SubgraphAuctionWithEvents | undefined) => {
   // Goal: Array of data with the following data per object:
   // - bid ID
@@ -99,28 +101,96 @@ const useChartData = (auction: SubgraphAuctionWithEvents | undefined) => {
     marginalPrice = 0;
   }
 
-  // Add marginal price to each bid and return
-  return data.map((bid) => {
-    return {
-      ...bid,
-      marginalPrice,
-    };
-  });
+  // Return data, marginal price, and minimum price
+  return { data, marginalPrice, minimumPrice };
 };
 
 export const SettledAuctionChart = (lotId?: string) => {
   const { result: auction } = useAuction(lotId);
 
-  const chartData = useChartData(auction);
+  const start = Number(auction?.start) * 1000;
+  const conclusion = Number(auction?.conclusion) * 1000;
+
+  // const chartData = useChartData(auction);
+  // TODO mock data for testing
+  const chartData = [
+    {
+      id: 0,
+      bidder: "0x1234567890abcdef1234567890abcdef12345678",
+      price: 5.0,
+      amountIn: 100,
+      amountOut: 20,
+      timestamp: 1707940560000,
+    },
+    {
+      id: 1,
+      bidder: "0x01234567890abcdef1234567890abcdef1234567",
+      price: 6.0,
+      amountIn: 240,
+      amountOut: 40,
+      timestamp: 1707945560000,
+    },
+    {
+      id: 2,
+      bidder: "0x101234567890abcdef1234567890abcdef123456",
+      price: 3.0,
+      amountIn: 300,
+      amountOut: 100,
+      timestamp: 1707948560000,
+    },
+    {
+      id: 3,
+      bidder: "0x201234567890abcdef1234567890abcdef123456",
+      price: 4.0,
+      amountIn: 160,
+      amountOut: 40,
+      timestamp: 1707950560000,
+    },
+  ];
+  const marginalPrice = 4.0;
+  const minimumPrice = 2.0;
+  const sizeRange = [
+    chartData.reduce(
+      (min, p) => (p.amountIn < min ? p.amountIn : min),
+      chartData[0].amountIn,
+    ),
+    chartData.reduce(
+      (max, p) => (p.amountIn > max ? p.amountIn : max),
+      chartData[0].amountIn,
+    ),
+  ];
 
   return (
     <ResponsiveContainer minWidth={300} minHeight={260}>
       <ScatterChart>
-        <CartesianGrid />
-        <XAxis type="number" dataKey="timestamp" name="Bid Submitted" />
-        <YAxis type="number" dataKey="price" name="Bid Price" />
-        <Scatter name="Bids" data={chartData} />
-        <Line dot={false} type="monotone" dataKey="marginalPrice" />
+        <XAxis
+          type="number"
+          dataKey="timestamp"
+          domain={[start, conclusion]}
+          name="Bid Submitted"
+          stroke="#FFFFFF"
+        />
+        <YAxis
+          type="number"
+          dataKey="price"
+          name="Bid Price"
+          stroke="#FFFFFF"
+        />
+        <ZAxis
+          type="number"
+          dataKey="amountIn"
+          range={sizeRange}
+          name="Bid Size"
+        />
+        <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+        <Scatter name="Bids" data={chartData} stroke="#FFFFFF" fill="#FFFFFF" />
+        <ReferenceLine y={marginalPrice} label="Settled Price" stroke="green" />
+        <ReferenceLine
+          y={minimumPrice}
+          label="Minimum Price"
+          strokeDasharray="3 3"
+          stroke="orange"
+        />
       </ScatterChart>
     </ResponsiveContainer>
   );
