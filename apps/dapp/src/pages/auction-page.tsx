@@ -18,6 +18,7 @@ import { PageHeader } from "components/page-header";
 import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { PropsWithAuction } from "modules/auction";
+import { ImageBanner } from "components/image-banner";
 
 const statuses: Record<
   AuctionStatus,
@@ -50,21 +51,24 @@ export default function AuctionPage() {
   return (
     <div>
       <PageHeader />
-      <div className="bg-secondary rounded-sm p-4">
-        <div className="flex items-center gap-x-1">
-          <Avatar
-            className="size-12 text-lg"
-            alt={auction.baseToken.symbol}
-            src={auction.auctionInfo?.links?.payoutTokenLogo}
+
+      <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>
+        <div className="relative rounded-sm p-4">
+          <div className="flex items-center gap-x-1 ">
+            <Avatar
+              className="size-12 text-lg"
+              alt={auction.baseToken.symbol}
+              src={auction.auctionInfo?.links?.payoutTokenLogo}
+            />
+            <h1 className="text-[40px]">{auction.baseToken.name}</h1>
+          </div>
+          <SocialRow
+            className="gap-x-2"
+            {...(auction.auctionInfo?.links ?? {})}
           />
-          <h1 className="text-[40px]">{auction.baseToken.name}</h1>
         </div>
-        <SocialRow
-          className="gap-x-2"
-          {...(auction.auctionInfo?.links ?? {})}
-        />
-      </div>
-      <div className="mt-5">
+      </ImageBanner>
+      <div className="mt-8">
         <AuctionElement auction={auction} />
       </div>
 

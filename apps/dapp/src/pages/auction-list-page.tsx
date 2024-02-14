@@ -1,5 +1,4 @@
 import { Button, DropdownChecker, IconnedInput, cn } from "@repo/ui";
-import { LoadingIndicator } from "components/loading-indicator";
 import { useAuctions } from "loaders/useAuctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
 import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
@@ -23,11 +22,9 @@ export default function AuctionListPage() {
     ? auctions.filter((a) => filters.includes(a.status))
     : auctions;
 
-  console.log({ auctions: auctions.map((a) => a.status) });
   return (
     <div className="mt-5">
       <h1 className="mb-12">Origin</h1>
-      <LoadingIndicator />
 
       <div className="flex items-center justify-between">
         <h3>Sealed-Bid Auctions</h3>
@@ -67,7 +64,7 @@ export default function AuctionListPage() {
       <div className="flex flex-col items-center justify-center py-8">
         <p className="font-aeonpro pb-2">Want to create an auction?</p>
         <Button onClick={() => navigate("/create/auction")} variant="outline">
-          Create Blind Auction <ArrowRightIcon className="w-6 pl-1" />
+          Create Sealed Bid Auction <ArrowRightIcon className="w-6 pl-1" />
         </Button>
       </div>
     </div>

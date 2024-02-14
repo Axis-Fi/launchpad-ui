@@ -9,23 +9,29 @@ import {
 export type SocialURLs = {
   discord?: string;
   twitter?: string;
-  homepage?: string;
+  website?: string;
   className?: string;
 };
 
 export function SocialRow(props: SocialURLs) {
   return (
     <div className={cn("flex h-9 items-center gap-x-4 pl-2", props.className)}>
-      <Link href={props.discord}>
-        <TwitterLogoIcon className="hover:text-[#1DA1F2]" />
-      </Link>
+      {props.twitter && (
+        <Link href={props.twitter}>
+          <TwitterLogoIcon className="hover:text-[#1DA1F2]" />
+        </Link>
+      )}
 
-      <Link href={props.discord}>
-        <DiscordLogoIcon className="hover:text-[#7289da]" />
-      </Link>
-      <Link href={props.discord}>
-        <GlobeIcon className="hover:text-primary transition-all" />
-      </Link>
+      {props.discord && (
+        <Link href={props.discord}>
+          <DiscordLogoIcon className="hover:text-[#7289da]" />
+        </Link>
+      )}
+      {props.website && (
+        <Link href={props.website}>
+          <GlobeIcon className="hover:text-primary transition-all" />
+        </Link>
+      )}
     </div>
   );
 }

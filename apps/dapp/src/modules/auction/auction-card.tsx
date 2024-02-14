@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "lucide-react";
 import { Auction } from "src/types";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { PropsWithAuction } from ".";
+import { ImageBanner } from "components/image-banner";
 
 type AuctionCardProps = {
   onClickView?: (auction: Auction) => void;
@@ -29,40 +30,44 @@ export function AuctionCard({
   console.log({ auction });
   return (
     <div
-      className="bg-secondary w-full max-w-[400px] rounded-sm p-2"
+      className="bg-secondary flex w-full max-w-[400px] flex-col justify-between rounded-sm p-2"
       {...props}
     >
-      <div className="flex justify-between">
-        <AuctionStatusChip status={auction.status} />
-        <SocialRow {...(auction.auctionInfo?.links ?? {})} className="h-6" />
-      </div>
-
-      <div className="bg-axis-orange-grad mt-2 flex flex-col rounded-md pt-6 ">
-        <div className="flex items-center gap-x-1 px-4">
-          <Avatar
-            className="text-md h-12 w-12"
-            src={auction.auctionInfo?.links?.payoutTokenLogo}
-            alt={auction.baseToken.symbol}
-          />
-          <p>{auction.baseToken.name}</p>
+      <div>
+        <div className="flex justify-between">
+          <AuctionStatusChip status={auction.status} />
+          <SocialRow {...(auction.auctionInfo?.links ?? {})} className="h-6" />
         </div>
-        <Progress
-          className="auction-progress relative mt-4 w-[100%] self-end"
-          value={progress > 100 ? 100 : progress}
-        />
-      </div>
-      <div className="font-aeonfono mt-2 text-center ">
-        {auction.status === "concluded" ? (
-          <h4>Auction has ended</h4>
-        ) : (
-          <>
-            <h4 className="leading-none">{remainingTime}</h4>
-            <p className="leading-none">Remaining</p>
-          </>
-        )}
-        <p className="mt-4 text-left leading-5">
-          {auction.auctionInfo?.description}
-        </p>
+
+        <div className="mt-4 flex flex-col rounded-sm ">
+          <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>
+            <div className="flex items-center gap-x-1 px-4 pt-4">
+              <Avatar
+                className="text-md h-12 w-12"
+                src={auction.auctionInfo?.links?.payoutTokenLogo}
+                alt={auction.baseToken.symbol}
+              />
+              <p>{auction.baseToken.name}</p>
+            </div>
+            <Progress
+              className="auction-progress relative mt-4 w-[100%] self-end"
+              value={progress > 100 ? 100 : progress}
+            />
+          </ImageBanner>
+        </div>
+        <div className="font-aeonfono mt-2 text-center ">
+          {auction.status === "concluded" ? (
+            <h4>Auction has ended</h4>
+          ) : (
+            <>
+              <h4 className="leading-none">{remainingTime}</h4>
+              <p className="leading-none">Remaining</p>
+            </>
+          )}
+          <p className="mt-4 text-left leading-5">
+            {auction.auctionInfo?.description}
+          </p>
+        </div>
       </div>
 
       <div className="mt-4 flex justify-center">
