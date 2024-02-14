@@ -1,7 +1,7 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
 
 const ENDPOINT =
-  "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.13";
+  "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.15";
 
 const config: CodegenConfig = {
   schema: ENDPOINT,

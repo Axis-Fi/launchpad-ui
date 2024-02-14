@@ -57,6 +57,11 @@ const cols = [
       );
     },
   }),
+  column.accessor("status", {
+    header: "Status",
+    enableSorting: true,
+    cell: (info) => info.getValue(),
+  }),
 ];
 
 export function BidList(props: PropsWithAuction) {
@@ -71,6 +76,7 @@ export function BidList(props: PropsWithAuction) {
     return decryptedBid
       ? {
           ...decryptedBid.bid,
+          status: bid.status,
           amountOut: decryptedBid.amountOut,
           auction: props.auction,
         }

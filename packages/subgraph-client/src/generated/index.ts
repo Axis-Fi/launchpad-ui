@@ -23,7 +23,7 @@ export type Incremental<T> =
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
     const res = await fetch(
-      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.13",
+      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.15",
       {
         method: "POST",
         ...{ headers: { "Content-Type": "application/json" } },
@@ -161,6 +161,7 @@ export enum AuctionCancelled_OrderBy {
   lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
   lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
   lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
   Lot__owner = "lot__owner",
   Lot__purchased = "lot__purchased",
   Lot__sold = "lot__sold",
@@ -285,6 +286,7 @@ export enum AuctionCreated_OrderBy {
   lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
   lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
   lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
   Lot__owner = "lot__owner",
   Lot__purchased = "lot__purchased",
   Lot__sold = "lot__sold",
@@ -317,6 +319,7 @@ export type AuctionLot = {
   lastUpdatedBlockTimestamp: Scalars["BigInt"]["output"];
   lastUpdatedTransactionHash: Scalars["Bytes"]["output"];
   lotId: Scalars["BigInt"]["output"];
+  maxBidId: Scalars["BigInt"]["output"];
   owner: Scalars["Bytes"]["output"];
   purchased: Scalars["BigDecimal"]["output"];
   purchases: Array<Purchase>;
@@ -558,6 +561,14 @@ export type AuctionLot_Filter = {
   lotId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   lotId_not?: InputMaybe<Scalars["BigInt"]["input"]>;
   lotId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  maxBidId?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxBidId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxBidId_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxBidId_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  maxBidId_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxBidId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxBidId_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  maxBidId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   or?: InputMaybe<Array<InputMaybe<AuctionLot_Filter>>>;
   owner?: InputMaybe<Scalars["Bytes"]["input"]>;
   owner_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
@@ -667,6 +678,7 @@ export enum AuctionLot_OrderBy {
   lastUpdatedBlockTimestamp = "lastUpdatedBlockTimestamp",
   lastUpdatedTransactionHash = "lastUpdatedTransactionHash",
   lotId = "lotId",
+  maxBidId = "maxBidId",
   Owner = "owner",
   Purchased = "purchased",
   Purchases = "purchases",
@@ -697,6 +709,7 @@ export type Bid = {
   id: Scalars["String"]["output"];
   lot: AuctionLot;
   refunded?: Maybe<RefundBid>;
+  status: Scalars["String"]["output"];
   transactionHash: Scalars["Bytes"]["output"];
 };
 
@@ -822,6 +835,7 @@ export enum BidDecrypted_OrderBy {
   bid__blockNumber = "bid__blockNumber",
   bid__blockTimestamp = "bid__blockTimestamp",
   Bid__id = "bid__id",
+  Bid__status = "bid__status",
   bid__transactionHash = "bid__transactionHash",
   blockNumber = "blockNumber",
   blockTimestamp = "blockTimestamp",
@@ -844,6 +858,7 @@ export enum BidDecrypted_OrderBy {
   lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
   lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
   lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
   Lot__owner = "lot__owner",
   Lot__purchased = "lot__purchased",
   Lot__sold = "lot__sold",
@@ -942,6 +957,26 @@ export type Bid_Filter = {
   lot_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   or?: InputMaybe<Array<InputMaybe<Bid_Filter>>>;
   refunded_?: InputMaybe<RefundBid_Filter>;
+  status?: InputMaybe<Scalars["String"]["input"]>;
+  status_contains?: InputMaybe<Scalars["String"]["input"]>;
+  status_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  status_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  status_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  status_gt?: InputMaybe<Scalars["String"]["input"]>;
+  status_gte?: InputMaybe<Scalars["String"]["input"]>;
+  status_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  status_lt?: InputMaybe<Scalars["String"]["input"]>;
+  status_lte?: InputMaybe<Scalars["String"]["input"]>;
+  status_not?: InputMaybe<Scalars["String"]["input"]>;
+  status_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  status_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  status_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  status_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  status_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  status_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  status_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  status_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  status_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   transactionHash?: InputMaybe<Scalars["Bytes"]["input"]>;
   transactionHash_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
   transactionHash_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
@@ -986,6 +1021,7 @@ export enum Bid_OrderBy {
   lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
   lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
   lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
   Lot__owner = "lot__owner",
   Lot__purchased = "lot__purchased",
   Lot__sold = "lot__sold",
@@ -997,6 +1033,7 @@ export enum Bid_OrderBy {
   refunded__blockTimestamp = "refunded__blockTimestamp",
   Refunded__id = "refunded__id",
   refunded__transactionHash = "refunded__transactionHash",
+  Status = "status",
   transactionHash = "transactionHash",
 }
 
@@ -1116,6 +1153,7 @@ export enum Curated_OrderBy {
   lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
   lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
   lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
   Lot__owner = "lot__owner",
   Lot__purchased = "lot__purchased",
   Lot__sold = "lot__sold",
@@ -1507,6 +1545,7 @@ export enum Purchase_OrderBy {
   lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
   lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
   lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
   Lot__owner = "lot__owner",
   Lot__purchased = "lot__purchased",
   Lot__sold = "lot__sold",
@@ -1873,6 +1912,7 @@ export enum RefundBid_OrderBy {
   bid__blockNumber = "bid__blockNumber",
   bid__blockTimestamp = "bid__blockTimestamp",
   Bid__id = "bid__id",
+  Bid__status = "bid__status",
   bid__transactionHash = "bid__transactionHash",
   Bidder = "bidder",
   blockNumber = "blockNumber",
@@ -1896,6 +1936,7 @@ export enum RefundBid_OrderBy {
   lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
   lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
   lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
   Lot__owner = "lot__owner",
   Lot__purchased = "lot__purchased",
   Lot__sold = "lot__sold",
@@ -1998,6 +2039,7 @@ export enum Settle_OrderBy {
   lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
   lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
   lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
   Lot__owner = "lot__owner",
   Lot__purchased = "lot__purchased",
   Lot__sold = "lot__sold",
@@ -2390,6 +2432,7 @@ export type AuctionLotFragmentFragment = {
   lastUpdatedBlockTimestamp: string;
   lastUpdatedTransactionHash: string;
   lotId: string;
+  maxBidId: string;
   owner: string;
   purchased: string;
   sold: string;
@@ -2437,6 +2480,7 @@ export type GetAuctionLotsQuery = {
     lastUpdatedBlockTimestamp: string;
     lastUpdatedTransactionHash: string;
     lotId: string;
+    maxBidId: string;
     owner: string;
     purchased: string;
     sold: string;
@@ -2487,6 +2531,7 @@ export type GetAuctionLotQuery = {
     lastUpdatedBlockTimestamp: string;
     lastUpdatedTransactionHash: string;
     lotId: string;
+    maxBidId: string;
     owner: string;
     purchased: string;
     sold: string;
@@ -2506,6 +2551,7 @@ export type GetAuctionLotQuery = {
       blockTimestamp: string;
       id: string;
       transactionHash: string;
+      status: string;
     }>;
     refundedBids: Array<{
       blockNumber: string;
@@ -2587,6 +2633,7 @@ export const AuctionLotFragmentFragmentDoc = `
   lastUpdatedBlockTimestamp
   lastUpdatedTransactionHash
   lotId
+  maxBidId
   owner
   purchased
   sold
@@ -2669,6 +2716,7 @@ export const GetAuctionLotDocument = `
       blockTimestamp
       id
       transactionHash
+      status
     }
     refundedBids {
       blockNumber
