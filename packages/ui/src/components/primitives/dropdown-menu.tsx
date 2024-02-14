@@ -4,9 +4,11 @@ import {
   CheckIcon,
   ChevronRightIcon,
   DotFilledIcon,
+  MixerHorizontalIcon,
 } from "@radix-ui/react-icons";
 
 import { cn } from "@/utils";
+import { Button, SelectProps } from "@/components";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
@@ -183,6 +185,49 @@ const DropdownMenuShortcut = ({
   );
 };
 DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
+
+export function DropdownChecker({
+  options,
+  filters = [],
+  setFilters,
+  ...props
+}: {
+  options: SelectProps["options"];
+  filters: string[];
+  label: string;
+  setFilters: (values: string[]) => void;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="secondary">
+          <MixerHorizontalIcon className="mr-2 size-6" /> Filter
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>{props.label}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {options.map((o, i) => (
+          <DropdownMenuCheckboxItem
+            key={i}
+            className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground cursor-pointer"
+            checked={filters.includes(o.value)}
+            onClick={(e) => {
+              e.preventDefault();
+              setFilters(
+                filters.includes(o.value)
+                  ? filters.filter((v) => v !== o.value)
+                  : [...filters, o.value],
+              );
+            }}
+          >
+            {o.label}
+          </DropdownMenuCheckboxItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export {
   DropdownMenu,

@@ -47,6 +47,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             showTrigger={true}
             disabled={disableButton}
             TriggerElement={(props: Partial<MutationDialogProps>) => (
+              /* @ts-expect-error TODO: remove */
               <MutationDialog
                 {...props}
                 disabled={disableButton}

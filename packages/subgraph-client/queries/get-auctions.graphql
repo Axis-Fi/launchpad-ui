@@ -41,6 +41,16 @@ fragment AuctionLotFragment on AuctionLot {
     transactionHash
     infoHash
   }
+
+  bids {
+    id
+  }
+  bidsDecrypted {
+    id
+  }
+  settle {
+    id
+  }
 }
 
 query getAuctionLots {

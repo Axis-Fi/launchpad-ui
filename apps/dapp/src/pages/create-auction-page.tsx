@@ -633,7 +633,7 @@ export default function CreateAuctionPage() {
             <MutationDialog
               submitText="DEPLOY AUCTION"
               triggerContent="DEPLOY AUCTION"
-              hash={createAuction.data}
+              hash={createAuction.data!}
               chainId={chainId}
               mutation={createTxReceipt}
               onConfirm={onSubmit}

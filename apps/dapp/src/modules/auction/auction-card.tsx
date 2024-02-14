@@ -26,6 +26,7 @@ export function AuctionCard({
     new Date(Number(auction.conclusion) * 1000),
   );
 
+  console.log({ auction });
   return (
     <div
       className="bg-secondary w-full max-w-[400px] rounded-sm p-2"

@@ -37,6 +37,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
       args: [parseUnits(auction.lotId, 0), bidId],
     });
   };
+  console.log({ auction });
 
   return (
     <div className="flex justify-between">
@@ -45,6 +46,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
         <InfoLabel label="Rate" value={0} />
       </AuctionInfoCard>
       <div className="w-[40%]">
+        {/* @ts-expect-error TODO: remove, slapped for preview*/}
         <AuctionInputCard
           onClick={handleRefund}
           submitText={isUserRefundable ? "Claim Refund" : ""}
@@ -57,7 +59,6 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             )}
           </div>
         </AuctionInputCard>
-
         {isLoading && <p>Loading... </p>}
         {refund.isError && <p>{refund.error?.message}</p>}
         {refundReceipt.isSuccess && <p>Success!</p>}

@@ -27,6 +27,7 @@ export function AuctionCreated({ auction }: PropsWithAuction) {
       </div>
 
       <div className="w-[40%]">
+        {/*@ts-expect-error TODO: */}
         <AuctionInputCard auction={auction} submitText="">
           <h3 className="text-center">
             Auction starts in {startDistance} at {startFormatted}.

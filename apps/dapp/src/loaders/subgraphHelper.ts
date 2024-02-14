@@ -28,7 +28,7 @@ export function getAuctionStatusWithBids(
   settled: boolean,
   bids: number,
   bidsDecrypted: number,
-  refundedBids: number,
+  //refundedBids: number,
 ): AuctionStatus {
   // If the auction is settled, it is settled
   if (settled) {
@@ -36,7 +36,7 @@ export function getAuctionStatusWithBids(
   }
 
   // If the number of bids is equal to the number of decrypted bids, the auction is decrypted
-  if (bids > 0 && bids === bidsDecrypted + refundedBids) {
+  if (bids > 0 && bids === bidsDecrypted) {
     return "decrypted";
   }
 
