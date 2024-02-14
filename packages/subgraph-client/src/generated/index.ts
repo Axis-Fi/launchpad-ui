@@ -2457,6 +2457,9 @@ export type AuctionLotFragmentFragment = {
     transactionHash: string;
     infoHash: string;
   };
+  bids: Array<{ id: string }>;
+  bidsDecrypted: Array<{ id: string }>;
+  settle?: { id: string } | null;
 };
 
 export type GetAuctionLotsQueryVariables = Exact<{ [key: string]: never }>;
@@ -2505,6 +2508,9 @@ export type GetAuctionLotsQuery = {
       transactionHash: string;
       infoHash: string;
     };
+    bids: Array<{ id: string }>;
+    bidsDecrypted: Array<{ id: string }>;
+    settle?: { id: string } | null;
   }>;
 };
 
@@ -2657,6 +2663,15 @@ export const AuctionLotFragmentFragmentDoc = `
     id
     transactionHash
     infoHash
+  }
+  bids {
+    id
+  }
+  bidsDecrypted {
+    id
+  }
+  settle {
+    id
   }
 }
     `;

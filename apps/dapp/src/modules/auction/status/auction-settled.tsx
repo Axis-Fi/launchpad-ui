@@ -37,6 +37,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
       args: [parseUnits(auction.lotId, 0), bidId],
     });
   };
+  console.log({ auction });
 
   return (
     <div className="flex justify-between">

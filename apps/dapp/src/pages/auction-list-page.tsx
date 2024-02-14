@@ -22,12 +22,13 @@ export default function AuctionListPage() {
     ? auctions.filter((a) => filters.includes(a.status))
     : auctions;
 
+  console.log({ auctions: auctions.map((a) => a.status) });
   return (
     <div className="mt-5">
-      <h1 className="mb-12">Blind Auctions</h1>
+      <h1 className="mb-12">Origin</h1>
 
       <div className="flex items-center justify-between">
-        <h3>Liquidity Bootstrapping</h3>
+        <h3>Sealed-Bid Auctions</h3>
         <div className="flex gap-x-2">
           <DropdownChecker
             setFilters={setFilters}
@@ -42,7 +43,7 @@ export default function AuctionListPage() {
           />
         </div>
       </div>
-      {!filteredAuctions.length && (
+      {!isLoading && !filteredAuctions.length && (
         <div className="flex h-[400px] w-full items-center justify-center">
           <h3>There arent any auctions in this state </h3>
         </div>
