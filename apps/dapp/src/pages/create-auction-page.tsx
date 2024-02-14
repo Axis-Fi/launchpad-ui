@@ -33,7 +33,7 @@ import { AuctionInfo } from "src/types";
 
 import { formatDate, dateMath } from "../utils/date";
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
-import { addDays, addHours } from "date-fns";
+import { addDays, addHours, addMinutes } from "date-fns";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -49,8 +49,8 @@ const schema = z.object({
   minFillPercent: z.array(z.number()),
   minBidPercent: z.array(z.number()),
   minPrice: z.string(),
-  start: z.date(),
-  deadline: z.date(),
+  start: z.date().min(addMinutes(new Date(), 5)),
+  deadline: z.date().min(addDays(addMinutes(new Date(), 5), 1)),
   hooks: z
     .string()
     .regex(/^(0x)?[0-9a-fA-F]{40}$/)
