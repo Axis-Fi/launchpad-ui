@@ -34,11 +34,19 @@ export function useAuction(lotId?: string): AuctionResult {
     };
   }
 
+  let status = getStatus(auction.start, auction.conclusion, auction.capacity);
+  if (
+    status === "concluded" &&
+    auction.bids.length === auction.bidsDecrypted.length
+  ) {
+    status = "decrypted";
+  }
+
   return {
     result: {
       ...auction,
       chainId: getChainId(auction.chain),
-      status: getStatus(auction.start, auction.conclusion, auction.capacity),
+      status,
       auctionInfo,
     },
     isLoading: isLoading || infoQuery.isLoading,
