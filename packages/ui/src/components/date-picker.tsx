@@ -1,5 +1,5 @@
 import * as React from "react";
-import { addHours, isBefore } from "date-fns";
+import { format, isBefore } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/utils";
@@ -11,13 +11,18 @@ import { addTimeToDate, formatDate } from "@/helpers";
 
 export type DatePickerProps = {
   content?: string;
+  placeholderDate?: Date;
   error?: string;
   time?: boolean;
   onChange?: (date?: Date) => void;
   onBlur?: () => void;
 } & CalendarProps;
 
-export function DatePicker({ content, ...props }: DatePickerProps) {
+export function DatePicker({
+  content,
+  placeholderDate,
+  ...props
+}: DatePickerProps) {
   const [date, setDate] = React.useState<Date>();
   const { matcher, time, setTime } = useTimeInput();
 
@@ -28,7 +33,7 @@ export function DatePicker({ content, ...props }: DatePickerProps) {
     if (matcher.test(time) && date) {
       const fullDate = addTimeToDate(date, time);
       /* eslint-disable-next-line */
-      const invalid = isBefore(fullDate, new Date()); //TODO: see if validation can be done by zod
+      const invalid = isBefore(fullDate, new Date()); // TODO: display error if date is invalid
       setDate(fullDate);
       props.onChange?.(fullDate);
     }
@@ -58,14 +63,16 @@ export function DatePicker({ content, ...props }: DatePickerProps) {
             setDate(date);
           }}
           initialFocus
-          fromDate={addHours(new Date(), 1)} // 1 hour from now
+          fromDate={!placeholderDate ? new Date() : placeholderDate}
           {...props}
         />
         {props.time && (
           <Input
             className="pb-4 text-center text-2xl"
             variant="lg"
-            placeholder="00:00" // TODO add fromDate value here
+            placeholder={
+              !placeholderDate ? "00:00" : format(placeholderDate, "HH:mm")
+            }
             // TODO does not set the time
             value={time}
             onChange={setTime}

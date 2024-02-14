@@ -33,6 +33,7 @@ import { AuctionInfo } from "src/types";
 
 import { formatDate, dateMath } from "../utils/date";
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
+import { addDays, addHours } from "date-fns";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
@@ -362,6 +363,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
+                        placeholderDate={addHours(new Date(), 1)}
                         content={formatDate.fullLocal(new Date())}
                         {...field}
                       />
@@ -379,6 +381,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
+                        placeholderDate={addDays(addHours(new Date(), 1), 7)}
                         content={formatDate.fullLocal(
                           dateMath.addDays(new Date(), 7),
                         )}
