@@ -36,6 +36,7 @@ type SettleData = {
 
 const useChartData = (
   auction: SubgraphAuctionWithEvents | undefined,
+  auctionData: AuctionData | undefined,
 ): SettleData => {
   // Goal: Array of data with the following data per object:
   // - bid ID
@@ -45,6 +46,9 @@ const useChartData = (
   // - amountOut
   // - timestamp
   // - marginalPrice
+
+  // Validate
+  if (!auctionData) return {};
 
   // 1. Create data array and parse inputs
   const data = !auction
@@ -71,20 +75,11 @@ const useChartData = (
   data.sort((a, b) => a.price - b.price);
 
   // 3. Calculate the marginal price
-  // Load data from auction module for lot
-  const lsbbaData = useReadContract({
-    abi: axisContracts.abis.localSealedBidBatchAuction,
-    address:
-      axisContracts.addresses[auction.chainId].localSealedBidBatchAuction,
-    functionName: "auctionData",
-    args: [parseUnits(auction.lotId, 0)],
-  });
-  if (!lsbbaData.data) return {};
   const minimumPrice = Number(
-    formatUnits(lsbbaData.data[3], Number(auction.quoteToken.decimals)),
+    formatUnits(auctionData.minimumPrice, Number(auction.quoteToken.decimals)),
   );
   const minimumFill = Number(
-    formatUnits(lsbbaData.data[4], Number(auction.baseToken.decimals)),
+    formatUnits(auctionData.minFilled, Number(auction.baseToken.decimals)),
   );
 
   // Apply marginal price algorithm
@@ -147,8 +142,44 @@ const formatter = (value: unknown, _name: string, props: formatterProps) => {
   return value;
 };
 
+type AuctionData = {
+  status: number;
+  nextDecryptIndex: bigint;
+  nextBidId: bigint;
+  minimumPrice: bigint;
+  minFilled: bigint;
+  minBidSize: bigint;
+  publicKeyModulus: `0x${string}`;
+};
+
+const mapAuctionData = (
+  data:
+    | readonly [number, bigint, bigint, bigint, bigint, bigint, `0x${string}`]
+    | undefined,
+): AuctionData | undefined => {
+  if (!data) return undefined;
+
+  return {
+    status: data[0],
+    nextDecryptIndex: data[1],
+    nextBidId: data[2],
+    minimumPrice: data[3],
+    minFilled: data[4],
+    minBidSize: data[5],
+    publicKeyModulus: data[6],
+  };
+};
+
 export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId);
+  const { data: auctionData } = useReadContract({
+    abi: axisContracts.abis.localSealedBidBatchAuction,
+    address: !auction
+      ? undefined
+      : axisContracts.addresses[auction.chainId].localSealedBidBatchAuction,
+    functionName: "auctionData",
+    args: [!auction ? BigInt(-1) : parseUnits(auction.lotId, 0)],
+  });
 
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;
@@ -157,7 +188,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
     data: chartData,
     marginalPrice,
     minimumPrice,
-  } = useChartData(auction);
+  } = useChartData(auction, mapAuctionData(auctionData));
 
   const sizeRange = [
     !chartData
