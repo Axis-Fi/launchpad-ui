@@ -12,7 +12,7 @@ import {
 import { cn } from "@repo/ui";
 import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useAuction } from "loaders/useAuction";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { useReadContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { format } from "date-fns";
@@ -50,15 +50,8 @@ const useChartData = (
   const data = !auction
     ? undefined
     : auction.bidsDecrypted.map((bid) => {
-        const amountIn = Number(
-          formatUnits(BigInt(bid.amountIn), Number(auction.baseToken.decimals)),
-        );
-        const amountOut = Number(
-          formatUnits(
-            BigInt(bid.amountOut),
-            Number(auction.quoteToken.decimals),
-          ),
-        );
+        const amountIn = Number(bid.amountIn);
+        const amountOut = Number(bid.amountOut);
         const price = amountIn / amountOut;
         const timestamp = Number(bid.blockTimestamp) * 1000;
 
@@ -84,6 +77,7 @@ const useChartData = (
     address:
       axisContracts.addresses[auction.chainId].localSealedBidBatchAuction,
     functionName: "auctionData",
+    args: [parseUnits(auction.lotId, 0)],
   });
   if (!lsbbaData.data) return {};
   const minimumPrice = Number(
@@ -159,55 +153,11 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;
 
-  // const {
-  //   data: chartData,
-  //   marginalPrice,
-  //   minimumPrice,
-  // } = useChartData(auction);
-  // TODO mock data for testing
   const {
     data: chartData,
     marginalPrice,
     minimumPrice,
-  } = {
-    data: [
-      {
-        id: 0,
-        bidder: "0x1234567890abcdef1234567890abcdef12345678",
-        price: 5.0,
-        amountIn: 100,
-        amountOut: 20,
-        timestamp: 1707940560000,
-      },
-      {
-        id: 1,
-        bidder: "0x01234567890abcdef1234567890abcdef1234567",
-        price: 6.0,
-        amountIn: 240,
-        amountOut: 40,
-        timestamp: 1707945560000,
-      },
-      {
-        id: 2,
-        bidder: "0x101234567890abcdef1234567890abcdef123456",
-        price: 3.0,
-        amountIn: 300,
-        amountOut: 100,
-        timestamp: 1707948560000,
-      },
-      {
-        id: 3,
-        bidder: "0x201234567890abcdef1234567890abcdef123456",
-        price: 4.0,
-        amountIn: 160,
-        amountOut: 40,
-        timestamp: 1707950560000,
-      },
-    ],
-    marginalPrice: 4.0,
-    minimumPrice: 2.0,
-  };
-  // TODO end mock data
+  } = useChartData(auction);
 
   const sizeRange = [
     !chartData
