@@ -1,5 +1,6 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
 import { Avatar, Button } from "@repo/ui";
+import { iconsPerChain } from "config/chains";
 
 export default function ConnectButton() {
   return (
@@ -59,7 +60,7 @@ export default function ConnectButton() {
                       <Avatar
                         className="hover:text-primary h-7 w-7"
                         alt={chain.name ?? "???"}
-                        src={chain.iconUrl}
+                        src={iconsPerChain[chain.id] ?? chain.iconUrl}
                       />
                     </div>
                   </Button>
