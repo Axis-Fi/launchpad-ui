@@ -35,8 +35,11 @@ export function getAuctionStatusWithBids(
     return "settled";
   }
 
-  // If the number of bids is equal to the number of decrypted bids, the auction is decrypted
-  if (bids > 0 && bids === bidsDecrypted + refundedBids) {
+  const isConcluded =
+    Date.now() > new Date(Number(conclusion) * 1000).getTime();
+
+  // If concluded and the number of bids is equal to the number of decrypted bids, the auction is decrypted
+  if (isConcluded && bids > 0 && bids === bidsDecrypted + refundedBids) {
     return "decrypted";
   }
 
@@ -51,7 +54,7 @@ export function getAuctionStatusWithBids(
   }
 
   // If after the conclusion date, the auction is concluded
-  if (Date.now() > new Date(Number(conclusion) * 1000).getTime()) {
+  if (isConcluded) {
     return "concluded";
   }
 
