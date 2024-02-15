@@ -44,7 +44,7 @@ export default function AuctionListPage() {
       </div>
       {!isLoading && !filteredAuctions.length && (
         <div className="flex h-[400px] w-full items-center justify-center">
-          <h3>There arent any auctions in this state </h3>
+          <h3>There aren&apos;t any auctions in this state</h3>
         </div>
       )}
       <div className={cn("mt-4 grid grid-cols-3 gap-4", isLoading && "mask")}>
