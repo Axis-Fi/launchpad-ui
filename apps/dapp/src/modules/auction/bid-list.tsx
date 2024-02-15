@@ -7,6 +7,7 @@ import {
 import { PropsWithAuction } from ".";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
+import { Tooltip } from "@repo/ui";
 
 const column = createColumnHelper<
   SubgraphAuctionEncryptedBid & {
@@ -46,14 +47,16 @@ const cols = [
       return value ? (
         `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
       ) : (
-        <div
-          className="w-30 bg-foreground h-5"
-          style={{
-            width: `${size}px`,
-          }}
-        >
-          {" "}
-        </div>
+        <Tooltip content="The amount out is not accessible until after the conclusion of the auction">
+          <div
+            className="w-30 bg-foreground h-5"
+            style={{
+              width: `${size}px`,
+            }}
+          >
+            {" "}
+          </div>
+        </Tooltip>
       );
     },
   }),
