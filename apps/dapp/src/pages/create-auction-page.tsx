@@ -240,7 +240,6 @@ export default function CreateAuctionPage() {
       },
       {
         onError: (error) => {
-          // TODO surface error
           console.error("Error during submission:", error);
         },
       },
