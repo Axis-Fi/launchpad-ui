@@ -53,7 +53,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   };
   console.log({ auction });
 
-  const rate = trimCurrency(tokenAmounts.in / tokenAmounts.out);
+  const rate = trimCurrency((tokenAmounts.in / tokenAmounts.out).toString());
 
   return (
     <div className="flex justify-between">
