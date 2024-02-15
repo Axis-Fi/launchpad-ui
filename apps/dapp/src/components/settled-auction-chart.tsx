@@ -191,79 +191,81 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   ];
 
   return (
-    <ResponsiveContainer minWidth={300} minHeight={260}>
-      <ScatterChart>
-        <XAxis
-          className="text-xs"
-          type="number"
-          tickLine={false}
-          minTickGap={30}
-          dataKey="timestamp"
-          domain={[start, conclusion]}
-          name="Bid Submitted"
-          stroke="#4A404E"
-          tickFormatter={timestampFormatter}
-        />
-        <YAxis
-          className="text-xs"
-          type="number"
-          dataKey="price"
-          tickLine={false}
-          name="Bid Price"
-          minTickGap={40}
-          stroke="#4A404E"
-          tickFormatter={(value) => value + " " + auction?.quoteToken.symbol}
-        />
-        <ZAxis
-          type="number"
-          dataKey="amountIn"
-          range={sizeRange}
-          name="Bid Size"
-        />
-        <Tooltip
-          cursor={{ strokeDasharray: "3 3" }}
-          formatter={formatter}
-          wrapperStyle={{
-            backgroundColor: "transparent",
-            outline: "none",
-          }}
-          content={(props) => <CustomTooltip {...props} auction={auction} />}
-        />
-        <Scatter
-          name="Bids"
-          data={chartData}
-          stroke="#FFFFFF"
-          fill="#FFFFFF"
-          shape={(props: any) => (
-            <CustomShape {...props} marginalPrice={marginalPrice} />
-          )}
-        />
-        <ReferenceLine
-          y={marginalPrice}
-          stroke="#76BDF2"
-          className="relative *:absolute *:top-10"
-          label={(props) => (
-            <CustomLabel
-              {...props}
-              content="Settled Price"
-              className="fill-axis-teal"
-            />
-          )}
-        />
-        <ReferenceLine
-          y={minimumPrice}
-          strokeDasharray="3 3"
-          stroke="orange"
-          label={(props) => (
-            <CustomLabel
-              {...props}
-              content="Minimum Price"
-              className="fill-axis-orange"
-            />
-          )}
-        />
-      </ScatterChart>
-    </ResponsiveContainer>
+    <div className="size-full">
+      <ResponsiveContainer minWidth={300} minHeight={260}>
+        <ScatterChart>
+          <XAxis
+            className="text-xs"
+            type="number"
+            tickLine={false}
+            minTickGap={30}
+            dataKey="timestamp"
+            domain={[start, conclusion]}
+            name="Bid Submitted"
+            stroke="#4A404E"
+            tickFormatter={timestampFormatter}
+          />
+          <YAxis
+            className="text-xs"
+            type="number"
+            dataKey="price"
+            tickLine={false}
+            name="Bid Price"
+            minTickGap={40}
+            stroke="#4A404E"
+            tickFormatter={(value) => value + " " + auction?.quoteToken.symbol}
+          />
+          <ZAxis
+            type="number"
+            dataKey="amountIn"
+            range={sizeRange}
+            name="Bid Size"
+          />
+          <Tooltip
+            cursor={{ strokeDasharray: "3 3" }}
+            formatter={formatter}
+            wrapperStyle={{
+              backgroundColor: "transparent",
+              outline: "none",
+            }}
+            content={(props) => <CustomTooltip {...props} auction={auction} />}
+          />
+          <Scatter
+            name="Bids"
+            data={chartData}
+            stroke="#FFFFFF"
+            fill="#FFFFFF"
+            shape={(props: any) => (
+              <CustomShape {...props} marginalPrice={marginalPrice} />
+            )}
+          />
+          <ReferenceLine
+            y={marginalPrice}
+            stroke="#76BDF2"
+            className="relative *:absolute *:top-10"
+            label={(props) => (
+              <CustomLabel
+                {...props}
+                content="Settled Price"
+                className="fill-axis-teal"
+              />
+            )}
+          />
+          <ReferenceLine
+            y={minimumPrice}
+            strokeDasharray="3 3"
+            stroke="orange"
+            label={(props) => (
+              <CustomLabel
+                {...props}
+                content="Minimum Price"
+                className="fill-axis-orange"
+              />
+            )}
+          />
+        </ScatterChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

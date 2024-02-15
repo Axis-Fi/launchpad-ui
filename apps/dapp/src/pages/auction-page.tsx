@@ -4,7 +4,7 @@ import {
   AuctionConcluded,
   AuctionCreated,
   AuctionDecrypted,
-  AuctionLive,
+  //AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
 import { useAuction } from "loaders/useAuction";
@@ -26,7 +26,7 @@ const statuses: Record<
   (props: PropsWithAuction) => JSX.Element
 > = {
   created: AuctionCreated,
-  live: AuctionLive,
+  live: AuctionSettled,
   concluded: AuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
@@ -75,7 +75,9 @@ export default function AuctionPage() {
       </div>
 
       <div className="mt-8 flex justify-between gap-x-4">
-        <ProjectInfoCard className="w-[50%]" auction={auction} />
+        {auction.status !== "settled" && (
+          <ProjectInfoCard className="w-[50%]" auction={auction} />
+        )}
         <ContractAddressCard
           chainId={auction.chainId}
           addresses={[

@@ -4,6 +4,7 @@ import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "..";
 import { trimCurrency } from "src/utils/currency";
 import { SettledAuctionChart } from "components/settled-auction-chart";
+import { ProjectInfoCard } from "../project-info-card";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const tokenAmounts = auction.bidsDecrypted
@@ -24,29 +25,36 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   const rate = trimCurrency((tokenAmounts.in / tokenAmounts.out).toString());
 
   return (
-    <div className="flex justify-between">
-      <AuctionInfoCard>
-        <InfoLabel
-          label="Total Raised"
-          value={`${tokenAmounts.in} ${auction.quoteToken.symbol}`}
-        />
-        <InfoLabel
-          label="Rate"
-          value={`${rate} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
-        />
-
-        <InfoLabel label="Total Bids" value={auction.bids.length} />
-        <InfoLabel label="Unique Participants" value={uniqueBidders} />
-      </AuctionInfoCard>
-      <div className="w-[40%]">
-        <div>
+    <div className="w-full">
+      <div className="mb-8 flex justify-between">
+        <div className="w-1/2">
           <SettledAuctionChart lotId={auction.lotId} />
         </div>
-        <AuctionInputCard submitText={""} auction={auction}>
-          <div className="text-center">
-            <h4>Payout for this auction has been distributed!</h4>
-          </div>
-        </AuctionInputCard>
+        <div className="w-[40%]">
+          <AuctionInputCard submitText={""} auction={auction}>
+            <div className="text-center">
+              <h4>Payout for this auction has been distributed!</h4>
+            </div>
+          </AuctionInputCard>
+        </div>
+      </div>
+      <div className="flex justify-between">
+        <AuctionInfoCard>
+          <InfoLabel
+            label="Total Raised"
+            value={`${tokenAmounts.in} ${auction.quoteToken.symbol}`}
+          />
+          <InfoLabel
+            label="Rate"
+            value={`${rate} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
+          />
+
+          <InfoLabel label="Total Bids" value={auction.bids.length} />
+          <InfoLabel label="Unique Participants" value={uniqueBidders} />
+        </AuctionInfoCard>
+        <div className="w-1/2">
+          <ProjectInfoCard auction={auction} />
+        </div>
       </div>
     </div>
   );

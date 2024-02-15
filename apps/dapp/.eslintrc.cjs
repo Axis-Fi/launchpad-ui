@@ -8,4 +8,7 @@ module.exports = {
     project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
+  rules: {
+    "@typescript-eslint/ban-ts-comment": 1,
+  },
 };
