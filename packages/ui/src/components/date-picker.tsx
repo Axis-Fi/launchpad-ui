@@ -29,7 +29,7 @@ export function DatePicker({
   React.useEffect(() => {
     if (!props.time) return;
 
-    //Update date with time once its typed
+    // Update date with time once its typed
     if (matcher.test(time) && date) {
       const fullDate = addTimeToDate(date, time);
       /* eslint-disable-next-line */
@@ -37,7 +37,7 @@ export function DatePicker({
       setDate(fullDate);
       props.onChange?.(fullDate);
     }
-  }, [props.time, time, date]);
+  }, [matcher, props, props.time, time, date]);
 
   return (
     <Popover onOpenChange={(open) => !open && props.onBlur?.()}>
