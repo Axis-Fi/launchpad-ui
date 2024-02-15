@@ -10,6 +10,7 @@ import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "..";
 import { trimCurrency } from "src/utils/currency";
+import { SettledAuctionChart } from "components/settled-auction-chart";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const axisAddresses = axisContracts.addresses[auction.chainId];
@@ -70,6 +71,9 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
         <InfoLabel label="Unique Participants" value={uniqueBidders} />
       </AuctionInfoCard>
       <div className="w-[40%]">
+        <div>
+          <SettledAuctionChart lotId={auction.lotId} />
+        </div>
         {/* @ts-expect-error TODO: remove, slapped for preview*/}
         <AuctionInputCard
           onClick={handleRefund}

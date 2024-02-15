@@ -13,8 +13,8 @@ import { useAuction } from "loaders/useAuction";
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
+import { format } from "date-fns";
 
-/* eslint-disable-next-line */
 const useChartData = (auction: SubgraphAuctionWithEvents | undefined) => {
   // Goal: Array of data with the following data per object:
   // - bid ID
@@ -105,13 +105,33 @@ const useChartData = (auction: SubgraphAuctionWithEvents | undefined) => {
   return { data, marginalPrice, minimumPrice };
 };
 
-export const SettledAuctionChart = (lotId?: string) => {
+type SettledAuctionChartProps = {
+  lotId?: string;
+};
+
+const timestampFormatter = (timestamp: number) => {
+  return format(new Date(timestamp), "yyyy-MM-dd");
+};
+
+const formatter = (value, name: string, props) => {
+  console.log("value", typeof value);
+  console.log("name", name);
+  console.log("props", props);
+
+  if (props.dataKey === "timestamp") {
+    return format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+  }
+
+  return value;
+};
+
+export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId);
 
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;
 
-  // const chartData = useChartData(auction);
+  // const { data: chartData, marginalPrice, minimumPrice } = useChartData(auction);
   // TODO mock data for testing
   const chartData = [
     {
@@ -169,6 +189,7 @@ export const SettledAuctionChart = (lotId?: string) => {
           domain={[start, conclusion]}
           name="Bid Submitted"
           stroke="#FFFFFF"
+          tickFormatter={timestampFormatter}
         />
         <YAxis
           type="number"
@@ -182,7 +203,7 @@ export const SettledAuctionChart = (lotId?: string) => {
           range={sizeRange}
           name="Bid Size"
         />
-        <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+        <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={formatter} />
         <Scatter name="Bids" data={chartData} stroke="#FFFFFF" fill="#FFFFFF" />
         <ReferenceLine y={marginalPrice} label="Settled Price" stroke="green" />
         <ReferenceLine
