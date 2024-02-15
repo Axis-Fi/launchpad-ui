@@ -184,6 +184,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     error={bidDependenciesMutation.error}
                     triggerContent={"Bid"}
                     disabled={shouldDisable}
+                    //@ts-expect-error make screens optional
                     screens={{
                       idle: {
                         Component: () => (

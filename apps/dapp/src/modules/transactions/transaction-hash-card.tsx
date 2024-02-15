@@ -13,11 +13,15 @@ export function TransactionHashCard(
       {props.message && <h3>{props.message}</h3>}
       <div className="mt-4 flex justify-center">
         View transaction on&nbsp;
-        <BlockExplorerLink
-          showName
-          address={props.hash}
-          chainId={props.chainId}
-        />
+        {props.hash && props.chainId ? (
+          <BlockExplorerLink
+            showName
+            address={props.hash}
+            chainId={props.chainId}
+          />
+        ) : (
+          "Unable to generate explorer link"
+        )}
       </div>
     </div>
   );
