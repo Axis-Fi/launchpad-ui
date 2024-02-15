@@ -19,6 +19,7 @@ import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { PropsWithAuction } from "modules/auction";
 import { ImageBanner } from "components/image-banner";
+import { useAccount } from "wagmi";
 
 const statuses: Record<
   AuctionStatus,
@@ -34,6 +35,7 @@ const statuses: Record<
 /** Displays Auction details and status*/
 export default function AuctionPage() {
   const params = useParams();
+  const { address } = useAccount();
 
   const { result: auction, isLoading: isAuctionLoading } = useAuction(
     params.id,
@@ -94,6 +96,7 @@ export default function AuctionPage() {
         className="mt-12"
         auction={auction}
         isLoading={isAuctionLoading}
+        address={address}
       />
     </div>
   );
