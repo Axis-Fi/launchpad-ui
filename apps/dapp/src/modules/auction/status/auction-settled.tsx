@@ -74,7 +74,6 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
         <div>
           <SettledAuctionChart lotId={auction.lotId} />
         </div>
-        {/* @ts-expect-error TODO: remove, slapped for preview*/}
         <AuctionInputCard
           onClick={handleRefund}
           submitText={isUserRefundable ? "Claim Refund" : ""}
