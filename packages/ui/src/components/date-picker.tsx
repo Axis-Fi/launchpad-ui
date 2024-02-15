@@ -1,5 +1,5 @@
 import * as React from "react";
-import { format, isBefore } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/utils";
@@ -32,8 +32,6 @@ export function DatePicker({
     // Update date with time once its typed
     if (matcher.test(time) && date) {
       const fullDate = addTimeToDate(date, time);
-      /* eslint-disable-next-line */
-      const invalid = isBefore(fullDate, new Date()); // TODO: display error if date is invalid
       setDate(fullDate);
       props.onChange?.(fullDate);
     }
@@ -74,7 +72,6 @@ export function DatePicker({
             placeholder={
               !placeholderDate ? "00:00" : format(placeholderDate, "HH:mm")
             }
-            // TODO does not set the time
             value={time}
             onChange={setTime}
           />
