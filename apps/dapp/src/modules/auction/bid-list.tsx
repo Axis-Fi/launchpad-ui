@@ -125,6 +125,7 @@ export function BidList(props: BidListProps) {
               mutation={refundReceipt}
               chainId={props.auction.chainId}
               hash={refund.data}
+              error={refundReceipt.error}
               triggerContent={"Refund"}
               screens={{
                 idle: {
