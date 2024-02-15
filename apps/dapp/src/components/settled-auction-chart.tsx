@@ -79,7 +79,6 @@ const useChartData = (
 
   // 3. Calculate the marginal price
   // Load data from auction module for lot
-  // TODO move to the main SettledAuctionChart component
   const lsbbaData = useReadContract({
     abi: axisContracts.abis.localSealedBidBatchAuction,
     address:
@@ -237,7 +236,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
             dataKey="timestamp"
             domain={[start, conclusion]}
             name="Bid Submitted"
-            stroke="#4A404E"
+            stroke="#f4f4f4"
             tickFormatter={timestampFormatter}
           />
           <YAxis
@@ -247,7 +246,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
             tickLine={false}
             name="Bid Price"
             minTickGap={40}
-            stroke="#4A404E"
+            stroke="#f4f4f4"
             tickFormatter={(value) => value + " " + auction?.quoteToken.symbol}
           />
           <ZAxis
@@ -320,7 +319,7 @@ function CustomLabel(props: any) {
 }
 
 function CustomShape({ fill, stroke, marginalPrice, ...props }: any) {
-  return marginalPrice < props.payload.price ? (
+  return marginalPrice <= props.payload.price ? (
     <GemIcon className="text-axis-green *:p-4" {...props} />
   ) : (
     <XIcon className="text-axis-red *:p-4" {...props} />

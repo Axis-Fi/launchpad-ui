@@ -60,12 +60,15 @@ export function AuctionCard({
           ) : (
             <>
               <h4 className="leading-none">{remainingTime}</h4>
-              <p className="leading-none">Remaining</p>
+              <p className="leading-none">remaining</p>
             </>
           )}
-          <p className="mt-4 text-left leading-5">
-            {auction.auctionInfo?.description}
-          </p>
+          <div>
+            <p className="my-4 px-4 text-xl">{auction.auctionInfo?.name}</p>
+            <p className="px-2 text-left leading-5">
+              {auction.auctionInfo?.description}
+            </p>
+          </div>
         </div>
       </div>
 

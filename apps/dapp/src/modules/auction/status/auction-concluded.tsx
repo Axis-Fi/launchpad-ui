@@ -8,6 +8,7 @@ import {
   MutationDialog,
   MutationDialogProps,
 } from "modules/transactions/mutation-dialog";
+import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 export function AuctionConcluded({ auction }: PropsWithAuction) {
   const decrypt = useDecryptBids(auction);
@@ -57,19 +58,21 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
               />
             )}
           >
-            <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
-              <div>
-                <h1 className="text-4xl">{auction.bidsDecrypted.length}</h1>
-                <p>Bids Decrypted</p>
-              </div>
+            <RequiresWalletConnection>
+              <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
+                <div>
+                  <h1 className="text-4xl">{auction.bidsDecrypted.length}</h1>
+                  <p>Bids Decrypted</p>
+                </div>
 
-              <p className="text-6xl">/</p>
+                <p className="text-6xl">/</p>
 
-              <div>
-                <h1 className="text-4xl">{auction.bids.length}</h1>
-                <p>Total Bids</p>
+                <div>
+                  <h1 className="text-4xl">{auction.bids.length}</h1>
+                  <p>Total Bids</p>
+                </div>
               </div>
-            </div>
+            </RequiresWalletConnection>
           </AuctionInputCard>
 
           {decrypt.nextBids.isFetching && <p>API - NextBids: Loading</p>}

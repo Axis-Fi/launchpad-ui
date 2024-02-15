@@ -5,6 +5,7 @@ import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "..";
+import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const axisAddresses = axisContracts.addresses[auction.chainId];
@@ -42,18 +43,20 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
           onClick={handleSettle}
           auction={auction}
         >
-          <div className="bg-secondary text-foreground flex justify-between rounded-sm p-2">
-            <InfoLabel
-              label="You bid"
-              value={`${amountBid} ${auction.quoteToken.symbol}`}
-              className="text-5xl font-light"
-            />
-            <InfoLabel
-              label="You got"
-              value={`${amountSecured} ${auction.baseToken.symbol}`}
-              className="text-5xl font-light"
-            />
-          </div>
+          <RequiresWalletConnection>
+            <div className="bg-secondary text-foreground flex justify-between rounded-sm p-2">
+              <InfoLabel
+                label="You bid"
+                value={`${amountBid} ${auction.quoteToken.symbol}`}
+                className="text-5xl font-light"
+              />
+              <InfoLabel
+                label="You got"
+                value={`${amountSecured} ${auction.baseToken.symbol}`}
+                className="text-5xl font-light"
+              />
+            </div>
+          </RequiresWalletConnection>
         </AuctionInputCard>
         {isLoading && <p>Loading... </p>}
         {settle.isError && <p>{settle.error?.message}</p>}

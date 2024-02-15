@@ -9,7 +9,6 @@ import {
 import { PropsWithAuction } from ".";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { formatDistanceToNow } from "date-fns";
-import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { MutationDialog } from "modules/transactions/mutation-dialog";
 
 type AuctionInputCardProps = PropsWithAuction &
@@ -17,7 +16,7 @@ type AuctionInputCardProps = PropsWithAuction &
     submitText: string | React.ReactNode;
     disabled?: boolean;
     showTrigger?: boolean;
-    TriggerElement?: typeof MutationDialog;
+    TriggerElement: typeof MutationDialog;
   };
 
 export function AuctionInputCard({
@@ -49,23 +48,20 @@ export function AuctionInputCard({
       </CardHeader>
       <CardContent>{props.children}</CardContent>
       <CardFooter className="flex justify-center">
-        <RequiresWalletConnection>
-          {props.showTrigger ? (
-            /* @ts-expect-error TODO: remove*/
-            <TriggerElement onConfirm={props.onClick} />
-          ) : (
-            props.submitText &&
-            props.onClick && (
-              <Button
-                className="w-full"
-                disabled={props.disabled}
-                onClick={props.onClick}
-              >
-                {props.submitText}
-              </Button>
-            )
-          )}
-        </RequiresWalletConnection>
+        {props.showTrigger ? (
+          <TriggerElement onConfirm={props.onClick} />
+        ) : (
+          props.submitText &&
+          props.onClick && (
+            <Button
+              className="w-full"
+              disabled={props.disabled}
+              onClick={props.onClick}
+            >
+              {props.submitText}
+            </Button>
+          )
+        )}
       </CardFooter>
     </CardRoot>
   );
