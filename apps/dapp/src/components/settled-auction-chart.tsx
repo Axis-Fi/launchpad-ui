@@ -1,19 +1,26 @@
+/* eslint-disable */
 import {
+  CartesianGrid,
+  Label,
   ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
   Tooltip,
+  TooltipProps,
   XAxis,
   YAxis,
   ZAxis,
 } from "recharts";
+import { cn } from "@repo/ui";
 import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useAuction } from "loaders/useAuction";
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { format } from "date-fns";
+import { GemIcon, XIcon } from "lucide-react";
+import { formatDate } from "src/utils/date";
 
 const useChartData = (auction: SubgraphAuctionWithEvents | undefined) => {
   // Goal: Array of data with the following data per object:
@@ -110,7 +117,7 @@ type SettledAuctionChartProps = {
 };
 
 const timestampFormatter = (timestamp: number) => {
-  return format(new Date(timestamp), "yyyy-MM-dd");
+  return format(new Date(timestamp), "MM-dd HH:mm");
 };
 
 type formatterProps = {
@@ -186,18 +193,25 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
     <ResponsiveContainer minWidth={300} minHeight={260}>
       <ScatterChart>
         <XAxis
+          className="text-xs"
           type="number"
+          tickLine={false}
+          minTickGap={30}
           dataKey="timestamp"
           domain={[start, conclusion]}
           name="Bid Submitted"
-          stroke="#FFFFFF"
+          stroke="#4A404E"
           tickFormatter={timestampFormatter}
         />
         <YAxis
+          className="text-xs"
           type="number"
           dataKey="price"
+          tickLine={false}
           name="Bid Price"
-          stroke="#FFFFFF"
+          minTickGap={40}
+          stroke="#4A404E"
+          tickFormatter={(value) => value + " " + auction?.quoteToken.symbol}
         />
         <ZAxis
           type="number"
@@ -205,16 +219,87 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
           range={sizeRange}
           name="Bid Size"
         />
-        <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={formatter} />
-        <Scatter name="Bids" data={chartData} stroke="#FFFFFF" fill="#FFFFFF" />
-        <ReferenceLine y={marginalPrice} label="Settled Price" stroke="green" />
+        <Tooltip
+          cursor={{ strokeDasharray: "3 3" }}
+          formatter={formatter}
+          wrapperStyle={{
+            backgroundColor: "transparent",
+            outline: "none",
+          }}
+          content={(props) => <CustomTooltip {...props} auction={auction} />}
+        />
+        <Scatter
+          name="Bids"
+          data={chartData}
+          stroke="#FFFFFF"
+          fill="#FFFFFF"
+          shape={(props: any) => (
+            <CustomShape {...props} marginalPrice={marginalPrice} />
+          )}
+        />
+        <ReferenceLine
+          y={marginalPrice}
+          stroke="#76BDF2"
+          className="relative *:absolute *:top-10"
+          label={(props) => (
+            <CustomLabel
+              {...props}
+              content="Settled Price"
+              className="fill-axis-teal"
+            />
+          )}
+        />
         <ReferenceLine
           y={minimumPrice}
-          label="Minimum Price"
           strokeDasharray="3 3"
           stroke="orange"
+          label={(props) => (
+            <CustomLabel
+              {...props}
+              content="Minimum Price"
+              className="fill-axis-orange"
+            />
+          )}
         />
       </ScatterChart>
     </ResponsiveContainer>
   );
 };
+
+function CustomLabel(props: any) {
+  return (
+    <text
+      {...props?.viewBox}
+      y={props.viewBox?.y - props?.offset}
+      x={props.viewBox?.x}
+      className={cn("absolute text-xs font-semibold", props.className)}
+    >
+      {props.content}
+    </text>
+  );
+}
+
+function CustomShape({ fill, stroke, marginalPrice, ...props }: any) {
+  return marginalPrice < props.payload.price ? (
+    <GemIcon className="text-axis-green *:p-4" {...props} />
+  ) : (
+    <XIcon className="text-axis-red *:p-4" {...props} />
+  );
+}
+
+function CustomTooltip(props: TooltipProps<any, any>) {
+  const [timestamp, price, amountIn, amountOut] = props.payload;
+  const { quoteToken } = props.auction;
+
+  return (
+    <div className="bg-secondary rounded-sm px-4 py-2">
+      <div>
+        Amount: {amountIn?.value} {quoteToken.symbol}
+      </div>
+      <div>
+        Price: {price?.value} {quoteToken.symbol}
+      </div>
+      <div>At {formatDate.fullLocal(timestamp?.value ?? new Date())}</div>
+    </div>
+  );
+}

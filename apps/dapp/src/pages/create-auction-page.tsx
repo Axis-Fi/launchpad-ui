@@ -20,6 +20,7 @@ import { cloakClient } from "src/services/cloak";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import {
+  Address,
   encodeAbiParameters,
   getAddress,
   isHex,
@@ -52,8 +53,8 @@ const schema = z
     minFillPercent: z.array(z.number()),
     minBidPercent: z.array(z.number()),
     minPrice: z.string(),
-    start: z.date().min(addMinutes(new Date(), 5)),
-    deadline: z.date().min(addDays(addMinutes(new Date(), 5), 1)),
+    start: z.date(),
+    deadline: z.date(),
     hooks: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
@@ -79,19 +80,24 @@ const schema = z
     farcaster: z.string().url().optional(),
     payoutTokenLogo: z.string().url().optional(),
   })
-  .refine((data) => {
-    // If vesting is enabled, vesting duration is required
-    if (data.isVested && !data.vestingDuration) {
-      return false;
-    }
-
-    // Deadline needs to be at least 1 day after the start
-    if (addDays(data.start, 1) > data.deadline) {
-      return false;
-    }
-
-    return true;
-  });
+  .refine(
+    (data) => (!data.isVested ? true : data.isVested && data.vestingDuration),
+    {
+      message: "Vesting duration is required",
+      path: ["vestingDuration"],
+    },
+  )
+  .refine((data) => data.start.getTime() > new Date().getTime(), {
+    message: "Start date needs to be in the future",
+    path: ["start"],
+  })
+  .refine(
+    (data) => addDays(data.start, 1).getTime() <= data.deadline.getTime(),
+    {
+      message: "Deadline needs to be at least 1 day after the start",
+      path: ["deadline"],
+    },
+  );
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
@@ -123,9 +129,6 @@ export default function CreateAuctionPage() {
     hash: createAuction.data,
   });
 
-  const errors = form.formState.errors;
-  console.log({ errors });
-
   const createDependenciesMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
@@ -143,26 +146,27 @@ export default function CreateAuctionPage() {
 
       // Store the auction info
       const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
-      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS"); // TODO display error
+      if (!auctionInfoAddress) {
+        throw new Error("Unable to store info on IPFS");
+      }
 
       // Get the public key
       const publicKey = await cloakClient.keysApi.newKeyPairPost();
-
-      if (!isHex(publicKey)) throw new Error("Invalid or no keypair received"); // TODO display error
+      if (!isHex(publicKey)) {
+        throw new Error("Invalid or no keypair received");
+      }
 
       return { publicKey, auctionInfoAddress };
+    },
+    onError: (error) => {
+      // It will also show in the interface
+      console.error("Error during submission:", error);
     },
   });
 
   const handleCreation = async (values: CreateAuctionForm) => {
     const { publicKey, auctionInfoAddress } =
       await createDependenciesMutation.mutateAsync(values);
-
-    if (createDependenciesMutation.isError) {
-      throw new Error(
-        "Unable to create auction due to dependent mutation error",
-      ); // TODO display error
-    }
 
     createAuction.writeContract(
       {
@@ -226,7 +230,7 @@ export default function CreateAuctionPage() {
                     values.minPrice,
                     values.payoutToken.decimals,
                   ),
-                  publicKeyModulus: publicKey,
+                  publicKeyModulus: publicKey as Address,
                 },
               ],
             ),
@@ -411,7 +415,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
-                        placeholderDate={addHours(new Date(), 1)}
+                        placeholderDate={addMinutes(new Date(), 5)}
                         content={formatDate.fullLocal(new Date())}
                         {...field}
                       />
@@ -642,7 +646,9 @@ export default function CreateAuctionPage() {
               hash={createAuction.data!}
               chainId={chainId}
               mutation={createTxReceipt}
+              disabled={!form.formState.isValid}
               onConfirm={onSubmit}
+              error={createDependenciesMutation.error} // TODO need to combine this with createAuction somehow, so that errors are shown
             />
           </CreateAuctionSubmitter>
         </form>
