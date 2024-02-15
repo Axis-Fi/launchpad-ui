@@ -119,6 +119,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   );
 
   const isValidInput = baseTokenAmount && quoteTokenAmount;
+  const shouldDisable =
+    !isValidInput ||
+    approveTx.isLoading ||
+    bidReceipt.isLoading ||
+    bid.isPending;
 
   return (
     <div className="flex justify-between">
@@ -142,14 +147,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
       <div className="w-[40%]">
         <AuctionInputCard
-          disabled={
-            !isValidInput ||
-            approveTx.isLoading ||
-            bidReceipt.isLoading ||
-            bid.isPending
-          }
+          disabled={shouldDisable}
           auction={auction}
           onClick={handleSubmit}
+          submitText={""}
         >
           <>
             <AuctionBidInput
@@ -164,7 +165,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                   <Button className="w-full" onClick={() => approveCapacity()}>
                     {isSufficientAllowance ? (
                       "Bid"
-                    ) : approveTx.isLoading ? (
+                    ) : shouldDisable ? (
                       <div className="flex">
                         Waiting for confirmation...
                         <LoadingIndicator />
@@ -178,11 +179,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     onConfirm={() => handleBid()}
                     mutation={bidReceipt}
                     chainId={auction.chainId}
-                    /* @ts-expect-error TODO: remove this expect*/
                     hash={bid.data}
                     /* @ts-expect-error TODO: remove this expect*/
                     error={bidDependenciesMutation.error}
                     triggerContent={"Bid"}
+                    disabled={shouldDisable}
                     screens={{
                       idle: {
                         Component: () => (

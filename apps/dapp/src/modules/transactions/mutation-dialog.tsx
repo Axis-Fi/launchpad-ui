@@ -15,7 +15,7 @@ import { UseMutationResult } from "@tanstack/react-query";
 
 export type MutationDialogElementProps = {
   chainId: number;
-  hash: Address;
+  hash?: Address;
   error?: WaitForTransactionReceiptErrorType | null;
 };
 
