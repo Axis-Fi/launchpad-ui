@@ -44,51 +44,59 @@ const tokenSchema = z.object({
   symbol: z.string(),
 });
 
-const schema = z.object({
-  quoteToken: tokenSchema,
-  payoutToken: tokenSchema,
-  capacity: z.string(),
-  minFillPercent: z.array(z.number()),
-  minBidPercent: z.array(z.number()),
-  minPrice: z.string(),
-  start: z.date().min(addMinutes(new Date(), 5)),
-  deadline: z.date().min(addDays(addMinutes(new Date(), 5), 1)),
-  hooks: z
-    .string()
-    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-    .optional(),
-  allowlist: z
-    .string()
-    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-    .optional(),
-  allowlistParams: z.string().optional(),
-  isVested: z.boolean().optional(),
-  curator: z
-    .string()
-    .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-    .optional(),
-  vestingDuration: z.string().optional(),
-  // Metadata
-  name: z.string(),
-  description: z.string(),
-  projectLogo: z.string().url().optional(),
-  twitter: z.string().url().optional(),
-  discord: z.string().url().optional(),
-  website: z.string().url().optional(),
-  farcaster: z.string().url().optional(),
-  payoutTokenLogo: z.string().url().optional(),
-});
-// .refine((data) => {
-//   // If vesting is enabled, vesting duration is required
-//   if (data.isVested && !data.vestingDuration) {
-//     return false;
-//   }
-
-//   // Deadline needs to be at least 1 day after the start
-//   if (addDays(data.start, 1) > data.deadline) {
-//     return false;
-//   }
-// });
+const schema = z
+  .object({
+    quoteToken: tokenSchema,
+    payoutToken: tokenSchema,
+    capacity: z.string(),
+    minFillPercent: z.array(z.number()),
+    minBidPercent: z.array(z.number()),
+    minPrice: z.string(),
+    start: z.date(),
+    deadline: z.date(),
+    hooks: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    allowlist: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    allowlistParams: z.string().optional(),
+    isVested: z.boolean().optional(),
+    curator: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    vestingDuration: z.string().optional(),
+    // Metadata
+    name: z.string(),
+    description: z.string(),
+    projectLogo: z.string().url().optional(),
+    twitter: z.string().url().optional(),
+    discord: z.string().url().optional(),
+    website: z.string().url().optional(),
+    farcaster: z.string().url().optional(),
+    payoutTokenLogo: z.string().url().optional(),
+  })
+  .refine(
+    (data) => (!data.isVested ? true : data.isVested && data.vestingDuration),
+    {
+      message: "Vesting duration is required",
+      path: ["vestingDuration"],
+    },
+  )
+  .refine((data) => data.start.getTime() > new Date().getTime(), {
+    message: "Start date needs to be in the future",
+    path: ["start"],
+  })
+  .refine(
+    (data) => addDays(data.start, 1).getTime() < data.deadline.getTime(),
+    {
+      message: "Deadline needs to be at least 1 day after the start",
+      path: ["deadline"],
+    },
+  );
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
@@ -407,7 +415,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
-                        placeholderDate={addHours(new Date(), 1)}
+                        placeholderDate={addMinutes(new Date(), 5)}
                         content={formatDate.fullLocal(new Date())}
                         {...field}
                       />
@@ -638,6 +646,7 @@ export default function CreateAuctionPage() {
               hash={createAuction.data!}
               chainId={chainId}
               mutation={createTxReceipt}
+              disabled={!form.formState.isValid}
               onConfirm={onSubmit}
             />
           </CreateAuctionSubmitter>
