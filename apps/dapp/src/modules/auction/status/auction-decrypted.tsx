@@ -1,13 +1,18 @@
 import { axisContracts } from "@repo/contracts";
 import { InfoLabel } from "@repo/ui";
 import { parseUnits } from "viem";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "..";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
+  const { address } = useAccount();
   const axisAddresses = axisContracts.addresses[auction.chainId];
   const settle = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: settle.data });
@@ -21,8 +26,18 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
   );
 
   const rate = 0;
-  const amountBid = 0;
-  const amountSecured = 0;
+  const userBids = auction.bidsDecrypted.filter((b) =>
+    b.bid.bidder.toLowerCase().includes(address?.toLowerCase() ?? ""),
+  );
+
+  const amountBid = userBids.reduce(
+    (total, b) => total + Number(b.amountIn),
+    0,
+  );
+  const amountSecured = userBids.reduce(
+    (total, b) => total + Number(b.amountOut ?? 0),
+    0,
+  );
 
   const handleSettle = () => {
     settle.writeContract({
@@ -32,6 +47,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       args: [parseUnits(auction.lotId, 0)],
     });
   };
+  console.log({ settle, decryptReceipt });
 
   return (
     <div className="flex justify-between">

@@ -18,6 +18,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     (total, b) => total + Number(b.amountIn),
     0,
   );
+
   const auctionEndDistance = formatDistanceToNow(
     new Date(Number(auction.conclusion) * 1000),
   );
@@ -27,6 +28,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
   );
 
   const disableButton = totalBids === 0 || decrypt.decryptTx.isPending;
+  console.log({ decrypt });
 
   return (
     <div>

@@ -383,7 +383,7 @@ export default function CreateAuctionPage() {
                   control={form.control}
                   name="farcaster"
                   render={({ field }) => (
-                    <FormItemWrapper className="mt-6" label="Farcaster">
+                    <FormItemWrapper className="mt-6" label="Warpcast">
                       <Input
                         type="url"
                         placeholder="https://warpcast.com/your-dao"
