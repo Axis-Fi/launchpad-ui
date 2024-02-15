@@ -141,6 +141,7 @@ export function BidList(props: BidListProps) {
                 )
               }
               disabled={isLoading}
+              //@ts-expect-error make screens optional
               screens={{
                 idle: {
                   title: "Refund Bid",
