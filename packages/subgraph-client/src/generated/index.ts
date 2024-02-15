@@ -2459,6 +2459,7 @@ export type AuctionLotFragmentFragment = {
   };
   bids: Array<{ id: string }>;
   bidsDecrypted: Array<{ id: string }>;
+  refundedBids: Array<{ id: string }>;
   settle?: { id: string } | null;
 };
 
@@ -2510,6 +2511,7 @@ export type GetAuctionLotsQuery = {
     };
     bids: Array<{ id: string }>;
     bidsDecrypted: Array<{ id: string }>;
+    refundedBids: Array<{ id: string }>;
     settle?: { id: string } | null;
   }>;
 };
@@ -2668,6 +2670,9 @@ export const AuctionLotFragmentFragmentDoc = `
     id
   }
   bidsDecrypted {
+    id
+  }
+  refundedBids {
     id
   }
   settle {

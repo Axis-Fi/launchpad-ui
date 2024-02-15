@@ -41,11 +41,13 @@ fragment AuctionLotFragment on AuctionLot {
     transactionHash
     infoHash
   }
-
   bids {
     id
   }
   bidsDecrypted {
+    id
+  }
+  refundedBids {
     id
   }
   settle {
