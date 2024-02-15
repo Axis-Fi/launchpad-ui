@@ -6,8 +6,6 @@ import { cloakClient } from "src/services/cloak";
 import { Address, ByteArray, fromHex, toHex } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
-// TODO fetch a batch of bids to decrypt (getNextBidsToDecrypt), decrypt off-chain, pass back to contract (decryptAndSortBids). Repeat until none left.
-
 /** Used manage decrypting the next set of bids */
 export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
   const contracts = axisContracts.addresses[auction.chainId];

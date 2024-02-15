@@ -11,14 +11,6 @@ export function AuctionBidsCard({
   isLoading,
   ...props
 }: AuctionBidsCard) {
-  // TODO: implement bids card
-  // - table of bids
-  // - bidder
-  // - quote token amount
-  // - "encrypted" base token amount out for each bid (skeleton?)
-  // - reveal the decrypted base token amount if there is a matching decrypted bid
-  // - display if the bid is refunded (search for it in the refundedBids prop using the bidId)
-
   return (
     <div {...props}>
       <h3>Bids</h3>
