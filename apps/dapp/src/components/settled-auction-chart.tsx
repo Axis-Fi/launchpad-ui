@@ -166,42 +166,50 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   //   minimumPrice,
   // } = useChartData(auction);
   // TODO mock data for testing
-  const chartData = [
-    {
-      id: 0,
-      bidder: "0x1234567890abcdef1234567890abcdef12345678",
-      price: 5.0,
-      amountIn: 100,
-      amountOut: 20,
-      timestamp: 1707940560000,
-    },
-    {
-      id: 1,
-      bidder: "0x01234567890abcdef1234567890abcdef1234567",
-      price: 6.0,
-      amountIn: 240,
-      amountOut: 40,
-      timestamp: 1707945560000,
-    },
-    {
-      id: 2,
-      bidder: "0x101234567890abcdef1234567890abcdef123456",
-      price: 3.0,
-      amountIn: 300,
-      amountOut: 100,
-      timestamp: 1707948560000,
-    },
-    {
-      id: 3,
-      bidder: "0x201234567890abcdef1234567890abcdef123456",
-      price: 4.0,
-      amountIn: 160,
-      amountOut: 40,
-      timestamp: 1707950560000,
-    },
-  ];
-  const marginalPrice = 4.0;
-  const minimumPrice = 2.0;
+  const {
+    data: chartData,
+    marginalPrice,
+    minimumPrice,
+  } = {
+    data: [
+      {
+        id: 0,
+        bidder: "0x1234567890abcdef1234567890abcdef12345678",
+        price: 5.0,
+        amountIn: 100,
+        amountOut: 20,
+        timestamp: 1707940560000,
+      },
+      {
+        id: 1,
+        bidder: "0x01234567890abcdef1234567890abcdef1234567",
+        price: 6.0,
+        amountIn: 240,
+        amountOut: 40,
+        timestamp: 1707945560000,
+      },
+      {
+        id: 2,
+        bidder: "0x101234567890abcdef1234567890abcdef123456",
+        price: 3.0,
+        amountIn: 300,
+        amountOut: 100,
+        timestamp: 1707948560000,
+      },
+      {
+        id: 3,
+        bidder: "0x201234567890abcdef1234567890abcdef123456",
+        price: 4.0,
+        amountIn: 160,
+        amountOut: 40,
+        timestamp: 1707950560000,
+      },
+    ],
+    marginalPrice: 4.0,
+    minimumPrice: 2.0,
+  };
+  // TODO end mock data
+
   const sizeRange = [
     !chartData
       ? 0
