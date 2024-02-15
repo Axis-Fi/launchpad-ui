@@ -238,8 +238,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
           />
           <Tooltip
             cursor={{ strokeDasharray: "3 3" }}
-            // TODO fix typing
-            // @ts-expect-error
+            // @ts-expect-error TODO fix typing
             formatter={formatter}
             wrapperStyle={{
               backgroundColor: "transparent",
@@ -312,8 +311,7 @@ type SettledTooltipProps = {
 } & TooltipProps<any, any>;
 
 function CustomTooltip(props: SettledTooltipProps) {
-  // TODO fix typing
-  // @ts-expect-error
+  // @ts-expect-error TODO fix typing
   const [timestamp, price, amountIn] = props.payload;
   const auction = props.auction;
 

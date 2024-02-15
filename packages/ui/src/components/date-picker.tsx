@@ -37,6 +37,7 @@ export function DatePicker({
     }
   }, [matcher, props, props.time, time, date]);
 
+  // TODO fix "Function components cannot be given refs" which seems to be breaking datetime validation
   return (
     <Popover onOpenChange={(open) => !open && props.onBlur?.()}>
       <PopoverTrigger asChild>
