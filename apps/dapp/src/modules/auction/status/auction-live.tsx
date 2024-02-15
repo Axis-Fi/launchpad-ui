@@ -166,7 +166,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                       "Bid"
                     ) : approveTx.isLoading ? (
                       <div className="flex">
-                        Waiting confirmation...
+                        Waiting for confirmation...
                         <LoadingIndicator />
                       </div>
                     ) : (

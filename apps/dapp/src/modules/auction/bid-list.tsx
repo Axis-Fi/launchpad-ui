@@ -12,6 +12,7 @@ import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { parseUnits } from "viem";
 import { MutationDialog } from "modules/transactions/mutation-dialog";
+import { LoadingIndicator } from "components/loading-indicator";
 
 const column = createColumnHelper<
   SubgraphAuctionEncryptedBid & {
@@ -90,6 +91,9 @@ export function BidList(props: BidListProps) {
   });
   const allBids = [...mappedBids];
 
+  // TODO after a tx, this does not update. Requires refresh.
+  const isLoading = refund.isPending || refundReceipt.isLoading;
+
   const handleRefund = (bidId: string) => {
     console.log("Refunding bid", bidId);
 
@@ -126,7 +130,17 @@ export function BidList(props: BidListProps) {
               chainId={props.auction.chainId}
               hash={refund.data}
               error={refundReceipt.error}
-              triggerContent={"Refund"}
+              triggerContent={
+                isLoading ? (
+                  <div className="flex">
+                    Waiting...
+                    <LoadingIndicator />
+                  </div>
+                ) : (
+                  "Refund"
+                )
+              }
+              disabled={isLoading}
               screens={{
                 idle: {
                   title: "Refund Bid",
