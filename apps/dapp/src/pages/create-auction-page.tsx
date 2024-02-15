@@ -20,6 +20,7 @@ import { cloakClient } from "src/services/cloak";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import {
+  Address,
   encodeAbiParameters,
   getAddress,
   isHex,
@@ -128,9 +129,6 @@ export default function CreateAuctionPage() {
     hash: createAuction.data,
   });
 
-  const errors = form.formState.errors;
-  console.log({ errors });
-
   const createDependenciesMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
@@ -148,26 +146,27 @@ export default function CreateAuctionPage() {
 
       // Store the auction info
       const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
-      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS"); // TODO display error
+      if (!auctionInfoAddress) {
+        throw new Error("Unable to store info on IPFS");
+      }
 
       // Get the public key
       const publicKey = await cloakClient.keysApi.newKeyPairPost();
-
-      if (!isHex(publicKey)) throw new Error("Invalid or no keypair received"); // TODO display error
+      if (!isHex(publicKey)) {
+        throw new Error("Invalid or no keypair received");
+      }
 
       return { publicKey, auctionInfoAddress };
+    },
+    onError: (error) => {
+      // It will also show in the interface
+      console.error("Error during submission:", error);
     },
   });
 
   const handleCreation = async (values: CreateAuctionForm) => {
     const { publicKey, auctionInfoAddress } =
       await createDependenciesMutation.mutateAsync(values);
-
-    if (createDependenciesMutation.isError) {
-      throw new Error(
-        "Unable to create auction due to dependent mutation error",
-      ); // TODO display error
-    }
 
     createAuction.writeContract(
       {
@@ -231,7 +230,7 @@ export default function CreateAuctionPage() {
                     values.minPrice,
                     values.payoutToken.decimals,
                   ),
-                  publicKeyModulus: publicKey,
+                  publicKeyModulus: publicKey as Address,
                 },
               ],
             ),
@@ -648,6 +647,7 @@ export default function CreateAuctionPage() {
               mutation={createTxReceipt}
               disabled={!form.formState.isValid}
               onConfirm={onSubmit}
+              error={createDependenciesMutation.error} // TODO need to combine this with createAuction somehow, so that errors are shown
             />
           </CreateAuctionSubmitter>
         </form>
