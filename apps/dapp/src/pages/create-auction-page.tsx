@@ -91,7 +91,7 @@ const schema = z
     path: ["start"],
   })
   .refine(
-    (data) => addDays(data.start, 1).getTime() < data.deadline.getTime(),
+    (data) => addDays(data.start, 1).getTime() <= data.deadline.getTime(),
     {
       message: "Deadline needs to be at least 1 day after the start",
       path: ["deadline"],
