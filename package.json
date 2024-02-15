@@ -7,7 +7,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "clean": "turbo run clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json,css,html}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json,css,html,yaml}\"",
     "prepare": "husky",
     "storybook": "turbo run storybook"
   },
