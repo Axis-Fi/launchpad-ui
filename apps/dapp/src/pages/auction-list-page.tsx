@@ -56,6 +56,7 @@ export default function AuctionListPage() {
                 //socials={} TODO: add socials
                 // @ts-expect-error fix type
                 auction={a}
+                // TODO support open in new tab
                 onClickView={() => navigate(`/auction/${a.chainId}/${a.id}`)}
               />
             ))}
