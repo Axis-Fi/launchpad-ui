@@ -69,7 +69,6 @@ const cols = [
 
 export function BidList(props: PropsWithAuction) {
   const encrypted = props.auction?.bids ?? [];
-  const decrypted = props.auction?.bidsDecrypted ?? [];
 
   // TODO add button triggering a modal to refund a bid if:
   // - auction is live && bid status is not refunded
