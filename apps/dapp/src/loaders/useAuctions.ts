@@ -43,6 +43,6 @@ export function useAuctions(): AuctionsResult {
       auctionInfo: infos.data?.find((info) => info.id === auction.id)
         ?.auctionInfo,
     })),
-    isLoading: isLoading,
+    isLoading: isLoading || infos.isLoading,
   };
 }
