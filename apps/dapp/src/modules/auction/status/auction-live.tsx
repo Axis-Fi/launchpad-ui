@@ -62,7 +62,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   }, [bidReceipt.isSuccess]);
 
   // TODO Permit2 signature
-  //
 
   const bidDependenciesMutation = useMutation({
     mutationFn: async () => {
@@ -124,7 +123,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     approveTx.isLoading ||
     bidReceipt.isLoading ||
     bid.isPending;
+  const isWaiting =
+    approveTx.isLoading || bidReceipt.isLoading || bid.isPending;
 
+  // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
     <div className="flex justify-between">
       <div className="w-1/2">
@@ -165,7 +167,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                   <Button className="w-full" onClick={() => approveCapacity()}>
                     {isSufficientAllowance ? (
                       "Bid"
-                    ) : shouldDisable ? (
+                    ) : isWaiting ? (
                       <div className="flex">
                         Waiting for confirmation...
                         <LoadingIndicator />
@@ -183,7 +185,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     /* @ts-expect-error TODO: remove this expect*/
                     error={bidDependenciesMutation.error}
                     triggerContent={"Bid"}
-                    disabled={shouldDisable}
+                    disabled={shouldDisable || isWaiting}
                     //@ts-expect-error make screens optional
                     screens={{
                       idle: {
