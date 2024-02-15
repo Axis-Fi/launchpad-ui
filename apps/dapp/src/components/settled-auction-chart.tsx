@@ -113,7 +113,13 @@ const timestampFormatter = (timestamp: number) => {
   return format(new Date(timestamp), "yyyy-MM-dd");
 };
 
-const formatter = (value, name: string, props) => {
+type formatterProps = {
+  dataKey: string;
+  name: string;
+  value: unknown;
+};
+
+const formatter = (value: unknown, _name: string, props: formatterProps) => {
   if (props.dataKey === "timestamp" && typeof value == "number") {
     return format(new Date(value), "yyyy-MM-dd HH:mm:ss");
   }
