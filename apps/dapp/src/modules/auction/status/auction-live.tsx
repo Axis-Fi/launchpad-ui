@@ -76,7 +76,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         xChainId: auction.chainId,
         xAuctionHouse: axisAddresses.auctionHouse,
         lotId: parseInt(auction.lotId),
-        body: baseTokenAmountOut.toString(),
+        body: toHex(baseTokenAmountOut, "bigint"),
       });
 
       return encryptedAmountOut;
