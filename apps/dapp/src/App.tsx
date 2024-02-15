@@ -9,7 +9,7 @@ function App() {
       <div className="mx-auto flex h-screen max-w-[1300px] flex-col justify-between">
         <div>
           <AppHeader />
-          <div className="mx-auto w-full max-w-[1137px]">
+          <div className="mx-auto mt-10 w-full max-w-[1137px]">
             <Outlet />
           </div>
         </div>
