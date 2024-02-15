@@ -38,7 +38,7 @@ export function AuctionCard({
           <SocialRow {...(auction.auctionInfo?.links ?? {})} className="h-6" />
         </div>
 
-        <div className="mt-4 flex flex-col rounded-sm ">
+        <div className="mt-4 flex flex-col rounded-sm">
           <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>
             <div className="flex items-center gap-x-1 px-4 pt-4">
               <Avatar

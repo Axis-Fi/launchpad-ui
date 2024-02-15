@@ -7,5 +7,9 @@ export function RequiresWalletConnection(
 ) {
   const account = useAccount();
 
-  return account.isConnected ? <>{props.children}</> : <ConnectButton />;
+  return account.isConnected ? (
+    <>{props.children}</>
+  ) : (
+    <ConnectButton className={props.className} />
+  );
 }

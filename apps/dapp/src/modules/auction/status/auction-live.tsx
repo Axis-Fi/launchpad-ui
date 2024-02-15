@@ -127,16 +127,25 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isWaiting =
     approveTx.isLoading || bidReceipt.isLoading || bid.isPending;
 
+  console.log({ bid, bidReceipt, bidDependenciesMutation });
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
     <div className="flex justify-between">
       <div className="w-1/2">
         <AuctionInfoCard>
+          <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
           <InfoLabel
             label="Capacity"
             value={`${auction.capacity} ${auction.baseToken.symbol}`}
           />
-          <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
+          <InfoLabel
+            label="Minimum Price"
+            value={`${auction.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
+          />
+          <InfoLabel
+            label="Minimum Quantity"
+            value={`${auction.minBidSize} ${auction.quoteToken.symbol}`}
+          />
           <InfoLabel label="Total Bids" value={auction.bids.length} />
           <InfoLabel
             label="Total Bid Amount"
@@ -162,7 +171,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               onChangeMinAmountOut={(e) => setBaseTokenAmount(Number(e))}
               auction={auction}
             />
-            <RequiresWalletConnection>
+            <RequiresWalletConnection className="mt-4">
               <div className="mt-4 w-full">
                 {!isSufficientAllowance ? (
                   <Button className="w-full" onClick={() => approveCapacity()}>
@@ -215,10 +224,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           </>
         </AuctionInputCard>
 
-        {bidReceipt.isLoading && <p>Confirming transaction...</p>}
-        {bid.isError && <p>{bid.error?.message}</p>}
-        {bidReceipt.isError && <p>{bidReceipt.error?.message}</p>}
-        {bidReceipt.isSuccess && <p>Success!</p>}
+        {/* {bidReceipt.isLoading && <p>Confirming transaction...</p>} */}
+        {/* {bid.isError && <p>{bid.error?.message}</p>} */}
+        {/* {bidReceipt.isError && <p>{bidReceipt.error?.message}</p>} */}
+        {/* {bidReceipt.isSuccess && <p>Success!</p>} */}
       </div>
     </div>
   );

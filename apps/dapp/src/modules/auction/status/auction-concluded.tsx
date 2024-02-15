@@ -75,18 +75,18 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             </RequiresWalletConnection>
           </AuctionInputCard>
 
-          {decrypt.nextBids.isFetching && <p>API - NextBids: Loading</p>}
-          {decrypt.nextBids.isError && (
-            <p>
-              API:{" "}
-              {decrypt.nextBids.error.message || decrypt.nextBids.error.name}
-            </p>
-          )}
-          {decrypt.decryptTx.isPending && <p>Confirming transaction...</p>}
-          {decrypt.decryptTx.isError && (
-            <p>Txn: {decrypt.decryptTx.error?.message}</p>
-          )}
-          {decrypt.decryptTx.isSuccess && <p>Success!</p>}
+          {/* {decrypt.nextBids.isFetching && <p>API - NextBids: Loading</p>} */}
+          {/* {decrypt.nextBids.isError && ( */}
+          {/*   <p> */}
+          {/*     API:{" "} */}
+          {/*     {decrypt.nextBids.error.message || decrypt.nextBids.error.name} */}
+          {/*   </p> */}
+          {/* )} */}
+          {/* {decrypt.decryptTx.isPending && <p>Confirming transaction...</p>} */}
+          {/* {decrypt.decryptTx.isError && ( */}
+          {/*   <p>Txn: {decrypt.decryptTx.error?.message}</p> */}
+          {/* )} */}
+          {/* {decrypt.decryptTx.isSuccess && <p>Success!</p>} */}
         </div>
       </div>
     </div>

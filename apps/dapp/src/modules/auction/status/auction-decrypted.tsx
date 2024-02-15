@@ -12,7 +12,9 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const settle = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: settle.data });
 
+  /* eslint-disable-next-line*/
   const isLoading = settle.isPending || decryptReceipt.isLoading;
+
   const totalRaised = auction.bids?.reduce(
     (total, b) => total + Number(b.amountIn),
     0,
@@ -58,9 +60,9 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
             </div>
           </RequiresWalletConnection>
         </AuctionInputCard>
-        {isLoading && <p>Loading... </p>}
-        {settle.isError && <p>{settle.error?.message}</p>}
-        {decryptReceipt.isSuccess && <p>Success!</p>}
+        {/* {isLoading && <p>Loading... </p>} */}
+        {/* {settle.isError && <p>{settle.error?.message}</p>} */}
+        {/* {decryptReceipt.isSuccess && <p>Success!</p>} */}
       </div>
     </div>
   );
