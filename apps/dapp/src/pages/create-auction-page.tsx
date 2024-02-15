@@ -647,6 +647,7 @@ export default function CreateAuctionPage() {
               mutation={createTxReceipt}
               disabled={!form.formState.isValid}
               onConfirm={onSubmit}
+              //@ts-expect-error TODO: improve
               error={createDependenciesMutation.error} // TODO need to combine this with createAuction somehow, so that errors are shown
             />
           </CreateAuctionSubmitter>

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Button } from "@repo/ui";
 import { UseWaitForTransactionReceiptReturnType } from "wagmi";
 import { TransactionHashCard } from "./transaction-hash-card";

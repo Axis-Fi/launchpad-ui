@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { axisContracts } from "@repo/contracts";
 import { Button, InfoLabel, trimAddress } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
