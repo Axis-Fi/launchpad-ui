@@ -14,8 +14,8 @@ import { WaitForTransactionReceiptErrorType } from "wagmi/actions";
 import { UseMutationResult } from "@tanstack/react-query";
 
 export type MutationDialogElementProps = {
-  chainId: number;
-  hash: Address;
+  chainId?: number;
+  hash?: Address;
   error?: WaitForTransactionReceiptErrorType | null;
 };
 

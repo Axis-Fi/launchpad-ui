@@ -8,10 +8,14 @@ import { PropsWithAuction } from ".";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
 import { Tooltip } from "@repo/ui";
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { axisContracts } from "@repo/contracts";
+import { parseUnits } from "viem";
+import { MutationDialog } from "modules/transactions/mutation-dialog";
+import { LoadingIndicator } from "components/loading-indicator";
 
 const column = createColumnHelper<
   SubgraphAuctionEncryptedBid & {
-    amountOut: string;
     auction: SubgraphAuctionWithEvents;
   }
 >();
@@ -67,12 +71,17 @@ const cols = [
   }),
 ];
 
-export function BidList(props: PropsWithAuction) {
+type BidListProps = PropsWithAuction & {
+  address?: `0x${string}`;
+};
+
+export function BidList(props: BidListProps) {
+  const axisAddresses = axisContracts.addresses[props.auction.chainId];
+  const addressLower = props.address ? props.address.toLowerCase() : undefined;
   const encrypted = props.auction?.bids ?? [];
 
-  // TODO add button triggering a modal to refund a bid if:
-  // - auction is live && bid status is not refunded
-  // - auction is settled && bid status is not won and not refunded
+  const refund = useWriteContract();
+  const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
 
   const mappedBids = encrypted.map((bid) => {
     return {
@@ -80,8 +89,81 @@ export function BidList(props: PropsWithAuction) {
       auction: props.auction,
     };
   });
-
   const allBids = [...mappedBids];
+
+  // TODO after a tx, this does not update. Requires refresh.
+  const isLoading = refund.isPending || refundReceipt.isLoading;
+
+  const handleRefund = (bidId: string) => {
+    console.log("Refunding bid", bidId);
+
+    refund.writeContract({
+      abi: axisContracts.abis.auctionHouse,
+      address: axisAddresses.auctionHouse,
+      functionName: "refundBid",
+      args: [parseUnits(props.auction.lotId, 0), parseUnits(bidId, 0)],
+    });
+  };
+
+  // Add a refund button to the columns
+  const columns = [
+    ...cols,
+    column.display({
+      id: "actions",
+      cell: (info) => {
+        const bid = info.row.original;
+        if (!addressLower) return;
+        if (bid.bidder.toLowerCase() !== addressLower) return;
+        if (bid.status === "refunded") return;
+
+        // Can refund if the bid did not win and the auction is settled
+        const isSettledBidNotWon =
+          props.auction.status === "settled" && bid.status !== "won";
+        // Can refund if the auction is live
+        const isLive = props.auction.status === "live";
+
+        if (isSettledBidNotWon || isLive) {
+          return (
+            <MutationDialog
+              onConfirm={() => handleRefund(bid.bidId)}
+              mutation={refundReceipt}
+              chainId={props.auction.chainId}
+              hash={refund.data}
+              error={refundReceipt.error}
+              triggerContent={
+                isLoading ? (
+                  <div className="flex">
+                    Waiting...
+                    <LoadingIndicator />
+                  </div>
+                ) : (
+                  "Refund"
+                )
+              }
+              disabled={isLoading}
+              //@ts-expect-error make screens optional
+              screens={{
+                idle: {
+                  title: "Refund Bid",
+                  Component: () => (
+                    <div className="text-center">
+                      Are you sure you want to refund this bid?
+                    </div>
+                  ),
+                },
+                success: {
+                  title: "Transaction Confirmed",
+                  Component: () => (
+                    <div className="text-center">Bid refunded!</div>
+                  ),
+                },
+              }}
+            />
+          );
+        }
+      },
+    }),
+  ];
 
   return (
     <DataTable
@@ -90,8 +172,7 @@ export function BidList(props: PropsWithAuction) {
           ? "No bids yet"
           : "No bids received"
       }
-      /*@ts-expect-error TODO: remove, slapped for preview*/
-      columns={cols}
+      columns={columns}
       data={allBids}
     />
   );
