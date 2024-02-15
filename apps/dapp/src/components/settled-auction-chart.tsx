@@ -172,6 +172,8 @@ const mapAuctionData = (
 
 export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId);
+
+  // TODO consider pulling into dedicated hook, normalising output
   const { data: auctionData } = useReadContract({
     abi: axisContracts.abis.localSealedBidBatchAuction,
     address: !auction
