@@ -151,20 +151,6 @@ export function BidList(props: BidListProps) {
                     </div>
                   ),
                 },
-                error: {
-                  title: "Transaction Error",
-                  Component: () => (
-                    <div className="text-center">Something went wrong</div>
-                  ),
-                },
-                pending: {
-                  title: "Waiting for Confirmation",
-                  Component: () => (
-                    <div className="text-center">
-                      Waiting for confirmation...
-                    </div>
-                  ),
-                },
                 success: {
                   title: "Transaction Confirmed",
                   Component: () => (
