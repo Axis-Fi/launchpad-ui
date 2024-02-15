@@ -30,3 +30,7 @@ export const activeChains = environment.isTestnet ? testnets : mainnets;
 export const activeConfig = environment.isTestnet
   ? testnetConfig
   : mainnetConfig;
+
+export const iconsPerChain: Record<number, string> = {
+  [blastSepolia.id]: "/blast-logo.png",
+};

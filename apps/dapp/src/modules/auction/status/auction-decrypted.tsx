@@ -1,25 +1,43 @@
 import { axisContracts } from "@repo/contracts";
 import { InfoLabel } from "@repo/ui";
 import { parseUnits } from "viem";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "..";
+import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
+  const { address } = useAccount();
   const axisAddresses = axisContracts.addresses[auction.chainId];
   const settle = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: settle.data });
 
+  /* eslint-disable-next-line*/
   const isLoading = settle.isPending || decryptReceipt.isLoading;
+
   const totalRaised = auction.bids?.reduce(
     (total, b) => total + Number(b.amountIn),
     0,
   );
 
   const rate = 0;
-  const amountBid = 0;
-  const amountSecured = 0;
+  const userBids = auction.bidsDecrypted.filter((b) =>
+    b.bid.bidder.toLowerCase().includes(address?.toLowerCase() ?? ""),
+  );
+
+  const amountBid = userBids.reduce(
+    (total, b) => total + Number(b.amountIn),
+    0,
+  );
+  const amountSecured = userBids.reduce(
+    (total, b) => total + Number(b.amountOut ?? 0),
+    0,
+  );
 
   const handleSettle = () => {
     settle.writeContract({
@@ -29,6 +47,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       args: [parseUnits(auction.lotId, 0)],
     });
   };
+  console.log({ settle, decryptReceipt });
 
   return (
     <div className="flex justify-between">
@@ -42,22 +61,24 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
           onClick={handleSettle}
           auction={auction}
         >
-          <div className="bg-secondary text-foreground flex justify-between rounded-sm p-2">
-            <InfoLabel
-              label="You bid"
-              value={`${amountBid} ${auction.quoteToken.symbol}`}
-              className="text-5xl font-light"
-            />
-            <InfoLabel
-              label="You got"
-              value={`${amountSecured} ${auction.baseToken.symbol}`}
-              className="text-5xl font-light"
-            />
-          </div>
+          <RequiresWalletConnection>
+            <div className="bg-secondary text-foreground flex justify-between rounded-sm p-2">
+              <InfoLabel
+                label="You bid"
+                value={`${amountBid} ${auction.quoteToken.symbol}`}
+                className="text-5xl font-light"
+              />
+              <InfoLabel
+                label="You got"
+                value={`${amountSecured} ${auction.baseToken.symbol}`}
+                className="text-5xl font-light"
+              />
+            </div>
+          </RequiresWalletConnection>
         </AuctionInputCard>
-        {isLoading && <p>Loading... </p>}
-        {settle.isError && <p>{settle.error?.message}</p>}
-        {decryptReceipt.isSuccess && <p>Success!</p>}
+        {/* {isLoading && <p>Loading... </p>} */}
+        {/* {settle.isError && <p>{settle.error?.message}</p>} */}
+        {/* {decryptReceipt.isSuccess && <p>Success!</p>} */}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { format, isBefore } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/utils";
@@ -29,16 +29,15 @@ export function DatePicker({
   React.useEffect(() => {
     if (!props.time) return;
 
-    //Update date with time once its typed
+    // Update date with time once its typed
     if (matcher.test(time) && date) {
       const fullDate = addTimeToDate(date, time);
-      /* eslint-disable-next-line */
-      const invalid = isBefore(fullDate, new Date()); // TODO: display error if date is invalid
       setDate(fullDate);
       props.onChange?.(fullDate);
     }
-  }, [props.time, time, date]);
+  }, [matcher, props, props.time, time, date]);
 
+  // TODO fix "Function components cannot be given refs" which seems to be breaking datetime validation
   return (
     <Popover onOpenChange={(open) => !open && props.onBlur?.()}>
       <PopoverTrigger asChild>
@@ -74,7 +73,6 @@ export function DatePicker({
             placeholder={
               !placeholderDate ? "00:00" : format(placeholderDate, "HH:mm")
             }
-            // TODO does not set the time
             value={time}
             onChange={setTime}
           />

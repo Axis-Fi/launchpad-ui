@@ -1,7 +1,8 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
-import { Avatar, Button } from "@repo/ui";
+import { Avatar, Button, cn } from "@repo/ui";
+import { iconsPerChain } from "config/chains";
 
-export default function ConnectButton() {
+export default function ConnectButton({ className }: { className?: string }) {
   return (
     <RKConnectButton.Custom>
       {({
@@ -17,7 +18,7 @@ export default function ConnectButton() {
         const connected = ready && account && chain;
         return (
           <div
-            className="w-full max-w-md"
+            className={cn("w-full max-w-md", className)}
             {...(!ready && {
               "aria-hidden": true,
               style: {
@@ -59,7 +60,7 @@ export default function ConnectButton() {
                       <Avatar
                         className="hover:text-primary h-7 w-7"
                         alt={chain.name ?? "???"}
-                        src={chain.iconUrl}
+                        src={iconsPerChain[chain.id] ?? chain.iconUrl}
                       />
                     </div>
                   </Button>

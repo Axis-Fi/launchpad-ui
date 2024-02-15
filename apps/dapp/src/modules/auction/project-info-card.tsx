@@ -13,7 +13,7 @@ export function ProjectInfoCard({
   return (
     <div className={props.className}>
       <div className="mb-2 flex justify-between">
-        <h3>About {auction.baseToken.name}</h3>
+        <h3 className="w-1/2">About {auction.auctionInfo?.name}</h3>
         <Link
           className="text-primary flex items-end"
           href={auction.auctionInfo?.links?.website}

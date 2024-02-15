@@ -28,7 +28,7 @@ export type MutationScreens = Record<
 export type MutationDialogProps = {
   onConfirm: () => void;
   mutation: UseWaitForTransactionReceiptReturnType;
-  triggerContent: string | React.ReactNode;
+  triggerContent?: string | React.ReactNode;
   screens?: MutationScreens;
   submitText?: string;
   error?: UseMutationResult["error"];

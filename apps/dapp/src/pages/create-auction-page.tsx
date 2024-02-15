@@ -8,6 +8,7 @@ import {
   Label,
   Slider,
   Switch,
+  Textarea,
   trimAddress,
 } from "@repo/ui";
 
@@ -108,6 +109,11 @@ function toKeycode(keycode: string): `0x${string}` {
 const auctionDefaultValues = {
   minFillPercent: [50],
   minBidPercent: [5],
+  quoteToken: {
+    address: "",
+    chainId: 1,
+    symbol: "USDB",
+  },
 };
 
 export default function CreateAuctionPage() {
@@ -249,45 +255,162 @@ export default function CreateAuctionPage() {
   const onSubmit = form.handleSubmit(handleCreation);
 
   return (
-    <div className="pb-20 pt-10">
-      <h1 className="text-6xl">Create Your Auction</h1>
+    <div className="pb-20">
+      <h1 className="text-5xl">Create Your Auction</h1>
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()}>
-          <div className="mx-auto mt-4 flex max-w-3xl justify-around rounded-md p-4">
+          <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
-              <div>
-                Creating an auction will involve the following:
-                <ol>
-                  <li>
-                    If necessary, authorising the spending of the payout token
-                  </li>
-                  <li>
-                    Pre-funding the auction with the payout token and capacity
-                    selected
-                  </li>
-                </ol>
-              </div>
+              {/* <div> */}
+              {/*   Creating an auction will involve the following: */}
+              {/*   <ol> */}
+              {/*     <li> */}
+              {/*       If necessary, authorising the spending of the payout token */}
+              {/*     </li> */}
+              {/*     <li> */}
+              {/*       Pre-funding the auction with the payout token and capacity */}
+              {/*       selected */}
+              {/*     </li> */}
+              {/*   </ol> */}
+              {/* </div> */}
 
               <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
-                <h3 className="form-div ">1 Tokens</h3>
+                <h3 className="form-div ">1 Your Project</h3>
                 <div />
+
                 <FormField
-                  name="quoteToken"
+                  control={form.control}
+                  name="name"
                   render={({ field }) => (
                     <FormItemWrapper
-                      label="Quote Token"
-                      tooltip="The token that bidders will place bids in"
+                      label="Name"
+                      tooltip="The project or auction name"
                     >
-                      <DialogInput
-                        title="Select Quote Token"
-                        triggerContent={"Select token"}
-                        {...field}
-                      >
-                        <TokenPicker />
-                      </DialogInput>
+                      <Input placeholder="YourDAO" type="text" {...field} />
                     </FormItemWrapper>
                   )}
                 />
+                {/* <FormField */}
+                {/*   control={form.control} */}
+                {/*   name="description" */}
+                {/*   render={({ field }) => ( */}
+                {/*     <FormItemWrapper */}
+                {/*       label="Description" */}
+                {/*       tooltip="The description of your auction or project" */}
+                {/*     > */}
+                {/*       <Input */}
+                {/*         placeholder="A short description of your project" */}
+                {/*         {...field} */}
+                {/*       /> */}
+                {/*     </FormItemWrapper> */}
+                {/*   )} */}
+                {/* /> */}
+
+                <FormField
+                  control={form.control}
+                  name="projectLogo"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Project Logo"
+                      tooltip="A URL to the project logo"
+                    >
+                      <Input
+                        placeholder="https://your-dao.link/tokenjpeg.svg"
+                        type="url"
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+                {/* <FormField */}
+                {/*   control={form.control} */}
+                {/*   name="payoutTokenLogo" */}
+                {/*   render={({ field }) => ( */}
+                {/*     <FormItemWrapper */}
+                {/*       label="Payout Token Logo" */}
+                {/*       tooltip="A URL to the Payout token logo" */}
+                {/*       className="mt-6" */}
+                {/*     > */}
+                {/*       <Input */}
+                {/*         placeholder="https://your-dao.link/jpeg.svg" */}
+                {/*         type="url" */}
+                {/*         {...field} */}
+                {/*       /> */}
+                {/*     </FormItemWrapper> */}
+                {/*   )} */}
+                {/* /> */}
+                <FormField
+                  control={form.control}
+                  name="website"
+                  render={({ field }) => (
+                    <FormItemWrapper className="mt-6" label="Website">
+                      <Input
+                        type="url"
+                        placeholder="https://your-dao.link"
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="discord"
+                  render={({ field }) => (
+                    <FormItemWrapper className="mt-6" label="Discord">
+                      <Input
+                        type="url"
+                        placeholder="https://discord.gg/your-dao"
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="twitter"
+                  render={({ field }) => (
+                    <FormItemWrapper className="mt-6" label="Twitter">
+                      <Input
+                        placeholder="https://x.com/your-dao"
+                        type="url"
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="farcaster"
+                  render={({ field }) => (
+                    <FormItemWrapper className="mt-6" label="Warpcast">
+                      <Input
+                        type="url"
+                        placeholder="https://warpcast.com/your-dao"
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      className="col-span-2 mt-6 max-w-3xl"
+                      label="Project description"
+                    >
+                      <Textarea
+                        placeholder="A short description of your project"
+                        className="placeholder:text-foreground/50"
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+
+                <h3 className="form-div ">2 Tokens</h3>
+                <div />
 
                 <FormField
                   name="payoutToken"
@@ -307,7 +430,30 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div">2 Quantity</h3>
+                <FormField
+                  name="quoteToken"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Quote Token"
+                      tooltip="The token that bidders will place bids in"
+                    >
+                      <DialogInput
+                        title="Select Quote Token"
+                        triggerContent={"Select token"}
+                        display={{
+                          value: field.value?.address,
+                          label: field.value?.symbol,
+                          imgURL: "/blast-logo.png",
+                        }}
+                        {...field}
+                      >
+                        <TokenPicker />
+                      </DialogInput>
+                    </FormItemWrapper>
+                  )}
+                />
+
+                <h3 className="form-div">3 Quantity</h3>
                 <div />
                 <FormField
                   name="capacity"
@@ -334,7 +480,7 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div">3 Auction Guard Rails</h3>
+                <h3 className="form-div">4 Auction Guard Rails</h3>
                 <div />
 
                 <FormField
@@ -441,127 +587,9 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-
-                <h3 className="form-div">5 Metadata</h3>
-                <div />
-
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Name"
-                      tooltip="The project or auction name"
-                    >
-                      <Input placeholder="YourDAO" type="text" {...field} />
-                    </FormItemWrapper>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Description"
-                      tooltip="The description of your auction or project"
-                    >
-                      <Input
-                        placeholder="A short description of your project"
-                        {...field}
-                      />
-                    </FormItemWrapper>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="projectLogo"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Project Logo"
-                      tooltip="A URL to the project logo"
-                      className="mt-6"
-                    >
-                      <Input
-                        placeholder="https://your-dao.link/tokenjpeg.svg"
-                        type="url"
-                        {...field}
-                      />
-                    </FormItemWrapper>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="payoutTokenLogo"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Payout Token Logo"
-                      tooltip="A URL to the Payout token logo"
-                      className="mt-6"
-                    >
-                      <Input
-                        placeholder="https://your-dao.link/jpeg.svg"
-                        type="url"
-                        {...field}
-                      />
-                    </FormItemWrapper>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="website"
-                  render={({ field }) => (
-                    <FormItemWrapper className="mt-6" label="Website">
-                      <Input
-                        type="url"
-                        placeholder="https://your-dao.link"
-                        {...field}
-                      />
-                    </FormItemWrapper>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="twitter"
-                  render={({ field }) => (
-                    <FormItemWrapper className="mt-6" label="X/Twitter">
-                      <Input
-                        placeholder="https://x.com/your-dao"
-                        type="url"
-                        {...field}
-                      />
-                    </FormItemWrapper>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="farcaster"
-                  render={({ field }) => (
-                    <FormItemWrapper className="mt-6" label="Farcaster">
-                      <Input
-                        type="url"
-                        placeholder="https://farcaster.xyz/your-dao"
-                        {...field}
-                      />
-                    </FormItemWrapper>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="discord"
-                  render={({ field }) => (
-                    <FormItemWrapper className="mt-6" label="Discord">
-                      <Input
-                        type="url"
-                        placeholder="https://discord.gg/your-dao"
-                        {...field}
-                      />
-                    </FormItemWrapper>
-                  )}
-                />
               </div>
               <div>
-                <h3 className="form-div">6 Optional Settings</h3>
+                <h3 className="form-div">6 Advanced Settings</h3>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
                     name="hooks"

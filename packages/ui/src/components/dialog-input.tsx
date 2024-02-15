@@ -10,11 +10,18 @@ export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
   children?: React.ReactElement<{
     onChange?: (value: T, display?: SelectData) => void;
   }>;
+  display?: {
+    imgURL?: string;
+    label: string;
+    value: string;
+  };
 };
 
 export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
   const [selected, setSelected] = React.useState<T>();
-  const [display, setDisplay] = React.useState<SelectData>();
+  const [display, setDisplay] = React.useState<SelectData | undefined>(
+    props.display,
+  );
 
   const handleChange = useCallback(
     (value: T, display?: SelectData) => {
@@ -35,6 +42,7 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
   ) : (
     props.triggerContent
   );
+  console.log({ display });
 
   return (
     <Dialog

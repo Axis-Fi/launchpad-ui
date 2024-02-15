@@ -3,6 +3,9 @@ import { getChainId, getAuctionStatusWithBids } from "./subgraphHelper";
 import { SubgraphAuctionWithEvents } from "./subgraphTypes";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./useAuctionInfo";
+import { useReadContract } from "wagmi";
+import { axisContracts } from "@repo/contracts";
+import { Address, formatUnits } from "viem";
 
 export type AuctionResult = {
   result?: SubgraphAuctionWithEvents;
@@ -26,6 +29,18 @@ export function useAuction(lotId?: string): AuctionResult {
     queryFn: () => getAuctionInfo(auction?.created.infoHash || ""),
   });
 
+  //TODO: fix this
+  const chainId = getChainId(auction?.chain ?? "blast-testnet");
+  const axisAddresses = axisContracts.addresses[chainId];
+
+  const auctionData = useReadContract({
+    address: axisAddresses?.localSealedBidBatchAuction,
+    abi: axisContracts?.abis.localSealedBidBatchAuction,
+    functionName: "auctionData",
+    args: [BigInt(auction?.lotId ?? 0)],
+    query: { enabled: query.isSuccess },
+  });
+
   if (!auction || data?.auctionLots.length === 0) {
     return {
       result: undefined,
@@ -47,10 +62,27 @@ export function useAuction(lotId?: string): AuctionResult {
   return {
     result: {
       ...auction,
-      chainId: getChainId(auction.chain),
+      ...parseAuctionData(
+        auctionData.data!,
+        Number(auction.baseToken.decimals),
+      ),
+      chainId,
       status,
       auctionInfo,
     },
     isLoading: isLoading || infoQuery.isLoading,
   };
+}
+
+//https://github.com/Axis-Fi/moonraker/blob/4172793566beb2b06113c8775b080c90a7a52853/src/modules/auctions/LSBBA/LSBBA.sol#L90
+//TODO: cleanup
+function parseAuctionData(
+  data: readonly [number, bigint, bigint, bigint, bigint, bigint, Address],
+  decimals: number,
+) {
+  if (!data) return {};
+  const minPrice = formatUnits(data[3], decimals);
+  const minBidSize = formatUnits(data[5], decimals);
+
+  return { minPrice, minBidSize };
 }

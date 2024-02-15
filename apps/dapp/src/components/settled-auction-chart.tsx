@@ -1,8 +1,4 @@
-//@ts-nocheck
-/* eslint-disable */
 import {
-  CartesianGrid,
-  Label,
   ReferenceLine,
   ResponsiveContainer,
   Scatter,
@@ -16,14 +12,32 @@ import {
 import { cn } from "@repo/ui";
 import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useAuction } from "loaders/useAuction";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { useReadContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { format } from "date-fns";
 import { GemIcon, XIcon } from "lucide-react";
 import { formatDate } from "src/utils/date";
 
-const useChartData = (auction: SubgraphAuctionWithEvents | undefined) => {
+type Bid = {
+  id: string;
+  bidder: string;
+  price: number;
+  amountIn: number;
+  amountOut: number;
+  timestamp: number;
+};
+
+type SettleData = {
+  marginalPrice?: number;
+  minimumPrice?: number;
+  data?: Bid[];
+};
+
+const useChartData = (
+  auction: SubgraphAuctionWithEvents | undefined,
+  auctionData: AuctionData | undefined,
+): SettleData => {
   // Goal: Array of data with the following data per object:
   // - bid ID
   // - bidder
@@ -32,47 +46,40 @@ const useChartData = (auction: SubgraphAuctionWithEvents | undefined) => {
   // - amountOut
   // - timestamp
   // - marginalPrice
-  if (!auction) return [];
+
+  // Validate
+  if (!auctionData) return {};
 
   // 1. Create data array and parse inputs
-  const data = auction.bidsDecrypted.map((bid) => {
-    const amountIn = Number(
-      formatUnits(BigInt(bid.amountIn), Number(auction.baseToken.decimals)),
-    );
-    const amountOut = Number(
-      formatUnits(BigInt(bid.amountOut), Number(auction.quoteToken.decimals)),
-    );
-    const price = amountIn / amountOut;
-    const timestamp = Number(bid.blockTimestamp) * 1000;
+  const data = !auction
+    ? undefined
+    : auction.bidsDecrypted.map((bid) => {
+        const amountIn = Number(bid.amountIn);
+        const amountOut = Number(bid.amountOut);
+        const price = amountIn / amountOut;
+        const timestamp = Number(bid.blockTimestamp) * 1000;
 
-    return {
-      id: bid.id,
-      bidder: bid.bid.bidder,
-      price,
-      amountIn,
-      amountOut,
-      timestamp,
-    };
-  });
+        return {
+          id: bid.id,
+          bidder: bid.bid.bidder,
+          price,
+          amountIn,
+          amountOut,
+          timestamp,
+        };
+      });
+
+  if (!auction || !data) return {};
 
   // 2. Sort bids by price
   data.sort((a, b) => a.price - b.price);
 
   // 3. Calculate the marginal price
-  // Load data from auction module for lot
-  /* eslint-disable-next-line */
-  const lsbbaData = useReadContract({
-    abi: axisContracts.abis.localSealedBidBatchAuction,
-    address:
-      axisContracts.addresses[auction.chainId].localSealedBidBatchAuction,
-    functionName: "auctionData",
-  });
-  if (!lsbbaData.data) return [];
   const minimumPrice = Number(
-    formatUnits(lsbbaData.data[3], Number(auction.quoteToken.decimals)),
+    formatUnits(auctionData.minimumPrice, Number(auction.quoteToken.decimals)),
   );
   const minimumFill = Number(
-    formatUnits(lsbbaData.data[4], Number(auction.baseToken.decimals)),
+    formatUnits(auctionData.minFilled, Number(auction.baseToken.decimals)),
   );
 
   // Apply marginal price algorithm
@@ -135,59 +142,69 @@ const formatter = (value: unknown, _name: string, props: formatterProps) => {
   return value;
 };
 
+type AuctionData = {
+  status: number;
+  nextDecryptIndex: bigint;
+  nextBidId: bigint;
+  minimumPrice: bigint;
+  minFilled: bigint;
+  minBidSize: bigint;
+  publicKeyModulus: `0x${string}`;
+};
+
+const mapAuctionData = (
+  data:
+    | readonly [number, bigint, bigint, bigint, bigint, bigint, `0x${string}`]
+    | undefined,
+): AuctionData | undefined => {
+  if (!data) return undefined;
+
+  return {
+    status: data[0],
+    nextDecryptIndex: data[1],
+    nextBidId: data[2],
+    minimumPrice: data[3],
+    minFilled: data[4],
+    minBidSize: data[5],
+    publicKeyModulus: data[6],
+  };
+};
+
 export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId);
+
+  // TODO consider pulling into dedicated hook, normalising output
+  const { data: auctionData } = useReadContract({
+    abi: axisContracts.abis.localSealedBidBatchAuction,
+    address: !auction
+      ? undefined
+      : axisContracts.addresses[auction.chainId].localSealedBidBatchAuction,
+    functionName: "auctionData",
+    args: [!auction ? BigInt(-1) : parseUnits(auction.lotId, 0)],
+  });
 
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;
 
-  // const { data: chartData, marginalPrice, minimumPrice } = useChartData(auction);
-  // TODO mock data for testing
-  const chartData = [
-    {
-      id: 0,
-      bidder: "0x1234567890abcdef1234567890abcdef12345678",
-      price: 5.0,
-      amountIn: 100,
-      amountOut: 20,
-      timestamp: 1707940560000,
-    },
-    {
-      id: 1,
-      bidder: "0x01234567890abcdef1234567890abcdef1234567",
-      price: 6.0,
-      amountIn: 240,
-      amountOut: 40,
-      timestamp: 1707945560000,
-    },
-    {
-      id: 2,
-      bidder: "0x101234567890abcdef1234567890abcdef123456",
-      price: 3.0,
-      amountIn: 300,
-      amountOut: 100,
-      timestamp: 1707948560000,
-    },
-    {
-      id: 3,
-      bidder: "0x201234567890abcdef1234567890abcdef123456",
-      price: 4.0,
-      amountIn: 160,
-      amountOut: 40,
-      timestamp: 1707950560000,
-    },
-  ];
-  const marginalPrice = 4.0;
-  const minimumPrice = 2.0;
+  const {
+    data: chartData,
+    marginalPrice,
+    minimumPrice,
+  } = useChartData(auction, mapAuctionData(auctionData));
+
   const sizeRange = [
-    chartData.reduce(
-      (min, p) => (p.amountIn < min ? p.amountIn : min),
-      chartData[0].amountIn,
-    ),
-    chartData.reduce(
-      (max, p) => (p.amountIn > max ? p.amountIn : max),
-      chartData[0].amountIn,
-    ),
+    !chartData
+      ? 0
+      : chartData.reduce(
+          (min, p) => (p.amountIn < min ? p.amountIn : min),
+          chartData[0].amountIn,
+        ),
+    !chartData
+      ? 0
+      : chartData.reduce(
+          (max, p) => (p.amountIn > max ? p.amountIn : max),
+          chartData[0].amountIn,
+        ),
   ];
 
   return (
@@ -202,7 +219,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
             dataKey="timestamp"
             domain={[start, conclusion]}
             name="Bid Submitted"
-            stroke="#4A404E"
+            stroke="#f4f4f4"
             tickFormatter={timestampFormatter}
           />
           <YAxis
@@ -212,7 +229,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
             tickLine={false}
             name="Bid Price"
             minTickGap={40}
-            stroke="#4A404E"
+            stroke="#f4f4f4"
             tickFormatter={(value) => value + " " + auction?.quoteToken.symbol}
           />
           <ZAxis
@@ -223,6 +240,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
           />
           <Tooltip
             cursor={{ strokeDasharray: "3 3" }}
+            // @ts-expect-error TODO fix typing
             formatter={formatter}
             wrapperStyle={{
               backgroundColor: "transparent",
@@ -283,24 +301,29 @@ function CustomLabel(props: any) {
 }
 
 function CustomShape({ fill, stroke, marginalPrice, ...props }: any) {
-  return marginalPrice < props.payload.price ? (
+  return marginalPrice <= props.payload.price ? (
     <GemIcon className="text-axis-green *:p-4" {...props} />
   ) : (
     <XIcon className="text-axis-red *:p-4" {...props} />
   );
 }
 
-function CustomTooltip(props: TooltipProps<any, any>) {
-  const [timestamp, price, amountIn, amountOut] = props.payload;
-  const { quoteToken } = props.auction;
+type SettledTooltipProps = {
+  auction?: SubgraphAuctionWithEvents;
+} & TooltipProps<any, any>;
+
+function CustomTooltip(props: SettledTooltipProps) {
+  // @ts-expect-error TODO fix typing
+  const [timestamp, price, amountIn] = props.payload;
+  const auction = props.auction;
 
   return (
     <div className="bg-secondary rounded-sm px-4 py-2">
       <div>
-        Amount: {amountIn?.value} {quoteToken.symbol}
+        Amount In: {amountIn?.value} {auction?.quoteToken.symbol}
       </div>
       <div>
-        Price: {price?.value} {quoteToken.symbol}
+        Price: {price?.value} {auction?.quoteToken.symbol}
       </div>
       <div>At {formatDate.fullLocal(timestamp?.value ?? new Date())}</div>
     </div>
