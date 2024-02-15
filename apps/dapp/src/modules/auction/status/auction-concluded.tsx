@@ -14,7 +14,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
 
   const totalBids = auction?.bids.length;
   const totalBidAmount = auction.bids?.reduce(
-    (total, b) => total + Number(b.amount),
+    (total, b) => total + Number(b.amountIn),
     0,
   );
   const auctionEndDistance = formatDistanceToNow(

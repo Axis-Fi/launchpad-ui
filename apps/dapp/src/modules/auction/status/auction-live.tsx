@@ -133,7 +133,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           <InfoLabel
             label="Total Bid Amount"
             value={`${auction.bids.reduce(
-              (total, b) => total + Number(b.amount),
+              (total, b) => total + Number(b.amountIn),
               0,
             )} ${auction.quoteToken.symbol}`}
           />

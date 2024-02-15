@@ -30,7 +30,7 @@ const cols = [
     ),
   }),
 
-  column.accessor("amount", {
+  column.accessor("amountIn", {
     header: "Amount In",
     enableSorting: true,
     cell: (info) =>
@@ -76,18 +76,10 @@ export function BidList(props: PropsWithAuction) {
   // - auction is settled && bid status is not won and not refunded
 
   const mappedBids = encrypted.map((bid) => {
-    const decryptedBid = decrypted.find(
-      (decryptedBid) => decryptedBid.bid.bidId === bid.bidId,
-    );
-
-    return decryptedBid
-      ? {
-          ...decryptedBid.bid,
-          status: bid.status,
-          amountOut: decryptedBid.amountOut,
-          auction: props.auction,
-        }
-      : { ...bid, auction: props.auction };
+    return {
+      ...bid,
+      auction: props.auction,
+    };
   });
 
   const allBids = [...mappedBids];

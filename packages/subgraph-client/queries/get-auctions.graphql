@@ -76,7 +76,8 @@ query getAuctionLot($lotId: BigInt!) {
       transactionHash
     }
     bids {
-      amount
+      amountIn
+      amountOut
       bidder
       bidId
       blockNumber
@@ -93,7 +94,7 @@ query getAuctionLot($lotId: BigInt!) {
       bid {
         bidId
         bidder
-        amount
+        amountIn
       }
     }
     bidsDecrypted {
@@ -106,7 +107,7 @@ query getAuctionLot($lotId: BigInt!) {
       bid {
         bidId
         bidder
-        amount
+        amountIn
       }
     }
     purchases {

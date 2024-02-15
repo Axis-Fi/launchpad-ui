@@ -12,7 +12,10 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const decryptReceipt = useWaitForTransactionReceipt({ hash: settle.data });
 
   const isLoading = settle.isPending || decryptReceipt.isLoading;
-  const totalRaised = 0; //TODO: update values, add formatters
+  const totalRaised = auction.bids?.reduce(
+    (total, b) => total + Number(b.amountIn),
+    0,
+  );
 
   const rate = 0;
   const amountBid = 0;

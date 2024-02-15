@@ -23,7 +23,7 @@ export type Incremental<T> =
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
     const res = await fetch(
-      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.17",
+      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.18",
       {
         method: "POST",
         ...{ headers: { "Content-Type": "application/json" } },
@@ -700,7 +700,8 @@ export enum AuctionLot_OrderBy {
 }
 
 export type Bid = {
-  amount: Scalars["BigDecimal"]["output"];
+  amountIn: Scalars["BigDecimal"]["output"];
+  amountOut?: Maybe<Scalars["BigDecimal"]["output"]>;
   bidId: Scalars["BigInt"]["output"];
   bidder: Scalars["Bytes"]["output"];
   blockNumber: Scalars["BigInt"]["output"];
@@ -829,7 +830,8 @@ export enum BidDecrypted_OrderBy {
   amountIn = "amountIn",
   amountOut = "amountOut",
   Bid = "bid",
-  Bid__amount = "bid__amount",
+  bid__amountIn = "bid__amountIn",
+  bid__amountOut = "bid__amountOut",
   bid__bidId = "bid__bidId",
   Bid__bidder = "bid__bidder",
   bid__blockNumber = "bid__blockNumber",
@@ -870,14 +872,22 @@ export enum BidDecrypted_OrderBy {
 export type Bid_Filter = {
   /** Filter for the block changed event. */
   _change_block?: InputMaybe<BlockChangedFilter>;
-  amount?: InputMaybe<Scalars["BigDecimal"]["input"]>;
-  amount_gt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
-  amount_gte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
-  amount_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
-  amount_lt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
-  amount_lte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
-  amount_not?: InputMaybe<Scalars["BigDecimal"]["input"]>;
-  amount_not_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  amountIn?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountIn_gt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountIn_gte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountIn_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  amountIn_lt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountIn_lte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountIn_not?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountIn_not_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  amountOut?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountOut_gt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountOut_gte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountOut_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  amountOut_lt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountOut_lte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountOut_not?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  amountOut_not_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
   and?: InputMaybe<Array<InputMaybe<Bid_Filter>>>;
   bidId?: InputMaybe<Scalars["BigInt"]["input"]>;
   bidId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -990,7 +1000,8 @@ export type Bid_Filter = {
 };
 
 export enum Bid_OrderBy {
-  Amount = "amount",
+  amountIn = "amountIn",
+  amountOut = "amountOut",
   bidId = "bidId",
   Bidder = "bidder",
   blockNumber = "blockNumber",
@@ -1906,7 +1917,8 @@ export type RefundBid_Filter = {
 
 export enum RefundBid_OrderBy {
   Bid = "bid",
-  Bid__amount = "bid__amount",
+  bid__amountIn = "bid__amountIn",
+  bid__amountOut = "bid__amountOut",
   bid__bidId = "bid__bidId",
   Bid__bidder = "bid__bidder",
   bid__blockNumber = "bid__blockNumber",
@@ -2552,7 +2564,8 @@ export type GetAuctionLotQuery = {
       transactionHash: string;
     } | null;
     bids: Array<{
-      amount: string;
+      amountIn: string;
+      amountOut?: string | null;
       bidder: string;
       bidId: string;
       blockNumber: string;
@@ -2566,7 +2579,7 @@ export type GetAuctionLotQuery = {
       blockTimestamp: string;
       id: string;
       transactionHash: string;
-      bid: { bidId: string; bidder: string; amount: string };
+      bid: { bidId: string; bidder: string; amountIn: string };
     }>;
     bidsDecrypted: Array<{
       amountIn: string;
@@ -2575,7 +2588,7 @@ export type GetAuctionLotQuery = {
       blockTimestamp: string;
       id: string;
       transactionHash: string;
-      bid: { bidId: string; bidder: string; amount: string };
+      bid: { bidId: string; bidder: string; amountIn: string };
     }>;
     purchases: Array<{
       amount: string;
@@ -2729,7 +2742,8 @@ export const GetAuctionLotDocument = `
       transactionHash
     }
     bids {
-      amount
+      amountIn
+      amountOut
       bidder
       bidId
       blockNumber
@@ -2746,7 +2760,7 @@ export const GetAuctionLotDocument = `
       bid {
         bidId
         bidder
-        amount
+        amountIn
       }
     }
     bidsDecrypted {
@@ -2759,7 +2773,7 @@ export const GetAuctionLotDocument = `
       bid {
         bidId
         bidder
-        amount
+        amountIn
       }
     }
     purchases {
