@@ -1,4 +1,6 @@
+/* eslint-disable */
 import {
+  Label,
   ReferenceLine,
   ResponsiveContainer,
   Scatter,
@@ -8,6 +10,7 @@ import {
   YAxis,
   ZAxis,
 } from "recharts";
+import { cn } from "@repo/ui";
 import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
 import { useAuction } from "loaders/useAuction";
 import { formatUnits } from "viem";
@@ -187,6 +190,8 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
       <ScatterChart>
         <XAxis
           type="number"
+          tickLine={false}
+          minTickGap={50}
           dataKey="timestamp"
           domain={[start, conclusion]}
           name="Bid Submitted"
@@ -196,6 +201,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
         <YAxis
           type="number"
           dataKey="price"
+          tickLine={false}
           name="Bid Price"
           stroke="#FFFFFF"
         />
@@ -207,14 +213,44 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
         />
         <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={formatter} />
         <Scatter name="Bids" data={chartData} stroke="#FFFFFF" fill="#FFFFFF" />
-        <ReferenceLine y={marginalPrice} label="Settled Price" stroke="green" />
+        <ReferenceLine
+          y={marginalPrice}
+          stroke="#cef476"
+          className="relative *:absolute *:top-10"
+          label={(props) => (
+            <CustomLabel
+              {...props}
+              content="Settled Price"
+              className="fill-axis-green"
+            />
+          )}
+        />
         <ReferenceLine
           y={minimumPrice}
-          label="Minimum Price"
           strokeDasharray="3 3"
           stroke="orange"
+          label={(props) => (
+            <CustomLabel
+              {...props}
+              content="Minimum Price"
+              className="fill-axis-orange"
+            />
+          )}
         />
       </ScatterChart>
     </ResponsiveContainer>
   );
 };
+
+export function CustomLabel(props: any) {
+  return (
+    <text
+      {...props.viewBox}
+      y={props.viewBox.y - props.offset}
+      x={props.viewBox.x}
+      className={cn("absolute text-xs font-semibold", props.className)}
+    >
+      {props.content}
+    </text>
+  );
+}

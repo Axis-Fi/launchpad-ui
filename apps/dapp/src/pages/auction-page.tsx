@@ -4,7 +4,7 @@ import {
   AuctionConcluded,
   AuctionCreated,
   AuctionDecrypted,
-  AuctionLive,
+  //AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
 import { useAuction } from "loaders/useAuction";
@@ -25,7 +25,7 @@ const statuses: Record<
   (props: PropsWithAuction) => JSX.Element
 > = {
   created: AuctionCreated,
-  live: AuctionLive,
+  live: AuctionSettled,
   concluded: AuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
