@@ -55,7 +55,9 @@ export function AuctionCard({
           </ImageBanner>
         </div>
         <div className="font-aeonfono mt-2 text-center ">
-          {auction.status === "concluded" ? (
+          {auction.status === "concluded" ||
+          auction.status === "decrypted" ||
+          auction.status === "settled" ? (
             <h4>Auction has ended</h4>
           ) : (
             <>
