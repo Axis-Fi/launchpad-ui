@@ -207,6 +207,10 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
         ),
   ];
 
+  // Scale the size range values to have a maximum of 500
+  sizeRange[0] = (sizeRange[0] / sizeRange[1]) * 500;
+  sizeRange[1] = 500;
+
   return (
     <div className="size-full">
       <ResponsiveContainer minWidth={300} minHeight={260}>
@@ -230,6 +234,10 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
             name="Bid Price"
             minTickGap={40}
             stroke="#f4f4f4"
+            domain={[
+              0,
+              !marginalPrice && minimumPrice ? minimumPrice * 1.5 : "dataMax", // If there is no marginal price, use the minimum price as every bid will have a price below that
+            ]}
             tickFormatter={(value) => value + " " + auction?.quoteToken.symbol}
           />
           <ZAxis
@@ -258,7 +266,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
             )}
           />
           <ReferenceLine
-            y={marginalPrice}
+            y={marginalPrice ? marginalPrice : undefined} // Only display the settled/marginal price if it is non-zero
             stroke="#76BDF2"
             className="relative *:absolute *:top-10"
             label={(props) => (
