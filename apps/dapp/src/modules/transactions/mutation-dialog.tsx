@@ -53,7 +53,11 @@ export function MutationDialog({
   ...props
 }: MutationDialogProps) {
   const allScreens = { ...defaultScreens, ...screens };
-  const status = props.error ? "error" : props.hash ? mutation.status : "idle";
+  const status = props.error
+    ? "error"
+    : props.hash && mutation
+      ? mutation.status
+      : "idle";
 
   const error = props.error ?? mutation?.error;
 
