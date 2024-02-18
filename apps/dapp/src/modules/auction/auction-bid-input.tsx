@@ -1,6 +1,6 @@
 import { IconedLabel, Input } from "@repo/ui";
 import React from "react";
-import { PropsWithAuction } from ".";
+import { PropsWithAuction } from "src/types";
 
 const formatRate = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 4,

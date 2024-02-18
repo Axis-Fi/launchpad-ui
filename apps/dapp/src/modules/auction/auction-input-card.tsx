@@ -6,7 +6,7 @@ import {
   CardRoot,
   cn,
 } from "@repo/ui";
-import { PropsWithAuction } from ".";
+import { PropsWithAuction } from "src/types";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { formatDistanceToNow } from "date-fns";
 import { MutationDialog } from "modules/transactions/mutation-dialog";

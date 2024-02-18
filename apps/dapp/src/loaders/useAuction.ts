@@ -1,6 +1,6 @@
 import { useGetAuctionLotQuery } from "@repo/subgraph-client";
 import { getChainId, getAuctionStatusWithBids } from "./subgraphHelper";
-import { SubgraphAuctionWithEvents } from "./subgraphTypes";
+import { Auction } from "src/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./useAuctionInfo";
 import { useReadContract } from "wagmi";
@@ -8,7 +8,7 @@ import { axisContracts } from "@repo/contracts";
 import { Address, formatUnits } from "viem";
 
 export type AuctionResult = {
-  result?: SubgraphAuctionWithEvents;
+  result?: Auction;
   isLoading: boolean;
 };
 

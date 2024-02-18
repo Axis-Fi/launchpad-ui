@@ -2,7 +2,7 @@
 
 @layer base {
   body {
-    @apply font-aeonfono bg-black;
+    @apply font-aeonfono max-h-dvh bg-black;
   }
 
   input {
@@ -39,8 +39,7 @@
     @apply mt-8 w-full max-w-sm;
   }
 
-  .nav-separator {
-    @apply absolute left-0 h-1 w-screen;
+  .axis-rainbow {
     background: linear-gradient(
       100deg,
       rgba(110, 148, 240, 1) 2%,
@@ -51,6 +50,10 @@
       rgba(246, 172, 84, 1) 79%,
       rgba(242, 103, 64, 1) 100%
     );
+  }
+
+  .nav-separator {
+    @apply axis-rainbow absolute left-0 h-1 w-screen;
   }
 }
 

@@ -1,7 +1,7 @@
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
-import { PropsWithAuction } from "..";
+import { PropsWithAuction } from "src/types";
 import { trimCurrency } from "src/utils/currency";
 import { SettledAuctionChart } from "components/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";

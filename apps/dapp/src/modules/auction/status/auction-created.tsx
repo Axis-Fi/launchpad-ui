@@ -1,6 +1,6 @@
 import { InfoLabel, trimAddress } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
-import { PropsWithAuction } from "..";
+import { PropsWithAuction } from "src/types";
 import { AuctionInputCard } from "../auction-input-card";
 import { formatDate } from "../../../utils/date";
 import { formatDistanceToNow } from "date-fns";

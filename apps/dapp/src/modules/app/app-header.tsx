@@ -1,4 +1,4 @@
-import ConnectButton from "./connect-button";
+import ConnectButton from "../../components/connect-button";
 import { Button } from "@repo/ui";
 import { useNavigate } from "react-router-dom";
 

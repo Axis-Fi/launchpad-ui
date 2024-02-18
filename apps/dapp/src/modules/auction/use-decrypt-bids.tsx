@@ -1,13 +1,13 @@
 import { axisContracts } from "@repo/contracts";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
+import { Auction } from "src/types";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
 import { Address, ByteArray, fromHex, toHex } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 /** Used manage decrypting the next set of bids */
-export const useDecryptBids = (auction: SubgraphAuctionWithEvents) => {
+export const useDecryptBids = (auction: Auction) => {
   const contracts = axisContracts.addresses[auction.chainId];
 
   const nextBidsQuery = useQuery({

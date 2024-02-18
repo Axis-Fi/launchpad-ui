@@ -1,10 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { DataTable } from "components/data-table";
-import {
-  SubgraphAuctionEncryptedBid,
-  SubgraphAuctionWithEvents,
-} from "loaders/subgraphTypes";
-import { PropsWithAuction } from ".";
+import { AuctionEncryptedBid, Auction } from "src/types";
+import { PropsWithAuction } from "src/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
 import { Tooltip } from "@repo/ui";
@@ -12,13 +9,9 @@ import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { parseUnits } from "viem";
 import { MutationDialog } from "modules/transactions/mutation-dialog";
-import { LoadingIndicator } from "components/loading-indicator";
+import { LoadingIndicator } from "modules/app/loading-indicator";
 
-const column = createColumnHelper<
-  SubgraphAuctionEncryptedBid & {
-    auction: SubgraphAuctionWithEvents;
-  }
->();
+const column = createColumnHelper<AuctionEncryptedBid & { auction: Auction }>();
 
 const cols = [
   column.accessor("bidder", {

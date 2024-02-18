@@ -14,10 +14,10 @@ import { ProjectInfoCard } from "modules/auction/project-info-card";
 import { ContractAddressCard } from "modules/auction/contract-address-card";
 import { axisContracts } from "@repo/contracts";
 import { Address } from "viem";
-import { PageHeader } from "components/page-header";
+import { PageHeader } from "modules/app/page-header";
 import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
-import { PropsWithAuction } from "modules/auction";
+import { PropsWithAuction } from "src/types";
 import { ImageBanner } from "components/image-banner";
 import { useAccount } from "wagmi";
 

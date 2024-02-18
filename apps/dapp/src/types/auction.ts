@@ -1,4 +1,4 @@
-import { GetAuctionLotsQuery } from "@repo/subgraph-client";
+import { RawSubgraphAuctionWithEvents } from "./subgraph-types";
 
 export type Token = {
   address: string;
@@ -9,29 +9,20 @@ export type Token = {
   logoURL?: string;
 };
 
+export type Auction = RawSubgraphAuctionWithEvents & {
+  chainId: number;
+  baseToken: Token;
+  quoteToken: Token;
+  status: AuctionStatus;
+  auctionInfo?: AuctionInfo;
+};
+
 export type AuctionStatus =
   | "created"
   | "live"
   | "concluded"
   | "decrypted"
   | "settled";
-
-export type AuctionSocialAssets = {
-  description?: string;
-  name?: string;
-};
-
-export type Auction = GetAuctionLotsQuery["auctionLots"][0] & {
-  chainId: number;
-  status: AuctionStatus;
-  baseToken: Token;
-  quoteToken: Token;
-} & AuctionSocialAssets;
-
-export type AuctionWithEvents = {
-  chainId: number;
-  status: AuctionStatus;
-} & Auction;
 
 export type AuctionInfo = {
   name?: string;
@@ -45,4 +36,8 @@ export type AuctionInfo = {
     payoutTokenLogo?: string;
     [key: string]: string | undefined;
   };
+};
+
+export type PropsWithAuction = {
+  auction: Auction;
 };

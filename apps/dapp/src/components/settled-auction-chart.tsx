@@ -1,4 +1,8 @@
+import type { CartesianViewBox } from "recharts/types/util/types";
+import type { ScatterPointItem } from "recharts/types/cartesian/Scatter";
+import type { Auction } from "src/types";
 import {
+  LabelProps,
   ReferenceLine,
   ResponsiveContainer,
   Scatter,
@@ -9,15 +13,15 @@ import {
   YAxis,
   ZAxis,
 } from "recharts";
-import { cn } from "@repo/ui";
-import { SubgraphAuctionWithEvents } from "loaders/subgraphTypes";
-import { useAuction } from "loaders/useAuction";
 import { formatUnits, parseUnits } from "viem";
 import { useReadContract } from "wagmi";
-import { axisContracts } from "@repo/contracts";
 import { format } from "date-fns";
-import { GemIcon, XIcon } from "lucide-react";
+import { CircleIcon, GemIcon, XIcon } from "lucide-react";
+import { cn } from "@repo/ui";
+import { axisContracts } from "@repo/contracts";
+import { useAuction } from "loaders/useAuction";
 import { formatDate } from "src/utils/date";
+import { SVGProps } from "react";
 
 type Bid = {
   id: string;
@@ -35,7 +39,7 @@ type SettleData = {
 };
 
 const useChartData = (
-  auction: SubgraphAuctionWithEvents | undefined,
+  auction: Auction | undefined,
   auctionData: AuctionData | undefined,
 ): SettleData => {
   // Goal: Array of data with the following data per object:
@@ -128,13 +132,13 @@ const timestampFormatter = (timestamp: number) => {
   return format(new Date(timestamp), "MM-dd HH:mm");
 };
 
-type formatterProps = {
+type FormatterProps = {
   dataKey: string;
-  name: string;
-  value: unknown;
+  name: "timestamp" | "price" | "amountIn";
+  value: number;
 };
 
-const formatter = (value: unknown, _name: string, props: formatterProps) => {
+const formatter = (value: unknown, _name: string, props: FormatterProps) => {
   if (props.dataKey === "timestamp" && typeof value == "number") {
     return format(new Date(value), "yyyy-MM-dd HH:mm:ss");
   }
@@ -222,16 +226,16 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
             minTickGap={30}
             dataKey="timestamp"
             domain={[start, conclusion]}
-            name="Bid Submitted"
+            name="timestamp"
             stroke="#f4f4f4"
             tickFormatter={timestampFormatter}
           />
           <YAxis
             className="text-xs"
             type="number"
-            dataKey="price"
             tickLine={false}
-            name="Bid Price"
+            dataKey="price"
+            name="price"
             minTickGap={40}
             stroke="#f4f4f4"
             domain={[
@@ -243,36 +247,31 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
           <ZAxis
             type="number"
             dataKey="amountIn"
+            name="amountIn"
             range={sizeRange}
-            name="Bid Size"
           />
           <Tooltip
             cursor={{ strokeDasharray: "3 3" }}
             // @ts-expect-error TODO fix typing
             formatter={formatter}
-            wrapperStyle={{
-              backgroundColor: "transparent",
-              outline: "none",
-            }}
+            wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
             content={(props) => <CustomTooltip {...props} auction={auction} />}
           />
           <Scatter
-            name="Bids"
+            name="bids"
             data={chartData}
-            stroke="#FFFFFF"
-            fill="#FFFFFF"
-            shape={(props: any) => (
+            shape={(props: Omit<CustomShapeProps, "marginalPrice">) => (
               <CustomShape {...props} marginalPrice={marginalPrice} />
             )}
           />
           <ReferenceLine
-            y={marginalPrice ? marginalPrice : undefined} // Only display the settled/marginal price if it is non-zero
+            y={marginalPrice ?? undefined} // Only display the settled/marginal price if it is non-zero
             stroke="#76BDF2"
             className="relative *:absolute *:top-10"
-            label={(props) => (
+            label={(props: Omit<LabelProps, "content">) => (
               <CustomLabel
                 {...props}
-                content="Settled Price"
+                label="Settled Price"
                 className="fill-axis-teal"
               />
             )}
@@ -295,34 +294,48 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   );
 };
 
-function CustomLabel(props: any) {
+function CustomLabel(
+  props: LabelProps & { viewBox?: CartesianViewBox; label: string },
+) {
   return (
     <text
       {...props?.viewBox}
-      y={props.viewBox?.y - props?.offset}
+      y={Number(props.viewBox?.y ?? 0) - Number(props?.offset)}
       x={props.viewBox?.x}
       className={cn("absolute text-xs font-semibold", props.className)}
     >
-      {props.content}
+      {props.label}
     </text>
   );
 }
 
-function CustomShape({ fill, stroke, marginalPrice, ...props }: any) {
-  return marginalPrice <= props.payload.price ? (
-    <GemIcon className="text-axis-green *:p-4" {...props} />
-  ) : (
-    <XIcon className="text-axis-red *:p-4" {...props} />
+type CustomShapeProps = ScatterPointItem &
+  SVGProps<SVGElement> & {
+    marginalPrice?: number;
+  };
+
+function CustomShape({
+  marginalPrice = 0,
+  ...props
+}: React.PropsWithoutRef<CustomShapeProps>) {
+  return (
+    <>
+      <CircleIcon className="fill-transparent text-transparent" {...props} />
+      {marginalPrice <= props.payload.price ? (
+        <GemIcon className="text-axis-green" {...props} />
+      ) : (
+        <XIcon className="text-axis-red *:p-4" {...props} />
+      )}
+    </>
   );
 }
 
 type SettledTooltipProps = {
-  auction?: SubgraphAuctionWithEvents;
-} & TooltipProps<any, any>;
+  auction?: Auction;
+} & TooltipProps<number, "timestamp" | "price" | "amountIn">;
 
 function CustomTooltip(props: SettledTooltipProps) {
-  // @ts-expect-error TODO fix typing
-  const [timestamp, price, amountIn] = props.payload;
+  const [timestamp, price, amountIn] = props.payload ?? [];
   const auction = props.auction;
 
   return (
@@ -333,7 +346,7 @@ function CustomTooltip(props: SettledTooltipProps) {
       <div>
         Price: {price?.value} {auction?.quoteToken.symbol}
       </div>
-      <div>At {formatDate.fullLocal(timestamp?.value ?? new Date())}</div>
+      <div>At {formatDate.fullLocal(new Date(timestamp?.value ?? 0))}</div>
     </div>
   );
 }

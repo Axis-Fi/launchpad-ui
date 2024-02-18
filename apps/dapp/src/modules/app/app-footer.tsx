@@ -1,5 +1,5 @@
 import { Button, Link } from "@repo/ui";
-import { SocialRow } from "./social-row";
+import { SocialRow } from "../../components/social-row";
 import { discord, twitter, contact, website } from "config/metadata";
 
 export function AppFooter() {

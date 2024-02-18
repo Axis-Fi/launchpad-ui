@@ -1,11 +1,11 @@
 import { useGetAuctionLotsQuery } from "@repo/subgraph-client";
 import { getChainId, getAuctionStatusWithBids } from "./subgraphHelper";
-import { SubgraphAuction } from "./subgraphTypes";
+import { Auction } from "src/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./useAuctionInfo";
 
 export type AuctionsResult = {
-  result: SubgraphAuction[];
+  result: Auction[];
   isLoading: boolean;
 };
 
@@ -28,6 +28,7 @@ export function useAuctions(): AuctionsResult {
   });
 
   return {
+    //@ts-expect-error //TODO: update queries
     result: (data?.auctionLots ?? []).map((auction) => ({
       ...auction,
       chainId: getChainId(auction.chain),

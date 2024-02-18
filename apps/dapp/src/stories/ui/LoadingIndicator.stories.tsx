@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { LoadingIndicator } from "src/components/loading-indicator";
+import { LoadingIndicator } from "modules/app/loading-indicator";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {

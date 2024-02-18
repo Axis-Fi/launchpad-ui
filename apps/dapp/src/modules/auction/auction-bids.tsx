@@ -1,5 +1,5 @@
 import { BidList } from "./bid-list";
-import { PropsWithAuction } from ".";
+import { PropsWithAuction } from "src/types";
 
 type AuctionBidsCard = {
   isLoading?: boolean;
@@ -9,7 +9,6 @@ type AuctionBidsCard = {
 
 export function AuctionBidsCard({
   auction,
-  isLoading,
   address,
   ...props
 }: AuctionBidsCard) {

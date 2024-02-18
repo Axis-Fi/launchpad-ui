@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ArrowRightIcon } from "lucide-react";
 import { Auction } from "src/types";
 import { AuctionStatusChip } from "./auction-status-chip";
-import { PropsWithAuction } from ".";
+import { PropsWithAuction } from "src/types";
 import { ImageBanner } from "components/image-banner";
 
 type AuctionCardProps = {

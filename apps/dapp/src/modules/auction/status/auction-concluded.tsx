@@ -3,7 +3,7 @@ import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { formatDistanceToNow } from "date-fns";
-import { PropsWithAuction } from "..";
+import { PropsWithAuction } from "src/types";
 import {
   MutationDialog,
   MutationDialogProps,

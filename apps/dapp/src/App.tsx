@@ -1,7 +1,7 @@
 import { Providers } from "./context/providers";
 import { Outlet } from "react-router-dom";
-import { AppFooter } from "components/app-footer";
-import { AppHeader } from "components/app-header";
+import { AppFooter } from "modules/app/app-footer";
+import { AppHeader } from "modules/app/app-header";
 
 function App() {
   return (

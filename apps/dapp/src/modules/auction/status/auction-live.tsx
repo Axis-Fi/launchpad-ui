@@ -18,7 +18,7 @@ import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "..";
 import { MutationDialog } from "modules/transactions/mutation-dialog";
 import { useMutation } from "@tanstack/react-query";
-import { LoadingIndicator } from "components/loading-indicator";
+import { LoadingIndicator } from "modules/app/loading-indicator";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { LockIcon } from "lucide-react";
 

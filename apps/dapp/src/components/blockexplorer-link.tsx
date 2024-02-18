@@ -4,6 +4,7 @@ import { ArrowUpRightIcon } from "lucide-react";
 import { getBlockExplorer } from "src/utils/blockexplorer";
 import { Address } from "viem";
 
+/** Renders a link to an address or transaction hash on a blockexplorer */
 export function BlockExplorerLink({
   chainId,
   address,

@@ -8,7 +8,7 @@ import {
 } from "wagmi";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
-import { PropsWithAuction } from "..";
+import { PropsWithAuction } from "src/types";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {

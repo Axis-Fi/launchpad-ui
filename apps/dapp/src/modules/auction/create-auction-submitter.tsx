@@ -7,7 +7,7 @@ import { useAllowance } from "loaders/use-allowance";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { axisContracts } from "@repo/contracts";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
-import { LoadingIndicator } from "components/loading-indicator";
+import { LoadingIndicator } from "modules/app/loading-indicator";
 
 type SubmitterProps = React.PropsWithChildren;
 
