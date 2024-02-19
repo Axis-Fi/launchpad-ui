@@ -1,115 +1,25 @@
-import { axisContracts } from "@repo/contracts";
 import { Button, InfoLabel, trimAddress } from "@repo/ui";
-import { useAllowance } from "loaders/use-allowance";
-import { useReferral } from "loaders/use-referral";
 import React from "react";
-import { cloakClient } from "src/services/cloak";
-import { Address, formatUnits, parseUnits, toHex } from "viem";
-import {
-  useAccount,
-  useBalance,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
+import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "src/types";
 import { MutationDialog } from "modules/transactions/mutation-dialog";
-import { useMutation } from "@tanstack/react-query";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { LockIcon } from "lucide-react";
+import { useBidAuction } from "../hooks/use-bid-auction";
 
 export function AuctionLive({ auction }: PropsWithAuction) {
-  const account = useAccount();
   const [baseTokenAmount, setBaseTokenAmount] = React.useState<number>(0);
   const [quoteTokenAmount, setQuoteTokenAmount] = React.useState<number>(0);
-  const { address } = useAccount(); // TODO add support for different recipient
-  const axisAddresses = axisContracts.addresses[auction.chainId];
 
-  const referrer = useReferral();
-
-  const bid = useWriteContract();
-
-  const bidReceipt = useWaitForTransactionReceipt({ hash: bid.data });
-
-  const balance = useBalance({
-    address: account.address,
-    token: auction.quoteToken.address as Address,
-    chainId: auction.chainId,
-  });
-
-  const {
-    isSufficientAllowance,
-    approveTx,
-    execute: approveCapacity,
-    allowance,
-  } = useAllowance({
-    ownerAddress: address,
-    spenderAddress: axisAddresses.auctionHouse,
-    tokenAddress: auction.quoteToken.address as Address,
-    decimals: Number(auction.quoteToken.decimals),
-    chainId: auction.chainId,
-    amount: Number(quoteTokenAmount),
-  });
-
-  React.useEffect(() => {
-    if (bidReceipt.isSuccess) {
-      balance.refetch();
-      allowance.refetch();
-    }
-  }, [bidReceipt.isSuccess]);
-
+  const { balance, ...bid } = useBidAuction(auction, baseTokenAmount);
   // TODO Permit2 signature
 
-  const bidDependenciesMutation = useMutation({
-    mutationFn: async () => {
-      const baseTokenAmountOut = parseUnits(
-        baseTokenAmount.toString(),
-        Number(auction.baseToken.decimals),
-      );
-
-      // TODO consider giving a state update on the encryption process
-      const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
-        xChainId: auction.chainId,
-        xAuctionHouse: axisAddresses.auctionHouse,
-        lotId: parseInt(auction.lotId),
-        body: toHex(baseTokenAmountOut),
-      });
-
-      return encryptedAmountOut;
-    },
-  });
-
-  const handleBid = async () => {
-    // Amount out needs to be a uint256
-    const encryptedAmountOut = await bidDependenciesMutation.mutateAsync();
-
-    // Submit the bid to the contract
-    bid.writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
-      functionName: "bid",
-      args: [
-        {
-          lotId: parseUnits(auction.lotId, 0),
-          recipient: address as Address,
-          referrer: referrer,
-          amount: parseUnits(
-            quoteTokenAmount.toString(),
-            Number(auction.quoteToken.decimals),
-          ),
-          auctionData: encryptedAmountOut,
-          allowlistProof: toHex(""),
-          permit2Data: toHex(""),
-        },
-      ],
-    });
-  };
-
   const handleSubmit = () => {
-    isSufficientAllowance ? handleBid() : approveCapacity();
+    bid.isSufficientAllowance ? bid.handleBid() : bid.approveCapacity();
   };
 
   const formattedBalance = formatUnits(
@@ -120,14 +30,15 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isValidInput = baseTokenAmount && quoteTokenAmount;
   const shouldDisable =
     !isValidInput ||
-    approveTx.isLoading ||
-    bidReceipt.isLoading ||
-    bid.isPending;
+    bid.approveReceipt.isLoading ||
+    bid.bidReceipt.isLoading ||
+    bid.bidTx.isPending;
 
   const isWaiting =
-    approveTx.isLoading || bidReceipt.isLoading || bid.isPending;
+    bid.approveReceipt.isLoading ||
+    bid.bidReceipt.isLoading ||
+    bid.bidTx.isPending;
 
-  console.log({ bid, bidReceipt, bidDependenciesMutation });
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
     <div className="flex justify-between">
@@ -170,9 +81,12 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             />
             <RequiresWalletConnection className="mt-4">
               <div className="mt-4 w-full">
-                {!isSufficientAllowance ? (
-                  <Button className="w-full" onClick={() => approveCapacity()}>
-                    {isSufficientAllowance ? (
+                {!bid.isSufficientAllowance ? (
+                  <Button
+                    className="w-full"
+                    onClick={() => bid.approveCapacity()}
+                  >
+                    {bid.isSufficientAllowance ? (
                       "Bid"
                     ) : isWaiting ? (
                       <div className="flex">
@@ -185,11 +99,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                   </Button>
                 ) : (
                   <MutationDialog
-                    onConfirm={() => handleBid()}
-                    mutation={bidReceipt}
+                    onConfirm={() => bid.handleBid()}
+                    mutation={bid.bidReceipt}
                     chainId={auction.chainId}
-                    hash={bid.data}
-                    error={bidDependenciesMutation.error}
+                    hash={bid.bidTx.data}
+                    error={bid.bidDependenciesMutation.error}
                     triggerContent={"Bid"}
                     disabled={shouldDisable || isWaiting}
                     screens={{

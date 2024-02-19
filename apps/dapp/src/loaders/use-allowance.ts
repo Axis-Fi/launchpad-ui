@@ -17,7 +17,7 @@ export type UseAllowanceProps = {
 
 export const useAllowance = (args: UseAllowanceProps) => {
   const { data: hash, writeContract, ...approveRequest } = useWriteContract();
-  const tx = useWaitForTransactionReceipt({ hash });
+  const approveReceipt = useWaitForTransactionReceipt({ hash });
 
   const allowance = useReadContract({
     abi: erc20Abi,
@@ -49,16 +49,16 @@ export const useAllowance = (args: UseAllowanceProps) => {
   };
 
   useEffect(() => {
-    if (tx.isSuccess) {
+    if (approveReceipt.isSuccess) {
       allowance.refetch();
     }
-  }, [allowance.refetch, tx.isSuccess]);
+  }, [allowance.refetch, approveReceipt.isSuccess]);
 
   const currentAllowance = allowance.data ?? 0n;
 
   return {
     approveRequest,
-    approveTx: tx,
+    approveReceipt,
     allowance,
     execute,
     currentAllowance,

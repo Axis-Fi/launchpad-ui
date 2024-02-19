@@ -18,7 +18,11 @@ export function CreateAuctionSubmitter({ children }: SubmitterProps) {
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
 
-  const { isSufficientAllowance, execute, approveTx } = useAllowance({
+  const {
+    isSufficientAllowance,
+    execute,
+    approveReceipt: approveTx,
+  } = useAllowance({
     ownerAddress: address,
     spenderAddress: axisAddresses?.auctionHouse,
     tokenAddress: payoutToken?.address as Address,

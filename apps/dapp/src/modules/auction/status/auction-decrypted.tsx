@@ -1,22 +1,14 @@
-import { axisContracts } from "@repo/contracts";
 import { InfoLabel } from "@repo/ui";
-import { parseUnits } from "viem";
-import {
-  useAccount,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
+import { useAccount } from "wagmi";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "src/types";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
+import { useSettleAuction } from "../hooks/use-settle-auction";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const { address } = useAccount();
-  const axisAddresses = axisContracts.addresses[auction.chainId];
-  const settle = useWriteContract();
-  const decryptReceipt = useWaitForTransactionReceipt({ hash: settle.data });
-  console.log({ decryptReceipt });
+  const settle = useSettleAuction(auction);
 
   const userBids = auction.bidsDecrypted.filter((b) =>
     b.bid.bidder.toLowerCase().includes(address?.toLowerCase() ?? ""),
@@ -32,15 +24,6 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     0,
   );
 
-  const handleSettle = () => {
-    settle.writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
-      functionName: "settle",
-      args: [parseUnits(auction.lotId, 0)],
-    });
-  };
-
   return (
     <div className="flex justify-between">
       <AuctionInfoCard>
@@ -53,7 +36,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       <div className="w-[50%]">
         <AuctionInputCard
           submitText="Settle Auction"
-          onClick={handleSettle}
+          onClick={settle.handleSettle}
           auction={auction}
         >
           <RequiresWalletConnection>

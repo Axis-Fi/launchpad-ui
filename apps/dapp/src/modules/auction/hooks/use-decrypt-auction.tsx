@@ -6,7 +6,7 @@ import { cloakClient } from "src/services/cloak";
 import { Address, ByteArray, fromHex, toHex } from "viem";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
-/** Used manage decrypting the next set of bids */
+/** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: Auction) => {
   const contracts = axisContracts.addresses[auction.chainId];
 
