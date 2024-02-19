@@ -16,6 +16,7 @@ const chainMap: Record<string, string> = {
 
 export function getChainId(chainName?: string): number {
   const name = chainMap[chainName ?? ""];
+
   const chainId = activeChains.find(
     (c) => c.name.toLocaleLowerCase() === name?.toLocaleLowerCase(),
   )?.id;

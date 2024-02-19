@@ -102,8 +102,6 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId);
   const { data: auctionData } = useAuctionData(auction);
 
-  // TODO consider pulling into dedicated hook, normalising output
-
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;
 
@@ -133,7 +131,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   sizeRange[1] = 500;
 
   return (
-    <div className="size-full">
+    <div className="size-full max-h-[260px]">
       <ResponsiveContainer minWidth={300} minHeight={260}>
         <ScatterChart>
           <XAxis

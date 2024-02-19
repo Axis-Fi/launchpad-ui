@@ -32,8 +32,6 @@ export function useAuction(lotId?: string): AuctionResult {
     queryFn: () => getAuctionInfo(auction?.created.infoHash || ""),
   });
 
-  const chainId = getChainId(auction?.chain);
-
   const auctionData = useAuctionData();
 
   if (!auction || data?.auctionLots.length === 0) {
@@ -44,6 +42,7 @@ export function useAuction(lotId?: string): AuctionResult {
     };
   }
 
+  const chainId = getChainId(auction?.chain);
   const status = getAuctionStatus(auction);
 
   const result = {

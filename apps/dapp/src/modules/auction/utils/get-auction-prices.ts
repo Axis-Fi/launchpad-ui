@@ -1,4 +1,4 @@
-import { ParsedBid } from "components/settled-auction-chart";
+import { ParsedBid } from "modules/auction/settled-auction-chart";
 import { Auction, AuctionData } from "src/types";
 import { formatUnits } from "viem";
 

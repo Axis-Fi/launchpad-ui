@@ -1,6 +1,7 @@
 export * from "./primitives";
 
 export * from "./combobox";
+export * from "./data-table";
 export * from "./date-picker";
 export * from "./dialog-input";
 export * from "./dialog";

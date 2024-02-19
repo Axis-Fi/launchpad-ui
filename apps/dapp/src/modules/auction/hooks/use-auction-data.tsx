@@ -6,8 +6,9 @@ import { useReadContract } from "wagmi";
 export function useAuctionData(auction?: Auction) {
   const auctionDataQuery = useReadContract({
     abi: axisContracts.abis.localSealedBidBatchAuction,
-    address:
-      axisContracts.addresses[auction?.chainId ?? 0].localSealedBidBatchAuction,
+    address: !auction
+      ? undefined
+      : axisContracts.addresses[auction.chainId].localSealedBidBatchAuction,
     functionName: "auctionData",
     args: [parseUnits(auction?.lotId ?? "0", 0)],
     query: { enabled: !!auction },

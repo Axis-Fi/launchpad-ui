@@ -29,6 +29,8 @@ export type MutationDialogProps = {
   screens?: Partial<MutationScreens>;
   submitText?: string;
   disabled?: boolean;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
 } & MutationDialogElementProps;
 
 const defaultScreens: MutationScreens = {
@@ -46,6 +48,8 @@ const defaultScreens: MutationScreens = {
 export function MutationDialog({
   screens = defaultScreens,
   mutation,
+  open,
+  setOpen,
   ...props
 }: MutationDialogProps) {
   const allScreens = { ...defaultScreens, ...screens };
@@ -61,7 +65,7 @@ export function MutationDialog({
   const showFooter = status === "idle";
 
   return (
-    <DialogRoot>
+    <DialogRoot open={open} setOpen={setOpen}>
       <DialogTrigger className="w-full " disabled={props.disabled}>
         <Button className="w-full max-w-sm" disabled={props.disabled}>
           {props.triggerContent}

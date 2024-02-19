@@ -1,10 +1,8 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { DataTable } from "components/data-table";
-import { AuctionEncryptedBid, Auction } from "src/types";
-import { PropsWithAuction } from "src/types";
+import { AuctionEncryptedBid, Auction, PropsWithAuction } from "src/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
-import { Tooltip } from "@repo/ui";
+import { DataTable, Tooltip } from "@repo/ui";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { parseUnits } from "viem";

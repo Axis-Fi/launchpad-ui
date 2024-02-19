@@ -2,7 +2,7 @@ import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "src/types";
-import { SettledAuctionChart } from "components/settled-auction-chart";
+import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {

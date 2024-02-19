@@ -1,3 +1,4 @@
+/** Renders an image blurred as a banner with a gradient */
 export function ImageBanner({
   imgUrl,
   children,

@@ -17,9 +17,9 @@ import {
   TableHeader,
   TableRow,
   Button,
-} from "@repo/ui";
+} from "./";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -107,7 +107,7 @@ export function DataTable<TData, TValue>({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              <ArrowLeft />
+              <ArrowLeftIcon />
             </Button>
             <Button
               variant="outline"
@@ -115,7 +115,7 @@ export function DataTable<TData, TValue>({
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              <ArrowRight />
+              <ArrowRightIcon />
             </Button>
           </>
         )}
