@@ -51,11 +51,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           />
           <InfoLabel
             label="Minimum Price"
-            value={`${auction.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
+            value={`${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
           />
           <InfoLabel
             label="Minimum Quantity"
-            value={`${auction.minBidSize} ${auction.quoteToken.symbol}`}
+            value={`${auction.formatted?.minBidSize} ${auction.quoteToken.symbol}`}
           />
           <InfoLabel label="Total Bids" value={auction.bids.length} />
           <InfoLabel

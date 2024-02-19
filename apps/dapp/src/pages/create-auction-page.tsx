@@ -29,11 +29,15 @@ import {
   toHex,
   zeroAddress,
 } from "viem";
-import { getDuration, getTimestamp } from "loaders/dateHelper";
-import { getPercentage } from "loaders/numberHelper";
+import {
+  getPercentage,
+  getDuration,
+  getTimestamp,
+  formatDate,
+  dateMath,
+} from "src/utils";
 import { AuctionInfo } from "src/types";
 
-import { formatDate, dateMath } from "../utils/date";
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { MutationDialog } from "modules/transactions/mutation-dialog";

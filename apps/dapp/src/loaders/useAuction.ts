@@ -1,14 +1,14 @@
 import { useGetAuctionLotQuery } from "@repo/subgraph-client";
-import { getChainId, getAuctionStatusWithBids } from "./subgraphHelper";
-import { Auction } from "src/types";
+import { getAuctionStatus } from "../modules/auction/utils/get-auction-status";
+import { Auction, AuctionData } from "src/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./useAuctionInfo";
-import { useReadContract } from "wagmi";
-import { axisContracts } from "@repo/contracts";
-import { Address, formatUnits } from "viem";
+import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
 import { trimCurrency } from "src/utils/currency";
+import { useAuctionData } from "modules/auction/hooks/use-auction-data";
+import { getChainId } from "src/utils/chain";
 
 export type AuctionResult = {
   result?: Auction;
@@ -32,17 +32,9 @@ export function useAuction(lotId?: string): AuctionResult {
     queryFn: () => getAuctionInfo(auction?.created.infoHash || ""),
   });
 
-  //TODO: fix this
-  const chainId = getChainId(auction?.chain ?? "blast-testnet");
-  const axisAddresses = axisContracts.addresses[chainId];
+  const chainId = getChainId(auction?.chain);
 
-  const auctionData = useReadContract({
-    address: axisAddresses?.localSealedBidBatchAuction,
-    abi: axisContracts?.abis.localSealedBidBatchAuction,
-    functionName: "auctionData",
-    args: [BigInt(auction?.lotId ?? 0)],
-    query: { enabled: query.isSuccess },
-  });
+  const auctionData = useAuctionData();
 
   if (!auction || data?.auctionLots.length === 0) {
     return {
@@ -52,19 +44,10 @@ export function useAuction(lotId?: string): AuctionResult {
     };
   }
 
-  const status = getAuctionStatusWithBids(
-    auction.start,
-    auction.conclusion,
-    auction.capacity,
-    auction.settle !== null,
-    auction.bids.length,
-    auction.bidsDecrypted.length,
-    auction.refundedBids.length,
-  );
+  const status = getAuctionStatus(auction);
 
   const result = {
     ...auction,
-    ...parseAuctionData(auctionData.data!, Number(auction.baseToken.decimals)),
     chainId,
     status,
     auctionInfo,
@@ -73,27 +56,14 @@ export function useAuction(lotId?: string): AuctionResult {
   return {
     result: {
       ...result,
-      formatted: formatAuction(result),
+      formatted: formatAuction(result, auctionData.data),
     },
     isLoading: isLoading || infoQuery.isLoading,
   };
 }
 
-//https://github.com/Axis-Fi/moonraker/blob/4172793566beb2b06113c8775b080c90a7a52853/src/modules/auctions/LSBBA/LSBBA.sol#L90
-//TODO: cleanup
-function parseAuctionData(
-  data: readonly [number, bigint, bigint, bigint, bigint, bigint, Address],
-  decimals: number,
-) {
-  if (!data) return { minPrice: "0", minBidSize: "0" };
-
-  const minPrice = formatUnits(data[3], decimals);
-  const minBidSize = formatUnits(data[5], decimals);
-
-  return { minPrice, minBidSize };
-}
-
-export function formatAuction(auction: Auction) {
+/** Formats Auction information for displaying purporses */
+export function formatAuction(auction: Auction, auctionData?: AuctionData) {
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
 
@@ -140,5 +110,13 @@ export function formatAuction(auction: Auction) {
     tokenAmounts,
     uniqueBidders,
     rate,
+    minPrice: formatUnits(
+      auctionData?.minimumPrice ?? 0n,
+      Number(auction.quoteToken.decimals),
+    ),
+    minBidSize: formatUnits(
+      auctionData?.minBidSize ?? 0n,
+      Number(auction.baseToken.decimals), //TODO: validate if its the right token
+    ),
   };
 }

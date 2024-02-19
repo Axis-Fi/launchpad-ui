@@ -1,7 +1,7 @@
 import { Link, trimAddress } from "@repo/ui";
 import { activeChains } from "config/chains";
 import { ArrowUpRightIcon } from "lucide-react";
-import { getBlockExplorer } from "src/utils/blockexplorer";
+import { getBlockExplorer } from "src/utils/chain";
 import { Address } from "viem";
 
 /** Renders a link to an address or transaction hash on a blockexplorer */

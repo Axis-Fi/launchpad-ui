@@ -1,4 +1,4 @@
-import { useDecryptBids } from "../hooks/use-decrypt-bids";
+import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";

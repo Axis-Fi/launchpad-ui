@@ -16,7 +16,8 @@
         "../../packages/ui/src/components/primitives/*"
       ],
       "@/components": ["../../packages/ui/src/components/index.ts"]
-    }
+    },
+    "moduleResolution": "node"
   },
   "references": [
     {

@@ -13,8 +13,6 @@ export type Auction = RawSubgraphAuctionWithEvents & {
   chainId: number;
   baseToken: Token;
   quoteToken: Token;
-  minBidSize: string;
-  minPrice: string;
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
   formatted?: AuctionFormattedInfo;
@@ -41,6 +39,16 @@ export type AuctionInfo = {
   };
 };
 
+export type AuctionData = {
+  status: number;
+  nextDecryptIndex: bigint;
+  nextBidId: bigint;
+  minimumPrice: bigint;
+  minFilled: bigint;
+  minBidSize: bigint;
+  publicKeyModulus: `0x${string}`;
+};
+
 export type AuctionFormattedInfo = {
   startDate: Date;
   endDate: Date;
@@ -57,6 +65,8 @@ export type AuctionFormattedInfo = {
     in: number;
     out: number;
   };
+  minPrice: string;
+  minBidSize: string;
 };
 
 export type PropsWithAuction = {

@@ -1,6 +1,6 @@
 import type { CartesianViewBox } from "recharts/types/util/types";
 import type { ScatterPointItem } from "recharts/types/cartesian/Scatter";
-import type { Auction } from "src/types";
+import type { Auction, AuctionData } from "src/types";
 import {
   LabelProps,
   ReferenceLine,
@@ -13,17 +13,17 @@ import {
   YAxis,
   ZAxis,
 } from "recharts";
-import { formatUnits, parseUnits } from "viem";
-import { useReadContract } from "wagmi";
 import { format } from "date-fns";
 import { CircleIcon, GemIcon, XIcon } from "lucide-react";
 import { cn } from "@repo/ui";
-import { axisContracts } from "@repo/contracts";
 import { useAuction } from "loaders/useAuction";
 import { formatDate } from "src/utils/date";
 import { SVGProps } from "react";
+import { getAuctionPrices } from "modules/auction/utils/get-auction-prices";
+import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 
-type Bid = {
+//TODO: revisit this type, see if can be squashed into Bid
+export type ParsedBid = {
   id: string;
   bidder: string;
   price: number;
@@ -35,37 +35,31 @@ type Bid = {
 type SettleData = {
   marginalPrice?: number;
   minimumPrice?: number;
-  data?: Bid[];
+  data?: ParsedBid[];
 };
 
 const useChartData = (
   auction: Auction | undefined,
   auctionData: AuctionData | undefined,
 ): SettleData => {
-  // Goal: Array of data with the following data per object:
-  // - bid ID
-  // - bidder
-  // - price
-  // - amountIn
-  // - amountOut
-  // - timestamp
-  // - marginalPrice
-
   // Validate
   if (!auctionData) return {};
 
   // 1. Create data array and parse inputs
   const data = !auction
     ? undefined
-    : auction.bidsDecrypted.map((bid) => {
+    : auction.bids.map((bid) => {
         const amountIn = Number(bid.amountIn);
-        const amountOut = Number(bid.amountOut);
+        const amountOut = isFinite(Number(bid.amountOut))
+          ? Number(bid.amountOut)
+          : 0;
+
         const price = amountIn / amountOut;
         const timestamp = Number(bid.blockTimestamp) * 1000;
 
         return {
           id: bid.id,
-          bidder: bid.bid.bidder,
+          bidder: bid.bidder,
           price,
           amountIn,
           amountOut,
@@ -75,53 +69,11 @@ const useChartData = (
 
   if (!auction || !data) return {};
 
-  // 2. Sort bids by price
   data.sort((a, b) => a.price - b.price);
 
-  // 3. Calculate the marginal price
-  const minimumPrice = Number(
-    formatUnits(auctionData.minimumPrice, Number(auction.quoteToken.decimals)),
-  );
-  const minimumFill = Number(
-    formatUnits(auctionData.minFilled, Number(auction.baseToken.decimals)),
-  );
+  const prices = getAuctionPrices(data, auction, auctionData);
 
-  // Apply marginal price algorithm
-  const capacity = Number(
-    formatUnits(BigInt(auction.capacity), Number(auction.baseToken.decimals)),
-  );
-  let marginalPrice = 0;
-  let totalAmountIn = 0;
-  let capacityExpended = 0;
-  let lastPrice = 0;
-  for (let i = 0; i < data.length; i++) {
-    const bid = data[i];
-
-    if (bid.price < minimumPrice) {
-      marginalPrice = lastPrice;
-      break;
-    }
-
-    lastPrice = bid.price;
-    totalAmountIn += bid.amountIn;
-    capacityExpended = totalAmountIn * bid.price;
-
-    if (capacityExpended >= capacity) {
-      marginalPrice = bid.price;
-      break;
-    }
-
-    if (i == data.length - 1) {
-      marginalPrice = bid.price;
-    }
-  }
-
-  if (capacityExpended < minimumFill) {
-    marginalPrice = 0;
-  }
-
-  // Return data, marginal price, and minimum price
-  return { data, marginalPrice, minimumPrice };
+  return { data, ...prices };
 };
 
 type SettledAuctionChartProps = {
@@ -146,46 +98,11 @@ const formatter = (value: unknown, _name: string, props: FormatterProps) => {
   return value;
 };
 
-type AuctionData = {
-  status: number;
-  nextDecryptIndex: bigint;
-  nextBidId: bigint;
-  minimumPrice: bigint;
-  minFilled: bigint;
-  minBidSize: bigint;
-  publicKeyModulus: `0x${string}`;
-};
-
-const mapAuctionData = (
-  data:
-    | readonly [number, bigint, bigint, bigint, bigint, bigint, `0x${string}`]
-    | undefined,
-): AuctionData | undefined => {
-  if (!data) return undefined;
-
-  return {
-    status: data[0],
-    nextDecryptIndex: data[1],
-    nextBidId: data[2],
-    minimumPrice: data[3],
-    minFilled: data[4],
-    minBidSize: data[5],
-    publicKeyModulus: data[6],
-  };
-};
-
 export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId);
+  const { data: auctionData } = useAuctionData(auction);
 
   // TODO consider pulling into dedicated hook, normalising output
-  const { data: auctionData } = useReadContract({
-    abi: axisContracts.abis.localSealedBidBatchAuction,
-    address: !auction
-      ? undefined
-      : axisContracts.addresses[auction.chainId].localSealedBidBatchAuction,
-    functionName: "auctionData",
-    args: [!auction ? BigInt(-1) : parseUnits(auction.lotId, 0)],
-  });
 
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;
@@ -194,7 +111,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
     data: chartData,
     marginalPrice,
     minimumPrice,
-  } = useChartData(auction, mapAuctionData(auctionData));
+  } = useChartData(auction, auctionData);
 
   const sizeRange = [
     !chartData
