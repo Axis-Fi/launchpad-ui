@@ -13,12 +13,14 @@ import { getChainId } from "src/utils/chain";
 export type AuctionResult = {
   result?: Auction;
   isLoading: boolean;
+  refetch: ReturnType<typeof useGetAuctionLotQuery>["refetch"];
 };
 
 export function useAuction(lotId?: string): AuctionResult {
-  const { data, isLoading, ...query } = useGetAuctionLotQuery({
-    lotId: lotId || "",
-  });
+  const { data, isLoading, ...query } = useGetAuctionLotQuery(
+    { lotId: lotId || "" },
+    //{ placeholderData: keepPreviousData },
+  );
 
   const auction =
     !data || !data.auctionLots || data.auctionLots.length == 0
@@ -26,6 +28,7 @@ export function useAuction(lotId?: string): AuctionResult {
       : data.auctionLots[0];
 
   const enabled = !!auction && !!auction?.created.infoHash;
+
   const { data: auctionInfo, ...infoQuery } = useQuery({
     enabled,
     queryKey: ["auction-info", auction?.id],
@@ -36,9 +39,9 @@ export function useAuction(lotId?: string): AuctionResult {
 
   if (!auction || data?.auctionLots.length === 0) {
     return {
+      refetch: query.refetch,
       result: undefined,
-      isLoading: isLoading || infoQuery.isLoading || infoQuery.isPending,
-      ...query,
+      isLoading: isLoading || infoQuery.isLoading, //|| infoQuery.isPending,
     };
   }
 
@@ -53,6 +56,8 @@ export function useAuction(lotId?: string): AuctionResult {
   };
 
   return {
+    ...query,
+    refetch: query.refetch,
     result: {
       ...result,
       formatted: formatAuction(result, auctionData.data),

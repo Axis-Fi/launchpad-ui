@@ -2,11 +2,12 @@ import { SVGProps } from "react";
 
 export function LoadingIndicator(props: SVGProps<SVGSVGElement>) {
   return (
-    <div className="loading-indicator h-full pb-[16px]">
+    <div className="loading-indicator h-full">
       <svg
         xmlnsXlink="http://www.w3.org/2000/svg"
         width="78"
         height="67"
+        viewBox="0 0 78 80"
         fill="white"
         className="fill-axis-orange"
         {...props}

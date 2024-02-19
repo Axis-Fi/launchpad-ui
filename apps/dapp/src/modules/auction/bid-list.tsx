@@ -2,12 +2,15 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { AuctionEncryptedBid, Auction, PropsWithAuction } from "src/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
-import { DataTable, Tooltip } from "@repo/ui";
+import { Button, DataTable, Tooltip } from "@repo/ui";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { parseUnits } from "viem";
 import { MutationDialog } from "modules/transactions/mutation-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
+import React from "react";
+import { useAuction } from "loaders/useAuction";
+import { useParams } from "react-router-dom";
 
 const column = createColumnHelper<AuctionEncryptedBid & { auction: Auction }>();
 
@@ -62,17 +65,36 @@ const cols = [
   }),
 ];
 
+const screens = {
+  idle: {
+    title: "Refund Bid",
+    Component: () => (
+      <div className="text-center">
+        Are you sure you want to refund this bid?
+      </div>
+    ),
+  },
+  success: {
+    title: "Transaction Confirmed",
+    Component: () => <div className="text-center">Bid refunded!</div>,
+  },
+};
+
 type BidListProps = PropsWithAuction & {
   address?: `0x${string}`;
 };
 
 export function BidList(props: BidListProps) {
+  const { id } = useParams();
+  const auction = useAuction(id);
   const axisAddresses = axisContracts.addresses[props.auction.chainId];
   const addressLower = props.address ? props.address.toLowerCase() : undefined;
   const encrypted = props.auction?.bids ?? [];
 
   const refund = useWriteContract();
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [bidToRefund, setBidToRefund] = React.useState<AuctionEncryptedBid>();
 
   const mappedBids = encrypted.map((bid) => {
     return {
@@ -82,12 +104,10 @@ export function BidList(props: BidListProps) {
   });
   const allBids = [...mappedBids];
 
-  console.log({ props });
-  // TODO after a tx, this does not update. Requires refresh.
   const isLoading = refund.isPending || refundReceipt.isLoading;
 
-  const handleRefund = (bidId: string) => {
-    console.log("Refunding bid", bidId);
+  const handleRefund = (bidId?: string) => {
+    if (!bidId) throw new Error("Unable to get bidId for refund");
 
     refund.writeContract({
       abi: axisContracts.abis.auctionHouse,
@@ -96,6 +116,12 @@ export function BidList(props: BidListProps) {
       args: [parseUnits(props.auction.lotId, 0), parseUnits(bidId, 0)],
     });
   };
+
+  React.useEffect(() => {
+    if (refundReceipt.isSuccess) {
+      auction;
+    }
+  }, [refundReceipt.isSuccess]);
 
   // Add a refund button to the columns
   const columns = [
@@ -113,43 +139,25 @@ export function BidList(props: BidListProps) {
           props.auction.status === "settled" && bid.status !== "won";
         // Can refund if the auction is live
         const isLive = props.auction.status === "live";
+        const isCurrentBid = bidToRefund?.bidId === bid.bidId;
 
         if (isSettledBidNotWon || isLive) {
           return (
-            <MutationDialog
-              onConfirm={() => handleRefund(bid.bidId)}
-              mutation={refundReceipt}
-              chainId={props.auction.chainId}
-              hash={refund.data}
-              error={refundReceipt.error}
-              triggerContent={
-                isLoading ? (
-                  <div className="flex">
-                    Waiting...
-                    <LoadingIndicator />
-                  </div>
-                ) : (
-                  "Refund"
-                )
-              }
-              disabled={isLoading}
-              screens={{
-                idle: {
-                  title: "Refund Bid",
-                  Component: () => (
-                    <div className="text-center">
-                      Are you sure you want to refund this bid?
-                    </div>
-                  ),
-                },
-                success: {
-                  title: "Transaction Confirmed",
-                  Component: () => (
-                    <div className="text-center">Bid refunded!</div>
-                  ),
-                },
+            <Button
+              onClick={() => {
+                setBidToRefund(bid);
+                setDialogOpen(true);
               }}
-            />
+            >
+              {isLoading && isCurrentBid ? (
+                <div className="flex items-center gap-x-1">
+                  <p>Waiting</p>
+                  <LoadingIndicator className="size-4 fill-black" />
+                </div>
+              ) : (
+                "Refund"
+              )}
+            </Button>
           );
         }
       },
@@ -157,14 +165,28 @@ export function BidList(props: BidListProps) {
   ];
 
   return (
-    <DataTable
-      emptyText={
-        props.auction.status == "created" || props.auction.status == "live"
-          ? "No bids yet"
-          : "No bids received"
-      }
-      columns={columns}
-      data={allBids}
-    />
+    <>
+      <DataTable
+        emptyText={
+          props.auction.status == "created" || props.auction.status == "live"
+            ? "No bids yet"
+            : "No bids received"
+        }
+        columns={columns}
+        data={allBids}
+      />
+
+      <MutationDialog
+        open={dialogOpen}
+        setOpen={(open) => setDialogOpen(open)}
+        onConfirm={() => handleRefund(bidToRefund?.bidId)}
+        mutation={refundReceipt}
+        chainId={props.auction.chainId}
+        hash={refund.data}
+        error={refundReceipt.error}
+        disabled={isLoading}
+        screens={screens}
+      />
+    </>
   );
 }

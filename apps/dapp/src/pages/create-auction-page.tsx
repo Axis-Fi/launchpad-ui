@@ -256,7 +256,10 @@ export default function CreateAuctionPage() {
     );
   };
 
+  // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
+
   const onSubmit = form.handleSubmit(handleCreation);
+  // TODO arrange fields
 
   return (
     <div className="pb-20">

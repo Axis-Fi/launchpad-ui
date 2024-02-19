@@ -65,12 +65,14 @@ export function MutationDialog({
   const showFooter = status === "idle";
 
   return (
-    <DialogRoot open={open} setOpen={setOpen}>
-      <DialogTrigger className="w-full " disabled={props.disabled}>
-        <Button className="w-full max-w-sm" disabled={props.disabled}>
-          {props.triggerContent}
-        </Button>
-      </DialogTrigger>
+    <DialogRoot open={open} onOpenChange={setOpen}>
+      {props.triggerContent && (
+        <DialogTrigger className="w-full " disabled={props.disabled}>
+          <Button className="w-full max-w-sm" disabled={props.disabled}>
+            {props.triggerContent}
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader className="text-2xl">{title}</DialogHeader>
         <Component error={error} hash={props.hash} chainId={props.chainId} />
