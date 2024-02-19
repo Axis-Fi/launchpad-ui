@@ -16,16 +16,8 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const axisAddresses = axisContracts.addresses[auction.chainId];
   const settle = useWriteContract();
   const decryptReceipt = useWaitForTransactionReceipt({ hash: settle.data });
+  console.log({ decryptReceipt });
 
-  /* eslint-disable-next-line*/
-  const isLoading = settle.isPending || decryptReceipt.isLoading;
-
-  const totalRaised = auction.bids?.reduce(
-    (total, b) => total + Number(b.amountIn),
-    0,
-  );
-
-  const rate = 0;
   const userBids = auction.bidsDecrypted.filter((b) =>
     b.bid.bidder.toLowerCase().includes(address?.toLowerCase() ?? ""),
   );
@@ -34,6 +26,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     (total, b) => total + Number(b.amountIn),
     0,
   );
+
   const amountSecured = userBids.reduce(
     (total, b) => total + Number(b.amountOut ?? 0),
     0,
@@ -47,13 +40,15 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       args: [parseUnits(auction.lotId, 0)],
     });
   };
-  console.log({ settle, decryptReceipt });
 
   return (
     <div className="flex justify-between">
       <AuctionInfoCard>
-        <InfoLabel label="Total Raised" value={totalRaised} />
-        <InfoLabel label="Rate" value={rate} />
+        <InfoLabel
+          label="Total Raised"
+          value={auction.formatted?.tokenAmounts.in}
+        />
+        <InfoLabel label="Rate" value={auction.formatted?.rate} />
       </AuctionInfoCard>
       <div className="w-[50%]">
         <AuctionInputCard
@@ -76,9 +71,6 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
             </div>
           </RequiresWalletConnection>
         </AuctionInputCard>
-        {/* {isLoading && <p>Loading... </p>} */}
-        {/* {settle.isError && <p>{settle.error?.message}</p>} */}
-        {/* {decryptReceipt.isSuccess && <p>Success!</p>} */}
       </div>
     </div>
   );

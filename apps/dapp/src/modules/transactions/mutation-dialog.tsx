@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { Button } from "@repo/ui";
 import { UseWaitForTransactionReceiptReturnType } from "wagmi";
 import { TransactionHashCard } from "./transaction-hash-card";
@@ -11,27 +10,24 @@ import {
   DialogTrigger,
 } from "@repo/ui";
 import React from "react";
-import { WaitForTransactionReceiptErrorType } from "wagmi/actions";
-import { UseMutationResult } from "@tanstack/react-query";
 
 export type MutationDialogElementProps = {
   chainId?: number;
   hash?: Address;
-  error?: WaitForTransactionReceiptErrorType | null;
+  error?: Error | null;
 };
 
 export type MutationScreens = Record<
-  Partial<UseWaitForTransactionReceiptReturnType["status"] | "idle">,
+  UseWaitForTransactionReceiptReturnType["status"] | "idle",
   { Component: React.FC<Partial<MutationDialogElementProps>>; title?: string }
 >;
 
 export type MutationDialogProps = {
-  onConfirm: () => void;
+  onConfirm: React.MouseEventHandler<HTMLButtonElement>;
   mutation: UseWaitForTransactionReceiptReturnType;
   triggerContent?: string | React.ReactNode;
-  screens?: MutationScreens;
+  screens?: Partial<MutationScreens>;
   submitText?: string;
-  error?: UseMutationResult["error"];
   disabled?: boolean;
 } & MutationDialogElementProps;
 
@@ -83,7 +79,7 @@ export function MutationDialog({
               onClick={(e) => {
                 console.log("preventing");
                 e.preventDefault();
-                props.onConfirm();
+                props.onConfirm(e);
               }}
             >
               {props.submitText ?? "CONFIRM"}

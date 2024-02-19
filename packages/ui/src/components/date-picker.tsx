@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/utils";
-import { Button, CalendarProps, Input } from "./primitives";
+import { Button, Input } from "./primitives";
 import { Calendar } from "./primitives";
 import { Popover, PopoverContent, PopoverTrigger } from "./primitives";
 import { useTimeInput } from "..";
@@ -16,7 +16,7 @@ export type DatePickerProps = {
   time?: boolean;
   onChange?: (date?: Date) => void;
   onBlur?: () => void;
-} & CalendarProps;
+};
 
 export function DatePicker({
   content,
@@ -54,9 +54,9 @@ export function DatePicker({
       </PopoverTrigger>
       <PopoverContent className="flex w-auto flex-col items-center p-0">
         <Calendar
+          {...props}
           mode="single"
           selected={date}
-          //@ts-expect-error TODO: fix type mismatch
           onSelect={(date) => {
             props.onChange?.(date);
             setDate(date);
@@ -64,7 +64,6 @@ export function DatePicker({
           initialFocus
           placeholderDate={!placeholderDate ? new Date() : placeholderDate}
           fromDate={new Date()}
-          {...props}
         />
         {props.time && (
           <Input

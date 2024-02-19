@@ -11,7 +11,6 @@ import {
   rainbowWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-import { activeChains } from "../config/chains";
 
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
 
@@ -38,8 +37,6 @@ export default function WalletProvider(props: PropsWithChildren) {
           </p>
         ),
       }}
-      //@ts-expect-error typg mismatch
-      chains={activeChains}
       theme={midnightTheme()}
       modalSize="compact"
     >

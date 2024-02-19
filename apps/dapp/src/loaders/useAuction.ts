@@ -6,6 +6,9 @@ import { getAuctionInfo } from "./useAuctionInfo";
 import { useReadContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { Address, formatUnits } from "viem";
+import { formatDate } from "@repo/ui";
+import { formatDistanceToNow } from "date-fns";
+import { trimCurrency } from "src/utils/currency";
 
 export type AuctionResult = {
   result?: Auction;
@@ -59,16 +62,18 @@ export function useAuction(lotId?: string): AuctionResult {
     auction.refundedBids.length,
   );
 
+  const result = {
+    ...auction,
+    ...parseAuctionData(auctionData.data!, Number(auction.baseToken.decimals)),
+    chainId,
+    status,
+    auctionInfo,
+  };
+
   return {
     result: {
-      ...auction,
-      ...parseAuctionData(
-        auctionData.data!,
-        Number(auction.baseToken.decimals),
-      ),
-      chainId,
-      status,
-      auctionInfo,
+      ...result,
+      formatted: formatAuction(result),
     },
     isLoading: isLoading || infoQuery.isLoading,
   };
@@ -80,9 +85,60 @@ function parseAuctionData(
   data: readonly [number, bigint, bigint, bigint, bigint, bigint, Address],
   decimals: number,
 ) {
-  if (!data) return {};
+  if (!data) return { minPrice: "0", minBidSize: "0" };
+
   const minPrice = formatUnits(data[3], decimals);
   const minBidSize = formatUnits(data[5], decimals);
 
   return { minPrice, minBidSize };
+}
+
+export function formatAuction(auction: Auction) {
+  const startDate = new Date(Number(auction.start) * 1000);
+  const endDate = new Date(Number(auction.conclusion) * 1000);
+
+  const startFormatted = formatDate.fullLocal(startDate);
+  const endFormatted = formatDate.fullLocal(endDate);
+  const startDistance = formatDistanceToNow(startDate);
+  const endDistance = formatDistanceToNow(endDate);
+  const totalBidAmount = auction.bids.reduce(
+    (total, b) => total + Number(b.amountIn),
+    0,
+  );
+
+  const totalBidsDecrypted = auction.bids.filter(
+    (b) => b.status === "decrypted",
+  ).length;
+
+  const tokenAmounts = auction.bids
+    .filter((b) => Number(b.amountOut) > 0)
+    .reduce(
+      (total, b) => {
+        total.in += Number(b.amountIn);
+        total.out += Number(b.amountOut);
+        return total;
+      },
+      { in: 0, out: 0 },
+    );
+
+  const uniqueBidders = auction.bids
+    .map((b) => b.bidder)
+    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
+
+  const rate = trimCurrency((tokenAmounts.in / tokenAmounts.out).toString());
+
+  return {
+    startDate,
+    endDate,
+    startFormatted,
+    endFormatted,
+    startDistance,
+    endDistance,
+    totalBids: auction.bids.length,
+    totalBidsDecrypted,
+    totalBidAmount,
+    tokenAmounts,
+    uniqueBidders,
+    rate,
+  };
 }

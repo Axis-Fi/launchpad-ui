@@ -2,17 +2,8 @@ import { InfoLabel, trimAddress } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "src/types";
 import { AuctionInputCard } from "../auction-input-card";
-import { formatDate } from "../../../utils/date";
-import { formatDistanceToNow } from "date-fns";
 
 export function AuctionCreated({ auction }: PropsWithAuction) {
-  const startDate = new Date(Number(auction.start) * 1000);
-  const startFormatted = formatDate.fullLocal(startDate);
-  const startDistance = formatDistanceToNow(startDate);
-
-  const endDate = new Date(Number(auction.conclusion) * 1000);
-  const endDistance = formatDistanceToNow(endDate);
-
   return (
     <div className="flex justify-between">
       <div className="w-1/2">
@@ -22,14 +13,15 @@ export function AuctionCreated({ auction }: PropsWithAuction) {
             value={`${auction.capacity} ${auction.baseToken.symbol}`}
           />
           <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
-          <InfoLabel label="Ends in" value={endDistance} />
+          <InfoLabel label="Ends in" value={auction.formatted?.endDistance} />
         </AuctionInfoCard>
       </div>
 
       <div className="w-[40%]">
         <AuctionInputCard auction={auction} submitText="">
           <h3 className="text-center">
-            Auction starts in {startDistance} at {startFormatted}.
+            Auction starts in {auction.formatted?.startDistance} at{" "}
+            {auction.formatted?.startDistance}.
           </h3>
         </AuctionInputCard>
       </div>

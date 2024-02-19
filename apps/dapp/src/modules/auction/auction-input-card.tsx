@@ -48,9 +48,9 @@ export function AuctionInputCard({
       </CardHeader>
       <CardContent>{props.children}</CardContent>
       <CardFooter className="flex justify-center">
-        {props.showTrigger ? (
-          /*@ts-expect-error TODO: fix type mismatch*/
-          <TriggerElement onConfirm={props.onClick} />
+        {props.showTrigger && TriggerElement ? (
+          //@ts-expect-error //TODO: revamp
+          <TriggerElement onConfirm={(e) => props.onClick?.(e)} />
         ) : (
           props.submitText &&
           props.onClick && (

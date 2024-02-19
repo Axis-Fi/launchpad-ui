@@ -1,8 +1,7 @@
-import { useDecryptBids } from "../use-decrypt-bids";
+import { useDecryptBids } from "../hooks/use-decrypt-bids";
 import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
-import { formatDistanceToNow } from "date-fns";
 import { PropsWithAuction } from "src/types";
 import {
   MutationDialog,
@@ -13,34 +12,26 @@ import { RequiresWalletConnection } from "components/requires-wallet-connection"
 export function AuctionConcluded({ auction }: PropsWithAuction) {
   const decrypt = useDecryptBids(auction);
 
-  const totalBids = auction?.bids.length;
-  const totalBidAmount = auction.bids?.reduce(
-    (total, b) => total + Number(b.amountIn),
-    0,
-  );
-
-  const auctionEndDistance = formatDistanceToNow(
-    new Date(Number(auction.conclusion) * 1000),
-  );
-
-  const auctionStartDistance = formatDistanceToNow(
-    new Date(Number(auction.createdBlockTimestamp) * 1000),
-  );
-
-  const disableButton = totalBids === 0 || decrypt.decryptTx.isPending;
-  console.log({ decrypt });
+  const disableButton =
+    auction.formatted?.totalBids === 0 || decrypt.decryptTx.isPending;
 
   return (
     <div>
       <div className="flex justify-between">
         <AuctionInfoCard className="w-1/2">
-          <InfoLabel label="Total Bids" value={totalBids} />
+          <InfoLabel label="Total Bids" value={auction.formatted?.totalBids} />
           <InfoLabel
             label="Total Bid Amount"
-            value={totalBidAmount + " " + auction.quoteToken.symbol}
+            value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
           />
-          <InfoLabel label="Started" value={`${auctionStartDistance} ago`} />
-          <InfoLabel label="Ended" value={`${auctionEndDistance} ago`} />
+          <InfoLabel
+            label="Started"
+            value={`${auction.formatted?.startDistance} ago`}
+          />
+          <InfoLabel
+            label="Ended"
+            value={`${auction.formatted?.endDistance} ago`}
+          />
         </AuctionInfoCard>
         <div className="w-[40%]">
           <AuctionInputCard
@@ -49,8 +40,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             submitText="Decrypt"
             showTrigger={true}
             disabled={disableButton}
-            TriggerElement={(props: Partial<MutationDialogProps>) => (
-              /* @ts-expect-error TODO: remove */
+            TriggerElement={(props: MutationDialogProps) => (
               <MutationDialog
                 {...props}
                 disabled={disableButton}
@@ -76,19 +66,6 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
               </div>
             </RequiresWalletConnection>
           </AuctionInputCard>
-
-          {/* {decrypt.nextBids.isFetching && <p>API - NextBids: Loading</p>} */}
-          {/* {decrypt.nextBids.isError && ( */}
-          {/*   <p> */}
-          {/*     API:{" "} */}
-          {/*     {decrypt.nextBids.error.message || decrypt.nextBids.error.name} */}
-          {/*   </p> */}
-          {/* )} */}
-          {/* {decrypt.decryptTx.isPending && <p>Confirming transaction...</p>} */}
-          {/* {decrypt.decryptTx.isError && ( */}
-          {/*   <p>Txn: {decrypt.decryptTx.error?.message}</p> */}
-          {/* )} */}
-          {/* {decrypt.decryptTx.isSuccess && <p>Success!</p>} */}
         </div>
       </div>
     </div>

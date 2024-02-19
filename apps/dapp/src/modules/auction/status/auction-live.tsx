@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { axisContracts } from "@repo/contracts";
 import { Button, InfoLabel, trimAddress } from "@repo/ui";
 import { useAllowance } from "loaders/use-allowance";
@@ -15,7 +14,7 @@ import {
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
-import { PropsWithAuction } from "..";
+import { PropsWithAuction } from "src/types";
 import { MutationDialog } from "modules/transactions/mutation-dialog";
 import { useMutation } from "@tanstack/react-query";
 import { LoadingIndicator } from "modules/app/loading-indicator";
@@ -76,7 +75,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         xChainId: auction.chainId,
         xAuctionHouse: axisAddresses.auctionHouse,
         lotId: parseInt(auction.lotId),
-        body: toHex(baseTokenAmountOut, "bigint"),
+        body: toHex(baseTokenAmountOut),
       });
 
       return encryptedAmountOut;
@@ -124,6 +123,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     approveTx.isLoading ||
     bidReceipt.isLoading ||
     bid.isPending;
+
   const isWaiting =
     approveTx.isLoading || bidReceipt.isLoading || bid.isPending;
 
@@ -149,10 +149,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           <InfoLabel label="Total Bids" value={auction.bids.length} />
           <InfoLabel
             label="Total Bid Amount"
-            value={`${auction.bids.reduce(
-              (total, b) => total + Number(b.amountIn),
-              0,
-            )} ${auction.quoteToken.symbol}`}
+            value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
           />
         </AuctionInfoCard>
       </div>
@@ -192,11 +189,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     mutation={bidReceipt}
                     chainId={auction.chainId}
                     hash={bid.data}
-                    /* @ts-expect-error TODO: remove this expect*/
                     error={bidDependenciesMutation.error}
                     triggerContent={"Bid"}
                     disabled={shouldDisable || isWaiting}
-                    //@ts-expect-error make screens optional
                     screens={{
                       idle: {
                         Component: () => (
@@ -223,11 +218,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             </RequiresWalletConnection>
           </>
         </AuctionInputCard>
-
-        {/* {bidReceipt.isLoading && <p>Confirming transaction...</p>} */}
-        {/* {bid.isError && <p>{bid.error?.message}</p>} */}
-        {/* {bidReceipt.isError && <p>{bidReceipt.error?.message}</p>} */}
-        {/* {bidReceipt.isSuccess && <p>Success!</p>} */}
       </div>
     </div>
   );

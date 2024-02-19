@@ -13,8 +13,11 @@ export type Auction = RawSubgraphAuctionWithEvents & {
   chainId: number;
   baseToken: Token;
   quoteToken: Token;
+  minBidSize: string;
+  minPrice: string;
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
+  formatted?: AuctionFormattedInfo;
 };
 
 export type AuctionStatus =
@@ -35,6 +38,24 @@ export type AuctionInfo = {
     farcaster?: string;
     payoutTokenLogo?: string;
     [key: string]: string | undefined;
+  };
+};
+
+export type AuctionFormattedInfo = {
+  startDate: Date;
+  endDate: Date;
+  startFormatted: string;
+  endFormatted: string;
+  startDistance: string;
+  endDistance: string;
+  totalBids: number;
+  totalBidsDecrypted: number;
+  totalBidAmount: number;
+  uniqueBidders: number;
+  rate: string;
+  tokenAmounts: {
+    in: number;
+    out: number;
   };
 };
 

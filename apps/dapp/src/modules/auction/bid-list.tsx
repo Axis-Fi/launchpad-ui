@@ -84,6 +84,7 @@ export function BidList(props: BidListProps) {
   });
   const allBids = [...mappedBids];
 
+  console.log({ props });
   // TODO after a tx, this does not update. Requires refresh.
   const isLoading = refund.isPending || refundReceipt.isLoading;
 
@@ -134,7 +135,6 @@ export function BidList(props: BidListProps) {
                 )
               }
               disabled={isLoading}
-              //@ts-expect-error make screens optional
               screens={{
                 idle: {
                   title: "Refund Bid",

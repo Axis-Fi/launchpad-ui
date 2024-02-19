@@ -28,8 +28,7 @@ export const useDecryptBids = (auction: Auction) => {
   const nextBids =
     nextBidsQuery.data?.map((d) => ({
       amountOut: fromHex(d.amountOut as Address, "bigint"),
-      /* @ts-expect-error TODO: remove*/
-      seed: toHex(d.seed as ByteArray),
+      seed: toHex(d.seed as unknown as ByteArray),
     })) ?? [];
 
   const handleDecryption = () => {
