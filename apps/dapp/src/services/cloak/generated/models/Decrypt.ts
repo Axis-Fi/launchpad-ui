@@ -27,17 +27,10 @@ export interface Decrypt {
   amountOut?: string;
   /**
    * The seed used to ciphertext as a bytes32
-<<<<<<< HEAD
    * @type {Array<number>}
    * @memberof Decrypt
    */
   seed?: Array<number>;
-=======
-   * @type {string}
-   * @memberof Decrypt
-   */
-  seed?: string;
->>>>>>> c505168 (remove cloak client generated files from gitignore)
 }
 
 /**
