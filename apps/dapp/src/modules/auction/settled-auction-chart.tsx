@@ -35,6 +35,7 @@ export type ParsedBid = {
 type SettleData = {
   marginalPrice?: number;
   minimumPrice?: number;
+  sizeRange?: [number, number];
   data?: ParsedBid[];
 };
 
@@ -71,9 +72,26 @@ const useChartData = (
 
   data.sort((a, b) => a.price - b.price);
 
-  const prices = getAuctionPrices(data, auction, auctionData);
+  const sizeRange: [number, number] = [
+    !data
+      ? 0
+      : data.reduce(
+          (min, p) => (p.amountIn < min ? p.amountIn : min),
+          data[0].amountIn,
+        ),
+    !data
+      ? 0
+      : data.reduce(
+          (max, p) => (p.amountIn > max ? p.amountIn : max),
+          data[0].amountIn,
+        ),
+  ];
+  // Scale the size range values to have a maximum of 500
+  sizeRange[0] = (sizeRange[0] / sizeRange[1]) * 500;
+  sizeRange[1] = 500;
 
-  return { data, ...prices };
+  const prices = getAuctionPrices(data, auction, auctionData);
+  return { data, sizeRange, ...prices };
 };
 
 type SettledAuctionChartProps = {
@@ -109,26 +127,8 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
     data: chartData,
     marginalPrice,
     minimumPrice,
+    sizeRange,
   } = useChartData(auction, auctionData);
-
-  const sizeRange = [
-    !chartData
-      ? 0
-      : chartData.reduce(
-          (min, p) => (p.amountIn < min ? p.amountIn : min),
-          chartData[0].amountIn,
-        ),
-    !chartData
-      ? 0
-      : chartData.reduce(
-          (max, p) => (p.amountIn > max ? p.amountIn : max),
-          chartData[0].amountIn,
-        ),
-  ];
-
-  // Scale the size range values to have a maximum of 500
-  sizeRange[0] = (sizeRange[0] / sizeRange[1]) * 500;
-  sizeRange[1] = 500;
 
   return (
     <div className="size-full max-h-[260px]">

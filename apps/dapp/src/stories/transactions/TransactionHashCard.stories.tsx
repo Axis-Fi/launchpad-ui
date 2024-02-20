@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { TransactionHashCard } from "src/modules/transactions/transaction-hash-card";
+import { TransactionHashCard } from "modules/transaction/transaction-hash-card";
 
 const meta = {
   title: "Transactions/TransactionPendingDialog",

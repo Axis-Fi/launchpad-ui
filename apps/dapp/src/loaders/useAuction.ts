@@ -17,10 +17,9 @@ export type AuctionResult = {
 };
 
 export function useAuction(lotId?: string): AuctionResult {
-  const { data, isLoading, ...query } = useGetAuctionLotQuery(
-    { lotId: lotId || "" },
-    //{ placeholderData: keepPreviousData },
-  );
+  const { data, isLoading, ...query } = useGetAuctionLotQuery({
+    lotId: lotId || "",
+  });
 
   const auction =
     !data || !data.auctionLots || data.auctionLots.length == 0
@@ -29,7 +28,7 @@ export function useAuction(lotId?: string): AuctionResult {
 
   const enabled = !!auction && !!auction?.created.infoHash;
 
-  const { data: auctionInfo, ...infoQuery } = useQuery({
+  const { data: auctionInfo } = useQuery({
     enabled,
     queryKey: ["auction-info", auction?.id],
     queryFn: () => getAuctionInfo(auction?.created.infoHash || ""),
@@ -41,7 +40,7 @@ export function useAuction(lotId?: string): AuctionResult {
     return {
       refetch: query.refetch,
       result: undefined,
-      isLoading: isLoading || infoQuery.isLoading, //|| infoQuery.isPending,
+      isLoading: isLoading, //|| infoQuery.isLoading, //|| infoQuery.isPending,
     };
   }
 
@@ -62,7 +61,7 @@ export function useAuction(lotId?: string): AuctionResult {
       ...result,
       formatted: formatAuction(result, auctionData.data),
     },
-    isLoading: isLoading || infoQuery.isLoading,
+    isLoading: isLoading, //|| infoQuery.isLoading,
   };
 }
 

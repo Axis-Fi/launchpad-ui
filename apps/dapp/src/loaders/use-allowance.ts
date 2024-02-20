@@ -15,6 +15,7 @@ export type UseAllowanceProps = {
   amount?: number;
 };
 
+/** Used to manage an address' allowance for a given token */
 export const useAllowance = (args: UseAllowanceProps) => {
   const { data: hash, writeContract, ...approveRequest } = useWriteContract();
   const approveReceipt = useWaitForTransactionReceipt({ hash });

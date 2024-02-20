@@ -6,7 +6,7 @@ import { Button, DataTable, Tooltip } from "@repo/ui";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { parseUnits } from "viem";
-import { MutationDialog } from "modules/transactions/mutation-dialog";
+import { MutationDialog } from "modules/transaction/mutation-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import React from "react";
 import { useAuction } from "loaders/useAuction";

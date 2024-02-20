@@ -40,7 +40,7 @@ import { AuctionInfo } from "src/types";
 
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
 import { addDays, addHours, addMinutes } from "date-fns";
-import { MutationDialog } from "modules/transactions/mutation-dialog";
+import { MutationDialog } from "modules/transaction/mutation-dialog";
 import { useMutation } from "@tanstack/react-query";
 
 const tokenSchema = z.object({

@@ -5,7 +5,7 @@ import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "src/types";
-import { MutationDialog } from "modules/transactions/mutation-dialog";
+import { MutationDialog } from "modules/transaction/mutation-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { LockIcon } from "lucide-react";

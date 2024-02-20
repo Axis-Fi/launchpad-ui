@@ -9,7 +9,7 @@ import {
 import { PropsWithAuction } from "src/types";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { formatDistanceToNow } from "date-fns";
-import { MutationDialog } from "modules/transactions/mutation-dialog";
+import { MutationDialog } from "modules/transaction/mutation-dialog";
 
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {

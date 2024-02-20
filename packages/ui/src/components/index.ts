@@ -11,6 +11,7 @@ export * from "./input-error";
 export * from "./link";
 export * from "./select";
 export * from "./scrollable-select";
+export * from "./sort-button";
 export * from "./table";
 export * from "./theme-provider";
 export * from "./theme-switcher";

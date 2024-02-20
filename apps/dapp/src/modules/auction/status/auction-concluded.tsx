@@ -6,7 +6,7 @@ import { PropsWithAuction } from "src/types";
 import {
   MutationDialog,
   MutationDialogProps,
-} from "modules/transactions/mutation-dialog";
+} from "modules/transaction/mutation-dialog";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 export function AuctionConcluded({ auction }: PropsWithAuction) {

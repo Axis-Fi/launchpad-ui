@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { MutationDialog } from "src/modules/transactions/mutation-dialog";
+import { MutationDialog } from "modules/transaction/mutation-dialog";
 
 const meta = {
   title: "Transactions/MutationDialog",

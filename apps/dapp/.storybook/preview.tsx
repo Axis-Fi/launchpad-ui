@@ -1,7 +1,9 @@
 import type { Preview } from "@storybook/react";
 import "@repo/ui/style.css";
 import "../src/index.css";
+import { BlockchainProvider } from "../src/context/blockchain-provider";
 import { TooltipProvider } from "@repo/ui";
+import React from "react";
 
 const preview: Preview = {
   parameters: {
@@ -13,12 +15,18 @@ const preview: Preview = {
       },
     },
     layout: "centered",
+    backgrounds: {
+      default: "grey",
+      values: [{ name: "grey", value: "#808080" }],
+    },
   },
   decorators: [
     (Story) => (
-      <TooltipProvider delayDuration={350}>
-        <Story />
-      </TooltipProvider>
+      <BlockchainProvider>
+        <TooltipProvider delayDuration={350}>
+          <Story />
+        </TooltipProvider>
+      </BlockchainProvider>
     ),
   ],
 };

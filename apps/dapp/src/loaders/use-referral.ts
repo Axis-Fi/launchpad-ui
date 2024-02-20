@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { Address, isAddress } from "viem";
 
+/** Checks if exists and returns a URL param named referrer*/
 export function useReferral() {
   // Get search params from the URL
   const [searchParams] = useSearchParams();

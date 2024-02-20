@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from "@repo/ui";
+import { Button, ButtonProps } from "./";
 import { Column } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
