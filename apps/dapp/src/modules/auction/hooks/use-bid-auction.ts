@@ -23,6 +23,7 @@ export function useBidAuction(auction: Auction, amountOut: number) {
 
   // Bids need to be encrypted before submitting
   const bidDependenciesMutation = useMutation({
+    mutationKey: ["bid-dependencies", amountOut],
     mutationFn: async () => {
       const baseTokenAmountOut = parseUnits(
         amountOut.toString(),

@@ -20,7 +20,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:text-primary",
         link: "text-foreground underline-offset-4 hover:text-primary/80 tracking-wider",
-        input: "rounded-full bg-secondary",
+        input: "rounded-full bg-secondary border-input",
       },
       size: {
         default: "h-9 px-4 py-2",

@@ -34,7 +34,9 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
   );
 
   const children = React.isValidElement(props.children)
-    ? React.cloneElement(props.children, { onChange: handleChange })
+    ? React.cloneElement(props.children, {
+        onChange: handleChange,
+      })
     : props.children;
 
   const triggerContent = display ? (
@@ -42,7 +44,6 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
   ) : (
     props.triggerContent
   );
-  console.log({ display });
 
   return (
     <Dialog

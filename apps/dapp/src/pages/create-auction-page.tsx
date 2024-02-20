@@ -12,7 +12,7 @@ import {
   trimAddress,
 } from "@repo/ui";
 
-import { TokenPicker } from "components/token-picker";
+import { TokenPicker } from "modules/token/token-picker";
 import { CreateAuctionSubmitter } from "modules/auction/create-auction-submitter";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -44,10 +44,11 @@ import { MutationDialog } from "modules/transaction/mutation-dialog";
 import { useMutation } from "@tanstack/react-query";
 
 const tokenSchema = z.object({
-  address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/),
+  address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
   chainId: z.coerce.number(),
   decimals: z.coerce.number(),
   symbol: z.string(),
+  logoURI: z.string().url().optional(),
 });
 
 const schema = z
@@ -113,11 +114,6 @@ function toKeycode(keycode: string): `0x${string}` {
 const auctionDefaultValues = {
   minFillPercent: [50],
   minBidPercent: [5],
-  quoteToken: {
-    address: "",
-    chainId: 1,
-    symbol: "USDB",
-  },
 };
 
 export default function CreateAuctionPage() {
@@ -259,7 +255,6 @@ export default function CreateAuctionPage() {
   // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
 
   const onSubmit = form.handleSubmit(handleCreation);
-  // TODO arrange fields
 
   return (
     <div className="pb-20">
@@ -282,8 +277,7 @@ export default function CreateAuctionPage() {
               {/* </div> */}
 
               <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
-                <h3 className="form-div ">1 Your Project</h3>
-                <div />
+                <h3 className="form-div">1 Your Project</h3>
 
                 <FormField
                   control={form.control}
@@ -297,21 +291,6 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-                {/* <FormField */}
-                {/*   control={form.control} */}
-                {/*   name="description" */}
-                {/*   render={({ field }) => ( */}
-                {/*     <FormItemWrapper */}
-                {/*       label="Description" */}
-                {/*       tooltip="The description of your auction or project" */}
-                {/*     > */}
-                {/*       <Input */}
-                {/*         placeholder="A short description of your project" */}
-                {/*         {...field} */}
-                {/*       /> */}
-                {/*     </FormItemWrapper> */}
-                {/*   )} */}
-                {/* /> */}
 
                 <FormField
                   control={form.control}
@@ -329,23 +308,7 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-                {/* <FormField */}
-                {/*   control={form.control} */}
-                {/*   name="payoutTokenLogo" */}
-                {/*   render={({ field }) => ( */}
-                {/*     <FormItemWrapper */}
-                {/*       label="Payout Token Logo" */}
-                {/*       tooltip="A URL to the Payout token logo" */}
-                {/*       className="mt-6" */}
-                {/*     > */}
-                {/*       <Input */}
-                {/*         placeholder="https://your-dao.link/jpeg.svg" */}
-                {/*         type="url" */}
-                {/*         {...field} */}
-                {/*       /> */}
-                {/*     </FormItemWrapper> */}
-                {/*   )} */}
-                {/* /> */}
+
                 <FormField
                   control={form.control}
                   name="website"
@@ -417,7 +380,6 @@ export default function CreateAuctionPage() {
                 />
 
                 <h3 className="form-div ">2 Tokens</h3>
-                <div />
 
                 <FormField
                   name="payoutToken"
@@ -427,11 +389,11 @@ export default function CreateAuctionPage() {
                       tooltip="The token that successful bidders will be paid in"
                     >
                       <DialogInput
+                        {...field}
                         title="Select Payout Token"
                         triggerContent={"Select token"}
-                        {...field}
                       >
-                        <TokenPicker />
+                        <TokenPicker name="payoutToken" />
                       </DialogInput>
                     </FormItemWrapper>
                   )}
@@ -445,23 +407,17 @@ export default function CreateAuctionPage() {
                       tooltip="The token that bidders will place bids in"
                     >
                       <DialogInput
+                        {...field}
                         title="Select Quote Token"
                         triggerContent={"Select token"}
-                        display={{
-                          value: field.value?.address,
-                          label: field.value?.symbol,
-                          imgURL: "/blast-logo.png",
-                        }}
-                        {...field}
                       >
-                        <TokenPicker />
+                        <TokenPicker name="quoteToken" />
                       </DialogInput>
                     </FormItemWrapper>
                   )}
                 />
 
                 <h3 className="form-div">3 Quantity</h3>
-                <div />
                 <FormField
                   name="capacity"
                   render={({ field }) => (
@@ -488,7 +444,6 @@ export default function CreateAuctionPage() {
                 />
 
                 <h3 className="form-div">4 Auction Guard Rails</h3>
-                <div />
 
                 <FormField
                   control={form.control}
@@ -555,7 +510,6 @@ export default function CreateAuctionPage() {
                 />
 
                 <h3 className="form-div">4 Schedule</h3>
-                <div />
 
                 <FormField
                   control={form.control}

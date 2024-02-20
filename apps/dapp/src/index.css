@@ -36,7 +36,7 @@
   }
 
   .form-div {
-    @apply mt-8 w-full max-w-sm;
+    @apply col-span-2 mt-8 w-full max-w-sm place-self-start;
   }
 
   .axis-rainbow {

@@ -3,7 +3,8 @@ import {
   Input,
   DialogInputProps,
   Skeleton,
-  LabelWrapper,
+  FormField,
+  FormItemWrapper,
 } from "@repo/ui";
 //import { activeChains } from "config/chains";
 import useERC20 from "loaders/use-erc20";
@@ -11,22 +12,26 @@ import React from "react";
 import { Token } from "src/types";
 import { Address } from "viem";
 import { useChainId } from "wagmi";
+import { useFormContext, Path } from "react-hook-form";
 
-type TokenPickerProps = {
+type TokenPickerProps<T> = {
   onChange?: NonNullable<
     DialogInputProps<Token>["children"]
   >["props"]["onChange"];
   onChainChange?: (chainId: number) => void;
+  name: Path<T>;
 };
 
-export function TokenPicker({
-  onChange,
-}: React.PropsWithChildren<TokenPickerProps>) {
-  const [address, setAddress] = React.useState<string>();
-  //const [newChain, setNewChain] = React.useState<number>();
+export function TokenPicker<
+  T extends Record<string, { address: Address; logoURI?: string }>,
+>({ onChange, ...props }: React.PropsWithChildren<TokenPickerProps<T>>) {
+  const form = useFormContext<T>();
+  const [address, logo] = form.watch([
+    `${props.name}.address` as Path<T>,
+    `${props.name}.logoURI` as Path<T>,
+  ]) as [Address, string];
 
   const chainId = useChainId();
-  //const chain = activeChains.find((c) => newChain ? c.id === Number(newChain) : c.id === chainId,);
 
   const { token, isError, response } = useERC20({
     address: address as Address,
@@ -36,21 +41,29 @@ export function TokenPicker({
   const { isLoading, isSuccess } = response;
 
   React.useEffect(() => {
-    if (isSuccess) {
-      onChange(token, { label: token.symbol });
-    }
-  }, [isSuccess, onChange, token]);
+    onChange(
+      { ...token, logoURI: logo },
+      { label: token.symbol, imgURL: logo },
+    );
+  }, [isSuccess, onChange, token, logo]);
 
   return (
     <div>
       <div className="flex items-center gap-x-2 space-y-4">
-        <LabelWrapper content="Token Address">
-          <Input
-            id="token-address"
-            placeholder="Paste token address"
-            onChange={(e) => setAddress(e.target.value)}
-          />
-        </LabelWrapper>
+        <FormField
+          control={form.control}
+          name={`${props.name}.address` as Path<T>}
+          render={({ field }) => (
+            <FormItemWrapper label="Token Address">
+              <Input
+                placeholder="http://yourdao.link/token.jpeg"
+                {...field}
+                value={field.value as string}
+              />
+            </FormItemWrapper>
+          )}
+        />
+
         {/* <ComboBox
           label="Chain"
           defaultValue={chainId}
@@ -69,9 +82,27 @@ export function TokenPicker({
         />
  */}
       </div>
+      {isSuccess && (
+        <FormField
+          control={form.control}
+          name={`${props.name}.logoURI` as Path<T>}
+          render={({ field }) => (
+            <FormItemWrapper label="Token Logo" className="mt-6">
+              <Input
+                placeholder="http://yourdao.link/token.jpeg"
+                {...field}
+                value={field.value as string}
+              />
+            </FormItemWrapper>
+          )}
+        />
+      )}
+
       <div className="flex flex-col items-center justify-center pt-4">
         {isLoading && <Skeleton className="h-[20px] w-[80px]" />}
-        {isSuccess && <IconedLabel label={token.symbol?.toString() ?? ""} />}
+        {(isSuccess || logo) && (
+          <IconedLabel src={logo} label={token.symbol?.toString() ?? ""} />
+        )}
         {isError && <h4>Token not found</h4>}
       </div>
     </div>

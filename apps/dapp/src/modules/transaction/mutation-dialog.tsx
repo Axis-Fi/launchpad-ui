@@ -83,7 +83,6 @@ export function MutationDialog({
               type="submit"
               className="mx-auto w-full max-w-sm"
               onClick={(e) => {
-                console.log("preventing");
                 e.preventDefault();
                 props.onConfirm(e);
               }}

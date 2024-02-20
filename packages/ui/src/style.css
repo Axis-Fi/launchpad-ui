@@ -24,7 +24,7 @@
     --primary: var(--axis-orange);
     --primary-foreground: var(--axis-dark);
 
-    --card: var(--axis-dark);
+    --card: var(--background);
     --card-foreground: var(--axis-light);
 
     --popover: var(--axis-dark);
