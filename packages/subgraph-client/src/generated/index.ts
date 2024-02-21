@@ -55,6 +55,11 @@ export type Scalars = {
   Int8: { input: string; output: string };
 };
 
+export enum Aggregation_Interval {
+  Day = "day",
+  Hour = "hour",
+}
+
 export type AuctionCancelled = {
   auctionRef: Scalars["Bytes"]["output"];
   blockNumber: Scalars["BigInt"]["output"];
