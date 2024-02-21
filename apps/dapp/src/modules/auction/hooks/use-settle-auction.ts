@@ -1,23 +1,28 @@
 import { axisContracts } from "@repo/contracts";
 import { Auction } from "src/types";
 import { parseUnits } from "viem";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 
 /** Used to settle an auction after decryption*/
 export function useSettleAuction(auction: Auction) {
   const axisAddresses = axisContracts.addresses[auction.chainId];
 
+  const { data: settleCall } = useSimulateContract({
+    abi: axisContracts.abis.auctionHouse,
+    address: axisAddresses.auctionHouse,
+    functionName: "settle",
+    chainId: auction.chainId,
+    args: [parseUnits(auction.lotId, 0)],
+  });
+
   const settleTx = useWriteContract();
   const settleReceipt = useWaitForTransactionReceipt({ hash: settleTx.data });
 
-  const handleSettle = () => {
-    settleTx.writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
-      functionName: "settle",
-      args: [parseUnits(auction.lotId, 0)],
-    });
-  };
+  const handleSettle = () => settleTx.writeContract(settleCall!.request);
 
   return {
     handleSettle,

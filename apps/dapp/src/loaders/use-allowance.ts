@@ -4,6 +4,7 @@ import {
   useReadContract,
   useWriteContract,
   useWaitForTransactionReceipt,
+  useSimulateContract,
 } from "wagmi";
 
 export type UseAllowanceProps = {
@@ -40,18 +41,19 @@ export const useAllowance = (args: UseAllowanceProps) => {
       ? parseUnits(args.amount.toString(), args.decimals)
       : 0n;
 
-  const execute = () => {
-    writeContract({
-      abi: erc20Abi,
-      address: args.tokenAddress!,
-      functionName: "approve",
-      args: [args.spenderAddress!, amountToApprove],
-    });
-  };
+  const { data: approveCall } = useSimulateContract({
+    abi: erc20Abi,
+    address: args.tokenAddress!,
+    functionName: "approve",
+    args: [args.spenderAddress!, amountToApprove],
+  });
+
+  const execute = () => writeContract(approveCall!.request);
 
   useEffect(() => {
     if (approveReceipt.isSuccess) {
       allowance.refetch();
+      approveRequest.reset();
     }
   }, [allowance.refetch, approveReceipt.isSuccess]);
 

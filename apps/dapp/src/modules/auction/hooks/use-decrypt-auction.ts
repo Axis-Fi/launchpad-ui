@@ -4,14 +4,24 @@ import { Auction } from "src/types";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
 import { Address, ByteArray, fromHex, toHex } from "viem";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 
 /** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: Auction) => {
   const contracts = axisContracts.addresses[auction.chainId];
 
+  //Get the next bids from the API
   const nextBidsQuery = useQuery({
-    queryKey: ["decrypt", auction.id, auction.chainId],
+    queryKey: [
+      "decrypt",
+      auction.chainId,
+      auction.lotId,
+      contracts.auctionHouse,
+    ],
     queryFn: () =>
       cloakClient.keysApi.decryptsLotIdGet({
         xChainId: auction.chainId,
@@ -22,27 +32,31 @@ export const useDecryptBids = (auction: Auction) => {
     enabled: auction.bids.length > auction.bidsDecrypted.length,
   });
 
-  const decrypt = useWriteContract();
-  const decryptReceipt = useWaitForTransactionReceipt({ hash: decrypt.data });
-
+  //Map bids to the expected format
   const nextBids =
     nextBidsQuery.data?.map((d) => ({
       amountOut: fromHex(d.amountOut as Address, "bigint"),
       seed: toHex(d.seed as unknown as ByteArray),
     })) ?? [];
 
-  const handleDecryption = () => {
-    decrypt.writeContract({
-      address: contracts.localSealedBidBatchAuction,
-      abi: axisContracts.abis.localSealedBidBatchAuction,
-      functionName: "decryptAndSortBids",
-      args: [BigInt(auction.lotId), nextBids],
-    });
-  };
+  //Send bids to the contract for decryption
+  const { data: decryptCall } = useSimulateContract({
+    address: contracts.localSealedBidBatchAuction,
+    abi: axisContracts.abis.localSealedBidBatchAuction,
+    functionName: "decryptAndSortBids",
+    chainId: auction.chainId,
+    args: [BigInt(auction.lotId), nextBids],
+  });
+
+  const decrypt = useWriteContract();
+  const decryptReceipt = useWaitForTransactionReceipt({ hash: decrypt.data });
+
+  const handleDecryption = () => decrypt.writeContract(decryptCall!.request);
 
   useEffect(() => {
     if (decryptReceipt.isSuccess && !nextBidsQuery.isRefetching) {
       nextBidsQuery.refetch();
+      decrypt.reset();
     }
   }, [decryptReceipt.isSuccess, nextBidsQuery]);
 
