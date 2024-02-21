@@ -9,8 +9,6 @@ import { parseUnits } from "viem";
 import { MutationDialog } from "modules/transaction/mutation-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import React from "react";
-import { useAuction } from "loaders/useAuction";
-import { useParams } from "react-router-dom";
 
 const column = createColumnHelper<AuctionEncryptedBid & { auction: Auction }>();
 
@@ -85,10 +83,8 @@ type BidListProps = PropsWithAuction & {
 };
 
 export function BidList(props: BidListProps) {
-  const { id } = useParams();
-  const auction = useAuction(id);
   const axisAddresses = axisContracts.addresses[props.auction.chainId];
-  const addressLower = props.address ? props.address.toLowerCase() : undefined;
+  const address = props.address ? props.address.toLowerCase() : undefined;
   const encrypted = props.auction?.bids ?? [];
 
   const refund = useWriteContract();
@@ -117,52 +113,49 @@ export function BidList(props: BidListProps) {
     });
   };
 
-  React.useEffect(() => {
-    if (refundReceipt.isSuccess) {
-      auction;
-    }
-  }, [refundReceipt.isSuccess]);
-
   // Add a refund button to the columns
-  const columns = [
-    ...cols,
-    column.display({
-      id: "actions",
-      cell: (info) => {
-        const bid = info.row.original;
-        if (!addressLower) return;
-        if (bid.bidder.toLowerCase() !== addressLower) return;
-        if (bid.status === "refunded") return;
+  const columns = React.useMemo(
+    () => [
+      ...cols,
+      column.display({
+        id: "actions",
+        cell: (info) => {
+          const bid = info.row.original;
+          if (!address) return;
+          if (bid.bidder.toLowerCase() !== address) return;
+          if (bid.status === "refunded") return;
 
-        // Can refund if the bid did not win and the auction is settled
-        const isSettledBidNotWon =
-          props.auction.status === "settled" && bid.status !== "won";
-        // Can refund if the auction is live
-        const isLive = props.auction.status === "live";
-        const isCurrentBid = bidToRefund?.bidId === bid.bidId;
+          // Can refund if the bid did not win and the auction is settled
+          const isSettledBidNotWon =
+            props.auction.status === "settled" && bid.status !== "won";
+          // Can refund if the auction is live
+          const isLive = props.auction.status === "live";
+          const isCurrentBid = bidToRefund?.bidId === bid.bidId;
 
-        if (isSettledBidNotWon || isLive) {
-          return (
-            <Button
-              onClick={() => {
-                setBidToRefund(bid);
-                setDialogOpen(true);
-              }}
-            >
-              {isLoading && isCurrentBid ? (
-                <div className="flex items-center gap-x-1">
-                  <p>Waiting</p>
-                  <LoadingIndicator className="size-4 fill-black" />
-                </div>
-              ) : (
-                "Refund"
-              )}
-            </Button>
-          );
-        }
-      },
-    }),
-  ];
+          if (isSettledBidNotWon || isLive) {
+            return (
+              <Button
+                onClick={() => {
+                  setBidToRefund(bid);
+                  setDialogOpen(true);
+                }}
+              >
+                {isLoading && isCurrentBid ? (
+                  <div className="flex items-center gap-x-1">
+                    <p>Waiting</p>
+                    <LoadingIndicator className="size-4 fill-black" />
+                  </div>
+                ) : (
+                  "Refund"
+                )}
+              </Button>
+            );
+          }
+        },
+      }),
+    ],
+    [props.auction, address],
+  );
 
   return (
     <>
@@ -178,7 +171,10 @@ export function BidList(props: BidListProps) {
 
       <MutationDialog
         open={dialogOpen}
-        setOpen={(open) => setDialogOpen(open)}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) refund.reset();
+        }}
         onConfirm={() => handleRefund(bidToRefund?.bidId)}
         mutation={refundReceipt}
         chainId={props.auction.chainId}

@@ -105,6 +105,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     onConfirm={() => bid.handleBid()}
                     mutation={bid.bidReceipt}
                     chainId={auction.chainId}
+                    onOpenChange={(open) => {
+                      if (!open) bid.bidTx.reset();
+                    }}
                     hash={bid.bidTx.data}
                     error={bid.bidDependenciesMutation.error}
                     triggerContent={"Bid"}
