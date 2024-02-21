@@ -10,14 +10,17 @@ import { LoadingIndicator } from "modules/app/loading-indicator";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { LockIcon } from "lucide-react";
 import { useBidAuction } from "../hooks/use-bid-auction";
+import { useParams } from "react-router-dom";
 
 export function AuctionLive({ auction }: PropsWithAuction) {
+  const { id } = useParams();
+
   const [baseTokenAmount, setBaseTokenAmount] = React.useState<number>(0);
   const [quoteTokenAmount, setQuoteTokenAmount] = React.useState<number>(0);
 
-  const { balance, ...bid } = useBidAuction(auction, baseTokenAmount);
-  // TODO Permit2 signature
+  const { balance, ...bid } = useBidAuction(id!, baseTokenAmount);
 
+  // TODO Permit2 signature
   const handleSubmit = () => {
     bid.isSufficientAllowance ? bid.handleBid() : bid.approveCapacity();
   };

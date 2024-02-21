@@ -15,12 +15,17 @@ const options = [
 
 export default function AuctionListPage() {
   const [filters, setFilters] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
   const navigate = useNavigate();
   const { result: auctions, isLoading } = useAuctions();
+  console.log({ searchText, auctions });
 
-  const filteredAuctions = filters.length
-    ? auctions.filter((a) => filters.includes(a.status))
-    : auctions;
+  const filteredAuctions =
+    filters.length || searchText.length
+      ? auctions.filter(
+          (a) => filters.includes(a.status) || searchObject(a, searchText),
+        )
+      : auctions;
 
   return (
     <div className="mt-5">
@@ -39,6 +44,7 @@ export default function AuctionListPage() {
             icon={<SearchIcon />}
             className="placeholder:text-foreground"
             placeholder="Search"
+            onChange={(e) => setSearchText(e.target.value)}
           />
         </div>
       </div>
@@ -50,12 +56,14 @@ export default function AuctionListPage() {
       <div className={cn("mt-4 grid grid-cols-3 gap-4", isLoading && "mask")}>
         {isLoading
           ? [...new Array(6)].map((_e, i) => <AuctionCardLoading key={i} />)
-          : filteredAuctions.map((a) => (
+          : filteredAuctions.map((auction) => (
               <AuctionCard
-                key={a.chainId + a.id}
-                auction={a}
+                key={auction.chainId + auction.id}
+                auction={auction}
                 // TODO support open in new tab
-                onClickView={() => navigate(`/auction/${a.chainId}/${a.id}`)}
+                onClickView={() =>
+                  navigate(`/auction/${auction.chainId}/${auction.id}`)
+                }
               />
             ))}
       </div>
@@ -68,4 +76,12 @@ export default function AuctionListPage() {
       </div>
     </div>
   );
+}
+
+function searchObject<T extends object>(obj: T, text: string): boolean {
+  return Object.values(obj).some((value: unknown) => {
+    return !!value && typeof value === "object"
+      ? searchObject(value, text)
+      : String(value).toLocaleLowerCase().includes(text.toLocaleLowerCase());
+  });
 }

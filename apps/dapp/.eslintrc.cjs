@@ -1,7 +1,11 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
-  extends: ["@repo/eslint-config/react.js", "plugin:storybook/recommended"],
+  extends: [
+    "@repo/eslint-config/react.js",
+    "plugin:storybook/recommended",
+    "plugin:@tanstack/eslint-plugin-query/recommended",
+  ],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",

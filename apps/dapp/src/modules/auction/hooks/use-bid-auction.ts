@@ -2,9 +2,9 @@ import { axisContracts } from "@repo/contracts";
 import { useMutation } from "@tanstack/react-query";
 import { useAllowance } from "loaders/use-allowance";
 import { useReferral } from "loaders/use-referral";
+import { useAuction } from "loaders/useAuction";
 import React from "react";
 import { cloakClient } from "src/services/cloak";
-import { Auction } from "src/types";
 import { Address, parseUnits, toHex } from "viem";
 import {
   useAccount,
@@ -13,17 +13,21 @@ import {
   useWriteContract,
 } from "wagmi";
 
-export function useBidAuction(auction: Auction, amountOut: number) {
-  const axisAddresses = axisContracts.addresses[auction.chainId];
+export function useBidAuction(lotId: string, amountOut: number) {
+  const { result: auction, ...auctionQuery } = useAuction(lotId);
+
+  if (!auction) throw new Error(`Unable to find auction ${lotId}`);
 
   const { address } = useAccount();
   const referrer = useReferral();
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
+  const axisAddresses = axisContracts.addresses[auction.chainId];
+
   // Bids need to be encrypted before submitting
-  const bidDependenciesMutation = useMutation({
-    mutationKey: ["bid-dependencies", amountOut],
+  const encryptBidMutation = useMutation({
+    mutationKey: ["encrypt", auction.id, amountOut],
     mutationFn: async () => {
       const baseTokenAmountOut = parseUnits(
         amountOut.toString(),
@@ -45,7 +49,7 @@ export function useBidAuction(auction: Auction, amountOut: number) {
   // Main action, calls encrypt route and submits encrypted bids
   const handleBid = async () => {
     // Amount out needs to be a uint256
-    const encryptedAmountOut = await bidDependenciesMutation.mutateAsync();
+    const encryptedAmountOut = await encryptBidMutation.mutateAsync();
 
     // Submit the bid to the contract
     bidTx.writeContract({
@@ -94,6 +98,7 @@ export function useBidAuction(auction: Auction, amountOut: number) {
     if (bidReceipt.isSuccess) {
       balance.refetch();
       allowance.refetch();
+      setTimeout(() => auctionQuery.refetch(), 5000); //TODO: ideas on how to improve this
     }
   }, [bidReceipt.isSuccess]);
 
@@ -105,6 +110,6 @@ export function useBidAuction(auction: Auction, amountOut: number) {
     approveReceipt,
     bidReceipt,
     bidTx,
-    bidDependenciesMutation,
+    bidDependenciesMutation: encryptBidMutation,
   };
 }

@@ -17,7 +17,7 @@ export type AuctionResult = {
 };
 
 export function useAuction(lotId?: string): AuctionResult {
-  const { data, isLoading, ...query } = useGetAuctionLotQuery({
+  const { data, refetch, isLoading } = useGetAuctionLotQuery({
     lotId: lotId || "",
   });
 
@@ -30,7 +30,7 @@ export function useAuction(lotId?: string): AuctionResult {
 
   const { data: auctionInfo } = useQuery({
     enabled,
-    queryKey: ["auction-info", auction?.id],
+    queryKey: ["auction-info", auction?.id, auction?.created.infoHash],
     queryFn: () => getAuctionInfo(auction?.created.infoHash || ""),
   });
 
@@ -38,7 +38,7 @@ export function useAuction(lotId?: string): AuctionResult {
 
   if (!auction || data?.auctionLots.length === 0) {
     return {
-      refetch: query.refetch,
+      refetch: refetch,
       result: undefined,
       isLoading: isLoading, //|| infoQuery.isLoading, //|| infoQuery.isPending,
     };
@@ -55,8 +55,7 @@ export function useAuction(lotId?: string): AuctionResult {
   };
 
   return {
-    ...query,
-    refetch: query.refetch,
+    refetch,
     result: {
       ...result,
       formatted: formatAuction(result, auctionData.data),
