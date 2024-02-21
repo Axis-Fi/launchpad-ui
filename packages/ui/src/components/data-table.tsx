@@ -45,6 +45,9 @@ export function DataTable<TData, TValue>({
     state: { sorting },
   });
 
+  const isLastPage = !table.getCanNextPage() && table.getPageCount() > 1;
+  const rowsPerPage = 10;
+
   return (
     <div>
       <div className="border-secondary *:*:*:*:border-secondary font-aeonpro border-y">
@@ -76,7 +79,7 @@ export function DataTable<TData, TValue>({
                   onClick={() => props.onClickRow?.(row)}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className="h-14 max-h-14" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
@@ -95,6 +98,18 @@ export function DataTable<TData, TValue>({
                 </TableCell>
               </TableRow>
             )}
+            {isLastPage &&
+              table.getRowModel().rows?.length < rowsPerPage &&
+              [
+                ...new Array(rowsPerPage - table.getRowModel().rows?.length),
+              ].map((_a, i) => (
+                <TableRow key={i}>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-13 h-14 max-h-14"
+                  ></TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>
