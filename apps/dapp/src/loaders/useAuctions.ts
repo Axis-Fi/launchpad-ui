@@ -4,6 +4,7 @@ import { Auction } from "src/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./useAuctionInfo";
 import { getChainId } from "src/utils/chain";
+import { sortAuction } from "modules/auction/utils/sort-auctions";
 
 export type AuctionsResult = {
   result: Auction[];
@@ -30,14 +31,17 @@ export function useAuctions(): AuctionsResult {
 
   return {
     //@ts-expect-error //TODO: update queries
-    result: (data?.auctionLots ?? []).map((auction) => ({
-      ...auction,
-      chainId: getChainId(auction.chain),
-      //@ts-expect-error //TODO: update queries
-      status: getAuctionStatus(auction),
-      auctionInfo: infos.data?.find((info) => info.id === auction.id)
-        ?.auctionInfo,
-    })),
+    result: (data?.auctionLots ?? [])
+      .map((auction) => ({
+        ...auction,
+        chainId: getChainId(auction.chain),
+        //@ts-expect-error //TODO: update queries
+        status: getAuctionStatus(auction),
+        auctionInfo: infos.data?.find((info) => info.id === auction.id)
+          ?.auctionInfo,
+      }))
+      //@ts-expect-error //TODO: update quries
+      .sort(sortAuction),
     isLoading: isLoading, //|| infos.isLoading,
   };
 }

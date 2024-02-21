@@ -20,12 +20,11 @@ export default function AuctionListPage() {
   const { result: auctions, isLoading } = useAuctions();
   console.log({ searchText, auctions });
 
-  const filteredAuctions =
-    filters.length || searchText.length
-      ? auctions.filter(
-          (a) => filters.includes(a.status) || searchObject(a, searchText),
-        )
-      : auctions;
+  const filteredAuctions = filters.length
+    ? auctions
+        .filter((a) => filters.includes(a.status))
+        .filter((a) => !searchText.length || searchObject(a, searchText))
+    : auctions;
 
   return (
     <div className="mt-5">
