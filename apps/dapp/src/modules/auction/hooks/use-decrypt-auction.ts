@@ -9,10 +9,12 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useAuction } from "loaders/useAuction";
 
 /** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: Auction) => {
   const contracts = axisContracts.addresses[auction.chainId];
+  const { refetch: refetchAuction } = useAuction(auction.lotId);
 
   //Get the next bids from the API
   const nextBidsQuery = useQuery({
@@ -39,6 +41,7 @@ export const useDecryptBids = (auction: Auction) => {
       seed: toHex(d.seed as unknown as ByteArray),
     })) ?? [];
 
+  console.log({ nextBids });
   //Send bids to the contract for decryption
   const { data: decryptCall } = useSimulateContract({
     address: contracts.localSealedBidBatchAuction,
@@ -57,6 +60,7 @@ export const useDecryptBids = (auction: Auction) => {
     if (decryptReceipt.isSuccess && !nextBidsQuery.isRefetching) {
       nextBidsQuery.refetch();
       decrypt.reset();
+      refetchAuction();
     }
   }, [decryptReceipt.isSuccess, nextBidsQuery]);
 
