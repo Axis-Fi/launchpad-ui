@@ -13,8 +13,12 @@ import {
   useWriteContract,
 } from "wagmi";
 
-export function useBidAuction(lotId: string, amountOut: number) {
-  const { result: auction, ...auctionQuery } = useAuction(lotId);
+export function useBidAuction(
+  lotId: string,
+  chainId: number,
+  amountOut: number,
+) {
+  const { result: auction, ...auctionQuery } = useAuction(lotId, chainId);
 
   if (!auction) throw new Error(`Unable to find auction ${lotId}`);
 
@@ -98,7 +102,6 @@ export function useBidAuction(lotId: string, amountOut: number) {
     if (bidReceipt.isSuccess) {
       balance.refetch();
       allowance.refetch();
-      bidTx.reset();
       setTimeout(() => auctionQuery.refetch(), 5000); //TODO: ideas on how to improve this
     }
   }, [bidReceipt.isSuccess]);

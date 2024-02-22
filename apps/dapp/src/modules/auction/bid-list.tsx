@@ -85,20 +85,20 @@ type BidListProps = PropsWithAuction & {
 export function BidList(props: BidListProps) {
   const axisAddresses = axisContracts.addresses[props.auction.chainId];
   const address = props.address ? props.address.toLowerCase() : undefined;
-  const encrypted = props.auction?.bids ?? [];
+  const encryptedBids = props.auction?.bids ?? [];
 
   const refund = useWriteContract();
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [bidToRefund, setBidToRefund] = React.useState<AuctionEncryptedBid>();
 
-  const mappedBids = encrypted.map((bid) => {
-    return {
-      ...bid,
-      auction: props.auction,
-    };
-  });
-  const allBids = [...mappedBids];
+  const mappedBids =
+    encryptedBids.map((bid) => {
+      return {
+        ...bid,
+        auction: props.auction,
+      };
+    }) ?? [];
 
   const isLoading = refund.isPending || refundReceipt.isLoading;
 
@@ -166,7 +166,7 @@ export function BidList(props: BidListProps) {
             : "No bids received"
         }
         columns={columns}
-        data={allBids}
+        data={mappedBids}
       />
 
       <MutationDialog

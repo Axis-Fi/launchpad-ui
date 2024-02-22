@@ -45,28 +45,31 @@ const useChartData = (
 ): SettleData => {
   // Validate
   if (!auctionData) return {};
+  console.log({ auction });
 
   // 1. Create data array and parse inputs
   const data = !auction
     ? undefined
-    : auction.bids.map((bid) => {
-        const amountIn = Number(bid.amountIn);
-        const amountOut = isFinite(Number(bid.amountOut))
-          ? Number(bid.amountOut)
-          : 0;
+    : auction.bids
+        .filter((b) => b.status !== "refunded")
+        .map((bid) => {
+          const amountIn = Number(bid.amountIn);
+          const amountOut = isFinite(Number(bid.amountOut))
+            ? Number(bid.amountOut)
+            : 0;
 
-        const price = amountIn / amountOut;
-        const timestamp = Number(bid.blockTimestamp) * 1000;
+          const price = amountIn / amountOut;
+          const timestamp = Number(bid.blockTimestamp) * 1000;
 
-        return {
-          id: bid.id,
-          bidder: bid.bidder,
-          price,
-          amountIn,
-          amountOut,
-          timestamp,
-        };
-      });
+          return {
+            id: bid.id,
+            bidder: bid.bidder,
+            price,
+            amountIn,
+            amountOut,
+            timestamp,
+          };
+        });
 
   if (!auction || !data) return {};
 
@@ -96,6 +99,7 @@ const useChartData = (
 
 type SettledAuctionChartProps = {
   lotId?: string;
+  chainId?: number;
 };
 
 const timestampFormatter = (timestamp: number) => {
@@ -116,9 +120,12 @@ const formatter = (value: unknown, _name: string, props: FormatterProps) => {
   return value;
 };
 
-export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
-  const { result: auction } = useAuction(lotId);
-  const { data: auctionData } = useAuctionData(auction);
+export const SettledAuctionChart = ({
+  lotId,
+  chainId,
+}: SettledAuctionChartProps) => {
+  const { result: auction } = useAuction(lotId, chainId);
+  const { data: auctionData } = useAuctionData({ lotId, chainId });
 
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;
@@ -129,6 +136,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
     minimumPrice,
     sizeRange,
   } = useChartData(auction, auctionData);
+  console.log({ chartData });
 
   return (
     <div className="size-full max-h-[260px]">
@@ -154,7 +162,7 @@ export const SettledAuctionChart = ({ lotId }: SettledAuctionChartProps) => {
             minTickGap={40}
             stroke="#f4f4f4"
             domain={[
-              0,
+              "dataMin",
               !marginalPrice && minimumPrice ? minimumPrice * 1.5 : "dataMax", // If there is no marginal price, use the minimum price as every bid will have a price below that
             ]}
             tickFormatter={(value) => value + " " + auction?.quoteToken.symbol}

@@ -14,7 +14,10 @@ import { useAuction } from "loaders/useAuction";
 /** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: Auction) => {
   const contracts = axisContracts.addresses[auction.chainId];
-  const { refetch: refetchAuction } = useAuction(auction.lotId);
+  const { refetch: refetchAuction } = useAuction(
+    auction.lotId,
+    auction.chainId,
+  );
 
   //Get the next bids from the API
   const nextBidsQuery = useQuery({

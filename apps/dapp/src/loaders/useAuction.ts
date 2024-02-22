@@ -8,7 +8,6 @@ import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
 import { trimCurrency } from "src/utils/currency";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
-import { getChainId } from "src/utils/chain";
 
 export type AuctionResult = {
   result?: Auction;
@@ -16,7 +15,7 @@ export type AuctionResult = {
   refetch: ReturnType<typeof useGetAuctionLotQuery>["refetch"];
 };
 
-export function useAuction(lotId?: string): AuctionResult {
+export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   const { data, refetch, isLoading } = useGetAuctionLotQuery({
     lotId: lotId || "",
   });
@@ -34,17 +33,16 @@ export function useAuction(lotId?: string): AuctionResult {
     queryFn: () => getAuctionInfo(auction?.created.infoHash || ""),
   });
 
-  const auctionData = useAuctionData();
+  const auctionData = useAuctionData({ chainId, lotId });
 
-  if (!auction || data?.auctionLots.length === 0) {
+  if (!auction || !chainId || data?.auctionLots.length === 0) {
     return {
-      refetch: refetch,
+      refetch,
       result: undefined,
       isLoading: isLoading, //|| infoQuery.isLoading, //|| infoQuery.isPending,
     };
   }
 
-  const chainId = getChainId(auction?.chain);
   const status = getAuctionStatus(auction);
 
   const result = {

@@ -10,15 +10,16 @@ import { LoadingIndicator } from "modules/app/loading-indicator";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { LockIcon } from "lucide-react";
 import { useBidAuction } from "../hooks/use-bid-auction";
-import { useParams } from "react-router-dom";
 
 export function AuctionLive({ auction }: PropsWithAuction) {
-  const { id } = useParams();
-
   const [baseTokenAmount, setBaseTokenAmount] = React.useState<number>(0);
   const [quoteTokenAmount, setQuoteTokenAmount] = React.useState<number>(0);
 
-  const { balance, ...bid } = useBidAuction(id!, baseTokenAmount);
+  const { balance, ...bid } = useBidAuction(
+    auction.lotId,
+    auction.chainId,
+    baseTokenAmount,
+  );
 
   // TODO Permit2 signature
   const handleSubmit = () => {
@@ -48,6 +49,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       <div className="w-1/2">
         <AuctionInfoCard>
           <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
+          {auction.curatorApproved && (
+            <InfoLabel label="Curator" value={trimAddress(auction.curator)} />
+          )}
           <InfoLabel
             label="Capacity"
             value={`${auction.capacity} ${auction.baseToken.symbol}`}

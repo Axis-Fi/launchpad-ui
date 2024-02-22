@@ -1,17 +1,23 @@
 import { axisContracts } from "@repo/contracts";
-import { Auction, AuctionData } from "src/types";
+import { AuctionData } from "src/types";
 import { parseUnits } from "viem";
 import { useReadContract } from "wagmi";
 
-export function useAuctionData(auction?: Auction) {
+type UseAuctionDataParameters = {
+  lotId?: string;
+  chainId?: number;
+};
+
+/** Reads auctionData for a specific auction on chain and parses it*/
+export function useAuctionData({ lotId, chainId }: UseAuctionDataParameters) {
   const auctionDataQuery = useReadContract({
     abi: axisContracts.abis.localSealedBidBatchAuction,
-    address: !auction
+    address: !chainId
       ? undefined
-      : axisContracts.addresses[auction.chainId].localSealedBidBatchAuction,
+      : axisContracts.addresses[chainId].localSealedBidBatchAuction,
     functionName: "auctionData",
-    args: [parseUnits(auction?.lotId ?? "0", 0)],
-    query: { enabled: !!auction },
+    args: [parseUnits(lotId ?? "0", 0)],
+    query: { enabled: !!chainId && !!lotId },
   });
 
   return {

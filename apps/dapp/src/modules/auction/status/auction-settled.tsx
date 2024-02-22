@@ -10,7 +10,10 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
     <div className="w-full">
       <div className="mb-8 flex justify-between">
         <div className="w-1/2">
-          <SettledAuctionChart lotId={auction.lotId} />
+          <SettledAuctionChart
+            lotId={auction.lotId}
+            chainId={auction.chainId}
+          />
         </div>
         <div className="w-[40%]">
           <AuctionInputCard submitText={""} auction={auction}>

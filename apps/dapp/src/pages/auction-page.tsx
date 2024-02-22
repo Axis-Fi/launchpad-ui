@@ -34,11 +34,12 @@ const statuses: Record<
 
 /** Displays Auction details and status*/
 export default function AuctionPage() {
-  const params = useParams();
+  const { lotId, chainId } = useParams();
   const { address } = useAccount();
 
   const { result: auction, isLoading: isAuctionLoading } = useAuction(
-    params.id,
+    lotId,
+    Number(chainId),
   );
 
   if (isAuctionLoading) {
