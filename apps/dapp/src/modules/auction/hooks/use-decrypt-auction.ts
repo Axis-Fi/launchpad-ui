@@ -41,7 +41,6 @@ export const useDecryptBids = (auction: Auction) => {
       seed: toHex(d.seed as unknown as ByteArray),
     })) ?? [];
 
-  console.log({ nextBids });
   //Send bids to the contract for decryption
   const { data: decryptCall } = useSimulateContract({
     address: contracts.localSealedBidBatchAuction,

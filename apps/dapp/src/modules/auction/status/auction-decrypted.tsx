@@ -1,28 +1,14 @@
 import { InfoLabel } from "@repo/ui";
-import { useAccount } from "wagmi";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "src/types";
-import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { useSettleAuction } from "../hooks/use-settle-auction";
+import { MutationDialog } from "modules/transaction/mutation-dialog";
+import React from "react";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
-  const { address } = useAccount();
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const settle = useSettleAuction(auction);
-
-  const userBids = auction.bidsDecrypted.filter((b) =>
-    b.bid.bidder.toLowerCase().includes(address?.toLowerCase() ?? ""),
-  );
-
-  const amountBid = userBids.reduce(
-    (total, b) => total + Number(b.amountIn),
-    0,
-  );
-
-  const amountSecured = userBids.reduce(
-    (total, b) => total + Number(b.amountOut ?? 0),
-    0,
-  );
 
   return (
     <div className="flex justify-between">
@@ -36,25 +22,22 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       <div className="w-[50%]">
         <AuctionInputCard
           submitText="Settle Auction"
-          onClick={settle.handleSettle}
+          onClick={() => setIsDialogOpen(true)}
           auction={auction}
         >
-          <RequiresWalletConnection>
-            <div className="bg-secondary text-foreground flex justify-between rounded-sm p-2">
-              <InfoLabel
-                label="You bid"
-                value={`${amountBid} ${auction.quoteToken.symbol}`}
-                className="text-5xl font-light"
-              />
-              <InfoLabel
-                label="You got"
-                value={`${amountSecured} ${auction.baseToken.symbol}`}
-                className="text-5xl font-light"
-              />
-            </div>
-          </RequiresWalletConnection>
+          <div className="bg-secondary text-foreground flex justify-center rounded-sm p-2">
+            <h3>All bids have been decrypted</h3>
+          </div>
         </AuctionInputCard>
       </div>
+      <MutationDialog
+        mutation={settle.settleReceipt}
+        chainId={auction.chainId}
+        hash={settle.settleTx.data!}
+        onConfirm={settle.handleSettle}
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+      />
     </div>
   );
 }
