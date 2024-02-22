@@ -142,7 +142,7 @@ export default function CreateAuctionPage() {
         description: values.description,
         links: {
           projectLogo: values.projectLogo,
-          payoutTokenLogo: values.payoutTokenLogo,
+          payoutTokenLogo: values.payoutToken.logoURI,
           website: values.website,
           twitter: values.twitter,
           discord: values.discord,

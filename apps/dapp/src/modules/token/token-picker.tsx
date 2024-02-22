@@ -56,7 +56,7 @@ export function TokenPicker<
           render={({ field }) => (
             <FormItemWrapper label="Token Address">
               <Input
-                placeholder="http://yourdao.link/token.jpeg"
+                placeholder="0x000...000"
                 {...field}
                 value={field.value as string}
               />
