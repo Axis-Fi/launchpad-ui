@@ -8,12 +8,14 @@ import { Address } from "viem";
 export function BlockExplorerLink({
   chainId,
   address,
+  hash,
   trim,
   icon = true,
   ...props
 }: {
   chainId: number;
-  address: string | Address;
+  address?: string | Address;
+  hash?: string | Address;
   trim?: boolean;
   icon?: boolean;
   showName?: boolean;
@@ -22,11 +24,16 @@ export function BlockExplorerLink({
 
   if (!chain) throw new Error("Unable to find chain for BlockExplorer");
   const blockExplorer = getBlockExplorer(chain);
+  const target = hash ?? address ?? "";
+  const path = hash ? "tx/" : "address/";
 
   return (
-    <Link className="flex items-center " href={blockExplorer.url + address}>
+    <Link
+      className="flex items-center "
+      href={blockExplorer.url + path + target}
+    >
       {trim
-        ? trimAddress(address, 6)
+        ? trimAddress(target, 6)
         : props.showName
           ? blockExplorer.name
           : address}

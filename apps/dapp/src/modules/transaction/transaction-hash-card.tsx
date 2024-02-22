@@ -16,7 +16,7 @@ export function TransactionHashCard(
         {props.hash && props.chainId ? (
           <BlockExplorerLink
             showName
-            address={props.hash}
+            hash={props.hash}
             chainId={props.chainId}
           />
         ) : (

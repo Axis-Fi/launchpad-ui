@@ -4,7 +4,7 @@ import { Chain } from "viem";
 export const getBlockExplorer = (chain: Chain) => {
   return {
     name: chain.blockExplorers?.default.name,
-    url: chain.blockExplorers?.default.url + "/address/",
+    url: chain.blockExplorers?.default.url + "/",
     baseUrl: chain.blockExplorers?.default.url,
   };
 };
