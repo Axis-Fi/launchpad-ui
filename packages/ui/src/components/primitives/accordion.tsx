@@ -48,4 +48,27 @@ const AccordionContent = React.forwardRef<
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
+export type AccordionProps = {
+  items: Array<{ trigger: React.ReactNode; content: React.ReactNode }>;
+};
+
+export function Accordion(
+  props: React.HTMLAttributes<HTMLDivElement> & AccordionProps,
+) {
+  return (
+    <AccordionRoot
+      type="single"
+      collapsible
+      className={cn("w-full", props.className)}
+    >
+      {props.items.map((item, i) => (
+        <AccordionItem key={i} value={`item-${i}`}>
+          <AccordionTrigger>{item.trigger}</AccordionTrigger>
+          <AccordionContent>{item.content}</AccordionContent>
+        </AccordionItem>
+      ))}
+    </AccordionRoot>
+  );
+}
+
 export { AccordionRoot, AccordionItem, AccordionTrigger, AccordionContent };

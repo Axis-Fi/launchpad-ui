@@ -14,12 +14,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Primary: Story = {
-  args: {},
-};
+export const Primary: Story = {};
 
 export const WithIcon: Story = {
-  render: () => <IconnedInput icon={<GlobeIcon className="h-6 w-6" />} />,
+  render: (args) => (
+    <IconnedInput {...args} icon={<GlobeIcon className="h-6 w-6" />} />
+  ),
 };
 
 export const Large: Story = {

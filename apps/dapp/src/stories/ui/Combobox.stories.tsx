@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ComboBox } from "@repo/ui";
-import { Primary as SelectStory } from "./Select.stories";
+import SelectStory from "./Select.stories";
 
 const meta = {
   title: "Design System/ComboBox",
@@ -14,6 +14,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
-  args: {},
-};
+export const Primary: Story = {};

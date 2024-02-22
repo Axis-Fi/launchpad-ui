@@ -36,7 +36,7 @@ export function Select(props: SelectProps) {
       }}
     >
       <SelectTrigger id={props.id} className="w-full max-w-sm">
-        <div className="flex justify-start gap-x-1">
+        <div className="flex items-center justify-start gap-x-1">
           {selectedImage && <Avatar src={selectedImage} />}
           <SelectValue placeholder={props.placeholder} />
         </div>
