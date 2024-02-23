@@ -17,7 +17,11 @@ const preview: Preview = {
     layout: "centered",
     backgrounds: {
       default: "grey",
-      values: [{ name: "grey", value: "#808080" }],
+      values: [
+        { name: "black", value: "#000000" },
+        { name: "white", value: "#ffffff" },
+        { name: "grey", value: "#808080" },
+      ],
     },
   },
   decorators: [

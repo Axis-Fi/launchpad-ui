@@ -4,7 +4,7 @@ Monorepo for Axis Finance Frontend Apps using [turbo](https://turbo.build/repo)
 
 ## Dev Setup
 
-- run `pnpm install` to Install dependencies for all packages
+- run `pnpm install` to install dependencies for all packages
 - Setup `.env` on dapp repo
 - run `pnpm dev --filter=dapp`
 
@@ -24,7 +24,11 @@ This Turborepo includes the following packages and applications:
 
 - `apps/dapp`: Decentralized App to interact with Axis contracts
 - `apps/lp`: Static Landing Page for Axis
-- `packages/ui`: Primitive React components
+- `apps/ipfs-api`: Proxy API for an IPFS gateway
+- `packages/contracts`: Protocol's contract addresses and abis
+- `packages/ui`: Primitive React components built using [shadcn](https://ui.shadcn.com/)
+- `packages/subgraph-client`: Subgraph client and queries
+- `packages/brand-assets`: Axis brand images and fonts
 - `packages/tailwind-config`: Shared TailwindCSS configs
 - `packages/typescript-config`: Shared `tsconfig.json`s used throughout the Turborepo
 - `packages/eslint-config`: ESLint preset
