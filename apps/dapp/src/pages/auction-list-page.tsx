@@ -1,6 +1,7 @@
 import { Button, DropdownChecker, IconnedInput, cn } from "@repo/ui";
 import { useAuctions } from "loaders/useAuctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
+import { PageContainer } from "modules/app/page-container";
 import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,9 +27,7 @@ export default function AuctionListPage() {
     : auctions;
 
   return (
-    <div className="mt-5">
-      <h1 className="mb-12">Origin</h1>
-
+    <PageContainer title="Origin">
       <div className="flex items-center justify-between">
         <h3>Sealed-Bid Auctions</h3>
         <div className="flex gap-x-2">
@@ -72,7 +71,7 @@ export default function AuctionListPage() {
           Create Sealed Bid Auction <ArrowRightIcon className="w-6 pl-1" />
         </Button>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 

@@ -7,11 +7,13 @@ export function AuctionStatusChip({
   className,
 }: { status: AuctionStatus } & React.HTMLAttributes<HTMLParagraphElement>) {
   const statusColor =
-    status === "concluded" ? "bg-axis-dark-mid" : "bg-axis-green";
+    status === "concluded"
+      ? "bg-axis-dark-mid text-foreground"
+      : "bg-axis-green";
   return (
     <p
       className={cn(
-        "text-background rounded-full px-2 py-0.5 text-sm uppercase",
+        "text-background w-min rounded-full px-3 py-0.5 text-center text-sm uppercase",
         statusColor,
         className,
       )}
