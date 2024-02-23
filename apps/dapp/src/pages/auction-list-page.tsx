@@ -18,7 +18,6 @@ export default function AuctionListPage() {
   const [searchText, setSearchText] = useState<string>("");
   const navigate = useNavigate();
   const { result: auctions, isLoading } = useAuctions();
-  console.log({ searchText, auctions });
 
   const filteredAuctions = filters.length
     ? auctions

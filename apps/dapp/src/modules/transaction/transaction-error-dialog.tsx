@@ -1,5 +1,4 @@
-import metadata from "config/metadata";
-import { Link } from "@repo/ui";
+import { ReachOutMessage } from "modules/app/reach-out";
 
 export function TransactionErrorDialog(props: { error: Error }) {
   return (
@@ -10,12 +9,7 @@ export function TransactionErrorDialog(props: { error: Error }) {
         {": "}
         {props.error?.message}
       </div>
-      <p className="mt-6">
-        If the problem persists, reach out in our{" "}
-        <Link className="text-primary" href={metadata.discord}>
-          Discord
-        </Link>
-      </p>
+      <ReachOutMessage className="mt-6" />
     </div>
   );
 }
