@@ -12,7 +12,7 @@ const meta = {
   title: "Design System/Select",
   component: Select,
   args: {
-    placeholder: "Selectd token",
+    placeholder: "Select token",
     options,
   },
   decorators: (Story) => (

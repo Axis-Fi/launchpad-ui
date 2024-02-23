@@ -20,22 +20,22 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     lotId: lotId || "",
   });
 
-  const auction =
+  const rawAuction =
     !data || !data.auctionLots || data.auctionLots.length == 0
       ? undefined
       : data.auctionLots[0];
 
-  const enabled = !!auction && !!auction?.created.infoHash;
+  const enabled = !!rawAuction && !!rawAuction?.created.infoHash;
 
   const { data: auctionInfo } = useQuery({
     enabled,
-    queryKey: ["auction-info", auction?.id, auction?.created.infoHash],
-    queryFn: () => getAuctionInfo(auction?.created.infoHash || ""),
+    queryKey: ["auction-info", rawAuction?.id, rawAuction?.created.infoHash],
+    queryFn: () => getAuctionInfo(rawAuction?.created.infoHash || ""),
   });
 
-  const auctionData = useAuctionData({ chainId, lotId });
+  const { data: auctionData } = useAuctionData({ chainId, lotId });
 
-  if (!auction || !chainId || data?.auctionLots.length === 0) {
+  if (!rawAuction || !chainId || data?.auctionLots.length === 0) {
     return {
       refetch,
       result: undefined,
@@ -43,10 +43,10 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     };
   }
 
-  const status = getAuctionStatus(auction);
+  const status = getAuctionStatus(rawAuction);
 
-  const result = {
-    ...auction,
+  const auction = {
+    ...rawAuction,
     chainId,
     status,
     auctionInfo,
@@ -55,8 +55,9 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   return {
     refetch,
     result: {
-      ...result,
-      formatted: formatAuction(result, auctionData.data),
+      ...auction,
+      auctionData,
+      formatted: formatAuction(auction, auctionData),
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
   };

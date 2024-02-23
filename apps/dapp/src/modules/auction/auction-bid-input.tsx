@@ -1,6 +1,7 @@
-import { IconedLabel, Input } from "@repo/ui";
-import React from "react";
+import { FormField, FormItemWrapper, IconedLabel, Input } from "@repo/ui";
+import { useFormContext } from "react-hook-form";
 import { PropsWithAuction } from "src/types";
+import { BidForm } from "./status";
 
 const formatRate = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 4,
@@ -10,24 +11,15 @@ const formatRate = new Intl.NumberFormat("en-US", {
 export function AuctionBidInput({
   auction,
   balance = "0",
-  ...props
 }: {
   balance?: string;
-  onChangeAmountIn: (value: string) => void;
-  onChangeMinAmountOut: (value: string) => void;
 } & PropsWithAuction) {
-  const [amount, setAmount] = React.useState<number>(0);
-  const [minAmountOut, setMinAmountOut] = React.useState<number>(0);
+  const form = useFormContext<BidForm>();
 
-  const handleAmountChange = (value: string) => {
-    setAmount(Number(value));
-    props.onChangeAmountIn(value);
-  };
-
-  const handleMinAmountOutChange = (value: string) => {
-    setMinAmountOut(Number(value));
-    props.onChangeMinAmountOut(value);
-  };
+  const [amount, minAmountOut] = form.watch([
+    "quoteTokenAmount",
+    "baseTokenAmount",
+  ]);
 
   const rate = amount / minAmountOut;
   const formattedRate = isFinite(rate) ? formatRate(rate) : "?";
@@ -41,18 +33,23 @@ export function AuctionBidInput({
             src={auction.quoteToken?.logoURL}
             label={auction.quoteToken.symbol}
           />
-          <Input
-            type="number"
-            onChange={(e) => handleAmountChange(e.target.value)}
-            variant="lg"
-            className="mt-1 w-full"
-            placeholder="0.00"
+          <FormField
+            name="quoteTokenAmount"
+            control={form.control}
+            render={({ field }) => (
+              <FormItemWrapper>
+                <Input
+                  type="number"
+                  {...field}
+                  variant="lg"
+                  className="mt-1 w-full"
+                  placeholder="0.00"
+                />
+              </FormItemWrapper>
+            )}
           />
         </div>
-        <div
-          className="flex w-full cursor-pointer flex-col items-end justify-end"
-          onClick={() => handleAmountChange(balance)}
-        >
+        <div className="flex w-full cursor-pointer flex-col items-end justify-end">
           <p className="text-foreground/50">
             Balance:{" "}
             <span className="text-foreground inline">
@@ -69,12 +66,20 @@ export function AuctionBidInput({
             src={auction.baseToken.logoURL}
             label={auction.baseToken.symbol}
           />
-          <Input
-            type="number"
-            onChange={(e) => handleMinAmountOutChange(e.target.value)}
-            variant="lg"
-            className="mt-1 w-full"
-            placeholder="0.00"
+          <FormField
+            name="baseTokenAmount"
+            control={form.control}
+            render={({ field }) => (
+              <FormItemWrapper>
+                <Input
+                  type="number"
+                  {...field}
+                  variant="lg"
+                  className="mt-1 w-full"
+                  placeholder="0.00"
+                />
+              </FormItemWrapper>
+            )}
           />
         </div>
         <div className="flex w-full flex-col items-end justify-end">

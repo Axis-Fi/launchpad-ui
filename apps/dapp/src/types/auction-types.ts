@@ -15,6 +15,7 @@ export type Auction = RawSubgraphAuctionWithEvents & {
   quoteToken: Token;
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
+  auctionData?: AuctionData;
   formatted?: AuctionFormattedInfo;
 };
 
