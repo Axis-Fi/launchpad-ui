@@ -3,7 +3,7 @@ import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "src/types";
-import { MutationDialog } from "modules/transaction/mutation-dialog";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import React from "react";
 
@@ -33,7 +33,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
           />
         </AuctionInfoCard>
         <div className="w-[40%]">
-          <MutationDialog
+          <TransactionDialog
             disabled={disableButton}
             chainId={auction.chainId}
             hash={decrypt.decryptTx.data!}

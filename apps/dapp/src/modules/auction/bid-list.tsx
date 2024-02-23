@@ -6,7 +6,7 @@ import { Button, DataTable, Tooltip } from "@repo/ui";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import { parseUnits } from "viem";
-import { MutationDialog } from "modules/transaction/mutation-dialog";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import React from "react";
 
@@ -169,7 +169,7 @@ export function BidList(props: BidListProps) {
         data={mappedBids}
       />
 
-      <MutationDialog
+      <TransactionDialog
         open={dialogOpen}
         onOpenChange={(open) => {
           setDialogOpen(open);

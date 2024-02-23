@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { MutationDialog } from "modules/transaction/mutation-dialog";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 
 const meta = {
   title: "Transactions/MutationDialog",
-  component: MutationDialog,
-} satisfies Meta<typeof MutationDialog>;
+  component: TransactionDialog,
+} satisfies Meta<typeof TransactionDialog>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

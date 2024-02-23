@@ -3,7 +3,7 @@ import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "src/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
-import { MutationDialog } from "modules/transaction/mutation-dialog";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import React from "react";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
@@ -30,7 +30,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
           </div>
         </AuctionInputCard>
       </div>
-      <MutationDialog
+      <TransactionDialog
         mutation={settle.settleReceipt}
         chainId={auction.chainId}
         hash={settle.settleTx.data!}

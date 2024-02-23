@@ -11,32 +11,24 @@ import {
 } from "@repo/ui";
 import React from "react";
 
-export type MutationDialogElementProps = {
+export type TransactionDialogElementProps = {
   chainId?: number;
   hash?: Address;
   error?: Error | null;
 };
 
-export type MutationScreens = Record<
+export type TransactionScreens = Record<
   UseWaitForTransactionReceiptReturnType["status"] | "idle",
-  { Component: React.FC<Partial<MutationDialogElementProps>>; title?: string }
+  {
+    Component: React.FC<Partial<TransactionDialogElementProps>>;
+    title?: string;
+  }
 >;
 
-export type MutationDialogProps = {
-  onConfirm: React.MouseEventHandler<HTMLButtonElement>;
-  mutation: UseWaitForTransactionReceiptReturnType;
-  triggerContent?: string | React.ReactNode;
-  screens?: Partial<MutationScreens>;
-  submitText?: string;
-  disabled?: boolean;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-} & MutationDialogElementProps;
-
-const defaultScreens: MutationScreens = {
+const defaultScreens: TransactionScreens = {
   idle: {
     Component: () => (
-      <div className="my-4 text-center">This action is irreversible</div>
+      <div className="my-4 text-center">Sign the transaction to proceed</div>
     ),
     title: "Confirm Transaction",
   },
@@ -45,14 +37,26 @@ const defaultScreens: MutationScreens = {
   error: { Component: TransactionHashCard, title: "Transaction failed!" },
 };
 
-export function MutationDialog({
+export type TransactionDialogProps = {
+  onConfirm: React.MouseEventHandler<HTMLButtonElement>;
+  mutation: UseWaitForTransactionReceiptReturnType;
+  triggerContent?: string | React.ReactNode;
+  screens?: Partial<TransactionScreens>;
+  submitText?: string;
+  disabled?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+} & TransactionDialogElementProps;
+
+export function TransactionDialog({
   screens = defaultScreens,
-  mutation,
+  mutation: mutation,
   open,
   onOpenChange,
   ...props
-}: MutationDialogProps) {
+}: TransactionDialogProps) {
   const allScreens = { ...defaultScreens, ...screens };
+
   const status = props.error
     ? "error"
     : props.hash && mutation
@@ -73,8 +77,9 @@ export function MutationDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader className="text-2xl">{title}</DialogHeader>
+
         <Component error={error} hash={props.hash} chainId={props.chainId} />
 
         <DialogFooter className="flex">

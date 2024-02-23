@@ -40,7 +40,7 @@ import { AuctionInfo } from "src/types";
 
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
 import { addDays, addHours, addMinutes } from "date-fns";
-import { MutationDialog } from "modules/transaction/mutation-dialog";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useMutation } from "@tanstack/react-query";
 
 const tokenSchema = z.object({
@@ -628,7 +628,7 @@ export default function CreateAuctionPage() {
           </div>
 
           <CreateAuctionSubmitter>
-            <MutationDialog
+            <TransactionDialog
               submitText="DEPLOY AUCTION"
               triggerContent="DEPLOY AUCTION"
               hash={createAuction.data!}

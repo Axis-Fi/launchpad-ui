@@ -4,7 +4,7 @@ import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "src/types";
-import { MutationDialog } from "modules/transaction/mutation-dialog";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { LockIcon } from "lucide-react";
@@ -22,7 +22,7 @@ export type BidForm = z.infer<typeof schema>;
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const form = useForm<BidForm>({
-    mode: "onBlur",
+    mode: "onTouched",
     resolver: zodResolver(
       schema
         .refine(
@@ -110,7 +110,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
       <div className="w-[40%]">
         <FormProvider {...form}>
-          <form>
+          <form onSubmit={(e) => e.preventDefault()}>
             <AuctionInputCard
               disabled={shouldDisable}
               auction={auction}
@@ -121,7 +121,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 <AuctionBidInput balance={formattedBalance} auction={auction} />
                 <RequiresWalletConnection className="mt-4">
                   <div className="mt-4 w-full">
-                    {!bid.isSufficientAllowance ? (
+                    {!bid.isSufficientAllowance && !shouldDisable ? (
                       <Button
                         className="w-full"
                         onClick={() => bid.approveCapacity()}
@@ -138,7 +138,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                         )}
                       </Button>
                     ) : (
-                      <MutationDialog
+                      <TransactionDialog
                         onConfirm={() => bid.handleBid()}
                         mutation={bid.bidReceipt}
                         chainId={auction.chainId}

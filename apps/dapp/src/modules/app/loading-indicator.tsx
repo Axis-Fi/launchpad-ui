@@ -3,7 +3,7 @@ import { cn } from "@repo/ui";
 
 export function LoadingIndicator(props: SVGProps<SVGSVGElement>) {
   return (
-    <div className="loading-indicator h-full">
+    <div className="loading-indicator">
       <svg
         xmlnsXlink="http://www.w3.org/2000/svg"
         width="78"

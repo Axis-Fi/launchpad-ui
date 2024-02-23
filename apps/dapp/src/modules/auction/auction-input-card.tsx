@@ -9,14 +9,14 @@ import {
 import { PropsWithAuction } from "src/types";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { formatDistanceToNow } from "date-fns";
-import { MutationDialog } from "modules/transaction/mutation-dialog";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {
     submitText: string | React.ReactNode;
     disabled?: boolean;
     showTrigger?: boolean;
-    TriggerElement?: typeof MutationDialog;
+    TriggerElement?: typeof TransactionDialog;
   };
 
 export function AuctionInputCard({
