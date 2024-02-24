@@ -18,8 +18,8 @@ export type UseAllowanceProps = {
 
 /** Used to manage an address' allowance for a given token */
 export const useAllowance = (args: UseAllowanceProps) => {
-  const { data: hash, writeContract, ...approveRequest } = useWriteContract();
-  const approveReceipt = useWaitForTransactionReceipt({ hash });
+  const approveTx = useWriteContract();
+  const approveReceipt = useWaitForTransactionReceipt({ hash: approveTx.data });
 
   const allowance = useReadContract({
     abi: erc20Abi,
@@ -48,19 +48,18 @@ export const useAllowance = (args: UseAllowanceProps) => {
     args: [args.spenderAddress!, amountToApprove],
   });
 
-  const execute = () => writeContract(approveCall!.request);
+  const execute = () => approveTx.writeContract(approveCall!.request);
 
   useEffect(() => {
     if (approveReceipt.isSuccess) {
       allowance.refetch();
-      approveRequest.reset();
     }
   }, [allowance.refetch, approveReceipt.isSuccess]);
 
   const currentAllowance = allowance.data ?? 0n;
 
   return {
-    approveRequest,
+    approveTx,
     approveReceipt,
     allowance,
     execute,

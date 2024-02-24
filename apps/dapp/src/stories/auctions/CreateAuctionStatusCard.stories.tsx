@@ -1,10 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { CreateAuctionStatusCard } from "../../pages/create-auction-page";
+import { AuctionCreationStatus } from "../../modules/auction/auction-creation-status";
 
 const meta = {
   title: "Auctions/CreateAuctionStatusCard",
-  component: CreateAuctionStatusCard,
-} satisfies Meta<typeof CreateAuctionStatusCard>;
+  component: AuctionCreationStatus,
+  decorators: (Story) => (
+    <div className="w-[300px]">
+      <Story />
+    </div>
+  ),
+} satisfies Meta<typeof AuctionCreationStatus>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

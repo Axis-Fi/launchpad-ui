@@ -11,13 +11,14 @@ import {
   UseWaitForTransactionReceiptReturnType,
   UseWriteContractReturnType,
 } from "wagmi";
-import { Button, Form, cn } from "@repo/ui";
+import { Button, cn } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
-import { useFormContext } from "react-hook-form";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { Address, BaseError } from "viem";
 
 type CreateAuctionStatusCardProps = {
+  approveTx: UseWriteContractReturnType;
+  approveReceipt: UseWaitForTransactionReceiptReturnType;
   info: UseMutationResult<string, Error, CreateAuctionForm>;
   keypair: UseMutationResult<Address, Error, void, unknown>;
   tx: UseWriteContractReturnType;
@@ -29,6 +30,8 @@ type CreateAuctionStatusCardProps = {
 /** Displays the status, confirmations and errors of the
  * several steps that occur when submitting an auction for creation */
 export function AuctionCreationStatus({
+  approveTx,
+  approveReceipt,
   info,
   keypair,
   tx,
@@ -36,13 +39,17 @@ export function AuctionCreationStatus({
   chainId,
   onSubmit,
 }: CreateAuctionStatusCardProps) {
+  const isSigningApprove = !approveTx.isIdle && approveTx.isPending;
+  const { isLoading: isApprovalConfirming } = approveReceipt;
+
   const isStoringInfo = !info.isIdle && info.isPending;
   const isMakingKeys = !keypair.isIdle && keypair.isPending;
   const isSigningTx = !tx.isIdle && tx.isPending;
   const { isLoading: isTxConfirming, isSuccess } = txReceipt;
-  const form = useFormContext();
 
   const isIdle = [
+    isSigningApprove,
+    isApprovalConfirming,
     isStoringInfo,
     isMakingKeys,
     isSigningTx,
@@ -50,12 +57,36 @@ export function AuctionCreationStatus({
     isSuccess,
   ].every((is) => !is);
 
-  const queries = [info, keypair, tx, txReceipt];
+  const queries = [approveTx, approveReceipt, info, keypair, tx, txReceipt];
   const error = queries.find((m) => m.isError)?.error;
+  const handleSubmit = () => {
+    if (error) {
+      approveTx.reset();
+      info.reset();
+      keypair.reset();
+      tx.reset();
+    }
+
+    onSubmit();
+  };
 
   return (
     <div>
-      <div className="flex max-w-md items-center justify-between">
+      <div className="flex max-w-md items-center justify-between transition-all">
+        <StatusIcon
+          {...approveTx}
+          Icon={BoxIcon}
+          isLoading={isSigningApprove}
+        />
+        <StatusSeparator
+          className={cn(approveTx.isSuccess && "border-axis-green")}
+        />
+        <StatusIcon
+          {...approveReceipt}
+          Icon={RadioTowerIcon}
+          isLoading={isApprovalConfirming}
+        />
+        <div className="border-foreground mx-2 h-8 border-l-2" />
         <StatusIcon
           {...info}
           Icon={UploadCloudIcon}
@@ -81,13 +112,20 @@ export function AuctionCreationStatus({
         />
       </div>
       <div className="mt-8 flex justify-center">
-        {isIdle && !error && <p className="text-center">Confirm creation</p>}
+        {isIdle && !error && (
+          <p className="text-center">
+            {approveReceipt.isSuccess
+              ? "Deploy your Auction"
+              : "Approve the configured capacity"}
+          </p>
+        )}
         {!error && (
           <p className="text-center">
             {isStoringInfo && "Storing auction metadata on IPFS"}
             {isMakingKeys && "Generating a new keypair for secure encryption"}
-            {isSigningTx && "Sign the transaction to proceed"}
-            {isTxConfirming &&
+            {(isSigningTx || isSigningApprove) &&
+              "Sign the transaction to proceed"}
+            {(isTxConfirming || isApprovalConfirming) &&
               "Waiting for the transaction to be included in a block"}
             {txReceipt.isSuccess && "Auction created!"}
           </p>
@@ -111,11 +149,11 @@ export function AuctionCreationStatus({
         </p>
       )}
       <div className="mt-4 flex justify-center">
-        <Form {...form}>
-          {(isIdle || error) && (
-            <Button onSubmit={onSubmit}>{error ? "RETRY" : "DEPLOY"}</Button>
-          )}
-        </Form>
+        {(isIdle || error) && (
+          <Button onClick={handleSubmit}>
+            {error ? "RETRY" : approveTx.isIdle ? "APPROVE" : "DEPLOY"}
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ export function StatusIcon({
     <div className="flex flex-col items-center justify-center">
       <Icon
         className={cn(
+          "transition-all",
           isSuccess && "text-axis-green",
           isError && "text-destructive",
         )}
@@ -39,7 +40,10 @@ export function StatusSeparator({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("mx-1 h-0 grow border-t border-dashed", className)}
+      className={cn(
+        "mx-1 h-0 grow border-t border-dashed transition-all",
+        className,
+      )}
       {...props}
     />
   );

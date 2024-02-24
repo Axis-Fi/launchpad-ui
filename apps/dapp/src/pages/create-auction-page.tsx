@@ -6,7 +6,6 @@ import {
   DialogInput,
   DialogRoot,
   DialogTitle,
-  DialogTrigger,
   Form,
   FormField,
   FormItemWrapper,
@@ -20,12 +19,15 @@ import {
 import { DevTool } from "@hookform/devtools";
 
 import { TokenPicker } from "modules/token/token-picker";
-import { CreateAuctionSubmitter } from "modules/auction/create-auction-submitter";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cloakClient } from "src/services/cloak";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { axisContracts } from "@repo/contracts";
 import {
   Address,
@@ -51,6 +53,8 @@ import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
+import { useAllowance } from "loaders/use-allowance";
+import { RequiresWalletConnection } from "components/requires-wallet-connection";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -126,6 +130,7 @@ const auctionDefaultValues = {
 };
 
 export default function CreateAuctionPage() {
+  const { address } = useAccount();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
@@ -133,16 +138,17 @@ export default function CreateAuctionPage() {
     defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken, chainId] = form.watch([
+  const [isVested, payoutToken, chainId, capacity] = form.watch([
     "isVested",
     "payoutToken",
     "quoteToken.chainId",
+    "capacity",
   ]);
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
-  const createAuction = useWriteContract();
+  const createAuctionTx = useWriteContract();
   const createTxReceipt = useWaitForTransactionReceipt({
-    hash: createAuction.data,
+    hash: createAuctionTx.data,
   });
 
   const auctionInfoMutation = useMutation({
@@ -185,7 +191,7 @@ export default function CreateAuctionPage() {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const publicKey = await generateKeyPairMutation.mutateAsync();
 
-    createAuction.writeContract(
+    createAuctionTx.writeContract(
       {
         abi: axisContracts.abis.auctionHouse,
         address: axisAddresses.auctionHouse,
@@ -262,18 +268,27 @@ export default function CreateAuctionPage() {
       },
     );
   };
-
+  const { isSufficientAllowance, execute, approveReceipt, approveTx } =
+    useAllowance({
+      ownerAddress: address,
+      spenderAddress: axisAddresses?.auctionHouse,
+      tokenAddress: payoutToken?.address as Address,
+      decimals: payoutToken?.decimals,
+      chainId: payoutToken?.chainId,
+      amount: Number(capacity),
+    });
   // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
 
-  const onSubmit = form.handleSubmit(handleCreation);
+  const createAuction = form.handleSubmit(handleCreation);
   const isValid = form.formState.isValid;
 
-  console.log({ isDialogOpen });
+  const onSubmit = () => (isSufficientAllowance ? createAuction() : execute());
+
   return (
     <div className="pb-20">
       <h1 className="text-5xl">Create Your Auction</h1>
       <Form {...form}>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
               {/* <div> */}
@@ -640,34 +655,43 @@ export default function CreateAuctionPage() {
             </div>
           </div>
 
-          <CreateAuctionSubmitter>
-            <Button onClick={() => isValid && setIsDialogOpen(true)}>
-              DEPLOY AUCTION
-            </Button>
-            <DialogRoot
-              open={isDialogOpen}
-              onOpenChange={(open) => !open && setIsDialogOpen(false)}
-            >
-              <DialogTrigger></DialogTrigger>
-              <DialogContent className="max-w-sm">
-                <DialogHeader>
-                  <DialogTitle>
-                    {createTxReceipt.isSuccess ? "Success" : "Creating Auction"}
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="px-6">
-                  <AuctionCreationStatus
-                    chainId={chainId}
-                    info={auctionInfoMutation}
-                    keypair={generateKeyPairMutation}
-                    tx={createAuction}
-                    txReceipt={createTxReceipt}
-                    onSubmit={onSubmit}
-                  />
-                </div>
-              </DialogContent>
-            </DialogRoot>
-          </CreateAuctionSubmitter>
+          <div className="mt-10 flex justify-center">
+            <RequiresWalletConnection rootClassName="mt-4">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  form.trigger();
+                  isValid && setIsDialogOpen(true);
+                }}
+              >
+                DEPLOY AUCTION
+              </Button>
+            </RequiresWalletConnection>
+          </div>
+          <DialogRoot
+            open={isDialogOpen}
+            onOpenChange={(open) => !open && setIsDialogOpen(false)}
+          >
+            <DialogContent className="max-w-sm">
+              <DialogHeader>
+                <DialogTitle>
+                  {createTxReceipt.isSuccess ? "Success" : "Creating Auction"}
+                </DialogTitle>
+              </DialogHeader>
+              <div className="px-6">
+                <AuctionCreationStatus
+                  chainId={chainId}
+                  approveTx={approveTx}
+                  approveReceipt={approveReceipt}
+                  info={auctionInfoMutation}
+                  keypair={generateKeyPairMutation}
+                  tx={createAuctionTx}
+                  txReceipt={createTxReceipt}
+                  onSubmit={onSubmit}
+                />
+              </div>
+            </DialogContent>
+          </DialogRoot>
           <DevTool control={form.control} />
         </form>
       </Form>
