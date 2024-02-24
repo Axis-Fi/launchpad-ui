@@ -29,7 +29,7 @@ export function BlockExplorerLink({
 
   return (
     <Link
-      className="flex items-center "
+      className="inline-flex items-center"
       href={blockExplorer.url + path + target}
     >
       {trim

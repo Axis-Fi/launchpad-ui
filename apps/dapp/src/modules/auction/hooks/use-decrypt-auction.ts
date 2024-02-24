@@ -34,7 +34,9 @@ export const useDecryptBids = (auction: Auction) => {
         lotId: Number(auction.lotId),
       }),
     placeholderData: keepPreviousData,
-    enabled: auction.bids.length > auction.bidsDecrypted.length,
+    enabled:
+      auction.bids.length - auction.refundedBids.length >
+      auction.bidsDecrypted.length,
   });
 
   //Map bids to the expected format
@@ -61,7 +63,6 @@ export const useDecryptBids = (auction: Auction) => {
   useEffect(() => {
     if (decryptReceipt.isSuccess && !nextBidsQuery.isRefetching) {
       nextBidsQuery.refetch();
-      decrypt.reset();
       refetchAuction();
     }
   }, [decryptReceipt.isSuccess, nextBidsQuery]);

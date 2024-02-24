@@ -20,7 +20,7 @@ export function TransactionHashCard(
         </div>
       )}
       <div className="mt-4 flex justify-center">
-        View transaction on&nbsp;
+        View transaction status on&nbsp;
         {props.hash && props.chainId ? (
           <BlockExplorerLink
             showName

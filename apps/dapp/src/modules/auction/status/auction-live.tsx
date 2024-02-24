@@ -45,7 +45,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     ),
   });
 
-  const [quoteTokenAmount, baseTokenAmount] = form.watch([
+  const [amountIn, minAmountOut] = form.watch([
     "quoteTokenAmount",
     "baseTokenAmount",
   ]);
@@ -53,7 +53,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const { balance, ...bid } = useBidAuction(
     auction.lotId,
     auction.chainId,
-    baseTokenAmount,
+    amountIn,
+    minAmountOut,
   );
 
   // TODO Permit2 signature
@@ -153,8 +154,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                           idle: {
                             Component: () => (
                               <div className="text-center">
-                                You&apos;re about to place a bid of{" "}
-                                {quoteTokenAmount} {auction.quoteToken.symbol}
+                                You&apos;re about to place a bid of {amountIn}{" "}
+                                {auction.quoteToken.symbol}
                               </div>
                             ),
                             title: "Confirm Bid",

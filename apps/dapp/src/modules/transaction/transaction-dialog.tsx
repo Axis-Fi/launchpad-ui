@@ -33,7 +33,12 @@ const defaultScreens: TransactionScreens = {
     title: "Confirm Transaction",
   },
   pending: { Component: TransactionHashCard, title: "Transaction Submitted!" },
-  success: { Component: TransactionHashCard, title: "Success!" },
+  success: {
+    Component: (props) => (
+      <TransactionHashCard {...props} message="Transaction complete" />
+    ),
+    title: "Success!",
+  },
   error: { Component: TransactionHashCard, title: "Transaction failed!" },
 };
 
