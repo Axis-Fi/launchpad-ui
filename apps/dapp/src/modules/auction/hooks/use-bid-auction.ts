@@ -16,6 +16,7 @@ import {
 export function useBidAuction(
   lotId: string,
   chainId: number,
+  amountIn: number,
   amountOut: number,
 ) {
   const { result: auction, ...auctionQuery } = useAuction(lotId, chainId);
@@ -66,7 +67,7 @@ export function useBidAuction(
           recipient: address as Address,
           referrer: referrer,
           amount: parseUnits(
-            amountOut.toString(),
+            amountIn.toString(),
             Number(auction.quoteToken.decimals),
           ),
           auctionData: encryptedAmountOut,
