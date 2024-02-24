@@ -1,6 +1,12 @@
 import {
+  Button,
   DatePicker,
+  DialogContent,
+  DialogHeader,
   DialogInput,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
   Form,
   FormField,
   FormItemWrapper,
@@ -11,6 +17,7 @@ import {
   Textarea,
   trimAddress,
 } from "@repo/ui";
+import { DevTool } from "@hookform/devtools";
 
 import { TokenPicker } from "modules/token/token-picker";
 import { CreateAuctionSubmitter } from "modules/auction/create-auction-submitter";
@@ -36,12 +43,14 @@ import {
   formatDate,
   dateMath,
 } from "src/utils";
+
 import { AuctionInfo } from "src/types";
 
 import { storeAuctionInfo } from "loaders/useAuctionInfo";
 import { addDays, addHours, addMinutes } from "date-fns";
-import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useMutation } from "@tanstack/react-query";
+import React from "react";
+import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -117,6 +126,7 @@ const auctionDefaultValues = {
 };
 
 export default function CreateAuctionPage() {
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -135,7 +145,7 @@ export default function CreateAuctionPage() {
     hash: createAuction.data,
   });
 
-  const createDependenciesMutation = useMutation({
+  const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
         name: values.name,
@@ -152,27 +162,28 @@ export default function CreateAuctionPage() {
 
       // Store the auction info
       const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
-      if (!auctionInfoAddress) {
-        throw new Error("Unable to store info on IPFS");
-      }
 
-      // Get the public key
+      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS");
+
+      return auctionInfoAddress;
+    },
+    onError: (error) => console.error("Error during submission:", error),
+  });
+
+  const generateKeyPairMutation = useMutation({
+    mutationFn: async () => {
       const publicKey = await cloakClient.keysApi.newKeyPairPost();
-      if (!isHex(publicKey)) {
-        throw new Error("Invalid or no keypair received");
-      }
 
-      return { publicKey, auctionInfoAddress };
+      if (!isHex(publicKey)) throw new Error("Invalid or no keypair received");
+
+      return publicKey;
     },
-    onError: (error) => {
-      // It will also show in the interface
-      console.error("Error during submission:", error);
-    },
+    onError: (error) => console.error("Error during submission:", error),
   });
 
   const handleCreation = async (values: CreateAuctionForm) => {
-    const { publicKey, auctionInfoAddress } =
-      await createDependenciesMutation.mutateAsync(values);
+    const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
+    const publicKey = await generateKeyPairMutation.mutateAsync();
 
     createAuction.writeContract(
       {
@@ -255,12 +266,14 @@ export default function CreateAuctionPage() {
   // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
 
   const onSubmit = form.handleSubmit(handleCreation);
+  const isValid = form.formState.isValid;
 
+  console.log({ isDialogOpen });
   return (
     <div className="pb-20">
       <h1 className="text-5xl">Create Your Auction</h1>
       <Form {...form}>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={onSubmit}>
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
               {/* <div> */}
@@ -628,17 +641,34 @@ export default function CreateAuctionPage() {
           </div>
 
           <CreateAuctionSubmitter>
-            <TransactionDialog
-              submitText="DEPLOY AUCTION"
-              triggerContent="DEPLOY AUCTION"
-              hash={createAuction.data!}
-              chainId={chainId}
-              mutation={createTxReceipt}
-              disabled={!form.formState.isValid}
-              onConfirm={onSubmit}
-              error={createDependenciesMutation.error} // TODO need to combine this with createAuction somehow, so that errors are shown
-            />
+            <Button onClick={() => isValid && setIsDialogOpen(true)}>
+              DEPLOY AUCTION
+            </Button>
+            <DialogRoot
+              open={isDialogOpen}
+              onOpenChange={(open) => !open && setIsDialogOpen(false)}
+            >
+              <DialogTrigger></DialogTrigger>
+              <DialogContent className="max-w-sm">
+                <DialogHeader>
+                  <DialogTitle>
+                    {createTxReceipt.isSuccess ? "Success" : "Creating Auction"}
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="px-6">
+                  <AuctionCreationStatus
+                    chainId={chainId}
+                    info={auctionInfoMutation}
+                    keypair={generateKeyPairMutation}
+                    tx={createAuction}
+                    txReceipt={createTxReceipt}
+                    onSubmit={onSubmit}
+                  />
+                </div>
+              </DialogContent>
+            </DialogRoot>
           </CreateAuctionSubmitter>
+          <DevTool control={form.control} />
         </form>
       </Form>
     </div>

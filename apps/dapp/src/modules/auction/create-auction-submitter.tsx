@@ -40,15 +40,16 @@ export function CreateAuctionSubmitter({ children }: SubmitterProps) {
           <div className="flex">
             <Button
               className="w-full max-w-md"
+              type="submit"
               disabled={approveTx.isLoading}
               onClick={() => execute()}
             >
               {approveTx.isLoading ? (
-                <>
+                <div className="flex justify-center gap-x-1">
                   Waiting <LoadingIndicator />
-                </>
+                </div>
               ) : (
-                "Approve"
+                "APPROVE"
               )}
             </Button>
             <Tooltip
