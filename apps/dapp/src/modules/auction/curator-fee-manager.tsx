@@ -18,8 +18,8 @@ export function CuratorFeeManager(props: CuratorFeeManagerProps) {
   } = useFees(chainId);
 
   const [amount, setAmount] = React.useState<string>("");
-
   const curatorFees = useCuratorFees(chainId, parseFloat(amount));
+  const parsedAmount = parseFloat(amount);
 
   return (
     <div className="gap-x-8">
@@ -42,7 +42,7 @@ export function CuratorFeeManager(props: CuratorFeeManagerProps) {
         />
 
         <Button size="icon" variant="ghost">
-          {parseFloat(amount) !== curatorFees.fee && (
+          {isFinite(parsedAmount) && parsedAmount !== curatorFees.fee && (
             <div>
               <Button size="icon" variant="ghost">
                 <CheckIcon onClick={() => curatorFees.handleSetFee()} />
