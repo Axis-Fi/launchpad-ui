@@ -55,6 +55,7 @@ import React from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
+import { toKeycode } from "modules/auction/utils/to-keycode";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -120,10 +121,6 @@ const schema = z
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
-function toKeycode(keycode: string): `0x${string}` {
-  return toHex(keycode, { size: 5 });
-}
-
 const auctionDefaultValues = {
   minFillPercent: [50],
   minBidPercent: [5],
@@ -188,7 +185,7 @@ export default function CreateAuctionPage() {
   });
 
   const handleCreation = async (values: CreateAuctionForm) => {
-    const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
+    const auctionInfoAddress = "0x43424"; //await auctionInfoMutation.mutateAsync(values);
     const publicKey = await generateKeyPairMutation.mutateAsync();
 
     createAuctionTx.writeContract(

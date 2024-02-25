@@ -1,4 +1,4 @@
-import { cn } from "@repo/ui";
+import { Badge, cn } from "@repo/ui";
 import { AuctionStatus } from "src/types";
 
 /** Displays a indicator with the auction's current status */
@@ -10,15 +10,16 @@ export function AuctionStatusChip({
     status === "concluded"
       ? "bg-axis-dark-mid text-foreground"
       : "bg-axis-green";
+
   return (
-    <p
+    <Badge
       className={cn(
-        "text-background w-min rounded-full px-3 py-0.5 text-center text-sm uppercase",
+        "text-background rounded-full font-medium uppercase",
         statusColor,
         className,
       )}
     >
       {status}
-    </p>
+    </Badge>
   );
 }

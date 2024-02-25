@@ -8,13 +8,14 @@ import {
 export function useCurateAuction(lotId: string, chainId: number) {
   const axisAddresses = axisContracts.addresses[chainId];
 
-  const { data: curateCall } = useSimulateContract({
+  const { data: curateCall, error } = useSimulateContract({
     abi: axisContracts.abis.auctionHouse,
     address: axisAddresses?.auctionHouse,
     chainId,
     functionName: "curate",
     args: [BigInt(lotId)],
   });
+  console.log({ error });
 
   const curateTx = useWriteContract();
   const curateReceipt = useWaitForTransactionReceipt({ hash: curateTx.data });

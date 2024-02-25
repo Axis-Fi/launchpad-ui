@@ -10,6 +10,11 @@ const inputVariants = cva(
       variant: {
         default: "h-9 text-sm rounded-full border-input",
         lg: "text-4xl text-foreground font-aeonfono font-light rounded-none",
+        ghost: "bg-transparent text-foreground font-aeonfono py-0 ",
+      },
+      textSize: {
+        lg: "text-2xl",
+        xl: "text-4xl",
       },
     },
     defaultVariants: {
@@ -27,11 +32,11 @@ export interface InputProps
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, variant, ...props }, ref) => {
+  ({ className, type, variant, textSize, ...props }, ref) => {
     return (
       <input
         type={type}
-        className={cn(inputVariants({ variant, className }))}
+        className={cn(inputVariants({ variant, textSize, className }))}
         ref={ref}
         {...props}
       />

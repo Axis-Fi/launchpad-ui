@@ -70,6 +70,10 @@ export type AuctionFormattedInfo = {
   minBidSize: string;
 };
 
+export enum AuctionTypes {
+  SEALED_BID = "LSBBA",
+}
+
 export type PropsWithAuction = {
   auction: Auction;
 };
