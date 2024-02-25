@@ -66,6 +66,10 @@
     animation: rotateAnimation 4s linear infinite; /* Adjust duration and animation timing as needed */
   }
 
+  .loading-indicator-fast {
+    animation: rotateAnimation 1s linear infinite;
+  }
+
   @keyframes rotateAnimation {
     from {
       transform: rotate(0deg);

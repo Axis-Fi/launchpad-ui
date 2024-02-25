@@ -8,7 +8,7 @@ import {
   AuctionSettled,
 } from "modules/auction/status";
 import { useAuction } from "loaders/useAuction";
-import { Avatar, Skeleton } from "@repo/ui";
+import { Avatar, Button, Skeleton, Tooltip, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { ProjectInfoCard } from "modules/auction/project-info-card";
 import { ContractAddressCard } from "modules/auction/contract-address-card";
@@ -20,6 +20,7 @@ import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { PropsWithAuction } from "src/types";
 import { ImageBanner } from "components/image-banner";
 import { useAccount } from "wagmi";
+import { RefreshCwIcon } from "lucide-react";
 
 const statuses: Record<
   AuctionStatus,
@@ -37,10 +38,12 @@ export default function AuctionPage() {
   const { lotId, chainId } = useParams();
   const { address } = useAccount();
 
-  const { result: auction, isLoading: isAuctionLoading } = useAuction(
-    lotId,
-    Number(chainId),
-  );
+  const {
+    result: auction,
+    isLoading: isAuctionLoading,
+    refetch,
+    isRefetching,
+  } = useAuction(lotId, Number(chainId));
 
   if (isAuctionLoading) {
     return <AuctionPageLoading />;
@@ -53,7 +56,15 @@ export default function AuctionPage() {
 
   return (
     <div>
-      <PageHeader />
+      <PageHeader>
+        <Tooltip content="Refetch latest auction information">
+          <Button size="icon" variant="ghost" onClick={() => refetch()}>
+            <RefreshCwIcon
+              className={cn(isRefetching && "loading-indicator-fast")}
+            />
+          </Button>
+        </Tooltip>
+      </PageHeader>
 
       <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>
         <div className="relative rounded-sm p-4">

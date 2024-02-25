@@ -12,11 +12,12 @@ import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 export type AuctionResult = {
   result?: Auction;
   isLoading: boolean;
+  isRefetching: boolean;
   refetch: ReturnType<typeof useGetAuctionLotQuery>["refetch"];
 };
 
 export function useAuction(lotId?: string, chainId?: number): AuctionResult {
-  const { data, refetch, isLoading } = useGetAuctionLotQuery({
+  const { data, refetch, isLoading, isRefetching } = useGetAuctionLotQuery({
     lotId: lotId || "",
   });
 
@@ -60,6 +61,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
       formatted: formatAuction(auction, auctionData),
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
+    isRefetching,
   };
 }
 
