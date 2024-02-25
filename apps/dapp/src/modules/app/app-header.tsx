@@ -1,6 +1,7 @@
 import ConnectButton from "../../components/connect-button";
 import { Button } from "@repo/ui";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./navbar";
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export function AppHeader() {
             <img width={80} height={26} src="/images/wordmark.svg" />
             <img width={30} height={26} src="/images/logo.svg" />
           </div>
+          <Navbar />
         </div>
 
         <div className="flex items-center justify-end gap-x-2">
