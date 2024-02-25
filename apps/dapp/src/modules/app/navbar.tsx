@@ -29,7 +29,7 @@ export default function Navbar() {
               <NavLink to={l.href}>
                 {({ isActive }) => (
                   <>
-                    {l.title === "Curator" && (
+                    {l.title === "Curator" && !!pendingCurationsCount && (
                       <CuratorNotification count={pendingCurationsCount} />
                     )}
                     <Button

@@ -39,6 +39,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   if (!rawAuction || !chainId || data?.auctionLots.length === 0) {
     return {
       refetch,
+      isRefetching,
       result: undefined,
       isLoading: isLoading, //|| infoQuery.isLoading, //|| infoQuery.isPending,
     };
