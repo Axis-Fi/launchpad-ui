@@ -1,17 +1,12 @@
 import { http } from "wagmi";
-import { Chain, blastSepolia, mainnet } from "viem/chains";
+import { Chain, blastSepolia } from "viem/chains";
 import { environment } from "./environment";
-import { testnetList } from "@repo/deployments";
+import { mainnetList, testnetList } from "@repo/deployments";
 import { AxisDeployment } from "@repo/deployments/src/types";
 
 //Mainnet Config
-export const mainnets: [Chain, ...Chain[]] = [mainnet];
-const mainnetConfig = {
-  chains: mainnets,
-  transports: {
-    [mainnet.id]: http(""),
-  },
-};
+export const mainnets: Chain[] = mainnetList.map(({ chain }) => chain);
+const mainnetConfig = generateConfig(mainnetList);
 
 //Testnet Config
 export const testnets: Chain[] = testnetList.map(({ chain }) => chain);
