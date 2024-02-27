@@ -37,6 +37,9 @@ importers:
       "@repo/contracts":
         specifier: workspace:*
         version: link:../../packages/contracts
+      "@repo/deployments":
+        specifier: workspace:*
+        version: link:../../packages/deployments
       "@repo/eslint-config":
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -246,6 +249,18 @@ importers:
       "@wagmi/cli":
         specifier: ^2.1.0
         version: 2.1.0
+
+  packages/deployments:
+    dependencies:
+      "@repo/contracts":
+        specifier: workspace:*
+        version: link:../contracts
+      "@repo/eslint-config":
+        specifier: workspace:*
+        version: link:../eslint-config
+      "@repo/typescript-config":
+        specifier: workspace:*
+        version: link:../typescript-config
 
   packages/eslint-config:
     dependencies:

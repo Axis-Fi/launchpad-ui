@@ -1,0 +1,14 @@
+{
+  "name": "@repo/deployments",
+  "type": "module",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@repo/contracts": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -5,3 +5,5 @@ export const axisContracts = {
   addresses: addressesPerChain,
   abis,
 };
+
+export * from "./types";
