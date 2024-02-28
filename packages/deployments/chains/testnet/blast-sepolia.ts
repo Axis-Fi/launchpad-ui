@@ -19,6 +19,11 @@ const config: AxisDeploymentConfig = {
       logoURI:
         "https://assets-global.website-files.com/65a6baa1a3f8ed336f415cb4/65c67eafd3569b7e2f834b8d_usdb-icon-yellow.svg",
     },
+    {
+      decimals: 18,
+      symbol: "BTK",
+      address: "0xCA8C1163dC6aA7Ee376F00Cc77f1cbE01adfFC92",
+    },
   ],
 };
 

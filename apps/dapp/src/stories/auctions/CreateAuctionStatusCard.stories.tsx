@@ -21,14 +21,17 @@ const idle = {
 };
 
 const pending = {
+  ...idle,
   isPending: true,
   isIdle: false,
 };
 
 const success = {
+  ...idle,
   isSuccess: true,
 };
 const error = {
+  ...idle,
   error: {
     message: "Something went wrong",
   },
@@ -36,8 +39,10 @@ const error = {
 
 export const Primary: Story = {
   args: {
+    approveTx: success,
+    approveReceipt: success,
     info: success,
-    keypair: success,
+    keypair: pending,
     tx: error,
     txReceipt: idle,
   },

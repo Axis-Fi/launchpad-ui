@@ -7,6 +7,11 @@ import React from "react";
 
 const preview: Preview = {
   parameters: {
+    options: {
+      storySort: {
+        order: ["Design System"],
+      },
+    },
     actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
       matchers: {

@@ -1,13 +1,5 @@
 import { RawSubgraphAuctionWithEvents } from "./subgraph-types";
-
-export type Token = {
-  address: string;
-  decimals: string;
-  symbol: string;
-  name: string;
-  chainId?: number;
-  logoURL?: string;
-};
+import { Token } from "./token-types";
 
 export type Auction = RawSubgraphAuctionWithEvents & {
   chainId: number;

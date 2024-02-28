@@ -1,0 +1,30 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import { TokenListManager } from "modules/token/token-list-manager";
+import { testnetList } from "@repo/deployments";
+
+const tokens = testnetList[0].tokenList;
+
+const tokenlist = {
+  name: "Axis",
+  logoURI: "/logo-color.png",
+  tokens,
+  timestamp: Date.now().toString(),
+  version: {
+    major: 0,
+    minor: 0,
+    patch: 0,
+  },
+};
+
+const meta = {
+  title: "Tokens/TokenListManager",
+  component: TokenListManager,
+  args: {
+    tokenlists: [tokenlist],
+  },
+} satisfies Meta<typeof TokenListManager>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Primary: Story = {};

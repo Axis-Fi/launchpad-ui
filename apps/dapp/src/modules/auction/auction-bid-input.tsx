@@ -30,7 +30,7 @@ export function AuctionBidInput({
         <div>
           <p className="mb-1">You pay</p>
           <IconedLabel
-            src={auction.quoteToken?.logoURL}
+            src={auction.quoteToken?.logoURI}
             label={auction.quoteToken.symbol}
           />
           <FormField
@@ -63,7 +63,7 @@ export function AuctionBidInput({
         <div>
           <p className="mb-1">You get</p>
           <IconedLabel
-            src={auction.baseToken.logoURL}
+            src={auction.baseToken.logoURI}
             label={auction.baseToken.symbol}
           />
           <FormField
