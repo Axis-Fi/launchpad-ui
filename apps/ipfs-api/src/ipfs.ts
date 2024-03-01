@@ -58,5 +58,10 @@ export async function getData(address: string): Promise<unknown> {
 
   const response = await fetch(`${gatewayClean}/ipfs/${address}`);
 
+  if (!response.status.toString().startsWith("2")) {
+    const error = await response.text();
+    throw new Error(error);
+  }
+
   return await response.json();
 }

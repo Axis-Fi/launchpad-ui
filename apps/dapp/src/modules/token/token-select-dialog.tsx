@@ -19,8 +19,8 @@ import { useTokenLists } from "context/tokenlist-provider";
 
 type TokenSelectDialogProps = {
   chainId: number;
-  onChange: DialogInputChangeHandler<Token>;
-  setDialogOpen: DialogStatusChangeHandler;
+  onChange?: DialogInputChangeHandler<Token>;
+  setDialogOpen?: DialogStatusChangeHandler;
 };
 
 /** Shows a list of tokens per chain and a way to manage tokenlists*/
@@ -66,7 +66,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
                       label: t.symbol,
                       value: t.address,
                     });
-                    props.setDialogOpen(false);
+                    props.setDialogOpen?.(false);
                   }}
                 >
                   <TokenSelectRow token={t} />

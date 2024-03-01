@@ -17,7 +17,7 @@ export const appRouter = t.router({
   getAuctionInfo: t.procedure
     .input(
       z.object({
-        hash: z.string(),
+        hash: z.string().regex(/^(Qm)?[0-9a-zA-Z]{44}$/), //Multihash format
       }),
     )
     .output(auctionInfoType)

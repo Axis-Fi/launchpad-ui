@@ -19,12 +19,10 @@ export function useAuctions(): AuctionsResult {
     enabled: isSuccess,
     queryFn: () => {
       return Promise.all(
-        data?.auctionLots
-          //.filter((a) => a.created?.infoHash)
-          .map(async (auction) => {
-            const auctionInfo = await getAuctionInfo(auction.created.infoHash);
-            return { id: auction.id, auctionInfo };
-          }) ?? [],
+        data?.auctionLots.map(async (auction) => {
+          const auctionInfo = await getAuctionInfo(auction.created.infoHash);
+          return { id: auction.id, auctionInfo };
+        }) ?? [],
       );
     },
   });
@@ -40,7 +38,7 @@ export function useAuctions(): AuctionsResult {
         auctionInfo: infos.data?.find((info) => info.id === auction.id)
           ?.auctionInfo,
       }))
-      //@ts-expect-error //TODO: update quries
+      //@ts-expect-error //TODO: update queries
       .sort(sortAuction),
     isLoading: isLoading, //|| infos.isLoading,
   };
