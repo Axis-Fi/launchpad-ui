@@ -1,7 +1,7 @@
 import type { Preview } from "@storybook/react";
 import "@repo/ui/style.css";
 import "../src/index.css";
-import { BlockchainProvider } from "../src/context/blockchain-provider";
+import { Providers } from "../src/context/providers";
 import { TooltipProvider } from "@repo/ui";
 import React from "react";
 
@@ -31,11 +31,9 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <BlockchainProvider>
-        <TooltipProvider delayDuration={350}>
-          <Story />
-        </TooltipProvider>
-      </BlockchainProvider>
+      <Providers>
+        <Story />
+      </Providers>
     ),
   ],
 };

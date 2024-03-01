@@ -14,16 +14,32 @@ export type Token = {
 /** Describes an Axis Deployment per chain */
 export type AxisDeployment = {
   chain: Chain;
-  tokenList: Token[];
+  tokenList: TokenList;
   subgraphURL: string;
   addresses: AxisContractAddresses;
 };
 
-/** Raw deployment configuration to be used to generate the final config*/
+/** Raw deployment data used to generate the final config*/
 export type AxisDeploymentConfig = Omit<
   AxisDeployment,
   "subgraphURL" | "tokenList"
 > & {
   rpcURL: string;
   tokenList: Omit<Token, "chainId">[];
+};
+
+//Tokenlist Standard
+export type TokenList = {
+  name: string;
+  timestamp: string;
+  version: {
+    major: number;
+    minor: number;
+    patch: number;
+  };
+  logoURI?: string;
+  keywords?: string[];
+  tokens: Token[];
+  //App specific
+  isActive?: boolean;
 };

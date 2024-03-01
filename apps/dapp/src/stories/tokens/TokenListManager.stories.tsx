@@ -19,9 +19,7 @@ const tokenlist = {
 const meta = {
   title: "Tokens/TokenListManager",
   component: TokenListManager,
-  args: {
-    tokenlists: [tokenlist],
-  },
+  args: {},
 } satisfies Meta<typeof TokenListManager>;
 
 export default meta;

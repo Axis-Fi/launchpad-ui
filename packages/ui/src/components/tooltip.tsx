@@ -5,6 +5,7 @@ export function Tooltip(
     content: React.ReactNode;
   }>,
 ) {
+  if (!props.content) return <>{props.children}</>;
   return (
     <TooltipRoot>
       <TooltipTrigger onClick={(e) => e.preventDefault()}>

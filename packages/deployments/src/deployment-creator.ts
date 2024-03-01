@@ -2,6 +2,7 @@ import { AxisContractAddresses } from "@repo/contracts";
 import { AxisDeployment, Token } from "./types";
 import { type Chain } from "viem/chains";
 import subgraphConfig from "../subgraph-config";
+import tokenlistMetadata from "../tokenlist-metadata";
 
 /** Creates a deployment configuration */
 export function createDeployment(config: {
@@ -11,13 +12,10 @@ export function createDeployment(config: {
   rpcURL?: string;
 }): AxisDeployment {
   return {
-    chain: withCustomRPC(config.chain, config.rpcURL),
-    subgraphURL: makeSubgraphURL(config.chain.id),
     addresses: config.addresses,
-    tokenList: config.tokenList.map((t) => ({
-      ...t,
-      chainId: config.chain.id,
-    })),
+    subgraphURL: makeSubgraphURL(config.chain.id),
+    chain: withCustomRPC(config.chain, config.rpcURL),
+    tokenList: withMetadata(config.tokenList, config.chain.id),
   };
 }
 
@@ -53,5 +51,13 @@ function withCustomRPC(chain: Chain, url?: string): Chain {
       ...chain.rpcUrls,
       axis: { http: [url] },
     },
+  };
+}
+
+function withMetadata(tokens: Omit<Token, "chainId">[], chainId: number) {
+  return {
+    ...tokenlistMetadata,
+    isActive: true,
+    tokens: tokens.map((t) => ({ ...t, chainId })),
   };
 }

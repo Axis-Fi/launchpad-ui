@@ -1,12 +1,15 @@
+import { Address } from "viem";
+
 export type Token = {
-  address: string;
-  decimals: string;
-  symbol: string;
-  name: string;
   chainId: number;
+  address: Address;
+  symbol: string;
+  decimals: number;
+  name?: string;
   logoURI?: string;
 };
 
+//Tokenlist Standard
 export type TokenList = {
   name: string;
   timestamp: string;
@@ -18,4 +21,6 @@ export type TokenList = {
   logoURI?: string;
   keywords?: string[];
   tokens: Token[];
+  //App specific
+  isActive?: boolean;
 };

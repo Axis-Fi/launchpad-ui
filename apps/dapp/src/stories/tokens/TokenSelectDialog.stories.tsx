@@ -2,13 +2,13 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
 import { testnetList } from "@repo/deployments";
 
-const tokens = testnetList[0].tokenList;
+const tokens = testnetList[0].tokenList.tokens;
 
 const meta = {
   title: "Tokens/TokenSelectDialog",
   component: TokenSelectDialog,
   args: {
-    tokens,
+    chainId: 168587773,
   },
 } satisfies Meta<typeof TokenSelectDialog>;
 

@@ -1,16 +1,13 @@
 import React from "react";
-import { TokenList } from "src/types/token-types";
-
-type AppTokenList = TokenList & {
-  isActive: boolean;
-  chainId: number;
-};
+import { TokenList, Token } from "src/types/token-types";
+import { defaultTokenlist as axisTokenlist } from "@repo/deployments";
 
 type ITokenlistContext = {
-  activeLists: AppTokenList[];
-  addList: (list: AppTokenList) => void;
-  removeList: (list: AppTokenList) => void;
-  toggleList: (list: AppTokenList) => void;
+  lists: TokenList[];
+  addList: (list: TokenList) => void;
+  removeList: (list: TokenList) => void;
+  toggleList: (list: TokenList, active: boolean) => void;
+  getTokensByChainId: (chainId: number) => Token[];
 };
 
 const TokenlistContext = React.createContext<ITokenlistContext>(
@@ -18,29 +15,45 @@ const TokenlistContext = React.createContext<ITokenlistContext>(
 );
 
 export function TokenlistProvider(props: React.PropsWithChildren) {
-  const [activeLists, setActiveList] = React.useState<AppTokenList[]>([]);
+  const [lists, setActiveLists] = React.useState<TokenList[]>([axisTokenlist]);
 
-  const addList = (list: AppTokenList) => {
-    setActiveList((prev) => [...prev, list]);
+  const addList = (list: TokenList) => {
+    if (!lists.some((l) => l.name === list.name)) {
+      setActiveLists((prev) => [...prev, list]);
+    }
   };
 
-  const removeList = (list: AppTokenList) => {
-    setActiveList((prev) => prev.filter((l) => l.name !== list.name));
+  const removeList = (list: TokenList) => {
+    setActiveLists((prev) => prev.filter((l) => l.name !== list.name));
   };
 
-  const toggleList = (list: AppTokenList) => {
-    setActiveList((prev) =>
+  const toggleList = (list: TokenList, active: boolean) => {
+    setActiveLists((prev) =>
       prev.map((l) => {
-        if (l.name === list.name) l.isActive = !l.isActive;
-
+        if (l.name === list.name) {
+          l.isActive = active;
+        }
         return l;
       }),
     );
   };
 
+  const getTokensByChainId = (chainId: number) => {
+    return lists
+      .filter((l) => l.isActive)
+      .flatMap((t) => t.tokens)
+      .filter((t) => t.chainId === chainId);
+  };
+
   return (
     <TokenlistContext.Provider
-      value={{ activeLists, addList, removeList, toggleList }}
+      value={{
+        lists: lists,
+        addList,
+        removeList,
+        toggleList,
+        getTokensByChainId,
+      }}
     >
       {props.children}
     </TokenlistContext.Provider>
