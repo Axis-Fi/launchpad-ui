@@ -4,7 +4,9 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogRoot,
+  DialogInputChangeHandler,
+  DialogStatusChangeHandler,
+  DialogTitle,
   IconedLabel,
   ScrollArea,
   Tooltip,
@@ -16,8 +18,9 @@ import { ArrowLeftIcon } from "lucide-react";
 import { useTokenLists } from "context/tokenlist-provider";
 
 type TokenSelectDialogProps = {
-  onSelect: (token: Token) => void;
   chainId: number;
+  onChange: DialogInputChangeHandler<Token>;
+  setDialogOpen: DialogStatusChangeHandler;
 };
 
 /** Shows a list of tokens per chain and a way to manage tokenlists*/
@@ -25,10 +28,10 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
   const { getTokensByChainId } = useTokenLists();
   const [isManaging, setIsManaging] = React.useState(false);
 
-  const tokens = getTokensByChainId(168587773);
+  const tokens = getTokensByChainId(props.chainId);
 
   return (
-    <DialogRoot open={true}>
+    <>
       {isManaging ? (
         <DialogContent className="max-w-sm">
           <DialogHeader className="flex-row items-center gap-x-2">
@@ -40,22 +43,31 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
             >
               <ArrowLeftIcon />
             </Button>
-            <p>Manage Tokenlist</p>
+            <DialogTitle>Manage Tokenlists</DialogTitle>
           </DialogHeader>
           <TokenListManager />
         </DialogContent>
       ) : (
         <DialogContent className="max-w-sm">
-          <DialogHeader>Select Token</DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Select Token</DialogTitle>
+          </DialogHeader>
           <div>
-            <ScrollArea className="h-[300px]">
+            <ScrollArea className="max-h-[300px]">
               {tokens.map((t, i) => (
                 <Button
                   key={i}
                   variant="outline"
                   size="lg"
                   className="block w-full rounded-none border-x border-b-0 border-t px-2 first:rounded-t-sm last:rounded-b-sm last:border-b"
-                  onClick={() => props.onSelect(t)}
+                  onClick={() => {
+                    props.onChange?.(t, {
+                      imgURL: t.logoURI,
+                      label: t.symbol,
+                      value: t.address,
+                    });
+                    props.setDialogOpen(false);
+                  }}
                 >
                   <TokenSelectRow token={t} />
                 </Button>
@@ -69,12 +81,12 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
                 setIsManaging(true);
               }}
             >
-              Manage Tokenlist
+              Manage Tokenlists
             </Button>
           </DialogFooter>
         </DialogContent>
       )}
-    </DialogRoot>
+    </>
   );
 }
 

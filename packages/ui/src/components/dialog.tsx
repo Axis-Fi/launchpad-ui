@@ -20,17 +20,32 @@ export type DialogProps = React.PropsWithChildren & {
   description?: string;
   submitText?: string;
   cancelText?: string;
+  open?: boolean;
   onOpenChange?: (open: boolean) => void;
   onSubmit?: () => void;
+  externalDialog?: boolean;
+  children?: React.ReactElement<{
+    setDialogOpen?: DialogStatusChangeHandler;
+  }>;
 };
 
+export type DialogStatusChangeHandler = React.Dispatch<
+  React.SetStateAction<boolean | undefined>
+>;
+
 export function Dialog(props: DialogProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(props.open);
 
   const handleSubmit = () => {
     props.onSubmit?.();
     setOpen(false);
   };
+
+  const children = React.isValidElement(props.children)
+    ? React.cloneElement(props.children, {
+        setDialogOpen: setOpen,
+      })
+    : props.children;
 
   const content = props.triggerElement ?? (
     <Button variant="secondary">{props.triggerContent}</Button>
@@ -40,35 +55,41 @@ export function Dialog(props: DialogProps) {
     <DialogRoot
       open={open}
       onOpenChange={(open) => {
-        setOpen((prev) => !prev);
+        setOpen(open);
         props.onOpenChange?.(open);
       }}
     >
       <DialogTrigger className="hover:bg-primary/80 w-full max-w-sm" asChild>
         {content}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{props.title}</DialogTitle>
-          <DialogDescription>{props.description}</DialogDescription>
-        </DialogHeader>
-        {props.children}
-        <DialogFooter className="flex gap-x-1 md:justify-around">
-          {props.cancelText && (
-            <Button className="w-1/2" variant="destructive" type="reset">
-              {props.cancelText}
-            </Button>
-          )}
 
-          <Button
-            className="w-1/2"
-            onClick={() => handleSubmit()}
-            type="submit"
-          >
-            {props.submitText ?? "Confirm"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+      {props.externalDialog ? (
+        //TODO: simplify or extract this
+        children
+      ) : (
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{props.title}</DialogTitle>
+            <DialogDescription>{props.description}</DialogDescription>
+          </DialogHeader>
+          {props.children}
+          <DialogFooter className="flex gap-x-1 md:justify-around">
+            {props.cancelText && (
+              <Button className="w-1/2" variant="destructive" type="reset">
+                {props.cancelText}
+              </Button>
+            )}
+
+            <Button
+              className="w-1/2"
+              onClick={() => handleSubmit()}
+              type="submit"
+            >
+              {props.submitText ?? "Confirm"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      )}
     </DialogRoot>
   );
 }

@@ -8,7 +8,7 @@ export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
   onBlur?: () => void;
   error?: string;
   children?: React.ReactElement<{
-    onChange?: (value: T, display?: SelectData) => void;
+    onChange?: DialogInputChangeHandler<T>;
   }>;
   display?: {
     imgURL?: string;
@@ -17,14 +17,19 @@ export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
   };
 };
 
+export type DialogInputChangeHandler<T> = (
+  value: T,
+  display?: SelectData,
+) => void;
+
 export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
   const [selected, setSelected] = React.useState<T>();
   const [display, setDisplay] = React.useState<SelectData | undefined>(
     props.display,
   );
 
-  const handleChange = useCallback(
-    (value: T, display?: SelectData) => {
+  const handleChange: DialogInputChangeHandler<T> = useCallback(
+    (value, display) => {
       setSelected(value);
       setDisplay(display);
 
@@ -48,13 +53,17 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
   return (
     <Dialog
       {...props}
-      onOpenChange={(open) => !open && props.onBlur?.()}
+      onOpenChange={(open) => {
+        !open && props.onBlur?.();
+      }}
       triggerElement={
         <Button variant="input" className="flex w-full justify-start">
           {triggerContent}
         </Button>
       }
-      onSubmit={() => props.onSubmit?.(selected)}
+      onSubmit={() => {
+        props.onSubmit?.(selected);
+      }}
     >
       {children}
     </Dialog>

@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
 import { testnetList } from "@repo/deployments";
-
-const tokens = testnetList[0].tokenList.tokens;
+import { DialogRoot } from "@repo/ui";
 
 const meta = {
   title: "Tokens/TokenSelectDialog",
@@ -10,6 +9,13 @@ const meta = {
   args: {
     chainId: 168587773,
   },
+  decorators: [
+    (Story) => (
+      <DialogRoot open={true}>
+        <Story />
+      </DialogRoot>
+    ),
+  ],
 } satisfies Meta<typeof TokenSelectDialog>;
 
 export default meta;

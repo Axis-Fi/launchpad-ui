@@ -25,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { cloakClient } from "src/services/cloak";
 import {
   useAccount,
+  useChainId,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
@@ -56,6 +57,7 @@ import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { toKeycode } from "modules/auction/utils/to-keycode";
+import { TokenSelectDialog } from "modules/token/token-select-dialog";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -129,18 +131,21 @@ const auctionDefaultValues = {
 export default function CreateAuctionPage() {
   const { address } = useAccount();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const connectedChainId = useChainId();
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
     defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken, chainId, capacity] = form.watch([
+  const [isVested, payoutToken, _chainId, capacity] = form.watch([
     "isVested",
     "payoutToken",
     "quoteToken.chainId",
     "capacity",
   ]);
+
+  const chainId = _chainId ?? connectedChainId;
 
   const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
   const createAuctionTx = useWriteContract();
@@ -433,10 +438,11 @@ export default function CreateAuctionPage() {
                     >
                       <DialogInput
                         {...field}
+                        externalDialog
                         title="Select Quote Token"
                         triggerContent={"Select token"}
                       >
-                        <TokenPicker name="quoteToken" />
+                        <TokenSelectDialog chainId={chainId} />
                       </DialogInput>
                     </FormItemWrapper>
                   )}
