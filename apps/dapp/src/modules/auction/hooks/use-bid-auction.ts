@@ -1,7 +1,6 @@
 import { axisContracts } from "@repo/contracts";
 import { useMutation } from "@tanstack/react-query";
 import { useAllowance } from "loaders/use-allowance";
-import { useReferral } from "loaders/use-referral";
 import { useAuction } from "loaders/useAuction";
 import React from "react";
 import { cloakClient } from "src/services/cloak";
@@ -12,6 +11,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { useReferrer } from "src/state/referral.atom";
 
 export function useBidAuction(
   lotId: string,
@@ -24,7 +24,7 @@ export function useBidAuction(
   if (!auction) throw new Error(`Unable to find auction ${lotId}`);
 
   const { address } = useAccount();
-  const referrer = useReferral();
+  const referrer = useReferrer();
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 

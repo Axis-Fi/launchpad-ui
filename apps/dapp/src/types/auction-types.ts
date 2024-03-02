@@ -1,7 +1,7 @@
 import { RawSubgraphAuctionWithEvents } from "./subgraph-types";
 import { Token } from "./token-types";
 
-export type Auction = RawSubgraphAuctionWithEvents & {
+export type Auction = {
   chainId: number;
   baseToken: Token;
   quoteToken: Token;
@@ -9,7 +9,7 @@ export type Auction = RawSubgraphAuctionWithEvents & {
   auctionInfo?: AuctionInfo;
   auctionData?: AuctionData;
   formatted?: AuctionFormattedInfo;
-};
+} & Omit<RawSubgraphAuctionWithEvents, "baseToken" | "quoteToken">;
 
 export type AuctionStatus =
   | "created"

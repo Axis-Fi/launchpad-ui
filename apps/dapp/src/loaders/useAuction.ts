@@ -1,9 +1,14 @@
 import { useGetAuctionLotQuery } from "@repo/subgraph-client";
 import { getAuctionStatus } from "../modules/auction/utils/get-auction-status";
-import { Auction, AuctionData } from "src/types";
+import {
+  Auction,
+  AuctionData,
+  RawSubgraphAuctionWithEvents,
+  Token,
+} from "src/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./useAuctionInfo";
-import { formatUnits } from "viem";
+import { Address, formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
 import { trimCurrency } from "src/utils/currency";
@@ -58,6 +63,8 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     refetch,
     result: {
       ...auction,
+      quoteToken: parseToken(auction.quoteToken, chainId),
+      baseToken: parseToken(auction.baseToken, chainId),
       auctionData,
       formatted: formatAuction(auction, auctionData),
     },
@@ -67,7 +74,10 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
 }
 
 /** Formats Auction information for displaying purporses */
-export function formatAuction(auction: Auction, auctionData?: AuctionData) {
+export function formatAuction(
+  auction: RawSubgraphAuctionWithEvents,
+  auctionData?: AuctionData,
+) {
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
 
@@ -122,5 +132,17 @@ export function formatAuction(auction: Auction, auctionData?: AuctionData) {
       auctionData?.minBidSize ?? 0n,
       Number(auction.baseToken.decimals), //TODO: validate if its the right token
     ),
+  };
+}
+
+function parseToken(
+  token: RawSubgraphAuctionWithEvents["baseToken"],
+  chainId: number,
+): Token {
+  return {
+    ...token,
+    decimals: parseInt(token.decimals),
+    address: token.address as Address,
+    chainId,
   };
 }
