@@ -10,7 +10,7 @@ type ITokenlistContext = {
   getTokensByChainId: (chainId: number) => Token[];
 };
 
-const TokenlistContext = React.createContext<ITokenlistContext>(
+export const TokenlistContext = React.createContext<ITokenlistContext>(
   {} as ITokenlistContext,
 );
 
@@ -58,8 +58,4 @@ export function TokenlistProvider(props: React.PropsWithChildren) {
       {props.children}
     </TokenlistContext.Provider>
   );
-}
-
-export function useTokenLists() {
-  return React.useContext(TokenlistContext);
 }

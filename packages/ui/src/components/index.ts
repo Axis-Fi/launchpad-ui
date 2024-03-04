@@ -1,4 +1,5 @@
 export * from "./primitives";
+export * from "./theme";
 
 export * from "./combobox";
 export * from "./data-table";
@@ -13,6 +14,4 @@ export * from "./select";
 export * from "./scrollable-select";
 export * from "./sort-button";
 export * from "./table";
-export * from "./theme-provider";
-export * from "./theme-switcher";
 export * from "./tooltip";

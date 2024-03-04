@@ -11,10 +11,13 @@ module.exports = {
   ],
   ignorePatterns: ["dist", ".eslintrc.*"],
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "react-refresh"],
   rules: {
     "react/prop-types": "off",
-    //"react-refresh/only-export-components": [ "warn", { allowConstantExport: true }, ],
+    "react-refresh/only-export-components": [
+      "warn",
+      { allowConstantExport: true },
+    ],
   },
   settings: {
     react: { version: "detect" },

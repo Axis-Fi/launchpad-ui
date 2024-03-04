@@ -1,5 +1,5 @@
 import { Avatar, Input, Skeleton, Switch } from "@repo/ui";
-import { useTokenLists } from "context/tokenlist-provider";
+import { useTokenLists } from "context/use-tokenlist";
 import { useGetTokenList } from "loaders/use-get-tokenlist";
 import React from "react";
 import { TokenList } from "src/types/token-types";

@@ -6,8 +6,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./";
-import { useTheme } from "./theme-provider";
+} from "..";
+import { useTheme } from "./";
 
 export function ThemeSwitcher() {
   const { setTheme } = useTheme();
