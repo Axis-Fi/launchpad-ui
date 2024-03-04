@@ -1,5 +1,5 @@
 import { axisContracts } from "@repo/deployments";
-import { AuctionData } from "src/types";
+import { AuctionData } from "@repo/types";
 import { parseUnits } from "viem";
 import { useReadContract } from "wagmi";
 

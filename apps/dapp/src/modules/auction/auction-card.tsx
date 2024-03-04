@@ -2,7 +2,7 @@ import { Avatar, Button, Progress, Skeleton } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowRightIcon } from "lucide-react";
-import { AuctionListed } from "src/types";
+import { AuctionListed } from "@repo/types";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { ImageBanner } from "components/image-banner";
 

@@ -1,6 +1,6 @@
 import { Link } from "@repo/ui";
 import { ArrowUpRightIcon } from "lucide-react";
-import { PropsWithAuction } from "src/types";
+import { PropsWithAuction } from "@repo/types";
 
 export function ProjectInfoCard({
   auction,

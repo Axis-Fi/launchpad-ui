@@ -1,7 +1,7 @@
 import { Button, DataTable, Tooltip, trimAddress } from "@repo/ui";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
-import type { AuctionListed } from "src/types";
+import type { AuctionListed } from "@repo/types";
 import { useAccount } from "wagmi";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { CheckIcon, XIcon } from "lucide-react";

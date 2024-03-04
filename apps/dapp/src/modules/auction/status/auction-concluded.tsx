@@ -2,7 +2,7 @@ import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
-import { PropsWithAuction } from "src/types";
+import { PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import React from "react";

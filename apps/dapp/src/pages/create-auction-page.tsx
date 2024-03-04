@@ -47,7 +47,7 @@ import {
   dateMath,
 } from "src/utils";
 
-import { AuctionInfo } from "src/types";
+import { AuctionInfo } from "@repo/types";
 
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";

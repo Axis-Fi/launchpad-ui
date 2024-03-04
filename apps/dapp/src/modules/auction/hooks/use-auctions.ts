@@ -3,7 +3,7 @@ import {
   useGetAuctionLotsQuery,
 } from "@repo/subgraph-client/src/generated";
 import { getAuctionStatus } from "../utils/get-auction-status";
-import { AuctionListed } from "src/types";
+import { AuctionListed } from "@repo/types";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
 import { getChainId } from "src/utils/chain";

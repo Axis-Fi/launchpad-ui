@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { TokenList } from "src/types";
+import { TokenList } from "@repo/types";
 import { defaultTokenlist } from "@repo/deployments";
 
 export const tokenlistAtom = atom<TokenList[]>([defaultTokenlist]);

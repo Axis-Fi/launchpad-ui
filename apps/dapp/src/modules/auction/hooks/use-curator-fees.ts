@@ -6,7 +6,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { toKeycode } from "../utils/to-keycode";
-import { AuctionTypes } from "src/types";
+import { AuctionTypes } from "@repo/types";
 
 export function useCuratorFees(chainId: number, feePercentage?: number) {
   const { address } = useAccount({});

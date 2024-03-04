@@ -1,6 +1,6 @@
 import { FormField, FormItemWrapper, IconedLabel, Input } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
-import { PropsWithAuction } from "src/types";
+import { PropsWithAuction } from "@repo/types";
 import { BidForm } from "./status";
 
 const formatRate = new Intl.NumberFormat("en-US", {

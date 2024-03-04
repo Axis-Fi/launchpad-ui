@@ -1,5 +1,5 @@
 import { ParsedBid } from "modules/auction/settled-auction-chart";
-import { Auction, AuctionData } from "src/types";
+import { Auction, AuctionData } from "@repo/types";
 import { formatUnits } from "viem";
 
 /** Calculates the minimum and marginal price for an Auction

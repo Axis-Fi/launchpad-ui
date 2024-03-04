@@ -9,7 +9,7 @@ import {
 //import { activeChains } from "config/chains";
 import useERC20 from "loaders/use-erc20";
 import React from "react";
-import { Token } from "src/types";
+import { Token } from "@repo/types";
 import { Address } from "viem";
 import { useChainId } from "wagmi";
 import { useFormContext, Path } from "react-hook-form";

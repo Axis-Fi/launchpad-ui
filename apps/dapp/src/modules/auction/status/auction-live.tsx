@@ -3,7 +3,7 @@ import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
-import { PropsWithAuction } from "src/types";
+import { PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";

@@ -1,8 +1,8 @@
 import {
   RawSubgraphAuction,
   RawSubgraphAuctionWithEvents,
-} from "./subgraph-types";
-import { Token } from "./token-types";
+} from "./subgraph-queries";
+import { Token } from "./token";
 
 export type BaseAuction = {
   chainId: number;

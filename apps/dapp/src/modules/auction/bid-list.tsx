@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { AuctionEncryptedBid, Auction, PropsWithAuction } from "src/types";
+import { AuctionEncryptedBid, Auction, PropsWithAuction } from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
 import { Button, DataTable, Tooltip } from "@repo/ui";

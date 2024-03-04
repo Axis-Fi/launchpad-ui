@@ -1,5 +1,6 @@
 import { Address } from "viem";
 
+/** Tokenlist's Token Definition */
 export type Token = {
   chainId: number;
   address: Address;

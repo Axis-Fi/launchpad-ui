@@ -1,5 +1,5 @@
 import { Badge, cn } from "@repo/ui";
-import { AuctionStatus } from "src/types";
+import { AuctionStatus } from "@repo/types";
 
 /** Displays a indicator with the auction's current status */
 export function AuctionStatusChip({

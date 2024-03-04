@@ -1,4 +1,4 @@
-import { AuctionStatus, RawSubgraphAuction } from "src/types";
+import { AuctionStatus, RawSubgraphAuction } from "@repo/types";
 
 /** Determines Auction status */
 export function getAuctionStatus(auction: RawSubgraphAuction): AuctionStatus {

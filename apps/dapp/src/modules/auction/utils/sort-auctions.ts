@@ -1,4 +1,4 @@
-import { AuctionStatus, BaseAuction } from "src/types";
+import { AuctionStatus, BaseAuction } from "@repo/types";
 
 const status: { [key in AuctionStatus]: number } = {
   live: 0,

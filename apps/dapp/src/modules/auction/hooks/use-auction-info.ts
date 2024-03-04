@@ -1,7 +1,7 @@
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "@repo/ipfs-api";
 
-import { AuctionInfo } from "src/types";
+import { AuctionInfo } from "@repo/types";
 import ipfsServers from "config/ipfs-servers";
 import { environment } from "config/environment";
 

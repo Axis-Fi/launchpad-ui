@@ -1,7 +1,7 @@
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
-import { PropsWithAuction } from "src/types";
+import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import React from "react";

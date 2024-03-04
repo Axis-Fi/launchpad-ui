@@ -1,8 +1,8 @@
 import React from "react";
 import { Avatar, Input, Skeleton, Switch } from "@repo/ui";
+import type { TokenList } from "@repo/types";
 import { useTokenLists } from "state/tokenlist";
 import { useGetTokenList } from "loaders/use-get-tokenlist";
-import type { TokenList } from "src/types/token-types";
 
 export function TokenListManager() {
   const [url, setUrl] = React.useState<string>();

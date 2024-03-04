@@ -52,6 +52,9 @@ importers:
       "@repo/tailwind-config":
         specifier: workspace:*
         version: link:../../config/tailwind-config
+      "@repo/types":
+        specifier: workspace:*
+        version: link:../../packages/types
       "@repo/typescript-config":
         specifier: workspace:*
         version: link:../../config/typescript-config
@@ -303,6 +306,9 @@ importers:
       "@repo/eslint-config":
         specifier: workspace:*
         version: link:../../config/eslint-config
+      "@repo/types":
+        specifier: workspace:*
+        version: link:../types
       "@repo/typescript-config":
         specifier: workspace:*
         version: link:../../config/typescript-config
@@ -331,6 +337,18 @@ importers:
       typescript:
         specifier: ^5.3.0
         version: 5.3.3
+
+  packages/types:
+    dependencies:
+      "@repo/eslint-config":
+        specifier: workspace:*
+        version: link:../../config/eslint-config
+      "@repo/subgraph-client":
+        specifier: workspace:*
+        version: link:../subgraph-client
+      "@repo/typescript-config":
+        specifier: workspace:*
+        version: link:../../config/typescript-config
 
   packages/ui:
     dependencies:

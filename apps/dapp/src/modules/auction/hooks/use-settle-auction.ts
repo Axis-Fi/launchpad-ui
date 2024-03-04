@@ -1,5 +1,5 @@
 import { axisContracts } from "@repo/deployments";
-import { Auction } from "src/types";
+import { Auction } from "@repo/types";
 import { parseUnits } from "viem";
 import {
   useSimulateContract,

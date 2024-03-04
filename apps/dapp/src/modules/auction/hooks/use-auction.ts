@@ -5,7 +5,7 @@ import {
   AuctionData,
   RawSubgraphAuctionWithEvents,
   Token,
-} from "src/types";
+} from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
 import { Address, formatUnits } from "viem";

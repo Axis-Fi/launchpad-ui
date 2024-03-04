@@ -1,5 +1,5 @@
 import { BidList } from "./bid-list";
-import { PropsWithAuction } from "src/types";
+import { PropsWithAuction } from "@repo/types";
 
 type AuctionBidsCard = {
   isLoading?: boolean;

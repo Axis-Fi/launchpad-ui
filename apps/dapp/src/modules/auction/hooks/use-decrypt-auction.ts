@@ -1,6 +1,6 @@
 import { axisContracts } from "@repo/deployments";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Auction } from "src/types";
+import { Auction } from "@repo/types";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
 import { Address, ByteArray, fromHex, toHex } from "viem";

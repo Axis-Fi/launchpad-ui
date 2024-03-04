@@ -1,6 +1,6 @@
 import { InfoLabel, trimAddress } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
-import { PropsWithAuction } from "src/types";
+import { PropsWithAuction } from "@repo/types";
 import { AuctionInputCard } from "../auction-input-card";
 
 export function AuctionCreated({ auction }: PropsWithAuction) {

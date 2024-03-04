@@ -1,4 +1,4 @@
-import { Token } from "@repo/deployments/src/types";
+import { Token } from "@repo/types";
 import {
   Button,
   DialogContent,

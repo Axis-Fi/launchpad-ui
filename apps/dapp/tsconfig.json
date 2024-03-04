@@ -1,6 +1,10 @@
 {
   "extends": "@repo/typescript-config/react-app.json",
-  "include": ["src", "../../packages/ui/src/components/sort-button.tsx"],
+  "include": [
+    "src",
+    "../../packages/ui/src/components/sort-button.tsx",
+    "../../packages/types/types"
+  ],
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {

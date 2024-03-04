@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 import type { Address } from "viem";
 import { axisContracts } from "@repo/deployments";
 import { Avatar, Skeleton } from "@repo/ui";
-import type { PropsWithAuction, AuctionStatus } from "src/types";
+import type { PropsWithAuction, AuctionStatus } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { SocialRow } from "components/social-row";
 import { ProjectInfoCard } from "modules/auction/project-info-card";

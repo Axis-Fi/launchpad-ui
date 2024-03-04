@@ -1,6 +1,6 @@
 import type { CartesianViewBox } from "recharts/types/util/types";
 import type { ScatterPointItem } from "recharts/types/cartesian/Scatter";
-import type { Auction, AuctionData } from "src/types";
+import type { Auction, AuctionData } from "@repo/types";
 import {
   LabelProps,
   ReferenceLine,

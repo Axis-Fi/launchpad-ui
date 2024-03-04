@@ -1,6 +1,6 @@
-import { AxisContractAddresses } from "@repo/abis";
-import { AxisDeployment, Token } from "./types";
-import { type Chain } from "viem/chains";
+import type { Token, AxisContractAddresses } from "@repo/types";
+import type { Chain } from "viem/chains";
+import type { AxisDeployment } from "./types";
 import subgraphConfig from "../subgraph-config";
 import tokenlistMetadata from "../tokenlist-metadata";
 

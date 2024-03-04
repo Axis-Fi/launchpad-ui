@@ -1,15 +1,5 @@
 import { type Chain } from "viem/chains";
-import { Address, AxisContractAddresses } from "@repo/abis";
-
-/** Tokenlist's Token Definition */
-export type Token = {
-  chainId: number;
-  address: Address;
-  symbol: string;
-  decimals: number;
-  name?: string;
-  logoURI?: string;
-};
+import { type Token, TokenList, AxisContractAddresses } from "@repo/types";
 
 /** Describes an Axis Deployment per chain */
 export type AxisDeployment = {
@@ -26,20 +16,4 @@ export type AxisDeploymentConfig = Omit<
 > & {
   rpcURL: string;
   tokenList: Omit<Token, "chainId">[];
-};
-
-//Tokenlist Standard
-export type TokenList = {
-  name: string;
-  timestamp: string;
-  version: {
-    major: number;
-    minor: number;
-    patch: number;
-  };
-  logoURI?: string;
-  keywords?: string[];
-  tokens: Token[];
-  //App specific
-  isActive?: boolean;
 };
