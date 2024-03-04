@@ -1,5 +1,18 @@
 import { useParams } from "react-router-dom";
-import { AuctionStatus } from "src/types";
+import { useAccount } from "wagmi";
+import type { Address } from "viem";
+import { axisContracts } from "@repo/deployments";
+import { Avatar, Skeleton } from "@repo/ui";
+import type { PropsWithAuction, AuctionStatus } from "src/types";
+import { useAuction } from "modules/auction/hooks/use-auction";
+import { SocialRow } from "components/social-row";
+import { ProjectInfoCard } from "modules/auction/project-info-card";
+import { ContractAddressCard } from "modules/auction/contract-address-card";
+import { PageHeader } from "modules/app/page-header";
+import { AuctionInfoCard } from "modules/auction/auction-info-card";
+import { AuctionBidsCard } from "modules/auction/auction-bids";
+import { ImageBanner } from "components/image-banner";
+import { ReloadButton } from "components/reload-button";
 import {
   AuctionConcluded,
   AuctionCreated,
@@ -7,20 +20,6 @@ import {
   AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
-import { useAuction } from "loaders/useAuction";
-import { Avatar, Button, Skeleton, Tooltip, cn } from "@repo/ui";
-import { SocialRow } from "components/social-row";
-import { ProjectInfoCard } from "modules/auction/project-info-card";
-import { ContractAddressCard } from "modules/auction/contract-address-card";
-import { axisContracts } from "@repo/deployments";
-import { Address } from "viem";
-import { PageHeader } from "modules/app/page-header";
-import { AuctionInfoCard } from "modules/auction/auction-info-card";
-import { AuctionBidsCard } from "modules/auction/auction-bids";
-import { PropsWithAuction } from "src/types";
-import { ImageBanner } from "components/image-banner";
-import { useAccount } from "wagmi";
-import { RefreshCwIcon } from "lucide-react";
 
 const statuses: Record<
   AuctionStatus,
@@ -57,13 +56,7 @@ export default function AuctionPage() {
   return (
     <div>
       <PageHeader>
-        <Tooltip content="Refetch latest auction information">
-          <Button size="icon" variant="ghost" onClick={() => refetch()}>
-            <RefreshCwIcon
-              className={cn(isRefetching && "loading-indicator-fast")}
-            />
-          </Button>
-        </Tooltip>
+        <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
       </PageHeader>
 
       <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>

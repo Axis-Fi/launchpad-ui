@@ -1,4 +1,4 @@
-import { Auction, AuctionStatus } from "src/types";
+import { AuctionStatus, BaseAuction } from "src/types";
 
 const status: { [key in AuctionStatus]: number } = {
   live: 0,
@@ -9,6 +9,6 @@ const status: { [key in AuctionStatus]: number } = {
 };
 
 /** Sorts an auction by status */
-export function sortAuction(a: Auction, b: Auction) {
+export function sortAuction(a: BaseAuction, b: BaseAuction) {
   return status[a.status] - status[b.status];
 }

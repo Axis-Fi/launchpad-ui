@@ -4,7 +4,7 @@ import { useChainId } from "wagmi";
 import React from "react";
 import { useFees } from "./hooks/use-fees";
 import { CheckIcon } from "lucide-react";
-import { parsePercent } from "./use-percentage-input";
+import { parsePercent } from "utils/number";
 
 type CuratorFeeManagerProps = {
   chainId?: number;

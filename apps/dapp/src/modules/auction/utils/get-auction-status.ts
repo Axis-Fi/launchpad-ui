@@ -1,9 +1,7 @@
-import { AuctionStatus, RawSubgraphAuctionWithEvents } from "src/types";
+import { AuctionStatus, RawSubgraphAuction } from "src/types";
 
 /** Determines Auction status */
-export function getAuctionStatus(
-  auction: RawSubgraphAuctionWithEvents,
-): AuctionStatus {
+export function getAuctionStatus(auction: RawSubgraphAuction): AuctionStatus {
   const { start, conclusion, capacity, bids, bidsDecrypted, refundedBids } =
     auction;
 

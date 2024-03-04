@@ -1,5 +1,6 @@
 import { Button, DropdownChecker, IconnedInput, cn } from "@repo/ui";
-import { useAuctions } from "loaders/useAuctions";
+import { ReloadButton } from "components/reload-button";
+import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
 import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
@@ -18,7 +19,7 @@ export default function AuctionListPage() {
   const [filters, setFilters] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const navigate = useNavigate();
-  const { result: auctions, isLoading } = useAuctions();
+  const { result: auctions, isLoading, refetch, isRefetching } = useAuctions();
 
   const filteredAuctions = filters.length
     ? auctions
@@ -43,6 +44,8 @@ export default function AuctionListPage() {
             placeholder="Search"
             onChange={(e) => setSearchText(e.target.value)}
           />
+
+          <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
         </div>
       </div>
       {!isLoading && !filteredAuctions.length && (

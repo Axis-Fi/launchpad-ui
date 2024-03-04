@@ -1,7 +1,7 @@
 import { Button, DataTable, Tooltip, trimAddress } from "@repo/ui";
 import { createColumnHelper } from "@tanstack/react-table";
-import { useAuctions } from "loaders/useAuctions";
-import type { Auction } from "src/types";
+import { useAuctions } from "modules/auction/hooks/use-auctions";
+import type { AuctionListed } from "src/types";
 import { useAccount } from "wagmi";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { CheckIcon, XIcon } from "lucide-react";
@@ -9,7 +9,7 @@ import React from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useCurateAuction } from "./hooks/use-curate-auction";
 
-const col = createColumnHelper<Auction>();
+const col = createColumnHelper<AuctionListed>();
 const cols = [
   col.accessor("owner", {
     header: "Creator",

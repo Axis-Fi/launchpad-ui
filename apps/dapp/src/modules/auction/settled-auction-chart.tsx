@@ -16,7 +16,7 @@ import {
 import { format } from "date-fns";
 import { CircleIcon, GemIcon, XIcon } from "lucide-react";
 import { cn } from "@repo/ui";
-import { useAuction } from "loaders/useAuction";
+import { useAuction } from "modules/auction/hooks/use-auction";
 import { formatDate } from "src/utils/date";
 import { SVGProps } from "react";
 import { getAuctionPrices } from "modules/auction/utils/get-auction-prices";

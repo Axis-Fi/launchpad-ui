@@ -1,7 +1,7 @@
 import { axisContracts } from "@repo/deployments";
 import { useMutation } from "@tanstack/react-query";
 import { useAllowance } from "loaders/use-allowance";
-import { useAuction } from "loaders/useAuction";
+import { useAuction } from "modules/auction/hooks/use-auction";
 import React from "react";
 import { cloakClient } from "src/services/cloak";
 import { Address, parseUnits, toHex } from "viem";

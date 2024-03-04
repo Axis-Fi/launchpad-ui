@@ -13,6 +13,8 @@
       "loaders/*": ["src/loaders/*"],
       "hooks/*": ["src/hooks/*"],
       "state/*": ["src/state/*"],
+      "utils/*": ["src/utils/*"],
+      "utils": ["src/utils/index"],
       "@/utils": ["../../packages/ui/src/utils.ts"],
       "@/components/primitives/*": [
         "../../packages/ui/src/components/primitives/*"

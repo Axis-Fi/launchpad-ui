@@ -1,5 +1,5 @@
 import { useGetAuctionLotQuery } from "@repo/subgraph-client/src/generated";
-import { getAuctionStatus } from "../modules/auction/utils/get-auction-status";
+import { getAuctionStatus } from "../utils/get-auction-status";
 import {
   Auction,
   AuctionData,
@@ -7,11 +7,11 @@ import {
   Token,
 } from "src/types";
 import { useQuery } from "@tanstack/react-query";
-import { getAuctionInfo } from "./useAuctionInfo";
+import { getAuctionInfo } from "./use-auction-info";
 import { Address, formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
-import { trimCurrency } from "src/utils/currency";
+import { trimCurrency } from "utils";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 
 export type AuctionResult = {
@@ -135,7 +135,7 @@ export function formatAuction(
   };
 }
 
-function parseToken(
+export function parseToken(
   token: RawSubgraphAuctionWithEvents["baseToken"],
   chainId: number,
 ): Token {

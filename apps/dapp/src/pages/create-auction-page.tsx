@@ -49,7 +49,7 @@ import {
 
 import { AuctionInfo } from "src/types";
 
-import { storeAuctionInfo } from "loaders/useAuctionInfo";
+import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
 import React from "react";

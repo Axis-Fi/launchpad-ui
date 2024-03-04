@@ -1,18 +1,25 @@
-import { useGetAuctionLotsQuery } from "@repo/subgraph-client/src/generated";
-import { getAuctionStatus } from "../modules/auction/utils/get-auction-status";
-import { Auction } from "src/types";
-import { useQuery } from "@tanstack/react-query";
-import { getAuctionInfo } from "./useAuctionInfo";
+import {
+  GetAuctionLotsQuery,
+  useGetAuctionLotsQuery,
+} from "@repo/subgraph-client/src/generated";
+import { getAuctionStatus } from "../utils/get-auction-status";
+import { AuctionListed } from "src/types";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import { getAuctionInfo } from "./use-auction-info";
 import { getChainId } from "src/utils/chain";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
+import { parseToken } from "./use-auction";
 
 export type AuctionsResult = {
-  result: Auction[];
-  isLoading: boolean;
-};
+  result: AuctionListed[];
+} & Pick<
+  UseQueryResult<GetAuctionLotsQuery, unknown>,
+  "isLoading" | "refetch" | "isRefetching"
+>;
 
 export function useAuctions(): AuctionsResult {
-  const { data, isLoading, isSuccess } = useGetAuctionLotsQuery();
+  const { data, refetch, isLoading, isSuccess, isRefetching } =
+    useGetAuctionLotsQuery();
 
   const infos = useQuery({
     queryKey: ["all-auction-info"],
@@ -28,18 +35,19 @@ export function useAuctions(): AuctionsResult {
   });
 
   return {
-    //@ts-expect-error //TODO: update queries
     result: (data?.auctionLots ?? [])
       .map((auction) => ({
         ...auction,
+        baseToken: parseToken(auction.baseToken, getChainId(auction.chain)),
+        quoteToken: parseToken(auction.quoteToken, getChainId(auction.chain)),
         chainId: getChainId(auction.chain),
-        //@ts-expect-error //TODO: update queries
         status: getAuctionStatus(auction),
         auctionInfo: infos.data?.find((info) => info.id === auction.id)
           ?.auctionInfo,
       }))
-      //@ts-expect-error //TODO: update queries
       .sort(sortAuction),
     isLoading: isLoading, //|| infos.isLoading,
+    refetch,
+    isRefetching,
   };
 }

@@ -9,7 +9,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { useAuction } from "loaders/useAuction";
+import { useAuction } from "modules/auction/hooks/use-auction";
 
 /** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: Auction) => {

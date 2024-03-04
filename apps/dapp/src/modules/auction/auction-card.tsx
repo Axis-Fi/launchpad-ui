@@ -2,15 +2,13 @@ import { Avatar, Button, Progress, Skeleton } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowRightIcon } from "lucide-react";
-import { Auction } from "src/types";
+import { AuctionListed } from "src/types";
 import { AuctionStatusChip } from "./auction-status-chip";
-import { PropsWithAuction } from "src/types";
 import { ImageBanner } from "components/image-banner";
 
 type AuctionCardProps = {
-  onClickView?: (auction: Auction) => void;
-} & React.HTMLAttributes<HTMLDivElement> &
-  PropsWithAuction;
+  onClickView?: (auction: AuctionListed) => void;
+} & React.HTMLAttributes<HTMLDivElement> & { auction: AuctionListed };
 
 export function AuctionCard({
   auction,

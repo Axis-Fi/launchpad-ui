@@ -1,4 +1,4 @@
-import { useAuctions } from "loaders/useAuctions";
+import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { useAccount } from "wagmi";
 
 /** Utility to read Curator data for the connected address*/
