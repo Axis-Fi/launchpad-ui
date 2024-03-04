@@ -1,4 +1,4 @@
-import { axisContracts } from "@repo/contracts";
+import { axisContracts } from "@repo/deployments";
 import { useMutation } from "@tanstack/react-query";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "loaders/useAuction";

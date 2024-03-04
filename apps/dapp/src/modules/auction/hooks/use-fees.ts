@@ -1,4 +1,4 @@
-import { axisContracts } from "@repo/contracts";
+import { axisContracts } from "@repo/deployments";
 import { useReadContract } from "wagmi";
 import { toKeycode } from "../utils/to-keycode";
 import { AuctionTypes } from "src/types";

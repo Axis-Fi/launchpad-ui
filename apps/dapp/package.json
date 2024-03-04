@@ -16,7 +16,7 @@
   "dependencies": {
     "@pinata/sdk": "^2.1.0",
     "@rainbow-me/rainbowkit": "2.0.0-beta.2",
-    "@repo/contracts": "workspace:*",
+    "@repo/abis": "workspace:*",
     "@repo/deployments": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/ipfs-api": "workspace:*",

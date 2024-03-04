@@ -1,4 +1,4 @@
-import { useGetAuctionLotQuery } from "@repo/subgraph-client";
+import { useGetAuctionLotQuery } from "@repo/subgraph-client/src/generated";
 import { getAuctionStatus } from "../modules/auction/utils/get-auction-status";
 import {
   Auction,

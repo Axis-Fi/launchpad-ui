@@ -25,7 +25,8 @@ This Turborepo includes the following packages and applications:
 - `apps/dapp`: Decentralized App to interact with Axis contracts
 - `apps/lp`: Static Landing Page for Axis
 - `apps/ipfs-api`: Proxy API for an IPFS gateway
-- `packages/contracts`: Protocol's contract addresses and abis
+- `packages/abis`: Protocol's contract abis
+- `packages/deployments`: Metadata and configuration for the protocol's chain deployments
 - `packages/ui`: Primitive React components built using [shadcn](https://ui.shadcn.com/)
 - `packages/subgraph-client`: Subgraph client and queries
 - `packages/brand-assets`: Axis brand images and fonts

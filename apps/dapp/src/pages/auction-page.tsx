@@ -12,7 +12,7 @@ import { Avatar, Button, Skeleton, Tooltip, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { ProjectInfoCard } from "modules/auction/project-info-card";
 import { ContractAddressCard } from "modules/auction/contract-address-card";
-import { axisContracts } from "@repo/contracts";
+import { axisContracts } from "@repo/deployments";
 import { Address } from "viem";
 import { PageHeader } from "modules/app/page-header";
 import { AuctionInfoCard } from "modules/auction/auction-info-card";

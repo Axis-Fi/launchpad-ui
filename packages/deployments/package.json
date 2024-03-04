@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "main": "./src/index.ts",
   "dependencies": {
-    "@repo/contracts": "workspace:*",
+    "@repo/abis": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/eslint-config": "workspace:*"
   },

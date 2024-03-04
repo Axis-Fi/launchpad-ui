@@ -1,4 +1,7 @@
-import { GetAuctionLotQuery, GetAuctionLotsQuery } from "@repo/subgraph-client";
+import {
+  GetAuctionLotQuery,
+  GetAuctionLotsQuery,
+} from "@repo/subgraph-client/src/generated";
 
 export type RawSubgraphAuctionWithEvents = GetAuctionLotQuery["auctionLots"][0];
 export type RawSubgraphAuction = GetAuctionLotsQuery["auctionLots"][0];

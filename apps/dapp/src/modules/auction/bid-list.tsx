@@ -4,7 +4,7 @@ import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
 import { Button, DataTable, Tooltip } from "@repo/ui";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { axisContracts } from "@repo/contracts";
+import { axisContracts } from "@repo/deployments";
 import { parseUnits } from "viem";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";

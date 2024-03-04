@@ -1,4 +1,4 @@
-import { axisContracts } from "@repo/contracts";
+import { axisContracts } from "@repo/deployments";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Auction } from "src/types";
 import { useEffect } from "react";

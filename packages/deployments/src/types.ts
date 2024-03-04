@@ -1,5 +1,5 @@
 import { type Chain } from "viem/chains";
-import { Address, AxisContractAddresses } from "@repo/contracts";
+import { Address, AxisContractAddresses } from "@repo/abis";
 
 /** Tokenlist's Token Definition */
 export type Token = {

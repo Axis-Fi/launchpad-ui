@@ -2,20 +2,34 @@ import { createDeployment, createDeploymentRecord } from "./deployment-creator";
 import testnetConfigs from "../chains/testnet";
 import mainnetConfigs from "../chains/mainnet";
 import { TokenList } from "./types";
+import { AxisContractAddresses, abis } from "@repo/abis";
 
 //Transforms config files into deployment objects
-export const testnetList = testnetConfigs.map(createDeployment);
-export const mainnetList = mainnetConfigs.map(createDeployment);
+export const mainnetDeployments = testnetConfigs.map(createDeployment);
+export const testnetDeployments = mainnetConfigs.map(createDeployment);
+
+const allDeployments = [testnetDeployments, mainnetDeployments];
+
+const addressesPerChain: Record<number, AxisContractAddresses> = allDeployments
+  .flat()
+  .reduce((acc, deployment) => {
+    return { ...acc, [deployment.chain.id]: deployment.addresses };
+  }, {});
+
+export const axisContracts = {
+  addresses: addressesPerChain,
+  abis,
+};
 
 //Indexes deployments by chain for ease of use
-export const testnets = createDeploymentRecord(testnetList);
-export const mainnets = createDeploymentRecord(mainnetList);
+export const testnets = createDeploymentRecord(mainnetDeployments);
+export const mainnets = createDeploymentRecord(testnetDeployments);
 
-const allList = [testnetList, mainnetList].flatMap((list) =>
+const lists = [mainnetDeployments, testnetDeployments].flatMap((list) =>
   list.flatMap((t) => t.tokenList),
 );
 
-export const defaultTokenlist = compileTokenList(allList);
+export const defaultTokenlist = compileTokenList(lists);
 
 function compileTokenList(tokenlist: TokenList[]) {
   const [metadata] = tokenlist;

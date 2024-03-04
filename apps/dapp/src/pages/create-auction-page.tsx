@@ -29,7 +29,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { axisContracts } from "@repo/contracts";
+import { axisContracts } from "@repo/deployments";
 import {
   Address,
   encodeAbiParameters,

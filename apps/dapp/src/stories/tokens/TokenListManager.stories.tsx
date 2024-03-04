@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TokenListManager } from "modules/token/token-list-manager";
-import { testnetList } from "@repo/deployments";
+import { mainnetDeployments } from "@repo/deployments";
 
-const tokens = testnetList[0].tokenList;
+const tokens = mainnetDeployments[0].tokenList;
 
 const tokenlist = {
   name: "Axis",

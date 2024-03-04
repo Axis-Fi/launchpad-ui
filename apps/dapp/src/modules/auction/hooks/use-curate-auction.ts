@@ -1,4 +1,4 @@
-import { axisContracts } from "@repo/contracts";
+import { axisContracts } from "@repo/deployments";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,

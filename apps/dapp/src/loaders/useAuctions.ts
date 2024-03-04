@@ -1,4 +1,4 @@
-import { useGetAuctionLotsQuery } from "@repo/subgraph-client";
+import { useGetAuctionLotsQuery } from "@repo/subgraph-client/src/generated";
 import { getAuctionStatus } from "../modules/auction/utils/get-auction-status";
 import { Auction } from "src/types";
 import { useQuery } from "@tanstack/react-query";

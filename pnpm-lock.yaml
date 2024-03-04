@@ -34,15 +34,15 @@ importers:
       "@rainbow-me/rainbowkit":
         specifier: 2.0.0-beta.2
         version: 2.0.0-beta.2(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)(viem@2.5.0)(wagmi@2.5.2)
-      "@repo/contracts":
+      "@repo/abis":
         specifier: workspace:*
-        version: link:../../packages/contracts
+        version: link:../../packages/abis
       "@repo/deployments":
         specifier: workspace:*
         version: link:../../packages/deployments
       "@repo/eslint-config":
         specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: link:../../config/eslint-config
       "@repo/ipfs-api":
         specifier: workspace:*
         version: link:../ipfs-api
@@ -51,10 +51,10 @@ importers:
         version: link:../../packages/subgraph-client
       "@repo/tailwind-config":
         specifier: workspace:*
-        version: link:../../packages/tailwind-config
+        version: link:../../config/tailwind-config
       "@repo/typescript-config":
         specifier: workspace:*
-        version: link:../../packages/typescript-config
+        version: link:../../config/typescript-config
       "@repo/ui":
         specifier: workspace:*
         version: link:../../packages/ui
@@ -200,7 +200,7 @@ importers:
     devDependencies:
       "@repo/eslint-config":
         specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: link:../../config/eslint-config
       "@types/cors":
         specifier: ^2.8.17
         version: 2.8.17
@@ -224,10 +224,10 @@ importers:
         version: 5.1.0(astro@4.2.3)(tailwindcss@3.4.1)
       "@repo/eslint-config":
         specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: link:../../config/eslint-config
       "@repo/tailwind-config":
         specifier: workspace:*
-        version: link:../../packages/tailwind-config
+        version: link:../../config/tailwind-config
       "@repo/ui":
         specifier: workspace:*
         version: link:../../packages/ui
@@ -253,28 +253,7 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
-  packages/contracts:
-    dependencies:
-      "@repo/eslint-config":
-        specifier: workspace:*
-        version: link:../eslint-config
-      "@wagmi/cli":
-        specifier: ^2.1.0
-        version: 2.1.0
-
-  packages/deployments:
-    dependencies:
-      "@repo/contracts":
-        specifier: workspace:*
-        version: link:../contracts
-      "@repo/eslint-config":
-        specifier: workspace:*
-        version: link:../eslint-config
-      "@repo/typescript-config":
-        specifier: workspace:*
-        version: link:../typescript-config
-
-  packages/eslint-config:
+  config/eslint-config:
     dependencies:
       "@typescript-eslint/eslint-plugin":
         specifier: ^6.14.0
@@ -288,12 +267,45 @@ importers:
       eslint-plugin-react-hooks:
         specifier: ^4.6.0
         version: 4.6.0(eslint@8.56.0)
-      eslint-plugin-react-refresh:
-        specifier: ^0.4.5
-        version: 0.4.5(eslint@8.56.0)
       eslint-plugin-storybook:
         specifier: ^0.6.15
         version: 0.6.15(eslint@8.56.0)(typescript@5.3.3)
+    devDependencies:
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.5
+        version: 0.4.5(eslint@8.56.0)
+
+  config/tailwind-config:
+    dependencies:
+      tailwindcss:
+        specifier: ^3.4.1
+        version: 3.4.1
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.4.1)
+
+  config/typescript-config: {}
+
+  packages/abis:
+    dependencies:
+      "@repo/eslint-config":
+        specifier: workspace:*
+        version: link:../../config/eslint-config
+      "@wagmi/cli":
+        specifier: ^2.1.0
+        version: 2.1.0
+
+  packages/deployments:
+    dependencies:
+      "@repo/abis":
+        specifier: workspace:*
+        version: link:../abis
+      "@repo/eslint-config":
+        specifier: workspace:*
+        version: link:../../config/eslint-config
+      "@repo/typescript-config":
+        specifier: workspace:*
+        version: link:../../config/typescript-config
 
   packages/subgraph-client:
     dependencies:
@@ -319,17 +331,6 @@ importers:
       typescript:
         specifier: ^5.3.0
         version: 5.3.3
-
-  packages/tailwind-config:
-    dependencies:
-      tailwindcss:
-        specifier: ^3.4.1
-        version: 3.4.1
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.1)
-
-  packages/typescript-config: {}
 
   packages/ui:
     dependencies:
@@ -420,13 +421,13 @@ importers:
     devDependencies:
       "@repo/eslint-config":
         specifier: workspace:*
-        version: link:../eslint-config
+        version: link:../../config/eslint-config
       "@repo/tailwind-config":
         specifier: workspace:*
-        version: link:../tailwind-config
+        version: link:../../config/tailwind-config
       "@repo/typescript-config":
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../../config/typescript-config
       "@types/react-dom":
         specifier: ^18.2.18
         version: 18.2.18
@@ -2653,7 +2654,6 @@ packages:
     cpu: [ppc64]
     os: [aix]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-arm64@0.18.20:
@@ -2677,7 +2677,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-arm64@0.19.7:
@@ -2712,7 +2711,6 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-arm@0.19.7:
@@ -2747,7 +2745,6 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-x64@0.19.7:
@@ -2782,7 +2779,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/darwin-arm64@0.19.7:
@@ -2817,7 +2813,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/darwin-x64@0.19.7:
@@ -2852,7 +2847,6 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/freebsd-arm64@0.19.7:
@@ -2887,7 +2881,6 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/freebsd-x64@0.19.7:
@@ -2922,7 +2915,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-arm64@0.19.7:
@@ -2957,7 +2949,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-arm@0.19.7:
@@ -2992,7 +2983,6 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-ia32@0.19.7:
@@ -3027,7 +3017,6 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-loong64@0.19.7:
@@ -3062,7 +3051,6 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-mips64el@0.19.7:
@@ -3097,7 +3085,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-ppc64@0.19.7:
@@ -3132,7 +3119,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-riscv64@0.19.7:
@@ -3167,7 +3153,6 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-s390x@0.19.7:
@@ -3202,7 +3187,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-x64@0.19.7:
@@ -3237,7 +3221,6 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/netbsd-x64@0.19.7:
@@ -3272,7 +3255,6 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/openbsd-x64@0.19.7:
@@ -3307,7 +3289,6 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/sunos-x64@0.19.7:
@@ -3342,7 +3323,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/win32-arm64@0.19.7:
@@ -3377,7 +3357,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/win32-ia32@0.19.7:
@@ -3412,7 +3391,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/win32-x64@0.19.7:
@@ -10293,14 +10271,14 @@ packages:
         optional: true
     dependencies:
       abitype: 0.9.8(zod@3.22.4)
-      bundle-require: 4.0.2(esbuild@0.19.7)
+      bundle-require: 4.0.2(esbuild@0.19.12)
       cac: 6.7.14
       change-case: 4.1.2
       chokidar: 3.5.3
       dedent: 0.7.0
-      dotenv: 16.4.1
+      dotenv: 16.4.3
       dotenv-expand: 10.0.0
-      esbuild: 0.19.7
+      esbuild: 0.19.12
       execa: 6.1.0
       find-up: 6.3.0
       fs-extra: 10.1.0
@@ -12260,6 +12238,19 @@ packages:
       }
     dev: false
 
+  /bundle-require@4.0.2(esbuild@0.19.12):
+    resolution:
+      {
+        integrity: sha512-jwzPOChofl67PSTW2SGubV9HBQAhhR2i6nskiOThauo9dzwDUgOWQScFVaJkjEfYX+UXiD+LEx8EblQMc2wIag==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    peerDependencies:
+      esbuild: ">=0.17"
+    dependencies:
+      esbuild: 0.19.12
+      load-tsconfig: 0.2.5
+    dev: false
+
   /bundle-require@4.0.2(esbuild@0.19.7):
     resolution:
       {
@@ -12271,6 +12262,7 @@ packages:
     dependencies:
       esbuild: 0.19.7
       load-tsconfig: 0.2.5
+    dev: true
 
   /busboy@1.6.0:
     resolution:
@@ -14151,6 +14143,7 @@ packages:
         integrity: sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==,
       }
     engines: { node: ">=12" }
+    dev: true
 
   /dotenv@16.4.3:
     resolution:
@@ -14596,7 +14589,6 @@ packages:
       "@esbuild/win32-arm64": 0.19.12
       "@esbuild/win32-ia32": 0.19.12
       "@esbuild/win32-x64": 0.19.12
-    dev: true
 
   /esbuild@0.19.7:
     resolution:
@@ -14708,7 +14700,7 @@ packages:
       eslint: ">=7"
     dependencies:
       eslint: 8.56.0
-    dev: false
+    dev: true
 
   /eslint-plugin-react@7.33.2(eslint@8.56.0):
     resolution:
@@ -23053,6 +23045,7 @@ packages:
       {
         integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==,
       }
+    hasBin: true
 
   /semver@7.5.4:
     resolution:
@@ -23060,6 +23053,7 @@ packages:
         integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==,
       }
     engines: { node: ">=10" }
+    hasBin: true
     dependencies:
       lru-cache: 6.0.0
 

@@ -1,4 +1,4 @@
-import { axisContracts } from "@repo/contracts";
+import { axisContracts } from "@repo/deployments";
 import { AuctionData } from "src/types";
 import { parseUnits } from "viem";
 import { useReadContract } from "wagmi";
