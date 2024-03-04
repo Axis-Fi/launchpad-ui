@@ -1,15 +1,13 @@
-import { Avatar, Input, Skeleton, Switch } from "@repo/ui";
-import { useTokenLists } from "context/use-tokenlist";
-import { useGetTokenList } from "loaders/use-get-tokenlist";
 import React from "react";
-import { TokenList } from "src/types/token-types";
+import { Avatar, Input, Skeleton, Switch } from "@repo/ui";
+import { useTokenLists } from "state/tokenlist";
+import { useGetTokenList } from "loaders/use-get-tokenlist";
+import type { TokenList } from "src/types/token-types";
 
 export function TokenListManager() {
   const [url, setUrl] = React.useState<string>();
   const tokenlists = useTokenLists();
   const listQuery = useGetTokenList(url);
-
-  console.log({ listQuery });
 
   return (
     <div>

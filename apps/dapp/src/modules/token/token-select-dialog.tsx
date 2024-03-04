@@ -15,7 +15,7 @@ import {
 import React from "react";
 import { TokenListManager } from "./token-list-manager";
 import { ArrowLeftIcon } from "lucide-react";
-import { useTokenLists } from "context/use-tokenlist";
+import { useTokenLists } from "state/tokenlist";
 
 type TokenSelectDialogProps = {
   chainId: number;

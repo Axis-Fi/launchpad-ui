@@ -11,6 +11,8 @@
       "modules/*": ["src/modules/*"],
       "pages/*": ["src/pages/*"],
       "loaders/*": ["src/loaders/*"],
+      "hooks/*": ["src/hooks/*"],
+      "state/*": ["src/state/*"],
       "@/utils": ["../../packages/ui/src/utils.ts"],
       "@/components/primitives/*": [
         "../../packages/ui/src/components/primitives/*"

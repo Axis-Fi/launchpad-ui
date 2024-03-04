@@ -1,1 +1,1 @@
-export * from "./referral.atom";
+export * from "./referral";

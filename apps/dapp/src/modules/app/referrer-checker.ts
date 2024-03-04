@@ -1,6 +1,6 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
-import { useSetReferrer } from "src/state/referral.atom";
+import { useSetReferrer } from "state/referral";
 import { isAddress } from "viem";
 
 /** Checks if exists and returns a URL param named referrer*/
@@ -18,7 +18,7 @@ export function ReferrerChecker() {
 
   React.useEffect(() => {
     if (referrerAddress) setReferral(referrerAddress);
-  }, [referrerAddress]);
+  }, [referrerAddress, setReferral]);
 
   return null;
 }

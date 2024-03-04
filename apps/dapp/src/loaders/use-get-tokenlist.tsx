@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { validateTokenlist } from "src/utils/tokenlist";
 import { TokenList } from "@repo/deployments/src/types";
 import { z } from "zod";
-import { useTokenLists } from "context/use-tokenlist";
+import { useTokenLists } from "state/tokenlist";
 
 const url = z.string().url().endsWith(".json");
 

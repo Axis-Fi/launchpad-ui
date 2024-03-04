@@ -11,7 +11,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { useReferrer } from "src/state/referral.atom";
+import { useReferrer } from "state/referral";
 
 export function useBidAuction(
   lotId: string,
