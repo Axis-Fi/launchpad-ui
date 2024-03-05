@@ -39,12 +39,21 @@ export function useBidAuction(
         Number(auction.baseToken.decimals),
       );
 
+      const quoteTokenAmountIn = parseUnits(
+        amountIn.toString(),
+        Number(auction.quoteToken.decimals),
+      );
+
       // TODO consider giving a state update on the encryption process
       const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
         xChainId: auction.chainId,
         xAuctionHouse: axisAddresses.auctionHouse,
         lotId: parseInt(auction.lotId),
-        body: toHex(baseTokenAmountOut),
+        encryptRequest: {
+          amount: toHex(quoteTokenAmountIn), //TODO: check if hex value
+          amountOut: toHex(baseTokenAmountOut),
+          bidder: address,
+        },
       });
 
       return encryptedAmountOut;
@@ -70,7 +79,7 @@ export function useBidAuction(
             amountIn.toString(),
             Number(auction.quoteToken.decimals),
           ),
-          auctionData: encryptedAmountOut,
+          auctionData: encryptedAmountOut.ciphertext as Address,
           allowlistProof: toHex(""),
           permit2Data: toHex(""),
         },
