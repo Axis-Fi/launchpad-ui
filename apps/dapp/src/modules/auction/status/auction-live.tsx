@@ -95,7 +95,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           />
           <InfoLabel
             label="Minimum Price"
-            value={`${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
+            value={`${auction.formatted?.minPrice} ${auction.formatted?.tokenPairSymbols}`}
           />
           <InfoLabel
             label="Minimum Quantity"
@@ -140,6 +140,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                       </Button>
                     ) : (
                       <TransactionDialog
+                        error={bid.error}
                         onConfirm={() => bid.handleBid()}
                         mutation={bid.bidReceipt}
                         chainId={auction.chainId}
@@ -147,7 +148,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                           if (!open) bid.bidTx.reset();
                         }}
                         hash={bid.bidTx.data}
-                        error={bid.bidDependenciesMutation.error}
                         triggerContent={"Bid"}
                         disabled={shouldDisable || isWaiting}
                         screens={{

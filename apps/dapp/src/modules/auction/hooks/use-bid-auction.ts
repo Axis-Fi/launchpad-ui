@@ -107,6 +107,9 @@ export function useBidAuction(
     }
   }, [bidReceipt.isSuccess]);
 
+  const error = [bidReceipt, bidTx, encryptBidMutation].find((m) => m.isError)
+    ?.error;
+
   return {
     handleBid,
     approveCapacity,
@@ -116,5 +119,6 @@ export function useBidAuction(
     bidReceipt,
     bidTx,
     bidDependenciesMutation: encryptBidMutation,
+    error,
   };
 }

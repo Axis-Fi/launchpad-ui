@@ -37,6 +37,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             disabled={disableButton}
             chainId={auction.chainId}
             hash={decrypt.decryptTx.data!}
+            error={decrypt.error}
             onConfirm={decrypt.handleDecryption}
             mutation={decrypt.decryptReceipt}
             open={open}

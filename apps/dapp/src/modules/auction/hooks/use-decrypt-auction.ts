@@ -47,7 +47,7 @@ export const useDecryptBids = (auction: Auction) => {
     })) ?? [];
 
   //Send bids to the contract for decryption
-  const { data: decryptCall } = useSimulateContract({
+  const { data: decryptCall, ...decryptCallQuery } = useSimulateContract({
     address: contracts.localSealedBidBatchAuction,
     abi: axisContracts.abis.localSealedBidBatchAuction,
     functionName: "decryptAndSortBids",
@@ -67,10 +67,15 @@ export const useDecryptBids = (auction: Auction) => {
     }
   }, [decryptReceipt.isSuccess, nextBidsQuery]);
 
+  const error = [nextBidsQuery, decrypt, decryptCallQuery, decryptReceipt].find(
+    (tx) => tx.isError,
+  )?.error;
+
   return {
     nextBids: nextBidsQuery,
     decryptTx: decrypt,
     decryptReceipt,
     handleDecryption,
+    error,
   };
 };

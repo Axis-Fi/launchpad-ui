@@ -45,7 +45,11 @@ export default function AuctionListPage() {
             onChange={(e) => setSearchText(e.target.value)}
           />
 
-          <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
+          <ReloadButton
+            tooltip="Reload Auctions"
+            refetching={isRefetching}
+            onClick={() => refetch()}
+          />
         </div>
       </div>
       {!isLoading && !filteredAuctions.length && (
