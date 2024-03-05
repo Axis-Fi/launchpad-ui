@@ -8,7 +8,8 @@ import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
 import { getChainId } from "src/utils/chain";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
-import { parseToken } from "./use-auction";
+import { formatAuctionTokens } from "../utils/format-tokens";
+import { useTokenLists } from "state/tokenlist";
 
 export type AuctionsResult = {
   result: AuctionListed[];
@@ -34,17 +35,22 @@ export function useAuctions(): AuctionsResult {
     },
   });
 
+  const { getToken } = useTokenLists();
+
   return {
     result: (data?.auctionLots ?? [])
-      .map((auction) => ({
-        ...auction,
-        baseToken: parseToken(auction.baseToken, getChainId(auction.chain)),
-        quoteToken: parseToken(auction.quoteToken, getChainId(auction.chain)),
-        chainId: getChainId(auction.chain),
-        status: getAuctionStatus(auction),
-        auctionInfo: infos.data?.find((info) => info.id === auction.id)
-          ?.auctionInfo,
-      }))
+      .map((auction) => {
+        const auctionInfo = infos.data?.find((info) => info.id === auction.id)
+          ?.auctionInfo;
+
+        return {
+          ...auction,
+          ...formatAuctionTokens(auction, getToken, auctionInfo),
+          chainId: getChainId(auction.chain),
+          status: getAuctionStatus(auction),
+          auctionInfo,
+        };
+      })
       .sort(sortAuction),
     isLoading: isLoading, //|| infos.isLoading,
     refetch,

@@ -35,11 +35,28 @@ export const useTokenLists = () => {
       .filter((t) => t.chainId === chainId);
   };
 
+  const getToken = ({
+    chainId,
+    address,
+  }: {
+    address: string;
+    chainId: number | string;
+  }) => {
+    return lists
+      .flatMap((t) => t.tokens)
+      .find(
+        (t) =>
+          t.address.toLocaleLowerCase().includes(address.toLocaleLowerCase()) &&
+          t.chainId == chainId,
+      );
+  };
+
   return {
     lists,
     addList,
     removeList,
     toggleList,
     getTokensByChainId,
+    getToken,
   };
 };

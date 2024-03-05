@@ -1,12 +1,15 @@
 import { Address } from "viem";
 
-/** Tokenlist's Token Definition */
-export type Token = {
+export type TokenBase = {
   chainId: number;
   address: Address;
+};
+
+/** Tokenlist's Token Definition */
+export type Token = TokenBase & {
   symbol: string;
   decimals: number;
-  name?: string;
+  name: string;
   logoURI?: string;
 };
 
