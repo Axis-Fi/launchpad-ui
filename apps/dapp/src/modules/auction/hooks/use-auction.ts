@@ -3,6 +3,7 @@ import { getAuctionStatus } from "../utils/get-auction-status";
 import {
   Auction,
   AuctionData,
+  AuctionFormattedInfo,
   RawSubgraphAuctionWithEvents,
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
@@ -81,7 +82,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
 export function formatAuction(
   auction: RawSubgraphAuctionWithEvents,
   auctionData?: AuctionData,
-) {
+): AuctionFormattedInfo {
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
 
@@ -89,14 +90,13 @@ export function formatAuction(
   const endFormatted = formatDate.fullLocal(endDate);
   const startDistance = formatDistanceToNow(startDate);
   const endDistance = formatDistanceToNow(endDate);
-  const totalBidAmount = auction.bids.reduce(
-    (total, b) => total + Number(b.amountIn),
-    0,
-  );
-
   const totalBidsDecrypted = auction.bids.filter(
     (b) => b.status === "decrypted",
   ).length;
+
+  const uniqueBidders = auction.bids
+    .map((b) => b.bidder)
+    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
 
   const tokenAmounts = auction.bids
     .filter((b) => Number(b.amountOut) > 0)
@@ -109,11 +109,11 @@ export function formatAuction(
       { in: 0, out: 0 },
     );
 
-  const uniqueBidders = auction.bids
-    .map((b) => b.bidder)
-    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
+  const totalBidAmount = trimCurrency(
+    auction.bids.reduce((total, b) => total + Number(b.amountIn), 0),
+  );
 
-  const rate = trimCurrency((tokenAmounts.in / tokenAmounts.out).toString());
+  const rate = trimCurrency(tokenAmounts.in / tokenAmounts.out);
 
   return {
     startDate,
@@ -122,19 +122,27 @@ export function formatAuction(
     endFormatted,
     startDistance,
     endDistance,
+    uniqueBidders,
     totalBids: auction.bids.length,
     totalBidsDecrypted,
-    totalBidAmount,
-    tokenAmounts,
-    uniqueBidders,
+    totalBidAmount: trimCurrency(totalBidAmount),
+    tokenAmounts: {
+      in: trimCurrency(tokenAmounts.in),
+      out: trimCurrency(tokenAmounts.out),
+    },
     rate,
-    minPrice: formatUnits(
-      auctionData?.minimumPrice ?? 0n,
-      Number(auction.quoteToken.decimals),
+    minPrice: trimCurrency(
+      formatUnits(
+        auctionData?.minimumPrice ?? 0n,
+        Number(auction.quoteToken.decimals),
+      ),
     ),
-    minBidSize: formatUnits(
-      auctionData?.minBidSize ?? 0n,
-      Number(auction.baseToken.decimals), //TODO: validate if its the right token
+    minBidSize: trimCurrency(
+      formatUnits(
+        auctionData?.minBidSize ?? 0n,
+        Number(auction.baseToken.decimals), //TODO: validate if its the right token
+      ),
     ),
+    tokenPairSymbols: `${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
   };
 }

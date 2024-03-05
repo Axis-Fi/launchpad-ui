@@ -82,7 +82,7 @@ export function TransactionDialog({
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg">
         <DialogHeader className="text-2xl">{title}</DialogHeader>
 
         <Component error={error} hash={props.hash} chainId={props.chainId} />

@@ -15,9 +15,12 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       <AuctionInfoCard>
         <InfoLabel
           label="Total Raised"
-          value={auction.formatted?.tokenAmounts.in}
+          value={`${auction.formatted?.tokenAmounts.in} ${auction.quoteToken.symbol}`}
         />
-        <InfoLabel label="Rate" value={auction.formatted?.rate} />
+        <InfoLabel
+          label="Rate"
+          value={`${auction.formatted?.rate} ${auction.formatted?.tokenPairSymbols}`}
+        />
       </AuctionInfoCard>
       <div className="w-[50%]">
         <AuctionInputCard
@@ -31,6 +34,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
         </AuctionInputCard>
       </div>
       <TransactionDialog
+        error={settle.error}
         mutation={settle.settleReceipt}
         chainId={auction.chainId}
         hash={settle.settleTx.data!}

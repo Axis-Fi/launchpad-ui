@@ -60,15 +60,16 @@ export type AuctionFormattedInfo = {
   endDistance: string;
   totalBids: number;
   totalBidsDecrypted: number;
-  totalBidAmount: number;
+  totalBidAmount: string;
   uniqueBidders: number;
   rate: string;
   tokenAmounts: {
-    in: number;
-    out: number;
+    in: string;
+    out: string;
   };
   minPrice: string;
   minBidSize: string;
+  tokenPairSymbols: string;
 };
 
 export enum AuctionTypes {
