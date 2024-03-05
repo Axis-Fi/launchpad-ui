@@ -109,11 +109,22 @@ export function formatAuction(
       { in: 0, out: 0 },
     );
 
-  const totalBidAmount = trimCurrency(
-    auction.bids.reduce((total, b) => total + Number(b.amountIn), 0),
+  const totalBidAmount = auction.bids.reduce(
+    (total, b) => total + Number(b.amountIn),
+    0,
   );
 
-  const rate = trimCurrency(tokenAmounts.in / tokenAmounts.out);
+  const rate = tokenAmounts.in / tokenAmounts.out || 0;
+
+  const minPrice = formatUnits(
+    auctionData?.minimumPrice ?? 0n,
+    Number(auction.quoteToken.decimals),
+  );
+
+  const minBidSize = formatUnits(
+    auctionData?.minBidSize ?? 0n,
+    Number(auction.baseToken.decimals),
+  ); //TODO: validate if its the right token
 
   return {
     startDate,
@@ -130,19 +141,9 @@ export function formatAuction(
       in: trimCurrency(tokenAmounts.in),
       out: trimCurrency(tokenAmounts.out),
     },
-    rate,
-    minPrice: trimCurrency(
-      formatUnits(
-        auctionData?.minimumPrice ?? 0n,
-        Number(auction.quoteToken.decimals),
-      ),
-    ),
-    minBidSize: trimCurrency(
-      formatUnits(
-        auctionData?.minBidSize ?? 0n,
-        Number(auction.baseToken.decimals), //TODO: validate if its the right token
-      ),
-    ),
+    rate: trimCurrency(rate),
+    minPrice: trimCurrency(minPrice),
+    minBidSize: trimCurrency(minBidSize),
     tokenPairSymbols: `${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
   };
 }
