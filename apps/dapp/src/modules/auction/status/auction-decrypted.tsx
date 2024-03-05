@@ -40,7 +40,13 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
         hash={settle.settleTx.data!}
         onConfirm={settle.handleSettle}
         open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+
+          if (settle.settleTx.isError) {
+            settle.settleTx.reset();
+          }
+        }}
       />
     </div>
   );

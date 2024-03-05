@@ -43,7 +43,10 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             open={open}
             onOpenChange={(open) => {
               setOpen(open);
-              if (decrypt.decryptReceipt.isSuccess) {
+              if (
+                decrypt.decryptReceipt.isSuccess ||
+                decrypt.decryptTx.isError
+              ) {
                 decrypt.decryptTx.reset();
               }
             }}

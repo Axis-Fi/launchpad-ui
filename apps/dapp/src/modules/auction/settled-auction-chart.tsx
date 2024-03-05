@@ -21,6 +21,7 @@ import { formatDate } from "src/utils/date";
 import { SVGProps } from "react";
 import { getAuctionPrices } from "modules/auction/utils/get-auction-prices";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
+import { trimCurrency } from "utils/currency";
 
 //TODO: revisit this type, see if can be squashed into Bid
 export type ParsedBid = {
@@ -136,7 +137,6 @@ export const SettledAuctionChart = ({
     minimumPrice,
     sizeRange,
   } = useChartData(auction, auctionData);
-  console.log({ chartData });
 
   return (
     <div className="size-full max-h-[260px]">
@@ -161,11 +161,13 @@ export const SettledAuctionChart = ({
             name="price"
             minTickGap={40}
             stroke="#f4f4f4"
-            domain={[
-              "dataMin",
-              !marginalPrice && minimumPrice ? minimumPrice * 1.5 : "dataMax", // If there is no marginal price, use the minimum price as every bid will have a price below that
+            domain={([min, max]) => [
+              Math.min(minimumPrice ?? 0, min) * 0.8,
+              !marginalPrice && minimumPrice ? minimumPrice * 1.5 : max * 1.1, // If there is no marginal price, use the minimum price as every bid will have a price below that
             ]}
-            tickFormatter={(value) => value + " " + auction?.quoteToken.symbol}
+            tickFormatter={(value) =>
+              trimCurrency(value) + " " + auction?.quoteToken.symbol
+            }
           />
           <ZAxis
             type="number"
