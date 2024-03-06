@@ -4,7 +4,8 @@ export type AxisContractNames =
   | "auctionHouse"
   | "catalogue"
   | "localSealedBidBatchAuction"
-  | "linearVesting";
+  | "linearVesting"
+  | "permit2";
 
 export type AxisContractAddresses = Record<AxisContractNames, Address>;
 export type AxisContractAbis = Record<AxisContractNames, unknown>;

@@ -5,4 +5,5 @@ export default {
   catalogue: abis.catalogueAbi,
   linearVesting: abis.linearVestingAbi,
   localSealedBidBatchAuction: abis.localSealedBidBatchAuctionAbi,
+  permit2: abis.permit2Abi,
 } as const;

@@ -13,7 +13,7 @@ export type UseAllowanceProps = {
   decimals?: number;
   ownerAddress?: Address;
   spenderAddress?: Address;
-  amount?: number;
+  amount?: number | bigint;
 };
 
 /** Used to manage an address' allowance for a given token */
@@ -24,22 +24,25 @@ export const useAllowance = (args: UseAllowanceProps) => {
   const allowance = useReadContract({
     abi: erc20Abi,
     chainId: args.chainId,
-    address: args.tokenAddress,
+    address: args.tokenAddress!,
     functionName: "allowance",
     args: [args.ownerAddress as Address, args.spenderAddress as Address],
     query: {
-      enabled:
-        !!args.chainId &&
-        !!args.tokenAddress &&
-        !!args.spenderAddress &&
-        !!args.ownerAddress,
+      enabled: [
+        args.chainId,
+        args.tokenAddress,
+        args.spenderAddress,
+        args.ownerAddress,
+      ].every(Boolean),
     },
   });
 
   const amountToApprove =
-    args.amount && args.decimals
-      ? parseUnits(args.amount.toString(), args.decimals)
-      : 0n;
+    typeof args.amount === "bigint"
+      ? args.amount
+      : args.amount && args.decimals
+        ? parseUnits(args.amount.toString(), args.decimals)
+        : 0n;
 
   const { data: approveCall } = useSimulateContract({
     abi: erc20Abi,

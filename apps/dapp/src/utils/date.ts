@@ -11,7 +11,7 @@ export const formatDate = {
 
 // Date math operations
 export const dateMath = {
-  addDays: addDays,
+  addDays,
 };
 
 export const getTimestamp = (date: Date) => Math.floor(date.getTime() / 1000);

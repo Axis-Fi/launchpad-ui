@@ -1832,3 +1832,458 @@ export const localSealedBidBatchAuctionAbi = [
     name: "Module_OnlyParent",
   },
 ] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// permit2
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const permit2Abi = [
+  { type: "error", inputs: [], name: "AllowanceExpired" },
+  { type: "error", inputs: [], name: "ExcessiveInvalidation" },
+  { type: "error", inputs: [], name: "InsufficientAllowance" },
+  { type: "error", inputs: [], name: "InvalidAmount" },
+  { type: "error", inputs: [], name: "InvalidContractSignature" },
+  { type: "error", inputs: [], name: "InvalidNonce" },
+  { type: "error", inputs: [], name: "InvalidSignature" },
+  { type: "error", inputs: [], name: "InvalidSigner" },
+  { type: "error", inputs: [], name: "LengthMismatch" },
+  { type: "error", inputs: [], name: "NotSpender" },
+  { type: "error", inputs: [], name: "SignatureExpired" },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "owner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "amount",
+        internalType: "uint160",
+        type: "uint160",
+        indexed: false,
+      },
+      {
+        name: "expiration",
+        internalType: "uint48",
+        type: "uint48",
+        indexed: false,
+      },
+    ],
+    name: "Approval",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "owner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+    ],
+    name: "Lockdown",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "owner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "spender",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newNonce",
+        internalType: "uint48",
+        type: "uint48",
+        indexed: false,
+      },
+      {
+        name: "oldNonce",
+        internalType: "uint48",
+        type: "uint48",
+        indexed: false,
+      },
+    ],
+    name: "NonceInvalidation",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "owner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "word",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+      {
+        name: "mask",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "UnorderedNonceInvalidation",
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "DOMAIN_SEPARATOR",
+    outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "", internalType: "address", type: "address" },
+      { name: "", internalType: "address", type: "address" },
+      { name: "", internalType: "address", type: "address" },
+    ],
+    name: "allowance",
+    outputs: [
+      { name: "amount", internalType: "uint160", type: "uint160" },
+      { name: "expiration", internalType: "uint48", type: "uint48" },
+      { name: "nonce", internalType: "uint48", type: "uint48" },
+    ],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "token", internalType: "address", type: "address" },
+      { name: "spender", internalType: "address", type: "address" },
+      { name: "amount", internalType: "uint160", type: "uint160" },
+      { name: "expiration", internalType: "uint48", type: "uint48" },
+    ],
+    name: "approve",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "token", internalType: "address", type: "address" },
+      { name: "spender", internalType: "address", type: "address" },
+      { name: "newNonce", internalType: "uint48", type: "uint48" },
+    ],
+    name: "invalidateNonces",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "wordPos", internalType: "uint256", type: "uint256" },
+      { name: "mask", internalType: "uint256", type: "uint256" },
+    ],
+    name: "invalidateUnorderedNonces",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      {
+        name: "approvals",
+        internalType: "struct IAllowanceTransfer.TokenSpenderPair[]",
+        type: "tuple[]",
+        components: [
+          { name: "token", internalType: "address", type: "address" },
+          { name: "spender", internalType: "address", type: "address" },
+        ],
+      },
+    ],
+    name: "lockdown",
+    outputs: [],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "", internalType: "address", type: "address" },
+      { name: "", internalType: "uint256", type: "uint256" },
+    ],
+    name: "nonceBitmap",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "owner", internalType: "address", type: "address" },
+      {
+        name: "permitBatch",
+        internalType: "struct IAllowanceTransfer.PermitBatch",
+        type: "tuple",
+        components: [
+          {
+            name: "details",
+            internalType: "struct IAllowanceTransfer.PermitDetails[]",
+            type: "tuple[]",
+            components: [
+              { name: "token", internalType: "address", type: "address" },
+              { name: "amount", internalType: "uint160", type: "uint160" },
+              { name: "expiration", internalType: "uint48", type: "uint48" },
+              { name: "nonce", internalType: "uint48", type: "uint48" },
+            ],
+          },
+          { name: "spender", internalType: "address", type: "address" },
+          { name: "sigDeadline", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "signature", internalType: "bytes", type: "bytes" },
+    ],
+    name: "permit",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "owner", internalType: "address", type: "address" },
+      {
+        name: "permitSingle",
+        internalType: "struct IAllowanceTransfer.PermitSingle",
+        type: "tuple",
+        components: [
+          {
+            name: "details",
+            internalType: "struct IAllowanceTransfer.PermitDetails",
+            type: "tuple",
+            components: [
+              { name: "token", internalType: "address", type: "address" },
+              { name: "amount", internalType: "uint160", type: "uint160" },
+              { name: "expiration", internalType: "uint48", type: "uint48" },
+              { name: "nonce", internalType: "uint48", type: "uint48" },
+            ],
+          },
+          { name: "spender", internalType: "address", type: "address" },
+          { name: "sigDeadline", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "signature", internalType: "bytes", type: "bytes" },
+    ],
+    name: "permit",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      {
+        name: "permit",
+        internalType: "struct ISignatureTransfer.PermitBatchTransferFrom",
+        type: "tuple",
+        components: [
+          {
+            name: "permitted",
+            internalType: "struct ISignatureTransfer.TokenPermissions[]",
+            type: "tuple[]",
+            components: [
+              { name: "token", internalType: "address", type: "address" },
+              { name: "amount", internalType: "uint256", type: "uint256" },
+            ],
+          },
+          { name: "nonce", internalType: "uint256", type: "uint256" },
+          { name: "deadline", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "owner", internalType: "address", type: "address" },
+      {
+        name: "transferDetails",
+        internalType: "struct ISignatureTransfer.SignatureTransferDetails[]",
+        type: "tuple[]",
+        components: [
+          { name: "to", internalType: "address", type: "address" },
+          { name: "requestedAmount", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "signature", internalType: "bytes", type: "bytes" },
+    ],
+    name: "permitTransferFrom",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      {
+        name: "permit",
+        internalType: "struct ISignatureTransfer.PermitTransferFrom",
+        type: "tuple",
+        components: [
+          {
+            name: "permitted",
+            internalType: "struct ISignatureTransfer.TokenPermissions",
+            type: "tuple",
+            components: [
+              { name: "token", internalType: "address", type: "address" },
+              { name: "amount", internalType: "uint256", type: "uint256" },
+            ],
+          },
+          { name: "nonce", internalType: "uint256", type: "uint256" },
+          { name: "deadline", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "owner", internalType: "address", type: "address" },
+      { name: "to", internalType: "address", type: "address" },
+      { name: "requestedAmount", internalType: "uint256", type: "uint256" },
+      { name: "signature", internalType: "bytes", type: "bytes" },
+    ],
+    name: "permitTransferFrom",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      {
+        name: "permit",
+        internalType: "struct ISignatureTransfer.PermitTransferFrom",
+        type: "tuple",
+        components: [
+          {
+            name: "permitted",
+            internalType: "struct ISignatureTransfer.TokenPermissions",
+            type: "tuple",
+            components: [
+              { name: "token", internalType: "address", type: "address" },
+              { name: "amount", internalType: "uint256", type: "uint256" },
+            ],
+          },
+          { name: "nonce", internalType: "uint256", type: "uint256" },
+          { name: "deadline", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "owner", internalType: "address", type: "address" },
+      { name: "to", internalType: "address", type: "address" },
+      { name: "requestedAmount", internalType: "uint256", type: "uint256" },
+      { name: "witness", internalType: "bytes32", type: "bytes32" },
+      { name: "witnessTypeName", internalType: "string", type: "string" },
+      { name: "witnessType", internalType: "string", type: "string" },
+      { name: "signature", internalType: "bytes", type: "bytes" },
+    ],
+    name: "permitWitnessTransferFrom",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      {
+        name: "permit",
+        internalType: "struct ISignatureTransfer.PermitBatchTransferFrom",
+        type: "tuple",
+        components: [
+          {
+            name: "permitted",
+            internalType: "struct ISignatureTransfer.TokenPermissions[]",
+            type: "tuple[]",
+            components: [
+              { name: "token", internalType: "address", type: "address" },
+              { name: "amount", internalType: "uint256", type: "uint256" },
+            ],
+          },
+          { name: "nonce", internalType: "uint256", type: "uint256" },
+          { name: "deadline", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "owner", internalType: "address", type: "address" },
+      {
+        name: "transferDetails",
+        internalType: "struct ISignatureTransfer.SignatureTransferDetails[]",
+        type: "tuple[]",
+        components: [
+          { name: "to", internalType: "address", type: "address" },
+          { name: "requestedAmount", internalType: "uint256", type: "uint256" },
+        ],
+      },
+      { name: "witness", internalType: "bytes32", type: "bytes32" },
+      { name: "witnessTypeName", internalType: "string", type: "string" },
+      { name: "witnessType", internalType: "string", type: "string" },
+      { name: "signature", internalType: "bytes", type: "bytes" },
+    ],
+    name: "permitWitnessTransferFrom",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "token", internalType: "address", type: "address" },
+      { name: "from", internalType: "address", type: "address" },
+      { name: "to", internalType: "address", type: "address" },
+      { name: "amount", internalType: "uint160", type: "uint160" },
+    ],
+    name: "transferFrom",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "from", internalType: "address", type: "address" },
+      {
+        name: "transferDetails",
+        internalType: "struct IAllowanceTransfer.AllowanceTransferDetails[]",
+        type: "tuple[]",
+        components: [
+          { name: "token", internalType: "address", type: "address" },
+          { name: "amount", internalType: "uint160", type: "uint160" },
+          { name: "to", internalType: "address", type: "address" },
+        ],
+      },
+    ],
+    name: "transferFrom",
+    outputs: [],
+  },
+] as const;
