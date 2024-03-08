@@ -1,17 +1,17 @@
-import { Button, InfoLabel, trimAddress } from "@repo/ui";
+import { InfoLabel, trimAddress } from "@repo/ui";
 import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
-import { LoadingIndicator } from "modules/app/loading-indicator";
-import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { LockIcon } from "lucide-react";
 import { useBidAuction } from "../hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { RequiresApproval } from "modules/token/requires-approval";
+import React from "react";
 
 const schema = z.object({
   baseTokenAmount: z.coerce.number(),
@@ -21,6 +21,8 @@ const schema = z.object({
 export type BidForm = z.infer<typeof schema>;
 
 export function AuctionLive({ auction }: PropsWithAuction) {
+  const [isPermit2, setIsPermit2] = React.useState(false);
+
   const form = useForm<BidForm>({
     mode: "onTouched",
     resolver: zodResolver(
@@ -55,9 +57,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     auction.chainId,
     amountIn,
     minAmountOut,
+    isPermit2,
   );
 
-  // TODO Permit2 signature
   const handleSubmit = () => {
     bid.isSufficientAllowance ? bid.handleBid() : bid.approveCapacity();
   };
@@ -80,6 +82,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     bid.bidReceipt.isLoading ||
     bid.bidTx.isPending;
 
+  console.log({ curre: bid.isSufficientAllowance, bid });
+
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
     <div className="flex justify-between">
@@ -91,7 +95,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           )}
           <InfoLabel
             label="Capacity"
-            value={`${auction.capacity} ${auction.baseToken.symbol}`}
+            value={`${auction.formatted?.capacity} ${auction.baseToken.symbol}`}
           />
           <InfoLabel
             label="Minimum Price"
@@ -120,60 +124,49 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             >
               <>
                 <AuctionBidInput balance={formattedBalance} auction={auction} />
-                <RequiresWalletConnection className="mt-4">
-                  <div className="mt-4 w-full">
-                    {!bid.isSufficientAllowance && !shouldDisable ? (
-                      <Button
-                        className="w-full"
-                        onClick={() => bid.approveCapacity()}
-                      >
-                        {bid.isSufficientAllowance ? (
-                          "Bid"
-                        ) : isWaiting ? (
-                          <div className="flex">
-                            Waiting for confirmation...
-                            <LoadingIndicator />
-                          </div>
-                        ) : (
-                          "Approve"
-                        )}
-                      </Button>
-                    ) : (
-                      <TransactionDialog
-                        error={bid.error}
-                        onConfirm={() => bid.handleBid()}
-                        mutation={bid.bidReceipt}
-                        chainId={auction.chainId}
-                        onOpenChange={(open) => {
-                          if (!open) bid.bidTx.reset();
-                        }}
-                        hash={bid.bidTx.data}
-                        triggerContent={"Bid"}
-                        disabled={shouldDisable || isWaiting}
-                        screens={{
-                          idle: {
-                            Component: () => (
-                              <div className="text-center">
-                                You&apos;re about to place a bid of {amountIn}{" "}
-                                {auction.quoteToken.symbol}
-                              </div>
-                            ),
-                            title: "Confirm Bid",
-                          },
-                          success: {
-                            Component: () => (
-                              <div className="flex justify-center text-center">
-                                <LockIcon className="mr-1" />
-                                Bid encrypted and stored successfully!
-                              </div>
-                            ),
-                            title: "Transaction Confirmed",
-                          },
-                        }}
-                      />
-                    )}
+                <RequiresApproval
+                  withPermit2Enabled
+                  className="mt-4"
+                  disabled={shouldDisable}
+                  approved={!shouldDisable && bid.isSufficientAllowance}
+                  onApprove={bid.approveCapacity}
+                  onPermit2Change={setIsPermit2}
+                >
+                  <div className="mt-4">
+                    <TransactionDialog
+                      error={bid.error}
+                      onConfirm={() => bid.handleBid()}
+                      mutation={bid.bidReceipt}
+                      chainId={auction.chainId}
+                      onOpenChange={(open) => {
+                        if (!open) bid.bidTx.reset();
+                      }}
+                      hash={bid.bidTx.data}
+                      triggerContent={"Bid"}
+                      disabled={shouldDisable || isWaiting}
+                      screens={{
+                        idle: {
+                          Component: () => (
+                            <div className="text-center">
+                              You&apos;re about to place a bid of {amountIn}{" "}
+                              {auction.quoteToken.symbol}
+                            </div>
+                          ),
+                          title: "Confirm Bid",
+                        },
+                        success: {
+                          Component: () => (
+                            <div className="flex justify-center text-center">
+                              <LockIcon className="mr-1" />
+                              Bid encrypted and stored successfully!
+                            </div>
+                          ),
+                          title: "Transaction Confirmed",
+                        },
+                      }}
+                    />
                   </div>
-                </RequiresWalletConnection>
+                </RequiresApproval>
               </>
             </AuctionInputCard>
           </form>

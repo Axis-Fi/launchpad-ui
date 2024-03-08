@@ -14,12 +14,16 @@ export type UseAllowanceProps = {
   ownerAddress?: Address;
   spenderAddress?: Address;
   amount?: number | bigint;
+  disable?: boolean; //TODO: refactor this, added to disabled in case of permit2
 };
 
 /** Used to manage an address' allowance for a given token */
 export const useAllowance = (args: UseAllowanceProps) => {
   const approveTx = useWriteContract();
-  const approveReceipt = useWaitForTransactionReceipt({ hash: approveTx.data });
+  const approveReceipt = useWaitForTransactionReceipt({
+    hash: approveTx.data,
+    query: { enabled: !args.disable },
+  });
 
   const allowance = useReadContract({
     abi: erc20Abi,
@@ -33,6 +37,7 @@ export const useAllowance = (args: UseAllowanceProps) => {
         args.tokenAddress,
         args.spenderAddress,
         args.ownerAddress,
+        !args.disable,
       ].every(Boolean),
     },
   });
@@ -49,6 +54,7 @@ export const useAllowance = (args: UseAllowanceProps) => {
     address: args.tokenAddress!,
     functionName: "approve",
     args: [args.spenderAddress!, amountToApprove],
+    query: { enabled: allowance.isSuccess },
   });
 
   const execute = () => approveTx.writeContract(approveCall!.request);

@@ -61,6 +61,7 @@ export type AuctionFormattedInfo = {
   totalBids: number;
   totalBidsDecrypted: number;
   totalBidAmount: string;
+  capacity: string;
   uniqueBidders: number;
   rate: string;
   tokenAmounts: {

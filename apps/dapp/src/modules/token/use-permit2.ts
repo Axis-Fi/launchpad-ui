@@ -1,6 +1,10 @@
 import { axisContracts } from "@repo/deployments";
 import { useAllowance } from "loaders/use-allowance";
-import { MaxAllowanceTransferAmount } from "permit2-sdk-viem";
+import {
+  AllowanceTransfer,
+  MaxAllowanceTransferAmount,
+  PermitSingle,
+} from "permit2-sdk-viem";
 import { invariant } from "utils/error";
 import { Address } from "viem";
 import {
@@ -55,7 +59,7 @@ export function usePermit2(tokenAddress: Address, spenderAddress: Address) {
 
     invariant(expiration > Date.now() / 1000, "Permit2 expired");
 
-    const permitSingle: permit2.PermitSingle = {
+    const permitSingle: PermitSingle = {
       spender: spenderAddress,
       sigDeadline: BigInt(toDeadline(THIRTY_MINUTES)),
       details: {
@@ -66,7 +70,7 @@ export function usePermit2(tokenAddress: Address, spenderAddress: Address) {
       },
     };
 
-    const { domain, values, types } = permit2.AllowanceTransfer.getPermitData(
+    const { domain, values, types } = AllowanceTransfer.getPermitData(
       permitSingle,
       permit2Address,
       chainId,

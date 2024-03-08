@@ -137,6 +137,7 @@ export function formatAuction(
     totalBids: auction.bids.length,
     totalBidsDecrypted,
     totalBidAmount: trimCurrency(totalBidAmount),
+    capacity: trimCurrency(auction.capacity),
     tokenAmounts: {
       in: trimCurrency(tokenAmounts.in),
       out: trimCurrency(tokenAmounts.out),

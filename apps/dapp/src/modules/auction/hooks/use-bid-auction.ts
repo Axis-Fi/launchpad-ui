@@ -12,23 +12,30 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useReferrer } from "state/referral";
+import { usePermit2 } from "modules/token/use-permit2";
 
 export function useBidAuction(
   lotId: string,
   chainId: number,
   amountIn: number,
   amountOut: number,
+  withPermit2?: boolean,
 ) {
   const { result: auction, ...auctionQuery } = useAuction(lotId, chainId);
 
   if (!auction) throw new Error(`Unable to find auction ${lotId}`);
+
+  const axisAddresses = axisContracts.addresses[auction.chainId];
 
   const { address } = useAccount();
   const referrer = useReferrer();
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
-  const axisAddresses = axisContracts.addresses[auction.chainId];
+  const permit2 = usePermit2(
+    auction.quoteToken.address,
+    axisAddresses.auctionHouse,
+  );
 
   // Bids need to be encrypted before submitting
   const encryptBidMutation = useMutation({
@@ -54,6 +61,7 @@ export function useBidAuction(
   // Main action, calls encrypt route and submits encrypted bids
   const handleBid = async () => {
     // Amount out needs to be a uint256
+
     const encryptedAmountOut = await encryptBidMutation.mutateAsync();
 
     // Submit the bid to the contract
@@ -66,10 +74,7 @@ export function useBidAuction(
           lotId: parseUnits(auction.lotId, 0),
           recipient: address as Address,
           referrer: referrer,
-          amount: parseUnits(
-            amountIn.toString(),
-            Number(auction.quoteToken.decimals),
-          ),
+          amount: parseUnits(amountIn.toString(), auction.quoteToken.decimals),
           auctionData: encryptedAmountOut,
           allowlistProof: toHex(""),
           permit2Data: toHex(""),
@@ -88,7 +93,7 @@ export function useBidAuction(
   const {
     isSufficientAllowance,
     approveReceipt,
-    execute: approveCapacity,
+    execute: handleApprove,
     allowance,
   } = useAllowance({
     ownerAddress: address,
@@ -96,8 +101,9 @@ export function useBidAuction(
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
-    amount: Number(amountOut),
-  });
+    amount: Number(amountIn),
+    disable: withPermit2,
+  }); //TODO: refactor this
 
   React.useEffect(() => {
     if (bidReceipt.isSuccess) {
@@ -109,6 +115,12 @@ export function useBidAuction(
 
   const error = [bidReceipt, bidTx, encryptBidMutation].find((m) => m.isError)
     ?.error;
+
+  const approveCapacity = () => {
+    const amount = parseUnits(amountIn.toString(), auction.quoteToken.decimals);
+    console.log({ withPermit2 });
+    return withPermit2 ? permit2.handleSignPermit(amount) : handleApprove();
+  };
 
   return {
     handleBid,

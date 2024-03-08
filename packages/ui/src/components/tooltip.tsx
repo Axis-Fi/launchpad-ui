@@ -1,18 +1,26 @@
-import { TooltipRoot, TooltipContent, TooltipTrigger } from "./primitives";
+import {
+  TooltipRoot,
+  TooltipContent,
+  TooltipTrigger,
+} from "./primitives/tooltip";
 
-export function Tooltip(
-  props: React.PropsWithChildren<{
-    content: React.ReactNode;
-  }>,
-) {
-  if (!props.content) return <>{props.children}</>;
+type TooltipProps = React.PropsWithChildren<{
+  content: React.ReactNode;
+  className?: string;
+}>;
+
+export function Tooltip({ content, children, ...props }: TooltipProps) {
+  if (!content) return <>{children}</>;
   return (
     <TooltipRoot>
-      <TooltipTrigger onClick={(e) => e.preventDefault()}>
-        {props.children}
+      <TooltipTrigger
+        className={props.className}
+        onClick={(e) => e.preventDefault()}
+      >
+        {children}
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">
-        <p>{props.content}</p>
+        <p>{content}</p>
       </TooltipContent>
     </TooltipRoot>
   );
