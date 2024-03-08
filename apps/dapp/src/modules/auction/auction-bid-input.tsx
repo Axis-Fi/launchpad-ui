@@ -37,25 +37,28 @@ export function AuctionBidInput({
             name="quoteTokenAmount"
             control={form.control}
             render={({ field }) => (
-              <FormItemWrapper>
-                <Input
-                  type="number"
-                  {...field}
-                  variant="lg"
-                  className="mt-1 w-full"
-                  placeholder="0.00"
-                />
+              <FormItemWrapper errorClassName="-top-16 text-nowrap">
+                <div className="flex">
+                  <Input
+                    type="number"
+                    {...field}
+                    variant="lg"
+                    className="mt-4 w-full"
+                    placeholder="0.00"
+                  />
+
+                  <div className="flex w-full cursor-pointer flex-col items-end justify-end">
+                    <p className="text-foreground/50">
+                      Balance:{" "}
+                      <span className="text-foreground inline">
+                        {balance} {auction.quoteToken.symbol}
+                      </span>
+                    </p>
+                  </div>
+                </div>
               </FormItemWrapper>
             )}
           />
-        </div>
-        <div className="flex w-full cursor-pointer flex-col items-end justify-end">
-          <p className="text-foreground/50">
-            Balance:{" "}
-            <span className="text-foreground inline">
-              {balance} {auction.quoteToken.symbol}
-            </span>
-          </p>
         </div>
       </div>
 
@@ -70,26 +73,28 @@ export function AuctionBidInput({
             name="baseTokenAmount"
             control={form.control}
             render={({ field }) => (
-              <FormItemWrapper>
-                <Input
-                  type="number"
-                  {...field}
-                  variant="lg"
-                  className="mt-1 w-full"
-                  placeholder="0.00"
-                />
+              <FormItemWrapper errorClassName="-top-16">
+                <div className="flex">
+                  <Input
+                    type="number"
+                    {...field}
+                    variant="lg"
+                    className="mt-4 w-full"
+                    placeholder="0.00"
+                  />
+                  <div className="flex w-full flex-col items-end justify-end">
+                    <p className="text-foreground/50">
+                      Rate:{" "}
+                      <span className="text-foreground inline">
+                        {formattedRate} {auction.quoteToken.symbol}/
+                        {auction.baseToken.symbol}
+                      </span>
+                    </p>
+                  </div>
+                </div>
               </FormItemWrapper>
             )}
           />
-        </div>
-        <div className="flex w-full flex-col items-end justify-end">
-          <p className="text-foreground/50">
-            Rate:{" "}
-            <span className="text-foreground inline">
-              {formattedRate} {auction.quoteToken.symbol}/
-              {auction.baseToken.symbol}
-            </span>
-          </p>
         </div>
       </div>
     </div>

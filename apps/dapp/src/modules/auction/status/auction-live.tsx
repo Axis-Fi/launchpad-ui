@@ -38,7 +38,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             Number(data.quoteTokenAmount) / Number(data.baseTokenAmount) >=
             Number(auction.formatted?.minPrice),
           {
-            message: `Minimum rate must be at least ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
+            message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
             path: ["baseTokenAmount"],
           },
         ),

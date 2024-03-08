@@ -125,15 +125,16 @@ FormMessage.displayName = "FormMessage";
 
 const FormItemWrapper = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & LabelProps & { label?: string }
->((props, ref) => {
+  React.HTMLAttributes<HTMLDivElement> &
+    LabelProps & { label?: string; errorClassName?: string }
+>(({ errorClassName, ...props }, ref) => {
   return (
     <FormItem {...props} ref={ref}>
       <FormLabel tooltip={props.tooltip}>{props.label}</FormLabel>
       <FormControl>
         <>{props.children}</>
       </FormControl>
-      <FormMessage className="absolute top-1" />
+      <FormMessage className={cn("absolute top-1", errorClassName)} />
     </FormItem>
   );
 });
