@@ -96,7 +96,7 @@ export function useBidAuction(
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
-    amount: Number(amountOut),
+    amount: Number(amountIn),
   });
 
   React.useEffect(() => {
