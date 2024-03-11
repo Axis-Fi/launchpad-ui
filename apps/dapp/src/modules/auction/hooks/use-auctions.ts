@@ -10,6 +10,7 @@ import { getChainId } from "src/utils/chain";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { useTokenLists } from "state/tokenlist";
+import { multihashRegex } from "utils/ipfs";
 
 export type AuctionsResult = {
   result: AuctionListed[];
@@ -27,10 +28,12 @@ export function useAuctions(): AuctionsResult {
     enabled: isSuccess,
     queryFn: () => {
       return Promise.all(
-        data?.auctionLots.map(async (auction) => {
-          const auctionInfo = await getAuctionInfo(auction.created.infoHash);
-          return { id: auction.id, auctionInfo };
-        }) ?? [],
+        data?.auctionLots
+          .filter((auction) => multihashRegex.test(auction.created.infoHash))
+          .map(async (auction) => {
+            const auctionInfo = await getAuctionInfo(auction.created.infoHash);
+            return { id: auction.id, auctionInfo };
+          }) ?? [],
       );
     },
   });
@@ -43,6 +46,7 @@ export function useAuctions(): AuctionsResult {
         const auctionInfo = infos.data?.find((info) => info.id === auction.id)
           ?.auctionInfo;
 
+        console.log({ auctionInfo, infos });
         return {
           ...auction,
           ...formatAuctionTokens(auction, getToken, auctionInfo),

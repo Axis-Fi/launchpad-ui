@@ -4,16 +4,16 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
 });
 
 /* Trims decimal based on the number of decimal places */
-export function trimCurrency(input: string | number): string | number {
+export function trimCurrency(input: string | number): string {
   const value = Number(input);
 
-  if (value === 0) return 0;
+  if (value === 0) return "0";
 
   if (!isFinite(value)) {
     throw new Error(`trimCurrency received infinite value:(${value}) `);
   }
 
   return value < 1
-    ? Number(trimCurrency(value * 10)) / 10
+    ? (Number(trimCurrency(value * 10)) / 10).toString()
     : currencyFormatter.format(value);
 }

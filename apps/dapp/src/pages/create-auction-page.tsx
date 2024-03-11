@@ -173,7 +173,7 @@ export default function CreateAuctionPage() {
 
       if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS");
 
-      return auctionInfoAddress;
+      return auctionInfoAddress.hash;
     },
     onError: (error) => console.error("Error during submission:", error),
   });

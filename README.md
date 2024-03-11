@@ -30,6 +30,7 @@ This Turborepo includes the following packages and applications:
 - `packages/ui`: Primitive React components built using [shadcn](https://ui.shadcn.com/)
 - `packages/subgraph-client`: Subgraph client and queries
 - `packages/brand-assets`: Axis brand images and fonts
-- `packages/tailwind-config`: Shared TailwindCSS configs
-- `packages/typescript-config`: Shared `tsconfig.json`s used throughout the Turborepo
-- `packages/eslint-config`: ESLint preset
+- `packages/types`: Common TS types
+- `config/tailwind-config`: Shared TailwindCSS configs
+- `config/typescript-config`: Shared `tsconfig.json`s used throughout the Turborepo
+- `config/eslint-config`: ESLint preset
