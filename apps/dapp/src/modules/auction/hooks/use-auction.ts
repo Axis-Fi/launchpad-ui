@@ -15,6 +15,7 @@ import { trimCurrency } from "utils";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
+import { deployments } from "@repo/deployments";
 
 export type AuctionResult = {
   result?: Auction;
@@ -26,9 +27,11 @@ export type AuctionResult = {
 export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   const { getToken } = useTokenLists();
 
-  const { data, refetch, isLoading, isRefetching } = useGetAuctionLotQuery({
-    lotId: lotId || "",
-  });
+  const { data, refetch, isLoading, isRefetching } = useGetAuctionLotQuery(
+    { endpoint: deployments[chainId!].subgraphURL },
+    { lotId: lotId! },
+    { enabled: !!chainId && !!lotId },
+  );
 
   const rawAuction =
     !data || !data.auctionLots || data.auctionLots.length == 0

@@ -20,16 +20,18 @@ export type Incremental<T> =
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
     };
 
-function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
+function fetcher<TData, TVariables>(
+  endpoint: string,
+  requestInit: RequestInit,
+  query: string,
+  variables?: TVariables,
+) {
   return async (): Promise<TData> => {
-    const res = await fetch(
-      "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.18",
-      {
-        method: "POST",
-        ...{ headers: { "Content-Type": "application/json" } },
-        body: JSON.stringify({ query, variables }),
-      },
-    );
+    const res = await fetch(endpoint, {
+      method: "POST",
+      ...requestInit,
+      body: JSON.stringify({ query, variables }),
+    });
 
     const json = await res.json();
 
@@ -2712,6 +2714,7 @@ export const useGetAuctionLotsQuery = <
   TData = GetAuctionLotsQuery,
   TError = unknown,
 >(
+  dataSource: { endpoint: string; fetchParams?: RequestInit },
   variables?: GetAuctionLotsQueryVariables,
   options?: Omit<
     UseQueryOptions<GetAuctionLotsQuery, TError, TData>,
@@ -2726,6 +2729,8 @@ export const useGetAuctionLotsQuery = <
         ? ["getAuctionLots"]
         : ["getAuctionLots", variables],
     queryFn: fetcher<GetAuctionLotsQuery, GetAuctionLotsQueryVariables>(
+      dataSource.endpoint,
+      dataSource.fetchParams || {},
       GetAuctionLotsDocument,
       variables,
     ),
@@ -2814,6 +2819,7 @@ export const useGetAuctionLotQuery = <
   TData = GetAuctionLotQuery,
   TError = unknown,
 >(
+  dataSource: { endpoint: string; fetchParams?: RequestInit },
   variables: GetAuctionLotQueryVariables,
   options?: Omit<
     UseQueryOptions<GetAuctionLotQuery, TError, TData>,
@@ -2825,6 +2831,8 @@ export const useGetAuctionLotQuery = <
   return useQuery<GetAuctionLotQuery, TError, TData>({
     queryKey: ["getAuctionLot", variables],
     queryFn: fetcher<GetAuctionLotQuery, GetAuctionLotQueryVariables>(
+      dataSource.endpoint,
+      dataSource.fetchParams || {},
       GetAuctionLotDocument,
       variables,
     ),

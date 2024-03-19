@@ -4,10 +4,11 @@ import { AxisDeploymentConfig } from "../../src/types";
 const config: AxisDeploymentConfig = {
   chain: blastSepolia,
   addresses: {
-    auctionHouse: "0x00000000cB3c2A36dEF5Be4d3A674280eFC33498",
-    catalogue: "0x0A0BA689D2D72D3f376293c534AF299B3C6Dac85",
-    localSealedBidBatchAuction: "0xcE56d3E3E145b44597B61E99c64cb82FB209Da04",
-    linearVesting: "0x32A7b69B9F42F0CD6306Bd897ae2664AF0eFBAbd",
+    auctionHouse: "0x000000008D5D105e7e35483B4c03160761A2De5D",
+    catalogue: "0x742485f9E2de202C5B0a2D540cac6d927FDE230f",
+    empam: "0xe1B83edA3399A2c9B8265215EA21042C9b918dc5",
+    fpam: "0x311016478a50d928386d422d44494fb57f9E692b",
+    linearVesting: "0xd13d64dD95F3DB8d1B3E1E65a1ef3F952ee1FC73",
   },
   rpcURL:
     "https://broken-magical-hill.blast-sepolia.quiknode.pro/3bdd9ff197592ef9652987ef7dcf549e759c713d/",

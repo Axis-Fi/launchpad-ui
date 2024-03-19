@@ -11,10 +11,8 @@ type UseAuctionDataParameters = {
 /** Reads auctionData for a specific auction on chain and parses it*/
 export function useAuctionData({ lotId, chainId }: UseAuctionDataParameters) {
   const auctionDataQuery = useReadContract({
-    abi: axisContracts.abis.localSealedBidBatchAuction,
-    address: !chainId
-      ? undefined
-      : axisContracts.addresses[chainId].localSealedBidBatchAuction,
+    abi: axisContracts.abis.empam,
+    address: !chainId ? undefined : axisContracts.addresses[chainId].empam,
     functionName: "auctionData",
     args: [parseUnits(lotId ?? "0", 0)],
     query: { enabled: !!chainId && !!lotId },

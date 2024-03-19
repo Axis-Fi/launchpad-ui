@@ -1,6 +1,6 @@
 import {
+  GetAuctionLotsDocument,
   GetAuctionLotsQuery,
-  useGetAuctionLotsQuery,
 } from "@repo/subgraph-client/src/generated";
 import { getAuctionStatus } from "../utils/get-auction-status";
 import { AuctionListed } from "@repo/types";
@@ -11,25 +11,30 @@ import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { useTokenLists } from "state/tokenlist";
 import { multihashRegex } from "utils/ipfs";
+import { useQueryAll } from "loaders/use-query-all";
 
 export type AuctionsResult = {
   result: AuctionListed[];
 } & Pick<
   UseQueryResult<GetAuctionLotsQuery, unknown>,
-  "isLoading" | "refetch" | "isRefetching"
->;
+  "isLoading" | "isRefetching"
+> &
+  Pick<ReturnType<typeof useQueryAll>, "refetch">;
 
 export function useAuctions(): AuctionsResult {
   const { data, refetch, isLoading, isSuccess, isRefetching } =
-    useGetAuctionLotsQuery();
+    useQueryAll<GetAuctionLotsQuery>({
+      document: GetAuctionLotsDocument,
+      field: "auctionLots",
+    });
 
   const infos = useQuery({
     queryKey: ["all-auction-info"],
     enabled: isSuccess,
     queryFn: () => {
       return Promise.all(
-        data?.auctionLots
-          .filter((auction) => multihashRegex.test(auction.created.infoHash))
+        data
+          ?.filter((auction) => multihashRegex.test(auction.created.infoHash))
           .map(async (auction) => {
             const auctionInfo = await getAuctionInfo(auction.created.infoHash);
             return { id: auction.id, auctionInfo };
@@ -41,7 +46,7 @@ export function useAuctions(): AuctionsResult {
   const { getToken } = useTokenLists();
 
   return {
-    result: (data?.auctionLots ?? [])
+    result: (data ?? [])
       .map((auction) => {
         const auctionInfo = infos.data?.find((info) => info.id === auction.id)
           ?.auctionInfo;

@@ -8,7 +8,7 @@ import mainnetConfigs from "../chains/mainnet";
 export const mainnetDeployments = testnetConfigs.map(createDeployment);
 export const testnetDeployments = mainnetConfigs.map(createDeployment);
 
-const allDeployments = [testnetDeployments, mainnetDeployments];
+export const allDeployments = [testnetDeployments, mainnetDeployments];
 
 const addressesPerChain: Record<number, AxisContractAddresses> = allDeployments
   .flat()
@@ -24,6 +24,7 @@ export const axisContracts = {
 //Indexes deployments by chain for ease of use
 export const testnets = createDeploymentRecord(mainnetDeployments);
 export const mainnets = createDeploymentRecord(testnetDeployments);
+export const deployments = { ...testnets, ...mainnets };
 
 const lists = [mainnetDeployments, testnetDeployments].flatMap((list) =>
   list.flatMap((t) => t.tokenList),

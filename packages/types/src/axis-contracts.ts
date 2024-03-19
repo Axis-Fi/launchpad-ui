@@ -3,7 +3,8 @@ export type Address = `0x${string}`;
 export type AxisContractNames =
   | "auctionHouse"
   | "catalogue"
-  | "localSealedBidBatchAuction"
+  | "empam"
+  | "fpam"
   | "linearVesting";
 
 export type AxisContractAddresses = Record<AxisContractNames, Address>;

@@ -15,14 +15,7 @@ const config: CodegenConfig = {
       ],
       config: {
         reactQueryVersion: 5,
-        fetcher: {
-          endpoint: `${ENDPOINT}`,
-          fetchParams: {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
-        },
+        fetcher: "fetch",
         namingConvention: {
           enumValues: "change-case-all#titleCase", // Avoids conflicts with enum values, e.g. AuctionLot_OrderBy
         },
