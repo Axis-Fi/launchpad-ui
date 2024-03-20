@@ -4,7 +4,7 @@ import {
   useQueries,
 } from "@tanstack/react-query";
 import { Variables } from "graphql-request";
-import { queryAllEndpoints } from "utils/subgraph/queryAllEndpoints";
+import { queryAllEndpoints } from "utils/subgraph/query-all-endpoints";
 
 /** Queries all configured endpoints */
 export function useQueryAll<TQuery>({
@@ -16,12 +16,17 @@ export function useQueryAll<TQuery>({
   variables?: Variables;
   field: QueryResultKey<TQuery>;
 }) {
-  return useQueries({
+  const queries = useQueries({
     queries: queryAllEndpoints<TQuery>({ document, variables }),
     combine: (responses) => {
+      const filteredResponses = responses.filter(
+        (response): response is UseQueryResult<TQuery> =>
+          response?.data !== undefined,
+      );
+
       return {
         data: concatSubgraphQueryResultArrays<TQuery, QueryResultKey<TQuery>>(
-          responses,
+          filteredResponses,
           field,
         ),
         queries: responses,
@@ -30,9 +35,12 @@ export function useQueryAll<TQuery>({
         isSuccess: responses.some((r) => r.isSuccess),
         isRefetching: responses.some((r) => r.isFetching),
         isLoading: responses.some((r) => r.isLoading),
+        isError: responses.some((r) => r.isError),
+        errors: responses.filter((r) => r.isError).map(({ error }) => error),
       };
     },
   });
+  return queries;
 }
 
 type QueryResultKey<T> = keyof Omit<T, "__typename">;

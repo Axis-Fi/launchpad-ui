@@ -3,26 +3,21 @@ import { Variables } from "graphql-request";
 import { environment } from "config/environment";
 import { mainnetDeployments, testnetDeployments } from "@repo/deployments";
 
+const isTestnet = environment.isTestnet;
+const endpoints = isTestnet ? testnetDeployments : mainnetDeployments;
+
 export function queryAllEndpoints<TQuery>({
   document,
-  variables,
+  variables = {},
 }: {
   document: string;
   variables?: Variables;
 }) {
-  const isTestnet = environment.isTestnet;
-  const endpoints = isTestnet ? testnetDeployments : mainnetDeployments;
-  const currentTime = Math.trunc(Date.now() / 1000);
-
-  const vars = variables || { currentTime };
-
-  const queries = endpoints.map(({ subgraphURL: url }) => ({
-    queryKey: [url, document, vars],
+  return endpoints.map(({ subgraphURL: url }) => ({
+    queryKey: [url, document, variables],
     queryFn: async () => {
-      const response = await request<TQuery>(url, document, vars);
+      const response = await request<TQuery>(url, document, variables);
       return response;
     },
   }));
-
-  return queries;
 }

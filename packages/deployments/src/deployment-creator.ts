@@ -35,7 +35,7 @@ export function createDeploymentRecord(
 function makeSubgraphURL(chainId: number) {
   return (
     subgraphConfig.baseURL +
-    chainId +
+    replaceBlastSepolia(chainId) +
     subgraphConfig.graph +
     subgraphConfig.version
   );
@@ -60,4 +60,9 @@ function withMetadata(tokens: Omit<Token, "chainId">[], chainId: number) {
     isActive: true,
     tokens: tokens.map((t) => ({ ...t, chainId })),
   };
+}
+
+//TODO: subgraph URL expects 65230 but actual testnet is 168587773
+function replaceBlastSepolia(chainId: number) {
+  return chainId === 168587773 ? 65230 : chainId;
 }

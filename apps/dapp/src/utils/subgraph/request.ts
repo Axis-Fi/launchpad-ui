@@ -5,7 +5,7 @@ import {
 } from "graphql-request";
 import { DocumentNode } from "graphql";
 
-export async function request<TDocument extends RequestDocument | DocumentNode>(
+export async function request<TDocument = unknown>(
   endpoint: string,
   document: RequestDocument | DocumentNode,
   variables?: Variables,

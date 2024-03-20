@@ -51,7 +51,6 @@ export function useAuctions(): AuctionsResult {
         const auctionInfo = infos.data?.find((info) => info.id === auction.id)
           ?.auctionInfo;
 
-        console.log({ auctionInfo, infos });
         return {
           ...auction,
           ...formatAuctionTokens(auction, getToken, auctionInfo),
