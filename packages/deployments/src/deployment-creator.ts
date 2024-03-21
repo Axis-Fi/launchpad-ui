@@ -4,18 +4,17 @@ import type { AxisDeployment } from "./types";
 import subgraphConfig from "../subgraph-config";
 import tokenlistMetadata from "../tokenlist-metadata";
 
-const SUBGRAPH_ID = 52935;
-
 /** Creates a deployment configuration */
 export function createDeployment(config: {
   chain: Chain;
   addresses: AxisContractAddresses;
   tokenList: Omit<Token, "chainId">[];
   rpcURL?: string;
+  name: string;
 }): AxisDeployment {
   return {
     addresses: config.addresses,
-    subgraphURL: makeSubgraphURL(),
+    subgraphURL: makeSubgraphURL(config.name),
     chain: withCustomRPC(config.chain, config.rpcURL),
     tokenList: withMetadata(config.tokenList, config.chain.id),
   };
@@ -34,11 +33,12 @@ export function createDeploymentRecord(
 }
 
 /** Generates a subgraph URL for a specific chain*/
-function makeSubgraphURL() {
+function makeSubgraphURL(chainName: string) {
   return (
     subgraphConfig.baseURL +
-    SUBGRAPH_ID +
+    subgraphConfig.id +
     subgraphConfig.graph +
+    `-${chainName}/` +
     subgraphConfig.version
   );
 }

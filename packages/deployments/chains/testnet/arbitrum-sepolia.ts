@@ -2,6 +2,7 @@ import { arbitrumSepolia } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 
 const config: AxisDeploymentConfig = {
+  name: "arbitrum-sepolia",
   chain: arbitrumSepolia,
   addresses: {
     auctionHouse: "0x884E32d3c9D60962EF1A005f3d5365a41CDE38b8",

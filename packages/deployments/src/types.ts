@@ -14,6 +14,7 @@ export type AxisDeploymentConfig = Omit<
   AxisDeployment,
   "subgraphURL" | "tokenList"
 > & {
+  name: string;
   rpcURL: string;
   tokenList: Omit<Token, "chainId">[];
 };

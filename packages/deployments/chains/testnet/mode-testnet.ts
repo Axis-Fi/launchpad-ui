@@ -2,6 +2,7 @@ import { modeTestnet } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 
 const config: AxisDeploymentConfig = {
+  name: "mode-testnet",
   chain: modeTestnet,
   addresses: {
     auctionHouse: "0x0000000053307d4Ec2141c8b49fff0A04903F11D",

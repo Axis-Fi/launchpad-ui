@@ -2,6 +2,7 @@ import { blastSepolia } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 
 const config: AxisDeploymentConfig = {
+  name: "blast-testnet",
   chain: blastSepolia,
   addresses: {
     auctionHouse: "0x000000009DB7a64d0B3f92E2F0e026a2AF9Cf9b3",
