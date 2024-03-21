@@ -4,6 +4,8 @@ import type { AxisDeployment } from "./types";
 import subgraphConfig from "../subgraph-config";
 import tokenlistMetadata from "../tokenlist-metadata";
 
+const SUBGRAPH_ID = 52935;
+
 /** Creates a deployment configuration */
 export function createDeployment(config: {
   chain: Chain;
@@ -13,7 +15,7 @@ export function createDeployment(config: {
 }): AxisDeployment {
   return {
     addresses: config.addresses,
-    subgraphURL: makeSubgraphURL(config.chain.id),
+    subgraphURL: makeSubgraphURL(),
     chain: withCustomRPC(config.chain, config.rpcURL),
     tokenList: withMetadata(config.tokenList, config.chain.id),
   };
@@ -32,10 +34,10 @@ export function createDeploymentRecord(
 }
 
 /** Generates a subgraph URL for a specific chain*/
-function makeSubgraphURL(chainId: number) {
+function makeSubgraphURL() {
   return (
     subgraphConfig.baseURL +
-    replaceBlastSepolia(chainId) +
+    SUBGRAPH_ID +
     subgraphConfig.graph +
     subgraphConfig.version
   );
@@ -60,9 +62,4 @@ function withMetadata(tokens: Omit<Token, "chainId">[], chainId: number) {
     isActive: true,
     tokens: tokens.map((t) => ({ ...t, chainId })),
   };
-}
-
-//TODO: subgraph URL expects 65230 but actual testnet is 168587773
-function replaceBlastSepolia(chainId: number) {
-  return chainId === 168587773 ? 65230 : chainId;
 }
