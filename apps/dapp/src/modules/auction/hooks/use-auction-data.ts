@@ -29,18 +29,32 @@ export function useAuctionData({ lotId, chainId }: UseAuctionDataParameters) {
 /** Maps the result of view function auctionData into a readable format */
 const mapAuctionData = (
   data:
-    | readonly [number, bigint, bigint, bigint, bigint, bigint, `0x${string}`]
+    | readonly [
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
+        number,
+        bigint,
+        { x: bigint; y: bigint },
+        bigint,
+      ]
     | undefined,
 ): AuctionData | undefined => {
   if (!data) return undefined;
 
   return {
-    status: data[0],
-    nextDecryptIndex: data[1],
-    nextBidId: data[2],
-    minimumPrice: data[3],
+    nextBidId: data[0],
+    marginalPrice: data[1],
+    minimumPrice: data[2],
+    nextDecryptIndex: data[3],
     minFilled: data[4],
     minBidSize: data[5],
-    publicKeyModulus: data[6],
+    status: data[6],
+    marginalBidId: data[7],
+    publicKey: data[8],
+    privateKey: data[9],
   };
 };

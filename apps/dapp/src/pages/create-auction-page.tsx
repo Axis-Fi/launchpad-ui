@@ -204,13 +204,7 @@ export default function CreateAuctionPage() {
             baseToken: getAddress(values.payoutToken.address),
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
-            hooks: !values.hooks ? zeroAddress : getAddress(values.hooks),
-            allowlist: !values.allowlist
-              ? zeroAddress
-              : getAddress(values.allowlist),
-            allowlistParams: !values.allowlistParams
-              ? toHex("")
-              : toHex(values.allowlistParams),
+            callbacks: !values.hooks ? zeroAddress : getAddress(values.hooks),
             derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
             derivativeParams:
               !values.isVested || !values.vestingDuration
@@ -222,6 +216,10 @@ export default function CreateAuctionPage() {
                         getDuration(Number(values.vestingDuration)),
                     ],
                   ),
+            //TODO: Check these parameters
+            wrapDerivative: false, //TODO: add missing inputs to UI
+            callbackData: toHex(""),
+            prefunded: false,
           },
           {
             start: getTimestamp(values.start),

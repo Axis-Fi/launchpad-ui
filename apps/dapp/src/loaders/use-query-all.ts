@@ -30,7 +30,7 @@ export function useQueryAll<TQuery>({
           field,
         ),
         queries: responses,
-        refetch: (args: RefetchOptions | undefined) =>
+        refetch: (args?: RefetchOptions) =>
           responses.flatMap((r) => r.refetch(args)),
         isSuccess: responses.some((r) => r.isSuccess),
         isRefetching: responses.some((r) => r.isFetching),

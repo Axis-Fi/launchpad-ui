@@ -64,16 +64,15 @@ export function useBidAuction(
       args: [
         {
           lotId: parseUnits(auction.lotId, 0),
-          recipient: address as Address,
           referrer: referrer,
           amount: parseUnits(
             amountIn.toString(),
             Number(auction.quoteToken.decimals),
           ),
           auctionData: encryptedAmountOut,
-          allowlistProof: toHex(""),
           permit2Data: toHex(""),
         },
+        toHex(""), //TODO: REVIEW PARAMETERS
       ],
     });
   };

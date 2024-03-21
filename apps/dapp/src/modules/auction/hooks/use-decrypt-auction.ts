@@ -40,6 +40,7 @@ export const useDecryptBids = (auction: Auction) => {
   });
 
   //Map bids to the expected format
+  /*eslint-disable-next-line*/
   const nextBids =
     nextBidsQuery.data?.map((d) => ({
       amountOut: fromHex(d.amountOut as Address, "bigint"),
@@ -48,11 +49,11 @@ export const useDecryptBids = (auction: Auction) => {
 
   //Send bids to the contract for decryption
   const { data: decryptCall, ...decryptCallQuery } = useSimulateContract({
-    address: contracts.localSealedBidBatchAuction,
-    abi: axisContracts.abis.localSealedBidBatchAuction,
+    address: contracts.empam,
+    abi: axisContracts.abis.empam,
     functionName: "decryptAndSortBids",
     chainId: auction.chainId,
-    args: [BigInt(auction.lotId), nextBids],
+    args: [BigInt(auction.lotId), 0n], //TODO: Correct parameter
   });
 
   const decrypt = useWriteContract();

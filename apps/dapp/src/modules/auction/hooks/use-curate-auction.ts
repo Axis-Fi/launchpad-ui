@@ -1,4 +1,5 @@
 import { axisContracts } from "@repo/deployments";
+import { toHex } from "viem";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -8,14 +9,13 @@ import {
 export function useCurateAuction(lotId: string, chainId: number) {
   const axisAddresses = axisContracts.addresses[chainId];
 
-  const { data: curateCall, error } = useSimulateContract({
+  const { data: curateCall } = useSimulateContract({
     abi: axisContracts.abis.auctionHouse,
     address: axisAddresses?.auctionHouse,
     chainId,
     functionName: "curate",
-    args: [BigInt(lotId)],
+    args: [BigInt(lotId), toHex("")], //TODO: REVIEW PARAMETERS
   });
-  console.log({ error });
 
   const curateTx = useWriteContract();
   const curateReceipt = useWaitForTransactionReceipt({ hash: curateTx.data });

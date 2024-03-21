@@ -48,7 +48,10 @@ export type AuctionData = {
   minimumPrice: bigint;
   minFilled: bigint;
   minBidSize: bigint;
-  publicKeyModulus: `0x${string}`;
+  marginalPrice: bigint;
+  marginalBidId: bigint;
+  publicKey: { x: bigint; y: bigint };
+  privateKey: bigint;
 };
 
 export type AuctionFormattedInfo = {
