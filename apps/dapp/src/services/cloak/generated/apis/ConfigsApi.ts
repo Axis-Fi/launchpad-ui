@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Cloak Key Management API
- * Cloak provides a simple key management API for RSA key pairs. It allows users to create a key pair where the private key will only be revealed after a certain time. The time is determined by the conclusion of an auction that the key is mapped to based on observations of blockchain events.
+ * Cloak provides a simple key management API for BN254 key pairs. It allows users to create a key pair where the private key will only be revealed after a certain time. The time is determined by the conclusion of an auction that the key is mapped to based on observations of blockchain events.
  *
  * The version of the OpenAPI document: 0.1.0
  *

@@ -14,54 +14,52 @@
 
 import { exists, mapValues } from "../runtime";
 /**
- * An API service Config object
+ * Object representing a BN254 public key
  * @export
- * @interface Config
+ * @interface PublicKey
  */
-export interface Config {
+export interface PublicKey {
   /**
-   * The Config's chain_id
-   * @type {number}
-   * @memberof Config
-   */
-  chainId?: number;
-  /**
-   * The Config's Auction House contract address
+   * The x coordinate of the public key
    * @type {string}
-   * @memberof Config
+   * @memberof PublicKey
    */
-  auctionHouse?: string;
+  x?: string;
+  /**
+   * The y coordinate of the public key
+   * @type {string}
+   * @memberof PublicKey
+   */
+  y?: string;
 }
 
 /**
- * Check if a given object implements the Config interface.
+ * Check if a given object implements the PublicKey interface.
  */
-export function instanceOfConfig(value: object): boolean {
+export function instanceOfPublicKey(value: object): boolean {
   let isInstance = true;
 
   return isInstance;
 }
 
-export function ConfigFromJSON(json: any): Config {
-  return ConfigFromJSONTyped(json, false);
+export function PublicKeyFromJSON(json: any): PublicKey {
+  return PublicKeyFromJSONTyped(json, false);
 }
 
-export function ConfigFromJSONTyped(
+export function PublicKeyFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): Config {
+): PublicKey {
   if (json === undefined || json === null) {
     return json;
   }
   return {
-    chainId: !exists(json, "chain_id") ? undefined : json["chain_id"],
-    auctionHouse: !exists(json, "auction_house")
-      ? undefined
-      : json["auction_house"],
+    x: !exists(json, "x") ? undefined : json["x"],
+    y: !exists(json, "y") ? undefined : json["y"],
   };
 }
 
-export function ConfigToJSON(value?: Config | null): any {
+export function PublicKeyToJSON(value?: PublicKey | null): any {
   if (value === undefined) {
     return undefined;
   }
@@ -69,7 +67,7 @@ export function ConfigToJSON(value?: Config | null): any {
     return null;
   }
   return {
-    chain_id: value.chainId,
-    auction_house: value.auctionHouse,
+    x: value.x,
+    y: value.y,
   };
 }

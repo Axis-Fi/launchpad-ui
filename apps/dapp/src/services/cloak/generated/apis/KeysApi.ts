@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Cloak Key Management API
- * Cloak provides a simple key management API for RSA key pairs. It allows users to create a key pair where the private key will only be revealed after a certain time. The time is determined by the conclusion of an auction that the key is mapped to based on observations of blockchain events.
+ * Cloak provides a simple key management API for BN254 key pairs. It allows users to create a key pair where the private key will only be revealed after a certain time. The time is determined by the conclusion of an auction that the key is mapped to based on observations of blockchain events.
  *
  * The version of the OpenAPI document: 0.1.0
  *
@@ -13,20 +13,25 @@
  */
 
 import * as runtime from "../runtime";
-import type { Decrypt } from "../models/index";
-import { DecryptFromJSON, DecryptToJSON } from "../models/index";
-
-export interface DecryptsLotIdGetRequest {
-  xChainId: number;
-  xAuctionHouse: string;
-  lotId: number;
-}
+import type {
+  EncryptLotIdPost200Response,
+  EncryptRequest,
+  PublicKey,
+} from "../models/index";
+import {
+  EncryptLotIdPost200ResponseFromJSON,
+  EncryptLotIdPost200ResponseToJSON,
+  EncryptRequestFromJSON,
+  EncryptRequestToJSON,
+  PublicKeyFromJSON,
+  PublicKeyToJSON,
+} from "../models/index";
 
 export interface EncryptLotIdPostRequest {
   xChainId: number;
   xAuctionHouse: string;
   lotId: number;
-  body: string;
+  encryptRequest: EncryptRequest;
 }
 
 export interface PrivateKeyLotIdGetRequest {
@@ -46,101 +51,12 @@ export interface PublicKeyLotIdGetRequest {
  */
 export class KeysApi extends runtime.BaseAPI {
   /**
-   * Retrieve a list of the next decrypts needed for a given lot ID. Decrypts will only be revealed after the auction for the lot has concluded. If an auction is cancelled, decrypts will not be revealed.
-   */
-  async decryptsLotIdGetRaw(
-    requestParameters: DecryptsLotIdGetRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<Array<Decrypt>>> {
-    if (
-      requestParameters.xChainId === null ||
-      requestParameters.xChainId === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xChainId",
-        "Required parameter requestParameters.xChainId was null or undefined when calling decryptsLotIdGet.",
-      );
-    }
-
-    if (
-      requestParameters.xAuctionHouse === null ||
-      requestParameters.xAuctionHouse === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xAuctionHouse",
-        "Required parameter requestParameters.xAuctionHouse was null or undefined when calling decryptsLotIdGet.",
-      );
-    }
-
-    if (
-      requestParameters.lotId === null ||
-      requestParameters.lotId === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "lotId",
-        "Required parameter requestParameters.lotId was null or undefined when calling decryptsLotIdGet.",
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (
-      requestParameters.xChainId !== undefined &&
-      requestParameters.xChainId !== null
-    ) {
-      headerParameters["x-chain-id"] = String(requestParameters.xChainId);
-    }
-
-    if (
-      requestParameters.xAuctionHouse !== undefined &&
-      requestParameters.xAuctionHouse !== null
-    ) {
-      headerParameters["x-auction-house"] = String(
-        requestParameters.xAuctionHouse,
-      );
-    }
-
-    const response = await this.request(
-      {
-        path: `/decrypts/{lot_id}`.replace(
-          `{${"lot_id"}}`,
-          encodeURIComponent(String(requestParameters.lotId)),
-        ),
-        method: "GET",
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides,
-    );
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(DecryptFromJSON),
-    );
-  }
-
-  /**
-   * Retrieve a list of the next decrypts needed for a given lot ID. Decrypts will only be revealed after the auction for the lot has concluded. If an auction is cancelled, decrypts will not be revealed.
-   */
-  async decryptsLotIdGet(
-    requestParameters: DecryptsLotIdGetRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<Array<Decrypt>> {
-    const response = await this.decryptsLotIdGetRaw(
-      requestParameters,
-      initOverrides,
-    );
-    return await response.value();
-  }
-
-  /**
-   * Encrypt a bid for a given lot ID. The bid will be encrypted using the public key modulus for the lot and a randomized seed.
+   * Encrypt a bid for a given lot ID. The bid will be encrypted using the public key for the lot and a randomized seed.
    */
   async encryptLotIdPostRaw(
     requestParameters: EncryptLotIdPostRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<`0x{string}`>> {
+  ): Promise<runtime.ApiResponse<EncryptLotIdPost200Response>> {
     if (
       requestParameters.xChainId === null ||
       requestParameters.xChainId === undefined
@@ -172,12 +88,12 @@ export class KeysApi extends runtime.BaseAPI {
     }
 
     if (
-      requestParameters.body === null ||
-      requestParameters.body === undefined
+      requestParameters.encryptRequest === null ||
+      requestParameters.encryptRequest === undefined
     ) {
       throw new runtime.RequiredError(
-        "body",
-        "Required parameter requestParameters.body was null or undefined when calling encryptLotIdPost.",
+        "encryptRequest",
+        "Required parameter requestParameters.encryptRequest was null or undefined when calling encryptLotIdPost.",
       );
     }
 
@@ -212,25 +128,23 @@ export class KeysApi extends runtime.BaseAPI {
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: requestParameters.body as any,
+        body: EncryptRequestToJSON(requestParameters.encryptRequest),
       },
       initOverrides,
     );
 
-    if (this.isJsonMime(response.headers.get("content-type"))) {
-      return new runtime.JSONApiResponse<`0x{string}`>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      EncryptLotIdPost200ResponseFromJSON(jsonValue),
+    );
   }
 
   /**
-   * Encrypt a bid for a given lot ID. The bid will be encrypted using the public key modulus for the lot and a randomized seed.
+   * Encrypt a bid for a given lot ID. The bid will be encrypted using the public key for the lot and a randomized seed.
    */
   async encryptLotIdPost(
     requestParameters: EncryptLotIdPostRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<`0x{string}`> {
+  ): Promise<EncryptLotIdPost200Response> {
     const response = await this.encryptLotIdPostRaw(
       requestParameters,
       initOverrides,
@@ -239,11 +153,11 @@ export class KeysApi extends runtime.BaseAPI {
   }
 
   /**
-   * Create a new 1024-bit RSA key pair with public expononent 65537. Returns the public key modulus.
+   * Create a new BN254 key pair. Returns the public key coordinates.
    */
   async newKeyPairPostRaw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<string>> {
+  ): Promise<runtime.ApiResponse<PublicKey>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -258,19 +172,17 @@ export class KeysApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    if (this.isJsonMime(response.headers.get("content-type"))) {
-      return new runtime.JSONApiResponse<string>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      PublicKeyFromJSON(jsonValue),
+    );
   }
 
   /**
-   * Create a new 1024-bit RSA key pair with public expononent 65537. Returns the public key modulus.
+   * Create a new BN254 key pair. Returns the public key coordinates.
    */
   async newKeyPairPost(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<string> {
+  ): Promise<PublicKey> {
     const response = await this.newKeyPairPostRaw(initOverrides);
     return await response.value();
   }
@@ -367,12 +279,12 @@ export class KeysApi extends runtime.BaseAPI {
   }
 
   /**
-   * Retrieve the public key modulus for a given lot ID.
+   * Retrieve the public key for a given lot ID.
    */
   async publicKeyLotIdGetRaw(
     requestParameters: PublicKeyLotIdGetRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<string>> {
+  ): Promise<runtime.ApiResponse<PublicKey>> {
     if (
       requestParameters.xChainId === null ||
       requestParameters.xChainId === undefined
@@ -436,20 +348,18 @@ export class KeysApi extends runtime.BaseAPI {
       initOverrides,
     );
 
-    if (this.isJsonMime(response.headers.get("content-type"))) {
-      return new runtime.JSONApiResponse<string>(response);
-    } else {
-      return new runtime.TextApiResponse(response) as any;
-    }
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      PublicKeyFromJSON(jsonValue),
+    );
   }
 
   /**
-   * Retrieve the public key modulus for a given lot ID.
+   * Retrieve the public key for a given lot ID.
    */
   async publicKeyLotIdGet(
     requestParameters: PublicKeyLotIdGetRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<string> {
+  ): Promise<PublicKey> {
     const response = await this.publicKeyLotIdGetRaw(
       requestParameters,
       initOverrides,
