@@ -2,7 +2,7 @@ import Storage from "@fleekhq/fleek-storage-js";
 
 /** Stores data and returns the location hash */
 export async function storeData(input: {
-  data: object;
+  data: string;
   key: string;
 }): Promise<Storage.uploadOutput> {
   const keys = getCredentials();

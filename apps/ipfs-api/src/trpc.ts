@@ -34,10 +34,15 @@ export const appRouter = t.router({
   storeAuctionInfo: t.procedure
     .input(auctionInfoType)
     .mutation(async (opts) => {
-      const { input } = opts;
+      const {
+        input: { key, ...data },
+      } = opts;
 
       // Store the object in IPFS
-      const ipfsHash = await storeData({ key: "test", data: input });
+      const ipfsHash = await storeData({
+        key,
+        data: JSON.stringify(data),
+      });
       console.log("Stored object at IPFS hash:", ipfsHash);
 
       return {

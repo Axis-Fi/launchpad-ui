@@ -28,6 +28,7 @@ export type AuctionStatus =
   | "settled";
 
 export type AuctionInfo = {
+  key?: string;
   name?: string;
   description?: string;
   links?: {

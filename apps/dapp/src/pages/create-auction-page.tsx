@@ -156,6 +156,7 @@ export default function CreateAuctionPage() {
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
+        key: values.payoutToken.chainId + "_" + values.payoutToken.address,
         name: values.name,
         description: values.description,
         links: {
@@ -190,7 +191,7 @@ export default function CreateAuctionPage() {
   });
 
   const handleCreation = async (values: CreateAuctionForm) => {
-    const auctionInfoAddress = "0x43424"; //await auctionInfoMutation.mutateAsync(values);
+    const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const publicKey = await generateKeyPairMutation.mutateAsync();
 
     createAuctionTx.writeContract(
