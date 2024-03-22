@@ -4,7 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { cloakClient } from "src/services/cloak";
-import { Address, parseUnits, toHex } from "viem";
+import {
+  Address,
+  Hex,
+  encodeAbiParameters,
+  fromHex,
+  parseUnits,
+  toHex,
+} from "viem";
 import {
   useAccount,
   useBalance,
@@ -50,7 +57,7 @@ export function useBidAuction(
         xAuctionHouse: axisAddresses.auctionHouse,
         lotId: parseInt(auction.lotId),
         encryptRequest: {
-          amount: toHex(quoteTokenAmountIn), //TODO: check if hex value
+          amount: toHex(quoteTokenAmountIn),
           amountOut: toHex(baseTokenAmountOut),
           bidder: address,
         },
@@ -60,11 +67,36 @@ export function useBidAuction(
     },
   });
 
+  const auctionDataParams = [
+    { name: "encryptedAmountOut", type: "uint256" },
+    {
+      name: "bidPublicKey",
+      type: "tuple",
+      internalType: "struct Point",
+      components: [
+        {
+          name: "x",
+          type: "uint256",
+        },
+        {
+          name: "y",
+          type: "uint256",
+        },
+      ],
+    },
+  ];
   // Main action, calls encrypt route and submits encrypted bids
   const handleBid = async () => {
     // Amount out needs to be a uint256
-    const encryptedAmountOut = await encryptBidMutation.mutateAsync();
+    const result = await encryptBidMutation.mutateAsync();
 
+    const auctionData = encodeAbiParameters(auctionDataParams, [
+      fromHex(result.ciphertext as Hex, "bigint"),
+      {
+        x: fromHex(result.x as Hex, "bigint"),
+        y: fromHex(result.y as Hex, "bigint"),
+      },
+    ]);
     // Submit the bid to the contract
     bidTx.writeContract({
       abi: axisContracts.abis.auctionHouse,
@@ -78,8 +110,7 @@ export function useBidAuction(
             amountIn.toString(),
             Number(auction.quoteToken.decimals),
           ),
-          auctionData: encryptedAmountOut.ciphertext as Address,
-          allowlistProof: toHex(""),
+          auctionData,
           permit2Data: toHex(""),
         },
         toHex(""), //TODO: REVIEW PARAMETERS

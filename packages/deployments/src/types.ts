@@ -10,10 +10,7 @@ export type AxisDeployment = {
 };
 
 /** Raw deployment data used to generate the final config*/
-export type AxisDeploymentConfig = Omit<
-  AxisDeployment,
-  "subgraphURL" | "tokenList"
-> & {
+export type AxisDeploymentConfig = Omit<AxisDeployment, "tokenList"> & {
   name: string;
   rpcURL: string;
   tokenList: Omit<Token, "chainId">[];

@@ -40,9 +40,10 @@ export const appRouter = t.router({
 
       // Store the object in IPFS
       const ipfsHash = await storeData({
-        key,
+        key: key ?? data.name!,
         data: JSON.stringify(data),
       });
+
       console.log("Stored object at IPFS hash:", ipfsHash);
 
       return {

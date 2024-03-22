@@ -1,7 +1,9 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
+import * as deps from "@repo/deployments";
 
+//TODO: improve
 const ENDPOINT =
-  "https://api.studio.thegraph.com/query/65230/axisfi-auctions/0.0.18";
+  "https://api.studio.thegraph.com/query/52935/axis-origin-blast-testnet/0.0.22";
 
 const config: CodegenConfig = {
   schema: ENDPOINT,
@@ -16,6 +18,7 @@ const config: CodegenConfig = {
       config: {
         reactQueryVersion: 5,
         fetcher: "fetch",
+
         namingConvention: {
           enumValues: "change-case-all#titleCase", // Avoids conflicts with enum values, e.g. AuctionLot_OrderBy
         },

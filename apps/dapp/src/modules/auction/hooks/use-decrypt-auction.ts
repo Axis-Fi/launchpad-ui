@@ -3,7 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Auction } from "@repo/types";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
-import { Address, ByteArray, fromHex, toHex } from "viem";
+import { Hex, fromHex } from "viem";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -20,7 +20,7 @@ export const useDecryptBids = (auction: Auction) => {
   );
 
   //Get the next bids from the API
-  const nextBidsQuery = useQuery({
+  const privateKeyQuery = useQuery({
     queryKey: [
       "decrypt",
       auction.chainId,
@@ -28,7 +28,7 @@ export const useDecryptBids = (auction: Auction) => {
       contracts.auctionHouse,
     ],
     queryFn: () =>
-      cloakClient.keysApi.decryptsLotIdGet({
+      cloakClient.keysApi.privateKeyLotIdGet({
         xChainId: auction.chainId,
         xAuctionHouse: contracts.auctionHouse,
         lotId: Number(auction.lotId),
@@ -39,21 +39,17 @@ export const useDecryptBids = (auction: Auction) => {
       auction.bidsDecrypted.length,
   });
 
-  //Map bids to the expected format
-  /*eslint-disable-next-line*/
-  const nextBids =
-    nextBidsQuery.data?.map((d) => ({
-      amountOut: fromHex(d.amountOut as Address, "bigint"),
-      seed: toHex(d.seed as unknown as ByteArray),
-    })) ?? [];
-
   //Send bids to the contract for decryption
   const { data: decryptCall, ...decryptCallQuery } = useSimulateContract({
     address: contracts.empam,
     abi: axisContracts.abis.empam,
-    functionName: "decryptAndSortBids",
+    functionName: "submitPrivateKey",
     chainId: auction.chainId,
-    args: [BigInt(auction.lotId), 0n], //TODO: Correct parameter
+    args: [
+      BigInt(auction.lotId),
+      fromHex(privateKeyQuery.data as Hex, "bigint"),
+      100n,
+    ],
   });
 
   const decrypt = useWriteContract();
@@ -62,18 +58,21 @@ export const useDecryptBids = (auction: Auction) => {
   const handleDecryption = () => decrypt.writeContract(decryptCall!.request);
 
   useEffect(() => {
-    if (decryptReceipt.isSuccess && !nextBidsQuery.isRefetching) {
-      nextBidsQuery.refetch();
+    if (decryptReceipt.isSuccess && !privateKeyQuery.isRefetching) {
+      privateKeyQuery.refetch();
       refetchAuction();
     }
-  }, [decryptReceipt.isSuccess, nextBidsQuery]);
+  }, [decryptReceipt.isSuccess, privateKeyQuery]);
 
-  const error = [nextBidsQuery, decrypt, decryptCallQuery, decryptReceipt].find(
-    (tx) => tx.isError,
-  )?.error;
+  const error = [
+    privateKeyQuery,
+    decrypt,
+    decryptCallQuery,
+    decryptReceipt,
+  ].find((tx) => tx.isError)?.error;
 
   return {
-    nextBids: nextBidsQuery,
+    nextBids: privateKeyQuery,
     decryptTx: decrypt,
     decryptReceipt,
     handleDecryption,

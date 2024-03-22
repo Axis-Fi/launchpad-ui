@@ -11,6 +11,8 @@ const config: AxisDeploymentConfig = {
     fpam: "0x605A7105CA51FD5F107258362f52d8269eeA851A",
     linearVesting: "0x6c80F20C5C0404a3D5349F71F9B25c0654884092",
   },
+  subgraphURL:
+    "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mode-testnet/<VERSION>/gn",
   rpcURL: "https://sepolia.mode.network",
   tokenList: [],
 };

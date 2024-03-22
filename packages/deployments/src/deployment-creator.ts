@@ -1,20 +1,14 @@
-import type { Token, AxisContractAddresses } from "@repo/types";
+import type { Token } from "@repo/types";
 import type { Chain } from "viem/chains";
-import type { AxisDeployment } from "./types";
+import type { AxisDeployment, AxisDeploymentConfig } from "./types";
 import subgraphConfig from "../subgraph-config";
 import tokenlistMetadata from "../tokenlist-metadata";
 
 /** Creates a deployment configuration */
-export function createDeployment(config: {
-  chain: Chain;
-  addresses: AxisContractAddresses;
-  tokenList: Omit<Token, "chainId">[];
-  rpcURL?: string;
-  name: string;
-}): AxisDeployment {
+export function createDeployment(config: AxisDeploymentConfig): AxisDeployment {
   return {
     addresses: config.addresses,
-    subgraphURL: makeSubgraphURL(config.name),
+    subgraphURL: withVersion(config.subgraphURL, subgraphConfig.version),
     chain: withCustomRPC(config.chain, config.rpcURL),
     tokenList: withMetadata(config.tokenList, config.chain.id),
   };
@@ -33,14 +27,8 @@ export function createDeploymentRecord(
 }
 
 /** Generates a subgraph URL for a specific chain*/
-function makeSubgraphURL(chainName: string) {
-  return (
-    subgraphConfig.baseURL +
-    subgraphConfig.id +
-    subgraphConfig.graph +
-    `-${chainName}/` +
-    subgraphConfig.version
-  );
+function withVersion(url: string, version: number | string) {
+  return url.replace("<VERSION>", version.toString());
 }
 
 /** Adds an Axis RPC URL to an existing viem Chain*/

@@ -33,8 +33,9 @@ import { axisContracts } from "@repo/deployments";
 import {
   Address,
   encodeAbiParameters,
+  fromHex,
   getAddress,
-  isHex,
+  Hex,
   parseUnits,
   toHex,
   zeroAddress,
@@ -174,7 +175,7 @@ export default function CreateAuctionPage() {
 
       if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS");
 
-      return auctionInfoAddress.hash;
+      return auctionInfoAddress.hashV0;
     },
     onError: (error) => console.error("Error during submission:", error),
   });
@@ -183,9 +184,16 @@ export default function CreateAuctionPage() {
     mutationFn: async () => {
       const publicKey = await cloakClient.keysApi.newKeyPairPost();
 
-      if (!isHex(publicKey)) throw new Error("Invalid or no keypair received");
+      if (!publicKey.x || !publicKey.y) {
+        throw new Error("No public key received");
+      }
 
-      return publicKey;
+      const updatedKey = {
+        x: fromHex(publicKey.x as Hex, "bigint"),
+        y: fromHex(publicKey.y as Hex, "bigint"),
+      };
+
+      return updatedKey;
     },
     onError: (error) => console.error("Error during submission:", error),
   });
@@ -201,7 +209,7 @@ export default function CreateAuctionPage() {
         functionName: "auction",
         args: [
           {
-            auctionType: toKeycode("LSBBA"),
+            auctionType: toKeycode("EMPAM"),
             baseToken: getAddress(values.payoutToken.address),
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
@@ -220,7 +228,7 @@ export default function CreateAuctionPage() {
             //TODO: Check these parameters
             wrapDerivative: false, //TODO: add missing inputs to UI
             callbackData: toHex(""),
-            prefunded: false,
+            prefunded: true,
           },
           {
             start: getTimestamp(values.start),
@@ -232,15 +240,21 @@ export default function CreateAuctionPage() {
               [
                 {
                   components: [
+                    { name: "minPrice", type: "uint96" },
                     { name: "minFillPercent", type: "uint24" },
                     { name: "minBidPercent", type: "uint24" },
-                    { name: "minimumPrice", type: "uint256" },
                     {
-                      name: "publicKeyModulus",
-                      type: "bytes",
+                      name: "publicKey",
+                      internalType: "struct Point",
+                      type: "tuple",
+                      components: [
+                        { name: "x", internalType: "uint256", type: "uint256" },
+                        { name: "y", internalType: "uint256", type: "uint256" },
+                      ],
                     },
                   ],
                   name: "AuctionDataParams",
+                  internalType: "struct AuctionDataParams",
                   type: "tuple",
                 },
               ],
@@ -250,11 +264,11 @@ export default function CreateAuctionPage() {
                     Number(values.minFillPercent[0]),
                   ),
                   minBidPercent: getPercentage(Number(values.minBidPercent[0])),
-                  minimumPrice: parseUnits(
+                  minPrice: parseUnits(
                     values.minPrice,
                     values.payoutToken.decimals,
                   ),
-                  publicKeyModulus: publicKey as Address,
+                  publicKey,
                 },
               ],
             ),

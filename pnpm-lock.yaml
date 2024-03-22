@@ -334,6 +334,9 @@ importers:
       "@parcel/watcher":
         specifier: ^2.4.0
         version: 2.4.0
+      "@repo/deployments":
+        specifier: workspace:*
+        version: link:../deployments
       ts-node:
         specifier: ^10.9.0
         version: 10.9.2(@types/node@20.11.30)(typescript@5.3.3)

@@ -11,6 +11,8 @@ const config: AxisDeploymentConfig = {
     fpam: "0x6c80F20C5C0404a3D5349F71F9B25c0654884092",
     linearVesting: "0xaC9957282BeA578f371078ddc4cD12A135B105d6",
   },
+  subgraphURL:
+    "https://subgraph.satsuma-prod.com/spaces-team/axis-origin-arbitrum-sepolia/version/v0.0.22/api",
   rpcURL:
     "https://arb-sepolia.g.alchemy.com/v2/a7a38HEWAID2ovEpz8ONjO6JwIPyaTOq",
   tokenList: [

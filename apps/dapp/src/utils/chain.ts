@@ -11,7 +11,7 @@ export const getBlockExplorer = (chain: Chain) => {
 
 //TODO: see if possible map chains to viem defs in subgraph
 const chainMap: Record<string, string> = {
-  "blast-testnet": "blast sepolia",
+  "blast-sepolia": "blast sepolia",
 };
 
 export function getChainId(chainName?: string): number {

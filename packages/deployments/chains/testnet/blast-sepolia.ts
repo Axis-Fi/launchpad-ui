@@ -11,6 +11,8 @@ const config: AxisDeploymentConfig = {
     fpam: "0x9f3a5566AB27F79c0cF090f70FFc73B7F9962b36",
     linearVesting: "0xDe6D096f14812182F434D164AD6d184cC9A150Fd",
   },
+  subgraphURL:
+    "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/0.0.23/gn",
   rpcURL:
     "https://broken-magical-hill.blast-sepolia.quiknode.pro/3bdd9ff197592ef9652987ef7dcf549e759c713d/",
   tokenList: [
