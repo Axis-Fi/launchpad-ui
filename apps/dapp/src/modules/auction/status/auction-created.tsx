@@ -21,7 +21,7 @@ export function AuctionCreated({ auction }: PropsWithAuction) {
         <AuctionInputCard auction={auction} submitText="">
           <h3 className="text-center">
             Auction starts in {auction.formatted?.startDistance} at{" "}
-            {auction.formatted?.startDistance}.
+            {auction.formatted?.startFormatted}.
           </h3>
         </AuctionInputCard>
       </div>
