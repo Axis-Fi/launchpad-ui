@@ -351,13 +351,6 @@ export const auctionHouseAbi = [
   {
     stateMutability: "nonpayable",
     type: "function",
-    inputs: [{ name: "reference_", internalType: "Veecode", type: "bytes7" }],
-    name: "claimModuleGas",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
       { name: "callbackData_", internalType: "bytes", type: "bytes" },
@@ -370,13 +363,6 @@ export const auctionHouseAbi = [
     type: "function",
     inputs: [{ name: "token_", internalType: "address", type: "address" }],
     name: "claimRewards",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [],
-    name: "claimYieldAndGas",
     outputs: [],
   },
   {

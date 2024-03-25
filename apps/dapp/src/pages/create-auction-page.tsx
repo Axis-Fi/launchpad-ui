@@ -193,6 +193,7 @@ export default function CreateAuctionPage() {
         y: fromHex(publicKey.y, "bigint"),
       };
 
+      console.log({ publicKey, updatedKey });
       return updatedKey;
     },
     onError: (error) => console.error("Error during submission:", error),
@@ -202,7 +203,6 @@ export default function CreateAuctionPage() {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const publicKey = await generateKeyPairMutation.mutateAsync();
 
-    console.log({ publicKey });
     createAuctionTx.writeContract(
       {
         abi: axisContracts.abis.auctionHouse,
@@ -701,6 +701,7 @@ export default function CreateAuctionPage() {
                   approveTx={approveTx}
                   approveReceipt={approveReceipt}
                   info={auctionInfoMutation}
+                  //@ts-expect-error debug
                   keypair={generateKeyPairMutation}
                   tx={createAuctionTx}
                   txReceipt={createTxReceipt}

@@ -5,7 +5,7 @@ const config: AxisDeploymentConfig = {
   name: "arbitrum-sepolia",
   chain: arbitrumSepolia,
   addresses: {
-    auctionHouse: "0x884E32d3c9D60962EF1A005f3d5365a41CDE38b8",
+    auctionHouse: "0x00000000dca78197E4B82b17AFc5C263a097ef3e",
     catalogue: "0x0407910809D251c2E4c217576b63f263e3Fd1B59",
     empam: "0x605A7105CA51FD5F107258362f52d8269eeA851A",
     fpam: "0x6c80F20C5C0404a3D5349F71F9B25c0654884092",

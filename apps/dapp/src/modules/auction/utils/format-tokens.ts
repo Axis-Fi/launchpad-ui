@@ -30,6 +30,7 @@ export function formatAuctionTokens(
 
   return {
     baseToken: parseToken(baseToken, chainId),
+    //@ts-expect-error ignore for debug
     quoteToken: parseToken(quoteToken, chainId),
   };
 }
