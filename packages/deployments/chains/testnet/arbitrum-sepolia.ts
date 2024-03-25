@@ -12,22 +12,21 @@ const config: AxisDeploymentConfig = {
     linearVesting: "0xaC9957282BeA578f371078ddc4cD12A135B105d6",
   },
   subgraphURL:
-    "https://subgraph.satsuma-prod.com/spaces-team/axis-origin-arbitrum-sepolia/version/<VERSION>/api",
+    "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/<VERSION>/api",
   rpcURL:
     "https://arb-sepolia.g.alchemy.com/v2/a7a38HEWAID2ovEpz8ONjO6JwIPyaTOq",
   tokenList: [
     {
-      address: "0x6Cec0Ba158fd0C8BC48eafa11f8560318B32258D",
-      name: "Olympus",
-      symbol: "OHM",
-      logoURI:
-        "https://assets.coingecko.com/coins/images/14483/large/token_OHM_%281%29.png",
-      decimals: 9,
+      name: "Test Token 1",
+      symbol: "TT1",
+      address: "0x16D5Aab9d35f8B3ac7BD086eEDcCe5343682D5F0",
+      decimals: 18,
     },
+
     {
-      address: "0xcA93c9BFaC39efC5b069066a0970c3036C3029c9",
-      name: "DAI",
-      symbol: "DAI",
+      address: "0xb5973cabd553f34c32ae2fbc91c94b3bf76db62e",
+      name: "Test Token2",
+      symbol: "TT2",
       logoURI:
         "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/DAI.png",
       decimals: 18,

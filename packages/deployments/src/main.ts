@@ -2,11 +2,11 @@ import type { TokenList, AxisContractAddresses } from "@repo/types";
 import { abis } from "@repo/abis";
 import { createDeployment, createDeploymentRecord } from "./deployment-creator";
 import testnetConfigs from "../chains/testnet";
-//import mainnetConfigs from "../chains/mainnet";
+import mainnetConfigs from "../chains/mainnet";
 
 //Transforms config files into deployment objects
 //TODO: REPLACE THIS ONCE THERE'S MAINNETS
-export const mainnetDeployments = testnetConfigs.map(createDeployment);
+export const mainnetDeployments = mainnetConfigs.map(createDeployment);
 export const testnetDeployments = testnetConfigs.map(createDeployment);
 
 export const allDeployments = [testnetDeployments, mainnetDeployments];

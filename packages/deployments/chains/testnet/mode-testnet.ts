@@ -14,7 +14,20 @@ const config: AxisDeploymentConfig = {
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mode-testnet/<VERSION>/gn",
   rpcURL: "https://sepolia.mode.network",
-  tokenList: [],
+  tokenList: [
+    {
+      name: "Test Token 1",
+      symbol: "TT1",
+      address: "0xBFfBef6f8a0Ef38121716860E2Ff824c018a467d",
+      decimals: 18,
+    },
+    {
+      name: "Test Token 2",
+      symbol: "TT2",
+      address: "0x16D5Aab9d35f8B3ac7BD086eEDcCe5343682D5F0",
+      decimals: 18,
+    },
+  ],
 };
 
 export default config;

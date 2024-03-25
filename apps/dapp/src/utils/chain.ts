@@ -9,13 +9,8 @@ export const getBlockExplorer = (chain: Chain) => {
   };
 };
 
-//TODO: see if possible map chains to viem defs in subgraph
-const chainMap: Record<string, string> = {
-  "blast-sepolia": "blast sepolia",
-};
-
 export function getChainId(chainName?: string): number {
-  const name = chainMap[chainName ?? ""];
+  const name = chainName?.replace("-", " ").toLowerCase();
 
   const chainId = activeChains.find(
     (c) => c.name.toLocaleLowerCase() === name?.toLocaleLowerCase(),

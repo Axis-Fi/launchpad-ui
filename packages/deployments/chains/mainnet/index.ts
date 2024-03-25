@@ -1,1 +1,2 @@
-export default [];
+import blastSepolia from "../testnet/blast-sepolia";
+export default [blastSepolia];

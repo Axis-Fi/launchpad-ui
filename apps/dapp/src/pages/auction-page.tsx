@@ -76,7 +76,9 @@ export default function AuctionPage() {
                 {...(auction.auctionInfo?.links ?? {})}
               />
             </div>
-            <h4>{auction.auctionType} Auction</h4>
+            <div>
+              <h4>{auction.auctionType} Auction</h4>
+            </div>
           </div>
         </div>
       </ImageBanner>
