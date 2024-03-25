@@ -57,11 +57,6 @@ export type Scalars = {
   Int8: { input: string; output: string };
 };
 
-export enum Aggregation_Interval {
-  Day = "day",
-  Hour = "hour",
-}
-
 export type AuctionCancelled = {
   auctionRef: Scalars["Bytes"]["output"];
   blockNumber: Scalars["BigInt"]["output"];
@@ -649,6 +644,7 @@ export enum AuctionLot_OrderBy {
   baseToken__id = "baseToken__id",
   baseToken__name = "baseToken__name",
   baseToken__symbol = "baseToken__symbol",
+  baseToken__totalSupply = "baseToken__totalSupply",
   Bids = "bids",
   bidsDecrypted = "bidsDecrypted",
   Cancelled = "cancelled",
@@ -695,6 +691,7 @@ export enum AuctionLot_OrderBy {
   quoteToken__id = "quoteToken__id",
   quoteToken__name = "quoteToken__name",
   quoteToken__symbol = "quoteToken__symbol",
+  quoteToken__totalSupply = "quoteToken__totalSupply",
   refundedBids = "refundedBids",
   Settle = "settle",
   settle__blockNumber = "settle__blockNumber",
@@ -2316,6 +2313,7 @@ export type Token = {
   id: Scalars["Bytes"]["output"];
   name: Scalars["String"]["output"];
   symbol: Scalars["String"]["output"];
+  totalSupply: Scalars["BigInt"]["output"];
 };
 
 export type Token_Filter = {
@@ -2391,6 +2389,14 @@ export type Token_Filter = {
   symbol_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   symbol_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   symbol_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  totalSupply?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalSupply_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalSupply_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalSupply_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  totalSupply_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalSupply_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalSupply_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  totalSupply_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
 };
 
 export enum Token_OrderBy {
@@ -2399,6 +2405,7 @@ export enum Token_OrderBy {
   Id = "id",
   Name = "name",
   Symbol = "symbol",
+  totalSupply = "totalSupply",
 }
 
 export type _Block_ = {
@@ -2406,8 +2413,6 @@ export type _Block_ = {
   hash?: Maybe<Scalars["Bytes"]["output"]>;
   /** The block number */
   number: Scalars["Int"]["output"];
-  /** The hash of the parent block */
-  parentHash?: Maybe<Scalars["Bytes"]["output"]>;
   /** Integer representation of the timestamp stored in blocks for the chain */
   timestamp?: Maybe<Scalars["Int"]["output"]>;
 };
@@ -2464,6 +2469,7 @@ export type AuctionLotFragmentFragment = {
     decimals: string;
     symbol: string;
     name: string;
+    totalSupply: string;
   };
   quoteToken: {
     address: string;
@@ -2516,6 +2522,7 @@ export type GetAuctionLotsQuery = {
       decimals: string;
       symbol: string;
       name: string;
+      totalSupply: string;
     };
     quoteToken: {
       address: string;
@@ -2627,6 +2634,7 @@ export type GetAuctionLotQuery = {
       decimals: string;
       symbol: string;
       name: string;
+      totalSupply: string;
     };
     quoteToken: {
       address: string;
@@ -2674,6 +2682,7 @@ export const AuctionLotFragmentFragmentDoc = `
     decimals
     symbol
     name
+    totalSupply
   }
   quoteToken {
     address

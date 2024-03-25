@@ -32,7 +32,10 @@ export function AuctionCard({
     >
       <div>
         <div className="flex justify-between">
-          <AuctionStatusChip status={auction.status} />
+          <div className="flex items-center justify-center gap-x-2">
+            <AuctionStatusChip status={auction.status} />
+            <p>{auction.auctionType} Auction</p>
+          </div>
           <SocialRow {...(auction.auctionInfo?.links ?? {})} className="h-6" />
         </div>
 

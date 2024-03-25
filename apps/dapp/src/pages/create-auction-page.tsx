@@ -35,7 +35,7 @@ import {
   encodeAbiParameters,
   fromHex,
   getAddress,
-  Hex,
+  isHex,
   parseUnits,
   toHex,
   zeroAddress,
@@ -57,7 +57,7 @@ import React from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
-import { toKeycode } from "modules/auction/utils/to-keycode";
+import { toKeycode } from "utils/hex";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
 
 const tokenSchema = z.object({
@@ -184,13 +184,13 @@ export default function CreateAuctionPage() {
     mutationFn: async () => {
       const publicKey = await cloakClient.keysApi.newKeyPairPost();
 
-      if (!publicKey.x || !publicKey.y) {
-        throw new Error("No public key received");
+      if (!isHex(publicKey.x) || !isHex(publicKey.y)) {
+        throw new Error("Public key is not in hex");
       }
 
       const updatedKey = {
-        x: fromHex(publicKey.x as Hex, "bigint"),
-        y: fromHex(publicKey.y as Hex, "bigint"),
+        x: fromHex(publicKey.x, "bigint"),
+        y: fromHex(publicKey.y, "bigint"),
       };
 
       return updatedKey;
@@ -202,6 +202,7 @@ export default function CreateAuctionPage() {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const publicKey = await generateKeyPairMutation.mutateAsync();
 
+    console.log({ publicKey });
     createAuctionTx.writeContract(
       {
         abi: axisContracts.abis.auctionHouse,

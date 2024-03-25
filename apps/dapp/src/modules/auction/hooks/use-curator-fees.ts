@@ -5,7 +5,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { toKeycode } from "../utils/to-keycode";
+import { toKeycode } from "utils/hex";
 import { AuctionTypes } from "@repo/types";
 
 export function useCuratorFees(chainId: number, feePercentage?: number) {

@@ -61,18 +61,23 @@ export default function AuctionPage() {
 
       <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>
         <div className="relative rounded-sm p-4">
-          <div className="flex items-center gap-x-1 ">
-            <Avatar
-              className="size-12 text-lg"
-              alt={auction.baseToken.symbol}
-              src={auction.auctionInfo?.links?.payoutTokenLogo}
-            />
-            <h1 className="text-[40px]">{auction.baseToken.name}</h1>
+          <div className="flex justify-between">
+            <div>
+              <div className="flex items-center gap-x-1 ">
+                <Avatar
+                  className="size-12 text-lg"
+                  alt={auction.baseToken.symbol}
+                  src={auction.auctionInfo?.links?.payoutTokenLogo}
+                />
+                <h1 className="text-[40px]">{auction.baseToken.name}</h1>
+              </div>
+              <SocialRow
+                className="gap-x-2"
+                {...(auction.auctionInfo?.links ?? {})}
+              />
+            </div>
+            <h4>{auction.auctionType} Auction</h4>
           </div>
-          <SocialRow
-            className="gap-x-2"
-            {...(auction.auctionInfo?.links ?? {})}
-          />
         </div>
       </ImageBanner>
       <div className="mt-8">

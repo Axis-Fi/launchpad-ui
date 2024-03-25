@@ -3,7 +3,7 @@ import * as deps from "@repo/deployments";
 
 //TODO: improve
 const ENDPOINT =
-  "https://api.studio.thegraph.com/query/52935/axis-origin-blast-testnet/0.0.22";
+  "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/0.0.24/gn";
 
 const config: CodegenConfig = {
   schema: ENDPOINT,

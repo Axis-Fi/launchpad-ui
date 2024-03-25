@@ -12,6 +12,7 @@ import { formatAuctionTokens } from "../utils/format-tokens";
 import { useTokenLists } from "state/tokenlist";
 import { multihashRegex } from "utils/ipfs";
 import { useQueryAll } from "loaders/use-query-all";
+import { getAuctionType } from "../utils/get-auction-type";
 
 export type AuctionsResult = {
   result: AuctionListed[];
@@ -53,6 +54,7 @@ export function useAuctions(): AuctionsResult {
 
         return {
           ...auction,
+          auctionType: getAuctionType(auction.auctionRef),
           ...formatAuctionTokens(auction, getToken, auctionInfo),
           chainId: getChainId(auction.chain),
           status: getAuctionStatus(auction),

@@ -11,6 +11,7 @@ export type BaseAuction = {
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
   auctionData?: AuctionData;
+  auctionType?: string;
   formatted?: AuctionFormattedInfo;
 };
 
@@ -74,6 +75,8 @@ export type AuctionFormattedInfo = {
   minPrice: string;
   minBidSize: string;
   tokenPairSymbols: string;
+  capacity: string;
+  totalSupply: string;
 };
 
 export enum AuctionTypes {

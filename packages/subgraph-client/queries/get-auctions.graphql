@@ -27,6 +27,7 @@ fragment AuctionLotFragment on AuctionLot {
     decimals
     symbol
     name
+    totalSupply
   }
   quoteToken {
     address

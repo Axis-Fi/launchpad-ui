@@ -17,6 +17,7 @@ import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
+import { getAuctionType } from "../utils/get-auction-type";
 
 export type AuctionResult = {
   result?: Auction;
@@ -65,6 +66,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
 
   const auction = {
     ...rawAuction,
+    auctionType: getAuctionType(rawAuction.auctionRef),
     chainId,
     status,
     auctionInfo,
@@ -141,6 +143,13 @@ export function formatAuction(
     startDistance,
     endDistance,
     uniqueBidders,
+    capacity: trimCurrency(auction.capacity),
+    totalSupply: trimCurrency(
+      formatUnits(
+        BigInt(auction.baseToken.totalSupply),
+        Number(auction.baseToken.decimals),
+      ),
+    ),
     totalBids: auction.bids.length,
     totalBidsDecrypted,
     totalBidAmount: trimCurrency(totalBidAmount),

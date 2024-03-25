@@ -3,7 +3,6 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Auction } from "@repo/types";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
-import { Hex, fromHex } from "viem";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -45,11 +44,8 @@ export const useDecryptBids = (auction: Auction) => {
     abi: axisContracts.abis.empam,
     functionName: "submitPrivateKey",
     chainId: auction.chainId,
-    args: [
-      BigInt(auction.lotId),
-      fromHex(privateKeyQuery.data as Hex, "bigint"),
-      100n,
-    ],
+    args: [BigInt(auction.lotId), BigInt(privateKeyQuery.data ?? 0n), 100n],
+    query: { enabled: privateKeyQuery.isSuccess },
   });
 
   const decrypt = useWriteContract();

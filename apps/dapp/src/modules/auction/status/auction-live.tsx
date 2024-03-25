@@ -85,14 +85,18 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     <div className="flex justify-between">
       <div className="w-1/2">
         <AuctionInfoCard>
-          <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
-          {auction.curatorApproved && (
-            <InfoLabel label="Curator" value={trimAddress(auction.curator)} />
-          )}
           <InfoLabel
             label="Capacity"
             value={`${auction.capacity} ${auction.baseToken.symbol}`}
           />
+          <InfoLabel
+            label="Total Supply"
+            value={`${auction.formatted?.totalSupply} ${auction.baseToken.symbol}`}
+          />
+          <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
+          {auction.curatorApproved && (
+            <InfoLabel label="Curator" value={trimAddress(auction.curator)} />
+          )}
           <InfoLabel
             label="Minimum Price"
             value={`${auction.formatted?.minPrice} ${auction.formatted?.tokenPairSymbols}`}
