@@ -21,11 +21,11 @@ export function BlockchainProvider({
   children: React.ReactNode;
 }) {
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <WagmiProvider config={wagmiConfig}>
         <WalletProvider>{children}</WalletProvider>
         <ReactQueryDevtools />
-      </QueryClientProvider>
-    </WagmiProvider>
+      </WagmiProvider>
+    </QueryClientProvider>
   );
 }

@@ -1,14 +1,8 @@
 import { http } from "wagmi";
-import { Chain, blastSepolia, modeTestnet } from "viem/chains";
 import { environment } from "./environment";
+import { Chain } from "@repo/types";
 import { testnetDeployments, mainnetDeployments } from "@repo/deployments";
 import { AxisDeployment } from "@repo/deployments/src/types";
-
-//TODO: add this to deployments config
-export const iconsPerChain: Record<number, string> = {
-  [blastSepolia.id]: "/blast-logo.png",
-  [modeTestnet.id]: "/mode-logo.svg",
-};
 
 //Mainnet Config
 export const mainnets: Chain[] = testnetDeployments.map(({ chain }) => chain);
@@ -30,10 +24,11 @@ function generateConfig(deployment: AxisDeployment[]) {
       const chains = acc.chains;
       const transports = acc.transports;
       const rpc = config.chain.rpcUrls.axis ?? config.chain.rpcUrls.default;
+
       const chain = {
         ...config.chain,
-        iconUrl: iconsPerChain[config.chain.id],
-      };
+        iconBackground: "#000",
+      } as const satisfies Chain;
 
       return {
         chains: [...chains, chain],

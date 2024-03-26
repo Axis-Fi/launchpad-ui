@@ -1,5 +1,5 @@
 import { activeChains } from "config/chains";
-import { Chain } from "viem";
+import { Chain } from "@repo/types";
 
 export const getBlockExplorer = (chain: Chain) => {
   return {

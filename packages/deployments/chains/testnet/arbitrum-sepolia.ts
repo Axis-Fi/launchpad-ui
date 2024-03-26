@@ -4,6 +4,8 @@ import { AxisDeploymentConfig } from "../../src/types";
 const config: AxisDeploymentConfig = {
   name: "arbitrum-sepolia",
   chain: arbitrumSepolia,
+  chainIconUrl:
+    "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/ARBITRUM.png",
   addresses: {
     auctionHouse: "0x00000000dca78197E4B82b17AFc5C263a097ef3e",
     catalogue: "0x0407910809D251c2E4c217576b63f263e3Fd1B59",
@@ -12,7 +14,7 @@ const config: AxisDeploymentConfig = {
     linearVesting: "0xaC9957282BeA578f371078ddc4cD12A135B105d6",
   },
   subgraphURL:
-    "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/<VERSION>/api",
+    "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v<VERSION>/api",
   rpcURL:
     "https://arb-sepolia.g.alchemy.com/v2/a7a38HEWAID2ovEpz8ONjO6JwIPyaTOq",
   tokenList: [

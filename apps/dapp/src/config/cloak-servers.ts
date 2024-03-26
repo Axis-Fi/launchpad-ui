@@ -10,7 +10,7 @@ export default {
     url: "https://api-testnet-d2e7.up.railway.app",
   },
   staging: {
-    description: "Testnet",
+    description: "Staging",
     url: "https://cloak-api-mainnet.up.railway.app",
   },
   production: {

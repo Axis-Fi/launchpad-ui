@@ -1,5 +1,9 @@
-import { type Chain } from "viem/chains";
-import { type Token, TokenList, AxisContractAddresses } from "@repo/types";
+import {
+  type Token,
+  TokenList,
+  AxisContractAddresses,
+  Chain,
+} from "@repo/types";
 
 /** Describes an Axis Deployment per chain */
 export type AxisDeployment = {
@@ -14,4 +18,5 @@ export type AxisDeploymentConfig = Omit<AxisDeployment, "tokenList"> & {
   name: string;
   rpcURL: string;
   tokenList: Omit<Token, "chainId">[];
+  chainIconUrl?: string;
 };

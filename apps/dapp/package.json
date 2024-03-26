@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@fleekhq/fleek-storage-js": "^1.0.24",
-    "@rainbow-me/rainbowkit": "2.0.0-beta.2",
+    "@rainbow-me/rainbowkit": "^2.0.2",
     "@repo/abis": "workspace:*",
     "@repo/deployments": "workspace:*",
     "@repo/eslint-config": "workspace:*",

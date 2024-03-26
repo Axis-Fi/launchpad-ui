@@ -4,6 +4,7 @@ import { AxisDeploymentConfig } from "../../src/types";
 const config: AxisDeploymentConfig = {
   name: "mode-testnet",
   chain: modeTestnet,
+  chainIconUrl: "/mode-logo.svg",
   addresses: {
     auctionHouse: "0x0000000053307d4Ec2141c8b49fff0A04903F11D",
     catalogue: "0x76d2932BE90F1AEd4B7aACeFed9AC8B8b712c8bf",

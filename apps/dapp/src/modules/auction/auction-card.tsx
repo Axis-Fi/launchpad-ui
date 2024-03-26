@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "lucide-react";
 import { AuctionListed } from "@repo/types";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { ImageBanner } from "components/image-banner";
+import { ChainIcon } from "components/chain-icon";
 
 type AuctionCardProps = {
   onClickView?: (auction: AuctionListed) => void;
@@ -36,7 +37,13 @@ export function AuctionCard({
             <AuctionStatusChip status={auction.status} />
             <p>{auction.auctionType} Auction</p>
           </div>
-          <SocialRow {...(auction.auctionInfo?.links ?? {})} className="h-6" />
+          <div className="flex items-center gap-x-3">
+            <SocialRow
+              {...(auction.auctionInfo?.links ?? {})}
+              className="h-6"
+            />
+            <ChainIcon chainId={auction.chainId} />
+          </div>
         </div>
 
         <div className="mt-4 flex flex-col rounded-sm">

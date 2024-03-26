@@ -20,6 +20,7 @@ import {
   AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
+import { ChainIcon } from "components/chain-icon";
 
 const statuses: Record<
   AuctionStatus,
@@ -76,8 +77,9 @@ export default function AuctionPage() {
                 {...(auction.auctionInfo?.links ?? {})}
               />
             </div>
-            <div>
+            <div className="flex gap-x-1">
               <h4>{auction.auctionType} Auction</h4>
+              <ChainIcon chainId={auction.chainId} />
             </div>
           </div>
         </div>
