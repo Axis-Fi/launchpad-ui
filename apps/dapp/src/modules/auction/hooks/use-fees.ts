@@ -1,7 +1,8 @@
 import { axisContracts } from "@repo/deployments";
 import { useReadContract } from "wagmi";
 import { toKeycode } from "utils/hex";
-import { AuctionTypes } from "@repo/types";
+import { AuctionType } from "@repo/types";
+import { fromBasisPoints } from "utils/number";
 
 //TODO: Figure out how to read fee percetange per curator
 /** Reads current AuctionHouse fees */
@@ -12,7 +13,7 @@ export function useFees(chainId: number) {
     abi: axisContracts.abis.auctionHouse,
     address: axisAddresses.auctionHouse,
     functionName: "fees",
-    args: [toKeycode(AuctionTypes.SEALED_BID)],
+    args: [toKeycode(AuctionType.SEALED_BID)],
     query: { enabled: !!chainId },
   });
 
@@ -25,7 +26,7 @@ export function useFees(chainId: number) {
 /** Parses fees from AuctionHouse/FeeManager */
 function parseFees(fees?: readonly [number, number, number]) {
   if (!fees) return {};
-  const [protocol, referrer, maxCuratorFee] = fees.map((f) => f / 1000); //Convert from basis points
+  const [protocol, referrer, maxCuratorFee] = fees.map(fromBasisPoints); //Convert from basis points
 
   return {
     protocol,

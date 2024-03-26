@@ -21,6 +21,7 @@ export type SelectProps = {
   label?: string;
   placeholder?: string;
   onChange?: (value: string) => void;
+  defaultValue?: string;
 };
 
 /** Dropdown selector */
@@ -30,12 +31,16 @@ export function Select(props: SelectProps) {
 
   return (
     <SelectRoot
+      defaultValue={props.defaultValue}
       onValueChange={(value) => {
         setSelected(value);
         props.onChange?.(value);
       }}
     >
-      <SelectTrigger id={props.id} className="w-full max-w-sm">
+      <SelectTrigger
+        id={props.id}
+        className="bg-muted border-muted w-full max-w-sm rounded-full"
+      >
         <div className="flex items-center justify-start gap-x-1">
           {selectedImage && <Avatar src={selectedImage} />}
           <SelectValue placeholder={props.placeholder} />

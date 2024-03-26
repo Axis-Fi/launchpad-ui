@@ -32,3 +32,23 @@ export function parsePercent(e: React.ChangeEvent<HTMLInputElement>) {
     );
   }
 }
+
+/** Converts a number or string into basis points format
+ * 1% -> 1000
+ */
+export function toBasisPoints(percentage: string | number) {
+  const _percentage =
+    typeof percentage === "string" ? parseFloat(percentage) : percentage;
+
+  return _percentage * 1000;
+}
+
+/** Converts a number or string in basis points format to percentage
+ * 1000 -> 1
+ */
+export function fromBasisPoints(percentage: string | number) {
+  const _basisPoints =
+    typeof percentage === "string" ? parseFloat(percentage) : percentage;
+
+  return _basisPoints / 1000;
+}

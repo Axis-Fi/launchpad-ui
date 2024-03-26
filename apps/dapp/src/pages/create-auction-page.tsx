@@ -11,6 +11,7 @@ import {
   FormItemWrapper,
   Input,
   Label,
+  Select,
   Slider,
   Switch,
   Textarea,
@@ -40,15 +41,9 @@ import {
   toHex,
   zeroAddress,
 } from "viem";
-import {
-  getPercentage,
-  getDuration,
-  getTimestamp,
-  formatDate,
-  dateMath,
-} from "src/utils";
+import { getDuration, getTimestamp, formatDate, dateMath } from "src/utils";
 
-import { AuctionInfo } from "@repo/types";
+import { AuctionInfo, AuctionType } from "@repo/types";
 
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
@@ -59,6 +54,7 @@ import { useAllowance } from "loaders/use-allowance";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { toKeycode } from "utils/hex";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
+import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create-params";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -73,9 +69,12 @@ const schema = z
     quoteToken: tokenSchema,
     payoutToken: tokenSchema,
     capacity: z.string(),
-    minFillPercent: z.array(z.number()),
-    minBidPercent: z.array(z.number()),
-    minPrice: z.string(),
+    auctionType: z.string(),
+    minFillPercent: z.array(z.number()).optional(),
+    minBidPercent: z.array(z.number()).optional(),
+    minPrice: z.string().optional(),
+    price: z.string().optional(),
+    maxPayoutPercent: z.array(z.number()).optional(),
     start: z.date(),
     deadline: z.date(),
     hooks: z
@@ -127,6 +126,8 @@ export type CreateAuctionForm = z.infer<typeof schema>;
 const auctionDefaultValues = {
   minFillPercent: [50],
   minBidPercent: [5],
+  maxPayoutPercent: [50],
+  AuctionType: AuctionType.SEALED_BID,
 };
 
 export default function CreateAuctionPage() {
@@ -139,11 +140,12 @@ export default function CreateAuctionPage() {
     defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken, _chainId, capacity] = form.watch([
+  const [isVested, payoutToken, _chainId, capacity, auctionType] = form.watch([
     "isVested",
     "payoutToken",
     "quoteToken.chainId",
     "capacity",
+    "auctionType",
   ]);
 
   const chainId = _chainId ?? connectedChainId;
@@ -157,7 +159,7 @@ export default function CreateAuctionPage() {
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
-        key: values.payoutToken.chainId + "_" + values.payoutToken.address,
+        key: `${values.auctionType}-${values.payoutToken.chainId}_${values.payoutToken.address}`,
         name: values.name,
         description: values.description,
         links: {
@@ -202,6 +204,13 @@ export default function CreateAuctionPage() {
   const handleCreation = async (values: CreateAuctionForm) => {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const publicKey = await generateKeyPairMutation.mutateAsync();
+    const auctionType = values.auctionType as AuctionType;
+
+    const auctionSpecificParams = getAuctionCreateParams(
+      auctionType,
+      values,
+      publicKey,
+    );
 
     createAuctionTx.writeContract(
       {
@@ -210,7 +219,7 @@ export default function CreateAuctionPage() {
         functionName: "auction",
         args: [
           {
-            auctionType: toKeycode("EMPAM"),
+            auctionType: toKeycode(auctionType),
             baseToken: getAddress(values.payoutToken.address),
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
@@ -226,10 +235,9 @@ export default function CreateAuctionPage() {
                         getDuration(Number(values.vestingDuration)),
                     ],
                   ),
-            //TODO: Check these parameters
-            wrapDerivative: false, //TODO: add missing inputs to UI
+            wrapDerivative: false,
             callbackData: toHex(""),
-            prefunded: true,
+            prefunded: auctionType === AuctionType.SEALED_BID,
           },
           {
             start: getTimestamp(values.start),
@@ -237,42 +245,7 @@ export default function CreateAuctionPage() {
               getTimestamp(values.deadline) - getTimestamp(values.start),
             capacityInQuote: false, // Disabled for LSBBA
             capacity: parseUnits(values.capacity, values.payoutToken.decimals),
-            implParams: encodeAbiParameters(
-              [
-                {
-                  components: [
-                    { name: "minPrice", type: "uint96" },
-                    { name: "minFillPercent", type: "uint24" },
-                    { name: "minBidPercent", type: "uint24" },
-                    {
-                      name: "publicKey",
-                      internalType: "struct Point",
-                      type: "tuple",
-                      components: [
-                        { name: "x", internalType: "uint256", type: "uint256" },
-                        { name: "y", internalType: "uint256", type: "uint256" },
-                      ],
-                    },
-                  ],
-                  name: "AuctionDataParams",
-                  internalType: "struct AuctionDataParams",
-                  type: "tuple",
-                },
-              ],
-              [
-                {
-                  minFillPercent: getPercentage(
-                    Number(values.minFillPercent[0]),
-                  ),
-                  minBidPercent: getPercentage(Number(values.minBidPercent[0])),
-                  minPrice: parseUnits(
-                    values.minPrice,
-                    values.payoutToken.decimals,
-                  ),
-                  publicKey,
-                },
-              ],
-            ),
+            implParams: auctionSpecificParams,
           },
           auctionInfoAddress,
         ],
@@ -464,6 +437,31 @@ export default function CreateAuctionPage() {
 
                 <h3 className="form-div">3 Quantity</h3>
                 <FormField
+                  control={form.control}
+                  name="auctionType"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Auction Type"
+                      tooltip="The minimum marginal price required for the auction lot to settle"
+                    >
+                      <Select
+                        defaultValue={AuctionType.SEALED_BID}
+                        options={[
+                          {
+                            value: AuctionType.FIXED_PRICE,
+                            label: "Fixed Price",
+                          },
+                          {
+                            value: AuctionType.SEALED_BID,
+                            label: "Encrypted Marginal Price",
+                          },
+                        ]}
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
                   name="capacity"
                   render={({ field }) => (
                     <FormItemWrapper
@@ -475,84 +473,138 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="minPrice"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Minimum Payout Token Price"
-                      tooltip="The minimum marginal price required for the auction lot to settle"
-                    >
-                      <Input placeholder="1" type="number" {...field} />
-                    </FormItemWrapper>
-                  )}
-                />
-
                 <h3 className="form-div">4 Auction Guard Rails</h3>
 
-                <FormField
-                  control={form.control}
-                  name="minFillPercent"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Minimum Filled Percentage"
-                      tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
-                    >
-                      <>
-                        <Input
-                          disabled
-                          className="disabled:opacity-100"
-                          value={`${
-                            field.value?.[0] ??
-                            auctionDefaultValues.minFillPercent
-                          }%`}
-                        />
-                        <Slider
-                          {...field}
-                          className="cursor-pointer pt-2"
-                          max={100}
-                          defaultValue={auctionDefaultValues.minFillPercent}
-                          value={field.value}
-                          onValueChange={(v) => {
-                            field.onChange(v);
-                          }}
-                        />
-                      </>
-                    </FormItemWrapper>
-                  )}
-                />
+                {auctionType === AuctionType.SEALED_BID && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="minFillPercent"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Minimum Filled Percentage"
+                          tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
+                        >
+                          <>
+                            <Input
+                              disabled
+                              className="disabled:opacity-100"
+                              value={`${
+                                field.value?.[0] ??
+                                auctionDefaultValues.minFillPercent
+                              }%`}
+                            />
+                            <Slider
+                              {...field}
+                              className="cursor-pointer pt-2"
+                              max={100}
+                              defaultValue={auctionDefaultValues.minFillPercent}
+                              value={field.value}
+                              onValueChange={(v) => {
+                                field.onChange(v);
+                              }}
+                            />
+                          </>
+                        </FormItemWrapper>
+                      )}
+                    />
 
-                <FormField
-                  control={form.control}
-                  name="minBidPercent"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Minimum Bid Size / Capacity"
-                      tooltip="Each bid will need to be greater than or equal to this percentage of the capacity"
-                    >
-                      <>
-                        <Input
-                          disabled
-                          className="disabled:opacity-100"
-                          value={`${
-                            field.value?.[0] ??
-                            auctionDefaultValues.minBidPercent
-                          }%`}
-                        />
-                        <Slider
-                          {...field}
-                          className="cursor-pointer pt-2"
-                          max={100}
-                          defaultValue={auctionDefaultValues.minBidPercent}
-                          value={field.value}
-                          onValueChange={(v) => {
-                            field.onChange(v);
-                          }}
-                        />
-                      </>
-                    </FormItemWrapper>
-                  )}
-                />
+                    <FormField
+                      control={form.control}
+                      name="minBidPercent"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Minimum Bid Size / Capacity"
+                          tooltip="Each bid will need to be greater than or equal to this percentage of the capacity"
+                        >
+                          <>
+                            <Input
+                              disabled
+                              className="disabled:opacity-100"
+                              value={`${
+                                field.value?.[0] ??
+                                auctionDefaultValues.minBidPercent
+                              }%`}
+                            />
+                            <Slider
+                              {...field}
+                              className="cursor-pointer pt-2"
+                              max={100}
+                              defaultValue={auctionDefaultValues.minBidPercent}
+                              value={field.value}
+                              onValueChange={(v) => {
+                                field.onChange(v);
+                              }}
+                            />
+                          </>
+                        </FormItemWrapper>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="minPrice"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          className="mt-6"
+                          label="Minimum Payout Token Price"
+                          tooltip="The minimum marginal price required for the auction lot to settle"
+                        >
+                          <Input placeholder="1" type="number" {...field} />
+                        </FormItemWrapper>
+                      )}
+                    />
+                  </>
+                )}
+                {auctionType === AuctionType.FIXED_PRICE && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Price"
+                          tooltip="The fixed price for the auction"
+                        >
+                          <Input placeholder="1" type="number" {...field} />
+                        </FormItemWrapper>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="maxPayoutPercent"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Max Payout Percentage"
+                          className="mt-4"
+                          tooltip=""
+                        >
+                          <>
+                            <Input
+                              disabled
+                              className="disabled:opacity-100"
+                              value={`${
+                                field.value ??
+                                auctionDefaultValues.maxPayoutPercent
+                              }%`}
+                            />
+                            <Slider
+                              {...field}
+                              className="cursor-pointer pt-2"
+                              max={100}
+                              defaultValue={
+                                auctionDefaultValues.maxPayoutPercent
+                              }
+                              value={field.value}
+                              onValueChange={(v) => {
+                                field.onChange(v);
+                              }}
+                            />
+                          </>
+                        </FormItemWrapper>
+                      )}
+                    />
+                  </>
+                )}
 
                 <h3 className="form-div">4 Schedule</h3>
 

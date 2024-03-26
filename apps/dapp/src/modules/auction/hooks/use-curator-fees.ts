@@ -6,14 +6,15 @@ import {
   useWriteContract,
 } from "wagmi";
 import { toKeycode } from "utils/hex";
-import { AuctionTypes } from "@repo/types";
+import { AuctionType } from "@repo/types";
+import { toBasisPoints } from "utils/number";
 
 export function useCuratorFees(chainId: number, feePercentage?: number) {
   const { address } = useAccount({});
   const axisAddresses = axisContracts.addresses[chainId];
 
   const currentFee = 0; //TODO: Figure out to fetch current curator fee
-  const newFee = Number(feePercentage) * 1000; // Fees are in basis points
+  const newFee = toBasisPoints(feePercentage!); // Fees are in basis points
 
   const { data: setFeeCall, ...feeSimulation } = useSimulateContract({
     chainId,
@@ -21,7 +22,7 @@ export function useCuratorFees(chainId: number, feePercentage?: number) {
     address: axisAddresses.auctionHouse,
     functionName: "setCuratorFee",
     //TODO: add support for different auctions
-    args: [toKeycode(AuctionTypes.SEALED_BID), newFee],
+    args: [toKeycode(AuctionType.SEALED_BID), newFee],
     query: {
       enabled: !!address && !!chainId && isFinite(newFee),
     },

@@ -79,10 +79,6 @@ export type AuctionFormattedInfo = {
   totalSupply: string;
 };
 
-export enum AuctionTypes {
-  SEALED_BID = "LSBBA",
-}
-
 export type PropsWithAuction = {
   auction: Auction;
 };
