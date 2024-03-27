@@ -6,12 +6,12 @@ import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
-import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { LockIcon } from "lucide-react";
 import { useBidAuction } from "../hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { RequiresChain } from "components/requires-chain";
 
 const schema = z.object({
   baseTokenAmount: z.coerce.number(),
@@ -137,7 +137,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             >
               <>
                 <AuctionBidInput balance={formattedBalance} auction={auction} />
-                <RequiresWalletConnection className="mt-4">
+                <RequiresChain chainId={auction.chainId} className="mt-4">
                   <div className="mt-4 w-full">
                     {!bid.isSufficientAllowance && !shouldDisable ? (
                       <Button
@@ -190,7 +190,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                       />
                     )}
                   </div>
-                </RequiresWalletConnection>
+                </RequiresChain>
               </>
             </AuctionInputCard>
           </form>

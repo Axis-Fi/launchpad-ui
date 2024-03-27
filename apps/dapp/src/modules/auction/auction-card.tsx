@@ -34,7 +34,8 @@ export function AuctionCard({
       <div>
         <div className="flex justify-between">
           <div className="flex items-center justify-center gap-x-2">
-            <AuctionStatusChip status={auction.status} />
+            <AuctionStatusChip status={auction.status} /> Bids:{" "}
+            {auction.bids.length}
             <p>{auction.auctionType} Auction</p>
           </div>
           <div className="flex items-center gap-x-3">

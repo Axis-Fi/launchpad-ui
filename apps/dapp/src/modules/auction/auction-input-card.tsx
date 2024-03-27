@@ -10,6 +10,7 @@ import { PropsWithAuction } from "@repo/types";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { formatDistanceToNow } from "date-fns";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
+import { RequiresChain } from "components/requires-chain";
 
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {
@@ -48,20 +49,24 @@ export function AuctionInputCard({
       </CardHeader>
       <CardContent>{props.children}</CardContent>
       <CardFooter className="flex justify-center">
-        {props.showTrigger && TriggerElement ? (
-          //@ts-expect-error //TODO: revamp
-          <TriggerElement onConfirm={(e) => props.onClick?.(e)} />
-        ) : (
-          props.submitText &&
-          props.onClick && (
-            <Button
-              className="w-full"
-              disabled={props.disabled}
-              onClick={props.onClick}
-            >
-              {props.submitText}
-            </Button>
-          )
+        {props.showTrigger && (
+          <RequiresChain chainId={auction.chainId}>
+            {TriggerElement ? (
+              //@ts-expect-error //TODO: revamp
+              <TriggerElement onConfirm={(e) => props.onClick?.(e)} />
+            ) : (
+              props.submitText &&
+              props.onClick && (
+                <Button
+                  className="w-full"
+                  disabled={props.disabled}
+                  onClick={props.onClick}
+                >
+                  {props.submitText}
+                </Button>
+              )
+            )}
+          </RequiresChain>
         )}
       </CardFooter>
     </CardRoot>

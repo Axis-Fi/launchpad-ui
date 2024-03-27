@@ -4,7 +4,6 @@ import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
-import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import React from "react";
 
 export function AuctionConcluded({ auction }: PropsWithAuction) {
@@ -34,6 +33,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
         </AuctionInfoCard>
         <div className="w-[40%]">
           <TransactionDialog
+            signatureMutation={decrypt.decryptTx}
             disabled={disableButton}
             chainId={auction.chainId}
             hash={decrypt.decryptTx.data!}
@@ -54,27 +54,25 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
           <AuctionInputCard
             auction={auction}
             onClick={() => setOpen(true)}
-            submitText="Decrypt"
+            submitText="DECRYPT"
             showTrigger={true}
             disabled={disableButton}
           >
-            <RequiresWalletConnection>
-              <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
-                <div>
-                  <h1 className="text-4xl">
-                    {auction.formatted?.totalBidsDecrypted}
-                  </h1>
-                  <p>Bids Decrypted</p>
-                </div>
-
-                <p className="text-6xl">/</p>
-
-                <div>
-                  <h1 className="text-4xl">{auction.formatted?.totalBids}</h1>
-                  <p>Total Bids</p>
-                </div>
+            <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
+              <div>
+                <h1 className="text-4xl">
+                  {auction.formatted?.totalBidsDecrypted}
+                </h1>
+                <p>Bids Decrypted</p>
               </div>
-            </RequiresWalletConnection>
+
+              <p className="text-6xl">/</p>
+
+              <div>
+                <h1 className="text-4xl">{auction.formatted?.totalBids}</h1>
+                <p>Total Bids</p>
+              </div>
+            </div>
           </AuctionInputCard>
         </div>
       </div>
