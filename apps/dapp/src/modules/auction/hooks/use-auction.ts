@@ -2,9 +2,11 @@ import { useGetAuctionLotQuery } from "@repo/subgraph-client/src/generated";
 import { getAuctionStatus } from "../utils/get-auction-status";
 import {
   Auction,
-  AuctionData,
+  EMPAuctionData,
   AuctionFormattedInfo,
+  AuctionType,
   RawSubgraphAuctionWithEvents,
+  FixedPriceAuctionData,
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
@@ -51,7 +53,13 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     queryFn: () => getAuctionInfo(rawAuction?.created.infoHash || ""),
   });
 
-  const { data: auctionData } = useAuctionData({ chainId, lotId });
+  const auctionType = getAuctionType(rawAuction?.auctionRef);
+
+  const { data: auctionData } = useAuctionData({
+    chainId,
+    lotId,
+    type: auctionType,
+  });
 
   if (!rawAuction || !chainId || data?.auctionLots.length === 0) {
     return {
@@ -66,7 +74,6 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
 
   const auction = {
     ...rawAuction,
-    auctionType: getAuctionType(rawAuction.auctionRef),
     chainId,
     status,
     auctionInfo,
@@ -74,13 +81,18 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
 
   const tokens = formatAuctionTokens(auction, getToken, auctionInfo);
 
+  if (!auctionType) {
+    throw new Error(`Auction type ${auctionType} doesn't exist`);
+  }
+
   return {
     refetch,
     result: {
       ...auction,
       ...tokens,
       auctionData,
-      formatted: formatAuction(auction, auctionData),
+      auctionType,
+      formatted: formatAuction(auction, auctionType, auctionData),
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
@@ -90,7 +102,8 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
 /** Formats Auction information for displaying purporses */
 export function formatAuction(
   auction: RawSubgraphAuctionWithEvents,
-  auctionData?: AuctionData,
+  auctionType: AuctionType,
+  auctionData?: EMPAuctionData | FixedPriceAuctionData,
 ): AuctionFormattedInfo {
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
@@ -123,17 +136,10 @@ export function formatAuction(
     0,
   );
 
-  const rate = tokenAmounts.in / tokenAmounts.out || 0;
-
-  const minPrice = formatUnits(
-    auctionData?.minimumPrice ?? 0n,
-    Number(auction.quoteToken.decimals),
-  );
-
-  const minBidSize = formatUnits(
-    auctionData?.minBidSize ?? 0n,
-    Number(auction.baseToken.decimals),
-  ); //TODO: validate if its the right token
+  const auctionSpecificFields =
+    auctionType === AuctionType.SEALED_BID
+      ? addEMPFields(auctionData as EMPAuctionData, auction, tokenAmounts)
+      : addFPFields(auctionData as FixedPriceAuctionData, auction);
 
   return {
     startDate,
@@ -157,9 +163,44 @@ export function formatAuction(
       in: trimCurrency(tokenAmounts.in),
       out: trimCurrency(tokenAmounts.out),
     },
+    tokenPairSymbols: `${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
+    ...auctionSpecificFields,
+  };
+}
+
+function addEMPFields(
+  auctionData: EMPAuctionData,
+  auction: RawSubgraphAuctionWithEvents,
+  tokenAmounts: { in: number; out: number },
+) {
+  const rate = tokenAmounts.in / tokenAmounts.out || 0;
+
+  const minPrice = formatUnits(
+    auctionData?.minimumPrice ?? 0n,
+    Number(auction.quoteToken.decimals),
+  );
+
+  const minBidSize = formatUnits(
+    auctionData?.minBidSize ?? 0n,
+    Number(auction.baseToken.decimals),
+  ); //TODO: validate if its the right token
+
+  return {
     rate: trimCurrency(rate),
     minPrice: trimCurrency(minPrice),
     minBidSize: trimCurrency(minBidSize),
-    tokenPairSymbols: `${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
+  };
+}
+
+function addFPFields(
+  auctionData: FixedPriceAuctionData,
+  auction: RawSubgraphAuctionWithEvents,
+) {
+  console.log({ auctionData });
+  if (!auctionData) return;
+
+  return {
+    price: formatUnits(auctionData.price, Number(auction.quoteToken.decimals)),
+    maxPayoutPercentage: auctionData.maxPayoutPercentage,
   };
 }

@@ -10,7 +10,7 @@ export type BaseAuction = {
   quoteToken: Token;
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
-  auctionData?: AuctionData;
+  auctionData?: EMPAuctionData | FixedPriceAuctionData;
   auctionType?: string;
   formatted?: AuctionFormattedInfo;
 };
@@ -43,7 +43,7 @@ export type AuctionInfo = {
   };
 };
 
-export type AuctionData = {
+export type EMPAuctionData = {
   status: number;
   nextDecryptIndex: bigint;
   nextBidId: bigint;
@@ -54,6 +54,11 @@ export type AuctionData = {
   marginalBidId: bigint;
   publicKey: { x: bigint; y: bigint };
   privateKey: bigint;
+};
+
+export type FixedPriceAuctionData = {
+  price: bigint;
+  maxPayoutPercentage: bigint;
 };
 
 export type AuctionFormattedInfo = {
@@ -67,16 +72,18 @@ export type AuctionFormattedInfo = {
   totalBidsDecrypted: number;
   totalBidAmount: string;
   uniqueBidders: number;
-  rate: string;
+  rate?: string;
   tokenAmounts: {
     in: string;
     out: string;
   };
-  minPrice: string;
-  minBidSize: string;
+  minPrice?: string;
+  minBidSize?: string;
   tokenPairSymbols: string;
   capacity: string;
   totalSupply: string;
+  price?: number;
+  maxPayoutPercentage?: string;
 };
 
 export type PropsWithAuction = {

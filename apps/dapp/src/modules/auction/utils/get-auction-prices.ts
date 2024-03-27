@@ -1,5 +1,5 @@
 import { ParsedBid } from "modules/auction/settled-auction-chart";
-import { Auction, AuctionData } from "@repo/types";
+import { Auction, EMPAuctionData } from "@repo/types";
 import { formatUnits } from "viem";
 
 /** Calculates the minimum and marginal price for an Auction
@@ -8,7 +8,7 @@ import { formatUnits } from "viem";
 export function getAuctionPrices(
   data: ParsedBid[],
   auction: Auction,
-  auctionData: AuctionData,
+  auctionData: EMPAuctionData,
 ) {
   // Ensure bids are sorted by price
   data.sort((a, b) => a.price - b.price);

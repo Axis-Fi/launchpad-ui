@@ -3,7 +3,7 @@ import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
-import { PropsWithAuction } from "@repo/types";
+import { AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { RequiresWalletConnection } from "components/requires-wallet-connection";
@@ -27,6 +27,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       schema
         .refine(
           (data) =>
+            auction.auctionType === AuctionType.FIXED_PRICE ||
             data.quoteTokenAmount >= Number(auction.formatted?.minBidSize),
           {
             message: `Minimum bid is ${auction.formatted?.minBidSize}`,
@@ -35,8 +36,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         )
         .refine(
           (data) =>
+            auction.auctionType === AuctionType.FIXED_PRICE ||
             Number(data.quoteTokenAmount) / Number(data.baseTokenAmount) >=
-            Number(auction.formatted?.minPrice),
+              Number(auction.formatted?.minPrice),
           {
             message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
             path: ["baseTokenAmount"],
@@ -97,19 +99,30 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           {auction.curatorApproved && (
             <InfoLabel label="Curator" value={trimAddress(auction.curator)} />
           )}
-          <InfoLabel
-            label="Minimum Price"
-            value={`${auction.formatted?.minPrice} ${auction.formatted?.tokenPairSymbols}`}
-          />
-          <InfoLabel
-            label="Minimum Quantity"
-            value={`${auction.formatted?.minBidSize} ${auction.quoteToken.symbol}`}
-          />
-          <InfoLabel label="Total Bids" value={auction.bids.length} />
-          <InfoLabel
-            label="Total Bid Amount"
-            value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
-          />
+          {auction.auctionType === AuctionType.SEALED_BID ? (
+            <>
+              <InfoLabel
+                label="Minimum Price"
+                value={`${auction.formatted?.minPrice} ${auction.formatted?.tokenPairSymbols}`}
+              />
+              <InfoLabel
+                label="Minimum Quantity"
+                value={`${auction.formatted?.minBidSize} ${auction.quoteToken.symbol}`}
+              />
+              <InfoLabel label="Total Bids" value={auction.bids.length} />
+              <InfoLabel
+                label="Total Bid Amount"
+                value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
+              />
+            </>
+          ) : (
+            <>
+              <InfoLabel
+                label="Price"
+                value={`${auction.formatted?.price} ${auction.formatted?.tokenPairSymbols}`}
+              />
+            </>
+          )}
         </AuctionInfoCard>
       </div>
 

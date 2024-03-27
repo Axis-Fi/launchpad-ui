@@ -203,8 +203,12 @@ export default function CreateAuctionPage() {
 
   const handleCreation = async (values: CreateAuctionForm) => {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
-    const publicKey = await generateKeyPairMutation.mutateAsync();
     const auctionType = values.auctionType as AuctionType;
+
+    const publicKey =
+      auctionType === AuctionType.SEALED_BID
+        ? await generateKeyPairMutation.mutateAsync()
+        : undefined;
 
     const auctionSpecificParams = getAuctionCreateParams(
       auctionType,
@@ -237,7 +241,7 @@ export default function CreateAuctionPage() {
                   ),
             wrapDerivative: false,
             callbackData: toHex(""),
-            prefunded: auctionType === AuctionType.SEALED_BID,
+            prefunded: true,
           },
           {
             start: getTimestamp(values.start),
@@ -448,12 +452,13 @@ export default function CreateAuctionPage() {
                         defaultValue={AuctionType.SEALED_BID}
                         options={[
                           {
-                            value: AuctionType.FIXED_PRICE,
-                            label: "Fixed Price",
-                          },
-                          {
                             value: AuctionType.SEALED_BID,
                             label: "Encrypted Marginal Price",
+                          },
+
+                          {
+                            value: AuctionType.FIXED_PRICE,
+                            label: "Fixed Price",
                           },
                         ]}
                         {...field}
@@ -606,7 +611,7 @@ export default function CreateAuctionPage() {
                   </>
                 )}
 
-                <h3 className="form-div">4 Schedule</h3>
+                <h3 className="form-div">5 Schedule</h3>
 
                 <FormField
                   control={form.control}

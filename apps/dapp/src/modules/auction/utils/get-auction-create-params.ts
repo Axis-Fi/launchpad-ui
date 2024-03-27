@@ -45,7 +45,7 @@ const handlers = {
 export function getAuctionCreateParams(
   type: AuctionType,
   values: CreateAuctionForm,
-  key: { x: bigint; y: bigint },
+  key?: { x: bigint; y: bigint },
 ) {
   const handler = handlers[type];
   const params = parameterMap[type];
@@ -56,7 +56,7 @@ export function getAuctionCreateParams(
 
 function handleEMP(
   values: CreateAuctionForm,
-  publicKey: { x: bigint; y: bigint },
+  publicKey?: { x: bigint; y: bigint },
 ) {
   if (!values.minBidPercent || !values.minFillPercent || !values.minPrice) {
     throw new Error("handleEMP called without the correct values");
@@ -73,13 +73,13 @@ function handleEMP(
 }
 
 function handleFP(values: CreateAuctionForm) {
-  if (!values.maxPayoutPercent) {
+  if (!values.maxPayoutPercent || !values.price) {
     throw new Error("handleFP called without the correct values");
   }
 
   return [
     {
-      price: values.price,
+      price: parseUnits(values.price, values.quoteToken.decimals),
       maxPayoutPercent: toBasisPoints(values.maxPayoutPercent[0]),
     },
   ];
