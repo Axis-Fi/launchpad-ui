@@ -82,7 +82,7 @@ export type AuctionFormattedInfo = {
   tokenPairSymbols: string;
   capacity: string;
   totalSupply: string;
-  price?: number;
+  price?: string;
   maxPayoutPercentage?: string;
 };
 

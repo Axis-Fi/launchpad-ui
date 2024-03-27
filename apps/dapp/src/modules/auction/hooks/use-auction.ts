@@ -183,7 +183,7 @@ function addEMPFields(
   const minBidSize = formatUnits(
     auctionData?.minBidSize ?? 0n,
     Number(auction.baseToken.decimals),
-  ); //TODO: validate if its the right token
+  );
 
   return {
     rate: trimCurrency(rate),
@@ -196,7 +196,6 @@ function addFPFields(
   auctionData: FixedPriceAuctionData,
   auction: RawSubgraphAuctionWithEvents,
 ) {
-  console.log({ auctionData });
   if (!auctionData) return;
 
   return {
