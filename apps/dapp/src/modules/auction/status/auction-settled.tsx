@@ -1,11 +1,16 @@
-import { InfoLabel } from "@repo/ui";
+import { Button, InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "@repo/types";
 import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";
+import { useClaimProceeds } from "../hooks/use-claim-proceeds";
+import { useAccount } from "wagmi";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
+  const { address } = useAccount();
+  const claim = useClaimProceeds(auction);
+
   return (
     <div className="w-full">
       <div className="mb-8 flex justify-between">
@@ -20,6 +25,13 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             <div className="text-center">
               <h4>Payout for this auction has been distributed!</h4>
             </div>
+            {address?.toLowerCase() === auction.owner.toLowerCase() && (
+              <div className="flex justify-center">
+                <Button onClick={claim.handleClaim} className="mt-4">
+                  CLAIM PROCEEDS
+                </Button>
+              </div>
+            )}
           </AuctionInputCard>
         </div>
       </div>
