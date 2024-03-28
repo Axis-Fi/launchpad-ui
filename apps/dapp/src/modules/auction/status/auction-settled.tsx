@@ -6,11 +6,17 @@ import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";
 import { useClaimProceeds } from "../hooks/use-claim-proceeds";
 import { useAccount } from "wagmi";
+import { useClaimBids } from "../hooks/use-claim-bids";
+import { RequiresChain } from "components/requires-chain";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const { address } = useAccount();
-  const claim = useClaimProceeds(auction);
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
+  const claimProceeds = useClaimProceeds(auction);
+  const claimBids = useClaimBids(auction);
+  const userHasBids = auction.bids.some(
+    (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
+  );
 
   return (
     <div className="w-full">
@@ -28,13 +34,22 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             <div className="text-center">
               <h4>Payout for this auction has been distributed!</h4>
             </div>
-            {address?.toLowerCase() === auction.owner.toLowerCase() && (
-              <div className="flex justify-center">
-                <Button onClick={claim.handleClaim} className="mt-4">
-                  CLAIM PROCEEDS
-                </Button>
-              </div>
-            )}
+            <RequiresChain chainId={auction.chainId}>
+              {address?.toLowerCase() === auction.owner.toLowerCase() && (
+                <div className="flex justify-center">
+                  <Button onClick={claimProceeds.handleClaim} className="mt-4">
+                    CLAIM PROCEEDS
+                  </Button>
+                </div>
+              )}
+              {userHasBids && (
+                <div className="flex justify-center">
+                  <Button onClick={claimBids.handleClaim} className="mt-4">
+                    CLAIM BIDS
+                  </Button>
+                </div>
+              )}
+            </RequiresChain>
           </AuctionInputCard>
         </div>
       </div>

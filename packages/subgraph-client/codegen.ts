@@ -1,5 +1,4 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
-import * as deps from "@repo/deployments";
 
 //TODO: improve
 const ENDPOINT =

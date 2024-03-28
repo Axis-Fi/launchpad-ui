@@ -14,3 +14,14 @@ export function getContractsByType(auction: Auction) {
 
   return { abi, address };
 }
+
+export function getContractByChain(chainId: number) {
+  const abi = axisContracts.abis.auctionHouse;
+  const address = axisContracts.addresses[chainId].auctionHouse;
+
+  if (!address || !abi) {
+    throw new Error(`Can't find abi/address for ${chainId}`);
+  }
+
+  return { abi, address };
+}
