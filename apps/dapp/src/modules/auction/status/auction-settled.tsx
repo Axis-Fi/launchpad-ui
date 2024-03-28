@@ -1,7 +1,7 @@
-import { Button, InfoLabel } from "@repo/ui";
+import { Button, InfoLabel, cn } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
-import { PropsWithAuction } from "@repo/types";
+import { AuctionType, PropsWithAuction } from "@repo/types";
 import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";
 import { useClaimProceeds } from "../hooks/use-claim-proceeds";
@@ -10,17 +10,20 @@ import { useAccount } from "wagmi";
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const { address } = useAccount();
   const claim = useClaimProceeds(auction);
+  const isEMP = auction.auctionType === AuctionType.SEALED_BID;
 
   return (
     <div className="w-full">
       <div className="mb-8 flex justify-between">
-        <div className="w-1/2">
-          <SettledAuctionChart
-            lotId={auction.lotId}
-            chainId={auction.chainId}
-          />
-        </div>
-        <div className="w-[40%]">
+        {isEMP && (
+          <div className="w-1/2">
+            <SettledAuctionChart
+              lotId={auction.lotId}
+              chainId={auction.chainId}
+            />
+          </div>
+        )}
+        <div className={cn("w-[40%]", !isEMP && "w-full")}>
           <AuctionInputCard submitText={""} auction={auction}>
             <div className="text-center">
               <h4>Payout for this auction has been distributed!</h4>

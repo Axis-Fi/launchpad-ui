@@ -157,6 +157,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                       </Button>
                     ) : (
                       <TransactionDialog
+                        signatureMutation={bid.bidTx}
                         error={bid.error}
                         onConfirm={() => bid.handleBid()}
                         mutation={bid.bidReceipt}

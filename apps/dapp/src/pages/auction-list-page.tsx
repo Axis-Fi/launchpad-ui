@@ -12,7 +12,7 @@ const options = [
   { value: "live", label: "Live" },
   { value: "concluded", label: "Concluded" },
   { value: "decrypted", label: "Decrypted" },
-  { value: "settle", label: "Settled" },
+  { value: "settled", label: "Settled" },
 ];
 
 export default function AuctionListPage() {

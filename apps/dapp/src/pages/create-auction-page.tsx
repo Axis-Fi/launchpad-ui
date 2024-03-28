@@ -51,10 +51,10 @@ import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
-import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { toKeycode } from "utils/hex";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
 import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create-params";
+import { RequiresChain } from "components/requires-chain";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -730,7 +730,7 @@ export default function CreateAuctionPage() {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <RequiresWalletConnection rootClassName="mt-4">
+            <RequiresChain chainId={chainId} className="mt-4 w-fit">
               <Button
                 onClick={(e) => {
                   e.preventDefault();
@@ -740,7 +740,7 @@ export default function CreateAuctionPage() {
               >
                 DEPLOY AUCTION
               </Button>
-            </RequiresWalletConnection>
+            </RequiresChain>
           </div>
           <DialogRoot
             open={isDialogOpen}

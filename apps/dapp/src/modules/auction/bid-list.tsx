@@ -170,6 +170,7 @@ export function BidList(props: BidListProps) {
       />
 
       <TransactionDialog
+        signatureMutation={refund}
         open={dialogOpen}
         onOpenChange={(open) => {
           setDialogOpen(open);

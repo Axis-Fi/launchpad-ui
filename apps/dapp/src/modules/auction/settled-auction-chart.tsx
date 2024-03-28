@@ -136,7 +136,7 @@ export const SettledAuctionChart = ({
     marginalPrice,
     minimumPrice,
     sizeRange,
-  } = useChartData(auction, auctionData);
+  } = useChartData(auction, auctionData as EMPAuctionData);
 
   return (
     <div className="size-full max-h-[260px]">

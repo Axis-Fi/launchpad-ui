@@ -24,7 +24,8 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       </AuctionInfoCard>
       <div className="w-[50%]">
         <AuctionInputCard
-          submitText="Settle Auction"
+          showTrigger
+          submitText="SETTLE AUCTION"
           onClick={() => setIsDialogOpen(true)}
           auction={auction}
         >
@@ -34,6 +35,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
         </AuctionInputCard>
       </div>
       <TransactionDialog
+        signatureMutation={settle.settleTx}
         error={settle.error}
         mutation={settle.settleReceipt}
         chainId={auction.chainId}

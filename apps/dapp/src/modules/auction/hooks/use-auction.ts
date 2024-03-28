@@ -20,6 +20,7 @@ import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
 import { getAuctionType } from "../utils/get-auction-type";
+//import { useReadContract } from "wagmi";
 
 export type AuctionResult = {
   result?: Auction;
@@ -52,6 +53,15 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     queryKey: ["auction-info", rawAuction?.id, rawAuction?.created.infoHash],
     queryFn: () => getAuctionInfo(rawAuction?.created.infoHash || ""),
   });
+
+  // const bid = useReadContract({
+  //   abi: axisContracts.abis.empam,
+  //   address: axisContracts.addresses[chainId!].empam,
+  //   functionName: "bids",
+  //   args: [BigInt(rawAuction.lotId), BigInt(1)],
+  //   query: { enabled: isSuccess },
+  // });
+  // console.log({ bid });
 
   const auctionType = getAuctionType(rawAuction?.auctionRef);
 
@@ -200,6 +210,6 @@ function addFPFields(
 
   return {
     price: formatUnits(auctionData.price, Number(auction.quoteToken.decimals)),
-    maxPayoutPercentage: auctionData.maxPayoutPercentage,
+    maxPayoutPercentage: auctionData.maxPayoutPercentage.toString(),
   };
 }
