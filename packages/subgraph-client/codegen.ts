@@ -3,7 +3,7 @@ import * as deps from "@repo/deployments";
 
 //TODO: improve
 const ENDPOINT =
-  "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/0.0.24/gn";
+  "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/api";
 
 const config: CodegenConfig = {
   schema: ENDPOINT,
