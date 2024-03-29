@@ -21,13 +21,17 @@ const schema = z.object({
 export type BidForm = z.infer<typeof schema>;
 
 export function AuctionLive({ auction }: PropsWithAuction) {
+  const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
+  const maxPayoutPercentage = Number(
+    auction.formatted?.maxPayoutPercentage ?? 0,
+  ); // percentage 0.00-1.00 format
   const form = useForm<BidForm>({
     mode: "onTouched",
     resolver: zodResolver(
       schema
         .refine(
           (data) =>
-            auction.auctionType === AuctionType.FIXED_PRICE ||
+            isFixedPrice ||
             data.quoteTokenAmount >= Number(auction.formatted?.minBidSize),
           {
             message: `Minimum bid is ${auction.formatted?.minBidSize}`,
@@ -36,12 +40,24 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         )
         .refine(
           (data) =>
-            auction.auctionType === AuctionType.FIXED_PRICE ||
+            isFixedPrice ||
             Number(data.quoteTokenAmount) / Number(data.baseTokenAmount) >=
               Number(auction.formatted?.minPrice),
           {
             message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
             path: ["baseTokenAmount"],
+          },
+        )
+        .refine(
+          (data) =>
+            !isFixedPrice ||
+            data.quoteTokenAmount <=
+              Number(auction.capacityInitial) * maxPayoutPercentage,
+          {
+            message: `Max bid is ${
+              Number(auction.capacityInitial) * maxPayoutPercentage
+            }`,
+            path: ["quoteTokenAmount"],
           },
         ),
     ),
@@ -136,7 +152,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               submitText={""}
             >
               <>
-                <AuctionBidInput balance={formattedBalance} auction={auction} />
+                <AuctionBidInput
+                  singleInput={isFixedPrice}
+                  balance={formattedBalance}
+                  auction={auction}
+                />
                 <RequiresChain chainId={auction.chainId} className="mt-4">
                   <div className="mt-4 w-full">
                     {!bid.isSufficientAllowance && !shouldDisable ? (
@@ -145,14 +165,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                         onClick={() => bid.approveCapacity()}
                       >
                         {bid.isSufficientAllowance ? (
-                          "Bid"
+                          "BID"
                         ) : isWaiting ? (
                           <div className="flex">
                             Waiting for confirmation...
                             <LoadingIndicator />
                           </div>
                         ) : (
-                          "Approve"
+                          "APPROVE"
                         )}
                       </Button>
                     ) : (

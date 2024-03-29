@@ -13,7 +13,7 @@ import { getAuctionInfo } from "./use-auction-info";
 import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
-import { trimCurrency } from "utils";
+import { fromBasisPoints, trimCurrency } from "utils";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
@@ -200,6 +200,10 @@ function addFPFields(
 
   return {
     price: formatUnits(auctionData.price, Number(auction.quoteToken.decimals)),
-    maxPayoutPercentage: auctionData.maxPayoutPercentage.toString(),
+    maxPayoutPercentage: fromBasisPoints(
+      // 0.00 - 1.00
+      //TODO: review and improve
+      formatUnits(auctionData.maxPayoutPercentage, 18),
+    ),
   };
 }
