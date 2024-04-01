@@ -8,7 +8,10 @@ export function Tooltip(
   if (!props.content) return <>{props.children}</>;
   return (
     <TooltipRoot>
-      <TooltipTrigger onClick={(e) => e.preventDefault()}>
+      <TooltipTrigger
+        className="cursor-help"
+        onClick={(e) => e.preventDefault()}
+      >
         {props.children}
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">

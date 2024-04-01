@@ -31,7 +31,9 @@ function generateConfig(deployment: AxisDeployment[]) {
       } as const satisfies Chain;
 
       return {
-        chains: [...chains, chain],
+        chains: [...chains, chain].sort((c, other) =>
+          c.name.localeCompare(other.name),
+        ),
         transports: {
           ...transports,
           [config.chain.id]: http(rpc.http[0]),

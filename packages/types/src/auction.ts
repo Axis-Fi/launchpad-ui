@@ -1,3 +1,4 @@
+import { AuctionType } from "./auction-modules";
 import {
   RawSubgraphAuction,
   RawSubgraphAuctionWithEvents,
@@ -11,7 +12,7 @@ export type BaseAuction = {
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
   auctionData?: EMPAuctionData | FixedPriceAuctionData;
-  auctionType?: string;
+  auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
 };
 
@@ -19,7 +20,9 @@ export type Auction = BaseAuction &
   Omit<RawSubgraphAuctionWithEvents, "baseToken" | "quoteToken">;
 
 export type AuctionListed = Omit<BaseAuction, "auctionData" | "formatted"> &
-  Omit<RawSubgraphAuction, "baseToken" | "quoteToken">;
+  Omit<RawSubgraphAuction, "baseToken" | "quoteToken"> & {
+    formattedType: string;
+  };
 
 export type AuctionStatus =
   | "created"
@@ -83,7 +86,8 @@ export type AuctionFormattedInfo = {
   capacity: string;
   totalSupply: string;
   price?: string;
-  maxPayoutPercentage?: string;
+  maxPayoutPercentage?: number;
+  auctionType?: string;
 };
 
 export type PropsWithAuction = {

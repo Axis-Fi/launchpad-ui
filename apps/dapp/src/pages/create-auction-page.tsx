@@ -127,7 +127,7 @@ const auctionDefaultValues = {
   minFillPercent: [50],
   minBidPercent: [5],
   maxPayoutPercent: [50],
-  AuctionType: AuctionType.SEALED_BID,
+  auctionType: AuctionType.SEALED_BID,
 };
 
 export default function CreateAuctionPage() {
@@ -439,7 +439,7 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div">3 Quantity</h3>
+                <h3 className="form-div">3 Style</h3>
                 <FormField
                   control={form.control}
                   name="auctionType"

@@ -1,4 +1,4 @@
-import { Button, DropdownChecker, IconnedInput, cn } from "@repo/ui";
+import { Button, DropdownChecker, IconnedInput, Tooltip, cn } from "@repo/ui";
 import { ReloadButton } from "components/reload-button";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
@@ -28,9 +28,11 @@ export default function AuctionListPage() {
     : auctions;
 
   return (
-    <PageContainer title="Origin">
+    <PageContainer>
       <div className="flex items-center justify-between">
-        <h3>Sealed-Bid Auctions</h3>
+        <Tooltip content={"Origin is a modular Auction suite"}>
+          <h1>Origin</h1>
+        </Tooltip>
         <div className="flex gap-x-2">
           <DropdownChecker
             setFilters={setFilters}

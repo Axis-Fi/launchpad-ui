@@ -46,7 +46,6 @@ const useChartData = (
 ): SettleData => {
   // Validate
   if (!auctionData) return {};
-  console.log({ auction });
 
   // 1. Create data array and parse inputs
   const data = !auction
