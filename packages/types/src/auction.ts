@@ -20,9 +20,7 @@ export type Auction = BaseAuction &
   Omit<RawSubgraphAuctionWithEvents, "baseToken" | "quoteToken">;
 
 export type AuctionListed = Omit<BaseAuction, "auctionData" | "formatted"> &
-  Omit<RawSubgraphAuction, "baseToken" | "quoteToken"> & {
-    formattedType: string;
-  };
+  Omit<RawSubgraphAuction, "baseToken" | "quoteToken">;
 
 export type AuctionStatus =
   | "created"

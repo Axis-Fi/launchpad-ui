@@ -33,7 +33,6 @@ import {
 import { axisContracts } from "@repo/deployments";
 import {
   Address,
-  encodeAbiParameters,
   fromHex,
   getAddress,
   isHex,
@@ -55,11 +54,13 @@ import { toKeycode } from "utils/hex";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
 import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create-params";
 import { RequiresChain } from "components/requires-chain";
+import { PageHeader } from "modules/app/page-header";
+import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
-  chainId: z.coerce.number(),
-  decimals: z.coerce.number(),
+  chainId: z.coerce.number().optional(),
+  decimals: z.coerce.number().optional(),
   symbol: z.string(),
   logoURI: z.string().url().optional(),
 });
@@ -156,6 +157,7 @@ export default function CreateAuctionPage() {
     hash: createAuctionTx.data,
   });
 
+  console.log(form.formState.errors);
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
@@ -228,18 +230,19 @@ export default function CreateAuctionPage() {
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
             callbacks: !values.hooks ? zeroAddress : getAddress(values.hooks),
+            //TODO: Extract into derivative helper function
             derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
             derivativeParams:
               !values.isVested || !values.vestingDuration
                 ? toHex("")
-                : encodeAbiParameters(
-                    [{ name: "expiry", type: "uint48" }],
-                    [
+                : getLinearVestingParams({
+                    expiry:
                       getTimestamp(values.deadline) +
-                        getDuration(Number(values.vestingDuration)),
-                    ],
-                  ),
+                      getDuration(Number(values.vestingDuration)),
+                    start: getTimestamp(values.deadline),
+                  }),
             wrapDerivative: false,
+            //TODO: enable callback data support
             callbackData: toHex(""),
             prefunded: true,
           },
@@ -278,8 +281,10 @@ export default function CreateAuctionPage() {
   const onSubmit = () => (isSufficientAllowance ? createAuction() : execute());
 
   return (
-    <div className="pb-20">
-      <h1 className="text-5xl">Create Your Auction</h1>
+    <>
+      <PageHeader className="items-center justify-start pb-10">
+        <h1 className="text-5xl">Create Your Auction</h1>
+      </PageHeader>
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()}>
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
@@ -502,6 +507,7 @@ export default function CreateAuctionPage() {
                             <Slider
                               {...field}
                               className="cursor-pointer pt-2"
+                              min={1}
                               max={100}
                               defaultValue={auctionDefaultValues.minFillPercent}
                               value={field.value}
@@ -534,6 +540,7 @@ export default function CreateAuctionPage() {
                             <Slider
                               {...field}
                               className="cursor-pointer pt-2"
+                              min={1}
                               max={100}
                               defaultValue={auctionDefaultValues.minBidPercent}
                               value={field.value}
@@ -770,6 +777,6 @@ export default function CreateAuctionPage() {
           <DevTool control={form.control} />
         </form>
       </Form>
-    </div>
+    </>
   );
 }

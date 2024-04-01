@@ -45,6 +45,9 @@ export function TokenPicker<
       { ...token, logoURI: logo },
       { label: token.symbol, imgURL: logo },
     );
+    if (token.address) {
+      form.trigger([props.name]);
+    }
   }, [isSuccess, onChange, token, logo]);
 
   return (

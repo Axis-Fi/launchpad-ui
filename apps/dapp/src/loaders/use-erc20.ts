@@ -5,7 +5,7 @@ import { useReadContracts } from "wagmi";
 /** Reads ERC20 details onchain */
 export default function useERC20({
   chainId,
-  address = "0x",
+  address,
 }: {
   chainId: number;
   address: Address;
