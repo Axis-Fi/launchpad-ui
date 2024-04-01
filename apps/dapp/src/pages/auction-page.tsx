@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 import type { Address } from "viem";
 import { axisContracts } from "@repo/deployments";
-import { Avatar, Skeleton } from "@repo/ui";
+import { Avatar, Button, Skeleton } from "@repo/ui";
 import type { PropsWithAuction, AuctionStatus } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { SocialRow } from "components/social-row";
@@ -49,7 +49,7 @@ export default function AuctionPage() {
     return <AuctionPageLoading />;
   }
 
-  if (!auction) throw new Error("Auction doesn't exist");
+  if (!auction) return <AuctionPageMissing />;
 
   const contracts = axisContracts.addresses[auction.chainId];
   const AuctionElement = statuses[auction.status];
@@ -144,6 +144,26 @@ function AuctionPageLoading() {
         <h3 className="mt-5">Contract Addresses</h3>
         <Skeleton className="h-32 w-[40%]" />
       </div>
+    </div>
+  );
+}
+
+function AuctionPageMissing() {
+  const { lotId, chainId } = useParams();
+  const { refetch } = useAuction(lotId, Number(chainId));
+  return (
+    <div className="absolute inset-0 -top-40 flex h-full flex-col items-center justify-center text-center">
+      <h4>
+        This auction doesn&apos;t seem to exist
+        <span className="ml-1 italic">yet</span>
+      </h4>
+      <p className="text-axis-light-mid mt-10 max-w-sm text-xs">
+        If you just created it, try refreshing below to see the subgraph has
+        indexed it
+      </p>
+      <Button className="mt-2" onClick={() => refetch()}>
+        REFRESH
+      </Button>
     </div>
   );
 }

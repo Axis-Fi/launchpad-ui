@@ -11,7 +11,7 @@ import {
   UseWaitForTransactionReceiptReturnType,
   UseWriteContractReturnType,
 } from "wagmi";
-import { Button, cn } from "@repo/ui";
+import { Button, Tooltip, cn } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { Address, BaseError } from "viem";
@@ -25,6 +25,8 @@ type CreateAuctionStatusCardProps = {
   txReceipt: UseWaitForTransactionReceiptReturnType;
   chainId: number;
   onSubmit: () => void;
+  onSuccess: (lotId?: number | undefined) => void;
+  lotId?: number | null;
 };
 
 /** Displays the status, confirmations and errors of the
@@ -38,6 +40,7 @@ export function AuctionCreationStatus({
   txReceipt,
   chainId,
   onSubmit,
+  ...props
 }: CreateAuctionStatusCardProps) {
   const isSigningApprove = !approveTx.isIdle && approveTx.isPending;
   const { isLoading: isApprovalConfirming } = approveReceipt;
@@ -142,6 +145,19 @@ export function AuctionCreationStatus({
           </p>
         )}
       </div>
+      {txReceipt.isSuccess && (
+        <div className="flex justify-center">
+          <Tooltip content={!props.lotId ? "Waiting to get Auction Id..." : ""}>
+            <Button
+              disabled={!props.lotId}
+              onClick={() => props.onSuccess()}
+              className="mt-3"
+            >
+              View your Auction
+            </Button>
+          </Tooltip>
+        </div>
+      )}
       {(isTxConfirming || txReceipt.isSuccess) && (
         <p className="mt-4 text-center ">
           View transaction on{" "}

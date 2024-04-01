@@ -1,6 +1,6 @@
 import { encodeAbiParameters } from "viem";
 
-export function getLinearVestingParams(args: {
+export function getLinearVestingParams(params: {
   start: number;
   expiry: number;
 }) {
@@ -15,6 +15,6 @@ export function getLinearVestingParams(args: {
         ],
       },
     ],
-    [args],
+    [params],
   );
 }

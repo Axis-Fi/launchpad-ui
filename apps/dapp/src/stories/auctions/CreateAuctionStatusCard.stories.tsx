@@ -39,11 +39,12 @@ const error = {
 
 export const Primary: Story = {
   args: {
+    chainId: 168587773,
     approveTx: success,
     approveReceipt: success,
     info: success,
-    keypair: pending,
-    tx: error,
-    txReceipt: idle,
+    keypair: success,
+    tx: success,
+    txReceipt: success,
   },
 };

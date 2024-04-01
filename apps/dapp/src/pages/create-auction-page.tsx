@@ -25,6 +25,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cloakClient } from "src/services/cloak";
 import {
+  UseWaitForTransactionReceiptReturnType,
   useAccount,
   useChainId,
   useWaitForTransactionReceipt,
@@ -56,6 +57,7 @@ import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create
 import { RequiresChain } from "components/requires-chain";
 import { PageHeader } from "modules/app/page-header";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
+import { useNavigate } from "react-router-dom";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -126,6 +128,7 @@ const schema = z
 export type CreateAuctionForm = z.infer<typeof schema>;
 
 export default function CreateAuctionPage() {
+  const navigate = useNavigate();
   const auctionDefaultValues = {
     minFillPercent: [50],
     minBidPercent: [5],
@@ -158,6 +161,7 @@ export default function CreateAuctionPage() {
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
+  const lotId = getCreatedAuctionId(createTxReceipt.data);
 
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
@@ -198,7 +202,6 @@ export default function CreateAuctionPage() {
         y: fromHex(publicKey.y, "bigint"),
       };
 
-      console.log({ publicKey, updatedKey });
       return updatedKey;
     },
     onError: (error) => console.error("Error during submission:", error),
@@ -767,6 +770,7 @@ export default function CreateAuctionPage() {
               </DialogHeader>
               <div className="px-6">
                 <AuctionCreationStatus
+                  lotId={lotId}
                   chainId={chainId}
                   approveTx={approveTx}
                   approveReceipt={approveReceipt}
@@ -776,6 +780,7 @@ export default function CreateAuctionPage() {
                   tx={createAuctionTx}
                   txReceipt={createTxReceipt}
                   onSubmit={onSubmit}
+                  onSuccess={() => navigate(`/auction/${chainId}/${lotId}`)}
                 />
               </div>
             </DialogContent>
@@ -785,4 +790,12 @@ export default function CreateAuctionPage() {
       </Form>
     </>
   );
+}
+
+function getCreatedAuctionId(
+  value: UseWaitForTransactionReceiptReturnType["data"],
+) {
+  const lotIdHex = value?.logs[1].topics[1];
+  if (!lotIdHex) return null;
+  return fromHex(lotIdHex, "number");
 }
