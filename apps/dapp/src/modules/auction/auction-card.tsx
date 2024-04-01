@@ -37,10 +37,9 @@ export function AuctionCard({
       <div>
         <div className="flex justify-between">
           <div className="flex items-center justify-center gap-x-2">
-            <AuctionStatusChip status={auction.status} /> Bids:{" "}
-            {auction.bids.length}
+            <AuctionStatusChip status={auction.status} />{" "}
             <Tooltip content={metadata.tooltip}>
-              <p>{metadata.label} Auction</p>
+              <p className="text-xs">{metadata.label}</p>
             </Tooltip>
           </div>
           <div className="flex items-center gap-x-3">

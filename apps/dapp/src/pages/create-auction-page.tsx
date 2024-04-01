@@ -493,9 +493,22 @@ export default function CreateAuctionPage() {
                   <>
                     <FormField
                       control={form.control}
+                      name="minPrice"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Minimum Payout Token Price"
+                          tooltip="The minimum number of quote tokens to receive per payout token."
+                        >
+                          <Input placeholder="1" type="number" {...field} />
+                        </FormItemWrapper>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
                       name="minFillPercent"
                       render={({ field }) => (
                         <FormItemWrapper
+                          className="mt-4"
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
@@ -524,7 +537,8 @@ export default function CreateAuctionPage() {
                       )}
                     />
 
-                    <FormField
+                    {/* Disabled for now*/}
+                    {/* <FormField
                       control={form.control}
                       name="minBidPercent"
                       render={({ field }) => (
@@ -555,20 +569,7 @@ export default function CreateAuctionPage() {
                           </>
                         </FormItemWrapper>
                       )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="minPrice"
-                      render={({ field }) => (
-                        <FormItemWrapper
-                          className="mt-6"
-                          label="Minimum Payout Token Price"
-                          tooltip="The minimum number of quote tokens to receive per payout token."
-                        >
-                          <Input placeholder="1" type="number" {...field} />
-                        </FormItemWrapper>
-                      )}
-                    />
+                    /> */}
                   </>
                 )}
                 {auctionType === AuctionType.FIXED_PRICE && (

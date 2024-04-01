@@ -65,7 +65,7 @@ function handleEMP(
   return [
     {
       minFillPercent: getPercentage(Number(values.minFillPercent[0])),
-      minBidPercent: getPercentage(Number(values.minBidPercent[0])),
+      minBidPercent: getPercentage(0.1), // magic number intentional until a better way is agreed
       minPrice: parseUnits(values.minPrice, values.payoutToken.decimals),
       publicKey,
     } as const,
