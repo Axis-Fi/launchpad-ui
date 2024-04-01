@@ -10,17 +10,18 @@ export function ProjectInfoCard({
     auction.auctionInfo?.description ??
     "No description found for this project.";
 
+  const website = auction.auctionInfo?.links?.website;
+
   return (
     <div className={props.className}>
       <div className="mb-2 flex justify-between">
         <h3 className="w-1/2">About {auction.auctionInfo?.name}</h3>
-        <Link
-          className="text-primary flex items-end"
-          href={auction.auctionInfo?.links?.website}
-        >
-          GO TO WEBSITE
-          <ArrowUpRightIcon className="inline" />
-        </Link>
+        {website && (
+          <Link className="text-primary flex items-end" href={website}>
+            GO TO WEBSITE
+            <ArrowUpRightIcon className="inline" />
+          </Link>
+        )}
       </div>
       {description}
     </div>

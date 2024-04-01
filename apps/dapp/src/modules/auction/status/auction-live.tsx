@@ -12,6 +12,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
+import React from "react";
 
 const schema = z.object({
   baseTokenAmount: z.coerce.number(),
@@ -21,6 +22,7 @@ const schema = z.object({
 export type BidForm = z.infer<typeof schema>;
 
 export function AuctionLive({ auction }: PropsWithAuction) {
+  const [open, setOpen] = React.useState(false);
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
   const maxPayoutPercentage = Number(
     auction.formatted?.maxPayoutPercentage ?? 0,
@@ -96,7 +98,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isWaiting =
     bid.approveReceipt.isLoading ||
     bid.bidReceipt.isLoading ||
-    bid.bidTx.isPending;
+    bid.bidTx.isPending ||
+    bid.bidDependenciesMutation.isPending;
+
+  const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
@@ -105,12 +110,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         <AuctionInfoCard>
           <InfoLabel
             label="Capacity"
-            value={`${auction.capacity} ${auction.baseToken.symbol}`}
+            value={`${auction.formatted?.capacity} ${auction.baseToken.symbol}`}
           />
           <InfoLabel
             label="Total Supply"
             value={`${auction.formatted?.totalSupply} ${auction.baseToken.symbol}`}
           />
+          <InfoLabel label="Deadline" value={auction.formatted?.endFormatted} />
           <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
           {auction.curatorApproved && (
             <InfoLabel label="Curator" value={trimAddress(auction.curator)} />
@@ -159,61 +165,66 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 />
                 <RequiresChain chainId={auction.chainId} className="mt-4">
                   <div className="mt-4 w-full">
-                    {!bid.isSufficientAllowance && !shouldDisable ? (
-                      <Button
-                        className="w-full"
-                        onClick={() => bid.approveCapacity()}
-                      >
-                        {bid.isSufficientAllowance ? (
-                          "BID"
-                        ) : isWaiting ? (
-                          <div className="flex">
-                            Waiting for confirmation...
-                            <LoadingIndicator />
-                          </div>
-                        ) : (
-                          "APPROVE"
-                        )}
-                      </Button>
-                    ) : (
-                      <TransactionDialog
-                        signatureMutation={bid.bidTx}
-                        error={bid.error}
-                        onConfirm={() => bid.handleBid()}
-                        mutation={bid.bidReceipt}
-                        chainId={auction.chainId}
-                        onOpenChange={(open) => {
-                          if (!open) bid.bidTx.reset();
-                        }}
-                        hash={bid.bidTx.data}
-                        triggerContent={"Bid"}
-                        disabled={shouldDisable || isWaiting}
-                        screens={{
-                          idle: {
-                            Component: () => (
-                              <div className="text-center">
-                                You&apos;re about to place a bid of {amountIn}{" "}
-                                {auction.quoteToken.symbol}
-                              </div>
-                            ),
-                            title: "Confirm Bid",
-                          },
-                          success: {
-                            Component: () => (
-                              <div className="flex justify-center text-center">
-                                <LockIcon className="mr-1" />
-                                Bid encrypted and stored successfully!
-                              </div>
-                            ),
-                            title: "Transaction Confirmed",
-                          },
-                        }}
-                      />
-                    )}
+                    <Button
+                      className="w-full"
+                      disabled={isWaiting || isSigningApproval}
+                      onClick={() =>
+                        bid.isSufficientAllowance
+                          ? setOpen(true)
+                          : bid.approveCapacity()
+                      }
+                    >
+                      {bid.isSufficientAllowance ? (
+                        "BID"
+                      ) : isWaiting ? (
+                        <div className="flex">
+                          Waiting for confirmation...
+                          <LoadingIndicator />
+                        </div>
+                      ) : (
+                        "APPROVE"
+                      )}
+                    </Button>
                   </div>
                 </RequiresChain>
               </>
             </AuctionInputCard>
+            <TransactionDialog
+              open={open}
+              signatureMutation={bid.bidTx}
+              error={bid.error}
+              onConfirm={() => bid.handleBid()}
+              mutation={bid.bidReceipt}
+              chainId={auction.chainId}
+              onOpenChange={(open) => {
+                if (!open) {
+                  bid.bidTx.reset();
+                }
+                setOpen(open);
+              }}
+              hash={bid.bidTx.data}
+              disabled={shouldDisable || isWaiting}
+              screens={{
+                idle: {
+                  Component: () => (
+                    <div className="text-center">
+                      You&apos;re about to place a bid of {amountIn}{" "}
+                      {auction.quoteToken.symbol}
+                    </div>
+                  ),
+                  title: "Confirm Bid",
+                },
+                success: {
+                  Component: () => (
+                    <div className="flex justify-center text-center">
+                      <LockIcon className="mr-1" />
+                      Bid encrypted and stored successfully!
+                    </div>
+                  ),
+                  title: "Transaction Confirmed",
+                },
+              }}
+            />
           </form>
         </FormProvider>
       </div>

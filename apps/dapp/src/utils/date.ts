@@ -1,4 +1,4 @@
-import { addDays, formatRFC7231, format } from "date-fns";
+import { addMinutes, addDays, addHours, formatRFC7231, format } from "date-fns";
 
 // Date formatting operations
 export const formatDate = {
@@ -11,7 +11,9 @@ export const formatDate = {
 
 // Date math operations
 export const dateMath = {
-  addDays: addDays,
+  addDays,
+  addHours,
+  addMinutes,
 };
 
 export const getTimestamp = (date: Date) => Math.floor(date.getTime() / 1000);

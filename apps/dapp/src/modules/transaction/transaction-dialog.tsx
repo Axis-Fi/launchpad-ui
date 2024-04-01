@@ -104,6 +104,7 @@ export function TransactionDialog({
         <DialogFooter className="flex">
           {showFooter && (
             <Button
+              disabled={props.disabled}
               type="submit"
               className="mx-auto w-full max-w-sm"
               onClick={(e) => {

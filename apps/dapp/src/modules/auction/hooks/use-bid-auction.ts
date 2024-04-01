@@ -173,6 +173,7 @@ export function useBidAuction(
     approveReceipt,
     execute: approveCapacity,
     allowance,
+    ...allowanceUtils
   } = useAllowance({
     ownerAddress: address,
     spenderAddress: axisAddresses.auctionHouse,
@@ -206,5 +207,6 @@ export function useBidAuction(
     bidTx,
     bidDependenciesMutation: encryptBidMutation,
     error,
+    allowanceUtils,
   };
 }

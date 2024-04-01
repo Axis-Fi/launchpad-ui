@@ -59,8 +59,8 @@ import { getLinearVestingParams } from "modules/auction/utils/get-derivative-par
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
-  chainId: z.coerce.number().optional(),
-  decimals: z.coerce.number().optional(),
+  chainId: z.coerce.number(),
+  decimals: z.coerce.number(),
   symbol: z.string(),
   logoURI: z.string().url().optional(),
 });
@@ -124,17 +124,18 @@ const schema = z
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
-const auctionDefaultValues = {
-  minFillPercent: [50],
-  minBidPercent: [5],
-  maxPayoutPercent: [50],
-  auctionType: AuctionType.SEALED_BID,
-};
-
 export default function CreateAuctionPage() {
+  const auctionDefaultValues = {
+    minFillPercent: [50],
+    minBidPercent: [5],
+    maxPayoutPercent: [50],
+    auctionType: AuctionType.SEALED_BID,
+    start: dateMath.addMinutes(new Date(), 15),
+  };
   const { address } = useAccount();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
+
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -151,13 +152,12 @@ export default function CreateAuctionPage() {
 
   const chainId = _chainId ?? connectedChainId;
 
-  const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
+  const axisAddresses = axisContracts.addresses[chainId];
   const createAuctionTx = useWriteContract();
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
 
-  console.log(form.formState.errors);
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
@@ -559,7 +559,7 @@ export default function CreateAuctionPage() {
                         <FormItemWrapper
                           className="mt-6"
                           label="Minimum Payout Token Price"
-                          tooltip="The minimum marginal price required for the auction lot to settle"
+                          tooltip="The minimum number of quote tokens to receive per payout token."
                         >
                           <Input placeholder="1" type="number" {...field} />
                         </FormItemWrapper>
@@ -665,8 +665,10 @@ export default function CreateAuctionPage() {
                     name="hooks"
                     render={({ field }) => (
                       <FormItemWrapper
-                        label="Hooks"
-                        tooltip={"The address of the hook contract"}
+                        label="Callback"
+                        tooltip={
+                          "The address of the contract implementing callbacks"
+                        }
                       >
                         <Input
                           {...field}
@@ -717,20 +719,6 @@ export default function CreateAuctionPage() {
                       )}
                     />
                   </div>
-                  <FormField
-                    name="allowlist"
-                    render={({ field }) => (
-                      <FormItemWrapper
-                        label="Allowlist"
-                        tooltip={"The address of the allowlist contract"}
-                      >
-                        <Input
-                          {...field}
-                          placeholder={trimAddress("0x0000000")}
-                        />
-                      </FormItemWrapper>
-                    )}
-                  />
                 </div>
               </div>
             </div>

@@ -9,6 +9,7 @@ import { parseUnits } from "viem";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import React from "react";
+import { useAuction } from "./hooks/use-auction";
 
 const column = createColumnHelper<AuctionEncryptedBid & { auction: Auction }>();
 
@@ -89,6 +90,10 @@ export function BidList(props: BidListProps) {
   const axisAddresses = axisContracts.addresses[props.auction.chainId];
   const address = props.address ? props.address.toLowerCase() : undefined;
   const encryptedBids = props.auction?.bids ?? [];
+  const { refetch: refetchAuction } = useAuction(
+    props.auction.lotId,
+    props.auction.chainId,
+  );
 
   const refund = useWriteContract();
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
@@ -159,6 +164,12 @@ export function BidList(props: BidListProps) {
     ],
     [props.auction, address],
   );
+
+  React.useEffect(() => {
+    if (refund.isSuccess) {
+      refetchAuction();
+    }
+  }, [refund.isSuccess]);
 
   return (
     <>
