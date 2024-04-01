@@ -93,6 +93,7 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
     vestingDuration: z.string().optional(),
+    vestingStart: z.date().optional(),
     // Metadata
     name: z.string(),
     description: z.string(),
@@ -239,7 +240,7 @@ export default function CreateAuctionPage() {
                     expiry:
                       getTimestamp(values.deadline) +
                       getDuration(Number(values.vestingDuration)),
-                    start: getTimestamp(values.deadline),
+                    start: getTimestamp(values.vestingStart ?? values.start),
                   }),
             wrapDerivative: false,
             //TODO: enable callback data support
@@ -719,6 +720,23 @@ export default function CreateAuctionPage() {
                       )}
                     />
                   </div>
+                  <FormField
+                    control={form.control}
+                    name="vestingStart"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Vesting Start"
+                        tooltip="The start date/time of the vesting"
+                      >
+                        <DatePicker
+                          time
+                          placeholderDate={addMinutes(new Date(), 5)}
+                          content={formatDate.fullLocal(new Date())}
+                          {...field}
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />
                 </div>
               </div>
             </div>
