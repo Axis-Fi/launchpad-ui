@@ -3,7 +3,11 @@ import { useAccount } from "wagmi";
 import type { Address } from "viem";
 import { axisContracts } from "@repo/deployments";
 import { Avatar, Button, Skeleton } from "@repo/ui";
-import type { PropsWithAuction, AuctionStatus } from "@repo/types";
+import {
+  type PropsWithAuction,
+  type AuctionStatus,
+  AuctionType,
+} from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { SocialRow } from "components/social-row";
 import { ProjectInfoCard } from "modules/auction/project-info-card";
@@ -21,6 +25,7 @@ import {
   AuctionSettled,
 } from "modules/auction/status";
 import { ChainIcon } from "components/chain-icon";
+import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
 
 const statuses: Record<
   AuctionStatus,
@@ -52,7 +57,11 @@ export default function AuctionPage() {
   if (!auction) return <AuctionPageMissing />;
 
   const contracts = axisContracts.addresses[auction.chainId];
-  const AuctionElement = statuses[auction.status];
+  const AuctionElement =
+    auction.status === "concluded" &&
+    auction.auctionType === AuctionType.FIXED_PRICE
+      ? FixedPriceAuctionConcluded
+      : statuses[auction.status];
 
   return (
     <div>

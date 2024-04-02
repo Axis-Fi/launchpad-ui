@@ -74,6 +74,7 @@ export type AuctionFormattedInfo = {
   totalBidAmount: string;
   uniqueBidders: number;
   rate?: string;
+  sold: string;
   tokenAmounts: {
     in: string;
     out: string;

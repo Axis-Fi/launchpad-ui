@@ -149,6 +149,7 @@ export function formatAuction(
     startDistance,
     endDistance,
     uniqueBidders,
+    sold: trimCurrency(auction.sold),
     capacity: trimCurrency(auction.capacity),
     totalSupply: trimCurrency(
       formatUnits(
