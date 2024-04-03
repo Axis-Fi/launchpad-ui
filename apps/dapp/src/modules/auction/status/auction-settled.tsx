@@ -57,12 +57,12 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
         <AuctionInfoCard>
           <InfoLabel
             label="Total Raised"
-            value={`${auction.formatted?.tokenAmounts.in} ${auction.quoteToken.symbol}`}
+            value={`${auction.formatted?.purchased} ${auction.quoteToken.symbol}`}
           />
 
           <InfoLabel
             label="Rate"
-            value={`${auction.formatted?.rate} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
+            value={`${auction.formatted?.marginalPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
           />
 
           <InfoLabel label="Total Bids" value={auction.bids.length} />

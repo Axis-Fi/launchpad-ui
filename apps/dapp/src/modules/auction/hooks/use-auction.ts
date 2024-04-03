@@ -84,7 +84,6 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   if (!auctionType) {
     throw new Error(`Auction type ${auctionType} doesn't exist`);
   }
-
   return {
     refetch,
     result: {
@@ -93,6 +92,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
       auctionData,
       auctionType,
       formatted: formatAuction(auction, auctionType, auctionData),
+      bids: updateBids(auction),
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
@@ -120,17 +120,6 @@ export function formatAuction(
     .map((b) => b.bidder)
     .filter((b, i, a) => a.lastIndexOf(b) === i).length;
 
-  const tokenAmounts = auction.bids
-    .filter((b) => Number(b.amountOut) > 0)
-    .reduce(
-      (total, b) => {
-        total.in += Number(b.amountIn);
-        total.out += Number(b.amountOut);
-        return total;
-      },
-      { in: 0, out: 0 },
-    );
-
   const totalBidAmount = auction.bids.reduce(
     (total, b) => total + Number(b.amountIn),
     0,
@@ -138,7 +127,7 @@ export function formatAuction(
 
   const auctionSpecificFields =
     auctionType === AuctionType.SEALED_BID
-      ? addEMPFields(auctionData as EMPAuctionData, auction, tokenAmounts)
+      ? addEMPFields(auctionData as EMPAuctionData, auction)
       : addFPFields(auctionData as FixedPriceAuctionData, auction);
 
   return {
@@ -150,6 +139,7 @@ export function formatAuction(
     endDistance,
     uniqueBidders,
     sold: trimCurrency(auction.sold),
+    purchased: trimCurrency(auction.purchased),
     capacity: trimCurrency(auction.capacity),
     totalSupply: trimCurrency(
       formatUnits(
@@ -160,10 +150,6 @@ export function formatAuction(
     totalBids: auction.bids.length,
     totalBidsDecrypted,
     totalBidAmount: trimCurrency(totalBidAmount),
-    tokenAmounts: {
-      in: trimCurrency(tokenAmounts.in),
-      out: trimCurrency(tokenAmounts.out),
-    },
     tokenPairSymbols: `${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
     ...auctionSpecificFields,
   };
@@ -172,10 +158,7 @@ export function formatAuction(
 function addEMPFields(
   auctionData: EMPAuctionData,
   auction: RawSubgraphAuctionWithEvents,
-  tokenAmounts: { in: number; out: number },
 ) {
-  const rate = tokenAmounts.in / tokenAmounts.out || 0;
-
   const minPrice = formatUnits(
     auctionData?.minimumPrice ?? 0n,
     Number(auction.quoteToken.decimals),
@@ -186,8 +169,14 @@ function addEMPFields(
     Number(auction.baseToken.decimals),
   );
 
+  const marginalPrice = formatUnits(
+    auctionData?.marginalPrice ?? "",
+    Number(auction.quoteToken.decimals),
+  );
+
   return {
-    rate: trimCurrency(rate),
+    marginalPrice: trimCurrency(marginalPrice),
+    rate: trimCurrency(marginalPrice),
     minPrice: trimCurrency(minPrice),
     minBidSize: trimCurrency(minBidSize),
   };
@@ -207,4 +196,34 @@ function addFPFields(
       formatUnits(auctionData.maxPayoutPercentage, 18),
     ),
   };
+}
+
+/** Updates bids based off the remaining capacity
+ * TODO: move to subgraph
+ */
+function updateBids(auction: RawSubgraphAuctionWithEvents) {
+  let remainingCapacity = Number(auction.capacityInitial);
+
+  const _bids = auction.bids
+    .sort((a, b) => Number(b.submittedPrice) - Number(a.submittedPrice))
+    .map((b) => {
+      const amountOut = Number(b.settledAmountOut);
+      if (!b.settledAmountOut || !isFinite(amountOut)) return b;
+
+      //If the amountOut is lower than capacity,
+      //this bid gets the rest of the capacity
+      const settledAmountOut =
+        remainingCapacity >= Number(b.settledAmountOut)
+          ? b.settledAmountOut
+          : remainingCapacity;
+
+      remainingCapacity -= Number(b.settledAmountOut);
+
+      return {
+        ...b,
+        settledAmountOut: settledAmountOut.toString(),
+      };
+    });
+
+  return _bids;
 }

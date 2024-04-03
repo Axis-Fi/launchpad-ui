@@ -74,11 +74,8 @@ export type AuctionFormattedInfo = {
   totalBidAmount: string;
   uniqueBidders: number;
   rate?: string;
+  purchased: string;
   sold: string;
-  tokenAmounts: {
-    in: string;
-    out: string;
-  };
   minPrice?: string;
   minBidSize?: string;
   tokenPairSymbols: string;
@@ -87,6 +84,11 @@ export type AuctionFormattedInfo = {
   price?: string;
   maxPayoutPercentage?: number;
   auctionType?: string;
+} & Partial<EMPFormattedInfo>;
+
+//TODO: add remaining fields
+type EMPFormattedInfo = {
+  marginalPrice: string;
 };
 
 export type PropsWithAuction = {

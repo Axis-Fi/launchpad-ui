@@ -55,6 +55,27 @@ const cols = [
       );
     },
   }),
+  column.accessor("submittedPrice", {
+    header: "Bid Price",
+    enableSorting: true,
+    cell: (info) => {
+      const value = info.getValue();
+      return value
+        ? `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
+        : "-";
+    },
+  }),
+  column.accessor("settledAmountOut", {
+    header: "Settled Amount",
+    enableSorting: true,
+    cell: (info) => {
+      const value = info.getValue();
+      return value
+        ? `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
+        : "-";
+    },
+  }),
+
   column.accessor("status", {
     header: "Status",
     enableSorting: true,

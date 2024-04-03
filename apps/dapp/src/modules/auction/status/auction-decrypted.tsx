@@ -14,8 +14,8 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     <div className="flex justify-between">
       <AuctionInfoCard>
         <InfoLabel
-          label="Total Raised"
-          value={`${auction.formatted?.tokenAmounts.in} ${auction.quoteToken.symbol}`}
+          label="Total Bid Amount"
+          value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
         />
         <InfoLabel
           label="Rate"

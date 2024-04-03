@@ -1,5 +1,6 @@
 fragment AuctionLotFragment on AuctionLot {
   auctionRef
+  auctionType
   capacity
   capacityInitial
   capacityInQuote
@@ -79,6 +80,11 @@ query getAuctionLot($lotId: BigInt!) {
     bids {
       amountIn
       amountOut
+      settledAmountOut
+      submittedPrice
+      rawAmountIn
+      rawAmountOut
+      rawSubmittedPrice
       bidder
       bidId
       blockNumber
