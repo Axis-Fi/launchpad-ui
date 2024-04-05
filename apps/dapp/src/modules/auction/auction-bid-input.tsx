@@ -11,8 +11,10 @@ const formatRate = new Intl.NumberFormat("en-US", {
 export function AuctionBidInput({
   auction,
   balance = "0",
+  singleInput,
 }: {
   balance?: string;
+  singleInput?: boolean;
 } & PropsWithAuction) {
   const form = useFormContext<BidForm>();
 
@@ -42,6 +44,16 @@ export function AuctionBidInput({
                   <Input
                     type="number"
                     {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      if (singleInput && "price" in auction.auctionData!) {
+                        // auction is fixed price //TODO: improve
+                        const amount =
+                          Number(e.target.value) *
+                          Number(auction.formatted?.price);
+                        form.setValue("baseTokenAmount", amount);
+                      }
+                    }}
                     variant="lg"
                     className="mt-4 w-full"
                     placeholder="0.00"
@@ -69,32 +81,42 @@ export function AuctionBidInput({
             src={auction.baseToken.logoURI}
             label={auction.baseToken.symbol}
           />
-          <FormField
-            name="baseTokenAmount"
-            control={form.control}
-            render={({ field }) => (
-              <FormItemWrapper errorClassName="-top-16">
-                <div className="flex">
-                  <Input
-                    type="number"
-                    {...field}
-                    variant="lg"
-                    className="mt-4 w-full"
-                    placeholder="0.00"
-                  />
-                  <div className="flex w-full flex-col items-end justify-end">
-                    <p className="text-foreground/50">
-                      Rate:{" "}
-                      <span className="text-foreground inline">
-                        {formattedRate} {auction.quoteToken.symbol}/
-                        {auction.baseToken.symbol}
-                      </span>
-                    </p>
+          {singleInput ? (
+            <Input
+              type="number"
+              className="mt-4"
+              variant="lg"
+              value={minAmountOut}
+              onChange={() => {}}
+            />
+          ) : (
+            <FormField
+              name="baseTokenAmount"
+              control={form.control}
+              render={({ field }) => (
+                <FormItemWrapper errorClassName="-top-16">
+                  <div className="flex">
+                    <Input
+                      type="number"
+                      {...field}
+                      variant="lg"
+                      className="mt-4 w-full"
+                      placeholder="0.00"
+                    />
+                    <div className="flex w-full flex-col items-end justify-end">
+                      <p className="text-foreground/50">
+                        Rate:{" "}
+                        <span className="text-foreground inline">
+                          {formattedRate} {auction.quoteToken.symbol}/
+                          {auction.baseToken.symbol}
+                        </span>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </FormItemWrapper>
-            )}
-          />
+                </FormItemWrapper>
+              )}
+            />
+          )}
         </div>
       </div>
     </div>

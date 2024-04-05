@@ -2,7 +2,7 @@ import { Input, cn } from "..";
 
 export function InfoLabel(
   props: {
-    label: string;
+    label: React.ReactNode;
     value: React.ReactNode;
     reverse?: boolean;
     editable?: boolean;

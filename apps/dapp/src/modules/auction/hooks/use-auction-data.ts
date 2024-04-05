@@ -1,33 +1,55 @@
 import { axisContracts } from "@repo/deployments";
-import { AuctionData } from "@repo/types";
+import {
+  EMPAuctionData,
+  AuctionType,
+  AxisContractAddresses,
+  FixedPriceAuctionData,
+} from "@repo/types";
 import { parseUnits } from "viem";
 import { useReadContract } from "wagmi";
 
 type UseAuctionDataParameters = {
   lotId?: string;
   chainId?: number;
+  type?: AuctionType;
 };
 
 /** Reads auctionData for a specific auction on chain and parses it*/
-export function useAuctionData({ lotId, chainId }: UseAuctionDataParameters) {
+export function useAuctionData({
+  lotId,
+  chainId,
+  type = AuctionType.SEALED_BID,
+}: UseAuctionDataParameters) {
+  const auctionType = type.toLocaleLowerCase() as keyof AxisContractAddresses;
+
   const auctionDataQuery = useReadContract({
-    abi: axisContracts.abis.empam,
-    address: !chainId ? undefined : axisContracts.addresses[chainId].empam,
+    abi: axisContracts.abis[auctionType],
+    address: !chainId
+      ? undefined
+      : axisContracts.addresses[chainId][auctionType],
     functionName: "auctionData",
     args: [parseUnits(lotId ?? "0", 0)],
     query: { enabled: !!chainId && !!lotId },
   });
 
+  const handle = handlers[type];
+
   return {
     ...auctionDataQuery,
     data: auctionDataQuery.isSuccess
-      ? mapAuctionData(auctionDataQuery.data)
+      ? //@ts-expect-error improve typing
+        handle(auctionDataQuery.data)
       : undefined,
   };
 }
 
+const handlers = {
+  [AuctionType.SEALED_BID]: mapEMPAuctionData,
+  [AuctionType.FIXED_PRICE]: mapFixedPriceData,
+};
+
 /** Maps the result of view function auctionData into a readable format */
-const mapAuctionData = (
+function mapEMPAuctionData(
   data:
     | readonly [
         bigint,
@@ -42,7 +64,7 @@ const mapAuctionData = (
         bigint,
       ]
     | undefined,
-): AuctionData | undefined => {
+): EMPAuctionData | undefined {
   if (!data) return undefined;
 
   return {
@@ -57,4 +79,13 @@ const mapAuctionData = (
     publicKey: data[8],
     privateKey: data[9],
   };
-};
+}
+
+function mapFixedPriceData(
+  data: readonly [bigint, bigint],
+): FixedPriceAuctionData | undefined {
+  return {
+    price: data[0],
+    maxPayoutPercentage: data[1],
+  };
+}

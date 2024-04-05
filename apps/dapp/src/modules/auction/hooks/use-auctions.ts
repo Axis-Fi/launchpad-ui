@@ -51,10 +51,13 @@ export function useAuctions(): AuctionsResult {
       .map((auction) => {
         const auctionInfo = infos.data?.find((info) => info.id === auction.id)
           ?.auctionInfo;
-
+        const type = getAuctionType(auction.auctionRef);
+        if (!type) {
+          throw new Error(`Type not found for auction ${auction.auctionRef}`);
+        }
         return {
           ...auction,
-          auctionType: getAuctionType(auction.auctionRef),
+          auctionType: type,
           ...formatAuctionTokens(auction, getToken, auctionInfo),
           chainId: getChainId(auction.chain),
           status: getAuctionStatus(auction),

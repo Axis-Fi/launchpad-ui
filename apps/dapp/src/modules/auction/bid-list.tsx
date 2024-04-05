@@ -9,6 +9,7 @@ import { parseUnits } from "viem";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import React from "react";
+import { useAuction } from "./hooks/use-auction";
 
 const column = createColumnHelper<AuctionEncryptedBid & { auction: Auction }>();
 
@@ -46,9 +47,7 @@ const cols = [
         <Tooltip content="The amount out is not accessible until after the conclusion of the auction">
           <div
             className="w-30 bg-foreground h-5"
-            style={{
-              width: `${size}px`,
-            }}
+            style={{ width: `${size}px` }}
           >
             {" "}
           </div>
@@ -56,10 +55,36 @@ const cols = [
       );
     },
   }),
+  column.accessor("submittedPrice", {
+    header: "Bid Price",
+    enableSorting: true,
+    cell: (info) => {
+      const value = info.getValue();
+      return value
+        ? `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
+        : "-";
+    },
+  }),
+  column.accessor("settledAmountOut", {
+    header: "Settled Amount",
+    enableSorting: true,
+    cell: (info) => {
+      const value = info.getValue();
+      return value
+        ? `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
+        : "-";
+    },
+  }),
+
   column.accessor("status", {
     header: "Status",
     enableSorting: true,
-    cell: (info) => info.getValue(),
+    cell: (info) => {
+      const status = info.getValue();
+      const amountOut = info.row.original.amountOut;
+      const isRefunded = status === "claimed" && !amountOut;
+      return isRefunded ? "refunded" : status;
+    },
   }),
 ];
 
@@ -86,6 +111,10 @@ export function BidList(props: BidListProps) {
   const axisAddresses = axisContracts.addresses[props.auction.chainId];
   const address = props.address ? props.address.toLowerCase() : undefined;
   const encryptedBids = props.auction?.bids ?? [];
+  const { refetch: refetchAuction } = useAuction(
+    props.auction.lotId,
+    props.auction.chainId,
+  );
 
   const refund = useWriteContract();
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
@@ -121,18 +150,18 @@ export function BidList(props: BidListProps) {
         id: "actions",
         cell: (info) => {
           const bid = info.row.original;
-          if (!address) return;
+          const isLive = props.auction.status === "live";
+          if (!address || !isLive) return;
           if (bid.bidder.toLowerCase() !== address) return;
-          if (bid.status === "refunded") return;
+          if (bid.status === "claimed" && !bid.amountOut) return;
 
           // Can refund if the bid did not win and the auction is settled
-          const isSettledBidNotWon =
-            props.auction.status === "settled" && bid.status !== "won";
+          //const isSettledBidNotWon = props.auction.status === "settled" && bid.status !== "won";
           // Can refund if the auction is live
-          const isLive = props.auction.status === "live";
+
           const isCurrentBid = bidToRefund?.bidId === bid.bidId;
 
-          if (isSettledBidNotWon || isLive) {
+          if (isLive) {
             return (
               <Button
                 onClick={() => {
@@ -157,6 +186,12 @@ export function BidList(props: BidListProps) {
     [props.auction, address],
   );
 
+  React.useEffect(() => {
+    if (refund.isSuccess) {
+      refetchAuction();
+    }
+  }, [refund.isSuccess]);
+
   return (
     <>
       <DataTable
@@ -170,6 +205,7 @@ export function BidList(props: BidListProps) {
       />
 
       <TransactionDialog
+        signatureMutation={refund}
         open={dialogOpen}
         onOpenChange={(open) => {
           setDialogOpen(open);

@@ -1,3 +1,6 @@
+import { Auction, PropsWithAuction } from "@repo/types";
+import React from "react";
+
 export function AuctionInfoCard(
   props: React.HtmlHTMLAttributes<HTMLDivElement>,
 ) {
@@ -9,4 +12,31 @@ export function AuctionInfoCard(
       </div>
     </div>
   );
+}
+
+type AuctionLabelChildren = React.ReactElement<PropsWithAuction>;
+
+export function AuctionInfoContainer(
+  props: React.HtmlHTMLAttributes<HTMLDivElement> &
+    PropsWithAuction & {
+      children?: AuctionLabelChildren | AuctionLabelChildren[];
+    },
+) {
+  if (!props.children) {
+    throw new Error("No children provided");
+  }
+
+  const children = Array.isArray(props.children)
+    ? props.children.map((c) => cloneWithAuction(c, props.auction))
+    : cloneWithAuction(props.children, props.auction);
+
+  return (
+    <AuctionInfoCard className={props.className}>{children}</AuctionInfoCard>
+  );
+}
+
+function cloneWithAuction(children: AuctionLabelChildren, auction: Auction) {
+  return React.isValidElement(children)
+    ? React.cloneElement(children, { auction })
+    : children;
 }

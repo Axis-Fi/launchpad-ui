@@ -1,4 +1,4 @@
-import { Avatar, Button, Progress, Skeleton } from "@repo/ui";
+import { Avatar, Button, Progress, Skeleton, Tooltip } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowRightIcon } from "lucide-react";
@@ -6,6 +6,7 @@ import { AuctionListed } from "@repo/types";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { ImageBanner } from "components/image-banner";
 import { ChainIcon } from "components/chain-icon";
+import { auctionMetadata } from "./metadata";
 
 type AuctionCardProps = {
   onClickView?: (auction: AuctionListed) => void;
@@ -26,6 +27,8 @@ export function AuctionCard({
     new Date(Number(auction.conclusion) * 1000),
   );
 
+  const metadata = auctionMetadata[auction.auctionType];
+
   return (
     <div
       className="bg-secondary flex w-full max-w-[400px] flex-col justify-between rounded-sm p-2"
@@ -34,8 +37,10 @@ export function AuctionCard({
       <div>
         <div className="flex justify-between">
           <div className="flex items-center justify-center gap-x-2">
-            <AuctionStatusChip status={auction.status} />
-            <p>{auction.auctionType} Auction</p>
+            <AuctionStatusChip status={auction.status} />{" "}
+            <Tooltip content={metadata.tooltip}>
+              <p className="text-xs">{metadata.label}</p>
+            </Tooltip>
           </div>
           <div className="flex items-center gap-x-3">
             <SocialRow

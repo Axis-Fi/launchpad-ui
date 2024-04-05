@@ -1,5 +1,8 @@
 import { Button } from "@repo/ui";
-import { UseWaitForTransactionReceiptReturnType } from "wagmi";
+import {
+  UseWaitForTransactionReceiptReturnType,
+  UseWriteContractReturnType,
+} from "wagmi";
 import { TransactionHashCard } from "./transaction-hash-card";
 import { Address } from "viem";
 import {
@@ -17,8 +20,12 @@ export type TransactionDialogElementProps = {
   error?: Error | null;
 };
 
+type TransactionScreenStatus =
+  | UseWaitForTransactionReceiptReturnType["status"]
+  | "idle"
+  | "signing";
 export type TransactionScreens = Record<
-  UseWaitForTransactionReceiptReturnType["status"] | "idle",
+  TransactionScreenStatus,
   {
     Component: React.FC<Partial<TransactionDialogElementProps>>;
     title?: string;
@@ -31,6 +38,12 @@ const defaultScreens: TransactionScreens = {
       <div className="my-4 text-center">Sign the transaction to proceed</div>
     ),
     title: "Confirm Transaction",
+  },
+  signing: {
+    title: "Waiting signature",
+    Component: () => (
+      <div className="my-4  text-center">Sign the transaction to proceed</div>
+    ),
   },
   pending: { Component: TransactionHashCard, title: "Transaction Submitted!" },
   success: {
@@ -45,6 +58,7 @@ const defaultScreens: TransactionScreens = {
 export type TransactionDialogProps = {
   onConfirm: React.MouseEventHandler<HTMLButtonElement>;
   mutation: UseWaitForTransactionReceiptReturnType;
+  signatureMutation: UseWriteContractReturnType;
   triggerContent?: string | React.ReactNode;
   screens?: Partial<TransactionScreens>;
   submitText?: string;
@@ -56,17 +70,17 @@ export type TransactionDialogProps = {
 export function TransactionDialog({
   screens = defaultScreens,
   mutation: mutation,
+  signatureMutation,
   open,
   onOpenChange,
   ...props
 }: TransactionDialogProps) {
   const allScreens = { ...defaultScreens, ...screens };
 
-  const status = props.error
-    ? "error"
-    : props.hash && mutation
-      ? mutation.status
-      : "idle";
+  let status: TransactionScreenStatus = "idle";
+  if (signatureMutation && signatureMutation.isPending) status = "signing";
+  if (props.hash) status = mutation.status;
+  if (props.error) status = "error";
 
   const error = props.error ?? mutation?.error;
 
@@ -90,6 +104,7 @@ export function TransactionDialog({
         <DialogFooter className="flex">
           {showFooter && (
             <Button
+              disabled={props.disabled}
               type="submit"
               className="mx-auto w-full max-w-sm"
               onClick={(e) => {

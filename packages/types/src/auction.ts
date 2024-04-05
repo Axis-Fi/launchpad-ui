@@ -1,3 +1,4 @@
+import { AuctionType } from "./auction-modules";
 import {
   RawSubgraphAuction,
   RawSubgraphAuctionWithEvents,
@@ -10,8 +11,8 @@ export type BaseAuction = {
   quoteToken: Token;
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
-  auctionData?: AuctionData;
-  auctionType?: string;
+  auctionData?: EMPAuctionData | FixedPriceAuctionData;
+  auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
 };
 
@@ -43,7 +44,7 @@ export type AuctionInfo = {
   };
 };
 
-export type AuctionData = {
+export type EMPAuctionData = {
   status: number;
   nextDecryptIndex: bigint;
   nextBidId: bigint;
@@ -54,6 +55,11 @@ export type AuctionData = {
   marginalBidId: bigint;
   publicKey: { x: bigint; y: bigint };
   privateKey: bigint;
+};
+
+export type FixedPriceAuctionData = {
+  price: bigint;
+  maxPayoutPercentage: bigint;
 };
 
 export type AuctionFormattedInfo = {
@@ -67,16 +73,22 @@ export type AuctionFormattedInfo = {
   totalBidsDecrypted: number;
   totalBidAmount: string;
   uniqueBidders: number;
-  rate: string;
-  tokenAmounts: {
-    in: string;
-    out: string;
-  };
-  minPrice: string;
-  minBidSize: string;
+  rate?: string;
+  purchased: string;
+  sold: string;
+  minPrice?: string;
+  minBidSize?: string;
   tokenPairSymbols: string;
   capacity: string;
   totalSupply: string;
+  price?: string;
+  maxPayoutPercentage?: number;
+  auctionType?: string;
+} & Partial<EMPFormattedInfo>;
+
+//TODO: add remaining fields
+type EMPFormattedInfo = {
+  marginalPrice: string;
 };
 
 export type PropsWithAuction = {

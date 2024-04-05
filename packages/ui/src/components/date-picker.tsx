@@ -16,6 +16,7 @@ export type DatePickerProps = {
   time?: boolean;
   onChange?: (date?: Date) => void;
   onBlur?: () => void;
+  value?: Date;
 };
 
 export function DatePicker({
@@ -23,7 +24,7 @@ export function DatePicker({
   placeholderDate,
   ...props
 }: DatePickerProps) {
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = React.useState<Date | undefined>(props.value);
   const { matcher, time, setTime } = useTimeInput();
 
   React.useEffect(() => {

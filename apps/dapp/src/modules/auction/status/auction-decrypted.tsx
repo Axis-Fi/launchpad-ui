@@ -14,8 +14,8 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     <div className="flex justify-between">
       <AuctionInfoCard>
         <InfoLabel
-          label="Total Raised"
-          value={`${auction.formatted?.tokenAmounts.in} ${auction.quoteToken.symbol}`}
+          label="Total Bid Amount"
+          value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
         />
         <InfoLabel
           label="Rate"
@@ -24,7 +24,8 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       </AuctionInfoCard>
       <div className="w-[50%]">
         <AuctionInputCard
-          submitText="Settle Auction"
+          showTrigger
+          submitText="SETTLE AUCTION"
           onClick={() => setIsDialogOpen(true)}
           auction={auction}
         >
@@ -34,6 +35,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
         </AuctionInputCard>
       </div>
       <TransactionDialog
+        signatureMutation={settle.settleTx}
         error={settle.error}
         mutation={settle.settleReceipt}
         chainId={auction.chainId}

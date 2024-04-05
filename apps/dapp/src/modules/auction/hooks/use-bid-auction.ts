@@ -9,6 +9,8 @@ import {
   Hex,
   encodeAbiParameters,
   fromHex,
+  isAddress,
+  parseAbiParameters,
   parseUnits,
   toHex,
 } from "viem";
@@ -19,6 +21,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useReferrer } from "state/referral";
+import { AuctionType } from "@repo/types";
 
 export function useBidAuction(
   lotId: string,
@@ -36,6 +39,7 @@ export function useBidAuction(
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
   const axisAddresses = axisContracts.addresses[auction.chainId];
+  console.log({ auction });
 
   // Bids need to be encrypted before submitting
   const encryptBidMutation = useMutation({
@@ -118,6 +122,45 @@ export function useBidAuction(
     });
   };
 
+  const handlePurchase = async () => {
+    if (!address || !isAddress(address)) {
+      throw new Error("Not connected");
+    }
+    const minAmountOut = parseUnits(
+      amountOut.toString(),
+      Number(auction.baseToken.decimals),
+    );
+
+    const auctionData = encodeAbiParameters(
+      parseAbiParameters("uint96 minAmountOut"),
+      [minAmountOut],
+    );
+
+    bidTx.writeContract({
+      abi: axisContracts.abis.auctionHouse,
+      address: axisAddresses.auctionHouse,
+      functionName: "purchase",
+      args: [
+        {
+          lotId: BigInt(lotId),
+          referrer,
+          recipient: address,
+          amount: parseUnits(
+            amountIn.toString(),
+            Number(auction.quoteToken.decimals),
+          ),
+          minAmountOut: parseUnits(
+            amountOut.toString(),
+            Number(auction.baseToken.decimals),
+          ),
+          permit2Data: "0x",
+          auctionData,
+        },
+        "0x",
+      ],
+    });
+  };
+
   // We need to know user's balance and allowance
   const balance = useBalance({
     address,
@@ -130,6 +173,7 @@ export function useBidAuction(
     approveReceipt,
     execute: approveCapacity,
     allowance,
+    ...allowanceUtils
   } = useAllowance({
     ownerAddress: address,
     spenderAddress: axisAddresses.auctionHouse,
@@ -151,7 +195,10 @@ export function useBidAuction(
     ?.error;
 
   return {
-    handleBid,
+    handleBid:
+      auction.auctionType === AuctionType.SEALED_BID
+        ? handleBid
+        : handlePurchase,
     approveCapacity,
     balance,
     isSufficientAllowance,
@@ -160,5 +207,6 @@ export function useBidAuction(
     bidTx,
     bidDependenciesMutation: encryptBidMutation,
     error,
+    allowanceUtils,
   };
 }

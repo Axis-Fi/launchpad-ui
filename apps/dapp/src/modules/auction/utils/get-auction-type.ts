@@ -6,7 +6,8 @@ const auctionTypes: Record<AuctionModuleReference, AuctionType> = {
   "01FPAM\x00": AuctionType.FIXED_PRICE, //TODO: fix this mapping
 };
 
-export function getAuctionType(auctionRef: string) {
+export function getAuctionType(auctionRef?: string) {
+  if (!auctionRef) return;
   const key = fromVeecode(auctionRef).trim() as AuctionModuleReference;
   const type = auctionTypes[key];
 

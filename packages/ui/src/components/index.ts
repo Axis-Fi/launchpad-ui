@@ -6,6 +6,7 @@ export * from "./data-table";
 export * from "./date-picker";
 export * from "./dialog-input";
 export * from "./dialog";
+//export * from "./filters";
 export * from "./iconed-label";
 export * from "./info-label";
 export * from "./input-error";

@@ -77,6 +77,7 @@ export function CuratableAuctionList() {
     <>
       <DataTable columns={columns} data={data} />
       <TransactionDialog
+        signatureMutation={curate.curateTx}
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         chainId={curating.chainId}

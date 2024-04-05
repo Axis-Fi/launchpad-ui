@@ -1,6 +1,6 @@
 import type { CartesianViewBox } from "recharts/types/util/types";
 import type { ScatterPointItem } from "recharts/types/cartesian/Scatter";
-import type { Auction, AuctionData } from "@repo/types";
+import type { Auction, EMPAuctionData } from "@repo/types";
 import {
   LabelProps,
   ReferenceLine,
@@ -42,11 +42,10 @@ type SettleData = {
 
 const useChartData = (
   auction: Auction | undefined,
-  auctionData: AuctionData | undefined,
+  auctionData: EMPAuctionData | undefined,
 ): SettleData => {
   // Validate
   if (!auctionData) return {};
-  console.log({ auction });
 
   // 1. Create data array and parse inputs
   const data = !auction
@@ -136,7 +135,7 @@ export const SettledAuctionChart = ({
     marginalPrice,
     minimumPrice,
     sizeRange,
-  } = useChartData(auction, auctionData);
+  } = useChartData(auction, auctionData as EMPAuctionData);
 
   return (
     <div className="size-full max-h-[260px]">

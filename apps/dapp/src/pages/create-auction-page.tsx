@@ -25,6 +25,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cloakClient } from "src/services/cloak";
 import {
+  UseWaitForTransactionReceiptReturnType,
   useAccount,
   useChainId,
   useWaitForTransactionReceipt,
@@ -33,7 +34,6 @@ import {
 import { axisContracts } from "@repo/deployments";
 import {
   Address,
-  encodeAbiParameters,
   fromHex,
   getAddress,
   isHex,
@@ -51,10 +51,13 @@ import { useMutation } from "@tanstack/react-query";
 import React from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
-import { RequiresWalletConnection } from "components/requires-wallet-connection";
 import { toKeycode } from "utils/hex";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
 import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create-params";
+import { RequiresChain } from "components/requires-chain";
+import { PageHeader } from "modules/app/page-header";
+import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
+import { useNavigate } from "react-router-dom";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -92,6 +95,7 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
     vestingDuration: z.string().optional(),
+    vestingStart: z.date().optional(),
     // Metadata
     name: z.string(),
     description: z.string(),
@@ -123,17 +127,19 @@ const schema = z
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
-const auctionDefaultValues = {
-  minFillPercent: [50],
-  minBidPercent: [5],
-  maxPayoutPercent: [50],
-  AuctionType: AuctionType.SEALED_BID,
-};
-
 export default function CreateAuctionPage() {
+  const navigate = useNavigate();
+  const auctionDefaultValues = {
+    minFillPercent: [50],
+    minBidPercent: [5],
+    maxPayoutPercent: [50],
+    auctionType: AuctionType.SEALED_BID,
+    start: dateMath.addMinutes(new Date(), 15),
+  };
   const { address } = useAccount();
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
+
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -150,11 +156,12 @@ export default function CreateAuctionPage() {
 
   const chainId = _chainId ?? connectedChainId;
 
-  const axisAddresses = axisContracts.addresses[payoutToken?.chainId];
+  const axisAddresses = axisContracts.addresses[chainId];
   const createAuctionTx = useWriteContract();
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
+  const lotId = getCreatedAuctionId(createTxReceipt.data);
 
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
@@ -195,7 +202,6 @@ export default function CreateAuctionPage() {
         y: fromHex(publicKey.y, "bigint"),
       };
 
-      console.log({ publicKey, updatedKey });
       return updatedKey;
     },
     onError: (error) => console.error("Error during submission:", error),
@@ -203,8 +209,12 @@ export default function CreateAuctionPage() {
 
   const handleCreation = async (values: CreateAuctionForm) => {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
-    const publicKey = await generateKeyPairMutation.mutateAsync();
     const auctionType = values.auctionType as AuctionType;
+
+    const publicKey =
+      auctionType === AuctionType.SEALED_BID
+        ? await generateKeyPairMutation.mutateAsync()
+        : undefined;
 
     const auctionSpecificParams = getAuctionCreateParams(
       auctionType,
@@ -224,20 +234,21 @@ export default function CreateAuctionPage() {
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
             callbacks: !values.hooks ? zeroAddress : getAddress(values.hooks),
+            //TODO: Extract into derivative helper function
             derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
             derivativeParams:
               !values.isVested || !values.vestingDuration
                 ? toHex("")
-                : encodeAbiParameters(
-                    [{ name: "expiry", type: "uint48" }],
-                    [
+                : getLinearVestingParams({
+                    expiry:
                       getTimestamp(values.deadline) +
-                        getDuration(Number(values.vestingDuration)),
-                    ],
-                  ),
+                      getDuration(Number(values.vestingDuration)),
+                    start: getTimestamp(values.vestingStart ?? values.start),
+                  }),
             wrapDerivative: false,
+            //TODO: enable callback data support
             callbackData: toHex(""),
-            prefunded: auctionType === AuctionType.SEALED_BID,
+            prefunded: true,
           },
           {
             start: getTimestamp(values.start),
@@ -274,8 +285,10 @@ export default function CreateAuctionPage() {
   const onSubmit = () => (isSufficientAllowance ? createAuction() : execute());
 
   return (
-    <div className="pb-20">
-      <h1 className="text-5xl">Create Your Auction</h1>
+    <>
+      <PageHeader className="items-center justify-start pb-10">
+        <h1 className="text-5xl">Create Your Auction</h1>
+      </PageHeader>
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()}>
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
@@ -435,7 +448,7 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div">3 Quantity</h3>
+                <h3 className="form-div">3 Style</h3>
                 <FormField
                   control={form.control}
                   name="auctionType"
@@ -448,12 +461,13 @@ export default function CreateAuctionPage() {
                         defaultValue={AuctionType.SEALED_BID}
                         options={[
                           {
-                            value: AuctionType.FIXED_PRICE,
-                            label: "Fixed Price",
-                          },
-                          {
                             value: AuctionType.SEALED_BID,
                             label: "Encrypted Marginal Price",
+                          },
+
+                          {
+                            value: AuctionType.FIXED_PRICE,
+                            label: "Fixed Price",
                           },
                         ]}
                         {...field}
@@ -479,9 +493,22 @@ export default function CreateAuctionPage() {
                   <>
                     <FormField
                       control={form.control}
+                      name="minPrice"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Minimum Payout Token Price"
+                          tooltip="The minimum number of quote tokens to receive per payout token."
+                        >
+                          <Input placeholder="1" type="number" {...field} />
+                        </FormItemWrapper>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
                       name="minFillPercent"
                       render={({ field }) => (
                         <FormItemWrapper
+                          className="mt-4"
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
@@ -497,6 +524,7 @@ export default function CreateAuctionPage() {
                             <Slider
                               {...field}
                               className="cursor-pointer pt-2"
+                              min={1}
                               max={100}
                               defaultValue={auctionDefaultValues.minFillPercent}
                               value={field.value}
@@ -509,7 +537,8 @@ export default function CreateAuctionPage() {
                       )}
                     />
 
-                    <FormField
+                    {/* Disabled for now*/}
+                    {/* <FormField
                       control={form.control}
                       name="minBidPercent"
                       render={({ field }) => (
@@ -529,6 +558,7 @@ export default function CreateAuctionPage() {
                             <Slider
                               {...field}
                               className="cursor-pointer pt-2"
+                              min={1}
                               max={100}
                               defaultValue={auctionDefaultValues.minBidPercent}
                               value={field.value}
@@ -539,20 +569,7 @@ export default function CreateAuctionPage() {
                           </>
                         </FormItemWrapper>
                       )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="minPrice"
-                      render={({ field }) => (
-                        <FormItemWrapper
-                          className="mt-6"
-                          label="Minimum Payout Token Price"
-                          tooltip="The minimum marginal price required for the auction lot to settle"
-                        >
-                          <Input placeholder="1" type="number" {...field} />
-                        </FormItemWrapper>
-                      )}
-                    />
+                    /> */}
                   </>
                 )}
                 {auctionType === AuctionType.FIXED_PRICE && (
@@ -606,7 +623,7 @@ export default function CreateAuctionPage() {
                   </>
                 )}
 
-                <h3 className="form-div">4 Schedule</h3>
+                <h3 className="form-div">5 Schedule</h3>
 
                 <FormField
                   control={form.control}
@@ -653,8 +670,10 @@ export default function CreateAuctionPage() {
                     name="hooks"
                     render={({ field }) => (
                       <FormItemWrapper
-                        label="Hooks"
-                        tooltip={"The address of the hook contract"}
+                        label="Callback"
+                        tooltip={
+                          "The address of the contract implementing callbacks"
+                        }
                       >
                         <Input
                           {...field}
@@ -706,15 +725,18 @@ export default function CreateAuctionPage() {
                     />
                   </div>
                   <FormField
-                    name="allowlist"
+                    control={form.control}
+                    name="vestingStart"
                     render={({ field }) => (
                       <FormItemWrapper
-                        label="Allowlist"
-                        tooltip={"The address of the allowlist contract"}
+                        label="Vesting Start"
+                        tooltip="The start date/time of the vesting"
                       >
-                        <Input
+                        <DatePicker
+                          time
+                          placeholderDate={addMinutes(new Date(), 5)}
+                          content={formatDate.fullLocal(new Date())}
                           {...field}
-                          placeholder={trimAddress("0x0000000")}
                         />
                       </FormItemWrapper>
                     )}
@@ -725,7 +747,7 @@ export default function CreateAuctionPage() {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <RequiresWalletConnection rootClassName="mt-4">
+            <RequiresChain chainId={chainId} className="mt-4 w-fit">
               <Button
                 onClick={(e) => {
                   e.preventDefault();
@@ -735,7 +757,7 @@ export default function CreateAuctionPage() {
               >
                 DEPLOY AUCTION
               </Button>
-            </RequiresWalletConnection>
+            </RequiresChain>
           </div>
           <DialogRoot
             open={isDialogOpen}
@@ -749,6 +771,7 @@ export default function CreateAuctionPage() {
               </DialogHeader>
               <div className="px-6">
                 <AuctionCreationStatus
+                  lotId={lotId}
                   chainId={chainId}
                   approveTx={approveTx}
                   approveReceipt={approveReceipt}
@@ -758,6 +781,7 @@ export default function CreateAuctionPage() {
                   tx={createAuctionTx}
                   txReceipt={createTxReceipt}
                   onSubmit={onSubmit}
+                  onSuccess={() => navigate(`/auction/${chainId}/${lotId}`)}
                 />
               </div>
             </DialogContent>
@@ -765,6 +789,14 @@ export default function CreateAuctionPage() {
           <DevTool control={form.control} />
         </form>
       </Form>
-    </div>
+    </>
   );
+}
+
+function getCreatedAuctionId(
+  value: UseWaitForTransactionReceiptReturnType["data"],
+) {
+  const lotIdHex = value?.logs[1].topics[1];
+  if (!lotIdHex) return null;
+  return fromHex(lotIdHex, "number");
 }
