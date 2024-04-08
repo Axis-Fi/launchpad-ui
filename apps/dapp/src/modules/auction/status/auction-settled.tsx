@@ -18,6 +18,8 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
     (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
   );
 
+  console.log({ auction });
+
   return (
     <div className="w-full">
       <div className="mb-8 flex justify-between">

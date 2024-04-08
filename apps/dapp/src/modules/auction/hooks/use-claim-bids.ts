@@ -14,7 +14,6 @@ export function useClaimBids(auction: Auction) {
     .filter((b) => b.bidder.toLowerCase() === userAddress?.toLowerCase())
     .map((b) => BigInt(b.bidId));
 
-  console.log({ bids });
   const claimCall = useSimulateContract({
     abi,
     address,
@@ -23,6 +22,7 @@ export function useClaimBids(auction: Auction) {
     args: [BigInt(auction.lotId), bids],
   });
 
+  console.log(claimCall.data, claimCall.error);
   const claimTx = useWriteContract();
   const claimReceipt = useWaitForTransactionReceipt({ hash: claimTx.data });
 

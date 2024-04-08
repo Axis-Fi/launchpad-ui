@@ -2,6 +2,7 @@ import ConnectButton from "../../components/connect-button";
 import { Button } from "@repo/ui";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./navbar";
+import { AppVersion } from "./app-version";
 
 export function AppHeader() {
   const navigate = useNavigate();
@@ -11,7 +12,8 @@ export function AppHeader() {
         <div className="flex cursor-pointer items-center gap-x-4 text-4xl">
           <div className="flex gap-x-2" onClick={() => navigate("/")}>
             <img width={80} height={26} src="/images/wordmark.svg" />
-            <img width={30} height={26} src="/images/logo.svg" />
+            {/*<img width={30} height={26} src="/images/logo.svg" />*/}
+            <AppVersion className="absolute top-14 ml-1 " />
           </div>
           <Navbar />
         </div>

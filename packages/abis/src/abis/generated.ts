@@ -592,6 +592,164 @@ export const auctionHouseAbi = [
     name: "transferOwnership",
     outputs: [],
   },
+  { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
+  { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
+  {
+    type: "error",
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint96", type: "uint96" },
+    ],
+    name: "Auction_InvalidBidId",
+  },
+  {
+    type: "error",
+    inputs: [
+      { name: "duration_", internalType: "uint48", type: "uint48" },
+      { name: "minimum_", internalType: "uint48", type: "uint48" },
+    ],
+    name: "Auction_InvalidDuration",
+  },
+  { type: "error", inputs: [], name: "Auction_InvalidKey" },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_InvalidLotId",
+  },
+  { type: "error", inputs: [], name: "Auction_InvalidParams" },
+  {
+    type: "error",
+    inputs: [
+      { name: "start_", internalType: "uint48", type: "uint48" },
+      { name: "minimum_", internalType: "uint48", type: "uint48" },
+    ],
+    name: "Auction_InvalidStart",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_MarketActive",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_MarketNotActive",
+  },
+  { type: "error", inputs: [], name: "Auction_NotAuthorized" },
+  { type: "error", inputs: [], name: "Auction_NotBidder" },
+  { type: "error", inputs: [], name: "Auction_NotEnoughCapacity" },
+  { type: "error", inputs: [], name: "Auction_NotImplemented" },
+  { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_WrongState",
+  },
+  {
+    type: "error",
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+    ],
+    name: "Bid_WrongState",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
+    name: "Module_InvalidParent",
+  },
+  { type: "error", inputs: [], name: "Module_OnlyInternal" },
+  {
+    type: "error",
+    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
+    name: "Module_OnlyParent",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "caller", internalType: "address", type: "address" }],
+    name: "NotPermitted",
+  },
+  { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
+  { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
+  { type: "error", inputs: [], name: "Auction_InsufficientPayout" },
+  {
+    type: "error",
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint96", type: "uint96" },
+    ],
+    name: "Auction_InvalidBidId",
+  },
+  {
+    type: "error",
+    inputs: [
+      { name: "duration_", internalType: "uint48", type: "uint48" },
+      { name: "minimum_", internalType: "uint48", type: "uint48" },
+    ],
+    name: "Auction_InvalidDuration",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_InvalidLotId",
+  },
+  { type: "error", inputs: [], name: "Auction_InvalidParams" },
+  {
+    type: "error",
+    inputs: [
+      { name: "start_", internalType: "uint48", type: "uint48" },
+      { name: "minimum_", internalType: "uint48", type: "uint48" },
+    ],
+    name: "Auction_InvalidStart",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_MarketActive",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_MarketNotActive",
+  },
+  { type: "error", inputs: [], name: "Auction_NotAuthorized" },
+  { type: "error", inputs: [], name: "Auction_NotBidder" },
+  { type: "error", inputs: [], name: "Auction_NotEnoughCapacity" },
+  { type: "error", inputs: [], name: "Auction_NotImplemented" },
+  { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
+  { type: "error", inputs: [], name: "Auction_PayoutGreaterThanMax" },
+  {
+    type: "error",
+    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
+    name: "Module_InvalidParent",
+  },
+  { type: "error", inputs: [], name: "Module_OnlyInternal" },
+  {
+    type: "error",
+    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
+    name: "Module_OnlyParent",
+  },
+  { type: "error", inputs: [], name: "BrokenInvariant" },
+  { type: "error", inputs: [], name: "Derivative_NotImplemented" },
+  { type: "error", inputs: [], name: "InsufficientBalance" },
+  { type: "error", inputs: [], name: "InvalidParams" },
+  {
+    type: "error",
+    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
+    name: "Module_InvalidParent",
+  },
+  { type: "error", inputs: [], name: "Module_OnlyInternal" },
+  {
+    type: "error",
+    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
+    name: "Module_OnlyParent",
+  },
+  { type: "error", inputs: [], name: "NotPermitted" },
+  {
+    type: "error",
+    inputs: [{ name: "token_", internalType: "address", type: "address" }],
+    name: "UnsupportedToken",
+  },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

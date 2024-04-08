@@ -1,11 +1,14 @@
 import { Button, Link } from "@repo/ui";
 import { SocialRow } from "../../components/social-row";
 import { discord, twitter, contact, website } from "config/metadata";
+import { AppVersion } from "./app-version";
 
 export function AppFooter() {
   return (
     <div className="py-6">
-      <div className="bg-secondary flex justify-end rounded-full">
+      <div className="bg-secondary flex items-center justify-between rounded-full">
+        <AppVersion className="ml-4" />
+
         <div className="flex items-center gap-x-3 px-4">
           <SocialRow discord={discord} twitter={twitter} website={website} />
           <Link href="https://docs.axis.finance/">
