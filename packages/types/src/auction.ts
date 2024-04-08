@@ -14,6 +14,7 @@ export type BaseAuction = {
   auctionData?: EMPAuctionData | FixedPriceAuctionData;
   auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
+  linearVesting?: LinearVestingData;
 };
 
 export type Auction = BaseAuction &
@@ -89,6 +90,16 @@ export type AuctionFormattedInfo = {
 //TODO: add remaining fields
 type EMPFormattedInfo = {
   marginalPrice: string;
+};
+
+export type LinearVestingData = {
+  start: number;
+  expiry: number;
+  startDate: Date;
+  expiryDate: Date;
+  days: number;
+  daysFromNow: number;
+  isVestingExpired: boolean;
 };
 
 export type PropsWithAuction = {

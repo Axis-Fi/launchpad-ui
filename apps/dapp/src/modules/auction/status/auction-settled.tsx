@@ -8,6 +8,7 @@ import { useClaimProceeds } from "../hooks/use-claim-proceeds";
 import { useAccount } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
+import { AuctionInfoLabel } from "../auction-info-labels";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const { address } = useAccount();
@@ -17,8 +18,6 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   const userHasBids = auction.bids.some(
     (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
   );
-
-  console.log({ auction });
 
   return (
     <div className="w-full">
@@ -74,6 +73,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           />
 
           <InfoLabel label="Ended" value={auction.formatted?.endFormatted} />
+          <AuctionInfoLabel auction={auction} id="vestingDuration" />
         </AuctionInfoCard>
         <div className="w-1/2">
           <ProjectInfoCard auction={auction} />

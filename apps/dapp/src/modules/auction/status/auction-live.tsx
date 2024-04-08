@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React from "react";
+import { AuctionInfoLabel } from "../auction-info-labels";
 
 const schema = z.object({
   baseTokenAmount: z.coerce.number(),
@@ -118,6 +119,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           />
           <InfoLabel label="Deadline" value={auction.formatted?.endFormatted} />
           <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
+          {auction.linearVesting && (
+            <AuctionInfoLabel auction={auction} id="vestingDuration" />
+          )}
           {auction.curatorApproved && (
             <InfoLabel label="Curator" value={trimAddress(auction.curator)} />
           )}

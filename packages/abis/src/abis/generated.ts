@@ -1802,9 +1802,7 @@ export const linearVestingAbi = [
   {
     stateMutability: "nonpayable",
     type: "constructor",
-    inputs: [
-      { name: "auctionHouse_", internalType: "address", type: "address" },
-    ],
+    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
   },
   { type: "error", inputs: [], name: "BrokenInvariant" },
   { type: "error", inputs: [], name: "Derivative_NotImplemented" },

@@ -31,6 +31,11 @@ const handlers = {
     handler: (auction: Auction) =>
       `${auction.formatted?.sold} ${auction.baseToken.symbol}`,
   },
+
+  vestingDuration: {
+    label: "Vesting",
+    handler: (auction: Auction) => `${auction.linearVesting?.days} days`,
+  },
 };
 
 type AuctionInfoLabelProps = Partial<PropsWithAuction> & {

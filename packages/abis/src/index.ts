@@ -1,3 +1,4 @@
 import abis from "./abis";
+import rawAbis from "./abis/sources";
 
-export { abis };
+export { abis, rawAbis };

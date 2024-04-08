@@ -1,5 +1,5 @@
 import { Auction } from "@repo/types";
-import { getContractByChain } from "utils/contracts";
+import { getAuctionHouse } from "utils/contracts";
 import {
   useAccount,
   useSimulateContract,
@@ -9,7 +9,7 @@ import {
 
 export function useClaimBids(auction: Auction) {
   const { address: userAddress } = useAccount();
-  const { abi, address } = getContractByChain(auction.chainId);
+  const { abi, address } = getAuctionHouse(auction.chainId);
   const bids = auction.bids
     .filter((b) => b.bidder.toLowerCase() === userAddress?.toLowerCase())
     .map((b) => BigInt(b.bidId));
@@ -22,7 +22,6 @@ export function useClaimBids(auction: Auction) {
     args: [BigInt(auction.lotId), bids],
   });
 
-  console.log(claimCall.data, claimCall.error);
   const claimTx = useWriteContract();
   const claimReceipt = useWaitForTransactionReceipt({ hash: claimTx.data });
 
@@ -32,5 +31,15 @@ export function useClaimBids(auction: Auction) {
     }
   };
 
-  return { handleClaim, claimCall, claimReceipt, claimTx };
+  const handleClaimSelected = (bids: bigint[]) => {
+    claimTx.writeContract({
+      abi,
+      address,
+      chainId: auction.chainId,
+      functionName: "claimBids",
+      args: [BigInt(auction.lotId), bids],
+    });
+  };
+
+  return { handleClaim, handleClaimSelected, claimCall, claimReceipt, claimTx };
 }

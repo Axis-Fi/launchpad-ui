@@ -1,4 +1,14 @@
-import { addMinutes, addDays, addHours, formatRFC7231, format } from "date-fns";
+import {
+  addMinutes,
+  addDays,
+  addHours,
+  formatRFC7231,
+  format,
+  formatDistance,
+  intervalToDuration,
+  interval,
+  isAfter,
+} from "date-fns";
 
 // Date formatting operations
 export const formatDate = {
@@ -19,8 +29,14 @@ export const dateMath = {
 export const getTimestamp = (date: Date) => Math.floor(date.getTime() / 1000);
 export const getDuration = (days: number) => days * 24 * 60 * 60;
 
+type ValidDateTypes = Date | number | string;
+
 // Date utilities
 export const dateHelpers = {
   getTimestamp,
   getDuration,
+  formatDistance,
+  isAfter,
+  intervalToDuration: (start: ValidDateTypes, end: ValidDateTypes) =>
+    intervalToDuration(interval(start, end)),
 };

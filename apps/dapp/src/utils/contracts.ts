@@ -1,5 +1,6 @@
 import { axisContracts } from "@repo/deployments";
 import { Auction, AxisContractAddresses } from "@repo/types";
+import { zeroAddress } from "viem";
 
 export function getContractsByType(auction: Auction) {
   const auctionType =
@@ -15,13 +16,15 @@ export function getContractsByType(auction: Auction) {
   return { abi, address };
 }
 
-export function getContractByChain(chainId: number) {
+export function getAuctionHouse(chainId?: number) {
   const abi = axisContracts.abis.auctionHouse;
-  const address = axisContracts.addresses[chainId].auctionHouse;
+  const address = chainId
+    ? axisContracts.addresses[chainId].auctionHouse
+    : zeroAddress;
 
-  if (!address || !abi) {
-    throw new Error(`Can't find abi/address for ${chainId}`);
-  }
+  // if (!address || !abi) {
+  //   throw new Error(`Can't find abi/address for ${chainId}`);
+  // }
 
   return { abi, address };
 }

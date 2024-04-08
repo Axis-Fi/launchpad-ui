@@ -20,6 +20,7 @@ import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
 import { getAuctionType } from "../utils/get-auction-type";
+import { useDerivativeData } from "./use-derivative-data";
 
 export type AuctionResult = {
   result?: Auction;
@@ -61,6 +62,8 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     type: auctionType,
   });
 
+  const { data: linearVesting } = useDerivativeData(lotId, chainId);
+
   if (!rawAuction || !chainId || data?.auctionLots.length === 0) {
     return {
       refetch,
@@ -91,6 +94,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
       ...tokens,
       auctionData,
       auctionType,
+      linearVesting,
       formatted: formatAuction(auction, auctionType, auctionData),
       bids: updateBids(auction),
     },
