@@ -34,7 +34,9 @@ export function FaucetPage() {
     <PageContainer title="Faucet">
       <div className="flex justify-start gap-x-1">
         <Select
+          //@ts-expect-error TODO: make generic
           options={options}
+          //@ts-expect-error TODO: make generic
           onChange={setToken}
           triggerClassName="max-w-40"
         />

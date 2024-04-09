@@ -10,6 +10,7 @@ import CreateAuctionPage from "pages/create-auction-page";
 import AuctionListPage from "pages/auction-list-page";
 import { CuratorPage } from "pages/curator-page";
 import { FaucetPage } from "pages/faucet-page";
+import { DeployTokenPage } from "pages/deploy-token-page";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
@@ -24,6 +25,7 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "/create/auction", element: <CreateAuctionPage /> },
       { path: "/curator", element: <CuratorPage /> },
       { path: "/faucet", element: <FaucetPage /> },
+      { path: "/deploy", element: <DeployTokenPage /> },
     ],
   },
 ]);
