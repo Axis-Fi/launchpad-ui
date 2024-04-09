@@ -23,6 +23,7 @@ const config: AxisDeploymentConfig = {
       symbol: "TT1",
       address: "0x16D5Aab9d35f8B3ac7BD086eEDcCe5343682D5F0",
       decimals: 18,
+      mintable: true,
     },
 
     {
@@ -32,6 +33,7 @@ const config: AxisDeploymentConfig = {
       logoURI:
         "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/DAI.png",
       decimals: 18,
+      mintable: true,
     },
   ],
 };

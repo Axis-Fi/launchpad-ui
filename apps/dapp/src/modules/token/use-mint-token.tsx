@@ -1,0 +1,50 @@
+import { Token } from "@repo/types";
+import { parseUnits } from "viem";
+import {
+  useAccount,
+  useSimulateContract,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
+
+const mintABI = [
+  {
+    inputs: [
+      { name: "to", type: "address" },
+      { name: "value", type: "uint256" },
+    ],
+    name: "mint",
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+];
+
+export function useMintToken(token: Token, amount: string) {
+  const { address: userAddress } = useAccount();
+  const parsedAmount = parseUnits(amount, token.decimals);
+
+  const mintCall = useSimulateContract({
+    abi: mintABI,
+    functionName: "mint",
+    address: token.address,
+    chainId: token.chainId,
+    args: [userAddress, parsedAmount],
+  });
+
+  const mintTx = useWriteContract();
+  const mintReceipt = useWaitForTransactionReceipt({ hash: mintTx.data });
+
+  const handleMint = () => {
+    if (mintCall.isSuccess) {
+      mintTx.writeContract(mintCall.data.request!);
+    }
+  };
+
+  return {
+    handleMint,
+    mintCall,
+    mintTx,
+    mintReceipt,
+  };
+}

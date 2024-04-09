@@ -11,6 +11,7 @@ export type Token = TokenBase & {
   decimals: number;
   name: string;
   logoURI?: string;
+  mintable?: boolean;
 };
 
 //Tokenlist Standard
