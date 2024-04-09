@@ -4,13 +4,12 @@ import {
   useWaitForTransactionReceipt,
   useWalletClient,
 } from "wagmi";
-import bytecode from "./bytecode";
-import abi from "./custom-erc20.json";
-import { Address, WalletClient } from "viem";
+import { Address, Hex, WalletClient } from "viem";
 import { useMutation } from "@tanstack/react-query";
 import { Chain } from "viem";
 import { activeChains } from "config/chains";
 import type { TokenConfig } from "pages/deploy-token-page";
+import { testnetERC20 as ERC20 } from "@repo/abis";
 
 const deploy = (
   walletClient: WalletClient,
@@ -20,9 +19,9 @@ const deploy = (
 ) => {
   return walletClient.deployContract({
     account,
-    abi,
-    bytecode,
-    args: [account, values.name, values.symbol],
+    abi: ERC20.abi,
+    bytecode: ERC20.bytecode.object as Hex,
+    args: [values.name, values.symbol, 18],
     chain,
   });
 };

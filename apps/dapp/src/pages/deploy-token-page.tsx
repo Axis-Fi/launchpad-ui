@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const schema = z.object({
   name: z.string(),
   symbol: z.string(),
-  supply: z.coerce.number(),
 });
 
 export type TokenConfig = z.infer<typeof schema>;
@@ -43,15 +42,7 @@ export function DeployTokenPage() {
                   </FormItemWrapper>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="supply"
-                render={({ field }) => (
-                  <FormItemWrapper label="Supply">
-                    <Input {...field} />
-                  </FormItemWrapper>
-                )}
-              />
+
               <Button type="submit" className="mt-4 w-1/2">
                 DEPLOY
               </Button>

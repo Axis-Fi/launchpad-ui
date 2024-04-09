@@ -14,7 +14,7 @@ const mintABI = [
       { name: "value", type: "uint256" },
     ],
     name: "mint",
-    outputs: [{ name: "", type: "bool" }],
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -22,13 +22,13 @@ const mintABI = [
 
 export function useMintToken(token: Token, amount: string) {
   const { address: userAddress } = useAccount();
-  const parsedAmount = parseUnits(amount, token.decimals);
+  const parsedAmount = parseUnits(amount, token?.decimals);
 
   const mintCall = useSimulateContract({
     abi: mintABI,
     functionName: "mint",
-    address: token.address,
-    chainId: token.chainId,
+    address: token?.address,
+    chainId: token?.chainId,
     args: [userAddress, parsedAmount],
   });
 

@@ -10,6 +10,7 @@ import { useChainId } from "wagmi";
 export function FaucetPage() {
   const tokenlists = useTokenLists();
   const chainId = useChainId();
+  const amount = "10000";
 
   const tokens = React.useMemo(
     () =>
@@ -19,6 +20,7 @@ export function FaucetPage() {
     [chainId],
   );
 
+  console.log(tokens);
   const options = React.useMemo(() => {
     return tokens.map((t) => ({
       label: t.symbol,
@@ -28,7 +30,7 @@ export function FaucetPage() {
   }, [tokens]);
 
   const [token, setToken] = React.useState(tokens[0]);
-  const mint = useMintToken(token, "10000");
+  const mint = useMintToken(token, amount);
 
   return (
     <PageContainer title="Faucet">
@@ -45,23 +47,31 @@ export function FaucetPage() {
           <Button onClick={mint.handleMint}>Mint</Button>
         </div>
       </div>
-      {mint.mintReceipt.isLoading && (
-        <div className="mt-4 ">
-          {mint.mintTx.data && (
-            <div>
-              Hash:{" "}
-              <BlockExplorerLink chainId={chainId} hash={mint.mintTx.data} />
-            </div>
-          )}
+      <div className="mt-4">
+        {mint.mintReceipt.isLoading && (
           <div className="flex items-center">
             Waiting confirmation{" "}
             <div className="size-8">
               <LoadingIndicator className="size-8 fill-white" />
             </div>
           </div>
-        </div>
-      )}
-      {mint.mintReceipt.isSuccess && <p>Success! </p>}
+        )}
+        {mint.mintTx.isSuccess && (
+          <div>
+            Hash:{" "}
+            <BlockExplorerLink chainId={chainId} hash={mint.mintTx.data} />
+          </div>
+        )}
+        {mint.mintReceipt.isSuccess && (
+          <>
+            <p>
+              Minted {amount} {token.symbol}{" "}
+            </p>
+            Token Address{" "}
+            <BlockExplorerLink trim chainId={chainId} address={token.address} />
+          </>
+        )}
+      </div>
     </PageContainer>
   );
 }
