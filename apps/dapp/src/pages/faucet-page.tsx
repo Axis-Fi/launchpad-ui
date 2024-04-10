@@ -1,23 +1,12 @@
 import React from "react";
-import {
-  Button,
-  Input,
-  LabelWrapper,
-  Select,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/ui";
+import { Button, Input, LabelWrapper, Select } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { PageContainer } from "modules/app/page-container";
 import { useMintToken } from "modules/token/use-mint-token";
 import { useTokenLists } from "state/tokenlist";
 import { useChainId } from "wagmi";
-import useERC20 from "loaders/use-erc20";
-import { Address, isAddress } from "viem";
-import { Token } from "@repo/types";
+import { trimCurrency } from "utils/currency";
 
 export function FaucetPage() {
   const tokenlists = useTokenLists();
@@ -39,59 +28,29 @@ export function FaucetPage() {
     }));
   }, [tokens]);
 
-  const [address, setAddress] = React.useState<Address>();
   const [amount, setAmount] = React.useState<string>("10000");
   const [token, setToken] = React.useState(tokens[0]);
 
-  const erc20 = useERC20({
-    address: address as Address,
-    chainId,
-  });
-
-  const _token = erc20.response.isSuccess ? (erc20.token as Token) : token;
-  const mint = useMintToken(_token, amount);
-  const disabled = !_token?.address;
+  const mint = useMintToken(token, amount);
+  const disabled = !mint.mintCall.isSuccess;
 
   return (
     <PageContainer title="Faucet">
       <div className="mx-auto flex max-w-sm flex-col justify-center gap-2">
-        <Tabs defaultValue="address" className="w-full">
-          <TabsList className="w-full *:w-full">
-            <TabsTrigger value="address">By Address</TabsTrigger>
-            <TabsTrigger value="token">By Token</TabsTrigger>
-          </TabsList>
-          <TabsContent value="token">
-            <LabelWrapper content="Token">
-              {options.length ? (
-                <Select
-                  //@ts-expect-error TODO: make generic
-                  options={options}
-                  //@ts-expect-error TODO: make generic
-                  onChange={setToken}
-                />
-              ) : (
-                <div className="font-aeonpro text-center text-xs">
-                  No tokens available in this chain. <br />
-                  Try searching by address.
-                </div>
-              )}
-            </LabelWrapper>
-          </TabsContent>
-          <TabsContent value="address">
-            <LabelWrapper content="Token Address">
-              <Input
-                onChange={(e) =>
-                  isAddress(e.target.value) && setAddress(e.target.value)
-                }
-              />
-              {erc20.response.isFetched && (
-                <p className="text-center">
-                  Token found: {erc20.token.name} - {erc20.token.symbol}
-                </p>
-              )}
-            </LabelWrapper>
-          </TabsContent>
-        </Tabs>
+        <LabelWrapper content="Token">
+          {options.length ? (
+            <Select
+              //@ts-expect-error TODO: make generic
+              options={options}
+              //@ts-expect-error TODO: make generic
+              onChange={setToken}
+            />
+          ) : (
+            <div className="font-aeonpro text-center text-xs">
+              No tokens available in this chain. <br />
+            </div>
+          )}
+        </LabelWrapper>
 
         <LabelWrapper content="Amount">
           <Input value={amount} onChange={(e) => setAmount(e.target.value)} />
@@ -100,7 +59,7 @@ export function FaucetPage() {
           Mint
         </Button>
       </div>
-      <div className="mt-4">
+      <div className="mx-auto mt-4 text-center">
         {mint.mintReceipt.isLoading && (
           <div className="flex items-center">
             Waiting confirmation{" "}
@@ -111,17 +70,21 @@ export function FaucetPage() {
         )}
         {mint.mintTx.isSuccess && (
           <div>
-            Hash:{" "}
-            <BlockExplorerLink chainId={chainId} hash={mint.mintTx.data} />
+            View transaction on&nbsp;
+            <BlockExplorerLink
+              showName
+              chainId={chainId}
+              hash={mint.mintTx.data}
+            />
           </div>
         )}
         {mint.mintReceipt.isSuccess && (
           <>
             <p>
-              Minted {amount} {token.symbol}{" "}
+              Minted {trimCurrency(amount)} {token.symbol}{" "}
             </p>
             Token Address{" "}
-            <BlockExplorerLink trim chainId={chainId} address={token.address} />
+            <BlockExplorerLink chainId={chainId} address={token.address} />
           </>
         )}
       </div>

@@ -129,7 +129,7 @@ export function DeployTokenPage() {
           <h4>Mint Status</h4>
           {mint.mintTx.isSuccess && (
             <>
-              View transaction on &nbsp;
+              View transaction on&nbsp;
               <BlockExplorerLink
                 showName
                 hash={mint.mintTx.data}
