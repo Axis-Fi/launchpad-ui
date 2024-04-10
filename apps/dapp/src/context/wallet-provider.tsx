@@ -32,8 +32,8 @@ export default function WalletProvider(props: PropsWithChildren) {
         learnMoreUrl: "https://docs.axis.finance",
         disclaimer: () => (
           <p>
-            This application is in beta, Axis is not resposible for the loss of
-            your funds. Thread carefully.
+            This application is in alpha stage, so there&apos;s obviously bugs
+            and broken stuff.
           </p>
         ),
       }}

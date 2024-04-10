@@ -7,6 +7,7 @@ import {
   useWriteContract,
 } from "wagmi";
 
+//const mintABI = testnetERC20.abi.find((e) => e.name === "mint")!;
 const mintABI = [
   {
     inputs: [
@@ -23,11 +24,12 @@ const mintABI = [
 export function useMintToken(token: Token, amount: string) {
   const { address: userAddress } = useAccount();
   const parsedAmount = parseUnits(amount, token?.decimals);
+  console.log({ token, amount });
 
   const mintCall = useSimulateContract({
     abi: mintABI,
     functionName: "mint",
-    address: token?.address,
+    address: token.address,
     chainId: token?.chainId,
     args: [userAddress, parsedAmount],
   });

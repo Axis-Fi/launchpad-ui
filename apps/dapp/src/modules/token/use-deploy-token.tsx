@@ -41,6 +41,7 @@ export function useDeployToken() {
     hash: mutation.data,
   });
 
+  console.log({ receipt });
   const handleDeploy = (values: TokenConfig) => {
     if (walletClient && address && chain) {
       mutation.mutate(values);
@@ -49,6 +50,7 @@ export function useDeployToken() {
 
   return {
     handleDeploy,
+    address: receipt.data?.contractAddress as Address,
     receipt,
     mutation,
   };

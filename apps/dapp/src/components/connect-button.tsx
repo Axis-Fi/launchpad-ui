@@ -52,9 +52,7 @@ export default function ConnectButton({ className }: { className?: string }) {
                   <Button variant="ghost" size="icon" onClick={openChainModal}>
                     <div
                       className="h-7 w-7 overflow-hidden rounded-full"
-                      style={{
-                        background: chain.iconBackground,
-                      }}
+                      style={{ background: chain.iconBackground }}
                     >
                       <Avatar
                         className="hover:text-primary h-7 w-7"
