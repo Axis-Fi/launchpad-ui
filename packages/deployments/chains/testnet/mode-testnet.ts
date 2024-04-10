@@ -17,16 +17,23 @@ const config: AxisDeploymentConfig = {
   rpcURL: "https://sepolia.mode.network",
   tokenList: [
     {
-      name: "Test Token 1",
-      symbol: "TT1",
-      address: "0xBFfBef6f8a0Ef38121716860E2Ff824c018a467d",
+      name: "USDC",
+      symbol: "USDC",
+      address: "0xfc3156a0a9295dcd83b8f405bae7a4b73f4e2306",
       decimals: 18,
+      mintable: true,
+      logoURI:
+        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/USDC.png",
     },
+
     {
-      name: "Test Token 2",
-      symbol: "TT2",
-      address: "0x16D5Aab9d35f8B3ac7BD086eEDcCe5343682D5F0",
+      address: "0xfdf5fe07a9c888f383aea34f152dee04baee7a2e",
+      name: "Wrapped Ether",
+      symbol: "WETH",
+      logoURI:
+        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/WETH.png",
       decimals: 18,
+      mintable: true,
     },
   ],
 };

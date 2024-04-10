@@ -128,7 +128,6 @@ const FormItemWrapper = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement> &
     LabelProps & { label?: string; errorClassName?: string }
 >(({ errorClassName, ...props }, ref) => {
-  console.log({ props });
   return (
     <FormItem {...props} ref={ref}>
       <FormLabel tooltip={props.tooltip}>{props.label}</FormLabel>

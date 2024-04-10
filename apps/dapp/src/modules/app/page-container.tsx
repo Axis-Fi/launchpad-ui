@@ -1,5 +1,5 @@
 type PageContainerProps = {
-  title?: string;
+  title?: React.ReactNode;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export function PageContainer(props: PageContainerProps) {

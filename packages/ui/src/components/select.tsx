@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "./primitives";
 import { Avatar } from "./primitives/avatar";
+import { cn } from "..";
 
 export type SelectData = {
   value: string;
@@ -22,6 +23,7 @@ export type SelectProps = {
   placeholder?: string;
   onChange?: (value: string) => void;
   defaultValue?: string;
+  triggerClassName?: string;
 };
 
 /** Dropdown selector */
@@ -39,7 +41,10 @@ export function Select(props: SelectProps) {
     >
       <SelectTrigger
         id={props.id}
-        className="bg-muted border-muted w-full max-w-sm rounded-full"
+        className={cn(
+          "bg-muted border-muted w-full max-w-sm rounded-full",
+          props.triggerClassName,
+        )}
       >
         <div className="flex items-center justify-start gap-x-1">
           {selectedImage && <Avatar src={selectedImage} />}

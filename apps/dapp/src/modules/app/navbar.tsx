@@ -12,13 +12,20 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 const curator = { title: "Curator", href: "/curator" };
+const testnetLinks = [
+  { title: "Get Tokens", href: "/faucet" },
+  { title: "Deploy", href: "/deploy" },
+];
 
 export default function Navbar() {
   const isRoot = window.location.hash === "#/";
   const { isCurator, pendingCurationsCount } = useCurator();
 
   //Only show curator link if connected address is a curator for any auction
-  const links = React.useMemo(() => (isCurator ? [curator] : []), [isCurator]);
+  const links = React.useMemo(
+    () => (isCurator ? [curator, ...testnetLinks] : testnetLinks),
+    [isCurator],
+  );
 
   return (
     <NavigationMenu>
