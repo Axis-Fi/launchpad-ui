@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Input, LabelWrapper, Select } from "@repo/ui";
+import { Button, Input, LabelWrapper, Link, Select } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { PageContainer } from "modules/app/page-container";
@@ -7,10 +7,20 @@ import { useMintToken } from "modules/token/use-mint-token";
 import { useTokenLists } from "state/tokenlist";
 import { useChainId } from "wagmi";
 import { trimCurrency } from "utils/currency";
+import { activeChains } from "config/chains";
+import { arbitrumSepolia, blastSepolia, modeTestnet } from "viem/chains";
+import { ArrowUpRightIcon } from "lucide-react";
+
+const ethFaucets: Record<number, string> = {
+  [blastSepolia.id]: "https://faucet.quicknode.com/blast/sepolia",
+  [modeTestnet.id]: "https://docs.mode.network/tools/testnet-faucets",
+  [arbitrumSepolia.id]: "https://www.alchemy.com/faucets/arbitrum-sepolia",
+};
 
 export function FaucetPage() {
   const tokenlists = useTokenLists();
   const chainId = useChainId();
+  const chain = activeChains.find((c) => c.id === chainId);
 
   const tokens = React.useMemo(
     () =>
@@ -87,6 +97,15 @@ export function FaucetPage() {
             <BlockExplorerLink chainId={chainId} address={token.address} />
           </>
         )}
+      </div>
+      <div className="text-center text-xs">
+        <p>Need {chain?.name} ETH? </p>
+        <Link
+          href={ethFaucets[chain!.id]}
+          className="flex items-center justify-center"
+        >
+          Get some here <ArrowUpRightIcon className="inline size-4" />
+        </Link>
       </div>
     </PageContainer>
   );

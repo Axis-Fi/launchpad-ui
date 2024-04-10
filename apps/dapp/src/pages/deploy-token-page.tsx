@@ -106,11 +106,13 @@ export function DeployTokenPage() {
           {deploy.mutation.isPending && "Waiting signature..."}
           {deploy.receipt.isLoading && (
             <div>
-              <BlockExplorerLink
-                icon
-                address={deployedAddress}
-                chainId={chainId}
-              />
+              <div>
+                View transaction on&nbsp;
+                <BlockExplorerLink
+                  address={deployedAddress}
+                  chainId={chainId}
+                />
+              </div>
               <p>Waiting confirmation...</p>
             </div>
           )}

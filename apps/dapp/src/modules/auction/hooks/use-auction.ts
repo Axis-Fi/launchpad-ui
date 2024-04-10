@@ -63,6 +63,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   });
 
   const { data: linearVesting } = useDerivativeData(lotId, chainId);
+  console.log({ rawAuction });
 
   if (!rawAuction || !chainId || data?.auctionLots.length === 0) {
     return {
