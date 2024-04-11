@@ -1,0 +1,11 @@
+export const discord = "https://";
+export const twitter = "https://twitter.com/axis_fi";
+export const website = "https://axis.finance";
+export const contact = "hello@axis.finance";
+
+export default {
+  discord,
+  twitter,
+  website,
+  contact,
+};

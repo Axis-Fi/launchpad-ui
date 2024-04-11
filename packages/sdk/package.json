@@ -1,0 +1,18 @@
+{
+  "name": "@repo/sdk",
+  "type": "module",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@repo/abis": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
+    "abitype": "^1.0.2",
+    "valibot": "^0.30.0",
+    "viem": "^2.8.16"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

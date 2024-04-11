@@ -1,0 +1,13 @@
+{
+  "name": "@repo/cloak",
+  "type": "module",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "dependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
