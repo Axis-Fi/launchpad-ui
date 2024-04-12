@@ -6,15 +6,11 @@
 4. Add docs folder, autogenerate docs from tsdoc comments
 5. Create README.md
 6. Test using various wallet types (MM/Frame/WalletConnect/Safe etc.) (see what we can automate)
-7. Add an examples folder
+7. Add an examples folder / add examples to tsdoc comments
 8. Move sdk out of packages and into its own repo so we can release it indepedently of the rest of the frontend
 9. Look into what a bare minimal wagmi and ethers adapter would look like for dispatching the rpc call using the SDK config response via a wagmi or ethers instance (determine whether it's worth adding)
 10. Check for any TODO comments left in the codebase
-
-# Questions for team
-
-1. Do we really need to enable consumers to get contract config from both primed and unprimed parameters? Does having both options make the API more confusing, or is it worth while to enable consumers to prime their parameters how they like, and maintain a pure function vs side-effecty function? IMO we should stop exposing primed methods and assume they'll always supply unprimed parameters (removes getXConfig methods from top level API, only expose side-effecty methods)
-2. Is there anything you'd like to add to the TODO list?
+11. Licensing - figure out which license to give SDK, other frontend packages and main dapp
 
 # Example consumer usage (React, wagmi)
 

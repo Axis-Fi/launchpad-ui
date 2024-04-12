@@ -3,7 +3,7 @@ import {
   createCloakClient,
   Configuration,
 } from "@repo/cloak";
-import { type OriginConfig } from "./types";
+import { SdkError, type OriginConfig } from "./types";
 import type { BidParams, BidResponse } from "./bid";
 import * as bid from "./bid";
 import { success, fail } from "./utils";
@@ -48,7 +48,7 @@ class OriginSdk {
     try {
       return success(await bid.bid(params, this.cloakClient));
     } catch (error: unknown) {
-      return fail(error);
+      return error instanceof SdkError ? fail(error) : Promise.reject(error);
     }
   }
 }
