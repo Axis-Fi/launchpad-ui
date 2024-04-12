@@ -1,6 +1,6 @@
-import cloakServers from "@repo/config/cloak-servers";
+import { cloakServers } from "@repo/env";
 import { ConfigsApi, Configuration, KeysApi } from ".";
-import { environment } from "@repo/config/environment";
+import { environment } from "@repo/env";
 
 const { url: serverUrl } =
   cloakServers[environment.current] ?? cloakServers.testing;

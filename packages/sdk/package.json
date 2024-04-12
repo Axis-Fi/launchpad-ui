@@ -5,6 +5,7 @@
   "main": "./src/index.ts",
   "dependencies": {
     "@repo/abis": "workspace:*",
+    "@repo/cloak": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/eslint-config": "workspace:*",

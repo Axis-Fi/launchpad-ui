@@ -1,7 +1,8 @@
 {
-  "name": "@repo/config",
+  "name": "@repo/env",
   "version": "0.0.0",
   "type": "module",
+  "main": "src/index.ts",
   "dependencies": {
     "@repo/abis": "workspace:*",
     "@repo/types": "workspace:*",
