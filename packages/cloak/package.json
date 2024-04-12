@@ -8,6 +8,9 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/env": "workspace:*"
   },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.9.0"
+  },
   "publishConfig": {
     "access": "public"
   },

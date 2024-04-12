@@ -8,7 +8,8 @@
     "@repo/types": "workspace:*",
     "@repo/deployments": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/eslint-config": "workspace:*"
+    "@repo/eslint-config": "workspace:*",
+    "wagmi": "2.5.2"
   },
   "publishConfig": {
     "access": "public"
