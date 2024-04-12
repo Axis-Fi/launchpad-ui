@@ -21,4 +21,5 @@ export class CloakClient {
 
 export const createCloakClient = (config?: Configuration) =>
   new CloakClient(config);
+
 export const cloakClient = new CloakClient();

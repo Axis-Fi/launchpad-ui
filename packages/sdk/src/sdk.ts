@@ -1,4 +1,8 @@
-import { type CloakClient, createCloakClient } from "@repo/cloak";
+import {
+  type CloakClient,
+  createCloakClient,
+  Configuration,
+} from "@repo/cloak";
 import { type OriginConfig } from "./types";
 import type { BidParams, BidResponse, GetBidConfigParams } from "./bid";
 import * as bid from "./bid";
@@ -26,7 +30,9 @@ class OriginSdk {
   cloakClient: CloakClient;
 
   constructor(config: OriginConfig) {
-    this.cloakClient = createCloakClient(config.cloak);
+    this.cloakClient = createCloakClient(
+      new Configuration({ basePath: config.cloak.url }),
+    );
   }
 
   /**
