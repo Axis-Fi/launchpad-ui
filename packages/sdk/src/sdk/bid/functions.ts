@@ -49,16 +49,18 @@ const bid = async (
   }
 
   const { lotId, amountIn, referrerAddress, chainId } = params;
+
+  // @ts-expect-error TODO: implement the getAuction function
   const { quoteToken, baseToken } = await utils.getAuction({ lotId, chainId });
   const auctionHouseAddress = utils.getContractAddresses(chainId)?.auctionHouse;
 
-  // TODO: the next async call can fail, review error handling
   const encryptBidParams = {
     ...params,
     quoteToken,
     baseToken,
     auctionHouseAddress,
   };
+
   const encryptedBid = await utils.encryptBid(encryptBidParams, cloakClient);
 
   if (

@@ -45,7 +45,7 @@ type EncryptBidParams = BidParams & {
 const encryptBid = async (
   params: EncryptBidParams,
   cloakClient: CloakClient,
-): EncryptLotIdPost200Response => {
+): Promise<EncryptLotIdPost200Response> => {
   const {
     lotId,
     amountIn,
