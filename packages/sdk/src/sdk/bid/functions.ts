@@ -2,7 +2,7 @@ import { toHex, parseUnits } from "viem";
 import * as v from "valibot";
 import { abis } from "@repo/abis";
 import type { CloakClient } from "@repo/cloak";
-import { SdkError } from "../types";
+import { SdkError } from "../../types";
 import { BidParamsSchema } from "./schema";
 import type { BidConfig, BidParams, GetBidConfigParams } from "./types";
 import * as utils from "./utils";

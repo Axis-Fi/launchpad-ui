@@ -35,7 +35,7 @@ type ContractConfig<
   args: FunctionParams<TAbi, TFunctionName>;
 };
 
-type SdkResponse<
+type SdkResult<
   TAbi extends Abi,
   TFunctionName extends ExtractAbiFunctionNames<TAbi>,
 > = {
@@ -52,6 +52,6 @@ type OriginConfig = {
   // TODO: ipfs, subgraph, etc.
 };
 
-export type { OriginConfig, SdkResponse, ContractConfig };
+export type { OriginConfig, SdkResult, ContractConfig };
 
 export { SdkError };

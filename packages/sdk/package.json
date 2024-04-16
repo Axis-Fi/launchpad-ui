@@ -3,6 +3,10 @@
   "type": "module",
   "version": "0.0.0",
   "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./react": "./src/react/index.ts"
+  },
   "dependencies": {
     "@repo/abis": "workspace:*",
     "@repo/cloak": "workspace:*",

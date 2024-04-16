@@ -3,10 +3,10 @@ import {
   createCloakClient,
   Configuration,
 } from "@repo/cloak";
-import { SdkError, type OriginConfig } from "./types";
+import { type OriginConfig } from "../types";
 import type { BidParams, BidResponse } from "./bid";
 import * as bid from "./bid";
-import { success, fail } from "./utils";
+import { success } from "./utils";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -19,8 +19,11 @@ import { success, fail } from "./utils";
  * Web3 client SDK wrappers are available for Wagmi and Ethers. See: @axis/origin-sdk/wagmi and @axis/origin-sdk/ethers.
  *
  * @example
- * todo
- *
+ * const sdk = new OriginSdk({
+ *   cloak: {
+ *     url: "https://cloak.blah/api"
+ *   }
+ * })
  */
 class OriginSdk {
   cloakClient: CloakClient;
@@ -38,7 +41,6 @@ class OriginSdk {
    * - Encrypts the bid via the cloak service
    *
    * @todo
-   * - Decide best way to handle all bid types (FP, EMP) etc. currently only supporting EMP.
    * - Add cloak service link in side effect text above
    *
    * @param params - Unprimed bid parameters
@@ -48,7 +50,7 @@ class OriginSdk {
     try {
       return success(await bid.bid(params, this.cloakClient));
     } catch (error: unknown) {
-      return error instanceof SdkError ? fail(error) : Promise.reject(error);
+      return Promise.reject(error);
     }
   }
 }
