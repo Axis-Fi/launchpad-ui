@@ -3,7 +3,7 @@ import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
-import { AuctionType, PropsWithAuction } from "@repo/types";
+import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
@@ -103,6 +103,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     bid.bidDependenciesMutation.isPending;
 
   const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
+  const isEMP = auction.auctionType === AuctionType.SEALED_BID;
+  const actionKeyword = isEMP ? "Bid" : "Purchase";
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
@@ -125,7 +127,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           {auction.curatorApproved && (
             <InfoLabel label="Curator" value={trimAddress(auction.curator)} />
           )}
-          {auction.auctionType === AuctionType.SEALED_BID ? (
+          {isEMP ? (
             <>
               <InfoLabel
                 label="Minimum Price"
@@ -178,8 +180,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                           : bid.approveCapacity()
                       }
                     >
+                      {/*TODO: simplify*/}
                       {bid.isSufficientAllowance ? (
-                        "BID"
+                        actionKeyword.toUpperCase()
                       ) : isWaiting ? (
                         <div className="flex">
                           Waiting for confirmation...
@@ -212,17 +215,22 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 idle: {
                   Component: () => (
                     <div className="text-center">
-                      You&apos;re about to place a bid of {amountIn}{" "}
-                      {auction.quoteToken.symbol}
+                      {getConfirmCardText(auction, amountIn, minAmountOut)}
                     </div>
                   ),
-                  title: "Confirm Bid",
+                  title: `Confirm ${actionKeyword}`,
                 },
                 success: {
                   Component: () => (
                     <div className="flex justify-center text-center">
-                      <LockIcon className="mr-1" />
-                      Bid encrypted and stored successfully!
+                      {isEMP ? (
+                        <>
+                          <LockIcon className="mr-1" />
+                          Bid encrypted and stored successfully!
+                        </>
+                      ) : (
+                        <p>Purchase completed!</p>
+                      )}
                     </div>
                   ),
                   title: "Transaction Confirmed",
@@ -234,4 +242,15 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       </div>
     </div>
   );
+}
+
+function getConfirmCardText(
+  auction: Auction,
+  amountIn: number,
+  amountOut: number,
+) {
+  const isEMP = auction.auctionType === AuctionType.SEALED_BID;
+  const empText = `You're about to place a bid of ${amountIn}{" "} ${auction.quoteToken.symbol} `;
+  const fpText = `You're about to purchase ${amountOut} ${auction.baseToken.symbol} for ${amountIn} ${auction.quoteToken.symbol}`;
+  return isEMP ? empText : fpText;
 }

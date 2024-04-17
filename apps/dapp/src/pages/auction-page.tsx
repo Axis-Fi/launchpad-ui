@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 import type { Address } from "viem";
 import { axisContracts } from "@repo/deployments";
-import { Avatar, Button, Skeleton } from "@repo/ui";
+import { Avatar, Button, Skeleton, Tooltip } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
@@ -26,6 +26,7 @@ import {
 } from "modules/auction/status";
 import { ChainIcon } from "components/chain-icon";
 import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
+import { getAuctionMetadata } from "modules/auction/metadata";
 
 const statuses: Record<
   AuctionStatus,
@@ -63,6 +64,8 @@ export default function AuctionPage() {
       ? FixedPriceAuctionConcluded
       : statuses[auction.status];
 
+  const metadata = getAuctionMetadata(auction.auctionType);
+
   return (
     <div>
       <PageHeader>
@@ -86,8 +89,10 @@ export default function AuctionPage() {
                 {...(auction.auctionInfo?.links ?? {})}
               />
             </div>
-            <div className="flex gap-x-1">
-              <h4>{auction.auctionType} Auction</h4>
+            <div className="flex items-start gap-x-1">
+              <Tooltip content={metadata.tooltip}>
+                <h4>{metadata.label}</h4>
+              </Tooltip>
               <ChainIcon chainId={auction.chainId} />
             </div>
           </div>

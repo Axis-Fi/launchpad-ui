@@ -499,7 +499,11 @@ export default function CreateAuctionPage() {
                           label="Minimum Payout Token Price"
                           tooltip="The minimum number of quote tokens to receive per payout token."
                         >
-                          <Input placeholder="1" type="number" {...field} />
+                          <Input
+                            placeholder="100000000"
+                            type="number"
+                            {...field}
+                          />
                         </FormItemWrapper>
                       )}
                     />
@@ -580,7 +584,7 @@ export default function CreateAuctionPage() {
                       render={({ field }) => (
                         <FormItemWrapper
                           label="Price"
-                          tooltip="The fixed price for the auction"
+                          tooltip="The amount of quote tokens per payout token"
                         >
                           <Input placeholder="1" type="number" {...field} />
                         </FormItemWrapper>
@@ -593,7 +597,7 @@ export default function CreateAuctionPage() {
                         <FormItemWrapper
                           label="Max Payout Percentage"
                           className="mt-4"
-                          tooltip=""
+                          tooltip="The maximum percentage of the auction capacity that can be purchased per transaction"
                         >
                           <>
                             <Input

@@ -49,7 +49,7 @@ export function AuctionBidInput({
                       if (singleInput && "price" in auction.auctionData!) {
                         // auction is fixed price //TODO: improve
                         const amount =
-                          Number(e.target.value) *
+                          Number(e.target.value) /
                           Number(auction.formatted?.price);
                         form.setValue("baseTokenAmount", amount);
                       }
