@@ -1,5 +1,5 @@
 import { Address } from "abitype";
-import * as v from "valibot"; // TODO: zod vs valibot, zod more popular but large bundle size
+import * as v from "valibot";
 
 // TODO: hoist to top/common area
 const AddressSchema = v.special<Address>(

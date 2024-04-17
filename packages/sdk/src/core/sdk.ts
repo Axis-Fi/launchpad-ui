@@ -4,7 +4,7 @@ import {
   Configuration,
 } from "@repo/cloak";
 import { type OriginConfig } from "../types";
-import type { BidParams, BidResponse } from "./bid";
+import type { BidParams, BidResult } from "./bid";
 import * as bid from "./bid";
 import { success } from "./utils";
 
@@ -46,7 +46,7 @@ class OriginSdk {
    * @param params - Unprimed bid parameters
    * @returns Primed contract config for the bid transaction
    */
-  async bid(params: BidParams): Promise<BidResponse> {
+  async bid(params: BidParams): Promise<BidResult> {
     try {
       return success(await bid.bid(params, this.cloakClient));
     } catch (error: unknown) {

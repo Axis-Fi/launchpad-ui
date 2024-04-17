@@ -3,9 +3,10 @@ import * as v from "valibot";
 import { abis } from "@repo/abis";
 import type { CloakClient } from "@repo/cloak";
 import { SdkError } from "../../types";
+import { getContractAddresses, auction } from "..";
 import { BidParamsSchema } from "./schema";
 import type { BidConfig, BidParams, GetBidConfigParams } from "./types";
-import * as utils from "./utils";
+import { encryptBid, encodeEncryptedBid } from "./utils";
 
 const getBidConfig = (params: GetBidConfigParams): BidConfig => {
   const {
@@ -27,7 +28,7 @@ const getBidConfig = (params: GetBidConfigParams): BidConfig => {
         lotId: BigInt(lotId),
         referrer: toHex(referrerAddress),
         amount: parseUnits(amountIn.toString(), quoteToken.decimals),
-        auctionData: utils.encodeEncryptedBid(encryptedBid),
+        auctionData: encodeEncryptedBid(encryptedBid),
         permit2Data: toHex(""), // TODO: handle permit2Data
       },
       callbackData,
@@ -50,9 +51,11 @@ const bid = async (
 
   const { lotId, amountIn, referrerAddress, chainId } = params;
 
-  // @ts-expect-error TODO: implement the getAuction function
-  const { quoteToken, baseToken } = await utils.getAuction({ lotId, chainId });
-  const auctionHouseAddress = utils.getContractAddresses(chainId)?.auctionHouse;
+  const { quoteToken, baseToken } = await auction.getAuctionTokens({
+    lotId,
+    chainId,
+  });
+  const auctionHouseAddress = getContractAddresses(chainId)?.auctionHouse;
 
   const encryptBidParams = {
     ...params,
@@ -61,7 +64,7 @@ const bid = async (
     auctionHouseAddress,
   };
 
-  const encryptedBid = await utils.encryptBid(encryptBidParams, cloakClient);
+  const encryptedBid = await encryptBid(encryptBidParams, cloakClient);
 
   if (
     !encryptedBid ||

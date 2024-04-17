@@ -4,43 +4,9 @@ import {
   toHex,
   parseUnits,
   encodeAbiParameters,
-  Address,
 } from "viem";
-
-import { deployments } from "@repo/deployments";
 import type { EncryptLotIdPost200Response, CloakClient } from "@repo/cloak";
-import type { BidParams } from ".";
-import { AxisContractAddresses, Token } from "@repo/types";
-
-const AUCTION_DATA_TYPE_ABI = [
-  { name: "encryptedBid", type: "uint256" },
-  {
-    name: "bidPublicKey",
-    type: "tuple",
-    internalType: "struct Point",
-    components: [
-      {
-        name: "x",
-        type: "uint256",
-      },
-      {
-        name: "y",
-        type: "uint256",
-      },
-    ],
-  },
-];
-
-const getAuction = () => {}; // TODO
-
-const getContractAddresses = (chainId: number): AxisContractAddresses =>
-  deployments[chainId!]?.addresses;
-
-type EncryptBidParams = BidParams & {
-  quoteToken: Token;
-  baseToken: Token;
-  auctionHouseAddress: Address;
-};
+import { AUCTION_DATA_TYPE_ABI, type EncryptBidParams } from ".";
 
 const encryptBid = async (
   params: EncryptBidParams,
@@ -56,16 +22,17 @@ const encryptBid = async (
     baseToken,
     auctionHouseAddress,
   } = params;
+
   const quoteTokenAmountIn = parseUnits(
     amountIn.toString(),
     quoteToken.decimals,
   );
+
   const baseTokenAmountOut = parseUnits(
     amountOut.toString(),
     baseToken.decimals,
   );
 
-  // TODO: review: error handling and better api than passing cloakClient
   return cloakClient.keysApi.encryptLotIdPost({
     xChainId: chainId,
     xAuctionHouse: auctionHouseAddress,
@@ -88,4 +55,4 @@ const encodeEncryptedBid = (encryptedBid: EncryptLotIdPost200Response): Hex => {
   ]);
 };
 
-export { getAuction, getContractAddresses, encryptBid, encodeEncryptedBid };
+export { encryptBid, encodeEncryptedBid };
