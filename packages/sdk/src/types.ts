@@ -49,14 +49,8 @@ type ContractConfig<
   args: ContractFunctionParams<TAbi, TFunctionName>;
 };
 
-type SdkResult<
-  TAbi extends Abi,
-  TFunctionName extends ExtractAbiFunctionNames<TAbi>,
-> = {
-  status: "success" | "fail";
-  error?: string; // TODO: Custom SDK error types?
-  issues?: v.SchemaIssues;
-  config?: ContractConfig<TAbi, TFunctionName>;
+type SdkResult<TResult> = {
+  config: TResult;
 };
 
 type OriginConfig = {

@@ -4,11 +4,10 @@ import { abis } from "@repo/abis";
 import type { Token } from "@repo/types";
 import type { EncryptLotIdPost200Response } from "@repo/cloak";
 import { BidParamsSchema } from "./schema";
-import type { ContractConfig, SdkResult } from "../../types";
+import type { ContractConfig } from "../../types";
 
 type BidParams = v.Input<typeof BidParamsSchema>;
 type BidConfig = ContractConfig<typeof abis.auctionHouse, "bid">;
-type BidResult = SdkResult<typeof abis.auctionHouse, "bid">;
 
 type GetBidConfigParams = Pick<
   BidParams,
@@ -25,10 +24,4 @@ type EncryptBidParams = BidParams & {
   auctionHouseAddress: Address;
 };
 
-export type {
-  GetBidConfigParams,
-  BidParams,
-  BidConfig,
-  BidResult,
-  EncryptBidParams,
-};
+export type { GetBidConfigParams, BidParams, BidConfig, EncryptBidParams };

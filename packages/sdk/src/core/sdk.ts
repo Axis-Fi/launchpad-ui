@@ -3,10 +3,12 @@ import {
   createCloakClient,
   Configuration,
 } from "@repo/cloak";
-import { type OriginConfig } from "../types";
-import type { BidParams, BidResult } from "./bid";
+import { type Config, type OriginConfig } from "../types";
+import type { BidParams, BidConfig } from "./bid";
+import type { GetAuctionParams, GetAuctionResult } from "./auction";
 import * as bid from "./bid";
-import { success } from "./utils";
+import * as auction from "./auction";
+import { config } from "./utils";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -34,6 +36,10 @@ class OriginSdk {
     );
   }
 
+  async getAuction(params: GetAuctionParams): Promise<GetAuctionResult> {
+    return auction.getAuction(params);
+  }
+
   /**
    * Gets the contract config required to execute a bid transaction on the auction house smart contract from unprimed parameters.
    *
@@ -45,13 +51,24 @@ class OriginSdk {
    *
    * @param params - Unprimed bid parameters
    * @returns Primed contract config for the bid transaction
+   *
+   * @example
+   * try {
+   *   const { config } = await sdk.bid({
+   *     lotId: 1,
+   *     amountIn: 100,
+   *     amountOut: 100,
+   *     chainId: 1,
+   *     bidderAddress: "0x123",
+   *     referrerAddress: "0x456",
+   *     signedPermit2Approval: "0x789",
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
    */
-  async bid(params: BidParams): Promise<BidResult> {
-    try {
-      return success(await bid.bid(params, this.cloakClient));
-    } catch (error: unknown) {
-      return Promise.reject(error);
-    }
+  async bid(params: BidParams): Promise<Config<BidConfig>> {
+    return config(await bid.bid(params, this.cloakClient));
   }
 }
 

@@ -26,7 +26,7 @@ const getBidConfig = (params: GetBidConfigParams): BidConfig => {
     args: [
       {
         lotId: BigInt(lotId),
-        referrer: toHex(referrerAddress),
+        referrer: referrerAddress,
         amount: parseUnits(amountIn.toString(), quoteToken.decimals),
         auctionData: encodeEncryptedBid(encryptedBid),
         permit2Data: toHex(""), // TODO: handle permit2Data

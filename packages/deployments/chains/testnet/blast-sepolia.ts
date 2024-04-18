@@ -31,6 +31,12 @@ const config: AxisDeploymentConfig = {
       name: "Base Token",
       address: "0xCA8C1163dC6aA7Ee376F00Cc77f1cbE01adfFC92",
     },
+    {
+      decimals: 18,
+      symbol: "SLO",
+      name: "SLO Token",
+      address: "0xB24D0b6ae015DC6fd279E330db101bB890d8060c",
+    },
   ],
 };
 

@@ -1,18 +1,9 @@
 import { type Chain } from "viem";
-import type { Abi, ExtractAbiFunctionNames } from "abitype";
 import { deployments } from "@repo/deployments";
 import { AxisContractAddresses } from "@repo/types";
-import { type ContractConfig, type SdkResult } from "../types";
+import { Config } from "./types";
 
-const success = <
-  TAbi extends Abi,
-  TFunctionName extends ExtractAbiFunctionNames<TAbi>,
->(
-  config: ContractConfig<TAbi, TFunctionName>,
-): SdkResult<TAbi, TFunctionName> => ({
-  status: "success",
-  config,
-});
+const config = <TConfig>(config: TConfig): Config<TConfig> => ({ config });
 
 const getContractAddresses = (chainId: number): AxisContractAddresses =>
   deployments[chainId!]?.addresses;
@@ -23,4 +14,4 @@ const getChainById = (
 ): Chain | undefined =>
   Object.values(chains).find((chain) => chain.id === chainId);
 
-export { success, getContractAddresses, getChainById };
+export { config, getContractAddresses, getChainById };

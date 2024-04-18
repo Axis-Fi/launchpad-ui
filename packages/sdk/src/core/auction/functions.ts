@@ -7,6 +7,7 @@ import type {
   GetAuctionResult,
   GetAuctionTokensResult,
 } from "./types";
+import { SdkError } from "../../types";
 
 const getAuctionTokens = async (
   params: GetAuctionTokensParams,
@@ -18,13 +19,13 @@ const getAuctionTokens = async (
   const quoteToken = getToken({ chainId, address: quoteTokenAddress });
 
   if (!baseToken) {
-    throw new Error(
+    throw new SdkError(
       `Couldn't find base token for auction ${lotId} with token address ${baseTokenAddress} on chain ${chainId}`,
     );
   }
 
   if (!quoteToken) {
-    throw new Error(
+    throw new SdkError(
       `Couldn't find quote token for auction ${lotId} with token address ${quoteTokenAddress} on chain ${chainId}`,
     );
   }

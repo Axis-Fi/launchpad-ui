@@ -7,11 +7,11 @@ import { ContractFunctionReturn } from "../../types";
 type GetAuctionParams = v.Input<typeof GetAuctionParamsSchema>;
 type GetAuctionTokensParams = v.Input<typeof GetAuctionTokensParamsSchema>;
 
+type GetAuctionTokensResult = { baseToken: Token; quoteToken: Token };
 type GetAuctionResult = ContractFunctionReturn<
   typeof abis.catalogue,
   "getRouting"
 >;
-type GetAuctionTokensResult = { baseToken: Token; quoteToken: Token };
 
 export type {
   GetAuctionParams,
