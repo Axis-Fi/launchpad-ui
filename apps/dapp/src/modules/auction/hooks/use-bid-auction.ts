@@ -34,6 +34,7 @@ export function useBidAuction(
   const referrer = useReferrer();
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
+
   const bidMutation = useSdkMutation((sdk) =>
     sdk.bid({
       lotId: Number(lotId),
@@ -41,6 +42,7 @@ export function useBidAuction(
       amountOut: Number(amountIn),
       chainId,
       referrerAddress: referrer,
+      // @ts-expect-error TODO: address can be undefined if wallet not connected (or was disconnected)
       bidderAddress: address,
       signedPermit2Approval: toHex(""), // TODO implement permit2
     }),
@@ -50,6 +52,9 @@ export function useBidAuction(
 
   // Main action, calls SDK which encrypts the bid and returns contract configuration data
   const handleBid = async () => {
+    if (address === undefined) {
+      throw new Error("Not connected. Try connecting your wallet.");
+    }
     const { config } = await bidMutation.mutateAsync();
 
     bidTx.writeContract({

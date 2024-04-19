@@ -18,19 +18,19 @@ const encryptBid = async (
     amountOut,
     chainId,
     bidderAddress,
-    quoteToken,
-    baseToken,
+    quoteTokenDecimals,
+    baseTokenDecimals,
     auctionHouseAddress,
   } = params;
 
   const quoteTokenAmountIn = parseUnits(
     amountIn.toString(),
-    quoteToken.decimals,
+    quoteTokenDecimals,
   );
 
   const baseTokenAmountOut = parseUnits(
     amountOut.toString(),
-    baseToken.decimals,
+    baseTokenDecimals,
   );
 
   return cloakClient.keysApi.encryptLotIdPost({

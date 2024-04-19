@@ -14,7 +14,7 @@ const getBidConfig = (params: GetBidConfigParams): BidConfig => {
     amountIn,
     referrerAddress,
     auctionHouseAddress,
-    quoteToken,
+    quoteTokenDecimals,
     encryptedBid,
   } = params;
   const callbackData = toHex(""); //TODO: callbackData - decide best way to handle this
@@ -27,7 +27,7 @@ const getBidConfig = (params: GetBidConfigParams): BidConfig => {
       {
         lotId: BigInt(lotId),
         referrer: referrerAddress,
-        amount: parseUnits(amountIn.toString(), quoteToken.decimals),
+        amount: parseUnits(amountIn.toString(), quoteTokenDecimals),
         auctionData: encodeEncryptedBid(encryptedBid),
         permit2Data: toHex(""), // TODO: handle permit2Data
       },
@@ -51,16 +51,15 @@ const bid = async (
 
   const { lotId, amountIn, referrerAddress, chainId } = params;
 
-  const { quoteToken, baseToken } = await auction.getAuctionTokens({
-    lotId,
-    chainId,
-  });
+  const { quoteTokenDecimals, baseTokenDecimals } =
+    await auction.getAuctionTokenDecimals({ lotId, chainId });
+
   const auctionHouseAddress = getContractAddresses(chainId)?.auctionHouse;
 
   const encryptBidParams = {
     ...params,
-    quoteToken,
-    baseToken,
+    quoteTokenDecimals,
+    baseTokenDecimals,
     auctionHouseAddress,
   };
 
@@ -80,7 +79,7 @@ const bid = async (
     amountIn,
     referrerAddress,
     auctionHouseAddress,
-    quoteToken,
+    quoteTokenDecimals,
     encryptedBid,
   });
 };

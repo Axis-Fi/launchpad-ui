@@ -1,6 +1,6 @@
 import { abis } from "@repo/abis";
 import { createClient, getContractAddresses } from "..";
-import { getToken } from "./utils";
+import { getTokenDecimals } from "./utils";
 import type {
   GetAuctionParams,
   GetAuctionTokensParams,
@@ -9,28 +9,35 @@ import type {
 } from "./types";
 import { SdkError } from "../../types";
 
-const getAuctionTokens = async (
+const getAuctionTokenDecimals = async (
   params: GetAuctionTokensParams,
 ): Promise<GetAuctionTokensResult> => {
   const { chainId, lotId } = params;
+
   const { baseToken: baseTokenAddress, quoteToken: quoteTokenAddress } =
     await getAuction({ chainId, lotId });
-  const baseToken = getToken({ chainId, address: baseTokenAddress });
-  const quoteToken = getToken({ chainId, address: quoteTokenAddress });
+  const baseTokenDecimals = await getTokenDecimals({
+    chainId,
+    address: baseTokenAddress,
+  });
+  const quoteTokenDecimals = await getTokenDecimals({
+    chainId,
+    address: quoteTokenAddress,
+  });
 
-  if (!baseToken) {
+  if (!baseTokenDecimals) {
     throw new SdkError(
-      `Couldn't find base token for auction ${lotId} with token address ${baseTokenAddress} on chain ${chainId}`,
+      `Couldn't find base token for address ${baseTokenAddress} on chain ${chainId} in auction ${lotId}`,
     );
   }
 
-  if (!quoteToken) {
+  if (!quoteTokenDecimals) {
     throw new SdkError(
-      `Couldn't find quote token for auction ${lotId} with token address ${quoteTokenAddress} on chain ${chainId}`,
+      `Couldn't find base token for address ${quoteTokenAddress} on chain ${chainId} in auction ${lotId}`,
     );
   }
 
-  return { baseToken, quoteToken };
+  return { baseTokenDecimals, quoteTokenDecimals };
 };
 
 const getAuction = async (
@@ -47,4 +54,4 @@ const getAuction = async (
   });
 };
 
-export { getAuction, getAuctionTokens };
+export { getAuction, getAuctionTokenDecimals };

@@ -1,7 +1,6 @@
 import * as v from "valibot";
 import type { Address } from "abitype";
 import { abis } from "@repo/abis";
-import type { Token } from "@repo/types";
 import type { EncryptLotIdPost200Response } from "@repo/cloak";
 import { BidParamsSchema } from "./schema";
 import type { ContractConfig } from "../../types";
@@ -14,13 +13,13 @@ type GetBidConfigParams = Pick<
   "lotId" | "amountIn" | "referrerAddress"
 > & {
   auctionHouseAddress: Address;
-  quoteToken: Token;
+  quoteTokenDecimals: number;
   encryptedBid: EncryptLotIdPost200Response;
 };
 
 type EncryptBidParams = BidParams & {
-  quoteToken: Token;
-  baseToken: Token;
+  quoteTokenDecimals: number;
+  baseTokenDecimals: number;
   auctionHouseAddress: Address;
 };
 

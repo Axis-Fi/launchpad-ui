@@ -3,7 +3,8 @@ import {
   createCloakClient,
   Configuration,
 } from "@repo/cloak";
-import { type Config, type OriginConfig } from "../types";
+import { type OriginConfig } from "../types";
+import { type Config } from "./types";
 import type { BidParams, BidConfig } from "./bid";
 import type { GetAuctionParams, GetAuctionResult } from "./auction";
 import * as bid from "./bid";
