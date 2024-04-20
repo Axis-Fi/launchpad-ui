@@ -35,18 +35,20 @@ export function useBidAuction(
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
-  const bidMutation = useSdkMutation((sdk) =>
-    sdk.bid({
+  const bidMutation = useSdkMutation((sdk) => {
+    if (address === undefined)
+      throw new Error("Wallet not connected. Please connect your wallet.");
+
+    return sdk.bid({
       lotId: Number(lotId),
       amountIn: Number(amountIn),
-      amountOut: Number(amountIn),
+      amountOut: Number(amountOut),
       chainId,
       referrerAddress: referrer,
-      // @ts-expect-error TODO: address can be undefined if wallet not connected (or was disconnected)
       bidderAddress: address,
       signedPermit2Approval: toHex(""), // TODO implement permit2
-    }),
-  );
+    });
+  });
 
   const axisAddresses = axisContracts.addresses[auction.chainId];
 
