@@ -1,4 +1,12 @@
-import { Button, DropdownChecker, IconnedInput, Tooltip, cn } from "@repo/ui";
+import {
+  Button,
+  DropdownChecker,
+  IconnedInput,
+  Pagination,
+  Tooltip,
+  cn,
+  usePagination,
+} from "@repo/ui";
 import { ReloadButton } from "components/reload-button";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
@@ -26,6 +34,8 @@ export default function AuctionListPage() {
         .filter((a) => filters.includes(a.status))
         .filter((a) => !searchText.length || searchObject(a, searchText))
     : auctions;
+
+  const { rows, ...pagination } = usePagination(filteredAuctions, 9);
 
   return (
     <PageContainer>
@@ -62,7 +72,7 @@ export default function AuctionListPage() {
       <div className={cn("mt-4 grid grid-cols-3 gap-4", isLoading && "mask")}>
         {isLoading
           ? [...new Array(6)].map((_e, i) => <AuctionCardLoading key={i} />)
-          : filteredAuctions.map((auction) => (
+          : rows.map((auction) => (
               <AuctionCard
                 key={auction.chainId + auction.id}
                 auction={auction}
@@ -73,6 +83,7 @@ export default function AuctionListPage() {
               />
             ))}
       </div>
+      <Pagination className="mt-6" {...pagination} />
 
       <div className="flex flex-col items-center justify-center py-8">
         <p className="font-aeonpro pb-2">Want to create an auction?</p>

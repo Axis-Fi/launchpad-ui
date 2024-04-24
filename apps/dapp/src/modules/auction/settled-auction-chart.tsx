@@ -30,6 +30,7 @@ export type ParsedBid = {
   price: number;
   amountIn: number;
   amountOut: number;
+  settledAmountOut: number;
   timestamp: number;
 };
 
@@ -58,7 +59,7 @@ const useChartData = (
             ? Number(bid.amountOut)
             : 0;
 
-          const price = amountIn / amountOut;
+          const price = Number(bid.submittedPrice);
           const timestamp = Number(bid.blockTimestamp) * 1000;
 
           return {
@@ -67,6 +68,7 @@ const useChartData = (
             price,
             amountIn,
             amountOut,
+            settledAmountOut: Number(bid.settledAmountOut),
             timestamp,
           };
         });
@@ -130,12 +132,13 @@ export const SettledAuctionChart = ({
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;
 
-  const {
-    data: chartData,
-    marginalPrice,
-    minimumPrice,
-    sizeRange,
-  } = useChartData(auction, auctionData as EMPAuctionData);
+  const { data, sizeRange } = useChartData(
+    auction,
+    auctionData as EMPAuctionData,
+  );
+
+  const marginalPrice = Number(auction?.formatted?.marginalPrice);
+  const minimumPrice = Number(auction?.formatted?.minPrice);
 
   return (
     <div className="size-full max-h-[260px]">
@@ -161,7 +164,7 @@ export const SettledAuctionChart = ({
             minTickGap={40}
             stroke="#f4f4f4"
             domain={([min, max]) => [
-              Math.min(minimumPrice ?? 0, min) * 0.8,
+              Math.min(minimumPrice ?? 0, min) * 0.5,
               !marginalPrice && minimumPrice ? minimumPrice * 1.5 : max * 1.1, // If there is no marginal price, use the minimum price as every bid will have a price below that
             ]}
             tickFormatter={(value) =>
@@ -183,7 +186,7 @@ export const SettledAuctionChart = ({
           />
           <Scatter
             name="bids"
-            data={chartData}
+            data={data}
             shape={(props: Omit<CustomShapeProps, "marginalPrice">) => (
               <CustomShape {...props} marginalPrice={marginalPrice} />
             )}
@@ -238,14 +241,11 @@ type CustomShapeProps = ScatterPointItem &
     marginalPrice?: number;
   };
 
-function CustomShape({
-  marginalPrice = 0,
-  ...props
-}: React.PropsWithoutRef<CustomShapeProps>) {
+function CustomShape(props: React.PropsWithoutRef<CustomShapeProps>) {
   return (
     <>
       <CircleIcon className="fill-transparent text-transparent" {...props} />
-      {marginalPrice <= props.payload.price ? (
+      {props.payload.settledAmountOut ? (
         <GemIcon className="text-axis-green" {...props} />
       ) : (
         <XIcon className="text-axis-red *:p-4" {...props} />

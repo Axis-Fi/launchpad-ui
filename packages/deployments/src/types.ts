@@ -1,5 +1,5 @@
-import {
-  type Token,
+import type {
+  Token,
   TokenList,
   AxisContractAddresses,
   Chain,

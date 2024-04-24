@@ -11,6 +11,7 @@ export * from "./iconed-label";
 export * from "./info-label";
 export * from "./input-error";
 export * from "./link";
+export * from "./pagination";
 export * from "./select";
 export * from "./scrollable-select";
 export * from "./sort-button";

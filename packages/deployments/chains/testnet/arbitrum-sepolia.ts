@@ -16,22 +16,26 @@ const config: AxisDeploymentConfig = {
   subgraphURL:
     "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v<VERSION>/api",
   rpcURL:
-    "https://arb-sepolia.g.alchemy.com/v2/a7a38HEWAID2ovEpz8ONjO6JwIPyaTOq",
+    "https://arb-sepolia.g.alchemy.com/v2/ijPbOvV9qNWHPGz-x-7JRvPwzUdBn1TJ",
   tokenList: [
     {
-      name: "Test Token 1",
-      symbol: "TT1",
-      address: "0x16D5Aab9d35f8B3ac7BD086eEDcCe5343682D5F0",
+      name: "USDC",
+      symbol: "USDC",
+      address: "0x4f3cf5d09a3e47bf9d6a9d295e4a643c79c43429",
       decimals: 18,
+      mintable: true,
+      logoURI:
+        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/USDC.png",
     },
 
     {
-      address: "0xb5973cabd553f34c32ae2fbc91c94b3bf76db62e",
-      name: "Test Token2",
-      symbol: "TT2",
+      address: "0x67dac8d7aeacc88c512f089a0abfff17e714535e",
+      name: "Wrapped Ether",
+      symbol: "WETH",
       logoURI:
-        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/DAI.png",
+        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/WETH.png",
       decimals: 18,
+      mintable: true,
     },
   ],
 };

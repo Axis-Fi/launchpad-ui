@@ -18,18 +18,22 @@ const config: AxisDeploymentConfig = {
     "https://broken-magical-hill.blast-sepolia.quiknode.pro/3bdd9ff197592ef9652987ef7dcf549e759c713d/",
   tokenList: [
     {
+      mintable: true,
       decimals: 18,
       symbol: "USDB",
       name: "Blast USD",
-      address: "0x392a07f18CB3640fFd4E69D0c90DCe397b277813",
+      address: "0x47F12ccE28D1A2ac9184777fa8a993C6067Df728",
       logoURI:
         "https://assets-global.website-files.com/65a6baa1a3f8ed336f415cb4/65c67eafd3569b7e2f834b8d_usdb-icon-yellow.svg",
     },
     {
+      mintable: true,
       decimals: 18,
-      symbol: "BTK",
-      name: "Base Token",
-      address: "0xCA8C1163dC6aA7Ee376F00Cc77f1cbE01adfFC92",
+      symbol: "WETH",
+      name: "Wrapped Ether",
+      address: "0x1095e2650accccc10daaac305b380f23158f1d94",
+      logoURI:
+        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/WETH.png",
     },
     {
       decimals: 18,

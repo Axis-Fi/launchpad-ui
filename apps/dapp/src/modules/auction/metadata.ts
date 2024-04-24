@@ -15,3 +15,7 @@ export const auctionMetadata: Record<
       "Fixed-Price Sale is a fully on-chain, fixed-price batch auction system",
   },
 };
+
+export function getAuctionMetadata(type: AuctionType) {
+  return auctionMetadata[type];
+}

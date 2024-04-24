@@ -13,6 +13,7 @@ import { useTokenLists } from "state/tokenlist";
 import { multihashRegex } from "utils/ipfs";
 import { useQueryAll } from "loaders/use-query-all";
 import { getAuctionType } from "../utils/get-auction-type";
+import { filterDevAddressesOnTestnet } from "utils/filter-dev-addresses";
 
 export type AuctionsResult = {
   result: AuctionListed[];
@@ -48,6 +49,7 @@ export function useAuctions(): AuctionsResult {
 
   return {
     result: (data ?? [])
+      .filter(filterDevAddressesOnTestnet)
       .map((auction) => {
         const auctionInfo = infos.data?.find((info) => info.id === auction.id)
           ?.auctionInfo;
