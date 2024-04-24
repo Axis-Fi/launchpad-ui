@@ -5,10 +5,10 @@ import {
   type UseQueryOptions,
   type UseQueryResult,
   type UseMutationOptions,
-  type UseMutationResult,
 } from "@tanstack/react-query";
 import { OriginSdk } from "..";
 import { OriginSdkContext } from ".";
+import { EnhancedMutation } from "./types";
 
 /**
  * A hook for calling Origin SDK's read functions.
@@ -54,7 +54,7 @@ const useSdkQuery = <TResult>(
  * @returns The result of the SDK callback as a TanStack MutationResult.
  *
  * @example
- * const bidMutation = useSdkMutation(sdk => sdk.bid({
+ * const bidMutation = useDeferredQuery(sdk => sdk.bid({
  *   lotId: 1,
  *   amountIn: 100,
  *   amountOut: 10,
@@ -64,20 +64,28 @@ const useSdkQuery = <TResult>(
  *   signedPermit2Approval: "0x000...",
  * }))
  */
-const useSdkMutation = <TResult>(
+const useDeferredQuery = <TResult>(
   callback: (sdk: OriginSdk) => Promise<TResult>,
   options?: UseMutationOptions<TResult>,
-): UseMutationResult<TResult, Error, void, unknown> => {
+): EnhancedMutation<TResult> => {
   const sdk = useContext(OriginSdkContext);
 
   if (!sdk) {
     throw new Error("useSdk must be used within an <OriginSdkProvider/>");
   }
 
-  return useMutation({
+  const mutation = useMutation({
     ...options,
     mutationFn: () => callback(sdk),
   });
+
+  // Consumers generally only need to call the mutation function, not access the mutation object properties
+  const callable = () => mutation.mutateAsync();
+
+  // We add the mutation properties as an escape hatch for any use case not covered by the callable
+  Object.assign(callable, mutation);
+
+  return callable as EnhancedMutation<TResult>;
 };
 
 /**
@@ -98,4 +106,4 @@ const useSdk = (): OriginSdk => {
   return sdk;
 };
 
-export { useSdkQuery, useSdkMutation, useSdk };
+export { useSdkQuery, useDeferredQuery, useSdk };

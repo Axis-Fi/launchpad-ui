@@ -2,13 +2,13 @@ import * as v from "valibot";
 import type { Address } from "abitype";
 import { abis } from "@repo/abis";
 import type { EncryptLotIdPost200Response } from "@repo/cloak";
-import { BidParamsSchema } from "./schema";
+import * as bid from ".";
 import type { ContractConfig } from "../../types";
 
-type BidParams = v.Input<typeof BidParamsSchema>;
+type BidParams = v.Input<typeof bid.schema.BidParamsSchema>;
 type BidConfig = ContractConfig<typeof abis.auctionHouse, "bid">;
 
-type GetBidConfigParams = Pick<
+type PrimedBidParams = Pick<
   BidParams,
   "lotId" | "amountIn" | "referrerAddress"
 > & {
@@ -23,4 +23,17 @@ type EncryptBidParams = BidParams & {
   auctionHouseAddress: Address;
 };
 
-export type { GetBidConfigParams, BidParams, BidConfig, EncryptBidParams };
+type BidModule = {
+  schema: typeof bid.schema;
+  functions: typeof bid.functions;
+  abi: typeof bid.abi;
+  utils: typeof bid.utils;
+};
+
+export type {
+  PrimedBidParams,
+  BidParams,
+  BidConfig,
+  EncryptBidParams,
+  BidModule,
+};

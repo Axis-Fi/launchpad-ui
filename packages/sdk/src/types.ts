@@ -12,7 +12,7 @@ class SdkError extends Error {
 
   constructor(message: string, issues: v.SchemaIssues | undefined = undefined) {
     super(message);
-    this.name = "SdkError";
+    this.name = "OriginSdkError";
     this.issues = issues;
   }
 }
@@ -49,10 +49,6 @@ type ContractConfig<
   args: ContractFunctionParams<TAbi, TFunctionName>;
 };
 
-type SdkResult<TResult> = {
-  config: TResult;
-};
-
 type OriginConfig = {
   cloak: {
     url: string;
@@ -60,6 +56,6 @@ type OriginConfig = {
   // TODO: ipfs, subgraph, etc.
 };
 
-export type { OriginConfig, SdkResult, ContractConfig, ContractFunctionReturn };
+export type { OriginConfig, ContractConfig, ContractFunctionReturn };
 
 export { SdkError };

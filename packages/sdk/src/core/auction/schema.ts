@@ -5,6 +5,6 @@ const GetAuctionParamsSchema = v.object({
   chainId: v.number(), // TODO: limit to deployment chainIds?
 });
 
-const GetAuctionTokensParamsSchema = GetAuctionParamsSchema;
+const GetAuctionTokenDecimalsParamsSchema = GetAuctionParamsSchema;
 
-export { GetAuctionParamsSchema, GetAuctionTokensParamsSchema };
+export { GetAuctionParamsSchema, GetAuctionTokenDecimalsParamsSchema };

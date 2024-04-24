@@ -2,13 +2,15 @@ import { toHex, parseUnits } from "viem";
 import * as v from "valibot";
 import { abis } from "@repo/abis";
 import type { CloakClient } from "@repo/cloak";
+import type { AxisDeployments } from "@repo/deployments";
 import { SdkError } from "../../types";
-import { getContractAddresses, auction } from "..";
+import { getContractAddresses } from "../utils";
 import { BidParamsSchema } from "./schema";
-import type { BidConfig, BidParams, GetBidConfigParams } from "./types";
+import type { BidConfig, BidParams, PrimedBidParams } from "./types";
 import { encryptBid, encodeEncryptedBid } from "./utils";
+import type { AuctionModule } from "../auction";
 
-const getBidConfig = (params: GetBidConfigParams): BidConfig => {
+const getConfigFromPrimedParams = (params: PrimedBidParams): BidConfig => {
   const {
     lotId,
     amountIn,
@@ -17,6 +19,7 @@ const getBidConfig = (params: GetBidConfigParams): BidConfig => {
     quoteTokenDecimals,
     encryptedBid,
   } = params;
+
   const callbackData = toHex(""); //TODO: callbackData - decide best way to handle this
 
   return {
@@ -36,15 +39,18 @@ const getBidConfig = (params: GetBidConfigParams): BidConfig => {
   };
 };
 
-const bid = async (
+const getConfig = async (
   params: BidParams,
   cloakClient: CloakClient,
+  auction: AuctionModule,
+  deployments: AxisDeployments,
+  // tokenLists: TokenList[],
 ): Promise<BidConfig> => {
   const parsedParams = v.safeParse(BidParamsSchema, params);
 
   if (!parsedParams.success) {
     throw new SdkError(
-      "Invalid parameters supplied to bid",
+      "Invalid parameters supplied to getConfig",
       parsedParams.issues,
     );
   }
@@ -52,9 +58,19 @@ const bid = async (
   const { lotId, amountIn, referrerAddress, chainId } = params;
 
   const { quoteTokenDecimals, baseTokenDecimals } =
-    await auction.getAuctionTokenDecimals({ lotId, chainId });
+    await auction.functions.getAuctionTokenDecimals(
+      { lotId, chainId },
+      deployments,
+    );
 
-  const auctionHouseAddress = getContractAddresses(chainId)?.auctionHouse;
+  const auctionHouseAddress = getContractAddresses(chainId, deployments)
+    ?.auctionHouse;
+
+  if (auctionHouseAddress === undefined) {
+    throw new SdkError(
+      `AuctionHouse contract address not found for chainId ${chainId}`,
+    );
+  }
 
   const encryptBidParams = {
     ...params,
@@ -65,16 +81,7 @@ const bid = async (
 
   const encryptedBid = await encryptBid(encryptBidParams, cloakClient);
 
-  if (
-    !encryptedBid ||
-    !encryptedBid.ciphertext ||
-    !encryptedBid.x ||
-    !encryptedBid.y
-  ) {
-    throw new SdkError("Failed to encrypt bid via cloak service");
-  }
-
-  return getBidConfig({
+  return getConfigFromPrimedParams({
     lotId,
     amountIn,
     referrerAddress,
@@ -84,4 +91,4 @@ const bid = async (
   });
 };
 
-export { getBidConfig, bid };
+export { getConfigFromPrimedParams, getConfig };

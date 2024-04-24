@@ -1,4 +1,4 @@
-const AUCTION_DATA_TYPE_ABI = [
+const ENCRYPTED_BID_TYPE_ABI = [
   { name: "encryptedBid", type: "uint256" },
   {
     name: "bidPublicKey",
@@ -17,4 +17,4 @@ const AUCTION_DATA_TYPE_ABI = [
   },
 ];
 
-export { AUCTION_DATA_TYPE_ABI };
+export { ENCRYPTED_BID_TYPE_ABI };

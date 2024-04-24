@@ -1,17 +1,21 @@
 import { type Chain } from "viem";
-import { deployments } from "@repo/deployments";
-import { AxisContractAddresses } from "@repo/types";
-import { Config } from "./types";
+import { type AxisDeployments } from "@repo/deployments";
+import type { AxisContractAddresses } from "@repo/types";
 
-const config = <TConfig>(config: TConfig): Config<TConfig> => ({ config });
-
-const getContractAddresses = (chainId: number): AxisContractAddresses =>
-  deployments[chainId!]?.addresses;
+const getContractAddresses = (
+  chainId: number,
+  deployments: AxisDeployments,
+): AxisContractAddresses => {
+  return deployments[chainId!]?.addresses;
+};
 
 const getChainById = (
   chains: Record<string, Chain>,
   chainId: number,
-): Chain | undefined =>
-  Object.values(chains).find((chain) => chain.id === chainId);
+): Chain | undefined => {
+  return chains
+    ? Object.values(chains).find((chain) => chain.id === chainId)
+    : undefined;
+};
 
-export { config, getContractAddresses, getChainById };
+export { getContractAddresses, getChainById };

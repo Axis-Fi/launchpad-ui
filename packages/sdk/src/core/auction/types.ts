@@ -1,23 +1,36 @@
 import * as v from "valibot";
 import { abis } from "@repo/abis";
-import { GetAuctionParamsSchema, GetAuctionTokensParamsSchema } from "./schema";
+import {
+  GetAuctionParamsSchema,
+  GetAuctionTokenDecimalsParamsSchema,
+} from "./schema";
 import { ContractFunctionReturn } from "../../types";
+import * as auction from ".";
 
 type GetAuctionParams = v.Input<typeof GetAuctionParamsSchema>;
-type GetAuctionTokensParams = v.Input<typeof GetAuctionTokensParamsSchema>;
-
-type GetAuctionTokensResult = {
-  baseTokenDecimals: number;
-  quoteTokenDecimals: number;
-};
 type GetAuctionResult = ContractFunctionReturn<
   typeof abis.catalogue,
   "getRouting"
 >;
 
+type GetAuctionTokenDecimalsParams = v.Input<
+  typeof GetAuctionTokenDecimalsParamsSchema
+>;
+type GetAuctionTokenDecimalsResult = {
+  baseTokenDecimals: number;
+  quoteTokenDecimals: number;
+};
+
+type AuctionModule = {
+  schema: typeof auction.schema;
+  functions: typeof auction.functions;
+  utils: typeof auction.utils;
+};
+
 export type {
   GetAuctionParams,
-  GetAuctionTokensParams,
+  GetAuctionTokenDecimalsParams,
   GetAuctionResult,
-  GetAuctionTokensResult,
+  GetAuctionTokenDecimalsResult,
+  AuctionModule,
 };

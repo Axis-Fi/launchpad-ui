@@ -7,17 +7,26 @@
     ".": "./src/index.ts",
     "./react": "./src/react/index.ts"
   },
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
   "dependencies": {
     "@repo/abis": "workspace:*",
     "@repo/cloak": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/eslint-config": "workspace:*",
     "abitype": "1.0.2",
     "valibot": "0.30.0",
     "viem": "2.8.16"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@vitest/coverage-istanbul": "^1.5.0",
+    "vite": "^5.0.8",
+    "vitest": "^1.5.0"
   }
 }

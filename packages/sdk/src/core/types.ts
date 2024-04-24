@@ -1,5 +1,15 @@
-type Config<TResult> = {
-  config: TResult;
-};
+// import * as v from "valibot";
+import * as core from "./";
 
-export type { Config };
+type Core = typeof core;
+
+// type CoreModule = {
+//   schema: Record<"string", v.BaseSchema>
+//   functions: Record<"string", () => unknown>;
+//   utils: Record<"string", () => unknown>;
+// };
+
+export type {
+  Core,
+  // CoreModule,
+};

@@ -18,7 +18,7 @@ import {
 } from "wagmi";
 import { useReferrer } from "state/referral";
 import { AuctionType } from "@repo/types";
-import { useSdkMutation } from "@repo/sdk/react";
+import { useDeferredQuery } from "@repo/sdk/react";
 
 export function useBidAuction(
   lotId: string,
@@ -35,9 +35,10 @@ export function useBidAuction(
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
-  const bidMutation = useSdkMutation((sdk) => {
-    if (address === undefined)
+  const bidConfig = useDeferredQuery((sdk) => {
+    if (address === undefined) {
       throw new Error("Wallet not connected. Please connect your wallet.");
+    }
 
     return sdk.bid({
       lotId: Number(lotId),
@@ -57,7 +58,7 @@ export function useBidAuction(
     if (address === undefined) {
       throw new Error("Not connected. Try connecting your wallet.");
     }
-    const { config } = await bidMutation.mutateAsync();
+    const config = await bidConfig();
 
     bidTx.writeContract({
       abi: config.abi,
@@ -136,7 +137,7 @@ export function useBidAuction(
     }
   }, [bidReceipt.isSuccess]);
 
-  const error = [bidReceipt, bidTx, bidMutation].find((m) => m.isError)?.error;
+  const error = [bidReceipt, bidTx, bidConfig].find((m) => m.isError)?.error;
 
   return {
     handleBid:
@@ -149,7 +150,7 @@ export function useBidAuction(
     approveReceipt,
     bidReceipt,
     bidTx,
-    bidDependenciesMutation: bidMutation,
+    bidDependenciesMutation: bidConfig,
     error,
     allowanceUtils,
   };
