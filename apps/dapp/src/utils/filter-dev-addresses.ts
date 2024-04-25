@@ -7,7 +7,6 @@ const devAddresses = [
 ].map((a) => a.toLowerCase());
 
 export function filterDevAddressesOnTestnet(a: RawSubgraphAuction) {
-  console.log({ environment });
   return (
     environment.isDevelopment || !devAddresses.includes(a.owner.toLowerCase())
   );

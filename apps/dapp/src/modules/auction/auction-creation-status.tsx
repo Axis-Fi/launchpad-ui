@@ -15,6 +15,7 @@ import { Button, Tooltip, cn } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { Address, BaseError } from "viem";
+import { TransactionErrorDialog } from "modules/transaction/transaction-error-dialog";
 
 type CreateAuctionStatusCardProps = {
   approveTx: UseWriteContractReturnType;
@@ -73,9 +74,11 @@ export function AuctionCreationStatus({
     onSubmit();
   };
 
+  const nonContractError = keypair.isError || info.isError;
+
   return (
     <div>
-      <div className="flex max-w-md items-center justify-between transition-all">
+      <div className="flex max-w-screen-md items-center justify-between transition-all">
         <StatusIcon
           {...approveTx}
           Icon={BoxIcon}
@@ -135,13 +138,16 @@ export function AuctionCreationStatus({
         )}
 
         {error && (
-          <p className="text-destructive text-center">
-            {"Execution failed!"} <br />
+          <p className="text-center">
             {info.isError && "Failed to store info on ipfs"}
             {keypair.isError && "Failed to generate a keypair"}
-            {`${error?.name ?? ""} ${
-              error instanceof BaseError ? error.shortMessage : error.message
-            }`}
+            {error && !nonContractError && (
+              <TransactionErrorDialog error={error} />
+            )}
+            {nonContractError &&
+              `${error?.name ?? ""} ${
+                error instanceof BaseError ? error.shortMessage : error.message
+              }`}
           </p>
         )}
       </div>

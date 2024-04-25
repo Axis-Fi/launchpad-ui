@@ -63,7 +63,11 @@ export function FaucetPage() {
         </LabelWrapper>
 
         <LabelWrapper content="Amount">
-          <Input value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <Input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
         </LabelWrapper>
         <Button disabled={disabled} className="mt-4" onClick={mint.handleMint}>
           Mint
