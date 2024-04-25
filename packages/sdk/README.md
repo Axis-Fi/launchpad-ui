@@ -1,6 +1,6 @@
 # TODO
 
-1. Add unit tests
+1. Remove cloak and env copies from the dapp folder, use the packages/ versions instead
 2. Cache analysis, reduce RPC calls, review batch settings etc.
 3. Add docs folder, autogenerate docs from tsdoc comments
 4. Create README.md
