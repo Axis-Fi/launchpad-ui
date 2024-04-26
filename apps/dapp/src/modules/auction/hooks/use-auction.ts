@@ -62,7 +62,12 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     type: auctionType,
   });
 
-  const { data: linearVesting } = useDerivativeData(lotId, chainId);
+  //TODO: needs updating
+  const { data: linearVesting } = useDerivativeData({
+    lotId,
+    auctionType,
+    chainId,
+  });
 
   if (!rawAuction || !chainId || data?.auctionLots.length === 0) {
     return {
@@ -129,7 +134,7 @@ export function formatAuction(
     0,
   );
 
-  const auctionSpecificFields =
+  const moduleFields =
     auctionType === AuctionType.SEALED_BID
       ? addEMPFields(auctionData as EMPAuctionData, auction)
       : addFPFields(auctionData as FixedPriceAuctionData, auction);
@@ -155,7 +160,7 @@ export function formatAuction(
     totalBidsDecrypted,
     totalBidAmount: trimCurrency(totalBidAmount),
     tokenPairSymbols: `${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
-    ...auctionSpecificFields,
+    ...moduleFields,
   };
 }
 

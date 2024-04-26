@@ -3,10 +3,18 @@ import { getAuctionHouse } from "utils/contracts";
 import { fromHex } from "viem";
 import { UseReadContractReturnType, useReadContract } from "wagmi";
 import { decodeLinearVestingParams } from "../utils/get-derivative-params";
-import { AuctionDerivatives } from "@repo/types";
+import { AuctionDerivatives, AuctionType } from "@repo/types";
 
-export function useDerivativeData(lotId?: string, chainId?: number) {
-  const { abi, address } = getAuctionHouse(chainId);
+export function useDerivativeData({
+  lotId,
+  chainId,
+  auctionType,
+}: {
+  lotId?: string;
+  chainId: number;
+  auctionType: AuctionType;
+}) {
+  const { abi, address } = getAuctionHouse({ chainId, auctionType });
 
   const response = useReadContract({
     abi,
@@ -23,7 +31,7 @@ export function useDerivativeData(lotId?: string, chainId?: number) {
 }
 
 type LotRoutingStruct = UseReadContractReturnType<
-  typeof axisContracts.abis.auctionHouse,
+  typeof axisContracts.abis.atomicAuctionHouse,
   "lotRouting"
 >["data"];
 

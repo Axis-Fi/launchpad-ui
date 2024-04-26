@@ -31,7 +31,6 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { axisContracts } from "@repo/deployments";
 import {
   Address,
   fromHex,
@@ -58,6 +57,7 @@ import { RequiresChain } from "components/requires-chain";
 import { PageHeader } from "modules/app/page-header";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
+import { getAuctionHouse } from "utils/contracts";
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
@@ -156,7 +156,6 @@ export default function CreateAuctionPage() {
 
   const chainId = _chainId ?? connectedChainId;
 
-  const axisAddresses = axisContracts.addresses[chainId];
   const createAuctionTx = useWriteContract();
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
@@ -211,6 +210,11 @@ export default function CreateAuctionPage() {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
 
+    const { address: contractAddress, abi } = getAuctionHouse({
+      auctionType,
+      chainId,
+    });
+
     const publicKey =
       auctionType === AuctionType.SEALED_BID
         ? await generateKeyPairMutation.mutateAsync()
@@ -224,8 +228,8 @@ export default function CreateAuctionPage() {
 
     createAuctionTx.writeContract(
       {
-        abi: axisContracts.abis.auctionHouse,
-        address: axisAddresses.auctionHouse,
+        abi,
+        address: contractAddress,
         functionName: "auction",
         args: [
           {
@@ -248,7 +252,6 @@ export default function CreateAuctionPage() {
             wrapDerivative: false,
             //TODO: enable callback data support
             callbackData: toHex(""),
-            prefunded: true,
           },
           {
             start: getTimestamp(values.start),
@@ -268,10 +271,14 @@ export default function CreateAuctionPage() {
       },
     );
   };
+
   const { isSufficientAllowance, execute, approveReceipt, approveTx } =
     useAllowance({
+      spenderAddress: getAuctionHouse({
+        chainId,
+        auctionType: auctionType as AuctionType,
+      }).address,
       ownerAddress: address,
-      spenderAddress: axisAddresses?.auctionHouse,
       tokenAddress: payoutToken?.address as Address,
       decimals: payoutToken?.decimals,
       chainId: payoutToken?.chainId,
