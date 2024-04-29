@@ -35,7 +35,7 @@ export const useDecryptBids = (auction: Auction) => {
       auction.bidsDecrypted.length,
   });
 
-  const DECRYPT_NUM = 400n; //TODO: figure out if theres a magic number or a better way
+  const DECRYPT_NUM = 100n; //TODO:
 
   const hintsQuery = useQuery({
     queryKey: ["hints", auctionHouse.address, auction, DECRYPT_NUM],

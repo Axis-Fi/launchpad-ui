@@ -4,12 +4,12 @@ import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
 import { Button, DataTable, Tooltip } from "@repo/ui";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { axisContracts } from "@repo/deployments";
-import { parseUnits } from "viem";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import React from "react";
 import { useAuction } from "./hooks/use-auction";
+import { getAuctionHouse } from "utils/contracts";
+import { useBidIndex } from "./hooks/use-bid-index";
 
 const column = createColumnHelper<AuctionEncryptedBid & { auction: Auction }>();
 
@@ -108,7 +108,7 @@ type BidListProps = PropsWithAuction & {
 };
 
 export function BidList(props: BidListProps) {
-  const axisAddresses = axisContracts.addresses[props.auction.chainId];
+  const auctionHouse = getAuctionHouse(props.auction);
   const address = props.address ? props.address.toLowerCase() : undefined;
   const encryptedBids = props.auction?.bids ?? [];
   const { refetch: refetchAuction } = useAuction(
@@ -120,6 +120,10 @@ export function BidList(props: BidListProps) {
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [bidToRefund, setBidToRefund] = React.useState<AuctionEncryptedBid>();
+  const { index: bidIndex } = useBidIndex(
+    props.auction,
+    BigInt(bidToRefund?.bidId ?? -1),
+  );
 
   const mappedBids =
     encryptedBids.map((bid) => {
@@ -132,13 +136,13 @@ export function BidList(props: BidListProps) {
   const isLoading = refund.isPending || refundReceipt.isLoading;
 
   const handleRefund = (bidId?: string) => {
-    if (!bidId) throw new Error("Unable to get bidId for refund");
+    if (!bidId || !bidIndex) throw new Error("Unable to get bidId for refund");
 
     refund.writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
+      abi: auctionHouse.abi,
+      address: auctionHouse.address,
       functionName: "refundBid",
-      args: [parseUnits(props.auction.lotId, 0), parseUnits(bidId, 0)],
+      args: [BigInt(props.auction.lotId), BigInt(bidId), BigInt(bidIndex)],
     });
   };
 
