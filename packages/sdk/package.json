@@ -14,6 +14,7 @@
   "dependencies": {
     "@repo/abis": "workspace:*",
     "@repo/cloak": "workspace:*",
+    "@repo/deployments": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
