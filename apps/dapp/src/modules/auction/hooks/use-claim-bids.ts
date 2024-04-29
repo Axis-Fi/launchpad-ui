@@ -9,7 +9,8 @@ import {
 
 export function useClaimBids(auction: Auction) {
   const { address: userAddress } = useAccount();
-  const { abi, address } = getAuctionHouse(auction.chainId);
+  const { abi, address } = getAuctionHouse(auction);
+
   const bids = auction.bids
     .filter((b) => b.bidder.toLowerCase() === userAddress?.toLowerCase())
     .map((b) => BigInt(b.bidId));

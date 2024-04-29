@@ -1,5 +1,4 @@
 import React from "react";
-import { axisContracts } from "@repo/deployments";
 import { useMutation } from "@tanstack/react-query";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
@@ -22,6 +21,7 @@ import {
 } from "wagmi";
 import { useReferrer } from "state/referral";
 import { AuctionType } from "@repo/types";
+import { getAuctionHouse } from "utils/contracts";
 
 export function useBidAuction(
   lotId: string,
@@ -38,8 +38,7 @@ export function useBidAuction(
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
-  const axisAddresses = axisContracts.addresses[auction.chainId];
-  console.log({ auction });
+  const auctionHouse = getAuctionHouse(auction);
 
   // Bids need to be encrypted before submitting
   const encryptBidMutation = useMutation({
@@ -58,7 +57,7 @@ export function useBidAuction(
       // TODO consider giving a state update on the encryption process
       const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
         xChainId: auction.chainId,
-        xAuctionHouse: axisAddresses.auctionHouse,
+        xAuctionHouse: auctionHouse.address,
         lotId: parseInt(auction.lotId),
         encryptRequest: {
           amount: toHex(quoteTokenAmountIn),
@@ -103,8 +102,8 @@ export function useBidAuction(
     ]);
     // Submit the bid to the contract
     bidTx.writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
+      abi: auctionHouse.abi,
+      address: auctionHouse.address,
       functionName: "bid",
       args: [
         {
@@ -137,8 +136,8 @@ export function useBidAuction(
     );
 
     bidTx.writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
+      abi: auctionHouse.abi,
+      address: auctionHouse.address,
       functionName: "purchase",
       args: [
         {
@@ -176,7 +175,7 @@ export function useBidAuction(
     ...allowanceUtils
   } = useAllowance({
     ownerAddress: address,
-    spenderAddress: axisAddresses.auctionHouse,
+    spenderAddress: auctionHouse.address,
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,

@@ -5,6 +5,7 @@ import {
   AxisContractNames,
   AxisModuleContractNames,
 } from "@repo/types";
+import { Address } from "viem";
 
 const moduleMap = {
   [AuctionType.SEALED_BID]: "atomicAuctionHouse",
@@ -25,12 +26,19 @@ export function getContractsByModuleType(auction: Auction) {
 }
 
 export function getAuctionHouse(
-  auction: Pick<Auction, "chainId" | "auctionType">,
+  auction: Partial<Pick<Auction, "chainId" | "auctionType">>,
 ) {
+  //TODO: find a better way to handle this, see useAuction for usecase
+  if (!auction.auctionType || !auction.chainId) {
+    return {
+      abi: axisContracts.abis.atomicAuctionHouse,
+      address: "0x" as Address,
+    };
+  }
   const contractName = moduleMap[auction.auctionType] as AxisContractNames;
 
   return {
     abi: axisContracts.abis[contractName],
-    address: axisContracts.addresses[auction.chainId][contractName],
+    address: axisContracts.addresses[auction.chainId][contractName] as Address,
   };
 }

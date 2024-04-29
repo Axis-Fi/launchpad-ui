@@ -1,7 +1,7 @@
 import { Button, DataTable, Tooltip, trimAddress } from "@repo/ui";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
-import type { AuctionListed } from "@repo/types";
+import { AuctionType, type AuctionListed } from "@repo/types";
 import { useAccount } from "wagmi";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { CheckIcon, XIcon } from "lucide-react";
@@ -35,10 +35,19 @@ export function CuratableAuctionList() {
   const data = auctions.result.filter(
     (a) => a.curator.toLocaleLowerCase() === address?.toLocaleLowerCase(),
   );
-  const [curating, setCurating] = React.useState({ lotId: "", chainId: 0 });
+  const [curating, setCurating] = React.useState({
+    lotId: "",
+    chainId: 0,
+    auctionType: AuctionType.SEALED_BID,
+  });
+
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
-  const curate = useCurateAuction(curating.lotId, curating.chainId);
+  const curate = useCurateAuction(
+    curating.lotId,
+    curating.chainId,
+    curating.auctionType,
+  );
 
   const columns = React.useMemo(
     () => [
@@ -61,6 +70,7 @@ export function CuratableAuctionList() {
                 setCurating({
                   lotId: info.row.original.lotId,
                   chainId: info.row.original.chainId,
+                  auctionType: info.row.original.auctionType,
                 });
                 setIsDialogOpen(true);
               }}

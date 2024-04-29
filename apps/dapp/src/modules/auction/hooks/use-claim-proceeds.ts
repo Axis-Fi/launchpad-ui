@@ -4,12 +4,13 @@ import {
   useWriteContract,
 } from "wagmi";
 import { Auction } from "@repo/types";
-import { axisContracts } from "@repo/deployments";
+import { getAuctionHouse } from "utils/contracts";
 
 export function useClaimProceeds(auction: Auction) {
+  const auctionHouse = getAuctionHouse(auction);
   const { data, ...claimCall } = useSimulateContract({
-    address: axisContracts.addresses[auction.chainId].auctionHouse,
-    abi: axisContracts.abis.auctionHouse,
+    address: auctionHouse.address,
+    abi: auctionHouse.abi,
     chainId: auction.chainId,
     functionName: "claimProceeds",
     args: [BigInt(auction.lotId), "0x"],

@@ -14,6 +14,7 @@ import { Hex } from "viem";
 /** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: Auction) => {
   const auctionHouse = getAuctionHouse(auction);
+  //Fixed priced auctions dont require decryption
   const emp = getContractsByModuleType(auction);
 
   const { refetch: refetchAuction } = useAuction(

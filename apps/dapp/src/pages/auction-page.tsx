@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 import type { Address } from "viem";
-import { axisContracts } from "@repo/deployments";
 import { Avatar, Button, Skeleton, Tooltip } from "@repo/ui";
 import {
   type PropsWithAuction,
@@ -27,6 +26,7 @@ import {
 import { ChainIcon } from "components/chain-icon";
 import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
 import { getAuctionMetadata } from "modules/auction/metadata";
+import { getAuctionHouse } from "utils/contracts";
 
 const statuses: Record<
   AuctionStatus,
@@ -57,7 +57,7 @@ export default function AuctionPage() {
 
   if (!auction) return <AuctionPageMissing />;
 
-  const contracts = axisContracts.addresses[auction.chainId];
+  const auctionHouse = getAuctionHouse(auction);
   const AuctionElement =
     auction.status === "concluded" &&
     auction.auctionType === AuctionType.FIXED_PRICE
@@ -117,7 +117,7 @@ export default function AuctionPage() {
               `Quote (${auction.quoteToken.symbol})`,
               auction.quoteToken.address as Address,
             ],
-            ["Auction House", contracts.auctionHouse],
+            ["Auction House", auctionHouse.address],
           ]}
         />
       </div>

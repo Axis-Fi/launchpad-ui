@@ -1,4 +1,3 @@
-import { axisContracts } from "@repo/deployments";
 import {
   useAccount,
   useSimulateContract,
@@ -8,18 +7,23 @@ import {
 import { toKeycode } from "utils/hex";
 import { AuctionType } from "@repo/types";
 import { toBasisPoints } from "utils/number";
+import { getAuctionHouse } from "utils/contracts";
 
-export function useCuratorFees(chainId: number, feePercentage?: number) {
-  const { address } = useAccount({});
-  const axisAddresses = axisContracts.addresses[chainId];
+export function useCuratorFees(
+  chainId: number,
+  feePercentage: number,
+  auctionType: AuctionType,
+) {
+  const { address } = useAccount();
+  const auctionHouse = getAuctionHouse({ chainId, auctionType });
 
   const currentFee = 0; //TODO: Figure out to fetch current curator fee
   const newFee = toBasisPoints(feePercentage!); // Fees are in basis points
 
   const { data: setFeeCall, ...feeSimulation } = useSimulateContract({
     chainId,
-    abi: axisContracts.abis.auctionHouse,
-    address: axisAddresses.auctionHouse,
+    abi: auctionHouse.abi,
+    address: auctionHouse.address,
     functionName: "setCuratorFee",
     //TODO: add support for different auctions
     args: [toKeycode(AuctionType.SEALED_BID), newFee],

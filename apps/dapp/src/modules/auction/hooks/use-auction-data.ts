@@ -20,7 +20,7 @@ export function useAuctionData({
   chainId,
   type = AuctionType.SEALED_BID,
 }: UseAuctionDataParameters) {
-  const auctionType = type.toLocaleLowerCase() as keyof AxisContractAddresses;
+  const auctionType = type as keyof AxisContractAddresses;
 
   const auctionDataQuery = useReadContract({
     abi: axisContracts.abis[auctionType],

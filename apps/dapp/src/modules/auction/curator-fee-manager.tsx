@@ -5,6 +5,8 @@ import React from "react";
 import { useFees } from "./hooks/use-fees";
 import { CheckIcon } from "lucide-react";
 import { parsePercent } from "utils/number";
+import { AuctionType } from "@repo/types";
+import { getAuctionHouse } from "utils/contracts";
 
 type CuratorFeeManagerProps = {
   chainId?: number;
@@ -12,14 +14,16 @@ type CuratorFeeManagerProps = {
 export function CuratorFeeManager(props: CuratorFeeManagerProps) {
   const connectedChainId = useChainId();
   const chainId = props.chainId ?? connectedChainId;
+  const auctionType = AuctionType.SEALED_BID; //TODO: add type picker
+  const ah = getAuctionHouse({ chainId, auctionType });
 
   const {
     data: { maxCuratorFee },
-  } = useFees(chainId);
+  } = useFees(chainId, ah.address);
 
-  const [amount, setAmount] = React.useState<string>("");
-  const curatorFees = useCuratorFees(chainId, parseFloat(amount));
-  const parsedAmount = parseFloat(amount);
+  const [fee, setFee] = React.useState<string>("");
+  const curatorFees = useCuratorFees(chainId, parseFloat(fee), auctionType);
+  const parsedAmount = parseFloat(fee);
 
   return (
     <div className="gap-x-8">
@@ -27,15 +31,15 @@ export function CuratorFeeManager(props: CuratorFeeManagerProps) {
         <InfoLabel
           editable
           label="Your Fee"
-          value={amount || curatorFees.fee + "%"}
+          value={fee || curatorFees.fee + "%"}
           inputClassName="w-24 min-w-0 pl-0"
           onChange={(e) => {
             parsePercent(e);
-            setAmount(e.target.value);
+            setFee(e.target.value);
           }}
           onBlur={(e) => {
             if (!isFinite(parseFloat(e.target.value))) {
-              setAmount(curatorFees.fee + "%");
+              setFee(curatorFees.fee + "%");
             }
           }}
           reverse
@@ -53,7 +57,7 @@ export function CuratorFeeManager(props: CuratorFeeManagerProps) {
       </div>
       <Tooltip content="The contract's maximum allowed curator's fee">
         <Badge
-          onClick={() => setAmount(maxCuratorFee + "%")}
+          onClick={() => setFee(maxCuratorFee + "%")}
           className="mt-4 h-min"
         >
           Max: {maxCuratorFee}%
