@@ -15,8 +15,8 @@
       "url": "https://api-testnet-d2e7.up.railway.app"
     },
     {
-      "description": "Mainnet",
-      "url": "https://cloak-api-mainnet.up.railway.app"
+      "description": "Testnet V2",
+      "url": "https://api-testnet-v2.up.railway.app"
     }
   ],
   "tags": [
@@ -212,6 +212,114 @@
         }
       }
     },
+    "/hints/{lot_id}/{num}": {
+      "parameters": [
+        {
+          "name": "x-chain-id",
+          "in": "header",
+          "description": "The ID of a chain the auction is on",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true
+        },
+        {
+          "name": "x-auction-house",
+          "in": "header",
+          "description": "The address of the auction house contract the auction is on",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieve optimal decrypts for the next N bids to be decrypted on the a given lot ID. Assumes that the key information for the auction was created by the service.",
+        "tags": ["Keys"],
+        "parameters": [
+          {
+            "name": "lot_id",
+            "in": "path",
+            "description": "The lot ID to retrive hints for",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "num",
+            "in": "path",
+            "description": "The number of hints to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/DecryptHintsResponse"
+          },
+          "500": {
+            "description": "Failed to retrieve decrypt hints for the given lot ID."
+          }
+        }
+      }
+    },
+    "/hints/{lot_id}/{num}/external": {
+      "parameters": [
+        {
+          "name": "x-chain-id",
+          "in": "header",
+          "description": "The ID of a chain the auction is on",
+          "schema": {
+            "type": "integer"
+          },
+          "required": true
+        },
+        {
+          "name": "x-auction-house",
+          "in": "header",
+          "description": "The address of the auction house contract the auction is on",
+          "schema": {
+            "type": "string"
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieve optimal decrypts for the next N bids to be decrypted on the a given lot ID. Works for any lot ID, assuming the private key for the auction has been submitted to the contract.",
+        "tags": ["Keys"],
+        "parameters": [
+          {
+            "name": "lot_id",
+            "in": "path",
+            "description": "The lot ID to retrive hints for",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "num",
+            "in": "path",
+            "description": "The number of hints to retrieve",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/DecryptHintsResponse"
+          },
+          "500": {
+            "description": "Failed to retrieve decrypt hints for the given lot ID."
+          }
+        }
+      }
+    },
     "/configs": {
       "get": {
         "summary": "Gets all chain configurations supported by the API.",
@@ -361,6 +469,20 @@
               "type": "array",
               "items": {
                 "$ref": "#/components/schemas/Config"
+              }
+            }
+          }
+        }
+      },
+      "DecryptHintsResponse": {
+        "description": "An array containing decrypt hints for the given lot ID.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "description": "The key which the decrypted bid should be inserted after. A 32-byte value provided as a hex string.",
+                "type": "string"
               }
             }
           }

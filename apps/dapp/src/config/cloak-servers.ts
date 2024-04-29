@@ -1,5 +1,7 @@
 import { Environment } from "./environment";
 
+const v2URL = "api-testnet-v2.up.railway.app";
+
 export default {
   development: {
     description: "Local",
@@ -7,11 +9,11 @@ export default {
   },
   testing: {
     description: "Testnet",
-    url: "https://api-testnet-d2e7.up.railway.app",
+    url: v2URL,
   },
   staging: {
     description: "Staging",
-    url: "https://cloak-api-mainnet.up.railway.app",
+    url: v2URL,
   },
   production: {
     description: "Mainnet",

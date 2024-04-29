@@ -34,6 +34,20 @@ export interface EncryptLotIdPostRequest {
   encryptRequest: EncryptRequest;
 }
 
+export interface HintsLotIdNumExternalGetRequest {
+  xChainId: number;
+  xAuctionHouse: string;
+  lotId: number;
+  num: number;
+}
+
+export interface HintsLotIdNumGetRequest {
+  xChainId: number;
+  xAuctionHouse: string;
+  lotId: number;
+  num: number;
+}
+
 export interface PrivateKeyLotIdGetRequest {
   xChainId: number;
   xAuctionHouse: string;
@@ -146,6 +160,204 @@ export class KeysApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<EncryptLotIdPost200Response> {
     const response = await this.encryptLotIdPostRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
+   * Retrieve optimal decrypts for the next N bids to be decrypted on the a given lot ID. Works for any lot ID, assuming the private key for the auction has been submitted to the contract.
+   */
+  async hintsLotIdNumExternalGetRaw(
+    requestParameters: HintsLotIdNumExternalGetRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<string>>> {
+    if (
+      requestParameters.xChainId === null ||
+      requestParameters.xChainId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "xChainId",
+        "Required parameter requestParameters.xChainId was null or undefined when calling hintsLotIdNumExternalGet.",
+      );
+    }
+
+    if (
+      requestParameters.xAuctionHouse === null ||
+      requestParameters.xAuctionHouse === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "xAuctionHouse",
+        "Required parameter requestParameters.xAuctionHouse was null or undefined when calling hintsLotIdNumExternalGet.",
+      );
+    }
+
+    if (
+      requestParameters.lotId === null ||
+      requestParameters.lotId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "lotId",
+        "Required parameter requestParameters.lotId was null or undefined when calling hintsLotIdNumExternalGet.",
+      );
+    }
+
+    if (requestParameters.num === null || requestParameters.num === undefined) {
+      throw new runtime.RequiredError(
+        "num",
+        "Required parameter requestParameters.num was null or undefined when calling hintsLotIdNumExternalGet.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (
+      requestParameters.xChainId !== undefined &&
+      requestParameters.xChainId !== null
+    ) {
+      headerParameters["x-chain-id"] = String(requestParameters.xChainId);
+    }
+
+    if (
+      requestParameters.xAuctionHouse !== undefined &&
+      requestParameters.xAuctionHouse !== null
+    ) {
+      headerParameters["x-auction-house"] = String(
+        requestParameters.xAuctionHouse,
+      );
+    }
+
+    const response = await this.request(
+      {
+        path: `/hints/{lot_id}/{num}/external`
+          .replace(
+            `{${"lot_id"}}`,
+            encodeURIComponent(String(requestParameters.lotId)),
+          )
+          .replace(
+            `{${"num"}}`,
+            encodeURIComponent(String(requestParameters.num)),
+          ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse<any>(response);
+  }
+
+  /**
+   * Retrieve optimal decrypts for the next N bids to be decrypted on the a given lot ID. Works for any lot ID, assuming the private key for the auction has been submitted to the contract.
+   */
+  async hintsLotIdNumExternalGet(
+    requestParameters: HintsLotIdNumExternalGetRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<string>> {
+    const response = await this.hintsLotIdNumExternalGetRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
+   * Retrieve optimal decrypts for the next N bids to be decrypted on the a given lot ID. Assumes that the key information for the auction was created by the service.
+   */
+  async hintsLotIdNumGetRaw(
+    requestParameters: HintsLotIdNumGetRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<string>>> {
+    if (
+      requestParameters.xChainId === null ||
+      requestParameters.xChainId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "xChainId",
+        "Required parameter requestParameters.xChainId was null or undefined when calling hintsLotIdNumGet.",
+      );
+    }
+
+    if (
+      requestParameters.xAuctionHouse === null ||
+      requestParameters.xAuctionHouse === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "xAuctionHouse",
+        "Required parameter requestParameters.xAuctionHouse was null or undefined when calling hintsLotIdNumGet.",
+      );
+    }
+
+    if (
+      requestParameters.lotId === null ||
+      requestParameters.lotId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "lotId",
+        "Required parameter requestParameters.lotId was null or undefined when calling hintsLotIdNumGet.",
+      );
+    }
+
+    if (requestParameters.num === null || requestParameters.num === undefined) {
+      throw new runtime.RequiredError(
+        "num",
+        "Required parameter requestParameters.num was null or undefined when calling hintsLotIdNumGet.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (
+      requestParameters.xChainId !== undefined &&
+      requestParameters.xChainId !== null
+    ) {
+      headerParameters["x-chain-id"] = String(requestParameters.xChainId);
+    }
+
+    if (
+      requestParameters.xAuctionHouse !== undefined &&
+      requestParameters.xAuctionHouse !== null
+    ) {
+      headerParameters["x-auction-house"] = String(
+        requestParameters.xAuctionHouse,
+      );
+    }
+
+    const response = await this.request(
+      {
+        path: `/hints/{lot_id}/{num}`
+          .replace(
+            `{${"lot_id"}}`,
+            encodeURIComponent(String(requestParameters.lotId)),
+          )
+          .replace(
+            `{${"num"}}`,
+            encodeURIComponent(String(requestParameters.num)),
+          ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse<any>(response);
+  }
+
+  /**
+   * Retrieve optimal decrypts for the next N bids to be decrypted on the a given lot ID. Assumes that the key information for the auction was created by the service.
+   */
+  async hintsLotIdNumGet(
+    requestParameters: HintsLotIdNumGetRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<string>> {
+    const response = await this.hintsLotIdNumGetRaw(
       requestParameters,
       initOverrides,
     );
