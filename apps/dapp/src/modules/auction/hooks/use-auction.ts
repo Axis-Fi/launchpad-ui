@@ -92,6 +92,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   if (!auctionType) {
     throw new Error(`Auction type ${auctionType} doesn't exist`);
   }
+
   return {
     refetch,
     result: {
