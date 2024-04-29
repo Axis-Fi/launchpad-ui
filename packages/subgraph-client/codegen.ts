@@ -24,6 +24,10 @@ const config: CodegenConfig = {
         strictScalars: true,
         skipTypename: true,
         scalars: {
+          Timestamp: {
+            input: "string",
+            output: "string",
+          },
           Int: {
             input: "string",
             output: "string",
