@@ -9,8 +9,13 @@ import { useAccount } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
 import { AuctionInfoLabel } from "../auction-info-labels";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
+import React from "react";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
+  const [isClaimBids, setIsClaimingBids] = React.useState(false);
+  const [isClaimingProceeds, setIsClaimingProceeds] = React.useState(false);
+
   const { address } = useAccount();
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const claimProceeds = useClaimProceeds(auction);
@@ -38,14 +43,20 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             <RequiresChain chainId={auction.chainId}>
               {address?.toLowerCase() === auction.owner.toLowerCase() && (
                 <div className="flex justify-center">
-                  <Button onClick={claimProceeds.handleClaim} className="mt-4">
+                  <Button
+                    onClick={() => setIsClaimingProceeds(true)}
+                    className="mt-4"
+                  >
                     CLAIM PROCEEDS
                   </Button>
                 </div>
               )}
               {userHasBids && (
                 <div className="flex justify-center">
-                  <Button onClick={claimBids.handleClaim} className="mt-4">
+                  <Button
+                    onClick={() => setIsClaimingBids(true)}
+                    className="mt-4"
+                  >
                     CLAIM BIDS
                   </Button>
                 </div>
@@ -79,6 +90,36 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           <ProjectInfoCard auction={auction} />
         </div>
       </div>
+      <TransactionDialog
+        signatureMutation={claimBids.claimTx}
+        mutation={claimBids.claimReceipt}
+        chainId={auction.chainId}
+        hash={claimBids.claimTx.data!}
+        onConfirm={claimBids.handleClaim}
+        open={isClaimBids}
+        onOpenChange={(open) => {
+          setIsClaimingBids(open);
+
+          if (claimBids.claimTx.isError) {
+            claimBids.claimTx.reset();
+          }
+        }}
+      />
+      <TransactionDialog
+        signatureMutation={claimProceeds.claimTx}
+        mutation={claimProceeds.claimReceipt}
+        chainId={auction.chainId}
+        hash={claimProceeds.claimTx.data!}
+        onConfirm={claimProceeds.handleClaim}
+        open={isClaimingProceeds}
+        onOpenChange={(open) => {
+          setIsClaimingBids(open);
+
+          if (claimProceeds.claimTx.isError) {
+            claimProceeds.claimTx.reset();
+          }
+        }}
+      />
     </div>
   );
 }
