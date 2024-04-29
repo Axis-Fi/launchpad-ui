@@ -54,14 +54,16 @@ function mapEMPAuctionData(
     | readonly [
         bigint,
         bigint,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
         number,
+        bigint,
+        boolean,
+        bigint,
+        bigint,
+        bigint,
         bigint,
         { x: bigint; y: bigint },
         bigint,
+        bigint[],
       ]
     | undefined,
 ): EMPAuctionData | undefined {
@@ -69,15 +71,17 @@ function mapEMPAuctionData(
 
   return {
     nextBidId: data[0],
-    marginalPrice: data[1],
-    minimumPrice: data[2],
-    nextDecryptIndex: data[3],
-    minFilled: data[4],
-    minBidSize: data[5],
-    status: data[6],
-    marginalBidId: data[7],
-    publicKey: data[8],
-    privateKey: data[9],
+    nextDecryptIndex: data[1],
+    status: data[2],
+    marginalBidId: data[3],
+    proceedsClaimed: data[4],
+    marginalPrice: data[5],
+    minimumPrice: data[6],
+    minFilled: data[7],
+    minBidSize: data[8],
+    publicKey: data[9],
+    privateKey: data[10],
+    bidIds: data[11],
   };
 }
 
