@@ -35,6 +35,12 @@ const config: AxisDeploymentConfig = {
       logoURI:
         "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/WETH.png",
     },
+    {
+      decimals: 18,
+      symbol: "SLO",
+      name: "SLO Token",
+      address: "0xB24D0b6ae015DC6fd279E330db101bB890d8060c",
+    },
   ],
 };
 
