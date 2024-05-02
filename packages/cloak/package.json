@@ -15,6 +15,6 @@
     "access": "public"
   },
   "scripts": {
-    "generate:api": "pnpm dlx @openapitools/openapi-generator-cli generate -i ./src/cloak-openapi.json -g typescript-fetch -o ./src/generated/"
+    "generate:openapi": "pnpm dlx @openapitools/openapi-generator-cli generate -i ./src/cloak-openapi.json -g typescript-fetch -o ./src/generated/"
   }
 }

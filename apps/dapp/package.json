@@ -11,12 +11,13 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "generate:openapi": "pnpm dlx @openapitools/openapi-generator-cli generate -i ./src/config/cloak-openapi.json -g typescript-fetch -o ./src/services/cloak/generated/"
+    "generate:openapi": "pnpm --filter=@repo/cloak run generate:openapi"
   },
   "dependencies": {
     "@fleekhq/fleek-storage-js": "^1.0.24",
     "@rainbow-me/rainbowkit": "^2.0.2",
     "@repo/abis": "workspace:*",
+    "@repo/cloak": "workspace:*",
     "@repo/deployments": "workspace:*",
     "@repo/env": "workspace:*",
     "@repo/eslint-config": "workspace:*",

@@ -1,8 +1,10 @@
 import { WagmiProvider, createConfig } from "wagmi";
-import { activeConfig } from "../config/chains";
+import { chains } from "@repo/env";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import WalletProvider, { connectors } from "./wallet-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const activeConfig = chains.activeConfig;
 
 const queryClient = new QueryClient({
   defaultOptions: {

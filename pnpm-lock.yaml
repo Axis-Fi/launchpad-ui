@@ -37,6 +37,9 @@ importers:
       "@repo/abis":
         specifier: workspace:*
         version: link:../../packages/abis
+      "@repo/cloak":
+        specifier: workspace:*
+        version: link:../../packages/cloak
       "@repo/deployments":
         specifier: workspace:*
         version: link:../../packages/deployments

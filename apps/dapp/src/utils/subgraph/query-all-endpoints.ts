@@ -1,6 +1,6 @@
 import { request } from "./request";
 import { Variables } from "graphql-request";
-import { environment } from "config/environment";
+import { environment } from "@repo/env";
 import { mainnetDeployments, testnetDeployments } from "@repo/deployments";
 
 const isTestnet = environment.isTestnet;
