@@ -55,13 +55,7 @@ export type Scalars = {
   BigInt: { input: string; output: string };
   Bytes: { input: string; output: string };
   Int8: { input: string; output: string };
-  Timestamp: { input: string; output: string };
 };
-
-export enum Aggregation_Interval {
-  Day = "day",
-  Hour = "hour",
-}
 
 export type AuctionCancelled = {
   auctionRef: Scalars["Bytes"]["output"];
@@ -2533,8 +2527,6 @@ export type _Block_ = {
   hash?: Maybe<Scalars["Bytes"]["output"]>;
   /** The block number */
   number: Scalars["Int"]["output"];
-  /** The hash of the parent block */
-  parentHash?: Maybe<Scalars["Bytes"]["output"]>;
   /** Integer representation of the timestamp stored in blocks for the chain */
   timestamp?: Maybe<Scalars["Int"]["output"]>;
 };

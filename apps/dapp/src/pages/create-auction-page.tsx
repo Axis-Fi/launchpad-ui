@@ -23,7 +23,7 @@ import { TokenPicker } from "modules/token/token-picker";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cloakClient } from "src/services/cloak";
+import { cloakClient } from "@repo/cloak";
 import {
   UseWaitForTransactionReceiptReturnType,
   useAccount,

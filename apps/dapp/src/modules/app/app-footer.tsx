@@ -1,7 +1,9 @@
 import { Button, Link } from "@repo/ui";
 import { SocialRow } from "../../components/social-row";
-import { discord, twitter, contact, website } from "config/metadata";
+import { metadata } from "@repo/env";
 import { AppVersion } from "./app-version";
+
+const { discord, twitter, website, contact } = metadata;
 
 export function AppFooter() {
   return (

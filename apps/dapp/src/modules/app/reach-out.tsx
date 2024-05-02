@@ -1,4 +1,4 @@
-import metadata from "config/metadata";
+import { metadata } from "@repo/env";
 import { Link, cn } from "@repo/ui";
 
 /**Shows a message with a link to Discord*/

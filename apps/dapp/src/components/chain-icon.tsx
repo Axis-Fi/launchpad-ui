@@ -1,5 +1,7 @@
 import { Avatar } from "@repo/ui";
-import { activeChains } from "config/chains";
+import { chains } from "@repo/env";
+
+const activeChains = chains.activeChains;
 
 type ChainIconProps = {
   chainId: number;
