@@ -1,4 +1,4 @@
-import { Auction } from "@repo/types";
+import { Auction, AuctionPurchase } from "@repo/types";
 import { DataTable } from "@repo/ui";
 import { createColumnHelper } from "@tanstack/react-table";
 import { BlockExplorerLink } from "components/blockexplorer-link";
@@ -9,9 +9,7 @@ type PurchaseListProps = {
   auction: Auction;
 };
 
-const column = createColumnHelper<
-  Auction["purchases"] & { auction: Auction }
->();
+const column = createColumnHelper<Auction[""] & { auction: Auction }>();
 
 const cols = [
   column.accessor("buyer", {
@@ -54,15 +52,11 @@ const cols = [
 ];
 
 export function PurchaseList(props: PurchaseListProps) {
-  const purchases = props.auction.purchases.map((p) => ({
+  //TODO: figure out why type is missing here
+  const purchases = props.auction.purchases.map((p: AuctionPurchase) => ({
     ...p,
     auction: props.auction,
   }));
 
-  return (
-    <>
-      {/*@ts-expect-error //TODO: fix type mismatch*/}
-      <DataTable columns={cols} data={purchases} />
-    </>
-  );
+  return <DataTable columns={cols} data={purchases} />;
 }

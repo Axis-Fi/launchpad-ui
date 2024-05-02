@@ -112,8 +112,8 @@ export function BidList(props: BidListProps) {
   const address = props.address ? props.address.toLowerCase() : undefined;
   const encryptedBids = props.auction?.bids ?? [];
   const { refetch: refetchAuction } = useAuction(
-    props.auction.lotId,
-    props.auction.chainId,
+    props.auction.id,
+    props.auction.auctionType,
   );
 
   const refund = useWriteContract();
@@ -157,7 +157,7 @@ export function BidList(props: BidListProps) {
           const isLive = props.auction.status === "live";
           if (!address || !isLive) return;
           if (bid.bidder.toLowerCase() !== address) return;
-          if (bid.status === "claimed" && !bid.amountOut) return;
+          if (bid.status === "claimed" && !bid.settledAmountOut) return;
 
           // Can refund if the bid did not win and the auction is settled
           //const isSettledBidNotWon = props.auction.status === "settled" && bid.status !== "won";

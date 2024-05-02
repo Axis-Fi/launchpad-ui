@@ -1,4 +1,4 @@
-import { RawSubgraphAuction } from "@repo/types";
+import { RawSubgraphBatchAuction } from "@repo/types";
 import { environment } from "config/environment";
 
 const devAddresses = [
@@ -6,9 +6,9 @@ const devAddresses = [
   "0x62A665d3f9fc9a968dC35a789122981d9109349a",
 ].map((a) => a.toLowerCase());
 
-export function filterDevAddressesOnTestnet(a: RawSubgraphAuction) {
+export function filterDevAddressesOnTestnet(a: RawSubgraphBatchAuction) {
   console.log({ environment });
   return (
-    environment.isDevelopment || !devAddresses.includes(a.owner.toLowerCase())
+    environment.isDevelopment || !devAddresses.includes(a.seller.toLowerCase())
   );
 }

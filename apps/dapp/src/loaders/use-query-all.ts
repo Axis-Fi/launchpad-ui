@@ -10,11 +10,11 @@ import { queryAllEndpoints } from "utils/subgraph/query-all-endpoints";
 export function useQueryAll<TQuery>({
   document,
   variables,
-  field,
+  fields,
 }: {
   document: string;
   variables?: Variables;
-  field: QueryResultKey<TQuery>;
+  fields: Array<QueryResultKey<TQuery>>;
 }) {
   const queries = useQueries({
     queries: queryAllEndpoints<TQuery>({ document, variables }),
@@ -27,7 +27,7 @@ export function useQueryAll<TQuery>({
       return {
         data: concatSubgraphQueryResultArrays<TQuery, QueryResultKey<TQuery>>(
           filteredResponses,
-          field,
+          fields,
         ),
         queries: responses,
         refetch: (args?: RefetchOptions) =>
@@ -47,13 +47,30 @@ type QueryResultKey<T> = keyof Omit<T, "__typename">;
 
 export const concatSubgraphQueryResultArrays = <T, K extends QueryResultKey<T>>(
   queries: UseQueryResult<T, unknown>[],
-  fieldName: K,
-) => {
-  return queries
-    .filter((value) => !value.isError)
-    .map((value) => (value.data as T)[fieldName])
-    .filter(
-      (fieldArray): fieldArray is NonNullable<T[K]> => fieldArray !== undefined,
-    )
-    .flat();
+  fieldNames: K[],
+): Record<K, NonNullable<T[K]>[]> => {
+  const result: Record<K, NonNullable<T[K]>[]> = {} as Record<
+    K,
+    NonNullable<T[K]>[]
+  >;
+
+  // Initialize each field with an empty array
+  fieldNames.forEach((fieldName) => {
+    result[fieldName] = [];
+  });
+
+  fieldNames.forEach((fieldName) => {
+    const fieldArray = queries
+      .filter((query) => !query.isError && query.data)
+      .map((query) => (query.data as T)[fieldName])
+      .filter(
+        (item): item is NonNullable<T[K]> =>
+          item !== undefined && item !== null,
+      )
+      .flat(); // Flatten the arrays
+
+    result[fieldName] = fieldArray as NonNullable<T[K]>[];
+  });
+
+  return result;
 };

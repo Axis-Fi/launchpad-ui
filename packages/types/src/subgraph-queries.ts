@@ -1,15 +1,29 @@
 import {
-  GetAuctionLotQuery,
+  GetAtomicAuctionLotQuery,
   GetAuctionLotsQuery,
+  GetBatchAuctionLotQuery,
 } from "@repo/subgraph-client/src/generated";
 
-export type RawSubgraphAuctionWithEvents = GetAuctionLotQuery["auctionLots"][0];
-export type RawSubgraphAuction = GetAuctionLotsQuery["auctionLots"][0];
+export type AtomicBaseSubgraphAuction =
+  GetAuctionLotsQuery["atomicAuctionLots"][0];
+export type BatchBaseSubgraphAuction =
+  GetAuctionLotsQuery["batchAuctionLots"][0];
 
-export type AuctionEncryptedBid = RawSubgraphAuctionWithEvents["bids"][0];
+export type RawSubgraphAuction =
+  | AtomicBaseSubgraphAuction
+  | BatchBaseSubgraphAuction;
 
-export type AuctionDecryptedBid =
-  RawSubgraphAuctionWithEvents["bidsDecrypted"][0];
+export type AtomicSubgraphAuction =
+  GetAtomicAuctionLotQuery["atomicAuctionLot"];
 
-export type AuctionRefundedBid =
-  RawSubgraphAuctionWithEvents["refundedBids"][0];
+export type BatchSubgraphAuction = NonNullable<
+  GetBatchAuctionLotQuery["batchAuctionLot"]
+>;
+
+export type AuctionEncryptedBid = BatchBaseSubgraphAuction["bids"][0];
+
+export type AuctionDecryptedBid = BatchBaseSubgraphAuction["bidsDecrypted"][0];
+
+export type AuctionRefundedBid = BatchBaseSubgraphAuction["bidsRefunded"][0];
+
+export type AuctionPurchase = AtomicBaseSubgraphAuction["purchases"][0];

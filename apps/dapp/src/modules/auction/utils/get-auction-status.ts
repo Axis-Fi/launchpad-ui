@@ -2,26 +2,28 @@ import { AuctionStatus, RawSubgraphAuction } from "@repo/types";
 
 /** Determines Auction status */
 export function getAuctionStatus(auction: RawSubgraphAuction): AuctionStatus {
-  const { start, conclusion, capacity, bids, bidsDecrypted, refundedBids } =
-    auction;
-
-  const isSettled = !!auction.settle;
-  // If the auction is settled, it is settled
-  if (isSettled) {
-    return "settled";
-  }
-
+  const { start, conclusion, capacity } = auction;
   const isConcluded =
     Date.now() > new Date(Number(conclusion) * 1000).getTime();
 
-  // If concluded and the number of bids is equal to the number of decrypted bids, the auction is decrypted
-  if (
-    isConcluded &&
-    bids.length > 0 &&
-    bids.length === bidsDecrypted.length + refundedBids.length
-  ) {
-    return "decrypted";
+  if ("bids" in auction) {
+    const { bids, bidsDecrypted, bidsRefunded } = auction;
+
+    const isSettled = !!auction.settled;
+    // If the auction is settled, it is settled
+    if (isSettled) {
+      return "settled";
+    }
+    if (
+      isConcluded &&
+      bids.length > 0 &&
+      bids.length === bidsDecrypted.length + bidsRefunded.length
+    ) {
+      return "decrypted";
+    }
   }
+
+  // If concluded and the number of bids is equal to the number of decrypted bids, the auction is decrypted
 
   // If capacity is 0, the auction is finished
   if (Number(capacity) == 0) {

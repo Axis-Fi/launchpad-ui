@@ -1,12 +1,19 @@
-import { useGetAuctionLotQuery } from "@repo/subgraph-client/src/generated";
+import {
+  GetAtomicAuctionLotQuery,
+  GetBatchAuctionLotQuery,
+  useGetAtomicAuctionLotQuery,
+  useGetBatchAuctionLotQuery,
+} from "@repo/subgraph-client/src/generated";
+import type { UseQueryResult } from "@tanstack/react-query";
 import { getAuctionStatus } from "../utils/get-auction-status";
 import {
   Auction,
   EMPAuctionData,
   AuctionFormattedInfo,
   AuctionType,
-  RawSubgraphAuctionWithEvents,
+  RawSubgraphAuction,
   FixedPriceAuctionData,
+  BatchSubgraphAuction,
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
@@ -19,32 +26,58 @@ import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
-import { getAuctionType } from "../utils/get-auction-type";
-import { useDerivativeData } from "./use-derivative-data";
+//import { useDerivativeData } from "./use-derivative-data";
+import { parseAuctionId } from "../utils/parse-auction-id";
 
 export type AuctionResult = {
   result?: Auction;
-  isLoading: boolean;
-  isRefetching: boolean;
-  refetch: ReturnType<typeof useGetAuctionLotQuery>["refetch"];
+} & Pick<
+  ReturnType<typeof useGetAtomicAuctionLotQuery>,
+  "refetch" | "isLoading" | "isRefetching"
+>;
+
+const hookMap = {
+  [AuctionType.SEALED_BID]: useGetBatchAuctionLotQuery,
+  [AuctionType.FIXED_PRICE]: useGetAtomicAuctionLotQuery,
 };
 
-export function useAuction(lotId?: string, chainId?: number): AuctionResult {
+export function useAuction(
+  id: string,
+  auctionType: AuctionType,
+): AuctionResult {
   const { getToken } = useTokenLists();
 
-  const { data, refetch, isLoading, isRefetching } = useGetAuctionLotQuery(
-    {
-      endpoint: deployments[chainId!].subgraphURL,
-      fetchParams,
-    },
-    { lotId: lotId! },
-    { enabled: !!chainId && !!lotId },
-  );
+  const { chainId, lotId } = parseAuctionId(id);
 
-  const rawAuction =
-    !data || !data.auctionLots || data.auctionLots.length == 0
-      ? undefined
-      : data.auctionLots[0];
+  const useGetAuction = auctionType
+    ? hookMap[auctionType]
+    : useGetBatchAuctionLotQuery;
+
+  const {
+    data,
+    refetch,
+    isLoading,
+    isRefetching,
+    isSuccess,
+  }: UseQueryResult<GetAtomicAuctionLotQuery | GetBatchAuctionLotQuery> =
+    useGetAuction(
+      {
+        endpoint: deployments[chainId!].subgraphURL,
+        fetchParams,
+      },
+      { id: id! },
+      { enabled: !!chainId && !!id },
+    );
+
+  let rawAuction:
+    | GetAtomicAuctionLotQuery["atomicAuctionLot"]
+    | GetBatchAuctionLotQuery["batchAuctionLot"];
+
+  if (isSuccess && auctionType === AuctionType.FIXED_PRICE) {
+    rawAuction = (data as GetAtomicAuctionLotQuery)?.atomicAuctionLot;
+  } else {
+    rawAuction = (data as GetBatchAuctionLotQuery)?.batchAuctionLot;
+  }
 
   const enabled = !!rawAuction && !!rawAuction?.created.infoHash;
 
@@ -54,8 +87,6 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     queryFn: () => getAuctionInfo(rawAuction?.created.infoHash || ""),
   });
 
-  const auctionType = getAuctionType(rawAuction?.auctionRef);
-
   const { data: auctionData } = useAuctionData({
     chainId,
     lotId,
@@ -63,13 +94,13 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   });
 
   //TODO: needs updating
-  const { data: linearVesting } = useDerivativeData({
-    lotId,
-    auctionType,
-    chainId,
-  });
+  // const { data: linearVesting } = useDerivativeData({
+  //   lotId,
+  //   auctionType,
+  //   chainId,
+  // });
 
-  if (!rawAuction || !chainId || data?.auctionLots.length === 0) {
+  if (!rawAuction) {
     return {
       refetch,
       isRefetching,
@@ -93,6 +124,11 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     throw new Error(`Auction type ${auctionType} doesn't exist`);
   }
 
+  const isEMP = auctionType === AuctionType.SEALED_BID;
+  const formatted = isEMP
+    ? formatAuction(auction as BatchSubgraphAuction, auctionType, auctionData)
+    : {};
+
   return {
     refetch,
     result: {
@@ -100,9 +136,8 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
       ...tokens,
       auctionData,
       auctionType,
-      linearVesting,
-      formatted: formatAuction(auction, auctionType, auctionData),
-      bids: updateBids(auction),
+      formatted,
+      bids: isEMP ? updateBids(auction as BatchSubgraphAuction) : [],
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
@@ -111,7 +146,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
 
 /** Formats Auction information for displaying purporses */
 export function formatAuction(
-  auction: RawSubgraphAuctionWithEvents,
+  auction: BatchSubgraphAuction,
   auctionType: AuctionType,
   auctionData?: EMPAuctionData | FixedPriceAuctionData,
 ): AuctionFormattedInfo {
@@ -167,7 +202,7 @@ export function formatAuction(
 
 function addEMPFields(
   auctionData: EMPAuctionData,
-  auction: RawSubgraphAuctionWithEvents,
+  auction: RawSubgraphAuction,
 ) {
   const minPrice = formatUnits(
     auctionData?.minimumPrice ?? 0n,
@@ -194,7 +229,7 @@ function addEMPFields(
 
 function addFPFields(
   auctionData: FixedPriceAuctionData,
-  auction: RawSubgraphAuctionWithEvents,
+  auction: RawSubgraphAuction,
 ) {
   if (!auctionData) return;
 
@@ -211,8 +246,11 @@ function addFPFields(
 /** Updates bids based off the remaining capacity
  * TODO: move to subgraph
  */
-function updateBids(auction: RawSubgraphAuctionWithEvents) {
+function updateBids(auction: BatchSubgraphAuction) {
   let remainingCapacity = Number(auction.capacityInitial);
+  if (!auction.bids) {
+    return [];
+  }
 
   const _bids = auction.bids
     .sort((a, b) => Number(b.submittedPrice) - Number(a.submittedPrice))

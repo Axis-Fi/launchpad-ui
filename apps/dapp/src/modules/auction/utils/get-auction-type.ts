@@ -1,14 +1,18 @@
 import { AuctionModuleReference, AuctionType } from "@repo/types";
-import { fromVeecode } from "utils/hex";
 
 const auctionTypes: Record<AuctionModuleReference, AuctionType> = {
-  "01EMPAM": AuctionType.SEALED_BID,
-  "01FPAM\x00": AuctionType.FIXED_PRICE, //TODO: fix this mapping
+  "01EMPA": AuctionType.SEALED_BID,
+  "01FPSA": AuctionType.FIXED_PRICE, //TODO: fix this mapping
+};
+
+export const auctionHouseTypes: Record<AuctionType, string> = {
+  [AuctionType.FIXED_PRICE]: "atomic",
+  [AuctionType.SEALED_BID]: "batch",
 };
 
 export function getAuctionType(auctionRef?: string) {
   if (!auctionRef) return;
-  const key = fromVeecode(auctionRef).trim() as AuctionModuleReference;
+  const key = auctionRef as AuctionModuleReference;
   const type = auctionTypes[key];
 
   if (!type) {

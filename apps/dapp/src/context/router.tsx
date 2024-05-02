@@ -20,7 +20,8 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
     children: [
       { path: "/", element: <AuctionListPage /> },
       { path: "/dashboard", element: <Dashboard /> },
-      { path: "/auction/:chainId/:lotId", element: <AuctionPage /> },
+      { path: "/auction/:type/:id", element: <AuctionPage /> },
+
       { path: "/auctions", element: <AuctionListPage /> },
       { path: "/create/auction", element: <CreateAuctionPage /> },
       { path: "/curator", element: <CuratorPage /> },

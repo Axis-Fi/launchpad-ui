@@ -24,14 +24,15 @@ import { AuctionType } from "@repo/types";
 import { getAuctionHouse } from "utils/contracts";
 
 export function useBidAuction(
-  lotId: string,
-  chainId: number,
+  id: string,
+  auctionType: AuctionType,
   amountIn: number,
   amountOut: number,
 ) {
-  const { result: auction, ...auctionQuery } = useAuction(lotId, chainId);
+  const { result: auction, ...auctionQuery } = useAuction(id, auctionType);
 
-  if (!auction) throw new Error(`Unable to find auction ${lotId}`);
+  if (!auction) throw new Error(`Unable to find auction ${id}`);
+  const lotId = auction.lotId;
 
   const { address } = useAccount();
   const referrer = useReferrer();

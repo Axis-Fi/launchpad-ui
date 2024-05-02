@@ -14,6 +14,7 @@ import { PageContainer } from "modules/app/page-container";
 import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Auction } from "@repo/types";
 
 const options = [
   { value: "created", label: "Created" },
@@ -36,6 +37,10 @@ export default function AuctionListPage() {
     : auctions;
 
   const { rows, ...pagination } = usePagination(filteredAuctions, 9);
+
+  const goToAuction = (auction: Auction) => {
+    navigate(`/auction/${auction.auctionType}/${auction.id}`);
+  };
 
   return (
     <PageContainer>
@@ -77,9 +82,7 @@ export default function AuctionListPage() {
                 key={auction.chainId + auction.id}
                 auction={auction}
                 // TODO support open in new tab
-                onClickView={() =>
-                  navigate(`/auction/${auction.chainId}/${auction.id}`)
-                }
+                onClickView={() => goToAuction(auction)}
               />
             ))}
       </div>

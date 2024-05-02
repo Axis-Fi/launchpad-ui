@@ -7,7 +7,7 @@ export function useCurator() {
   const { result } = useAuctions();
 
   const auctionsCuratedByUser = result.filter(
-    (a) => a.curator.toLocaleLowerCase() === address?.toLocaleLowerCase(),
+    (a) => a.curator?.toLocaleLowerCase() === address?.toLocaleLowerCase(),
   );
 
   const pendingCurations = auctionsCuratedByUser.filter(

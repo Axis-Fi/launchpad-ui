@@ -1,6 +1,6 @@
 import { Environment } from "./environment";
 
-const v2URL = "api-testnet-v2.up.railway.app";
+const v2URL = "https://api-testnet-v2.up.railway.app";
 
 export default {
   development: {

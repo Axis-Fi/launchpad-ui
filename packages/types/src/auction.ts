@@ -1,8 +1,5 @@
 import { AuctionType } from "./auction-modules";
-import {
-  RawSubgraphAuction,
-  RawSubgraphAuctionWithEvents,
-} from "./subgraph-queries";
+import { RawSubgraphAuction } from "./subgraph-queries";
 import { Token } from "./token";
 
 export type BaseAuction = {
@@ -18,10 +15,9 @@ export type BaseAuction = {
 };
 
 export type Auction = BaseAuction &
-  Omit<RawSubgraphAuctionWithEvents, "baseToken" | "quoteToken">;
-
-export type AuctionListed = Omit<BaseAuction, "auctionData" | "formatted"> &
   Omit<RawSubgraphAuction, "baseToken" | "quoteToken">;
+
+export type AuctionListed = Auction; //Omit<BaseAuction, "auctionData" | "formatted"> & Omit<RawSubgraphAuction, "baseToken" | "quoteToken">;
 
 export type AuctionStatus =
   | "created"
