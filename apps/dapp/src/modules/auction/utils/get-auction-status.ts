@@ -1,7 +1,7 @@
-import { AuctionStatus, RawSubgraphAuction } from "@repo/types";
+import { AuctionStatus, SubgraphAuction } from "@repo/types";
 
 /** Determines Auction status */
-export function getAuctionStatus(auction: RawSubgraphAuction): AuctionStatus {
+export function getAuctionStatus(auction: SubgraphAuction): AuctionStatus {
   const { start, conclusion, capacity } = auction;
   const isConcluded =
     Date.now() > new Date(Number(conclusion) * 1000).getTime();
