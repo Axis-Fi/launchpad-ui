@@ -12,6 +12,7 @@ export type Token = TokenBase & {
   name: string;
   logoURI?: string;
   mintable?: boolean;
+  totalSupply?: string;
 };
 
 //Tokenlist Standard

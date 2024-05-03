@@ -12,7 +12,7 @@ export function AuctionCreated({ auction }: PropsWithAuction) {
             label="Capacity"
             value={`${auction.formatted?.capacity} ${auction.baseToken.symbol}`}
           />
-          <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
+          <InfoLabel label="Creator" value={trimAddress(auction.seller)} />
           <InfoLabel label="Ends in" value={auction.formatted?.endDistance} />
         </AuctionInfoCard>
       </div>

@@ -9,16 +9,17 @@ export type AtomicBaseSubgraphAuction =
 export type BatchBaseSubgraphAuction =
   GetAuctionLotsQuery["batchAuctionLots"][0];
 
-export type RawSubgraphAuction =
-  | AtomicBaseSubgraphAuction
-  | BatchBaseSubgraphAuction;
+export type RawSubgraphAuction = AtomicSubgraphAuction | BatchSubgraphAuction;
 
-export type AtomicSubgraphAuction =
-  GetAtomicAuctionLotQuery["atomicAuctionLot"];
+export type AtomicSubgraphAuction = NonNullable<
+  GetAtomicAuctionLotQuery["atomicAuctionLot"]
+>;
 
 export type BatchSubgraphAuction = NonNullable<
   GetBatchAuctionLotQuery["batchAuctionLot"]
 >;
+
+export type SubgraphAuction = AtomicSubgraphAuction | BatchSubgraphAuction;
 
 export type AuctionEncryptedBid = BatchBaseSubgraphAuction["bids"][0];
 

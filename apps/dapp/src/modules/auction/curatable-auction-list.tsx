@@ -11,7 +11,7 @@ import { useCurateAuction } from "./hooks/use-curate-auction";
 
 const col = createColumnHelper<AuctionListed>();
 const cols = [
-  col.accessor("owner", {
+  col.accessor("seller", {
     header: "Creator",
     cell: (info) => trimAddress(info.getValue()),
   }),
@@ -32,8 +32,8 @@ const cols = [
 export function CuratableAuctionList() {
   const auctions = useAuctions();
   const { address } = useAccount();
-  const data = auctions.result.filter(
-    (a) => a.curator.toLocaleLowerCase() === address?.toLocaleLowerCase(),
+  const data = auctions.data.filter(
+    (a) => a.curator?.toLocaleLowerCase() === address?.toLocaleLowerCase(),
   );
   const [curating, setCurating] = React.useState({
     lotId: "",
@@ -80,7 +80,7 @@ export function CuratableAuctionList() {
         },
       }),
     ],
-    [auctions.result],
+    [auctions.data],
   );
 
   return (

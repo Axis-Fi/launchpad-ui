@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Auction } from "@repo/types";
+import { Auction, BatchAuction } from "@repo/types";
 import { useEffect } from "react";
 import { cloakClient } from "src/services/cloak";
 import {
@@ -12,36 +12,37 @@ import { getAuctionHouse, getContractsByModuleType } from "utils/contracts";
 import { Hex } from "viem";
 
 /** Used to manage decrypting the next set of bids */
-export const useDecryptBids = (auction: Auction) => {
+export const useDecryptBids = (auction: BatchAuction) => {
   const auctionHouse = getAuctionHouse(auction);
   //Fixed priced auctions dont require decryption
   const emp = getContractsByModuleType(auction);
 
   const { refetch: refetchAuction } = useAuction(
-    auction.lotId,
-    auction.chainId,
+    auction.id,
+    auction.auctionType,
   );
 
+  const params = deriveParamsFromAuction(auction);
   const privateKeyQuery = useQuery({
-    queryKey: ["get_private_key", auctionHouse.address, auction],
+    queryKey: ["get_private_key", auction.id, auctionHouse.address, params],
     queryFn: () =>
       cloakClient.keysApi.privateKeyLotIdGet({
-        ...deriveParamsFromAuction(auction),
+        ...params,
         xAuctionHouse: auctionHouse.address,
       }),
     placeholderData: keepPreviousData,
     enabled:
-      auction.bids.length - auction.refundedBids.length >
+      auction.bids.length - auction.bidsRefunded.length >
       auction.bidsDecrypted.length,
   });
 
   const DECRYPT_NUM = 100n; //TODO:
 
   const hintsQuery = useQuery({
-    queryKey: ["hints", auctionHouse.address, auction, DECRYPT_NUM],
+    queryKey: ["hints", auction.id, auctionHouse.address, params, DECRYPT_NUM],
     queryFn: () =>
       cloakClient.keysApi.hintsLotIdNumGet({
-        ...deriveParamsFromAuction(auction),
+        ...params,
         xAuctionHouse: auctionHouse.address,
         num: Number(DECRYPT_NUM),
       }),

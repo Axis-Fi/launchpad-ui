@@ -1,4 +1,4 @@
-import { Auction, AuctionPurchase } from "@repo/types";
+import { AtomicAuction, AuctionPurchase } from "@repo/types";
 import { DataTable } from "@repo/ui";
 import { createColumnHelper } from "@tanstack/react-table";
 import { BlockExplorerLink } from "components/blockexplorer-link";
@@ -6,10 +6,12 @@ import { Address } from "viem";
 import { formatDate } from "utils/date";
 
 type PurchaseListProps = {
-  auction: Auction;
+  auction: AtomicAuction;
 };
 
-const column = createColumnHelper<Auction[""] & { auction: Auction }>();
+const column = createColumnHelper<
+  AtomicAuction["purchases"] & { auction: AtomicAuction }
+>();
 
 const cols = [
   column.accessor("buyer", {
@@ -34,7 +36,7 @@ const cols = [
     cell: (info) =>
       `${info.getValue()} ${info.row.original.auction.baseToken.symbol}`,
   }),
-  column.accessor("blockTimestamp", {
+  column.accessor("date", {
     header: "Date",
     cell: (info) =>
       formatDate.full(new Date((info.getValue() as number) * 1000)),
@@ -58,5 +60,6 @@ export function PurchaseList(props: PurchaseListProps) {
     auction: props.auction,
   }));
 
+  //@ts-expect-error something wrong is not right, compiler sez its not array
   return <DataTable columns={cols} data={purchases} />;
 }

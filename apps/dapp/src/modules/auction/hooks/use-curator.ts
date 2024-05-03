@@ -4,9 +4,9 @@ import { useAccount } from "wagmi";
 /** Utility to read Curator data for the connected address*/
 export function useCurator() {
   const { address } = useAccount();
-  const { result } = useAuctions();
+  const { data } = useAuctions();
 
-  const auctionsCuratedByUser = result.filter(
+  const auctionsCuratedByUser = data.filter(
     (a) => a.curator?.toLocaleLowerCase() === address?.toLocaleLowerCase(),
   );
 

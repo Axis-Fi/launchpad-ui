@@ -3,7 +3,12 @@ import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
-import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
+import {
+  Auction,
+  AuctionType,
+  BatchAuction,
+  PropsWithAuction,
+} from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
@@ -127,7 +132,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           {auction.curatorApproved && (
             <InfoLabel
               label="Curator"
-              value={trimAddress(auction.curated.curator!)}
+              value={
+                auction.curated ? trimAddress(auction.curated.curator!) : ""
+              }
             />
           )}
           {isEMP ? (
@@ -140,7 +147,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 label="Minimum Quantity"
                 value={`${auction.formatted?.minBidSize} ${auction.quoteToken.symbol}`}
               />
-              <InfoLabel label="Total Bids" value={auction.bids.length} />
+              <InfoLabel
+                label="Total Bids"
+                value={(auction as BatchAuction).bids.length}
+              />
               <InfoLabel
                 label="Total Bid Amount"
                 value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}

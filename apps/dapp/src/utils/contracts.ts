@@ -8,8 +8,8 @@ import {
 import { Address } from "viem";
 
 const moduleMap = {
-  [AuctionType.SEALED_BID]: "atomicAuctionHouse",
-  [AuctionType.FIXED_PRICE]: "batchAuctionHouse",
+  [AuctionType.SEALED_BID]: "batchAuctionHouse",
+  [AuctionType.FIXED_PRICE]: "atomicAuctionHouse",
 };
 
 export function getContractsByModuleType(auction: Auction) {

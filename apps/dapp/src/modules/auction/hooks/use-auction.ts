@@ -11,9 +11,9 @@ import {
   EMPAuctionData,
   AuctionFormattedInfo,
   AuctionType,
-  RawSubgraphAuction,
   FixedPriceAuctionData,
   BatchSubgraphAuction,
+  AtomicSubgraphAuction,
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
@@ -125,9 +125,7 @@ export function useAuction(
   }
 
   const isEMP = auctionType === AuctionType.SEALED_BID;
-  const formatted = isEMP
-    ? formatAuction(auction as BatchSubgraphAuction, auctionType, auctionData)
-    : {};
+  const formatted = formatAuction(auction, auctionType, auctionData);
 
   return {
     refetch,
@@ -137,7 +135,10 @@ export function useAuction(
       auctionData,
       auctionType,
       formatted,
-      bids: isEMP ? updateBids(auction as BatchSubgraphAuction) : [],
+      //TODO: improve this mess
+      [isEMP ? "bids" : "purchases"]: isEMP
+        ? updateBids(auction as BatchSubgraphAuction)
+        : (rawAuction as AtomicSubgraphAuction).purchases,
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
@@ -146,10 +147,12 @@ export function useAuction(
 
 /** Formats Auction information for displaying purporses */
 export function formatAuction(
-  auction: BatchSubgraphAuction,
+  auction: AtomicSubgraphAuction | BatchSubgraphAuction,
   auctionType: AuctionType,
   auctionData?: EMPAuctionData | FixedPriceAuctionData,
 ): AuctionFormattedInfo {
+  if (!auction) throw new Error("No Auction provided to formatAuction");
+
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
 
@@ -157,23 +160,17 @@ export function formatAuction(
   const endFormatted = formatDate.fullLocal(endDate);
   const startDistance = formatDistanceToNow(startDate);
   const endDistance = formatDistanceToNow(endDate);
-  const totalBidsDecrypted = auction.bids.filter(
-    (b) => b.status === "decrypted",
-  ).length;
-
-  const uniqueBidders = auction.bids
-    .map((b) => b.bidder)
-    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
-
-  const totalBidAmount = auction.bids.reduce(
-    (total, b) => total + Number(b.amountIn),
-    0,
-  );
 
   const moduleFields =
     auctionType === AuctionType.SEALED_BID
-      ? addEMPFields(auctionData as EMPAuctionData, auction)
-      : addFPFields(auctionData as FixedPriceAuctionData, auction);
+      ? addEMPFields(
+          auctionData as EMPAuctionData,
+          auction as BatchSubgraphAuction,
+        )
+      : addFPFields(
+          auctionData as FixedPriceAuctionData,
+          auction as AtomicSubgraphAuction,
+        );
 
   return {
     startDate,
@@ -182,7 +179,6 @@ export function formatAuction(
     endFormatted,
     startDistance,
     endDistance,
-    uniqueBidders,
     sold: trimCurrency(auction.sold),
     purchased: trimCurrency(auction.purchased),
     capacity: trimCurrency(auction.capacity),
@@ -192,9 +188,6 @@ export function formatAuction(
         Number(auction.baseToken.decimals),
       ),
     ),
-    totalBids: auction.bids.length,
-    totalBidsDecrypted,
-    totalBidAmount: trimCurrency(totalBidAmount),
     tokenPairSymbols: `${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
     ...moduleFields,
   };
@@ -202,7 +195,7 @@ export function formatAuction(
 
 function addEMPFields(
   auctionData: EMPAuctionData,
-  auction: RawSubgraphAuction,
+  auction: BatchSubgraphAuction,
 ) {
   const minPrice = formatUnits(
     auctionData?.minimumPrice ?? 0n,
@@ -218,20 +211,36 @@ function addEMPFields(
     auctionData?.marginalPrice ?? "",
     Number(auction.quoteToken.decimals),
   );
+  const totalBidsDecrypted = auction.bids.filter(
+    (b) => b.status === "decrypted",
+  ).length;
+
+  const totalBidAmount = auction.bids.reduce(
+    (total, b) => total + Number(b.amountIn),
+    0,
+  );
+
+  const uniqueBidders = auction.bids
+    .map((b) => b.bidder)
+    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
 
   return {
     marginalPrice: trimCurrency(marginalPrice),
     rate: trimCurrency(marginalPrice),
     minPrice: trimCurrency(minPrice),
     minBidSize: trimCurrency(minBidSize),
+    totalBidAmount: trimCurrency(totalBidAmount),
+    totalBids: auction.bids.length,
+    totalBidsDecrypted,
+    uniqueBidders,
   };
 }
 
 function addFPFields(
   auctionData: FixedPriceAuctionData,
-  auction: RawSubgraphAuction,
+  auction: AtomicSubgraphAuction,
 ) {
-  if (!auctionData) return;
+  if (!auctionData || !auction) return;
 
   return {
     price: formatUnits(auctionData.price, Number(auction.quoteToken.decimals)),

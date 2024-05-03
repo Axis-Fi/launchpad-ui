@@ -28,17 +28,23 @@ fragment AtomicCommonFields on AtomicAuctionLot {
   lastUpdatedTransactionHash
   linearVesting {
     id
+    startDate
+    expiryDate
+    startTimestamp
+    expiryTimestamp
   }
   baseToken {
     totalSupply
     address
     decimals
     symbol
+    name
   }
   quoteToken {
     address
     decimals
     symbol
+    name
   }
   #cancelled
   created {
@@ -79,17 +85,23 @@ fragment BatchCommonFields on BatchAuctionLot {
   lastUpdatedTransactionHash
   linearVesting {
     id
+    startDate
+    expiryDate
+    startTimestamp
+    expiryTimestamp
   }
   baseToken {
     totalSupply
     address
     decimals
     symbol
+    name
   }
   quoteToken {
     address
     decimals
     symbol
+    name
   }
   #cancelled
   created {
@@ -122,6 +134,8 @@ fragment BatchAuctionFields on BatchAuctionLot {
   bids {
     bidId
     bidder
+    blockTimestamp
+    date
     amountIn
     rawAmountIn
     rawAmountOut

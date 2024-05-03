@@ -2,13 +2,13 @@ import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
-import { PropsWithAuction } from "@repo/types";
+import { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import React from "react";
 
 export function AuctionConcluded({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
-  const decrypt = useDecryptBids(auction);
+  const decrypt = useDecryptBids(auction as BatchAuction);
 
   const disableButton =
     auction.formatted?.totalBids === 0 || decrypt.decryptTx.isPending;

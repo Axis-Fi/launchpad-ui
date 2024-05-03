@@ -4947,14 +4947,26 @@ export type AtomicCommonFieldsFragment = {
   lastUpdatedBlockTimestamp: string;
   lastUpdatedDate: string;
   lastUpdatedTransactionHash: string;
-  linearVesting?: { id: string } | null;
+  linearVesting?: {
+    id: string;
+    startDate: string;
+    expiryDate: string;
+    startTimestamp: string;
+    expiryTimestamp: string;
+  } | null;
   baseToken: {
     totalSupply: string;
     address: string;
     decimals: string;
     symbol: string;
+    name: string;
   };
-  quoteToken: { address: string; decimals: string; symbol: string };
+  quoteToken: {
+    address: string;
+    decimals: string;
+    symbol: string;
+    name: string;
+  };
   created: { infoHash: string };
   curated?: { curator: string } | null;
 };
@@ -4987,14 +4999,26 @@ export type BatchCommonFieldsFragment = {
   lastUpdatedBlockTimestamp: string;
   lastUpdatedDate: string;
   lastUpdatedTransactionHash: string;
-  linearVesting?: { id: string } | null;
+  linearVesting?: {
+    id: string;
+    startDate: string;
+    expiryDate: string;
+    startTimestamp: string;
+    expiryTimestamp: string;
+  } | null;
   baseToken: {
     totalSupply: string;
     address: string;
     decimals: string;
     symbol: string;
+    name: string;
   };
-  quoteToken: { address: string; decimals: string; symbol: string };
+  quoteToken: {
+    address: string;
+    decimals: string;
+    symbol: string;
+    name: string;
+  };
   created: { infoHash: string };
   curated?: { curator: string } | null;
 };
@@ -5017,6 +5041,8 @@ export type BatchAuctionFieldsFragment = {
   bids: Array<{
     bidId: string;
     bidder: string;
+    blockTimestamp: string;
+    date: string;
     amountIn: string;
     rawAmountIn: string;
     rawAmountOut?: string | null;
@@ -5066,19 +5092,33 @@ export type GetAuctionLotsQuery = {
     lastUpdatedDate: string;
     lastUpdatedTransactionHash: string;
     maxBidId: string;
-    linearVesting?: { id: string } | null;
+    linearVesting?: {
+      id: string;
+      startDate: string;
+      expiryDate: string;
+      startTimestamp: string;
+      expiryTimestamp: string;
+    } | null;
     baseToken: {
       totalSupply: string;
       address: string;
       decimals: string;
       symbol: string;
+      name: string;
     };
-    quoteToken: { address: string; decimals: string; symbol: string };
+    quoteToken: {
+      address: string;
+      decimals: string;
+      symbol: string;
+      name: string;
+    };
     created: { infoHash: string };
     curated?: { curator: string } | null;
     bids: Array<{
       bidId: string;
       bidder: string;
+      blockTimestamp: string;
+      date: string;
       amountIn: string;
       rawAmountIn: string;
       rawAmountOut?: string | null;
@@ -5124,14 +5164,26 @@ export type GetAuctionLotsQuery = {
     lastUpdatedDate: string;
     lastUpdatedTransactionHash: string;
     capacityInQuote: boolean;
-    linearVesting?: { id: string } | null;
+    linearVesting?: {
+      id: string;
+      startDate: string;
+      expiryDate: string;
+      startTimestamp: string;
+      expiryTimestamp: string;
+    } | null;
     baseToken: {
       totalSupply: string;
       address: string;
       decimals: string;
       symbol: string;
+      name: string;
     };
-    quoteToken: { address: string; decimals: string; symbol: string };
+    quoteToken: {
+      address: string;
+      decimals: string;
+      symbol: string;
+      name: string;
+    };
     created: { infoHash: string };
     curated?: { curator: string } | null;
     purchases: Array<{
@@ -5180,14 +5232,26 @@ export type GetAtomicAuctionLotQuery = {
     lastUpdatedDate: string;
     lastUpdatedTransactionHash: string;
     capacityInQuote: boolean;
-    linearVesting?: { id: string } | null;
+    linearVesting?: {
+      id: string;
+      startDate: string;
+      expiryDate: string;
+      startTimestamp: string;
+      expiryTimestamp: string;
+    } | null;
     baseToken: {
       totalSupply: string;
       address: string;
       decimals: string;
       symbol: string;
+      name: string;
     };
-    quoteToken: { address: string; decimals: string; symbol: string };
+    quoteToken: {
+      address: string;
+      decimals: string;
+      symbol: string;
+      name: string;
+    };
     created: { infoHash: string };
     curated?: { curator: string } | null;
     purchases: Array<{
@@ -5236,19 +5300,33 @@ export type GetBatchAuctionLotQuery = {
     lastUpdatedDate: string;
     lastUpdatedTransactionHash: string;
     maxBidId: string;
-    linearVesting?: { id: string } | null;
+    linearVesting?: {
+      id: string;
+      startDate: string;
+      expiryDate: string;
+      startTimestamp: string;
+      expiryTimestamp: string;
+    } | null;
     baseToken: {
       totalSupply: string;
       address: string;
       decimals: string;
       symbol: string;
+      name: string;
     };
-    quoteToken: { address: string; decimals: string; symbol: string };
+    quoteToken: {
+      address: string;
+      decimals: string;
+      symbol: string;
+      name: string;
+    };
     created: { infoHash: string };
     curated?: { curator: string } | null;
     bids: Array<{
       bidId: string;
       bidder: string;
+      blockTimestamp: string;
+      date: string;
       amountIn: string;
       rawAmountIn: string;
       rawAmountOut?: string | null;
@@ -5308,17 +5386,23 @@ export const AtomicCommonFieldsFragmentDoc = `
   lastUpdatedTransactionHash
   linearVesting {
     id
+    startDate
+    expiryDate
+    startTimestamp
+    expiryTimestamp
   }
   baseToken {
     totalSupply
     address
     decimals
     symbol
+    name
   }
   quoteToken {
     address
     decimals
     symbol
+    name
   }
   created {
     infoHash
@@ -5359,17 +5443,23 @@ export const BatchCommonFieldsFragmentDoc = `
   lastUpdatedTransactionHash
   linearVesting {
     id
+    startDate
+    expiryDate
+    startTimestamp
+    expiryTimestamp
   }
   baseToken {
     totalSupply
     address
     decimals
     symbol
+    name
   }
   quoteToken {
     address
     decimals
     symbol
+    name
   }
   created {
     infoHash
@@ -5403,6 +5493,8 @@ export const BatchAuctionFieldsFragmentDoc = `
   bids {
     bidId
     bidder
+    blockTimestamp
+    date
     amountIn
     rawAmountIn
     rawAmountOut

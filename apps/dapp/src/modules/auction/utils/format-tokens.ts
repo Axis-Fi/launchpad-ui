@@ -1,14 +1,14 @@
 import {
   Address,
   AuctionInfo,
-  RawSubgraphAuctionWithEvents,
+  SubgraphAuction,
   Token,
   TokenBase,
 } from "@repo/types";
 import { getChainId } from "utils/chain";
 
 type AuctionTokens = Pick<
-  RawSubgraphAuctionWithEvents,
+  SubgraphAuction,
   "quoteToken" | "baseToken" | "chain"
 >;
 
@@ -30,13 +30,15 @@ export function formatAuctionTokens(
 
   return {
     baseToken: parseToken(baseToken, chainId),
-    //@ts-expect-error ignore for debug
     quoteToken: parseToken(quoteToken, chainId),
   };
 }
 
 export function parseToken(
-  token: Omit<RawSubgraphAuctionWithEvents["baseToken"], "decimals"> & {
+  token: Omit<
+    SubgraphAuction["quoteToken"] | SubgraphAuction["baseToken"],
+    "decimals"
+  > & {
     decimals: number | string;
   },
   chainId: number,

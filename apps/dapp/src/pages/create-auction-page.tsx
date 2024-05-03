@@ -209,16 +209,19 @@ export default function CreateAuctionPage() {
   const handleCreation = async (values: CreateAuctionForm) => {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
+    const isEMP = auctionType === AuctionType.SEALED_BID;
+    const code = isEMP ? "EMPA" : "FPSA";
+
+    const auctionTypeKeycode = toKeycode(code);
 
     const { address: contractAddress, abi } = getAuctionHouse({
       auctionType,
       chainId,
     });
 
-    const publicKey =
-      auctionType === AuctionType.SEALED_BID
-        ? await generateKeyPairMutation.mutateAsync()
-        : undefined;
+    const publicKey = isEMP
+      ? await generateKeyPairMutation.mutateAsync()
+      : undefined;
 
     const auctionSpecificParams = getAuctionCreateParams(
       auctionType,
@@ -233,7 +236,7 @@ export default function CreateAuctionPage() {
         functionName: "auction",
         args: [
           {
-            auctionType: toKeycode(auctionType),
+            auctionType: auctionTypeKeycode,
             baseToken: getAddress(values.payoutToken.address),
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
@@ -265,9 +268,7 @@ export default function CreateAuctionPage() {
         ],
       },
       {
-        onError: (error) => {
-          console.error("Error during submission:", error);
-        },
+        onError: (error) => console.error("Error during submission:", error),
       },
     );
   };

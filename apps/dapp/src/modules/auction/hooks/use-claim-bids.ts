@@ -1,4 +1,4 @@
-import { Auction } from "@repo/types";
+import { BatchAuction } from "@repo/types";
 import { getAuctionHouse } from "utils/contracts";
 import {
   useAccount,
@@ -7,7 +7,7 @@ import {
   useWriteContract,
 } from "wagmi";
 
-export function useClaimBids(auction: Auction) {
+export function useClaimBids(auction: BatchAuction) {
   const { address: userAddress } = useAccount();
   const { abi, address } = getAuctionHouse(auction);
 

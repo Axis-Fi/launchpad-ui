@@ -1,7 +1,7 @@
 import { Button, InfoLabel, cn } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
-import { AuctionType, PropsWithAuction } from "@repo/types";
+import { AuctionType, BatchAuction } from "@repo/types";
 import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";
 import { useClaimProceeds } from "../hooks/use-claim-proceeds";
@@ -10,11 +10,11 @@ import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
 import { AuctionInfoLabel } from "../auction-info-labels";
 
-export function AuctionSettled({ auction }: PropsWithAuction) {
+export function AuctionSettled({ auction }: { auction: BatchAuction }) {
   const { address } = useAccount();
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const claimProceeds = useClaimProceeds(auction);
-  const claimBids = useClaimBids(auction);
+  const claimBids = useClaimBids(auction as BatchAuction);
   const userHasBids = auction.bids.some(
     (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
   );
@@ -24,10 +24,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
       <div className="mb-8 flex justify-between">
         {isEMP && (
           <div className="w-1/2">
-            <SettledAuctionChart
-              lotId={auction.lotId}
-              chainId={auction.chainId}
-            />
+            <SettledAuctionChart auction={auction as BatchAuction} />
           </div>
         )}
         <div className={cn("w-[40%]", !isEMP && "w-full")}>
@@ -36,7 +33,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
               <h4>Payout for this auction has been distributed!</h4>
             </div>
             <RequiresChain chainId={auction.chainId}>
-              {address?.toLowerCase() === auction.owner.toLowerCase() && (
+              {address?.toLowerCase() === auction.seller.toLowerCase() && (
                 <div className="flex justify-center">
                   <Button onClick={claimProceeds.handleClaim} className="mt-4">
                     CLAIM PROCEEDS

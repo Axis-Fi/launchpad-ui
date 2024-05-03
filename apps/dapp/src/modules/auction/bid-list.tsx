@@ -1,5 +1,10 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { AuctionEncryptedBid, Auction, PropsWithAuction } from "@repo/types";
+import {
+  AuctionEncryptedBid,
+  Auction,
+  PropsWithAuction,
+  BatchAuction,
+} from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
 import { Button, DataTable, Tooltip } from "@repo/ui";
@@ -35,7 +40,7 @@ const cols = [
         info.row.original.auction.quoteToken.symbol
       }`,
   }),
-  column.accessor("amountOut", {
+  column.accessor("rawAmountOut", {
     header: "Amount Out",
     enableSorting: true,
     cell: (info) => {
@@ -81,7 +86,7 @@ const cols = [
     enableSorting: true,
     cell: (info) => {
       const status = info.getValue();
-      const amountOut = info.row.original.amountOut;
+      const amountOut = info.row.original.settledAmountOut;
       const isRefunded = status === "claimed" && !amountOut;
       return isRefunded ? "refunded" : status;
     },
@@ -108,9 +113,11 @@ type BidListProps = PropsWithAuction & {
 };
 
 export function BidList(props: BidListProps) {
+  const auction = props.auction as BatchAuction;
+
   const auctionHouse = getAuctionHouse(props.auction);
   const address = props.address ? props.address.toLowerCase() : undefined;
-  const encryptedBids = props.auction?.bids ?? [];
+  const encryptedBids = auction?.bids ?? [];
   const { refetch: refetchAuction } = useAuction(
     props.auction.id,
     props.auction.auctionType,

@@ -15,8 +15,7 @@ import { useQueryAll } from "loaders/use-query-all";
 import { getAuctionType } from "../utils/get-auction-type";
 
 export type AuctionsResult = {
-  result: Auction[];
-  getAuctionById: (id: string) => Auction | undefined;
+  data: Auction[];
 } & Pick<
   ReturnType<typeof useQueryAll>,
   "refetch" | "isSuccess" | "isLoading" | "isRefetching"
@@ -29,10 +28,8 @@ export function useAuctions(): AuctionsResult {
       fields: ["batchAuctionLots", "atomicAuctionLots"],
     });
 
-  const rawAuctions = [
-    ...data.atomicAuctionLots,
-    ...data.batchAuctionLots,
-  ].flat();
+  const rawAuctions =
+    [...data.atomicAuctionLots, ...data.batchAuctionLots].flat() ?? [];
 
   const { getToken } = useTokenLists();
 
@@ -51,7 +48,7 @@ export function useAuctions(): AuctionsResult {
     },
   });
 
-  const auctions = (rawAuctions ?? [])
+  const auctions = rawAuctions
     .map((auction) => {
       const auctionInfo = infos.data?.find((info) => info.id === auction.id)
         ?.auctionInfo;
@@ -70,13 +67,8 @@ export function useAuctions(): AuctionsResult {
     })
     .sort(sortAuction);
 
-  const getAuctionById = (id: string) => {
-    return auctions.find((a) => a.id === id);
-  };
-
   return {
-    result: auctions,
-    getAuctionById,
+    data: auctions,
     isLoading: isLoading, //|| infos.isLoading,
     refetch,
     isRefetching,

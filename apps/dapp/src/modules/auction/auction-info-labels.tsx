@@ -1,5 +1,5 @@
 import { Auction, PropsWithAuction } from "@repo/types";
-import { InfoLabel } from "@repo/ui";
+import { formatDate, InfoLabel } from "@repo/ui";
 
 const handlers = {
   totalBidAmount: {
@@ -34,7 +34,11 @@ const handlers = {
 
   vestingDuration: {
     label: "Vesting",
-    handler: (auction: Auction) => `${auction.linearVesting?.days} days`,
+    handler: (auction: Auction) =>
+      //TODO: move to formatters
+      `${formatDate.full(
+        Number(auction.linearVesting?.startTimestamp) * 1000,
+      )} days`,
   },
 };
 

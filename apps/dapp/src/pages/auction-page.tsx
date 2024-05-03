@@ -36,6 +36,7 @@ const statuses: Record<
   live: AuctionLive,
   concluded: AuctionConcluded,
   decrypted: AuctionDecrypted,
+  //@ts-expect-error Need to update arg type
   settled: AuctionSettled,
 };
 
@@ -49,7 +50,7 @@ export default function AuctionPage() {
     isLoading: isAuctionLoading,
     refetch,
     isRefetching,
-  } = useAuction(id, type);
+  } = useAuction(id!, type as AuctionType);
 
   if (isAuctionLoading) {
     return <AuctionPageLoading />;
@@ -163,8 +164,9 @@ function AuctionPageLoading() {
 }
 
 function AuctionPageMissing() {
-  const { lotId, chainId } = useParams();
-  const { refetch } = useAuction(lotId, Number(chainId));
+  const { id, type } = useParams();
+  const { refetch } = useAuction(id!, type as AuctionType);
+
   return (
     <div className="absolute inset-0 -top-40 flex h-full flex-col items-center justify-center text-center">
       <h4>

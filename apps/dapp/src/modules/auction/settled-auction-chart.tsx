@@ -1,6 +1,6 @@
 import type { CartesianViewBox } from "recharts/types/util/types";
 import type { ScatterPointItem } from "recharts/types/cartesian/Scatter";
-import type { Auction, EMPAuctionData } from "@repo/types";
+import type { Auction, BatchAuction, EMPAuctionData } from "@repo/types";
 import {
   LabelProps,
   ReferenceLine,
@@ -16,7 +16,6 @@ import {
 import { format } from "date-fns";
 import { CircleIcon, GemIcon, XIcon } from "lucide-react";
 import { cn } from "@repo/ui";
-import { useAuction } from "modules/auction/hooks/use-auction";
 import { formatDate } from "src/utils/date";
 import { SVGProps } from "react";
 import { getAuctionPrices } from "modules/auction/utils/get-auction-prices";
@@ -42,7 +41,7 @@ type SettleData = {
 };
 
 const useChartData = (
-  auction: Auction | undefined,
+  auction: BatchAuction | undefined,
   auctionData: EMPAuctionData | undefined,
 ): SettleData => {
   // Validate
@@ -54,16 +53,16 @@ const useChartData = (
     : auction.bids
         .filter((b) => b.status !== "refunded")
         .map((bid) => {
-          const amountIn = Number(bid.amountIn);
-          const amountOut = isFinite(Number(bid.amountOut))
-            ? Number(bid.amountOut)
+          const amountIn = Number(bid.rawAmountIn);
+          const amountOut = isFinite(Number(bid.rawAmountOut))
+            ? Number(bid.rawAmountOut)
             : 0;
 
           const price = Number(bid.submittedPrice);
-          const timestamp = Number(bid.blockTimestamp) * 1000;
+          const timestamp = Number(bid) * 1000;
 
           return {
-            id: bid.id,
+            id: bid.bidId,
             bidder: bid.bidder,
             price,
             amountIn,
@@ -99,10 +98,10 @@ const useChartData = (
   return { data, sizeRange, ...prices };
 };
 
-type SettledAuctionChartProps = {
-  lotId?: string;
-  chainId?: number;
-};
+// type SettledAuctionChartProps = {
+//   lotId?: string;
+//   chainId?: number;
+// };
 
 const timestampFormatter = (timestamp: number) => {
   return format(new Date(timestamp), "MM-dd HH:mm");
@@ -122,12 +121,8 @@ const formatter = (value: unknown, _name: string, props: FormatterProps) => {
   return value;
 };
 
-export const SettledAuctionChart = ({
-  lotId,
-  chainId,
-}: SettledAuctionChartProps) => {
-  const { result: auction } = useAuction(lotId, chainId);
-  const { data: auctionData } = useAuctionData({ lotId, chainId });
+export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
+  const { data: auctionData } = useAuctionData(auction);
 
   const start = Number(auction?.start) * 1000;
   const conclusion = Number(auction?.conclusion) * 1000;

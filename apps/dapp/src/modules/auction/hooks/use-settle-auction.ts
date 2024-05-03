@@ -12,7 +12,7 @@ import { getAuctionHouse } from "utils/contracts";
 /** Used to settle an auction after decryption*/
 export function useSettleAuction(auction: Auction) {
   const { address, abi } = getAuctionHouse(auction);
-  const { refetch } = useAuction(auction.lotId, auction.chainId);
+  const { refetch } = useAuction(auction.id, auction.auctionType);
 
   const { data: settleCall, ...settleCallStatus } = useSimulateContract({
     abi,
