@@ -264,6 +264,31 @@ export const atomicAuctionHouseAbi = [
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
   },
   {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      {
+        name: "params_",
+        internalType: "struct IAtomicAuctionHouse.PurchaseParams[]",
+        type: "tuple[]",
+        components: [
+          { name: "recipient", internalType: "address", type: "address" },
+          { name: "referrer", internalType: "address", type: "address" },
+          { name: "lotId", internalType: "uint96", type: "uint96" },
+          { name: "amount", internalType: "uint256", type: "uint256" },
+          { name: "minAmountOut", internalType: "uint256", type: "uint256" },
+          { name: "auctionData", internalType: "bytes", type: "bytes" },
+          { name: "permit2Data", internalType: "bytes", type: "bytes" },
+        ],
+      },
+      { name: "callbackData_", internalType: "bytes[]", type: "bytes[]" },
+    ],
+    name: "multiPurchase",
+    outputs: [
+      { name: "payoutAmounts", internalType: "uint256[]", type: "uint256[]" },
+    ],
+  },
+  {
     stateMutability: "view",
     type: "function",
     inputs: [],
@@ -555,6 +580,11 @@ export const atomicAuctionHouseAbi = [
     name: "UnsupportedToken",
   },
   { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_DedicatedSettlePeriod",
+  },
   { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
   {
     type: "error",
@@ -590,17 +620,22 @@ export const atomicAuctionHouseAbi = [
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketActive",
+    name: "Auction_LotActive",
   },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketNotActive",
+    name: "Auction_LotNotActive",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_LotNotConcluded",
   },
   { type: "error", inputs: [], name: "Auction_NotAuthorized" },
   { type: "error", inputs: [], name: "Auction_NotBidder" },
   { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
+  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
@@ -658,16 +693,21 @@ export const atomicAuctionHouseAbi = [
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketActive",
+    name: "Auction_LotActive",
   },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketNotActive",
+    name: "Auction_LotNotActive",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_LotNotConcluded",
   },
   { type: "error", inputs: [], name: "Auction_NotAuthorized" },
   { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
+  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
   { type: "error", inputs: [], name: "Auction_PayoutGreaterThanMax" },
   {
     type: "error",
@@ -903,6 +943,13 @@ export const batchAuctionHouseAbi = [
   {
     stateMutability: "nonpayable",
     type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "abort",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
       {
         name: "routing_",
@@ -951,6 +998,7 @@ export const batchAuctionHouseAbi = [
         type: "tuple",
         components: [
           { name: "lotId", internalType: "uint96", type: "uint96" },
+          { name: "bidder", internalType: "address", type: "address" },
           { name: "referrer", internalType: "address", type: "address" },
           { name: "amount", internalType: "uint256", type: "uint256" },
           { name: "auctionData", internalType: "bytes", type: "bytes" },
@@ -995,16 +1043,6 @@ export const batchAuctionHouseAbi = [
       { name: "bidIds_", internalType: "uint64[]", type: "uint64[]" },
     ],
     name: "claimBids",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "callbackData_", internalType: "bytes", type: "bytes" },
-    ],
-    name: "claimProceeds",
     outputs: [],
   },
   {
@@ -1279,11 +1317,16 @@ export const batchAuctionHouseAbi = [
   {
     stateMutability: "nonpayable",
     type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "num_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
     name: "settle",
     outputs: [
       { name: "totalIn", internalType: "uint256", type: "uint256" },
       { name: "totalOut", internalType: "uint256", type: "uint256" },
+      { name: "finished", internalType: "bool", type: "bool" },
       { name: "auctionOutput", internalType: "bytes", type: "bytes" },
     ],
   },
@@ -1300,6 +1343,14 @@ export const batchAuctionHouseAbi = [
     inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
     name: "transferOwnership",
     outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
+    ],
+    name: "Abort",
   },
   {
     type: "event",
@@ -1370,20 +1421,6 @@ export const batchAuctionHouseAbi = [
       },
     ],
     name: "ClaimBid",
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
-      {
-        name: "seller",
-        internalType: "address",
-        type: "address",
-        indexed: true,
-      },
-    ],
-    name: "ClaimProceeds",
   },
   {
     type: "event",
@@ -1535,6 +1572,11 @@ export const batchAuctionHouseAbi = [
     name: "UnsupportedToken",
   },
   { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_DedicatedSettlePeriod",
+  },
   { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
   {
     type: "error",
@@ -1570,17 +1612,22 @@ export const batchAuctionHouseAbi = [
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketActive",
+    name: "Auction_LotActive",
   },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketNotActive",
+    name: "Auction_LotNotActive",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_LotNotConcluded",
   },
   { type: "error", inputs: [], name: "Auction_NotAuthorized" },
   { type: "error", inputs: [], name: "Auction_NotBidder" },
   { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
+  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
@@ -1638,16 +1685,21 @@ export const batchAuctionHouseAbi = [
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketActive",
+    name: "Auction_LotActive",
   },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketNotActive",
+    name: "Auction_LotNotActive",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_LotNotConcluded",
   },
   { type: "error", inputs: [], name: "Auction_NotAuthorized" },
   { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
+  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
   { type: "error", inputs: [], name: "Auction_PayoutGreaterThanMax" },
   {
     type: "error",
@@ -1881,6 +1933,13 @@ export const encryptedMarginalPriceAbi = [
   {
     stateMutability: "nonpayable",
     type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "abort",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
       {
@@ -1915,7 +1974,6 @@ export const encryptedMarginalPriceAbi = [
         type: "uint8",
       },
       { name: "marginalBidId", internalType: "uint64", type: "uint64" },
-      { name: "proceedsClaimed", internalType: "bool", type: "bool" },
       { name: "marginalPrice", internalType: "uint256", type: "uint256" },
       { name: "minPrice", internalType: "uint256", type: "uint256" },
       { name: "minFilled", internalType: "uint256", type: "uint256" },
@@ -2015,18 +2073,6 @@ export const encryptedMarginalPriceAbi = [
   {
     stateMutability: "nonpayable",
     type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "claimProceeds",
-    outputs: [
-      { name: "purchased", internalType: "uint256", type: "uint256" },
-      { name: "sold", internalType: "uint256", type: "uint256" },
-      { name: "capacity", internalType: "uint256", type: "uint256" },
-      { name: "auctionOutput", internalType: "bytes", type: "bytes" },
-    ],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
       { name: "num_", internalType: "uint64", type: "uint64" },
@@ -2099,7 +2145,6 @@ export const encryptedMarginalPriceAbi = [
             type: "uint8",
           },
           { name: "marginalBidId", internalType: "uint64", type: "uint64" },
-          { name: "proceedsClaimed", internalType: "bool", type: "bool" },
           { name: "marginalPrice", internalType: "uint256", type: "uint256" },
           { name: "minPrice", internalType: "uint256", type: "uint256" },
           { name: "minFilled", internalType: "uint256", type: "uint256" },
@@ -2333,11 +2378,16 @@ export const encryptedMarginalPriceAbi = [
   {
     stateMutability: "nonpayable",
     type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "num_", internalType: "uint256", type: "uint256" },
+    ],
     name: "settle",
     outputs: [
       { name: "totalIn", internalType: "uint256", type: "uint256" },
       { name: "totalOut", internalType: "uint256", type: "uint256" },
+      { name: "capacity", internalType: "uint256", type: "uint256" },
+      { name: "finished", internalType: "bool", type: "bool" },
       { name: "auctionOutput", internalType: "bytes", type: "bytes" },
     ],
   },
@@ -2375,6 +2425,11 @@ export const encryptedMarginalPriceAbi = [
     name: "BidDecrypted",
   },
   { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_DedicatedSettlePeriod",
+  },
   { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
   {
     type: "error",
@@ -2410,17 +2465,22 @@ export const encryptedMarginalPriceAbi = [
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketActive",
+    name: "Auction_LotActive",
   },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketNotActive",
+    name: "Auction_LotNotActive",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_LotNotConcluded",
   },
   { type: "error", inputs: [], name: "Auction_NotAuthorized" },
   { type: "error", inputs: [], name: "Auction_NotBidder" },
   { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
+  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
@@ -2698,16 +2758,21 @@ export const fixedPriceSaleAbi = [
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketActive",
+    name: "Auction_LotActive",
   },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_MarketNotActive",
+    name: "Auction_LotNotActive",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "Auction_LotNotConcluded",
   },
   { type: "error", inputs: [], name: "Auction_NotAuthorized" },
   { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyMarketOwner" },
+  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
   { type: "error", inputs: [], name: "Auction_PayoutGreaterThanMax" },
   {
     type: "error",

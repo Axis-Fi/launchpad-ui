@@ -7,14 +7,14 @@ const config: AxisDeploymentConfig = {
   chainIconUrl:
     "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/ARBITRUM.png",
   addresses: {
-    atomicAuctionHouse: "0xAa000000c0F79193A7f3a76C9a0b8b905e901fea",
-    batchAuctionHouse: "0xBA0000004d9B5D528077C97dD0097b8DC836F173",
-    atomicCatalogue: "0x0e4996960731Fec8E7C9DBbD51383fC71174DD88",
-    batchCatalogue: "0x68a8d91d9936b5Ef8b65f516F8a5AAB6c7b1E43e",
-    encryptedMarginalPrice: "0x4a7D9A72C29C6f1e74Ce6a972c5CAD1b1B00df9",
-    fixedPriceSale: "0xE03E5bF70E04dB487bCa3A36beEFccd7b6be582F",
-    atomicLinearVesting: "0x3A327c856AF41EcF4d783975CE38f669dEeaB298",
-    batchLinearVesting: "0x3c068BF506925A8349CC14438ce91d2C43793D4e",
+    atomicAuctionHouse: "0xAA0000003E38C00379513d73FFbcEAFafcF1bB4C",
+    batchAuctionHouse: "0xBA000000878cD72315d797b6de67b151Ae547038",
+    atomicCatalogue: "0xF5c31d08a71c854A9f607A5992456dBC31B11e16",
+    batchCatalogue: "0xacD10C2B4aA625dd00cba40E4466c8Ff07288a16",
+    encryptedMarginalPrice: "0x2B63Aa737a1AD617A6d6894698Abd043F95cCecb",
+    fixedPriceSale: "0x02c63F8aE0a8e9D0F7267AA4d0Af0567858188C2",
+    atomicLinearVesting: "0x188Ad428c60eADFB0749B2E3A4836D63489304E3",
+    batchLinearVesting: "0x392C629741a0c7350c7181addD5870dE178eeD94",
   },
   subgraphURL:
     "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v<VERSION>/api",
