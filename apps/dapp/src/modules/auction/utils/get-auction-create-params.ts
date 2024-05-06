@@ -12,7 +12,7 @@ const parameterMap = {
       components: [
         { name: "minPrice", type: "uint96" },
         { name: "minFillPercent", type: "uint24" },
-        { name: "minBidPercent", type: "uint24" },
+        { name: "minBidSize", type: "uint256" },
         {
           name: "publicKey",
           internalType: "struct Point",
@@ -58,14 +58,14 @@ function handleEMP(
   values: CreateAuctionForm,
   publicKey?: { x: bigint; y: bigint },
 ) {
-  if (!values.minBidPercent || !values.minFillPercent || !values.minPrice) {
+  if (!values.minBidSize || !values.minFillPercent || !values.minPrice) {
     throw new Error("handleEMP called without the correct values");
   }
 
   return [
     {
       minFillPercent: getPercentage(Number(values.minFillPercent[0])),
-      minBidPercent: getPercentage(0.1), // magic number intentional until a better way is agreed
+      minBidSize: parseUnits("0.01", values.quoteToken.decimals), // magic number intentional until a better way is agreed
       minPrice: parseUnits(values.minPrice, values.payoutToken.decimals),
       publicKey,
     } as const,

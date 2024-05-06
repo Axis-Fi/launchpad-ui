@@ -74,7 +74,7 @@ const schema = z
     capacity: z.string(),
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
-    minBidPercent: z.array(z.number()).optional(),
+    minBidSize: z.array(z.number()).optional(),
     minPrice: z.string().optional(),
     price: z.string().optional(),
     maxPayoutPercent: z.array(z.number()).optional(),
@@ -131,7 +131,7 @@ export default function CreateAuctionPage() {
   const navigate = useNavigate();
   const auctionDefaultValues = {
     minFillPercent: [50],
-    minBidPercent: [5],
+    minBidSize: [10],
     maxPayoutPercent: [50],
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),

@@ -204,7 +204,7 @@ function addEMPFields(
 
   const minBidSize = formatUnits(
     auctionData?.minBidSize ?? 0n,
-    Number(auction.baseToken.decimals),
+    Number(auction.quoteToken.decimals),
   );
 
   const marginalPrice = formatUnits(
