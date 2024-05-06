@@ -1,6 +1,6 @@
 import { Auction } from "@repo/types";
 import React from "react";
-import { parseUnits } from "viem";
+import { parseUnits, toHex } from "viem";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -19,7 +19,11 @@ export function useSettleAuction(auction: Auction) {
     address,
     functionName: "settle",
     chainId: auction.chainId,
-    args: [parseUnits(auction.lotId, 0)],
+    args: [
+      parseUnits(auction.lotId, 0),
+      100n, // number of bids to settle at once, TODO replace with value based on chain & gas limits
+      toHex(""), // TODO support callback data
+    ],
   });
 
   const settleTx = useWriteContract();
