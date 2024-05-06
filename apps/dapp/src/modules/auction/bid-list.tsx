@@ -165,10 +165,7 @@ export function BidList(props: BidListProps) {
           if (!address || !isLive) return;
           if (bid.bidder.toLowerCase() !== address) return;
           if (bid.status === "claimed" && !bid.settledAmountOut) return;
-
-          // Can refund if the bid did not win and the auction is settled
-          //const isSettledBidNotWon = props.auction.status === "settled" && bid.status !== "won";
-          // Can refund if the auction is live
+          // Can refund if the auction is live, other "refunds" are handled by claim bids after the auction ends
 
           const isCurrentBid = bidToRefund?.bidId === bid.bidId;
 

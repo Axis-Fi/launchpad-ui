@@ -9,23 +9,31 @@ export function useBidIndex(auction: Auction, bidId: bigint = -1n) {
   const [startingIndex, setStartingIndex] = React.useState(0n);
   const BID_COUNT = 100n;
 
+  // TODO using call to EMP until getNumBids is added to BatchCatalogue
   const numBidsQuery = useReadContract({
-    address,
-    abi,
+    address: axisContracts.addresses[auction.chainId].encryptedMarginalPrice,
+    abi: axisContracts.abis.encryptedMarginalPrice,
     functionName: "getNumBids",
     args: [BigInt(auction.lotId)],
   });
+
+  console.log(numBidsQuery);
 
   const bidsQuery = useReadContract({
     address,
     abi,
     functionName: "getBidIds",
     args: [BigInt(auction.lotId), startingIndex, BID_COUNT],
-    enabled: numBidsQuery.isSuccess,
+    query: {
+      enabled: numBidsQuery.isSuccess,
+    },
   });
 
   React.useEffect(() => {
-    if (bidsQuery.isSuccess && startingIndex + BID_COUNT < numBidsQuery.data) {
+    if (
+      bidsQuery.isSuccess &&
+      startingIndex + BID_COUNT < (numBidsQuery.data ?? 0n)
+    ) {
       // Update query args to trigger a re-read
       setStartingIndex((index) => index + BID_COUNT);
     }
