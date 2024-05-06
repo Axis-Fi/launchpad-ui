@@ -4,7 +4,6 @@ import { AuctionInputCard } from "../auction-input-card";
 import { AuctionType, BatchAuction } from "@repo/types";
 import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";
-import { useClaimProceeds } from "../hooks/use-claim-proceeds";
 import { useAccount } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
@@ -13,7 +12,6 @@ import { AuctionInfoLabel } from "../auction-info-labels";
 export function AuctionSettled({ auction }: { auction: BatchAuction }) {
   const { address } = useAccount();
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
-  const claimProceeds = useClaimProceeds(auction);
   const claimBids = useClaimBids(auction as BatchAuction);
   const userHasBids = auction.bids.some(
     (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
@@ -33,13 +31,6 @@ export function AuctionSettled({ auction }: { auction: BatchAuction }) {
               <h4>Payout for this auction has been distributed!</h4>
             </div>
             <RequiresChain chainId={auction.chainId}>
-              {address?.toLowerCase() === auction.seller.toLowerCase() && (
-                <div className="flex justify-center">
-                  <Button onClick={claimProceeds.handleClaim} className="mt-4">
-                    CLAIM PROCEEDS
-                  </Button>
-                </div>
-              )}
               {userHasBids && (
                 <div className="flex justify-center">
                   <Button onClick={claimBids.handleClaim} className="mt-4">
