@@ -14,7 +14,6 @@ export function parseAuctionId(id: string): {
     c.name.toLowerCase().includes(chain.replace("-", " ")),
   )?.id;
 
-  console.log({ activeChains });
   if (!chainId) throw new Error(`Unable to find chain definition for ${chain}`);
   if (!isFinite(Number(lotId))) throw new Error("Invalid lotId");
   if (!isAddress(auctionHouse)) {

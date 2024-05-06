@@ -9,22 +9,30 @@ export function useBidIndex(auction: Auction, bidId: bigint = -1n) {
   const [startingIndex, setStartingIndex] = React.useState(0n);
   const BID_COUNT = 100n;
 
+  const numBidsQuery = useReadContract({
+    address,
+    abi,
+    functionName: "getNumBids",
+    args: [BigInt(auction.lotId)],
+  });
+
   const bidsQuery = useReadContract({
     address,
     abi,
     functionName: "getBidIds",
     args: [BigInt(auction.lotId), startingIndex, BID_COUNT],
+    enabled: numBidsQuery.isSuccess,
   });
 
   React.useEffect(() => {
-    if (bidsQuery.isSuccess && !bidsQuery.data.includes(bidId)) {
-      //Update query args to trigger a re-read
+    if (bidsQuery.isSuccess && startingIndex + BID_COUNT < numBidsQuery.data) {
+      // Update query args to trigger a re-read
       setStartingIndex((index) => index + BID_COUNT);
     }
   }, [bidsQuery.isSuccess]);
 
   return {
-    index: bidsQuery.data?.find((b) => b === bidId),
+    index: bidsQuery.data?.findIndex((b: bigint) => b === bidId),
     ...bidsQuery,
   };
 }
