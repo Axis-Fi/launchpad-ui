@@ -36,7 +36,6 @@ const statuses: Record<
   live: AuctionLive,
   concluded: AuctionConcluded,
   decrypted: AuctionDecrypted,
-  //@ts-expect-error Need to update arg type
   settled: AuctionSettled,
 };
 
