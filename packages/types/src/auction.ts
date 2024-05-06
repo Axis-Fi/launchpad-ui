@@ -61,7 +61,6 @@ export type EMPAuctionData = {
   marginalBidId: bigint;
   publicKey: { x: bigint; y: bigint };
   privateKey: bigint;
-  proceedsClaimed: boolean;
   bidIds: bigint[];
 };
 
