@@ -91,6 +91,10 @@ export function useBidAuction(
   ];
   // Main action, calls encrypt route and submits encrypted bids
   const handleBid = async () => {
+    if (!address || !isAddress(address)) {
+      throw new Error("Not connected");
+    }
+
     // Amount out needs to be a uint256
     const result = await encryptBidMutation.mutateAsync();
 
@@ -109,15 +113,16 @@ export function useBidAuction(
       args: [
         {
           lotId: parseUnits(auction.lotId, 0),
+          bidder: address, // defaults to the connected address
           referrer: referrer,
           amount: parseUnits(
             amountIn.toString(),
             Number(auction.quoteToken.decimals),
           ),
           auctionData,
-          permit2Data: toHex(""),
+          permit2Data: toHex(""), // TODO support permit2
         },
-        toHex(""), //TODO: REVIEW PARAMETERS
+        toHex(""), // No callback parameters being passed. TODO update when callback support is added.
       ],
     });
   };
@@ -153,10 +158,10 @@ export function useBidAuction(
             amountOut.toString(),
             Number(auction.baseToken.decimals),
           ),
-          permit2Data: "0x",
+          permit2Data: toHex(""), // TODO support permit2
           auctionData,
         },
-        "0x",
+        toHex(""), // No callback parameters being passed. TODO update when callback support is added.
       ],
     });
   };
