@@ -131,7 +131,7 @@ export default function CreateAuctionPage() {
   const navigate = useNavigate();
   const auctionDefaultValues = {
     minFillPercent: [50],
-    minBidSize: [10],
+    minBidSize: [1], // TODO allows users to specify this value in the UI
     maxPayoutPercent: [50],
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
@@ -507,11 +507,7 @@ export default function CreateAuctionPage() {
                           label="Minimum Payout Token Price"
                           tooltip="The minimum number of quote tokens to receive per payout token."
                         >
-                          <Input
-                            placeholder="100000000"
-                            type="number"
-                            {...field}
-                          />
+                          <Input placeholder="1" type="number" {...field} />
                         </FormItemWrapper>
                       )}
                     />
