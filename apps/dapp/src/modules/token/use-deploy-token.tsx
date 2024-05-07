@@ -7,9 +7,11 @@ import {
 import { Address, Hex, WalletClient } from "viem";
 import { useMutation } from "@tanstack/react-query";
 import { Chain } from "viem";
-import { activeChains } from "config/chains";
+import { chains } from "@repo/env";
 import type { TokenConfig } from "pages/deploy-token-page";
 import { testnetERC20 as ERC20 } from "@repo/abis";
+
+const activeChains = chains.activeChains;
 
 const deploy = (
   walletClient: WalletClient,

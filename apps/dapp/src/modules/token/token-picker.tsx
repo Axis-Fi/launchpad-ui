@@ -6,7 +6,6 @@ import {
   FormField,
   FormItemWrapper,
 } from "@repo/ui";
-//import { activeChains } from "config/chains";
 import useERC20 from "loaders/use-erc20";
 import React from "react";
 import { Token } from "@repo/types";

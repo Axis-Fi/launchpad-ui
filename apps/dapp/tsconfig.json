@@ -25,7 +25,7 @@
       ],
       "@/components": ["../../packages/ui/src/components/index.ts"]
     },
-    "moduleResolution": "node"
+    "moduleResolution": "Bundler"
   },
   "references": [
     {

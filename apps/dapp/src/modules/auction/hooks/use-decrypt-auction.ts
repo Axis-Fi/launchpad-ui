@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Auction, BatchAuction } from "@repo/types";
 import { useEffect } from "react";
-import { cloakClient } from "src/services/cloak";
+import { cloakClient } from "@repo/cloak";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,

@@ -1,0 +1,20 @@
+{
+  "name": "@repo/cloak",
+  "type": "module",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/env": "workspace:*"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "2.9.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "generate:openapi": "pnpm dlx @openapitools/openapi-generator-cli generate -i ./src/cloak-openapi.json -g typescript-fetch -o ./src/generated/"
+  }
+}

@@ -1,5 +1,7 @@
-import { activeChains } from "config/chains";
+import { chains } from "@repo/env";
 import { Chain } from "@repo/types";
+
+const activeChains = chains.activeChains;
 
 export const getBlockExplorer = (chain: Chain) => {
   return {

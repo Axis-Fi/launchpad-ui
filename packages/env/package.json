@@ -1,0 +1,17 @@
+{
+  "name": "@repo/env",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@repo/abis": "workspace:*",
+    "@repo/types": "workspace:*",
+    "@repo/deployments": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
+    "wagmi": "2.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

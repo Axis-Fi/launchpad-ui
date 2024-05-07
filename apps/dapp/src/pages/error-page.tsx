@@ -1,5 +1,5 @@
 import { Button } from "@repo/ui";
-import { environment } from "config/environment";
+import { environment } from "@repo/env";
 import { ReachOutMessage } from "modules/app/reach-out";
 import { ErrorResponse, Link, useRouteError } from "react-router-dom";
 

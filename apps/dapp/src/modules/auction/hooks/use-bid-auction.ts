@@ -1,13 +1,9 @@
 import React from "react";
-import { useMutation } from "@tanstack/react-query";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
-import { cloakClient } from "src/services/cloak";
 import {
   Address,
-  Hex,
   encodeAbiParameters,
-  fromHex,
   isAddress,
   parseAbiParameters,
   parseUnits,
@@ -22,6 +18,7 @@ import {
 import { useReferrer } from "state/referral";
 import { AuctionType } from "@repo/types";
 import { getAuctionHouse } from "utils/contracts";
+import { useDeferredQuery } from "@repo/sdk/react";
 
 export function useBidAuction(
   id: string,
@@ -34,101 +31,42 @@ export function useBidAuction(
   if (!auction) throw new Error(`Unable to find auction ${id}`);
   const lotId = auction.lotId;
 
-  const { address } = useAccount();
+  const { address: bidderAddress } = useAccount();
   const referrer = useReferrer();
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
   const auctionHouse = getAuctionHouse(auction);
 
-  // Bids need to be encrypted before submitting
-  const encryptBidMutation = useMutation({
-    mutationKey: ["encrypt", auction.id, amountOut],
-    mutationFn: async () => {
-      const baseTokenAmountOut = parseUnits(
-        amountOut.toString(),
-        Number(auction.baseToken.decimals),
-      );
-
-      const quoteTokenAmountIn = parseUnits(
-        amountIn.toString(),
-        Number(auction.quoteToken.decimals),
-      );
-
-      // TODO consider giving a state update on the encryption process
-      const encryptedAmountOut = await cloakClient.keysApi.encryptLotIdPost({
-        xChainId: auction.chainId,
-        xAuctionHouse: auctionHouse.address,
-        lotId: parseInt(auction.lotId),
-        encryptRequest: {
-          amount: toHex(quoteTokenAmountIn),
-          amountOut: toHex(baseTokenAmountOut),
-          bidder: address,
-        },
-      });
-
-      return encryptedAmountOut;
-    },
+  const bidConfig = useDeferredQuery((sdk) => {
+    if (bidderAddress === undefined) {
+      throw new Error("Wallet not connected. Please connect your wallet.");
+    }
+    console.log({ auctionType });
+    return sdk.bid({
+      lotId: Number(lotId),
+      amountIn: Number(amountIn),
+      amountOut: Number(amountOut),
+      chainId: auction.chainId,
+      auctionType: auctionType,
+      referrerAddress: referrer,
+      bidderAddress: bidderAddress,
+      signedPermit2Approval: toHex(""), // TODO implement permit2
+    });
   });
 
-  const auctionDataParams = [
-    { name: "encryptedAmountOut", type: "uint256" },
-    {
-      name: "bidPublicKey",
-      type: "tuple",
-      internalType: "struct Point",
-      components: [
-        {
-          name: "x",
-          type: "uint256",
-        },
-        {
-          name: "y",
-          type: "uint256",
-        },
-      ],
-    },
-  ];
-  // Main action, calls encrypt route and submits encrypted bids
+  // Main action, calls SDK which encrypts the bid and returns contract configuration data
   const handleBid = async () => {
-    if (!address || !isAddress(address)) {
-      throw new Error("Not connected");
+    if (bidderAddress === undefined) {
+      throw new Error("Not connected. Try connecting your wallet.");
     }
+    const { abi, address, functionName, args } = await bidConfig();
 
-    // Amount out needs to be a uint256
-    const result = await encryptBidMutation.mutateAsync();
-
-    const auctionData = encodeAbiParameters(auctionDataParams, [
-      fromHex(result.ciphertext as Hex, "bigint"),
-      {
-        x: fromHex(result.x as Hex, "bigint"),
-        y: fromHex(result.y as Hex, "bigint"),
-      },
-    ]);
-    // Submit the bid to the contract
-    bidTx.writeContract({
-      abi: auctionHouse.abi,
-      address: auctionHouse.address,
-      functionName: "bid",
-      args: [
-        {
-          lotId: parseUnits(auction.lotId, 0),
-          bidder: address, // defaults to the connected address
-          referrer: referrer,
-          amount: parseUnits(
-            amountIn.toString(),
-            Number(auction.quoteToken.decimals),
-          ),
-          auctionData,
-          permit2Data: toHex(""), // TODO support permit2
-        },
-        toHex(""), // No callback parameters being passed. TODO update when callback support is added.
-      ],
-    });
+    bidTx.writeContract({ abi, address, functionName, args });
   };
 
   const handlePurchase = async () => {
-    if (!address || !isAddress(address)) {
+    if (!bidderAddress || !isAddress(bidderAddress)) {
       throw new Error("Not connected");
     }
     const minAmountOut = parseUnits(
@@ -149,7 +87,7 @@ export function useBidAuction(
         {
           lotId: BigInt(lotId),
           referrer,
-          recipient: address,
+          recipient: bidderAddress,
           amount: parseUnits(
             amountIn.toString(),
             Number(auction.quoteToken.decimals),
@@ -168,7 +106,7 @@ export function useBidAuction(
 
   // We need to know user's balance and allowance
   const balance = useBalance({
-    address,
+    address: bidderAddress,
     token: auction.quoteToken.address as Address,
     chainId: auction.chainId,
   });
@@ -180,7 +118,7 @@ export function useBidAuction(
     allowance,
     ...allowanceUtils
   } = useAllowance({
-    ownerAddress: address,
+    ownerAddress: bidderAddress,
     spenderAddress: auctionHouse.address,
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
@@ -196,8 +134,7 @@ export function useBidAuction(
     }
   }, [bidReceipt.isSuccess]);
 
-  const error = [bidReceipt, bidTx, encryptBidMutation].find((m) => m.isError)
-    ?.error;
+  const error = [bidReceipt, bidTx, bidConfig].find((m) => m.isError)?.error;
 
   return {
     handleBid:
@@ -210,7 +147,7 @@ export function useBidAuction(
     approveReceipt,
     bidReceipt,
     bidTx,
-    bidDependenciesMutation: encryptBidMutation,
+    bidDependenciesMutation: bidConfig,
     error,
     allowanceUtils,
   };

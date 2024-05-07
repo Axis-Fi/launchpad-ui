@@ -1,6 +1,7 @@
 import { Address, isAddress } from "viem";
-import { activeChains } from "config/chains";
+import { chains } from "@repo/env";
 
+const activeChains = chains.activeChains;
 const idRegex = /(?<=\w)-(0x[0-9a-fA-F]+)-(\d+)/;
 
 export function parseAuctionId(id: string): {
