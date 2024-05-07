@@ -40,8 +40,8 @@ const handlers = {
         (Number(auction.linearVesting?.expiryTimestamp) -
           Number(auction.linearVesting?.startTimestamp)) /
           86400,
-      )} days starting   ${formatDate.full(
-        Number(auction.linearVesting?.startTimestamp) * 1000,
+      )} days starting   ${formatDate.fullLocal(
+        new Date(Number(auction.linearVesting?.startTimestamp) * 1000),
       )}`,
   },
 };
