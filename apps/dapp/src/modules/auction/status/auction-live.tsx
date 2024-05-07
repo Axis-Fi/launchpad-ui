@@ -274,7 +274,7 @@ function getConfirmCardText(
   amountOut: number,
 ) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
-  const empText = `You're about to place a bid of ${amountIn}{" "} ${auction.quoteToken.symbol} `;
+  const empText = `You're about to place a bid of ${amountIn} ${auction.quoteToken.symbol}`;
   const fpText = `You're about to purchase ${amountOut} ${auction.baseToken.symbol} for ${amountIn} ${auction.quoteToken.symbol}`;
   return isEMP ? empText : fpText;
 }
