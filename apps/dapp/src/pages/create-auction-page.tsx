@@ -59,12 +59,14 @@ import { getLinearVestingParams } from "modules/auction/utils/get-derivative-par
 import { useNavigate } from "react-router-dom";
 import { getAuctionHouse } from "utils/contracts";
 
+const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
+
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
   chainId: z.coerce.number(),
   decimals: z.coerce.number(),
   symbol: z.string(),
-  logoURI: z.string().url().optional(),
+  logoURI: optionalURL,
 });
 
 const schema = z
@@ -100,11 +102,11 @@ const schema = z
     name: z.string(),
     description: z.string(),
     projectLogo: z.string().url().optional(),
-    twitter: z.string().url().optional(),
-    discord: z.string().url().optional(),
-    website: z.string().url().optional(),
-    farcaster: z.string().url().optional(),
-    payoutTokenLogo: z.string().url().optional(),
+    twitter: optionalURL,
+    discord: optionalURL,
+    website: optionalURL,
+    farcaster: optionalURL,
+    payoutTokenLogo: optionalURL,
   })
   .refine((data) => (!data.isVested ? true : data.vestingDuration), {
     message: "Vesting duration is required",
@@ -322,6 +324,11 @@ export default function CreateAuctionPage() {
 
   const onSubmit = () => (isSufficientAllowance ? createAuction() : execute());
 
+  // Handle form validation on token picker modal
+  const payoutModalInvalid =
+    form.getFieldState("payoutToken.address").invalid ||
+    form.getFieldState("payoutToken.logoURI").invalid;
+
   return (
     <>
       <PageHeader className="items-center justify-start pb-10">
@@ -460,6 +467,7 @@ export default function CreateAuctionPage() {
                         {...field}
                         title="Select Payout Token"
                         triggerContent={"Select token"}
+                        disabled={payoutModalInvalid}
                       >
                         <TokenPicker name="payoutToken" />
                       </DialogInput>

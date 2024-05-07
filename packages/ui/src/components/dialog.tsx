@@ -27,6 +27,7 @@ export type DialogProps = React.PropsWithChildren & {
   children?: React.ReactElement<{
     setDialogOpen?: DialogStatusChangeHandler;
   }>;
+  disabled?: boolean;
 };
 
 export type DialogStatusChangeHandler = React.Dispatch<
@@ -84,6 +85,7 @@ export function Dialog(props: DialogProps) {
               className="w-1/2"
               onClick={() => handleSubmit()}
               type="submit"
+              disabled={props.disabled ?? false}
             >
               {props.submitText ?? "Confirm"}
             </Button>

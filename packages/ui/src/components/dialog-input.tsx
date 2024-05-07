@@ -15,6 +15,7 @@ export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
     label: string;
     value: string;
   };
+  disabled?: boolean;
 };
 
 export type DialogInputChangeHandler<T> = (
@@ -64,6 +65,7 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
       onSubmit={() => {
         props.onSubmit?.(selected);
       }}
+      disabled={props.disabled}
     >
       {children}
     </Dialog>
