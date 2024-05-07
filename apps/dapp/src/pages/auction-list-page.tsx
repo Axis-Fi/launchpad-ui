@@ -13,8 +13,7 @@ import { ArrowRightIcon, SearchIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
 import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Auction } from "@repo/types";
+import { Link } from "react-router-dom";
 
 const options = [
   { value: "created", label: "Created" },
@@ -27,7 +26,6 @@ const options = [
 export default function AuctionListPage() {
   const [filters, setFilters] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const navigate = useNavigate();
   const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
 
   const filteredAuctions = filters.length
@@ -37,10 +35,6 @@ export default function AuctionListPage() {
     : auctions;
 
   const { rows, ...pagination } = usePagination(filteredAuctions, 9);
-
-  const goToAuction = (auction: Auction) => {
-    navigate(`/auction/${auction.auctionType}/${auction.id}`);
-  };
 
   return (
     <PageContainer>
@@ -81,8 +75,6 @@ export default function AuctionListPage() {
               <AuctionCard
                 key={auction.chainId + auction.id}
                 auction={auction}
-                // TODO support open in new tab
-                onClickView={() => goToAuction(auction)}
               />
             ))}
       </div>
@@ -90,9 +82,11 @@ export default function AuctionListPage() {
 
       <div className="flex flex-col items-center justify-center py-8">
         <p className="font-aeonpro pb-2">Want to create an auction?</p>
-        <Button onClick={() => navigate("/create/auction")} variant="outline">
-          Create Sealed Bid Auction <ArrowRightIcon className="w-6 pl-1" />
-        </Button>
+        <Link to="/create/auction">
+          <Button variant="outline">
+            Create Sealed Bid Auction <ArrowRightIcon className="w-6 pl-1" />
+          </Button>
+        </Link>
       </div>
     </PageContainer>
   );
