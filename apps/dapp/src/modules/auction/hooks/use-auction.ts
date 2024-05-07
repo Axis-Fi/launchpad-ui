@@ -214,6 +214,9 @@ function addEMPFields(
   const totalBidsDecrypted = auction.bids.filter(
     (b) => b.status === "decrypted",
   ).length;
+  const totalBidsClaimed = auction.bids.filter(
+    (b) => b.status === "claimed",
+  ).length;
 
   const totalBidAmount = auction.bids.reduce(
     (total, b) => total + Number(b.amountIn),
@@ -232,6 +235,7 @@ function addEMPFields(
     totalBidAmount: trimCurrency(totalBidAmount),
     totalBids: auction.bids.length,
     totalBidsDecrypted,
+    totalBidsClaimed,
     uniqueBidders,
   };
 }

@@ -95,6 +95,7 @@ type EMPFormattedInfo = {
   marginalPrice: string;
   totalBids: number;
   totalBidsDecrypted: number;
+  totalBidsClaimed: number;
   totalBidAmount: string;
   uniqueBidders: number;
 };

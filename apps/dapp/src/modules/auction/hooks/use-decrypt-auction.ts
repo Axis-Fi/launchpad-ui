@@ -32,11 +32,12 @@ export const useDecryptBids = (auction: BatchAuction) => {
       }),
     placeholderData: keepPreviousData,
     enabled:
+      auction.bids.length === 0 ||
       auction.bids.length - auction.bidsRefunded.length >
-      auction.bidsDecrypted.length,
+        auction.bidsDecrypted.length,
   });
 
-  const DECRYPT_NUM = 100n; //TODO:
+  const DECRYPT_NUM = 100; // TODO determine limit on amount per chain
 
   const hintsQuery = useQuery({
     queryKey: ["hints", auction.id, auctionHouse.address, params, DECRYPT_NUM],
@@ -44,7 +45,7 @@ export const useDecryptBids = (auction: BatchAuction) => {
       cloakClient.keysApi.hintsLotIdNumGet({
         ...params,
         xAuctionHouse: auctionHouse.address,
-        num: Number(DECRYPT_NUM),
+        num: DECRYPT_NUM,
       }),
   });
 
@@ -59,7 +60,7 @@ export const useDecryptBids = (auction: BatchAuction) => {
     args: [
       BigInt(auction.lotId),
       BigInt(privateKeyQuery.data ?? 0),
-      DECRYPT_NUM,
+      BigInt(hints?.length ?? 0),
       hints,
     ],
     query: { enabled: privateKeyQuery.isSuccess },
