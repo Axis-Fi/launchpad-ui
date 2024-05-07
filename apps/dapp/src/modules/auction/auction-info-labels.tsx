@@ -35,10 +35,14 @@ const handlers = {
   vestingDuration: {
     label: "Vesting",
     handler: (auction: Auction) =>
-      //TODO: move to formatters
-      `${formatDate.full(
+      // TODO: move to formatters
+      `${Math.floor(
+        (Number(auction.linearVesting?.expiryTimestamp) -
+          Number(auction.linearVesting?.startTimestamp)) /
+          86400,
+      )} days starting   ${formatDate.full(
         Number(auction.linearVesting?.startTimestamp) * 1000,
-      )} days`,
+      )}`,
   },
 };
 
