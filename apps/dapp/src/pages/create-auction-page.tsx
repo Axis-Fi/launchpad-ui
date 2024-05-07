@@ -106,11 +106,27 @@ const schema = z
     farcaster: z.string().url().optional(),
     payoutTokenLogo: z.string().url().optional(),
   })
+  .refine((data) => (!data.isVested ? true : data.vestingDuration), {
+    message: "Vesting duration is required",
+    path: ["vestingDuration"],
+  })
+  // TODO do we need to add a max vesting duration check?
+  // .refine(
+  //   (data) => (!data.isVested ? true : data.vestingDuration && Number(data.vestingDuration) <= 270),
+  //   {
+  //     message: "Max vesting duration is 270 days",
+  //     path: ["vestingStart"],
+  //   },
+  // )
   .refine(
-    (data) => (!data.isVested ? true : data.isVested && data.vestingDuration),
+    (data) =>
+      !data.isVested
+        ? true
+        : data.vestingStart &&
+          data.vestingStart.getTime() >= data.deadline.getTime(),
     {
-      message: "Vesting duration is required",
-      path: ["vestingDuration"],
+      message: "Vesting start needs to be on or after the auction deadline",
+      path: ["vestingStart"],
     },
   )
   .refine((data) => data.start.getTime() > new Date().getTime(), {
@@ -146,12 +162,22 @@ export default function CreateAuctionPage() {
     defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken, _chainId, capacity, auctionType] = form.watch([
+  const [
+    isVested,
+    payoutToken,
+    _chainId,
+    capacity,
+    auctionType,
+    start,
+    deadline,
+  ] = form.watch([
     "isVested",
     "payoutToken",
     "quoteToken.chainId",
     "capacity",
     "auctionType",
+    "start",
+    "deadline",
   ]);
 
   const chainId = _chainId ?? connectedChainId;
@@ -663,7 +689,11 @@ export default function CreateAuctionPage() {
                         time
                         placeholderDate={addDays(addHours(new Date(), 1), 7)}
                         content={formatDate.fullLocal(
-                          dateMath.addDays(new Date(), 7),
+                          addDays(start ? (start as Date) : new Date(), 7),
+                        )}
+                        minDate={addDays(
+                          start ? (start as Date) : new Date(),
+                          1,
                         )}
                         {...field}
                       />
@@ -745,6 +775,11 @@ export default function CreateAuctionPage() {
                           placeholderDate={addMinutes(new Date(), 5)}
                           content={formatDate.fullLocal(new Date())}
                           {...field}
+                          minDate={
+                            deadline
+                              ? (deadline as Date)
+                              : addDays(new Date(), 1)
+                          }
                         />
                       </FormItemWrapper>
                     )}

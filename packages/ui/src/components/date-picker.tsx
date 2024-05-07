@@ -12,6 +12,7 @@ import { addTimeToDate, formatDate } from "../helpers";
 export type DatePickerProps = {
   content?: string;
   placeholderDate?: Date;
+  minDate?: Date;
   error?: string;
   time?: boolean;
   onChange?: (date?: Date) => void;
@@ -64,7 +65,7 @@ export function DatePicker({
           }}
           initialFocus
           placeholderDate={!placeholderDate ? new Date() : placeholderDate}
-          fromDate={new Date()}
+          minDate={props.minDate}
         />
         {props.time && (
           <Input
