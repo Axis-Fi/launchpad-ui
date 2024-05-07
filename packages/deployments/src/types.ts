@@ -20,3 +20,5 @@ export type AxisDeploymentConfig = Omit<AxisDeployment, "tokenList"> & {
   tokenList: Omit<Token, "chainId">[];
   chainIconUrl?: string;
 };
+
+export type AxisDeployments = Record<number, AxisDeployment>;

@@ -1,5 +1,5 @@
 import { SubgraphAuction } from "@repo/types";
-import { environment } from "config/environment";
+import { environment } from "@repo/env";
 
 const devAddresses = [
   "0xb47c8e4beb28af80ede5e5bf474927b110ef2c0e",
