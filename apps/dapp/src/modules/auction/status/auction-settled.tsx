@@ -67,7 +67,9 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           />
 
           <InfoLabel label="Ended" value={auction.formatted?.endFormatted} />
-          <AuctionInfoLabel auction={auction} id="vestingDuration" />
+          {auction.linearVesting && (
+            <AuctionInfoLabel auction={auction} id="vestingDuration" />
+          )}
         </AuctionInfoCard>
         <div className="w-1/2">
           <ProjectInfoCard auction={auction} />
