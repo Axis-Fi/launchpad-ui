@@ -1,14 +1,14 @@
 import { Input, cn } from "..";
 
-export function InfoLabel(
-  props: {
-    label: React.ReactNode;
-    value: React.ReactNode;
-    reverse?: boolean;
-    editable?: boolean;
-    inputClassName?: string;
-  } & React.ComponentProps<"input">,
-) {
+export type InfoLabelProps = {
+  label: React.ReactNode;
+  value: React.ReactNode;
+  reverse?: boolean;
+  editable?: boolean;
+  inputClassName?: string;
+} & React.ComponentProps<"input">;
+
+export function InfoLabel(props: InfoLabelProps) {
   return (
     <div className={cn(props.reverse && "flex flex-col-reverse")}>
       {props.editable ? (

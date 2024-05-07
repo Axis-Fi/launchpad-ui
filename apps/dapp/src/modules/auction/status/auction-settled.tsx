@@ -1,21 +1,96 @@
-import { Button, InfoLabel, cn } from "@repo/ui";
+import {
+  Button,
+  InfoLabel,
+  cn,
+  type
+  InfoLabelProps,
+  ToggleProvider,
+  useToggle,
+} from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
-import { AuctionType, PropsWithAuction } from "@repo/types";
+import { AuctionType, type EMPAuctionData, type PropsWithAuction } from "@repo/types";
 import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";
 import { useClaimProceeds } from "../hooks/use-claim-proceeds";
-import { useAccount } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
 import { AuctionInfoLabel } from "../auction-info-labels";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import React from "react";
+import { trimCurrency } from "utils/currency";
+import { useTokenPrice } from "../hooks/use-token-price";
+import { formatUnits } from "viem";
+
+type ToggledAmountProps = {
+   symbol: string;
+   amount: number | string;
+} & Omit<InfoLabelProps, "value">;
+
+const ToggledAmount = ({ symbol, amount, ...rest }: ToggledAmountProps) => {
+  const chainId = useChainId();
+  const price = useTokenPrice(chainId, symbol);
+  const { isToggled: isUsdEnabled } = useToggle();
+
+  const value = isUsdEnabled && price !== undefined
+    ?`$${trimCurrency(price * Number(amount))}`
+    : `${trimCurrency(amount)} ${symbol}`;
+
+  return <InfoLabel {...rest} value={value} />;
+}
+
+const AuctionHeader = ({ auction }: PropsWithAuction) => {
+  const clearingPrice = Number(formatUnits(
+    (auction?.auctionData as EMPAuctionData)?.marginalPrice ?? 0,
+    Number(auction.quoteToken.decimals),
+  ));
+  const fdv = (Number(auction.baseToken.totalSupply) ?? 0) * clearingPrice;
+
+  return (
+    <div className="flex justify-between items-start mb-4">
+      <ToggledAmount
+        reverse={true}
+        label="Clearing price"
+        symbol={auction.quoteToken.symbol}
+        amount={clearingPrice}
+      />
+      <ToggledAmount
+        reverse={true}
+        label="Total Raised"
+        symbol={auction.quoteToken.symbol}
+        amount={auction?.purchased ?? 0}
+      />
+      <ToggledAmount
+        reverse={true}
+        label="FDV"
+        symbol={auction.quoteToken.symbol}
+        amount={fdv ?? 0}
+      />
+      <InfoLabel
+        reverse={true}
+        label="Participants"
+        value={auction.formatted?.uniqueBidders}
+      />
+    </div>
+  )
+}
+
+const UsdSwitch: React.FC<{ currencySymbol: string }>  = ({ currencySymbol }) => {
+  const { isToggled, toggle } = useToggle();
+
+  return (
+    <div className="flex items-center ghost">
+      <Button variant={isToggled ? "secondary" : "ghost"} size="sm" className="mr-2" onClick={toggle}>USD</Button>
+      <Button variant={isToggled ? "ghost" : "secondary"} size="sm" className="mr-2" onClick={toggle}>{currencySymbol}</Button>
+    </div>
+  );
+}
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const [isClaimBids, setIsClaimingBids] = React.useState(false);
   const [isClaimingProceeds, setIsClaimingProceeds] = React.useState(false);
-
+  
   const { address } = useAccount();
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const claimProceeds = useClaimProceeds(auction);
@@ -28,11 +103,17 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
     <div className="w-full">
       <div className="mb-8 flex justify-between">
         {isEMP && (
-          <div className="w-1/2">
-            <SettledAuctionChart
-              lotId={auction.lotId}
-              chainId={auction.chainId}
-            />
+          <div className="w-[60%] mx-8">
+            <ToggleProvider>
+              <AuctionHeader auction={auction} />
+              <div className="flex justify-start">
+                <UsdSwitch currencySymbol={auction.quoteToken.symbol} />
+              </div>
+              <SettledAuctionChart
+                lotId={auction.lotId}
+                chainId={auction.chainId}
+              />
+            </ToggleProvider>
           </div>
         )}
         <div className={cn("w-[40%]", !isEMP && "w-full")}>
@@ -70,11 +151,6 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           <InfoLabel
             label="Total Raised"
             value={`${auction.formatted?.purchased} ${auction.quoteToken.symbol}`}
-          />
-
-          <InfoLabel
-            label="Rate"
-            value={`${auction.formatted?.marginalPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
           />
 
           <InfoLabel label="Total Bids" value={auction.bids.length} />

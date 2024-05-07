@@ -3,12 +3,13 @@ import {
   createCloakClient,
   Configuration,
 } from "@repo/cloak";
+import * as core from "../core";
 import { type AxisDeployments, deployments } from "@repo/deployments";
 import { type OriginConfig } from "../types";
 import type { BidParams, BidConfig } from "../core/bid";
 import type { GetAuctionParams, GetAuctionResult } from "../core/auction";
 import type { Core } from "../core";
-import * as core from "../core";
+import type { GetTokenPriceParams } from "../core/tokens";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -66,6 +67,10 @@ class OriginSdk {
    */
   async getAuction(params: GetAuctionParams): Promise<GetAuctionResult> {
     return this.core.auction.functions.getAuction(params, this.deployments);
+  }
+
+  async getTokenPrice(params: GetTokenPriceParams): Promise<number> {
+    return this.core.tokens.functions.getTokenPrice(params.chainId, params.tokenSymbol);
   }
 
   /**

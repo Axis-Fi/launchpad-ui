@@ -31,7 +31,6 @@ export type AuctionResult = {
 
 export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   const { getToken } = useTokenLists();
-
   const { data, refetch, isLoading, isRefetching } = useGetAuctionLotQuery(
     {
       endpoint: deployments[chainId!].subgraphURL,

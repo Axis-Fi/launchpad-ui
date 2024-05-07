@@ -1,27 +1,20 @@
-import type { CartesianViewBox } from "recharts/types/util/types";
-import type { ScatterPointItem } from "recharts/types/cartesian/Scatter";
-import type { Auction, EMPAuctionData } from "@repo/types";
+import { format } from "date-fns";
 import {
-  LabelProps,
   ReferenceLine,
-  ResponsiveContainer,
-  Scatter,
-  ScatterChart,
   Tooltip,
-  TooltipProps,
   XAxis,
   YAxis,
-  ZAxis,
+  CartesianGrid,
+  ComposedChart,
+  Area,
+  ResponsiveContainer
 } from "recharts";
-import { format } from "date-fns";
-import { CircleIcon, GemIcon, XIcon } from "lucide-react";
-import { cn } from "@repo/ui";
+import type { Auction, EMPAuctionData } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
-import { formatDate } from "src/utils/date";
-import { SVGProps } from "react";
-import { getAuctionPrices } from "modules/auction/utils/get-auction-prices";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
-import { trimCurrency } from "utils/currency";
+import { abbreviateNumber } from "utils/currency";
+import { formatDate } from "utils/date";
+
 
 //TODO: revisit this type, see if can be squashed into Bid
 export type ParsedBid = {
@@ -31,6 +24,7 @@ export type ParsedBid = {
   amountIn: number;
   amountOut: number;
   settledAmountOut: number;
+  cumulativeAmountIn: number;
   timestamp: number;
 };
 
@@ -46,67 +40,55 @@ const useChartData = (
   auctionData: EMPAuctionData | undefined,
 ): SettleData => {
   // Validate
-  if (!auctionData) return {};
+  if (!auctionData || !auction) return {};
 
-  // 1. Create data array and parse inputs
-  const data = !auction
-    ? undefined
-    : auction.bids
-        .filter((b) => b.status !== "refunded")
-        .map((bid) => {
-          const amountIn = Number(bid.amountIn);
-          const amountOut = isFinite(Number(bid.amountOut))
-            ? Number(bid.amountOut)
-            : 0;
+  // Create data array and parse inputs
+  const data = auction.bids
+    .filter((b) => b.status !== "refunded")
+    .map((bid) => {
+      const amountIn = Number(bid.amountIn);
+      const amountOut = isFinite(Number(bid.amountOut))
+        ? Number(bid.amountOut)
+        : 0;
 
-          const price = Number(bid.submittedPrice);
-          const timestamp = Number(bid.blockTimestamp) * 1000;
+      const price = Number(bid.submittedPrice);
+      const timestamp = Number(bid.blockTimestamp) * 1000;
 
-          return {
-            id: bid.id,
-            bidder: bid.bidder,
-            price,
-            amountIn,
-            amountOut,
-            settledAmountOut: Number(bid.settledAmountOut),
-            timestamp,
-          };
-        });
+      return {
+        id: bid.id,
+        bidder: bid.bidder,
+        price,
+        amountIn,
+        amountOut,
+        settledAmountOut: Number(bid.settledAmountOut),
+        cumulativeAmountIn: 0,
+        timestamp,
+      };
+    });
+    
+  if (!data) return {};
 
-  if (!auction || !data) return {};
+  data.sort((a, b) => b.price - a.price);
 
-  data.sort((a, b) => a.price - b.price);
+  // Track cumulative tokens sold
+  let cumulativeAmountIn = 0;
+  data.forEach((bid) => {
+    cumulativeAmountIn += bid.amountIn;
+    bid.cumulativeAmountIn = cumulativeAmountIn;
+  });
 
-  const sizeRange: [number, number] = [
-    !data
-      ? 0
-      : data.reduce(
-          (min, p) => (p.amountIn < min ? p.amountIn : min),
-          data[0].amountIn,
-        ),
-    !data
-      ? 0
-      : data.reduce(
-          (max, p) => (p.amountIn > max ? p.amountIn : max),
-          data[0].amountIn,
-        ),
-  ];
-  // Scale the size range values to have a maximum of 500
-  sizeRange[0] = (sizeRange[0] / sizeRange[1]) * 500;
-  sizeRange[1] = 500;
+  // Insert initial data point for drawing first token sale
+  data.unshift({ cumulativeAmountIn: Number(0), price: data[0].price })
 
-  const prices = getAuctionPrices(data, auction, auctionData);
-  return { data, sizeRange, ...prices };
+  data.push({ cumulativeAmountIn: data[data.length - 1].cumulativeAmountIn, price: Number(0) })
+
+  // const prices = getAuctionPrices(data, auction, auctionData);
+  return { data };
 };
 
-type SettledAuctionChartProps = {
-  lotId?: string;
-  chainId?: number;
-};
-
-const timestampFormatter = (timestamp: number) => {
-  return format(new Date(timestamp), "MM-dd HH:mm");
-};
+type SettledTooltipProps = {
+  auction?: Auction;
+} & TooltipProps<number, "timestamp" | "price" | "amountIn">;
 
 type FormatterProps = {
   dataKey: string;
@@ -121,144 +103,8 @@ const formatter = (value: unknown, _name: string, props: FormatterProps) => {
 
   return value;
 };
-
-export const SettledAuctionChart = ({
-  lotId,
-  chainId,
-}: SettledAuctionChartProps) => {
-  const { result: auction } = useAuction(lotId, chainId);
-  const { data: auctionData } = useAuctionData({ lotId, chainId });
-
-  const start = Number(auction?.start) * 1000;
-  const conclusion = Number(auction?.conclusion) * 1000;
-
-  const { data, sizeRange } = useChartData(
-    auction,
-    auctionData as EMPAuctionData,
-  );
-
-  const marginalPrice = Number(auction?.formatted?.marginalPrice);
-  const minimumPrice = Number(auction?.formatted?.minPrice);
-
-  return (
-    <div className="size-full max-h-[260px]">
-      <ResponsiveContainer minWidth={300} minHeight={260}>
-        <ScatterChart>
-          <XAxis
-            className="text-xs"
-            type="number"
-            tickLine={false}
-            minTickGap={30}
-            dataKey="timestamp"
-            domain={[start, conclusion]}
-            name="timestamp"
-            stroke="#f4f4f4"
-            tickFormatter={timestampFormatter}
-          />
-          <YAxis
-            className="text-xs"
-            type="number"
-            tickLine={false}
-            dataKey="price"
-            name="price"
-            minTickGap={40}
-            stroke="#f4f4f4"
-            domain={([min, max]) => [
-              Math.min(minimumPrice ?? 0, min) * 0.5,
-              !marginalPrice && minimumPrice ? minimumPrice * 1.5 : max * 1.1, // If there is no marginal price, use the minimum price as every bid will have a price below that
-            ]}
-            tickFormatter={(value) =>
-              trimCurrency(value) + " " + auction?.quoteToken.symbol
-            }
-          />
-          <ZAxis
-            type="number"
-            dataKey="amountIn"
-            name="amountIn"
-            range={sizeRange}
-          />
-          <Tooltip
-            cursor={{ strokeDasharray: "3 3" }}
-            // @ts-expect-error TODO fix typing
-            formatter={formatter}
-            wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
-            content={(props) => <CustomTooltip {...props} auction={auction} />}
-          />
-          <Scatter
-            name="bids"
-            data={data}
-            shape={(props: Omit<CustomShapeProps, "marginalPrice">) => (
-              <CustomShape {...props} marginalPrice={marginalPrice} />
-            )}
-          />
-          <ReferenceLine
-            y={marginalPrice ?? undefined} // Only display the settled/marginal price if it is non-zero
-            stroke="#76BDF2"
-            className="relative *:absolute *:top-10"
-            label={(props: Omit<LabelProps, "content">) => (
-              <CustomLabel
-                {...props}
-                label="Settled Price"
-                className="fill-axis-teal"
-              />
-            )}
-          />
-          <ReferenceLine
-            y={minimumPrice}
-            strokeDasharray="3 3"
-            stroke="orange"
-            label={(props) => (
-              <CustomLabel
-                {...props}
-                content="Minimum Price"
-                className="fill-axis-orange"
-              />
-            )}
-          />
-        </ScatterChart>
-      </ResponsiveContainer>
-    </div>
-  );
-};
-
-function CustomLabel(
-  props: LabelProps & { viewBox?: CartesianViewBox; label: string },
-) {
-  return (
-    <text
-      {...props?.viewBox}
-      y={Number(props.viewBox?.y ?? 0) - Number(props?.offset)}
-      x={props.viewBox?.x}
-      className={cn("absolute text-xs font-semibold", props.className)}
-    >
-      {props.label}
-    </text>
-  );
-}
-
-type CustomShapeProps = ScatterPointItem &
-  SVGProps<SVGElement> & {
-    marginalPrice?: number;
-  };
-
-function CustomShape(props: React.PropsWithoutRef<CustomShapeProps>) {
-  return (
-    <>
-      <CircleIcon className="fill-transparent text-transparent" {...props} />
-      {props.payload.settledAmountOut ? (
-        <GemIcon className="text-axis-green" {...props} />
-      ) : (
-        <XIcon className="text-axis-red *:p-4" {...props} />
-      )}
-    </>
-  );
-}
-
-type SettledTooltipProps = {
-  auction?: Auction;
-} & TooltipProps<number, "timestamp" | "price" | "amountIn">;
-
-function CustomTooltip(props: SettledTooltipProps) {
+const CustomTooltip = (props: SettledTooltipProps) => {
+  // console.log("props", props.payload)
   const [timestamp, price, amountIn] = props.payload ?? [];
   const auction = props.auction;
 
@@ -274,3 +120,107 @@ function CustomTooltip(props: SettledTooltipProps) {
     </div>
   );
 }
+
+type SettledAuctionChartProps = {
+  lotId?: string;
+  chainId?: number;
+};
+
+export const SettledAuctionChart = ({
+  lotId,
+  chainId,
+}: SettledAuctionChartProps) => {
+  const { result: auction } = useAuction(lotId, chainId);
+  const { data: auctionData } = useAuctionData({ lotId, chainId });
+
+  const { data } = useChartData(
+    auction,
+    auctionData as EMPAuctionData,
+  );
+  // console.log("DDDD", { auction, auctionData, data});
+  const marginalPrice = Number(auction?.formatted?.marginalPrice);
+  const capacityFilled = Number(auction?.capacityInitial) * marginalPrice;
+  // console.log({capacityFilled, initial: auction?.capacityInitial, marginalPrice})
+  // console.log("margin", marginalPrice)
+  return (
+    <div className="size-full max-h-[488px]">
+      <ResponsiveContainer width="100%" height={488}>
+        <ComposedChart
+          data={data}
+          // width={657}
+          // height={488}
+          margin={{ top: 44, right: 16, left: 16, bottom: 16 }}
+          style={{ backgroundColor: "#252026", border: "0.5px solid #D7D7C1", borderRadius: 4, paddingRight: 16 }}
+        >
+          <CartesianGrid
+            stroke="#D7D7C1"
+            strokeDasharray="0"
+            strokeWidth={0.5}
+            vertical={false}
+          />
+          <XAxis
+            dataKey="cumulativeAmountIn"
+            type="number"
+            tick={{ fill: "#D7D7C1", fontSize: 14 }}
+            tickFormatter={(value) => {
+              return abbreviateNumber(value);
+            }}
+          />
+          <YAxis
+            dataKey="price"
+            type="number"
+            tick={{ fill: "#D7D7C1", fontSize: 14 }}
+          />
+          <Tooltip
+            cursor={{ strokeDasharray: "3 3" }}
+            // @ts-expect-error TODO
+            // formatter={formatter}
+            wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
+            content={(props) => <CustomTooltip {...props} auction={auction} />}
+          />
+          {/* <Legend align="left" /> */}
+          <ReferenceLine
+            x={capacityFilled}
+            stroke="#D7D7C1"
+            strokeDasharray="3 3"
+            label={{
+              fontSize: 14,
+              fill: "#D7D7C1",
+              value: "Capacity filled",
+              position: "top",
+              angle: -90,
+              offset: -180,
+              dx: -6,
+            }}
+          />
+          <Area
+            type="stepBefore"
+            dataKey="price"
+            stroke="#75C8F6"
+            dot={false}
+            strokeWidth={2}
+          />
+          {data?.map((entry, index) => (
+            <ReferenceLine
+              key={index}
+              segment={[
+                { x: entry.cumulativeAmountIn, y: 0 },
+                { x: entry.cumulativeAmountIn, y: entry.price }
+              ]}
+              stroke="#75C8F6"
+              strokeWidth={2}
+            />
+          ))}
+          <ReferenceLine
+              segment={[
+                { x: 0, y: 0 },
+                { x: data ? data[data.length - 1].cumulativeAmountIn: 0, y: 0 }
+              ]}
+              stroke="#75C8F6"
+              strokeWidth={2}
+            />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
