@@ -17,7 +17,7 @@ export function AuctionBidsCard({
 
   return (
     <div {...props}>
-      <h3>Bids</h3>
+      {isFixedPrice ? <h3>Purchases</h3> : <h3>Bids</h3>}
       <div className="mt-2">
         {isFixedPrice ? (
           <PurchaseList auction={auction as AtomicAuction} />
