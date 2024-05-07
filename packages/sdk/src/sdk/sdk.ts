@@ -59,7 +59,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const auction = await sdk.getAuction({ lotId: 1, chainId: 1 })
+   *   const auction = await sdk.getAuction({ lotId: 1, chainId: 1, auctionType: AuctionType.SEALED_BID })
    * } catch (error: SdkError) {
    *   console.log(error.message, error.issues)
    * }
@@ -89,6 +89,7 @@ class OriginSdk {
    *     chainId: 1,
    *     amountIn: 100,
    *     amountOut: 100,
+   *     auctionType: AuctionType.SEALED_BID,
    *     bidderAddress: "0x123...",
    *     referrerAddress: "0x456...",
    *     signedPermit2Approval: "0x789...",
