@@ -29,7 +29,6 @@ export default function AuctionListPage() {
   const [searchText, setSearchText] = useState<string>("");
   const navigate = useNavigate();
   const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
-  console.log({ auctions });
 
   const filteredAuctions = filters.length
     ? auctions

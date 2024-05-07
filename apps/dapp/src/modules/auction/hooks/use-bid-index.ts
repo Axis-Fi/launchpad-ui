@@ -17,8 +17,6 @@ export function useBidIndex(auction: Auction, bidId: bigint = -1n) {
     args: [BigInt(auction.lotId)],
   });
 
-  console.log(numBidsQuery);
-
   const bidsQuery = useReadContract({
     address,
     abi,
