@@ -41,10 +41,10 @@ describe("encryptBid()", () => {
     );
   });
 
-  it("throws an error if the cloakClient.keysApi.encryptLotIdPost() returns an unexpected response", async () => {
+  it("throws an error if cloakClient.keysApi.encryptLotIdPost() returns an unexpected response", async () => {
     const invalidResponse = { foo: "bar" };
-    // @ts-expect-error deliberately returning an unexpected shape
     vi.spyOn(mockCloakClient.keysApi, "encryptLotIdPost").mockResolvedValue(
+      // @ts-expect-error deliberately returning an unexpected shape
       invalidResponse,
     );
 

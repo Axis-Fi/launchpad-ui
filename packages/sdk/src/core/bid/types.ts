@@ -20,7 +20,10 @@ type PrimedBidParams = Pick<
   encryptedBid: EncryptLotIdPost200Response;
 };
 
-type EncryptBidParams = BidParams & {
+type EncryptBidParams = Pick<
+  BidParams,
+  "lotId" | "amountIn" | "amountOut" | "chainId" | "bidderAddress"
+> & {
   quoteTokenDecimals: number;
   baseTokenDecimals: number;
   auctionHouseAddress: Address;

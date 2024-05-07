@@ -1,44 +1,12 @@
-import { toHex, parseUnits } from "viem";
 import * as v from "valibot";
-import { abis } from "@repo/abis";
 import type { CloakClient } from "@repo/cloak";
 import { getAuctionHouse, type AxisDeployments } from "@repo/deployments";
-import { SdkError } from "../../types";
-import { BidParamsSchema } from "./schema";
-import type { BidConfig, BidParams, PrimedBidParams } from "./types";
-import { encryptBid, encodeEncryptedBid } from "./utils";
-import type { AuctionModule } from "../auction";
-
-const getConfigFromPrimedParams = (params: PrimedBidParams): BidConfig => {
-  const {
-    lotId,
-    amountIn,
-    bidderAddress,
-    referrerAddress,
-    auctionHouseAddress,
-    quoteTokenDecimals,
-    encryptedBid,
-  } = params;
-
-  const callbackData = toHex(""); //TODO: callbackData - decide best way to handle this
-
-  return {
-    abi: abis.batchAuctionHouse,
-    address: auctionHouseAddress,
-    functionName: "bid",
-    args: [
-      {
-        lotId: BigInt(lotId),
-        bidder: bidderAddress,
-        referrer: referrerAddress,
-        amount: parseUnits(amountIn.toString(), quoteTokenDecimals),
-        auctionData: encodeEncryptedBid(encryptedBid),
-        permit2Data: toHex(""), // TODO: handle permit2Data
-      },
-      callbackData,
-    ],
-  };
-};
+import { SdkError } from "../../../types";
+import { BidParamsSchema } from "../schema";
+import type { BidConfig, BidParams } from "../types";
+import { encryptBid } from "../utils";
+import type { AuctionModule } from "../../auction";
+import { getConfigFromPrimedParams } from "./get-config-from-primed-params";
 
 const getConfig = async (
   params: BidParams,
@@ -99,4 +67,4 @@ const getConfig = async (
   });
 };
 
-export { getConfigFromPrimedParams, getConfig };
+export { getConfig };

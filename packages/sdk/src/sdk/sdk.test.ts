@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { CloakClient } from "@repo/cloak";
 import { OriginSdk } from "./sdk";
 import type { Core } from "../core";
-import * as cloakRepo from "@repo/cloak";
+import * as cloakDep from "@repo/cloak";
 
 const mockConfig = {
   cloak: {
@@ -32,9 +32,9 @@ describe("OriginSdk", () => {
   it("calls Configuration() with the supplied cloak config", () => {
     const mockConfigurationClass = class {
       constructor() {}
-    } as unknown as cloakRepo.Configuration;
+    } as unknown as cloakDep.Configuration;
     const configurationSpy = vi
-      .spyOn(cloakRepo, "Configuration")
+      .spyOn(cloakDep, "Configuration")
       .mockReturnValue(mockConfigurationClass);
 
     new OriginSdk(mockConfig, mockCore);
@@ -47,13 +47,11 @@ describe("OriginSdk", () => {
   it("calls createCloakClient() with the supplied cloak config", () => {
     const mockConfigurationClass = class {
       constructor() {}
-    } as unknown as cloakRepo.Configuration;
+    } as unknown as cloakDep.Configuration;
 
-    vi.spyOn(cloakRepo, "Configuration").mockReturnValue(
-      mockConfigurationClass,
-    );
+    vi.spyOn(cloakDep, "Configuration").mockReturnValue(mockConfigurationClass);
 
-    const createCloakClientSpy = vi.spyOn(cloakRepo, "createCloakClient");
+    const createCloakClientSpy = vi.spyOn(cloakDep, "createCloakClient");
 
     new OriginSdk(mockConfig, mockCore);
 
@@ -68,7 +66,7 @@ describe("OriginSdk", () => {
 });
 
 describe("OriginSdk: bid()", () => {
-  it("calls bid module's getConfig() once with the supplied params", async () => {
+  it("calls bid module's getConfig() with the correct params", async () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     // @ts-expect-error - params shape is irrelevant for this test
     await sdk.bid(mockParams);
@@ -83,14 +81,13 @@ describe("OriginSdk: bid()", () => {
 });
 
 describe("OriginSdk: getAuction()", () => {
-  it("getAuction() calls auction module's getAuction() once with the supplied params", async () => {
+  it("calls auction module's getAuction() with correct params", async () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     // @ts-expect-error - params shape is irrelevant for this test
     await sdk.getAuction(mockParams);
 
     expect(mockCore.auction.functions.getAuction).toHaveBeenCalledWith(
       mockParams,
-      sdk.deployments,
     );
   });
 });

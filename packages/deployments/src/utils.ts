@@ -54,9 +54,7 @@ function getCatalogue(auction: Pick<Auction, "chainId" | "auctionType">) {
   ] as Address;
 
   if (!abi || !address) {
-    throw new Error(
-      `Can't find abi/address for auctionType ${auction.auctionType} and chainId ${auction.chainId}`,
-    );
+    return undefined;
   }
 
   return {

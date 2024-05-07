@@ -42,7 +42,7 @@ export function useBidAuction(
     if (bidderAddress === undefined) {
       throw new Error("Wallet not connected. Please connect your wallet.");
     }
-    console.log({ auctionType });
+
     return sdk.bid({
       lotId: Number(lotId),
       amountIn: Number(amountIn),
