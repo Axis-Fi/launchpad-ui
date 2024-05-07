@@ -8,8 +8,11 @@ import { useAccount } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
 import { AuctionInfoLabel } from "../auction-info-labels";
+import React from "react";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
+  const [open, setOpen] = React.useState(false);
   const { address } = useAccount();
   const batchAuction = auction as BatchAuction;
   const cleared = auction.formatted?.marginalPrice !== "0.00";
@@ -18,6 +21,9 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   const userHasBids = batchAuction.bids.some(
     (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
   );
+
+  const isWaiting =
+    claimBids.claimTx.isPending || claimBids.claimReceipt.isLoading;
 
   return (
     <div className="w-full">
@@ -39,7 +45,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             <RequiresChain chainId={auction.chainId}>
               {userHasBids && (
                 <div className="flex justify-center">
-                  <Button onClick={claimBids.handleClaim} className="mt-4">
+                  <Button onClick={() => setOpen(true)} className="mt-4">
                     {cleared ? "CLAIM BIDS" : "CLAIM REFUND"}
                   </Button>
                 </div>
@@ -75,6 +81,41 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           <ProjectInfoCard auction={auction} />
         </div>
       </div>
+      <TransactionDialog
+        open={open}
+        signatureMutation={claimBids.claimTx}
+        error={claimBids.claimTx.error}
+        onConfirm={claimBids.handleClaim}
+        mutation={claimBids.claimReceipt}
+        chainId={auction.chainId}
+        onOpenChange={(open: boolean) => {
+          if (!open) {
+            claimBids.claimTx.reset();
+          }
+          setOpen(open);
+        }}
+        hash={claimBids.claimTx.data}
+        disabled={isWaiting}
+        screens={{
+          idle: {
+            Component: () => (
+              <div className="text-center">
+                You&apos;re about to claim all of your outstanding refunds and
+                payouts for this auction.
+              </div>
+            ),
+            title: `Confirm Claim Bids`,
+          },
+          success: {
+            Component: () => (
+              <div className="flex justify-center text-center">
+                <p>Bids claimed successfully!</p>
+              </div>
+            ),
+            title: "Transaction Confirmed",
+          },
+        }}
+      />
     </div>
   );
 }
