@@ -12,8 +12,16 @@ export function useClaimBids(auction: BatchAuction) {
   const { abi, address } = getAuctionHouse(auction);
 
   const bids = auction.bids
-    .filter((b) => b.bidder.toLowerCase() === userAddress?.toLowerCase())
+    .filter(
+      (b) =>
+        b.bidder.toLowerCase() === userAddress?.toLowerCase() &&
+        b.status !== "claimed" &&
+        b.status !== "refunded",
+    )
     .map((b) => BigInt(b.bidId));
+
+  // TODO get total number of refunds, refund amount, payouts, and payout amount that the user is claimed
+  // Display this back to them on the settle page in the confirm dialog box.
 
   const claimCall = useSimulateContract({
     abi,
