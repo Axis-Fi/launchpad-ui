@@ -88,6 +88,6 @@ function mapFixedPriceData(
 ): FixedPriceAuctionData | undefined {
   return {
     price: data[0],
-    maxPayoutPercentage: data[1],
+    maxPayout: data[1],
   };
 }

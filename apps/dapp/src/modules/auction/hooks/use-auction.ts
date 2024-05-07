@@ -17,10 +17,10 @@ import {
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
-import { fromBasisPoints, trimCurrency } from "utils";
+import { trimCurrency } from "utils";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
@@ -242,13 +242,24 @@ function addFPFields(
 ) {
   if (!auctionData || !auction) return;
 
+  const price = formatUnits(
+    auctionData.price,
+    Number(auction.quoteToken.decimals),
+  );
+  const capacity = parseUnits(
+    auction.capacity,
+    Number(auction.baseToken.decimals),
+  );
+  const maxPayout = formatUnits(
+    capacity > auctionData.maxPayout ? auctionData.maxPayout : capacity,
+    Number(auction.baseToken.decimals),
+  );
+  const maxAmount = (Number(maxPayout) * Number(price)).toString(); // TODO not sure whether to do toLocaleString() or toString()
+
   return {
-    price: formatUnits(auctionData.price, Number(auction.quoteToken.decimals)),
-    maxPayoutPercentage: fromBasisPoints(
-      // 0.00 - 1.00
-      //TODO: review and improve
-      formatUnits(auctionData.maxPayoutPercentage, 18),
-    ),
+    price,
+    maxPayout,
+    maxAmount,
   };
 }
 

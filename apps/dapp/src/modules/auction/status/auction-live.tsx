@@ -12,6 +12,7 @@ import {
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
+import { trimCurrency } from "utils";
 import { useBidAuction } from "../hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,9 +31,7 @@ export type BidForm = z.infer<typeof schema>;
 export function AuctionLive({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
-  const maxPayoutPercentage = Number(
-    auction.formatted?.maxPayoutPercentage ?? 0,
-  ); // percentage 0.00-1.00 format
+
   const form = useForm<BidForm>({
     mode: "onTouched",
     resolver: zodResolver(
@@ -59,12 +58,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             !isFixedPrice ||
-            data.quoteTokenAmount <=
-              Number(auction.capacityInitial) * maxPayoutPercentage,
+            data.quoteTokenAmount <= Number(auction.formatted?.maxAmount),
           {
-            message: `Max bid is ${
-              Number(auction.capacityInitial) * maxPayoutPercentage
-            }`,
+            message: `Max amount is ${trimCurrency(
+              auction.formatted?.maxAmount ?? 0,
+            )}`,
             path: ["quoteTokenAmount"],
           },
         ),
@@ -88,9 +86,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     bid.isSufficientAllowance ? bid.handleBid() : bid.approveCapacity();
   };
 
-  const formattedBalance = formatUnits(
-    balance.data?.value ?? 0n,
-    balance.data?.decimals ?? 0,
+  const formattedBalance = trimCurrency(
+    formatUnits(balance.data?.value ?? 0n, balance.data?.decimals ?? 0),
   );
 
   const isValidInput = form.formState.isValid;
@@ -110,6 +107,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const actionKeyword = isEMP ? "Bid" : "Purchase";
+
+  const overMaxAmount =
+    isFixedPrice && amountIn > Number(auction.formatted?.maxAmount);
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
@@ -186,7 +186,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                   <div className="mt-4 w-full">
                     <Button
                       className="w-full"
-                      disabled={isWaiting || isSigningApproval}
+                      disabled={isWaiting || isSigningApproval || overMaxAmount}
                       onClick={() =>
                         bid.isSufficientAllowance
                           ? setOpen(true)

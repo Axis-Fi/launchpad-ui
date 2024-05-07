@@ -66,7 +66,7 @@ export type EMPAuctionData = {
 
 export type FixedPriceAuctionData = {
   price: bigint;
-  maxPayoutPercentage: bigint;
+  maxPayout: bigint;
 };
 
 export type AuctionFormattedInfo = {
@@ -85,7 +85,8 @@ export type AuctionFormattedInfo = {
   capacity: string;
   totalSupply: string;
   price?: string;
-  maxPayoutPercentage?: number;
+  maxPayout?: string;
+  maxAmount?: string;
   auctionType?: string;
 } & Partial<EMPFormattedInfo>;
 
