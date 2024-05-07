@@ -38,7 +38,7 @@ const cols = [
   }),
   column.accessor("date", {
     header: "Date",
-    cell: (info) => formatDate.full(info.getValue()),
+    cell: (info) => formatDate.full(info.getValue() as Date),
   }),
   column.accessor("transactionHash", {
     header: "Transaction Hash",
