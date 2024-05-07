@@ -65,7 +65,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             )}`,
             path: ["quoteTokenAmount"],
           },
-        ),
+        )
+        .refine((data) => data.quoteTokenAmount <= Number(formattedBalance), {
+          message: `Insufficient balance`,
+          path: ["quoteTokenAmount"],
+        }),
     ),
   });
 
@@ -81,14 +85,15 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     minAmountOut,
   );
 
+  const formattedBalance = formatUnits(
+    balance.data?.value ?? 0n,
+    balance.data?.decimals ?? 0,
+  );
+
   // TODO Permit2 signature
   const handleSubmit = () => {
     bid.isSufficientAllowance ? bid.handleBid() : bid.approveCapacity();
   };
-
-  const formattedBalance = trimCurrency(
-    formatUnits(balance.data?.value ?? 0n, balance.data?.decimals ?? 0),
-  );
 
   const isValidInput = form.formState.isValid;
 
@@ -110,6 +115,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   const overMaxAmount =
     isFixedPrice && amountIn > Number(auction.formatted?.maxAmount);
+  const amountOverBalance = amountIn > Number(formattedBalance);
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
@@ -179,14 +185,19 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <>
                 <AuctionBidInput
                   singleInput={isFixedPrice}
-                  balance={formattedBalance}
+                  balance={trimCurrency(formattedBalance)}
                   auction={auction}
                 />
                 <RequiresChain chainId={auction.chainId} className="mt-4">
                   <div className="mt-4 w-full">
                     <Button
                       className="w-full"
-                      disabled={isWaiting || isSigningApproval || overMaxAmount}
+                      disabled={
+                        isWaiting ||
+                        isSigningApproval ||
+                        overMaxAmount ||
+                        amountOverBalance
+                      }
                       onClick={() =>
                         bid.isSufficientAllowance
                           ? setOpen(true)
