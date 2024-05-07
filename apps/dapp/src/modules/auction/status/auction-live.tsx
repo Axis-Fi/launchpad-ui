@@ -51,7 +51,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             Number(data.quoteTokenAmount) / Number(data.baseTokenAmount) >=
               Number(auction.formatted?.minPrice),
           {
-            message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
+            message: `Min price is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
             path: ["baseTokenAmount"],
           },
         )
@@ -113,9 +113,18 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
-  const overMaxAmount =
-    isFixedPrice && amountIn > Number(auction.formatted?.maxAmount);
-  const amountOverBalance = amountIn > Number(formattedBalance);
+  const amountInInvalid =
+    (isFixedPrice && amountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
+    amountIn > Number(formattedBalance) || // greater than balance
+    amountIn === undefined ||
+    Number(amountIn) === 0; // zero or empty
+
+  const amountOutInvalid =
+    minAmountOut === undefined ||
+    Number(minAmountOut) === 0 || // zero or empty
+    (isEMP &&
+      Number(amountIn) / Number(minAmountOut) <
+        Number(auction.formatted?.minPrice)); // less than min price
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
@@ -195,8 +204,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                       disabled={
                         isWaiting ||
                         isSigningApproval ||
-                        overMaxAmount ||
-                        amountOverBalance
+                        amountInInvalid ||
+                        amountOutInvalid
                       }
                       onClick={() =>
                         bid.isSufficientAllowance
