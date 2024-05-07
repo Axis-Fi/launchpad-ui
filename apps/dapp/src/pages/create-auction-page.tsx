@@ -118,6 +118,10 @@ const schema = z
   //     path: ["vestingStart"],
   //   },
   // )
+  .refine((data) => (!data.isVested ? true : data.vestingStart), {
+    message: "Vesting start is required",
+    path: ["vestingStart"],
+  })
   .refine(
     (data) =>
       !data.isVested
