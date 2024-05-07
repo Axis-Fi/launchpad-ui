@@ -12,7 +12,7 @@ import { AuctionInfoLabel } from "../auction-info-labels";
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const { address } = useAccount();
   const batchAuction = auction as BatchAuction;
-  const cleared = auction.formatted?.marginalPrice === "0.00";
+  const cleared = auction.formatted?.marginalPrice !== "0.00";
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const claimBids = useClaimBids(batchAuction);
   const userHasBids = batchAuction.bids.some(
@@ -56,7 +56,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           />
 
           <InfoLabel
-            label="Rate"
+            label="Clearing Rate"
             value={`${auction.formatted?.marginalPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
           />
 
