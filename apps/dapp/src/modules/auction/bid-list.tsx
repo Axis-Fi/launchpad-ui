@@ -15,6 +15,7 @@ import React from "react";
 import { useAuction } from "./hooks/use-auction";
 import { getAuctionHouse } from "utils/contracts";
 import { useBidIndex } from "./hooks/use-bid-index";
+import { formatUnits } from "viem";
 
 const column = createColumnHelper<AuctionEncryptedBid & { auction: Auction }>();
 
@@ -47,7 +48,12 @@ const cols = [
       const size = Math.random() * 80 + 60;
       const value = info.getValue();
       return value ? (
-        `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
+        `${trimCurrency(
+          formatUnits(
+            BigInt(value),
+            info.row.original.auction.baseToken.decimals,
+          ),
+        )} ${info.row.original.auction.baseToken.symbol}`
       ) : (
         <Tooltip content="The amount out is not accessible until after the conclusion of the auction">
           <div
