@@ -40,6 +40,7 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
         label="Clearing price"
         amount={clearingPrice}
         token={auction.quoteToken}
+        valueSize="lg"
       />
       <ToggledAmountLabel
         reverse={true}
@@ -75,7 +76,7 @@ const SettledAuctionCard = (
         <AuctionHeader auction={auction} />
         <SettledAuctionChart
           overlay={() => (
-            <div className="mr-4 mt-2 flex justify-end">
+            <div className="mr-8 mt-4 flex justify-end">
               <UsdToggle currencySymbol={auction.quoteToken.symbol} />
             </div>
           )}

@@ -13,8 +13,20 @@ const UsdToggle: React.FC<{ currencySymbol: string }> = ({
       onValueChange={toggle}
       value={isToggled ? "USD" : currencySymbol}
     >
-      <ToggleGroupItem value="USD">USD</ToggleGroupItem>
-      <ToggleGroupItem value={currencySymbol}>{currencySymbol}</ToggleGroupItem>
+      <ToggleGroupItem
+        className="h-8 rounded-3xl px-3 text-xs"
+        variant={isToggled ? "default" : "outline"}
+        value="USD"
+      >
+        USD
+      </ToggleGroupItem>
+      <ToggleGroupItem
+        className="h-8 rounded-3xl px-3 text-xs"
+        variant={!isToggled ? "default" : "outline"}
+        value={currencySymbol}
+      >
+        {currencySymbol}
+      </ToggleGroupItem>
     </ToggleGroup>
   );
 };

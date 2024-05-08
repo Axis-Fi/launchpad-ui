@@ -3,10 +3,17 @@ import { Input, cn } from "..";
 export type InfoLabelProps = {
   label: React.ReactNode;
   value: React.ReactNode;
+  valueSize?: "sm" | "md" | "lg";
   reverse?: boolean;
   editable?: boolean;
   inputClassName?: string;
 } & React.ComponentProps<"input">;
+
+const valueSizeMap = {
+  sm: "text-base",
+  md: "text-2xl",
+  lg: "text-3xl",
+} as const;
 
 export function InfoLabel(props: InfoLabelProps) {
   return (
@@ -21,7 +28,11 @@ export function InfoLabel(props: InfoLabelProps) {
           value={props.value as string}
         />
       ) : (
-        <p className={cn("text-2xl", props.className)}>{props.value}</p>
+        <p
+          className={cn(valueSizeMap[props.valueSize || "md"], props.className)}
+        >
+          {props.value}
+        </p>
       )}
       <p className="text-sm">{props.label}</p>
     </div>
