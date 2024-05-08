@@ -1,32 +1,27 @@
 import { formatUnits } from "viem";
 import {
+  cn,
   InfoLabel,
   ToggleProvider,
   UsdToggle,
   type InfoLabelProps,
 } from "@repo/ui";
-import { type EMPAuctionData, type PropsWithAuction } from "@repo/types";
-
+import type { Token, EMPAuctionData, PropsWithAuction } from "@repo/types";
 import { SettledAuctionChart } from "./settled-auction-chart";
-import { ToggledAmount, type ToggledAmountProps } from "./toggled-amount";
+import { useToggleUsdValue } from "./hooks/use-toggle-usd-value";
 
-type ToggledAmountLabelProps = ToggledAmountProps &
-  Omit<InfoLabelProps, "value">;
+type ToggledAmountLabelProps = {
+  token: Token;
+  amount: number;
+} & Omit<InfoLabelProps, "value">;
 
 const ToggledAmountLabel = ({
-  symbol,
+  token,
   amount,
-  chainId,
   ...rest
 }: ToggledAmountLabelProps) => {
-  return (
-    <InfoLabel
-      {...rest}
-      value={
-        <ToggledAmount symbol={symbol} amount={amount} chainId={chainId} />
-      }
-    />
-  );
+  const usdValue = useToggleUsdValue({ token, amount });
+  return <InfoLabel {...rest} value={usdValue} />;
 };
 
 const AuctionHeader = ({ auction }: PropsWithAuction) => {
@@ -43,23 +38,20 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
       <ToggledAmountLabel
         reverse={true}
         label="Clearing price"
-        symbol={auction.quoteToken.symbol}
         amount={clearingPrice}
-        chainId={auction.chainId}
+        token={auction.quoteToken}
       />
       <ToggledAmountLabel
         reverse={true}
         label="Total Raised"
-        symbol={auction.quoteToken.symbol}
-        amount={auction?.purchased ?? 0}
-        chainId={auction.chainId}
+        amount={Number(auction?.purchased) ?? 0}
+        token={auction.quoteToken}
       />
       <ToggledAmountLabel
         reverse={true}
         label="FDV"
-        symbol={auction.quoteToken.symbol}
+        token={auction.quoteToken}
         amount={fdv ?? 0}
-        chainId={auction.chainId}
       />
       <InfoLabel
         reverse={true}
@@ -70,9 +62,15 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
   );
 };
 
-const SettledAuctionCard = ({ auction }: PropsWithAuction) => {
+const SettledAuctionCard = (
+  props: React.HTMLAttributes<HTMLDivElement> & PropsWithAuction,
+) => {
+  const { className, auction } = props;
   return (
-    <div className="mr-4 w-[60%]" style={{ backgroundColor: "#252026" }}>
+    <div
+      className={cn("mr-4", className)}
+      style={{ backgroundColor: "#252026" }}
+    >
       <ToggleProvider initialIsToggled={true}>
         <AuctionHeader auction={auction} />
         <SettledAuctionChart

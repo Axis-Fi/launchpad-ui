@@ -1,21 +1,20 @@
 import { useSdkQuery } from "@repo/sdk/react";
+import type { Token } from "@repo/types";
 
-const useTokenPrice = (chainId: number, symbol: string) => {
+const useTokenPrice = (token: Token) => {
   const { data, status, error } = useSdkQuery(
-    sdk => sdk.getTokenPrice({ chainId, tokenSymbol: symbol }),
+    (sdk) => sdk.getTokenPrice({ token }),
     {
-      queryKey: ["get-token-price", chainId, symbol],
-      enabled: !!chainId && !!symbol,
-    }
+      queryKey: ["get-token-price", token.address],
+      enabled: !!token?.address,
+    },
   );
-  
+
   if (error) {
     throw error;
   }
 
-  return (status === "success") ? data : undefined;
-}
-
-export {
-  useTokenPrice,
+  return status === "success" ? data : undefined;
 };
+
+export { useTokenPrice };

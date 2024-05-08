@@ -1,39 +1,73 @@
-import {
-  isTestnet,
-  getMainnetName,
-  getMainnetTokenAddress,
-  getAnyMainnetTokenAddressBySymbol,
-  getMainnetNameFromTestnet,
-} from "@repo/deployments";
-import type { Address } from "@repo/types";
+import { isTestnet, getMainnetTokenFromSymbol } from "@repo/deployments";
+import type { Address, Token } from "@repo/types";
 import { fetchTokenPrices } from "../utils";
 
-const getTokenPrices = async (chainId: number, tokenSymbols: string[]): Promise<number[]> => {
-  const tokenAddresses = isTestnet(chainId)
-    ? tokenSymbols.map((tokenSymbol) => getAnyMainnetTokenAddressBySymbol(tokenSymbol))
-    : tokenSymbols.map((tokenSymbol) => getMainnetTokenAddress(chainId, tokenSymbol));
+const stablecoins = [
+  "USDC",
+  "USDT",
+  "USDD",
+  "TUSD",
+  "PYUSD",
+  "USDe",
+  "USDP",
+  "CRVUSD",
+  "DAI",
+  "USDB",
+  "LUSD",
+  "FRAX",
+  "GUSD",
+  "BUSD",
+];
+const isStablecoin = (symbol: string) =>
+  stablecoins.includes(symbol.toUpperCase());
 
-  const allTokensFound = tokenAddresses.every((address): address is Address => address !== undefined);
-  
-  if (!allTokensFound) {
-    throw new Error(`Couldn't find token address for symbol ${tokenSymbols[tokenAddresses.indexOf(undefined)]}`);
-  }
+const MAINNET_USDC = {
+  chainId: 1,
+  decimals: 6,
+  symbol: "USDC",
+  name: "USD Coin",
+  address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48" as Address,
+};
 
-  const mainnetName = isTestnet(chainId) ? getMainnetNameFromTestnet(tokenSymbols[0]) : getMainnetName(chainId);
+const MAINNET_WETH = {
+  chainId: 1,
+  decimals: 18,
+  symbol: "WETH",
+  name: "Wrapped Ether",
+  address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" as Address,
+};
 
-  if (mainnetName === undefined) {
-    throw new Error(`Couldn't find mainnet name for chainId ${chainId}`);
-  }
-  
-  return fetchTokenPrices(mainnetName, tokenAddresses);
-}
+/**
+ * If the token is a testnet token, stablecoin, or WETH: use the mainnet equivalent token instead.
+ * This solves the problem where DeFiLlama doesn't support historical prices for certain chains (e.g. Blast)
+ */
+const adjustUnsupportedTokens = (tokens: Token[]): Token[] => {
+  return tokens.map((token) => {
+    if (isStablecoin(token.symbol)) {
+      return MAINNET_USDC;
+    }
 
-const getTokenPrice = async (chainId: number, tokenSymbol: string): Promise<number> => {
-  const [price] = await getTokenPrices(chainId, [tokenSymbol]);
+    if (token.symbol === "WETH") {
+      return MAINNET_WETH;
+    }
+
+    if (isTestnet(token.chainId)) {
+      return getMainnetTokenFromSymbol(token.symbol) || token;
+    }
+
+    return token;
+  });
+};
+
+const getTokenPrices = async (tokens: Token[]): Promise<number[]> => {
+  const adjustedTokens = adjustUnsupportedTokens(tokens);
+
+  return fetchTokenPrices(adjustedTokens);
+};
+
+const getTokenPrice = async (token: Token): Promise<number> => {
+  const [price] = await getTokenPrices([token]);
   return price;
-}
+};
 
-export {
-  getTokenPrice,
-  getTokenPrices,
-}
+export { getTokenPrice, getTokenPrices };

@@ -16,8 +16,9 @@ import { useAuction } from "modules/auction/hooks/use-auction";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { abbreviateNumber } from "utils/currency";
 import { formatDate } from "utils/date";
-import { formatUsdValue, useUsdValue } from "./hooks/use-usd-value";
+import { useGetUsdValue } from "./hooks/use-get-usd-value";
 import { useToggle } from "@repo/ui";
+import { formatUsdValue } from "./utils/format-usd-value";
 
 //TODO: revisit this type, see if can be squashed into Bid
 export type ParsedBid = {
@@ -142,7 +143,7 @@ export const SettledAuctionChart = ({
 }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId, chainId);
   const { data: auctionData } = useAuctionData({ lotId, chainId });
-  const { getUsdValue } = useUsdValue(auction?.quoteToken.symbol, chainId); // TODO race condition?
+  const { getUsdValue } = useGetUsdValue(auction?.quoteToken); // TODO race condition?
   const { isToggled: isUsdToggled } = useToggle();
 
   const { data } = useChartData(auction, auctionData as EMPAuctionData);

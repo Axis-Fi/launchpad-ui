@@ -1,28 +1,29 @@
-import { Address } from "@repo/types";
+import * as chains from "viem/chains";
+import type { Token } from "@repo/types";
 
 type PartialTokenResponse = { coins: { [key: string]: { price: number } } };
 
-const fetchTokenPrices = async (
-  mainnetName: string,
-  tokenAddresses: Address[],
-): Promise<number[]> => {
-  if (!mainnetName) {
-    throw new Error("mainnetName is required");
+const getMainnetName = (chainId: number): string | undefined => {
+  return Object.values(chains).find((chain) => chain.id === chainId)?.name;
+};
+
+const fetchTokenPrices = async (tokens: Token[]): Promise<number[]> => {
+  if (!tokens || tokens?.length === 0) {
+    throw new Error("tokens is required");
   }
-  if (!tokenAddresses || tokenAddresses?.length === 0) {
-    throw new Error("tokenAddresses is required");
-  }
+  const preparedTokens = tokens.map(
+    (token) => `${getMainnetName(token.chainId)}:${token.address}`,
+  );
+  const tokenUrlQuery = preparedTokens.join(",");
 
-  const mainnetNameLowerCase = mainnetName.toLowerCase();
-  const tokenUrlQuery = `${mainnetNameLowerCase}:${tokenAddresses.join(`,${mainnetNameLowerCase}:`)}`;
-   // TODO get url from env config
-  const response = await fetch(`https://coins.llama.fi/prices/current/${tokenUrlQuery}?searchWidth=1h`);
-  const json = await response.json() as PartialTokenResponse;
-  const tokenPrices = Object.values(json?.coins).map((token) => token?.price);
+  // TODO get url from env config
+  const response = await fetch(
+    `https://coins.llama.fi/prices/current/${tokenUrlQuery}?searchWidth=1h`,
+  );
+  const json = (await response.json()) as PartialTokenResponse;
 
-  return tokenPrices;
-}
+  // Return the same shape array as the input tokens, undefined means a price wasn't returned from DL.
+  return preparedTokens.map((token) => json?.coins[token]?.price);
+};
 
-export {
-  fetchTokenPrices,
-}
+export { fetchTokenPrices };

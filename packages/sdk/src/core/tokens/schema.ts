@@ -1,16 +1,21 @@
 import * as v from "valibot";
+import { AddressSchema } from "../bid/schema";
 
 const GetTokenPriceSchema = v.object({
-  chainId: v.number(),
-  tokenSymbol: v.string(),
+  token: v.object({
+    chainId: v.number(),
+    address: AddressSchema,
+    symbol: v.string(),
+    decimals: v.number(),
+    name: v.string(),
+    totalSupply: v.optional(v.number()),
+    logoURI: v.optional(v.string()),
+    mintable: v.optional(v.boolean()),
+  }),
 });
 
 const GetTokenPricesSchema = v.object({
-  chainId: v.number(),
-  tokenSymbols: v.array(v.string()),
+  tokens: v.array(GetTokenPriceSchema),
 });
 
-export {
-  GetTokenPriceSchema,
-  GetTokenPricesSchema,
-};
+export { GetTokenPriceSchema, GetTokenPricesSchema };

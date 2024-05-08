@@ -27,7 +27,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   return (
     <div className="w-full">
       <div className="mb-8 flex justify-between">
-        {isEMP && <SettledAuctionCard auction={auction} />}
+        {isEMP && <SettledAuctionCard className="w-[60%]" auction={auction} />}
         <div className={cn("w-[40%]", !isEMP && "w-full")}>
           <AuctionInputCard submitText={""} auction={auction}>
             <div className="text-center">
