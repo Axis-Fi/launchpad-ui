@@ -17,3 +17,4 @@ export * from "./scrollable-select";
 export * from "./sort-button";
 export * from "./table";
 export * from "./tooltip";
+export * from "./usd-toggle";

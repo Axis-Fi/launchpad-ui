@@ -23,13 +23,16 @@ export function trimCurrency(input: string | number): string {
   }
 }
 
-export const abbreviateNumber = (num: number): string => {
-  if (num < 10000) return currencyFormatter.format(num);
-  const symbols = ["", "k", "M", "B", "T", "Q", "GMI"]; 
-  const sign = Math.sign(num); 
-  num = Math.abs(num); 
-  const mag = Math.min(Math.floor(Math.log10(num) / 3), symbols.length - 1); 
-  const shortNum = Number((num / Math.pow(10, mag * 3)).toFixed(1)) * sign; 
+export const abbreviateNumber = (
+  num: number,
+  ignoreLessThan: number = 0,
+): string => {
+  if (num < ignoreLessThan) return currencyFormatter.format(num);
+  const symbols = ["", "k", "M", "B", "T", "Q", "GMI"];
+  const sign = Math.sign(num);
+  num = Math.abs(num);
+  const mag = Math.min(Math.floor(Math.log10(num) / 3), symbols.length - 1);
+  const shortNum = Number((num / Math.pow(10, mag * 3)).toFixed(1)) * sign;
   if (mag < 1) return trimCurrency(num);
   return `${shortNum}${symbols[mag]}`;
 };

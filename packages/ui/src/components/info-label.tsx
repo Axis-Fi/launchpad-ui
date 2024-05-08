@@ -23,7 +23,7 @@ export function InfoLabel(props: InfoLabelProps) {
       ) : (
         <p className={cn("text-2xl", props.className)}>{props.value}</p>
       )}
-      <p>{props.label}</p>
+      <p className="text-sm">{props.label}</p>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+// import { format } fr11om "date-fns";
 import {
   ReferenceLine,
   Tooltip,
@@ -7,14 +7,17 @@ import {
   CartesianGrid,
   ComposedChart,
   Area,
-  ResponsiveContainer
+  Legend,
+  ResponsiveContainer,
+  type TooltipProps,
 } from "recharts";
 import type { Auction, EMPAuctionData } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { abbreviateNumber } from "utils/currency";
 import { formatDate } from "utils/date";
-
+import { formatUsdValue, useUsdValue } from "./hooks/use-usd-value";
+import { useToggle } from "@repo/ui";
 
 //TODO: revisit this type, see if can be squashed into Bid
 export type ParsedBid = {
@@ -65,7 +68,7 @@ const useChartData = (
         timestamp,
       };
     });
-    
+
   if (!data) return {};
 
   data.sort((a, b) => b.price - a.price);
@@ -77,10 +80,14 @@ const useChartData = (
     bid.cumulativeAmountIn = cumulativeAmountIn;
   });
 
-  // Insert initial data point for drawing first token sale
-  data.unshift({ cumulativeAmountIn: Number(0), price: data[0].price })
+  // Insert initial data point for drawing first token sale left line
+  data.unshift({ cumulativeAmountIn: Number(0), price: data[0].price });
 
-  data.push({ cumulativeAmountIn: data[data.length - 1].cumulativeAmountIn, price: Number(0) })
+  // Insert final data point for drawing last token sale right line
+  data.push({
+    cumulativeAmountIn: data[data.length - 1].cumulativeAmountIn,
+    price: Number(0),
+  });
 
   // const prices = getAuctionPrices(data, auction, auctionData);
   return { data };
@@ -90,19 +97,20 @@ type SettledTooltipProps = {
   auction?: Auction;
 } & TooltipProps<number, "timestamp" | "price" | "amountIn">;
 
-type FormatterProps = {
-  dataKey: string;
-  name: "timestamp" | "price" | "amountIn";
-  value: number;
-};
+// type FormatterProps = {
+//   dataKey: string;
+//   name: "timestamp" | "price" | "amountIn";
+//   value: number;
+// };
 
-const formatter = (value: unknown, _name: string, props: FormatterProps) => {
-  if (props.dataKey === "timestamp" && typeof value == "number") {
-    return format(new Date(value), "yyyy-MM-dd HH:mm:ss");
-  }
+// const formatter = (value: unknown, _name: string, props: FormatterProps) => {
+//   if (props.dataKey === "timestamp" && typeof value == "number") {
+//     return format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+//   }
 
-  return value;
-};
+//   return value;
+// };
+
 const CustomTooltip = (props: SettledTooltipProps) => {
   // console.log("props", props.payload)
   const [timestamp, price, amountIn] = props.payload ?? [];
@@ -119,38 +127,50 @@ const CustomTooltip = (props: SettledTooltipProps) => {
       <div>At {formatDate.fullLocal(new Date(timestamp?.value ?? 0))}</div>
     </div>
   );
-}
+};
 
 type SettledAuctionChartProps = {
   lotId?: string;
   chainId?: number;
+  overlay?: () => React.ReactNode;
 };
 
 export const SettledAuctionChart = ({
   lotId,
   chainId,
+  overlay,
 }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId, chainId);
   const { data: auctionData } = useAuctionData({ lotId, chainId });
+  const { getUsdValue } = useUsdValue(auction?.quoteToken.symbol, chainId); // TODO race condition?
+  const { isToggled: isUsdToggled } = useToggle();
 
-  const { data } = useChartData(
-    auction,
-    auctionData as EMPAuctionData,
-  );
-  // console.log("DDDD", { auction, auctionData, data});
+  const { data } = useChartData(auction, auctionData as EMPAuctionData);
+
   const marginalPrice = Number(auction?.formatted?.marginalPrice);
   const capacityFilled = Number(auction?.capacityInitial) * marginalPrice;
-  // console.log({capacityFilled, initial: auction?.capacityInitial, marginalPrice})
-  // console.log("margin", marginalPrice)
+
   return (
-    <div className="size-full max-h-[488px]">
-      <ResponsiveContainer width="100%" height={488}>
+    <div
+      className="size-full"
+      style={{ position: "relative", paddingRight: 16, height: 488 }}
+    >
+      {overlay && (
+        <div
+          style={{
+            position: "absolute",
+            width: "100%",
+            zIndex: 1,
+          }}
+        >
+          {overlay()}
+        </div>
+      )}
+
+      <ResponsiveContainer width="100%" height="100%">
         <ComposedChart
           data={data}
-          // width={657}
-          // height={488}
-          margin={{ top: 44, right: 16, left: 16, bottom: 16 }}
-          style={{ backgroundColor: "#252026", border: "0.5px solid #D7D7C1", borderRadius: 4, paddingRight: 16 }}
+          // margin={{ top: 44, right: 16, left: 16, bottom: 16 }}
         >
           <CartesianGrid
             stroke="#D7D7C1"
@@ -163,13 +183,16 @@ export const SettledAuctionChart = ({
             type="number"
             tick={{ fill: "#D7D7C1", fontSize: 14 }}
             tickFormatter={(value) => {
-              return abbreviateNumber(value);
+              return abbreviateNumber(value, 1000);
             }}
           />
           <YAxis
             dataKey="price"
             type="number"
             tick={{ fill: "#D7D7C1", fontSize: 14 }}
+            tickFormatter={(value) => {
+              return isUsdToggled ? formatUsdValue(getUsdValue(value)) : value;
+            }}
           />
           <Tooltip
             cursor={{ strokeDasharray: "3 3" }}
@@ -178,7 +201,7 @@ export const SettledAuctionChart = ({
             wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
             content={(props) => <CustomTooltip {...props} auction={auction} />}
           />
-          {/* <Legend align="left" /> */}
+          <Legend align="left" />
           <ReferenceLine
             x={capacityFilled}
             stroke="#D7D7C1"
@@ -205,20 +228,20 @@ export const SettledAuctionChart = ({
               key={index}
               segment={[
                 { x: entry.cumulativeAmountIn, y: 0 },
-                { x: entry.cumulativeAmountIn, y: entry.price }
+                { x: entry.cumulativeAmountIn, y: entry.price },
               ]}
               stroke="#75C8F6"
               strokeWidth={2}
             />
           ))}
           <ReferenceLine
-              segment={[
-                { x: 0, y: 0 },
-                { x: data ? data[data.length - 1].cumulativeAmountIn: 0, y: 0 }
-              ]}
-              stroke="#75C8F6"
-              strokeWidth={2}
-            />
+            segment={[
+              { x: 0, y: 0 },
+              { x: data ? data[data.length - 1].cumulativeAmountIn : 0, y: 0 },
+            ]}
+            stroke="#75C8F6"
+            strokeWidth={2}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
