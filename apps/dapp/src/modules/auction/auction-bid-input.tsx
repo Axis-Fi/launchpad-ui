@@ -24,7 +24,7 @@ export function AuctionBidInput({
     "baseTokenAmount",
   ]);
 
-  const rate = amount / minAmountOut;
+  const rate = Number(amount) / Number(minAmountOut);
   const formattedRate = isFinite(rate) ? formatRate(rate) : "?";
 
   return (

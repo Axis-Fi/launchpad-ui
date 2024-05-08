@@ -22,8 +22,8 @@ import React from "react";
 import { AuctionInfoLabel } from "../auction-info-labels";
 
 const schema = z.object({
-  baseTokenAmount: z.coerce.number(),
-  quoteTokenAmount: z.coerce.number(),
+  baseTokenAmount: z.string(),
+  quoteTokenAmount: z.string(),
 });
 
 export type BidForm = z.infer<typeof schema>;
@@ -39,7 +39,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             isFixedPrice ||
-            data.quoteTokenAmount >= Number(auction.formatted?.minBidSize),
+            Number(data.quoteTokenAmount) >=
+              Number(auction.formatted?.minBidSize),
           {
             message: `Minimum bid is ${auction.formatted?.minBidSize}`,
             path: ["quoteTokenAmount"],
@@ -58,7 +59,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             !isFixedPrice ||
-            data.quoteTokenAmount <= Number(auction.formatted?.maxAmount),
+            Number(data.quoteTokenAmount) <=
+              Number(auction.formatted?.maxAmount),
           {
             message: `Max amount is ${trimCurrency(
               auction.formatted?.maxAmount ?? 0,
@@ -66,10 +68,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             path: ["quoteTokenAmount"],
           },
         )
-        .refine((data) => data.quoteTokenAmount <= Number(formattedBalance), {
-          message: `Insufficient balance`,
-          path: ["quoteTokenAmount"],
-        }),
+        .refine(
+          (data) => Number(data.quoteTokenAmount) <= Number(formattedBalance),
+          {
+            message: `Insufficient balance`,
+            path: ["quoteTokenAmount"],
+          },
+        ),
     ),
   });
 
@@ -78,11 +83,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     "baseTokenAmount",
   ]);
 
+  const parsedAmountIn = Number(amountIn);
+  const parsedMinAmountOut = Number(minAmountOut);
+
   const { balance, ...bid } = useBidAuction(
     auction.id,
     auction.auctionType,
-    amountIn,
-    minAmountOut,
+    parsedAmountIn,
+    parsedMinAmountOut,
   );
 
   const formattedBalance = formatUnits(
@@ -114,9 +122,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
   const amountInInvalid =
-    (isFixedPrice && amountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
-    amountIn > Number(formattedBalance) || // greater than balance
-    amountIn === undefined ||
+    (isFixedPrice && parsedAmountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
+    parsedAmountIn > Number(formattedBalance) || // greater than balance
+    parsedAmountIn === undefined ||
     Number(amountIn) === 0; // zero or empty
 
   const amountOutInvalid =
@@ -279,8 +287,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
 function getConfirmCardText(
   auction: Auction,
-  amountIn: number,
-  amountOut: number,
+  amountIn: string,
+  amountOut: string,
 ) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const empText = `You're about to place a bid of ${amountIn} ${auction.quoteToken.symbol}`;
