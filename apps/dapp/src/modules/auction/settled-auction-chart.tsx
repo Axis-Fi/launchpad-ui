@@ -21,6 +21,7 @@ import { SVGProps } from "react";
 import { getAuctionPrices } from "modules/auction/utils/get-auction-prices";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { trimCurrency } from "utils/currency";
+import { formatUnits } from "viem";
 
 //TODO: revisit this type, see if can be squashed into Bid
 export type ParsedBid = {
@@ -53,13 +54,20 @@ const useChartData = (
     : auction.bids
         .filter((b) => b.status !== "refunded")
         .map((bid) => {
-          const amountIn = Number(bid.rawAmountIn);
+          const amountIn = Number(
+            formatUnits(BigInt(bid.rawAmountIn), auction.quoteToken.decimals),
+          );
           const amountOut = isFinite(Number(bid.rawAmountOut))
-            ? Number(bid.rawAmountOut)
+            ? Number(
+                formatUnits(
+                  BigInt(bid.rawAmountOut ?? 0),
+                  auction.baseToken.decimals,
+                ),
+              )
             : 0;
 
           const price = Number(bid.submittedPrice);
-          const timestamp = Number(bid) * 1000;
+          const timestamp = Number(bid.blockTimestamp) * 1000;
 
           return {
             id: bid.bidId,
