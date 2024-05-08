@@ -124,7 +124,6 @@ export function useAuction(
     throw new Error(`Auction type ${auctionType} doesn't exist`);
   }
 
-  const isEMP = auctionType === AuctionType.SEALED_BID;
   const formatted = formatAuction(auction, auctionType, auctionData);
 
   return {
@@ -135,10 +134,6 @@ export function useAuction(
       auctionData,
       auctionType,
       formatted,
-      //TODO: improve this mess
-      [isEMP ? "bids" : "purchases"]: isEMP
-        ? updateBids(auction as BatchSubgraphAuction)
-        : (rawAuction as AtomicSubgraphAuction).purchases,
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
@@ -265,37 +260,4 @@ function addFPFields(
     maxPayout,
     maxAmount,
   };
-}
-
-/** Updates bids based off the remaining capacity
- * TODO: move to subgraph
- */
-function updateBids(auction: BatchSubgraphAuction) {
-  let remainingCapacity = Number(auction.capacityInitial);
-  if (!auction.bids) {
-    return [];
-  }
-
-  const _bids = auction.bids
-    .sort((a, b) => Number(b.submittedPrice) - Number(a.submittedPrice))
-    .map((b) => {
-      const amountOut = Number(b.settledAmountOut);
-      if (!b.settledAmountOut || !isFinite(amountOut)) return b;
-
-      //If the amountOut is lower than capacity,
-      //this bid gets the rest of the capacity
-      const settledAmountOut =
-        remainingCapacity >= Number(b.settledAmountOut)
-          ? b.settledAmountOut
-          : remainingCapacity;
-
-      remainingCapacity -= Number(b.settledAmountOut);
-
-      return {
-        ...b,
-        settledAmountOut: settledAmountOut.toString(),
-      };
-    });
-
-  return _bids;
 }
