@@ -19,7 +19,10 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const claimBids = useClaimBids(batchAuction);
   const userHasBids = batchAuction.bids.some(
-    (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
+    (b) =>
+      b.bidder.toLowerCase() === address?.toLowerCase() &&
+      b.status !== "claimed" &&
+      b.status !== "refunded",
   );
 
   const isWaiting =
