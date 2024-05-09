@@ -1,14 +1,8 @@
 import { formatUnits } from "viem";
-import {
-  cn,
-  InfoLabel,
-  ToggleProvider,
-  UsdToggle,
-  type InfoLabelProps,
-} from "@repo/ui";
+import { cn, InfoLabel, ToggleProvider, type InfoLabelProps } from "@repo/ui";
 import type { Token, EMPAuctionData, PropsWithAuction } from "@repo/types";
 import { SettledAuctionChart } from "./settled-auction-chart";
-import { useToggleUsdValue } from "./hooks/use-toggle-usd-value";
+import { useToggleUsdAmount } from "./hooks/use-toggle-usd-amount";
 
 type ToggledAmountLabelProps = {
   token: Token;
@@ -20,8 +14,8 @@ const ToggledAmountLabel = ({
   amount,
   ...rest
 }: ToggledAmountLabelProps) => {
-  const usdValue = useToggleUsdValue({ token, amount });
-  return <InfoLabel {...rest} value={usdValue} />;
+  const usdAmount = useToggleUsdAmount({ token, amount });
+  return <InfoLabel {...rest} value={usdAmount} />;
 };
 
 const AuctionHeader = ({ auction }: PropsWithAuction) => {
@@ -74,15 +68,7 @@ const SettledAuctionCard = (
     >
       <ToggleProvider initialIsToggled={true}>
         <AuctionHeader auction={auction} />
-        <SettledAuctionChart
-          overlay={() => (
-            <div className="mr-8 mt-4 flex justify-end">
-              <UsdToggle currencySymbol={auction.quoteToken.symbol} />
-            </div>
-          )}
-          lotId={auction.lotId}
-          chainId={auction.chainId}
-        />
+        <SettledAuctionChart lotId={auction.lotId} chainId={auction.chainId} />
       </ToggleProvider>
     </div>
   );

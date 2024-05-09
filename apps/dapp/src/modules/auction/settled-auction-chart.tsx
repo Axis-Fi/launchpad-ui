@@ -1,6 +1,5 @@
+import { format } from "date-fns";
 import { OriginIcon } from "./origin-icon";
-
-// import { format } fr11om "date-fns";
 import {
   ReferenceLine,
   Tooltip,
@@ -19,9 +18,8 @@ import { useAuction } from "modules/auction/hooks/use-auction";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { abbreviateNumber } from "utils/currency";
 import { formatDate } from "utils/date";
-import { useGetUsdValue } from "./hooks/use-get-usd-value";
-import { useToggle } from "@repo/ui";
-import { formatUsdValue } from "./utils/format-usd-value";
+import { useGetToggledUsdAmount } from "./hooks/use-get-toggled-usd-amount";
+import { SettledAuctionChartOverlay } from "./settled-auction-chart-overlay";
 
 //TODO: revisit this type, see if can be squashed into Bid
 export type ParsedBid = {
@@ -101,34 +99,36 @@ type SettledTooltipProps = {
   auction?: Auction;
 } & TooltipProps<number, "timestamp" | "price" | "amountIn">;
 
-// type FormatterProps = {
-//   dataKey: string;
-//   name: "timestamp" | "price" | "amountIn";
-//   value: number;
-// };
+type FormatterProps = {
+  dataKey: string;
+  name: "timestamp" | "price" | "amountIn";
+  value: number;
+};
 
-// const formatter = (value: unknown, _name: string, props: FormatterProps) => {
-//   if (props.dataKey === "timestamp" && typeof value == "number") {
-//     return format(new Date(value), "yyyy-MM-dd HH:mm:ss");
-//   }
+const formatter = (value: unknown, _name: string, props: FormatterProps) => {
+  if (props.dataKey === "timestamp" && typeof value == "number") {
+    return format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+  }
 
-//   return value;
-// };
+  return value;
+};
 
 const CustomTooltip = (props: SettledTooltipProps) => {
-  // console.log("props", props.payload)
-  const [timestamp, price, amountIn] = props.payload ?? [];
-  const auction = props.auction;
+  const { getToggledUsdAmount } = useGetToggledUsdAmount(
+    props.auction?.quoteToken,
+  );
+  const { timestamp, price, amountIn, settledAmountOut } =
+    props?.payload[0]?.payload || {};
 
   return (
     <div className="bg-secondary rounded-sm px-4 py-2">
+      <div>Amount: {getToggledUsdAmount(amountIn)}</div>
+      <div>Price: {getToggledUsdAmount(price)}</div>
       <div>
-        Amount In: {amountIn?.value} {auction?.quoteToken.symbol}
+        Settled: {abbreviateNumber(settledAmountOut)}{" "}
+        {props.auction?.baseToken.symbol}
       </div>
-      <div>
-        Price: {price?.value} {auction?.quoteToken.symbol}
-      </div>
-      <div>At {formatDate.fullLocal(new Date(timestamp?.value ?? 0))}</div>
+      <div>At: {formatDate.fullLocal(new Date(timestamp ?? 0))}</div>
     </div>
   );
 };
@@ -136,18 +136,15 @@ const CustomTooltip = (props: SettledTooltipProps) => {
 type SettledAuctionChartProps = {
   lotId?: string;
   chainId?: number;
-  overlay?: () => React.ReactNode;
 };
 
 export const SettledAuctionChart = ({
   lotId,
   chainId,
-  overlay,
 }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId, chainId);
   const { data: auctionData } = useAuctionData({ lotId, chainId });
-  const { getUsdValue } = useGetUsdValue(auction?.quoteToken); // TODO race condition?
-  const { isToggled: isUsdToggled } = useToggle();
+  const { getToggledUsdAmount } = useGetToggledUsdAmount(auction?.quoteToken);
 
   const { data } = useChartData(auction, auctionData as EMPAuctionData);
 
@@ -159,17 +156,7 @@ export const SettledAuctionChart = ({
       className="size-full"
       style={{ position: "relative", paddingRight: 16, height: 488 }}
     >
-      {overlay && (
-        <div
-          style={{
-            position: "absolute",
-            width: "100%",
-            zIndex: 1,
-          }}
-        >
-          {overlay()}
-        </div>
-      )}
+      {auction && <SettledAuctionChartOverlay auction={auction} />}
 
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={data}>
@@ -191,9 +178,7 @@ export const SettledAuctionChart = ({
             dataKey="price"
             type="number"
             tick={{ fill: "#D7D7C1", fontSize: 14 }}
-            tickFormatter={(value) => {
-              return isUsdToggled ? formatUsdValue(getUsdValue(value)) : value;
-            }}
+            tickFormatter={(value) => getToggledUsdAmount(value, false)}
           />
           <ReferenceLine
             x={capacityFilled}
@@ -235,9 +220,14 @@ export const SettledAuctionChart = ({
           <Tooltip
             cursor={{ strokeDasharray: "3 3" }}
             // @ts-expect-error TODO
-            // formatter={formatter}
+            formatter={formatter}
             wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
-            content={(props) => <CustomTooltip {...props} auction={auction} />}
+            content={
+              (props) => {
+                return <CustomTooltip {...props} auction={auction} />;
+              }
+              // return <CustomTooltip payload={payload} auction={auction} />}
+            }
           />
           <Legend align="left" />
         </ComposedChart>

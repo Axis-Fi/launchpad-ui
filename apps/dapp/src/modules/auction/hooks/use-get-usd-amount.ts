@@ -1,19 +1,20 @@
 import type { Token } from "@repo/types";
 import { useTokenPrice } from "./use-token-price";
+import { formatUsdValue } from "../utils/format-usd-amount";
 
-const useGetUsdValue = (token: Token | undefined) => {
+const useGetUsdAmount = (token: Token | undefined) => {
   if (token === undefined) throw new Error("token cannot be undefined");
 
   const price = useTokenPrice(token);
 
-  const getUsdValue = (amount: number) => {
+  const getUsdAmount = (amount: number) => {
     if (price === undefined || amount === undefined) {
       return undefined;
     }
-    return Number(price) * Number(amount);
+    return formatUsdValue(Number(price) * Number(amount));
   };
 
-  return { getUsdValue };
+  return { getUsdAmount };
 };
 
-export { useGetUsdValue };
+export { useGetUsdAmount };
