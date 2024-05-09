@@ -12,6 +12,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 const curator = { title: "Curator", href: "/curator" };
+const refer = { title: "Refer Bidders", href: "/refer" };
 const testnetLinks = [
   { title: "Get Tokens", href: "/faucet" },
   { title: "Deploy", href: "/deploy" },
@@ -23,7 +24,8 @@ export default function Navbar() {
 
   //Only show curator link if connected address is a curator for any auction
   const links = React.useMemo(
-    () => (isCurator ? [curator, ...testnetLinks] : testnetLinks),
+    () =>
+      isCurator ? [curator, refer, ...testnetLinks] : [refer, ...testnetLinks],
     [isCurator],
   );
 

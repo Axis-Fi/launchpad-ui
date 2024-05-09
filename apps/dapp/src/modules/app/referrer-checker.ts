@@ -10,7 +10,12 @@ export function ReferrerChecker() {
   const setReferral = useSetReferrer();
 
   // Get the referrer from the search params, if it exists
-  const referrer = searchParams.get("ref") ?? "";
+  const encodedReferrer = searchParams.get("ref") ?? "";
+
+  // Decode the referrer address
+  const referrer = atob(encodedReferrer);
+
+  console.log(referrer);
 
   // Parse the referrer into an address, otherwise the referrer is the zero address
   // TODO support address lookup from ENS name in referral?
