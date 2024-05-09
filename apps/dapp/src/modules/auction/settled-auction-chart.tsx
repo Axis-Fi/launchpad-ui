@@ -192,9 +192,10 @@ export const SettledAuctionChart = ({
             tickFormatter={(value) => getToggledUsdAmount(value, false)}
           />
           <ReferenceLine
+            name="Amount"
             x={capacityFilled}
             stroke="#D7D7C1"
-            strokeDasharray="3 3"
+            strokeDasharray="6 6"
           />
           <Area
             type="stepBefore"
@@ -240,7 +241,22 @@ export const SettledAuctionChart = ({
               // return <CustomTooltip payload={payload} auction={auction} />}
             }
           />
-          <Legend align="left" />
+          <Legend
+            align="left"
+            payload={[
+              {
+                value: "Bid price (x) and amount (y)",
+                type: "rect",
+                color: "#D7D7C1",
+              },
+              {
+                value: "Capacity filled",
+                type: "plainline",
+                color: "#D7D7C1",
+                payload: { strokeDasharray: "6 6" },
+              },
+            ]}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
