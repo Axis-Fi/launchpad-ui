@@ -1,11 +1,13 @@
-import { axisContracts } from "./";
 import {
-  Address,
-  Auction,
   AuctionType,
-  AxisContractNames,
-  AxisModuleContractNames,
+  type Token,
+  type Address,
+  type Auction,
+  type AxisContractNames,
+  type AxisModuleContractNames,
 } from "@repo/types";
+import { testnetDeployments, axisContracts } from ".";
+import mainnetTokenList from "./mainnet-tokenlist.json";
 
 const moduleMap = {
   [AuctionType.SEALED_BID]: "batchAuctionHouse",
@@ -64,3 +66,17 @@ function getCatalogue(auction: Pick<Auction, "chainId" | "auctionType">) {
 }
 
 export { getContractsByModuleType, getAuctionHouse, getCatalogue };
+
+const isTestnet = (chainId: number): boolean =>
+  testnetDeployments.find((testnet) => testnet.chain.id === chainId) !==
+  undefined;
+
+const mainnetTokens = mainnetTokenList.tokens;
+
+const getMainnetTokenFromSymbol = (tokenSymbol: string): Token | undefined => {
+  return mainnetTokens.find((token) => token.symbol === tokenSymbol) as
+    | Token
+    | undefined;
+};
+
+export { isTestnet, getMainnetTokenFromSymbol };

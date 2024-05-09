@@ -3,7 +3,7 @@ import {
   AtomicSubgraphAuction,
   BatchSubgraphAuction,
 } from "./subgraph-queries";
-import { Token } from "./token";
+import type { Token } from "./token";
 
 export type BaseAuction = {
   chainId: number;

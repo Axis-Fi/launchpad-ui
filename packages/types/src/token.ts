@@ -3,6 +3,7 @@ import { Address } from "viem";
 export type TokenBase = {
   chainId: number;
   address: Address;
+  totalSupply?: number;
 };
 
 /** Tokenlist's Token Definition */

@@ -1,15 +1,15 @@
+import React from "react";
 import { Button, InfoLabel, cn } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
-import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { ProjectInfoCard } from "../project-info-card";
 import { useAccount } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
 import { AuctionInfoLabel } from "../auction-info-labels";
-import React from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
+import { SettledAuctionCard } from "modules/auction/settled-auction-card";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
@@ -29,9 +29,10 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
     <div className="w-full">
       <div className="mb-8 flex justify-between">
         {isEMP && (
-          <div className="w-1/2">
-            <SettledAuctionChart auction={auction as BatchAuction} />
-          </div>
+          <SettledAuctionCard
+            className="w-[60%]"
+            auction={auction as BatchAuction}
+          />
         )}
         <div className={cn("w-[40%]", !isEMP && "w-full")}>
           <AuctionInputCard submitText={""} auction={auction}>
@@ -59,11 +60,6 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           <InfoLabel
             label="Total Raised"
             value={`${auction.formatted?.purchased} ${auction.quoteToken.symbol}`}
-          />
-
-          <InfoLabel
-            label="Clearing Rate"
-            value={`${auction.formatted?.marginalPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
           />
 
           <InfoLabel label="Total Bids" value={batchAuction.bids.length} />
