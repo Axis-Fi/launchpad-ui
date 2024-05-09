@@ -74,6 +74,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             message: `Insufficient balance`,
             path: ["quoteTokenAmount"],
           },
+        )
+        .refine(
+          (data) => Number(data.baseTokenAmount) <= Number(auction.capacity),
+          {
+            message: "Amount out exceeds capacity",
+            path: ["baseTokenAmount"],
+          },
         ),
     ),
   });
@@ -125,13 +132,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     (isFixedPrice && parsedAmountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
     parsedAmountIn > Number(formattedBalance) || // greater than balance
     parsedAmountIn === undefined ||
-    Number(amountIn) === 0; // zero or empty
+    parsedAmountIn === 0; // zero or empty
 
   const amountOutInvalid =
     minAmountOut === undefined ||
-    Number(minAmountOut) === 0 || // zero or empty
+    parsedMinAmountOut === 0 || // zero or empty
+    parsedMinAmountOut > Number(auction.capacity) || // exceeds capacity
     (isEMP &&
-      Number(amountIn) / Number(minAmountOut) <
+      parsedAmountIn / parsedMinAmountOut <
         Number(auction.formatted?.minPrice)); // less than min price
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
