@@ -1830,6 +1830,13 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getNumBids",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getRouting",
     outputs: [
       {
@@ -2217,6 +2224,29 @@ export const encryptedMarginalPriceAbi = [
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId_", internalType: "uint64", type: "uint64" },
+    ],
+    name: "getBidClaim",
+    outputs: [
+      {
+        name: "bidClaim",
+        internalType: "struct IBatchAuction.BidClaim",
+        type: "tuple",
+        components: [
+          { name: "bidder", internalType: "address", type: "address" },
+          { name: "referrer", internalType: "address", type: "address" },
+          { name: "paid", internalType: "uint256", type: "uint256" },
+          { name: "payout", internalType: "uint256", type: "uint256" },
+          { name: "refund", internalType: "uint256", type: "uint256" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
       { name: "index_", internalType: "uint256", type: "uint256" },
     ],
     name: "getBidIdAtIndex",
@@ -2286,8 +2316,9 @@ export const encryptedMarginalPriceAbi = [
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getPartialFill",
     outputs: [
+      { name: "hasPartialFill", internalType: "bool", type: "bool" },
       {
-        name: "",
+        name: "partialFill",
         internalType: "struct EncryptedMarginalPrice.PartialFill",
         type: "tuple",
         components: [
