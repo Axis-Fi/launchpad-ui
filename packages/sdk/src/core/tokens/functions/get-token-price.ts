@@ -2,7 +2,7 @@ import { isTestnet, getMainnetTokenFromSymbol } from "@repo/deployments";
 import type { Address, Token } from "@repo/types";
 import { fetchTokenPrices } from "../utils";
 
-const stablecoins = [
+const usdTokens = [
   "USDC",
   "USDT",
   "USDD",
@@ -18,8 +18,7 @@ const stablecoins = [
   "GUSD",
   "BUSD",
 ];
-const isStablecoin = (symbol: string) =>
-  stablecoins.includes(symbol.toUpperCase());
+const isUsdToken = (symbol: string) => usdTokens.includes(symbol.toUpperCase());
 
 const MAINNET_USDC = {
   chainId: 1,
@@ -43,7 +42,7 @@ const MAINNET_WETH = {
  */
 const adjustUnsupportedTokens = (tokens: Token[]): Token[] => {
   return tokens.map((token) => {
-    if (isStablecoin(token.symbol)) {
+    if (isUsdToken(token.symbol)) {
       return MAINNET_USDC;
     }
 
@@ -76,4 +75,4 @@ const getTokenPrice = async (
   return price;
 };
 
-export { getTokenPrice, getTokenPrices, isStablecoin };
+export { getTokenPrice, getTokenPrices, isUsdToken };

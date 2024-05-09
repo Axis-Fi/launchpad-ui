@@ -128,8 +128,18 @@ const CustomTooltip = (props: SettledTooltipProps) => {
     props.auction?.quoteToken,
     auctionEndTimestamp,
   );
-  const { timestamp, price, amountIn, settledAmountOut } =
-    props?.payload[0]?.payload || {};
+
+  const payload = props.payload?.[0]?.payload;
+
+  if (
+    payload === undefined ||
+    payload.price === 0 ||
+    payload.cumulativeAmountIn === 0
+  ) {
+    return null;
+  }
+
+  const { timestamp, price, amountIn, settledAmountOut } = payload;
 
   return (
     <div className="bg-secondary rounded-sm px-4 py-2">
@@ -164,7 +174,7 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
 
   const marginalPrice = Number(auction?.formatted?.marginalPrice);
   const capacityFilled = Number(auction?.capacityInitial) * marginalPrice;
-
+  console.log({ marginalPrice, capacityFilled });
   return (
     <div
       className="size-full"
@@ -195,7 +205,6 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
             tickFormatter={(value) => getToggledUsdAmount(value, false)}
           />
           <ReferenceLine
-            name="Amount"
             x={capacityFilled}
             stroke="#D7D7C1"
             strokeDasharray="6 6"
@@ -218,14 +227,6 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
               strokeWidth={2}
             />
           ))}
-          <ReferenceLine
-            segment={[
-              { x: 0, y: 0 },
-              { x: data ? data[data.length - 1].cumulativeAmountIn : 0, y: 0 },
-            ]}
-            stroke="#75C8F6"
-            strokeWidth={2}
-          />
           <ReferenceDot
             x={capacityFilled}
             y={marginalPrice}
@@ -233,22 +234,23 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
             shape={(props) => <OriginIcon cx={props.cx} cy={props.cy} />}
           />
           <Tooltip
+            // active={true}
             cursor={{ strokeDasharray: "3 3" }}
+            coordinate={{ x: 10, y: 35 }}
             // @ts-expect-error TODO
             formatter={formatter}
             wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
-            content={
-              (props) => {
-                return <CustomTooltip {...props} auction={auction} />;
-              }
-              // return <CustomTooltip payload={payload} auction={auction} />}
-            }
+            content={(props) => {
+              return <CustomTooltip {...props} auction={auction} />;
+            }}
           />
           <Legend
+            height={32}
+            margin={{ top: 30, right: 0, left: 0, bottom: 0 }}
             align="left"
             payload={[
               {
-                value: "Bid price (x) and amount (y)",
+                value: "Bid price (y) and amount (x)",
                 type: "rect",
                 color: "#D7D7C1",
               },

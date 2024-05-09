@@ -1,7 +1,15 @@
+import { useSdk } from "@repo/sdk/react";
 import type { PropsWithAuction } from "@repo/types";
 import { UsdToggle } from "@repo/ui";
 
 export const SettledAuctionChartOverlay = ({ auction }: PropsWithAuction) => {
+  const sdk = useSdk();
+  const isTokenAlreadyUsd = sdk.isUsdToken(auction.quoteToken.symbol);
+
+  if (isTokenAlreadyUsd) {
+    return null;
+  }
+
   return (
     <div
       style={{

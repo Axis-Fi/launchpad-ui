@@ -8,7 +8,7 @@ const GetTokenPriceSchema = v.object({
     symbol: v.string(),
     decimals: v.number(),
     name: v.string(),
-    totalSupply: v.optional(v.number()),
+    totalSupply: v.optional(v.string()),
     logoURI: v.optional(v.string()),
     mintable: v.optional(v.boolean()),
   }),

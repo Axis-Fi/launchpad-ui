@@ -76,6 +76,10 @@ class OriginSdk {
     );
   }
 
+  isUsdToken(symbol: string): boolean {
+    return this.core.tokens.functions.isUsdToken(symbol);
+  }
+
   /**
    * Gets the contract config required to execute a bid transaction on the auction house smart contract from unprimed parameters.
    *

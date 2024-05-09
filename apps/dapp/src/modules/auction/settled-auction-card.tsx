@@ -75,6 +75,7 @@ const SettledAuctionCard = (
   props: React.HTMLAttributes<HTMLDivElement> & PropsWithAuction,
 ) => {
   const { className, auction } = props;
+
   return (
     <div
       className={cn("mr-4", className)}
