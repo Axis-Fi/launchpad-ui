@@ -1,3 +1,5 @@
+import { OriginIcon } from "./origin-icon";
+
 // import { format } fr11om "date-fns";
 import {
   ReferenceLine,
@@ -10,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
   type TooltipProps,
+  ReferenceDot,
 } from "recharts";
 import type { Auction, EMPAuctionData } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
@@ -169,10 +172,7 @@ export const SettledAuctionChart = ({
       )}
 
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart
-          data={data}
-          // margin={{ top: 44, right: 16, left: 16, bottom: 16 }}
-        >
+        <ComposedChart data={data}>
           <CartesianGrid
             stroke="#D7D7C1"
             strokeDasharray="0"
@@ -195,27 +195,10 @@ export const SettledAuctionChart = ({
               return isUsdToggled ? formatUsdValue(getUsdValue(value)) : value;
             }}
           />
-          <Tooltip
-            cursor={{ strokeDasharray: "3 3" }}
-            // @ts-expect-error TODO
-            // formatter={formatter}
-            wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
-            content={(props) => <CustomTooltip {...props} auction={auction} />}
-          />
-          <Legend align="left" />
           <ReferenceLine
             x={capacityFilled}
             stroke="#D7D7C1"
             strokeDasharray="3 3"
-            label={{
-              fontSize: 14,
-              fill: "#D7D7C1",
-              value: "Capacity filled",
-              position: "top",
-              angle: -90,
-              offset: -180,
-              dx: -6,
-            }}
           />
           <Area
             type="stepBefore"
@@ -243,6 +226,20 @@ export const SettledAuctionChart = ({
             stroke="#75C8F6"
             strokeWidth={2}
           />
+          <ReferenceDot
+            x={capacityFilled}
+            y={marginalPrice}
+            isFront={true}
+            shape={(props) => <OriginIcon cx={props.cx} cy={props.cy} />}
+          />
+          <Tooltip
+            cursor={{ strokeDasharray: "3 3" }}
+            // @ts-expect-error TODO
+            // formatter={formatter}
+            wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
+            content={(props) => <CustomTooltip {...props} auction={auction} />}
+          />
+          <Legend align="left" />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
