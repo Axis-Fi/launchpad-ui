@@ -30,7 +30,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
       <div className="mb-8 flex justify-between">
         {isEMP && (
           <SettledAuctionCard
-            className="w-[60%]"
+            className="mr-6 w-[60%]"
             auction={auction as BatchAuction}
           />
         )}

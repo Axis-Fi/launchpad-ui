@@ -174,12 +174,9 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
 
   const marginalPrice = Number(auction?.formatted?.marginalPrice);
   const capacityFilled = Number(auction?.capacityInitial) * marginalPrice;
-  console.log({ marginalPrice, capacityFilled });
+
   return (
-    <div
-      className="size-full"
-      style={{ position: "relative", paddingRight: 16, height: 488 }}
-    >
+    <div className="size-full" style={{ position: "relative", height: 488 }}>
       {auction && <SettledAuctionChartOverlay auction={auction} />}
 
       <ResponsiveContainer width="100%" height="100%">
@@ -245,12 +242,10 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
             }}
           />
           <Legend
-            height={32}
-            margin={{ top: 30, right: 0, left: 0, bottom: 0 }}
             align="left"
             payload={[
               {
-                value: "Bid price (y) and amount (x)",
+                value: "Bid price (y) and Amount (x)",
                 type: "rect",
                 color: "#D7D7C1",
               },

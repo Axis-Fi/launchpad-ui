@@ -1,5 +1,5 @@
 import { formatUnits } from "viem";
-import { cn, InfoLabel, ToggleProvider, type InfoLabelProps } from "@repo/ui";
+import { InfoLabel, ToggleProvider, type InfoLabelProps } from "@repo/ui";
 import type {
   Token,
   EMPAuctionData,
@@ -39,7 +39,7 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
     : undefined;
 
   return (
-    <div className="mx-6 my-4 flex items-start justify-between">
+    <div className="my-5 mr-16 flex items-end justify-between">
       <ToggledAmountLabel
         reverse={true}
         label="Clearing price"
@@ -77,14 +77,13 @@ const SettledAuctionCard = (
   const { className, auction } = props;
 
   return (
-    <div
-      className={cn("mr-4", className)}
-      style={{ backgroundColor: "#252026" }}
-    >
-      <ToggleProvider initialIsToggled={true}>
-        <AuctionHeader auction={auction} />
-        <SettledAuctionChart auction={auction as BatchAuction} />
-      </ToggleProvider>
+    <div className={className} style={{ backgroundColor: "#252026" }}>
+      <div className="mx-4 mb-3">
+        <ToggleProvider initialIsToggled={true}>
+          <AuctionHeader auction={auction} />
+          <SettledAuctionChart auction={auction as BatchAuction} />
+        </ToggleProvider>
+      </div>
     </div>
   );
 };
