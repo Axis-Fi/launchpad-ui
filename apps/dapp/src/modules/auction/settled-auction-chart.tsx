@@ -173,7 +173,7 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
   const { data } = useChartData(auction, auctionData as EMPAuctionData);
 
   const marginalPrice = Number(auction?.formatted?.marginalPrice);
-  const capacityFilled = Number(auction?.capacityInitial) * marginalPrice;
+  const capacityFilled = Number(auction?.sold);
 
   return (
     <div className="size-full" style={{ position: "relative", height: 488 }}>
