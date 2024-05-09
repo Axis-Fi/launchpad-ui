@@ -70,7 +70,10 @@ class OriginSdk {
   }
 
   async getTokenPrice(params: GetTokenPriceParams): Promise<number> {
-    return this.core.tokens.functions.getTokenPrice(params.token);
+    return this.core.tokens.functions.getTokenPrice(
+      params.token,
+      params.timestamp,
+    );
   }
 
   /**

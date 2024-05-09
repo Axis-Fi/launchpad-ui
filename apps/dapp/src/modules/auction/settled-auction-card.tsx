@@ -3,18 +3,21 @@ import { cn, InfoLabel, ToggleProvider, type InfoLabelProps } from "@repo/ui";
 import type { Token, EMPAuctionData, PropsWithAuction } from "@repo/types";
 import { SettledAuctionChart } from "./settled-auction-chart";
 import { useToggleUsdAmount } from "./hooks/use-toggle-usd-amount";
+import { getTimestamp } from "utils/date";
 
 type ToggledAmountLabelProps = {
   token: Token;
   amount: number;
+  timestamp?: number;
 } & Omit<InfoLabelProps, "value">;
 
 const ToggledAmountLabel = ({
   token,
   amount,
+  timestamp,
   ...rest
 }: ToggledAmountLabelProps) => {
-  const usdAmount = useToggleUsdAmount({ token, amount });
+  const usdAmount = useToggleUsdAmount({ token, amount, timestamp });
   return <InfoLabel {...rest} value={usdAmount} />;
 };
 
@@ -26,6 +29,9 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
     ),
   );
   const fdv = (Number(auction.baseToken.totalSupply) ?? 0) * clearingPrice;
+  const auctionEndTimestamp = auction?.formatted
+    ? getTimestamp(auction.formatted.endDate)
+    : undefined;
 
   return (
     <div className="mx-6 my-4 flex items-start justify-between">
@@ -35,18 +41,21 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
         amount={clearingPrice}
         token={auction.quoteToken}
         valueSize="lg"
+        timestamp={auctionEndTimestamp}
       />
       <ToggledAmountLabel
         reverse={true}
         label="Total Raised"
         amount={Number(auction?.purchased) ?? 0}
         token={auction.quoteToken}
+        timestamp={auctionEndTimestamp}
       />
       <ToggledAmountLabel
         reverse={true}
         label="FDV"
         token={auction.quoteToken}
         amount={fdv ?? 0}
+        timestamp={auctionEndTimestamp}
       />
       <InfoLabel
         reverse={true}

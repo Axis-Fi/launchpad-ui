@@ -59,14 +59,20 @@ const adjustUnsupportedTokens = (tokens: Token[]): Token[] => {
   });
 };
 
-const getTokenPrices = async (tokens: Token[]): Promise<number[]> => {
+const getTokenPrices = async (
+  tokens: Token[],
+  timestamp: number | undefined,
+): Promise<number[]> => {
   const adjustedTokens = adjustUnsupportedTokens(tokens);
 
-  return fetchTokenPrices(adjustedTokens);
+  return fetchTokenPrices(adjustedTokens, timestamp);
 };
 
-const getTokenPrice = async (token: Token): Promise<number> => {
-  const [price] = await getTokenPrices([token]);
+const getTokenPrice = async (
+  token: Token,
+  timestamp: number | undefined,
+): Promise<number> => {
+  const [price] = await getTokenPrices([token], timestamp);
   return price;
 };
 

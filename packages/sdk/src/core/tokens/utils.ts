@@ -7,7 +7,12 @@ const getMainnetName = (chainId: number): string | undefined => {
   return Object.values(chains).find((chain) => chain.id === chainId)?.name;
 };
 
-const fetchTokenPrices = async (tokens: Token[]): Promise<number[]> => {
+const unixTimestampNow = Math.floor(Date.now() / 1000);
+
+const fetchTokenPrices = async (
+  tokens: Token[],
+  timestamp: number = unixTimestampNow,
+): Promise<number[]> => {
   if (!tokens || tokens?.length === 0) {
     throw new Error("tokens is required");
   }
@@ -18,7 +23,7 @@ const fetchTokenPrices = async (tokens: Token[]): Promise<number[]> => {
 
   // TODO get url from env config
   const response = await fetch(
-    `https://coins.llama.fi/prices/current/${tokenUrlQuery}?searchWidth=1h`,
+    `https://coins.llama.fi/prices/historical/${timestamp}/${tokenUrlQuery}?searchWidth=1h`, // TODO: search width
   );
   const json = (await response.json()) as PartialTokenResponse;
 

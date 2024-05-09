@@ -17,7 +17,7 @@ import type { Auction, EMPAuctionData } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { abbreviateNumber } from "utils/currency";
-import { formatDate } from "utils/date";
+import { formatDate, getTimestamp } from "utils/date";
 import { useGetToggledUsdAmount } from "./hooks/use-get-toggled-usd-amount";
 import { SettledAuctionChartOverlay } from "./settled-auction-chart-overlay";
 
@@ -114,8 +114,13 @@ const formatter = (value: unknown, _name: string, props: FormatterProps) => {
 };
 
 const CustomTooltip = (props: SettledTooltipProps) => {
+  const auctionEndTimestamp = props?.auction?.formatted
+    ? getTimestamp(props.auction.formatted.endDate)
+    : undefined;
+
   const { getToggledUsdAmount } = useGetToggledUsdAmount(
     props.auction?.quoteToken,
+    auctionEndTimestamp,
   );
   const { timestamp, price, amountIn, settledAmountOut } =
     props?.payload[0]?.payload || {};
@@ -144,7 +149,13 @@ export const SettledAuctionChart = ({
 }: SettledAuctionChartProps) => {
   const { result: auction } = useAuction(lotId, chainId);
   const { data: auctionData } = useAuctionData({ lotId, chainId });
-  const { getToggledUsdAmount } = useGetToggledUsdAmount(auction?.quoteToken);
+  const auctionEndTimestamp = auction?.formatted
+    ? getTimestamp(auction.formatted.endDate)
+    : undefined;
+  const { getToggledUsdAmount } = useGetToggledUsdAmount(
+    auction?.quoteToken,
+    auctionEndTimestamp,
+  );
 
   const { data } = useChartData(auction, auctionData as EMPAuctionData);
 

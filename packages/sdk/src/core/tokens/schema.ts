@@ -12,6 +12,7 @@ const GetTokenPriceSchema = v.object({
     logoURI: v.optional(v.string()),
     mintable: v.optional(v.boolean()),
   }),
+  timestamp: v.optional(v.number()),
 });
 
 const GetTokenPricesSchema = v.object({
