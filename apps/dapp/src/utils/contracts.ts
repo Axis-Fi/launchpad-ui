@@ -7,26 +7,33 @@ import {
 } from "@repo/types";
 import { Address } from "viem";
 
-const moduleMap = {
+const auctionHouseMap = {
   [AuctionType.SEALED_BID]: "batchAuctionHouse",
   [AuctionType.FIXED_PRICE]: "atomicAuctionHouse",
 };
 
-export function getContractsByModuleType(auction: Auction) {
-  const auctionType = auction.auctionType as AxisModuleContractNames;
+export const moduleMap = {
+  [AuctionType.SEALED_BID]: "encryptedMarginalPrice",
+  [AuctionType.FIXED_PRICE]: "fixedPriceSale",
+};
 
-  const abi = axisContracts.abis[auctionType];
-  const address = axisContracts.addresses[auction.chainId][auctionType];
+export function getContractsByModuleType(auction: Auction) {
+  const auctionModule = moduleMap[
+    auction.auctionType
+  ] as AxisModuleContractNames;
+
+  const abi = axisContracts.abis[auctionModule];
+  const address = axisContracts.addresses[auction.chainId][auctionModule];
 
   if (!abi || !address) {
-    throw new Error(`Can't find abi/address for ${auctionType}`);
+    throw new Error(`Can't find abi/address for ${auction.auctionType}`);
   }
 
   return { abi, address };
 }
 
 export function getAuctionHouse(
-  auction: Partial<Pick<Auction, "chainId" | "auctionType">>,
+  auction: Pick<Auction, "chainId" | "auctionType">,
 ) {
   //TODO: find a better way to handle this, see useAuction for usecase
   if (!auction.auctionType || !auction.chainId) {
@@ -35,7 +42,9 @@ export function getAuctionHouse(
       address: "0x" as Address,
     };
   }
-  const contractName = moduleMap[auction.auctionType] as AxisContractNames;
+  const contractName = auctionHouseMap[
+    auction.auctionType
+  ] as AxisContractNames;
 
   return {
     abi: axisContracts.abis[contractName],

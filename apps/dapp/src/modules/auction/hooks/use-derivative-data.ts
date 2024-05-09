@@ -10,9 +10,9 @@ export function useDerivativeData({
   chainId,
   auctionType,
 }: {
-  lotId?: string;
-  chainId?: number;
-  auctionType?: AuctionType;
+  lotId: string;
+  chainId: number;
+  auctionType: AuctionType;
 }) {
   const auctionHouse = getAuctionHouse({ chainId, auctionType });
 

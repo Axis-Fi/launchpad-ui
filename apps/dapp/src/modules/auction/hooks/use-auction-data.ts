@@ -2,11 +2,12 @@ import { axisContracts } from "@repo/deployments";
 import {
   EMPAuctionData,
   AuctionType,
-  AxisContractAddresses,
+  AxisModuleContractNames,
   FixedPriceAuctionData,
 } from "@repo/types";
 import { parseUnits } from "viem";
 import { useReadContract } from "wagmi";
+import { moduleMap } from "utils/contracts";
 
 type UseAuctionDataParameters = {
   lotId?: string;
@@ -20,13 +21,13 @@ export function useAuctionData({
   chainId,
   type = AuctionType.SEALED_BID,
 }: UseAuctionDataParameters) {
-  const auctionType = type as keyof AxisContractAddresses;
+  const auctionModule = moduleMap[type] as AxisModuleContractNames;
 
   const auctionDataQuery = useReadContract({
-    abi: axisContracts.abis[auctionType],
+    abi: axisContracts.abis[auctionModule],
     address: !chainId
       ? undefined
-      : axisContracts.addresses[chainId][auctionType],
+      : axisContracts.addresses[chainId][auctionModule],
     functionName: "auctionData",
     args: [parseUnits(lotId ?? "0", 0)],
     query: { enabled: !!chainId && !!lotId },
