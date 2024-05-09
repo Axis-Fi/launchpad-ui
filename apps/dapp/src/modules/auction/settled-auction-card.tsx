@@ -1,6 +1,11 @@
 import { formatUnits } from "viem";
 import { cn, InfoLabel, ToggleProvider, type InfoLabelProps } from "@repo/ui";
-import type { Token, EMPAuctionData, PropsWithAuction } from "@repo/types";
+import type {
+  Token,
+  EMPAuctionData,
+  PropsWithAuction,
+  BatchAuction,
+} from "@repo/types";
 import { SettledAuctionChart } from "./settled-auction-chart";
 import { useToggleUsdAmount } from "./hooks/use-toggle-usd-amount";
 import { getTimestamp } from "utils/date";
@@ -77,7 +82,7 @@ const SettledAuctionCard = (
     >
       <ToggleProvider initialIsToggled={true}>
         <AuctionHeader auction={auction} />
-        <SettledAuctionChart lotId={auction.lotId} chainId={auction.chainId} />
+        <SettledAuctionChart auction={auction as BatchAuction} />
       </ToggleProvider>
     </div>
   );

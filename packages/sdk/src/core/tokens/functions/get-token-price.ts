@@ -76,4 +76,4 @@ const getTokenPrice = async (
   return price;
 };
 
-export { getTokenPrice, getTokenPrices };
+export { getTokenPrice, getTokenPrices, isStablecoin };

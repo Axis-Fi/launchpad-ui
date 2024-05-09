@@ -1,3 +1,4 @@
+import { formatUnits } from "viem";
 import { format } from "date-fns";
 import { OriginIcon } from "./origin-icon";
 import {
@@ -13,8 +14,7 @@ import {
   type TooltipProps,
   ReferenceDot,
 } from "recharts";
-import type { Auction, EMPAuctionData } from "@repo/types";
-import { useAuction } from "modules/auction/hooks/use-auction";
+import type { Auction, BatchAuction, EMPAuctionData } from "@repo/types";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { abbreviateNumber } from "utils/currency";
 import { formatDate, getTimestamp } from "utils/date";
@@ -51,16 +51,23 @@ const useChartData = (
   const data = auction.bids
     .filter((b) => b.status !== "refunded")
     .map((bid) => {
-      const amountIn = Number(bid.amountIn);
-      const amountOut = isFinite(Number(bid.amountOut))
-        ? Number(bid.amountOut)
+      const amountIn = Number(
+        formatUnits(BigInt(bid.rawAmountIn), auction.quoteToken.decimals),
+      );
+      const amountOut = isFinite(Number(bid.rawAmountOut))
+        ? Number(
+            formatUnits(
+              BigInt(bid.rawAmountOut ?? 0),
+              auction.baseToken.decimals,
+            ),
+          )
         : 0;
 
       const price = Number(bid.submittedPrice);
       const timestamp = Number(bid.blockTimestamp) * 1000;
 
       return {
-        id: bid.id,
+        id: bid.bidId,
         bidder: bid.bidder,
         price,
         amountIn,
@@ -91,7 +98,6 @@ const useChartData = (
     price: Number(0),
   });
 
-  // const prices = getAuctionPrices(data, auction, auctionData);
   return { data };
 };
 
@@ -139,19 +145,16 @@ const CustomTooltip = (props: SettledTooltipProps) => {
 };
 
 type SettledAuctionChartProps = {
-  lotId?: string;
-  chainId?: number;
+  auction: BatchAuction;
 };
 
-export const SettledAuctionChart = ({
-  lotId,
-  chainId,
-}: SettledAuctionChartProps) => {
-  const { result: auction } = useAuction(lotId, chainId);
-  const { data: auctionData } = useAuctionData({ lotId, chainId });
+export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
+  const { data: auctionData } = useAuctionData(auction);
+
   const auctionEndTimestamp = auction?.formatted
     ? getTimestamp(auction.formatted.endDate)
     : undefined;
+
   const { getToggledUsdAmount } = useGetToggledUsdAmount(
     auction?.quoteToken,
     auctionEndTimestamp,
