@@ -1,4 +1,3 @@
-import { formatUnits } from "viem";
 import { format } from "date-fns";
 import { OriginIcon } from "./origin-icon";
 import {
@@ -28,16 +27,18 @@ export type ParsedBid = {
   price: number;
   amountIn: number;
   amountOut: number;
+  settledAmountIn: number;
   settledAmountOut: number;
   cumulativeAmountIn: number;
   timestamp: number;
+  outcome: string;
 };
 
 type SettleData = {
   marginalPrice?: number;
   minimumPrice?: number;
   sizeRange?: [number, number];
-  data?: ParsedBid[];
+  bids?: ParsedBid[];
 };
 
 const useChartData = (
@@ -48,21 +49,9 @@ const useChartData = (
   if (!auctionData || !auction) return {};
 
   // Create data array and parse inputs
-  const data = auction.bids
+  const filledBids = auction.bids
     .filter((b) => b.status !== "refunded")
     .map((bid) => {
-      const amountIn = Number(
-        formatUnits(BigInt(bid.rawAmountIn), auction.quoteToken.decimals),
-      );
-      const amountOut = isFinite(Number(bid.rawAmountOut))
-        ? Number(
-            formatUnits(
-              BigInt(bid.rawAmountOut ?? 0),
-              auction.baseToken.decimals,
-            ),
-          )
-        : 0;
-
       const price = Number(bid.submittedPrice);
       const timestamp = Number(bid.blockTimestamp) * 1000;
 
@@ -70,35 +59,39 @@ const useChartData = (
         id: bid.bidId,
         bidder: bid.bidder,
         price,
-        amountIn,
-        amountOut,
+        amountIn: Number(bid.amountIn),
+        amountOut: Number(bid.amountOut),
+        settledAmountIn: Number(bid.settledAmountIn),
         settledAmountOut: Number(bid.settledAmountOut),
         cumulativeAmountIn: 0,
         timestamp,
+        outcome: bid.outcome,
       };
     });
+  if (!filledBids) return {};
 
-  if (!data) return {};
+  filledBids.sort((a, b) => b.price - a.price);
 
-  data.sort((a, b) => b.price - a.price);
-
-  // Track cumulative tokens sold
+  // Track cumulative bid amounts
   let cumulativeAmountIn = 0;
-  data.forEach((bid) => {
+  filledBids.forEach((bid) => {
     cumulativeAmountIn += bid.amountIn;
     bid.cumulativeAmountIn = cumulativeAmountIn;
   });
 
-  // Insert initial data point for drawing first token sale left line
-  data.unshift({ cumulativeAmountIn: Number(0), price: data[0].price });
+  // Insert initial data point for drawing first bid left line
+  filledBids.unshift({
+    cumulativeAmountIn: Number(0),
+    price: filledBids[0].price,
+  });
 
-  // Insert final data point for drawing last token sale right line
-  data.push({
-    cumulativeAmountIn: data[data.length - 1].cumulativeAmountIn,
+  // Insert final data point for drawing last bid right line
+  filledBids.push({
+    cumulativeAmountIn: filledBids[filledBids.length - 1].cumulativeAmountIn,
     price: Number(0),
   });
 
-  return { data };
+  return { bids: filledBids };
 };
 
 type SettledTooltipProps = {
@@ -131,6 +124,7 @@ const CustomTooltip = (props: SettledTooltipProps) => {
 
   const payload = props.payload?.[0]?.payload;
 
+  // Ignore data points used for drawing the start and end lines
   if (
     payload === undefined ||
     payload.price === 0 ||
@@ -158,10 +152,6 @@ type SettledAuctionChartProps = {
   auction: BatchAuction;
 };
 
-const filterUnsuccessfulBids = (data: ParsedBid[]) => {
-  return data.filter((bid) => bid.settledAmountOut > 0);
-};
-
 export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
   const { data: auctionData } = useAuctionData(auction);
 
@@ -174,17 +164,19 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
     auctionEndTimestamp,
   );
 
-  const { data } = useChartData(auction, auctionData as EMPAuctionData);
-
+  const { bids } = useChartData(auction, auctionData as EMPAuctionData);
   const marginalPrice = Number(auction?.formatted?.marginalPrice);
   const capacityFilled = Number(auction?.sold) * marginalPrice;
+
+  // console.log("ASDF2", data, data?.filter((bid) => bid.outcome === "won"))
+
   console.log({ auction });
   return (
     <div className="size-full" style={{ position: "relative", height: 488 }}>
       {auction && <SettledAuctionChartOverlay auction={auction} />}
 
       <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={data}>
+        <ComposedChart data={bids}>
           <CartesianGrid
             stroke="#D7D7C1"
             strokeDasharray="0"
@@ -196,7 +188,7 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
             type="number"
             tick={{ fill: "#D7D7C1", fontSize: 14 }}
             tickFormatter={(value) => {
-              return abbreviateNumber(value, 1000);
+              return abbreviateNumber(value, 0);
             }}
           />
           <YAxis
@@ -211,14 +203,14 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
             strokeDasharray="6 6"
           />
           <Area
-            data={filterUnsuccessfulBids(data)}
+            // data={filterUnsuccessfulBids(data)}
             type="stepBefore"
             dataKey="price"
             stroke="#75C8F6"
             dot={false}
             strokeWidth={2}
           />
-          {data?.map((entry, index) => (
+          {bids?.map((entry, index) => (
             <ReferenceLine
               key={index}
               segment={[
@@ -236,9 +228,7 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
             shape={(props) => <OriginIcon cx={props.cx} cy={props.cy} />}
           />
           <Tooltip
-            // active={true}
             cursor={{ strokeDasharray: "3 3" }}
-            coordinate={{ x: 10, y: 35 }}
             // @ts-expect-error TODO
             formatter={formatter}
             wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
