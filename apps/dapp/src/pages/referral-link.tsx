@@ -31,7 +31,7 @@ export function ReferralLinkPage() {
   return (
     <PageContainer title="Referrals">
       <div className="flex">
-        <div className="mt-1 flex w-1/2 flex-col items-center ">
+        <div className="mx-auto flex max-w-sm flex-col justify-center gap-2">
           <h4>Earn fees by referring bidders</h4>
           <LabelWrapper content="Address" className="mt-2">
             <Input
