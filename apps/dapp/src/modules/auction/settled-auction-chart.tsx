@@ -158,6 +158,10 @@ type SettledAuctionChartProps = {
   auction: BatchAuction;
 };
 
+const filterUnsuccessfulBids = (data: ParsedBid[]) => {
+  return data.filter((bid) => bid.settledAmountOut > 0);
+};
+
 export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
   const { data: auctionData } = useAuctionData(auction);
 
@@ -173,8 +177,8 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
   const { data } = useChartData(auction, auctionData as EMPAuctionData);
 
   const marginalPrice = Number(auction?.formatted?.marginalPrice);
-  const capacityFilled = Number(auction?.sold);
-
+  const capacityFilled = Number(auction?.sold) * marginalPrice;
+  console.log({ auction });
   return (
     <div className="size-full" style={{ position: "relative", height: 488 }}>
       {auction && <SettledAuctionChartOverlay auction={auction} />}
@@ -207,6 +211,7 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
             strokeDasharray="6 6"
           />
           <Area
+            data={filterUnsuccessfulBids(data)}
             type="stepBefore"
             dataKey="price"
             stroke="#75C8F6"
