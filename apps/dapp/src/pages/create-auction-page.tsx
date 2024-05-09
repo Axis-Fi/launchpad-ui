@@ -77,7 +77,7 @@ const schema = z
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
     minBidSize: z.array(z.number()).optional(),
-    minPrice: z.string().optional(),
+    minPrice: z.string(),
     price: z.string().optional(),
     maxPayoutPercent: z.array(z.number()).optional(),
     start: z.date(),
