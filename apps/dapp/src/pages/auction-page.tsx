@@ -37,6 +37,7 @@ const statuses: Record<
   concluded: AuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
+  cancelled: () => <></>, // not displayed
 };
 
 /** Displays Auction details and status*/

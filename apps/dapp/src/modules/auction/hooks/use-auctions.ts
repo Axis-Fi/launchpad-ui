@@ -31,6 +31,11 @@ export function useAuctions(): AuctionsResult {
   const rawAuctions =
     [...data.atomicAuctionLots, ...data.batchAuctionLots].flat() ?? [];
 
+  // Filter out cancelled batch auctions before querying additional data
+  const filteredAuctions = rawAuctions.filter(
+    (auction) => getAuctionStatus(auction) !== "cancelled",
+  );
+
   const { getToken } = useTokenLists();
 
   const infos = useQuery({
@@ -38,7 +43,7 @@ export function useAuctions(): AuctionsResult {
     enabled: isSuccess,
     queryFn: () => {
       return Promise.all(
-        rawAuctions
+        filteredAuctions
           ?.filter((auction) => multihashRegex.test(auction.created.infoHash))
           .map(async (auction) => {
             const auctionInfo = await getAuctionInfo(auction.created.infoHash);
@@ -48,7 +53,7 @@ export function useAuctions(): AuctionsResult {
     },
   });
 
-  const auctions = rawAuctions
+  const auctions = filteredAuctions
     .map((auction) => {
       const auctionInfo = infos.data?.find((info) => info.id === auction.id)
         ?.auctionInfo;
