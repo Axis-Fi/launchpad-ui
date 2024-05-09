@@ -142,8 +142,12 @@ fragment BatchAuctionFields on BatchAuctionLot {
     rawMarginalPrice
     rawSubmittedPrice
     submittedPrice
+    settledAmountIn
+    settledAmountInRefunded
     settledAmountOut
     status
+    outcome
+    referrer
     claimed {
       id
     }
@@ -159,6 +163,12 @@ fragment BatchAuctionFields on BatchAuctionLot {
   }
   encryptedMarginalPrice {
     id
+    status
+    minPrice
+    minFilled
+    minBidSize
+    marginalPrice
+    hasPartialFill
   }
   settled {
     id

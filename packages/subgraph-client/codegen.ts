@@ -2,7 +2,8 @@ import { CodegenConfig } from "@graphql-codegen/cli";
 
 //TODO: improve
 const ENDPOINT =
-  "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/0.1.0/gn";
+  "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v0.2.0/api";
+// "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/0.1.0/gn";
 
 const config: CodegenConfig = {
   schema: ENDPOINT,
