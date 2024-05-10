@@ -2840,6 +2840,7 @@ export enum BatchAuctionLot_OrderBy {
   encryptedMarginalPrice__minFilled = "encryptedMarginalPrice__minFilled",
   encryptedMarginalPrice__minPrice = "encryptedMarginalPrice__minPrice",
   encryptedMarginalPrice__partialBidId = "encryptedMarginalPrice__partialBidId",
+  encryptedMarginalPrice__settlementSuccessful = "encryptedMarginalPrice__settlementSuccessful",
   encryptedMarginalPrice__status = "encryptedMarginalPrice__status",
   Id = "id",
   lastUpdatedBlockNumber = "lastUpdatedBlockNumber",
@@ -3981,6 +3982,7 @@ export type BatchEncryptedMarginalPriceLot = {
   minFilled: Scalars["BigDecimal"]["output"];
   minPrice: Scalars["BigDecimal"]["output"];
   partialBidId?: Maybe<Scalars["BigInt"]["output"]>;
+  settlementSuccessful: Scalars["Boolean"]["output"];
   status: Scalars["String"]["output"];
 };
 
@@ -4074,6 +4076,10 @@ export type BatchEncryptedMarginalPriceLot_Filter = {
   partialBidId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   partialBidId_not?: InputMaybe<Scalars["BigInt"]["input"]>;
   partialBidId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  settlementSuccessful?: InputMaybe<Scalars["Boolean"]["input"]>;
+  settlementSuccessful_in?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
+  settlementSuccessful_not?: InputMaybe<Scalars["Boolean"]["input"]>;
+  settlementSuccessful_not_in?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
   status?: InputMaybe<Scalars["String"]["input"]>;
   status_contains?: InputMaybe<Scalars["String"]["input"]>;
   status_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
@@ -4133,6 +4139,7 @@ export enum BatchEncryptedMarginalPriceLot_OrderBy {
   minFilled = "minFilled",
   minPrice = "minPrice",
   partialBidId = "partialBidId",
+  settlementSuccessful = "settlementSuccessful",
   Status = "status",
 }
 
@@ -5425,6 +5432,7 @@ export type BatchAuctionFieldsFragment = {
   encryptedMarginalPrice?: {
     id: string;
     status: string;
+    settlementSuccessful: boolean;
     minPrice: string;
     minFilled: string;
     minBidSize: string;
@@ -5513,6 +5521,7 @@ export type GetAuctionLotsQuery = {
     encryptedMarginalPrice?: {
       id: string;
       status: string;
+      settlementSuccessful: boolean;
       minPrice: string;
       minFilled: string;
       minBidSize: string;
@@ -5733,6 +5742,7 @@ export type GetBatchAuctionLotQuery = {
     encryptedMarginalPrice?: {
       id: string;
       status: string;
+      settlementSuccessful: boolean;
       minPrice: string;
       minFilled: string;
       minBidSize: string;
@@ -5921,6 +5931,7 @@ export const BatchAuctionFieldsFragmentDoc = `
   encryptedMarginalPrice {
     id
     status
+    settlementSuccessful
     minPrice
     minFilled
     minBidSize
