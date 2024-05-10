@@ -15,11 +15,16 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const { address } = useAccount();
   const batchAuction = auction as BatchAuction;
-  const cleared = auction.formatted?.marginalPrice !== "0.00";
+  const cleared =
+    auction.formatted?.marginalPrice !==
+    "115,792,089,237,316,200,000,000,000,000,000,000,000,000,000,000,000,000,000,000.00";
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const claimBids = useClaimBids(batchAuction);
   const userHasBids = batchAuction.bids.some(
-    (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
+    (b) =>
+      b.bidder.toLowerCase() === address?.toLowerCase() &&
+      b.status !== "claimed" &&
+      b.status !== "refunded",
   );
 
   const isWaiting =

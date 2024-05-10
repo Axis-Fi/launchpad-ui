@@ -7,7 +7,13 @@ export function getAuctionStatus(auction: SubgraphAuction): AuctionStatus {
     Date.now() > new Date(Number(conclusion) * 1000).getTime();
 
   if ("bids" in auction) {
-    const { bids } = auction; // TODO subgraph was not returning correct values for bidsDecrypted and bidsRefunded
+    const { bids, capacity } = auction; // TODO subgraph was not returning correct values for bidsDecrypted and bidsRefunded
+
+    // bids implies batch auction
+    // if a batch auction has a capacity of zero, it means it was cancelled before it started
+    if (Number(capacity) == 0) {
+      return "cancelled";
+    }
 
     const numBids = bids.length;
     const numBidsDecrypted = bids.filter(

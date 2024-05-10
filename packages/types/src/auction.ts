@@ -30,6 +30,7 @@ export type AuctionListed = Auction; //Omit<BaseAuction, "auctionData" | "format
 
 export type AuctionStatus =
   | "created"
+  | "cancelled"
   | "live"
   | "concluded"
   | "decrypted"

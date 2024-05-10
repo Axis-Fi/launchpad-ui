@@ -145,6 +145,15 @@ const schema = z
       message: "Deadline needs to be at least 1 day after the start",
       path: ["deadline"],
     },
+  )
+  .refine(
+    (data) =>
+      data.auctionType === AuctionType.FIXED_PRICE ||
+      (!!data.minPrice && isFinite(Number(data.minPrice))),
+    {
+      message: "Price must be set",
+      path: ["minPrice"],
+    },
   );
 
 export type CreateAuctionForm = z.infer<typeof schema>;
@@ -322,7 +331,10 @@ export default function CreateAuctionPage() {
   const createAuction = form.handleSubmit(handleCreation);
   const isValid = form.formState.isValid;
 
-  const onSubmit = () => (isSufficientAllowance ? createAuction() : execute());
+  const onSubmit = () => {
+    console.log("here");
+    isSufficientAllowance ? createAuction() : execute();
+  };
 
   // Handle form validation on token picker modal
   const payoutModalInvalid =
