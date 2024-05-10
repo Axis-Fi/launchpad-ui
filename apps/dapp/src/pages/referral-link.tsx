@@ -3,15 +3,37 @@ import { PageContainer } from "modules/app/page-container";
 import React from "react";
 import { Address, isAddress } from "viem";
 
-function generateLink(addr: string) {
-  // String off the 0x at the beginning
-  const address = addr.slice(2);
+function hexToBinary(hex: string) {
+  const bin = [];
+  let i = 0;
+  let d;
+  let b;
+  while (i < hex.length) {
+    d = parseInt(hex.slice(i, i + 2), 16);
+    b = String.fromCharCode(d);
+    bin.push(b);
+    i += 2;
+  }
 
-  // Convert to base64 encoding
-  const encoded = btoa(address);
+  return bin.join("");
+}
+
+function urlSafe(b64Str: string) {
+  return b64Str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "~");
+}
+
+function generateLink(addr: string) {
+  // Remove the hex string prefix and convert to binary
+  const bin = hexToBinary(addr.slice(2));
+
+  // Convert to base64
+  const encoded = btoa(bin);
+
+  // Make encoding URL safe
+  const urlEncoded = urlSafe(encoded);
 
   // Create link
-  const link = window.location.origin + "/#/?ref=" + encoded;
+  const link = window.location.origin + "/#/?ref=" + urlEncoded;
 
   return link;
 }
