@@ -164,6 +164,7 @@ fragment BatchAuctionFields on BatchAuctionLot {
   encryptedMarginalPrice {
     id
     status
+    settlementSuccessful
     minPrice
     minFilled
     minBidSize
