@@ -68,7 +68,6 @@ function mapEMPAuctionData(
     | undefined,
 ): EMPAuctionData | undefined {
   if (!data) return undefined;
-
   return {
     nextBidId: data[0],
     nextDecryptIndex: data[1],

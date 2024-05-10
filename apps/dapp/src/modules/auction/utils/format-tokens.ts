@@ -1,4 +1,4 @@
-import {
+import type {
   Address,
   AuctionInfo,
   SubgraphAuction,
@@ -6,6 +6,7 @@ import {
   TokenBase,
 } from "@repo/types";
 import { getChainId } from "utils/chain";
+import { formatUnits } from "viem";
 
 type AuctionTokens = Pick<
   SubgraphAuction,
@@ -45,6 +46,9 @@ export function parseToken(
 ): Token {
   return {
     ...token,
+    totalSupply: token.totalSupply
+      ? Number(formatUnits(BigInt(token.totalSupply), Number(token.decimals)))
+      : undefined,
     decimals: Number(token.decimals),
     address: token.address as Address,
     chainId,
