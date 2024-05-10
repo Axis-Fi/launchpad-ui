@@ -1,9 +1,5 @@
-import type {
-  BatchAuction,
-  BatchAuctionBids,
-  EMPAuctionData,
-  Token,
-} from "@repo/types";
+import type { BatchAuction, EMPAuctionData, Token } from "@repo/types";
+import type { BatchBid } from "@repo/subgraph-client/src/generated";
 import { formatUnits } from "viem";
 
 const BID_OUTCOME = {
@@ -24,9 +20,9 @@ type SortedBid = {
   outcome: string | undefined | null;
 };
 
-const sortBids = (bids: BatchAuctionBids, quoteToken: Token): SortedBid[] => {
+const sortBids = (bids: BatchBid[], quoteToken: Token): SortedBid[] => {
   const sortedBids = bids
-    .filter((bid) => bid.status !== REFUNDED_BID_STATUS)
+    .filter(({ status }) => status !== REFUNDED_BID_STATUS)
     .flatMap((bid) => {
       const price = Number(bid.submittedPrice);
       const timestamp = Number(bid.blockTimestamp) * 1000;
@@ -94,7 +90,7 @@ const useSortedBids = (
 ): SortedBid[] => {
   if (!auctionData || !auction) return [];
 
-  const sortedBids = sortBids(auction.bids, auction.quoteToken);
+  const sortedBids = sortBids(auction.bids as BatchBid[], auction.quoteToken);
 
   // Insert initial data point for drawing the first bid corner
   sortedBids.unshift({

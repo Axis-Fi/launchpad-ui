@@ -1,4 +1,4 @@
-import { ParsedBid } from "modules/auction/settled-auction-chart";
+import { SortedBid } from "modules/auction/hooks/use-sorted-bids";
 import { Auction, EMPAuctionData } from "@repo/types";
 import { formatUnits } from "viem";
 
@@ -6,7 +6,7 @@ import { formatUnits } from "viem";
  *  @author Oighty, 0xJem
  */
 export function getAuctionPrices(
-  data: ParsedBid[],
+  data: SortedBid[],
   auction: Auction,
   auctionData: EMPAuctionData,
 ) {
