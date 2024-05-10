@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-import { OriginIcon } from "./origin-icon";
 import {
   ReferenceLine,
   Tooltip,
@@ -12,87 +10,21 @@ import {
   ResponsiveContainer,
   type TooltipProps,
   ReferenceDot,
+  Line,
 } from "recharts";
+import { format } from "date-fns";
 import type { Auction, BatchAuction, EMPAuctionData } from "@repo/types";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { abbreviateNumber } from "utils/currency";
 import { formatDate, getTimestamp } from "utils/date";
 import { useGetToggledUsdAmount } from "./hooks/use-get-toggled-usd-amount";
 import { SettledAuctionChartOverlay } from "./settled-auction-chart-overlay";
-
-//TODO: revisit this type, see if can be squashed into Bid
-export type ParsedBid = {
-  id: string;
-  bidder: string;
-  price: number;
-  amountIn: number;
-  amountOut: number;
-  settledAmountIn: number;
-  settledAmountOut: number;
-  cumulativeAmountIn: number;
-  timestamp: number;
-  outcome: string;
-};
-
-type SettleData = {
-  marginalPrice?: number;
-  minimumPrice?: number;
-  sizeRange?: [number, number];
-  bids?: ParsedBid[];
-};
-
-const useChartData = (
-  auction: BatchAuction | undefined,
-  auctionData: EMPAuctionData | undefined,
-): SettleData => {
-  // Validate
-  if (!auctionData || !auction) return {};
-
-  // Create data array and parse inputs
-  const filledBids = auction.bids
-    .filter((b) => b.status !== "refunded")
-    .map((bid) => {
-      const price = Number(bid.submittedPrice);
-      const timestamp = Number(bid.blockTimestamp) * 1000;
-
-      return {
-        id: bid.bidId,
-        bidder: bid.bidder,
-        price,
-        amountIn: Number(bid.amountIn),
-        amountOut: Number(bid.amountOut),
-        settledAmountIn: Number(bid.settledAmountIn),
-        settledAmountOut: Number(bid.settledAmountOut),
-        cumulativeAmountIn: 0,
-        timestamp,
-        outcome: bid.outcome,
-      };
-    });
-  if (!filledBids) return {};
-
-  filledBids.sort((a, b) => b.price - a.price);
-
-  // Track cumulative bid amounts
-  let cumulativeAmountIn = 0;
-  filledBids.forEach((bid) => {
-    cumulativeAmountIn += bid.amountIn;
-    bid.cumulativeAmountIn = cumulativeAmountIn;
-  });
-
-  // Insert initial data point for drawing first bid left line
-  filledBids.unshift({
-    cumulativeAmountIn: Number(0),
-    price: filledBids[0].price,
-  });
-
-  // Insert final data point for drawing last bid right line
-  filledBids.push({
-    cumulativeAmountIn: filledBids[filledBids.length - 1].cumulativeAmountIn,
-    price: Number(0),
-  });
-
-  return { bids: filledBids };
-};
+import {
+  BID_OUTCOME,
+  type SortedBid,
+  useSortedBids,
+} from "./hooks/use-sorted-bids";
+import { OriginIcon } from "./origin-icon";
 
 type SettledTooltipProps = {
   auction?: Auction;
@@ -124,7 +56,7 @@ const CustomTooltip = (props: SettledTooltipProps) => {
 
   const payload = props.payload?.[0]?.payload;
 
-  // Ignore data points used for drawing the start and end lines
+  // Ignore data points used for drawing the corners of first & last bid
   if (
     payload === undefined ||
     payload.price === 0 ||
@@ -148,11 +80,15 @@ const CustomTooltip = (props: SettledTooltipProps) => {
   );
 };
 
-type SettledAuctionChartProps = {
-  auction: BatchAuction;
+const filterWinningBids = (bids: SortedBid[]) => {
+  return bids.filter(
+    (bid) =>
+      bid.outcome === BID_OUTCOME.WON ||
+      bid.outcome === BID_OUTCOME.PARTIAL_FILL,
+  );
 };
 
-export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
+export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
   const { data: auctionData } = useAuctionData(auction);
 
   const auctionEndTimestamp = auction?.formatted
@@ -164,13 +100,11 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
     auctionEndTimestamp,
   );
 
-  const { bids } = useChartData(auction, auctionData as EMPAuctionData);
+  const bids = useSortedBids(auction, auctionData as EMPAuctionData);
   const marginalPrice = Number(auction?.formatted?.marginalPrice);
-  const capacityFilled = Number(auction?.sold) * marginalPrice;
+  const amountRaised = Number(auction?.sold) * marginalPrice;
+  const winning = filterWinningBids(bids);
 
-  // console.log("ASDF2", data, data?.filter((bid) => bid.outcome === "won"))
-
-  console.log({ auction });
   return (
     <div className="size-full" style={{ position: "relative", height: 488 }}>
       {auction && <SettledAuctionChartOverlay auction={auction} />}
@@ -198,31 +132,43 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
             tickFormatter={(value) => getToggledUsdAmount(value, false)}
           />
           <ReferenceLine
-            x={capacityFilled}
+            x={amountRaised}
             stroke="#D7D7C1"
             strokeDasharray="6 6"
           />
           <Area
-            // data={filterUnsuccessfulBids(data)}
+            data={winning}
             type="stepBefore"
             dataKey="price"
             stroke="#75C8F6"
             dot={false}
             strokeWidth={2}
           />
-          {bids?.map((entry, index) => (
-            <ReferenceLine
-              key={index}
-              segment={[
-                { x: entry.cumulativeAmountIn, y: 0 },
-                { x: entry.cumulativeAmountIn, y: entry.price },
-              ]}
-              stroke="#75C8F6"
-              strokeWidth={2}
-            />
-          ))}
+          <Line
+            data={bids}
+            type="stepBefore"
+            dataKey="price"
+            stroke="#75C8F6"
+            dot={false}
+            activeDot={false}
+            strokeWidth={2}
+          />
+          {bids?.map(
+            (bid, index) =>
+              bid.outcome !== BID_OUTCOME.PARTIAL_FILL && (
+                <ReferenceLine
+                  key={index}
+                  segment={[
+                    { x: bid.cumulativeAmountIn, y: 0 },
+                    { x: bid.cumulativeAmountIn, y: bid.price },
+                  ]}
+                  stroke="#75C8F6"
+                  strokeWidth={2}
+                />
+              ),
+          )}
           <ReferenceDot
-            x={capacityFilled}
+            x={amountRaised}
             y={marginalPrice}
             isFront={true}
             shape={(props) => <OriginIcon cx={props.cx} cy={props.cy} />}
@@ -245,7 +191,7 @@ export const SettledAuctionChart = ({ auction }: SettledAuctionChartProps) => {
                 color: "#D7D7C1",
               },
               {
-                value: "Capacity filled",
+                value: "Total raised",
                 type: "plainline",
                 color: "#D7D7C1",
                 payload: { strokeDasharray: "6 6" },
