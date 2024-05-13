@@ -900,5 +900,5 @@ function generateAuctionURL(
     chainId: chain.id,
   });
 
-  return `/auction/${chainName}-${auctionHouse}-${lotId}`;
+  return `/auction/${auctionType}/${chainName}-${auctionHouse.toLowerCase()}-${lotId}`;
 }
