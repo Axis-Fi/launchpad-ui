@@ -58,6 +58,7 @@ import { PageHeader } from "modules/app/page-header";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
 import { getAuctionHouse } from "utils/contracts";
+import { Chain } from "@rainbow-me/rainbowkit";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -171,6 +172,7 @@ export default function CreateAuctionPage() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
 
+  const { chain } = useAccount();
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -201,7 +203,10 @@ export default function CreateAuctionPage() {
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
-  const lotId = getCreatedAuctionId(createTxReceipt.data);
+  const lotId = getCreatedAuctionId(
+    createTxReceipt.data,
+    auctionType as AuctionType,
+  );
 
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
@@ -848,7 +853,17 @@ export default function CreateAuctionPage() {
                   tx={createAuctionTx}
                   txReceipt={createTxReceipt}
                   onSubmit={onSubmit}
-                  onSuccess={() => navigate(`/auction/${chainId}/${lotId}`)}
+                  onSuccess={() => {
+                    if (lotId && chain) {
+                      navigate(
+                        generateAuctionURL(
+                          auctionType as AuctionType,
+                          lotId,
+                          chain,
+                        ),
+                      );
+                    }
+                  }}
                 />
               </div>
             </DialogContent>
@@ -862,8 +877,29 @@ export default function CreateAuctionPage() {
 
 function getCreatedAuctionId(
   value: UseWaitForTransactionReceiptReturnType["data"],
+  auctionType: AuctionType,
 ) {
-  const lotIdHex = value?.logs[1].topics[1];
+  //TODO: find a better way to handle this
+  //on EMP auctioniD is on log index 1 pos 1
+  //on FPS on log 1 pos 1
+  const logIndex = auctionType === AuctionType.FIXED_PRICE ? 0 : 1;
+  const lotIdHex = value?.logs[logIndex].topics[1];
   if (!lotIdHex) return null;
   return fromHex(lotIdHex, "number");
+}
+
+function generateAuctionURL(
+  auctionType: AuctionType,
+  lotId: number,
+  chain: Chain,
+) {
+  //Transform viem/rainbowkit names into subgraph format
+  const chainName = chain.name.replace(" ", "-").toLowerCase();
+
+  const { address: auctionHouse } = getAuctionHouse({
+    auctionType,
+    chainId: chain.id,
+  });
+
+  return `/auction/${chainName}-${auctionHouse}-${lotId}`;
 }
