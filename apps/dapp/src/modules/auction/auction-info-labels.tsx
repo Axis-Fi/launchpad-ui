@@ -1,4 +1,4 @@
-import { Auction, PropsWithAuction } from "@repo/types";
+import { AtomicAuction, Auction, PropsWithAuction } from "@repo/types";
 import { formatDate, InfoLabel } from "@repo/ui";
 
 const handlers = {
@@ -23,7 +23,9 @@ const handlers = {
   price: {
     label: "Price",
     handler: (auction: Auction) =>
-      `${auction.formatted?.price} ${auction.formatted?.tokenPairSymbols}`,
+      //TODO: improve types here
+      `${(auction as AtomicAuction).fixedPriceSale?.price} ${auction.formatted
+        ?.tokenPairSymbols}`,
   },
 
   sold: {

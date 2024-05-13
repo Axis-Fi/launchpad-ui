@@ -4,6 +4,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { Address } from "viem";
 import { formatDate } from "utils/date";
+import { trimCurrency } from "utils/currency";
 
 type PurchaseListProps = {
   auction: AtomicAuction;
@@ -29,12 +30,16 @@ const cols = [
   column.accessor("amount", {
     header: "Amount",
     cell: (info) =>
-      `${info.getValue()} ${info.row.original.auction.quoteToken.symbol}`,
+      `${trimCurrency(info.getValue() as string)} ${
+        info.row.original.auction.quoteToken.symbol
+      }`,
   }),
   column.accessor("payout", {
     header: "Payout",
     cell: (info) =>
-      `${info.getValue()} ${info.row.original.auction.baseToken.symbol}`,
+      `${trimCurrency(info.getValue() as string)} ${
+        info.row.original.auction.baseToken.symbol
+      }`,
   }),
   column.accessor("date", {
     header: "Date",
