@@ -121,15 +121,16 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
             dataKey="cumulativeAmountIn"
             type="number"
             tick={{ fill: "#D7D7C1", fontSize: 14 }}
-            tickFormatter={(value) => {
-              return abbreviateNumber(value, 0);
-            }}
+            tickFormatter={(value) => abbreviateNumber(value, 0)}
+            tickLine={false}
           />
           <YAxis
             dataKey="price"
             type="number"
             tick={{ fill: "#D7D7C1", fontSize: 14 }}
             tickFormatter={(value) => getToggledUsdAmount(value, false)}
+            allowDecimals={false}
+            tickLine={false}
           />
           <ReferenceLine
             x={amountRaised}
@@ -150,7 +151,6 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
             dataKey="price"
             stroke="#75C8F6"
             dot={false}
-            activeDot={false}
             strokeWidth={2}
           />
           {bids?.map(
