@@ -99,6 +99,7 @@ type EMPFormattedInfo = {
   totalBidsClaimed: number;
   totalBidAmount: string;
   uniqueBidders: number;
+  cleared: boolean;
 };
 
 export type LinearVestingData = {

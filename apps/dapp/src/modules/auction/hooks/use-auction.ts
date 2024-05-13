@@ -188,6 +188,10 @@ export function formatAuction(
   };
 }
 
+/** The value returned as marginal price when auction couldnt be cleared */
+const UNCLEARED_MARGINAL_PRICE =
+  115792089237316195423570985008687907853269984665640564039457584007913129639935n;
+
 function addEMPFields(
   auctionData: EMPAuctionData,
   auction: BatchSubgraphAuction,
@@ -222,7 +226,10 @@ function addEMPFields(
     .map((b) => b.bidder)
     .filter((b, i, a) => a.lastIndexOf(b) === i).length;
 
+  const cleared = auctionData?.marginalPrice !== UNCLEARED_MARGINAL_PRICE;
+
   return {
+    cleared,
     marginalPrice: trimCurrency(marginalPrice),
     rate: trimCurrency(marginalPrice),
     minPrice: trimCurrency(minPrice),

@@ -337,7 +337,6 @@ export default function CreateAuctionPage() {
   const isValid = form.formState.isValid;
 
   const onSubmit = () => {
-    console.log("here");
     isSufficientAllowance ? createAuction() : execute();
   };
 

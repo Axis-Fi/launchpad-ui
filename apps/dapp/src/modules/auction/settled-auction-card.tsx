@@ -40,28 +40,32 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
 
   return (
     <div className="my-5 mr-16 flex items-end justify-between">
-      <ToggledAmountLabel
-        reverse={true}
-        label="Clearing price"
-        amount={clearingPrice}
-        token={auction.quoteToken}
-        valueSize="lg"
-        timestamp={auctionEndTimestamp}
-      />
-      <ToggledAmountLabel
-        reverse={true}
-        label="Total Raised"
-        amount={Number(auction?.purchased) ?? 0}
-        token={auction.quoteToken}
-        timestamp={auctionEndTimestamp}
-      />
-      <ToggledAmountLabel
-        reverse={true}
-        label="FDV"
-        token={auction.quoteToken}
-        amount={fdv ?? 0}
-        timestamp={auctionEndTimestamp}
-      />
+      {auction.formatted?.cleared && (
+        <>
+          <ToggledAmountLabel
+            reverse={true}
+            label="Clearing price"
+            amount={clearingPrice}
+            token={auction.quoteToken}
+            valueSize="lg"
+            timestamp={auctionEndTimestamp}
+          />
+          <ToggledAmountLabel
+            reverse={true}
+            label="Total Raised"
+            amount={Number(auction?.purchased) ?? 0}
+            token={auction.quoteToken}
+            timestamp={auctionEndTimestamp}
+          />
+          <ToggledAmountLabel
+            reverse={true}
+            label="FDV"
+            token={auction.quoteToken}
+            amount={fdv ?? 0}
+            timestamp={auctionEndTimestamp}
+          />
+        </>
+      )}
       <InfoLabel
         reverse={true}
         label="Participants"

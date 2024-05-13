@@ -15,9 +15,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const { address } = useAccount();
   const batchAuction = auction as BatchAuction;
-  const cleared =
-    auction.formatted?.marginalPrice !==
-    "115,792,089,237,316,200,000,000,000,000,000,000,000,000,000,000,000,000,000,000.00";
+  const cleared = auction.formatted?.cleared;
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const claimBids = useClaimBids(batchAuction);
   const userHasBids = batchAuction.bids.some(
