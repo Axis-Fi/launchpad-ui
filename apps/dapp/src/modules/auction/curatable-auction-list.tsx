@@ -8,9 +8,15 @@ import { CheckIcon, XIcon } from "lucide-react";
 import React from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useCurateAuction } from "./hooks/use-curate-auction";
+import { ChainIcon } from "components/chain-icon";
 
 const col = createColumnHelper<AuctionListed>();
 const cols = [
+  col.accessor("chainId", {
+    header: "Chain",
+    cell: (info) => <ChainIcon chainId={info.getValue()} />,
+  }),
+
   col.accessor("seller", {
     header: "Creator",
     cell: (info) => trimAddress(info.getValue()),
