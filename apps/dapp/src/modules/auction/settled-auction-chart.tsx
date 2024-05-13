@@ -129,7 +129,6 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
             type="number"
             tick={{ fill: "#D7D7C1", fontSize: 14 }}
             tickFormatter={(value) => getToggledUsdAmount(value, false)}
-            allowDecimals={false}
             tickLine={false}
           />
           <ReferenceLine
