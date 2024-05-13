@@ -191,7 +191,7 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
                 color: "#D7D7C1",
               },
               {
-                value: "Total raised",
+                value: "USDB raised",
                 type: "plainline",
                 color: "#D7D7C1",
                 payload: { strokeDasharray: "6 6" },

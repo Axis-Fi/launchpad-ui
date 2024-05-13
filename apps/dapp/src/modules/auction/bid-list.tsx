@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import {
-  AuctionEncryptedBid,
+  BatchAuctionBid,
   Auction,
   PropsWithAuction,
   BatchAuction,
@@ -17,7 +17,7 @@ import { getAuctionHouse } from "utils/contracts";
 import { useBidIndex } from "./hooks/use-bid-index";
 import { formatUnits } from "viem";
 
-const column = createColumnHelper<AuctionEncryptedBid & { auction: Auction }>();
+const column = createColumnHelper<BatchAuctionBid & { auction: Auction }>();
 
 const cols = [
   column.accessor("bidder", {
@@ -132,7 +132,7 @@ export function BidList(props: BidListProps) {
   const refund = useWriteContract();
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [bidToRefund, setBidToRefund] = React.useState<AuctionEncryptedBid>();
+  const [bidToRefund, setBidToRefund] = React.useState<BatchAuctionBid>();
   const { index: bidIndex } = useBidIndex(
     props.auction,
     BigInt(bidToRefund?.bidId ?? -1),

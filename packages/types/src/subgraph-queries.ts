@@ -13,7 +13,7 @@ export type BatchSubgraphAuction = NonNullable<
 
 export type SubgraphAuction = AtomicSubgraphAuction | BatchSubgraphAuction;
 
-export type AuctionEncryptedBid = BatchSubgraphAuction["bids"][0];
+export type BatchAuctionBid = BatchSubgraphAuction["bids"][0];
 
 export type AuctionDecryptedBid = BatchSubgraphAuction["bidsDecrypted"][0];
 

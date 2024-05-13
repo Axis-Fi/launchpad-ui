@@ -52,7 +52,7 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
           />
           <ToggledAmountLabel
             reverse={true}
-            label="Total Raised"
+            label={`${auction.quoteToken.symbol} Raised`}
             amount={Number(auction?.purchased) ?? 0}
             token={auction.quoteToken}
             timestamp={auctionEndTimestamp}
