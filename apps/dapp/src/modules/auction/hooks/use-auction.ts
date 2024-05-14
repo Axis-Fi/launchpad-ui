@@ -1,50 +1,83 @@
-import { useGetAuctionLotQuery } from "@repo/subgraph-client/src/generated";
+import {
+  GetAtomicAuctionLotQuery,
+  GetBatchAuctionLotQuery,
+  useGetAtomicAuctionLotQuery,
+  useGetBatchAuctionLotQuery,
+} from "@repo/subgraph-client/src/generated";
+import type { UseQueryResult } from "@tanstack/react-query";
 import { getAuctionStatus } from "../utils/get-auction-status";
 import {
   Auction,
   EMPAuctionData,
   AuctionFormattedInfo,
   AuctionType,
-  RawSubgraphAuctionWithEvents,
   FixedPriceAuctionData,
+  BatchSubgraphAuction,
+  AtomicSubgraphAuction,
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
-import { fromBasisPoints, trimCurrency } from "utils";
+import { trimCurrency } from "utils";
 import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
-import { getAuctionType } from "../utils/get-auction-type";
-import { useDerivativeData } from "./use-derivative-data";
+//import { useDerivativeData } from "./use-derivative-data";
+import { parseAuctionId } from "../utils/parse-auction-id";
 
 export type AuctionResult = {
   result?: Auction;
-  isLoading: boolean;
-  isRefetching: boolean;
-  refetch: ReturnType<typeof useGetAuctionLotQuery>["refetch"];
+} & Pick<
+  ReturnType<typeof useGetAtomicAuctionLotQuery>,
+  "refetch" | "isLoading" | "isRefetching"
+>;
+
+const hookMap = {
+  [AuctionType.SEALED_BID]: useGetBatchAuctionLotQuery,
+  [AuctionType.FIXED_PRICE]: useGetAtomicAuctionLotQuery,
 };
 
-export function useAuction(lotId?: string, chainId?: number): AuctionResult {
+export function useAuction(
+  id: string,
+  auctionType: AuctionType,
+): AuctionResult {
   const { getToken } = useTokenLists();
 
-  const { data, refetch, isLoading, isRefetching } = useGetAuctionLotQuery(
-    {
-      endpoint: deployments[chainId!].subgraphURL,
-      fetchParams,
-    },
-    { lotId: lotId! },
-    { enabled: !!chainId && !!lotId },
-  );
+  const { chainId, lotId } = parseAuctionId(id);
 
-  const rawAuction =
-    !data || !data.auctionLots || data.auctionLots.length == 0
-      ? undefined
-      : data.auctionLots[0];
+  const useGetAuction = auctionType
+    ? hookMap[auctionType]
+    : useGetBatchAuctionLotQuery;
+
+  const {
+    data,
+    refetch,
+    isLoading,
+    isRefetching,
+    isSuccess,
+  }: UseQueryResult<GetAtomicAuctionLotQuery | GetBatchAuctionLotQuery> =
+    useGetAuction(
+      {
+        endpoint: deployments[chainId!].subgraphURL,
+        fetchParams,
+      },
+      { id: id! },
+      { enabled: !!chainId && !!id },
+    );
+
+  let rawAuction:
+    | GetAtomicAuctionLotQuery["atomicAuctionLot"]
+    | GetBatchAuctionLotQuery["batchAuctionLot"];
+
+  if (isSuccess && auctionType === AuctionType.FIXED_PRICE) {
+    rawAuction = (data as GetAtomicAuctionLotQuery)?.atomicAuctionLot;
+  } else {
+    rawAuction = (data as GetBatchAuctionLotQuery)?.batchAuctionLot;
+  }
 
   const enabled = !!rawAuction && !!rawAuction?.created.infoHash;
 
@@ -54,17 +87,20 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
     queryFn: () => getAuctionInfo(rawAuction?.created.infoHash || ""),
   });
 
-  const auctionType = getAuctionType(rawAuction?.auctionRef);
-
   const { data: auctionData } = useAuctionData({
     chainId,
     lotId,
     type: auctionType,
   });
 
-  const { data: linearVesting } = useDerivativeData(lotId, chainId);
+  //TODO: needs updating
+  // const { data: linearVesting } = useDerivativeData({
+  //   lotId,
+  //   auctionType,
+  //   chainId,
+  // });
 
-  if (!rawAuction || !chainId || data?.auctionLots.length === 0) {
+  if (!rawAuction) {
     return {
       refetch,
       isRefetching,
@@ -87,6 +123,9 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
   if (!auctionType) {
     throw new Error(`Auction type ${auctionType} doesn't exist`);
   }
+
+  const formatted = formatAuction(auction, auctionType, auctionData);
+
   return {
     refetch,
     result: {
@@ -94,9 +133,7 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
       ...tokens,
       auctionData,
       auctionType,
-      linearVesting,
-      formatted: formatAuction(auction, auctionType, auctionData),
-      bids: updateBids(auction),
+      formatted,
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
@@ -105,10 +142,12 @@ export function useAuction(lotId?: string, chainId?: number): AuctionResult {
 
 /** Formats Auction information for displaying purporses */
 export function formatAuction(
-  auction: RawSubgraphAuctionWithEvents,
+  auction: AtomicSubgraphAuction | BatchSubgraphAuction,
   auctionType: AuctionType,
   auctionData?: EMPAuctionData | FixedPriceAuctionData,
 ): AuctionFormattedInfo {
+  if (!auction) throw new Error("No Auction provided to formatAuction");
+
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
 
@@ -116,23 +155,17 @@ export function formatAuction(
   const endFormatted = formatDate.fullLocal(endDate);
   const startDistance = formatDistanceToNow(startDate);
   const endDistance = formatDistanceToNow(endDate);
-  const totalBidsDecrypted = auction.bids.filter(
-    (b) => b.status === "decrypted",
-  ).length;
 
-  const uniqueBidders = auction.bids
-    .map((b) => b.bidder)
-    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
-
-  const totalBidAmount = auction.bids.reduce(
-    (total, b) => total + Number(b.amountIn),
-    0,
-  );
-
-  const auctionSpecificFields =
+  const moduleFields =
     auctionType === AuctionType.SEALED_BID
-      ? addEMPFields(auctionData as EMPAuctionData, auction)
-      : addFPFields(auctionData as FixedPriceAuctionData, auction);
+      ? addEMPFields(
+          auctionData as EMPAuctionData,
+          auction as BatchSubgraphAuction,
+        )
+      : addFPFields(
+          auctionData as FixedPriceAuctionData,
+          auction as AtomicSubgraphAuction,
+        );
 
   return {
     startDate,
@@ -141,7 +174,6 @@ export function formatAuction(
     endFormatted,
     startDistance,
     endDistance,
-    uniqueBidders,
     sold: trimCurrency(auction.sold),
     purchased: trimCurrency(auction.purchased),
     capacity: trimCurrency(auction.capacity),
@@ -151,17 +183,18 @@ export function formatAuction(
         Number(auction.baseToken.decimals),
       ),
     ),
-    totalBids: auction.bids.length,
-    totalBidsDecrypted,
-    totalBidAmount: trimCurrency(totalBidAmount),
     tokenPairSymbols: `${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
-    ...auctionSpecificFields,
+    ...moduleFields,
   };
 }
 
+/** The value returned as marginal price when auction couldnt be cleared */
+const UNCLEARED_MARGINAL_PRICE =
+  115792089237316195423570985008687907853269984665640564039457584007913129639935n;
+
 function addEMPFields(
   auctionData: EMPAuctionData,
-  auction: RawSubgraphAuctionWithEvents,
+  auction: BatchSubgraphAuction,
 ) {
   const minPrice = formatUnits(
     auctionData?.minimumPrice ?? 0n,
@@ -170,64 +203,68 @@ function addEMPFields(
 
   const minBidSize = formatUnits(
     auctionData?.minBidSize ?? 0n,
-    Number(auction.baseToken.decimals),
+    Number(auction.quoteToken.decimals),
   );
 
   const marginalPrice = formatUnits(
     auctionData?.marginalPrice ?? "",
     Number(auction.quoteToken.decimals),
   );
+  const totalBidsDecrypted = auction.bids.filter(
+    (b) => b.status === "decrypted",
+  ).length;
+  const totalBidsClaimed = auction.bids.filter(
+    (b) => b.status === "claimed",
+  ).length;
+
+  const totalBidAmount = auction.bids.reduce(
+    (total, b) => total + Number(b.amountIn),
+    0,
+  );
+
+  const uniqueBidders = auction.bids
+    .map((b) => b.bidder)
+    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
+
+  const cleared = auctionData?.marginalPrice !== UNCLEARED_MARGINAL_PRICE;
 
   return {
+    cleared,
     marginalPrice: trimCurrency(marginalPrice),
     rate: trimCurrency(marginalPrice),
     minPrice: trimCurrency(minPrice),
     minBidSize: trimCurrency(minBidSize),
+    totalBidAmount: trimCurrency(totalBidAmount),
+    totalBids: auction.bids.length,
+    totalBidsDecrypted,
+    totalBidsClaimed,
+    uniqueBidders,
   };
 }
 
 function addFPFields(
   auctionData: FixedPriceAuctionData,
-  auction: RawSubgraphAuctionWithEvents,
+  auction: AtomicSubgraphAuction,
 ) {
-  if (!auctionData) return;
+  if (!auctionData || !auction) return;
+
+  const price = formatUnits(
+    auctionData.price,
+    Number(auction.quoteToken.decimals),
+  );
+  const capacity = parseUnits(
+    auction.capacity,
+    Number(auction.baseToken.decimals),
+  );
+  const maxPayout = formatUnits(
+    capacity > auctionData.maxPayout ? auctionData.maxPayout : capacity,
+    Number(auction.baseToken.decimals),
+  );
+  const maxAmount = (Number(maxPayout) * Number(price)).toString(); // TODO not sure whether to do toLocaleString() or toString()
 
   return {
-    price: formatUnits(auctionData.price, Number(auction.quoteToken.decimals)),
-    maxPayoutPercentage: fromBasisPoints(
-      // 0.00 - 1.00
-      //TODO: review and improve
-      formatUnits(auctionData.maxPayoutPercentage, 18),
-    ),
+    price,
+    maxPayout,
+    maxAmount,
   };
-}
-
-/** Updates bids based off the remaining capacity
- * TODO: move to subgraph
- */
-function updateBids(auction: RawSubgraphAuctionWithEvents) {
-  let remainingCapacity = Number(auction.capacityInitial);
-
-  const _bids = auction.bids
-    .sort((a, b) => Number(b.submittedPrice) - Number(a.submittedPrice))
-    .map((b) => {
-      const amountOut = Number(b.settledAmountOut);
-      if (!b.settledAmountOut || !isFinite(amountOut)) return b;
-
-      //If the amountOut is lower than capacity,
-      //this bid gets the rest of the capacity
-      const settledAmountOut =
-        remainingCapacity >= Number(b.settledAmountOut)
-          ? b.settledAmountOut
-          : remainingCapacity;
-
-      remainingCapacity -= Number(b.settledAmountOut);
-
-      return {
-        ...b,
-        settledAmountOut: settledAmountOut.toString(),
-      };
-    });
-
-  return _bids;
 }

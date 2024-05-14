@@ -1,8 +1,8 @@
-export type AuctionModuleReference = "01EMPAM" | "01FPAM\x00";
+export type AuctionModuleReference = "01EMPA" | "01FPSA";
 
 export enum AuctionType {
-  SEALED_BID = "EMPAM",
-  FIXED_PRICE = "FPAM",
+  SEALED_BID = "EMPA",
+  FIXED_PRICE = "FPSA",
 }
 
 export enum AuctionDerivatives {

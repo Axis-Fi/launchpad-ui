@@ -1,144 +1,210 @@
-fragment AuctionLotFragment on AuctionLot {
-  auctionRef
-  auctionType
-  capacity
-  capacityInitial
-  capacityInQuote
+fragment AtomicCommonFields on AtomicAuctionLot {
+  id
   chain
-  conclusion
+  auctionHouse
+  lotId
   createdBlockNumber
   createdBlockTimestamp
+  createdDate
   createdTransactionHash
+  capacityInitial
+  start
+  conclusion
+  auctionType
+  seller
+  derivativeType
+  wrapDerivative
   curator
   curatorApproved
-  derivativeRef
-  id
+  curatorFee
+  protocolFee
+  referrerFee
+  capacity
+  sold
+  purchased
   lastUpdatedBlockNumber
   lastUpdatedBlockTimestamp
+  lastUpdatedDate
   lastUpdatedTransactionHash
-  lotId
-  maxBidId
-  owner
-  purchased
-  sold
-  start
-  wrapDerivative
+  linearVesting {
+    id
+    startDate
+    expiryDate
+    startTimestamp
+    expiryTimestamp
+  }
   baseToken {
+    totalSupply
     address
     decimals
     symbol
     name
-    totalSupply
   }
   quoteToken {
     address
     decimals
-    name
     symbol
+    name
   }
+  #cancelled
   created {
-    blockNumber
-    blockTimestamp
-    id
-    transactionHash
     infoHash
   }
-  bids {
+  curated {
+    curator
+  }
+}
+
+fragment BatchCommonFields on BatchAuctionLot {
+  id
+  chain
+  auctionHouse
+  lotId
+  createdBlockNumber
+  createdBlockTimestamp
+  createdDate
+  createdTransactionHash
+  capacityInitial
+  start
+  conclusion
+  auctionType
+  seller
+  derivativeType
+  wrapDerivative
+  curator
+  curatorApproved
+  curatorFee
+  protocolFee
+  referrerFee
+  capacity
+  sold
+  purchased
+  lastUpdatedBlockNumber
+  lastUpdatedBlockTimestamp
+  lastUpdatedDate
+  lastUpdatedTransactionHash
+  linearVesting {
     id
+    startDate
+    expiryDate
+    startTimestamp
+    expiryTimestamp
+  }
+  baseToken {
+    totalSupply
+    address
+    decimals
+    symbol
+    name
+  }
+  quoteToken {
+    address
+    decimals
+    symbol
+    name
+  }
+  #cancelled
+  created {
+    infoHash
+  }
+  curated {
+    curator
+  }
+}
+
+fragment AtomicAuctionFields on AtomicAuctionLot {
+  capacityInQuote
+  purchases {
+    amount
+    buyer
+    date
+    payout
+    transactionHash
+    referrer
+  }
+  fixedPriceSale {
+    maxPayout
+    price
+    id
+  }
+}
+
+fragment BatchAuctionFields on BatchAuctionLot {
+  maxBidId
+  bids {
+    bidId
+    bidder
+    blockTimestamp
+    date
+    amountIn
+    rawAmountIn
+    rawAmountOut
+    rawMarginalPrice
+    rawSubmittedPrice
+    submittedPrice
+    settledAmountIn
+    settledAmountInRefunded
+    settledAmountOut
+    status
+    outcome
+    referrer
+    claimed {
+      id
+    }
   }
   bidsDecrypted {
     id
   }
-  refundedBids {
+  bidsClaimed {
     id
   }
-  settle {
+  bidsRefunded {
+    id
+  }
+  encryptedMarginalPrice {
+    id
+    status
+    settlementSuccessful
+    minPrice
+    minFilled
+    minBidSize
+    marginalPrice
+    hasPartialFill
+  }
+  settled {
     id
   }
 }
 
 query getAuctionLots {
-  auctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
-    ...AuctionLotFragment
+  batchAuctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
+    ...BatchCommonFields
+    ...BatchAuctionFields
+  }
+  atomicAuctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
+    ...AtomicCommonFields
+    ...AtomicAuctionFields
   }
 }
 
-query getAuctionLot($lotId: BigInt!) {
-  auctionLots(
-    orderBy: createdBlockNumber
-    orderDirection: asc
-    where: { lotId: $lotId }
-    first: 1
-  ) {
-    ...AuctionLotFragment
-    cancelled {
-      blockNumber
-      blockTimestamp
-      id
-      transactionHash
-    }
-    bids {
-      amountIn
-      amountOut
-      settledAmountOut
-      submittedPrice
-      rawAmountIn
-      rawAmountOut
-      rawSubmittedPrice
-      bidder
-      bidId
-      blockNumber
-      blockTimestamp
-      id
-      transactionHash
-      status
-    }
-    refundedBids {
-      blockNumber
-      blockTimestamp
-      id
-      transactionHash
-      bid {
-        bidId
-        bidder
-        amountIn
-      }
-    }
-    bidsDecrypted {
-      amountIn
-      amountOut
-      blockNumber
-      blockTimestamp
-      id
-      transactionHash
-      bid {
-        bidId
-        bidder
-        amountIn
-      }
-    }
-    purchases {
-      amount
-      blockNumber
-      blockTimestamp
-      buyer
-      id
-      payout
-      referrer
-      transactionHash
-    }
-    settle {
-      blockNumber
-      blockTimestamp
-      id
-      transactionHash
-    }
-    curated {
-      blockNumber
-      blockTimestamp
-      curator
-      id
-      transactionHash
-    }
+query getAtomicAuctionLot($id: ID!) {
+  atomicAuctionLot(id: $id) {
+    ...AtomicCommonFields
+    ...AtomicAuctionFields
+  }
+}
+
+query getBatchAuctionLot($id: ID!) {
+  batchAuctionLot(id: $id) {
+    ...BatchCommonFields
+    ...BatchAuctionFields
+  }
+}
+
+query getInstalledModules {
+  auctionHouseModuleInstalleds {
+    keycode
+    address
+    auctionHouse
   }
 }

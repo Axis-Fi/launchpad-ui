@@ -1,63 +1,56 @@
+import React from "react";
 import { Button, InfoLabel, cn } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
 import { AuctionInputCard } from "../auction-input-card";
-import { AuctionType, PropsWithAuction } from "@repo/types";
-import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
+import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
 import { ProjectInfoCard } from "../project-info-card";
-import { useClaimProceeds } from "../hooks/use-claim-proceeds";
 import { useAccount } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
 import { AuctionInfoLabel } from "../auction-info-labels";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
-import React from "react";
+import { SettledAuctionCard } from "modules/auction/settled-auction-card";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
-  const [isClaimBids, setIsClaimingBids] = React.useState(false);
-  const [isClaimingProceeds, setIsClaimingProceeds] = React.useState(false);
-
+  const [open, setOpen] = React.useState(false);
   const { address } = useAccount();
+  const batchAuction = auction as BatchAuction;
+  const cleared = auction.formatted?.cleared;
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
-  const claimProceeds = useClaimProceeds(auction);
-  const claimBids = useClaimBids(auction);
-  const userHasBids = auction.bids.some(
-    (b) => b.bidder.toLowerCase() === address?.toLowerCase(),
+  const claimBids = useClaimBids(batchAuction);
+  const userHasBids = batchAuction.bids.some(
+    (b) =>
+      b.bidder.toLowerCase() === address?.toLowerCase() &&
+      b.status !== "claimed" &&
+      b.status !== "refunded",
   );
+
+  const isWaiting =
+    claimBids.claimTx.isPending || claimBids.claimReceipt.isLoading;
 
   return (
     <div className="w-full">
       <div className="mb-8 flex justify-between">
         {isEMP && (
-          <div className="w-1/2">
-            <SettledAuctionChart
-              lotId={auction.lotId}
-              chainId={auction.chainId}
-            />
-          </div>
+          <SettledAuctionCard
+            className="mr-6 w-[60%]"
+            auction={auction as BatchAuction}
+          />
         )}
         <div className={cn("w-[40%]", !isEMP && "w-full")}>
           <AuctionInputCard submitText={""} auction={auction}>
             <div className="text-center">
-              <h4>Payout for this auction has been distributed!</h4>
+              {cleared ? (
+                <h4>Payout for this auction can be claimed!</h4>
+              ) : (
+                <h4>Auction could not be settled. Refunds may be claimed.</h4>
+              )}
             </div>
             <RequiresChain chainId={auction.chainId}>
-              {address?.toLowerCase() === auction.owner.toLowerCase() && (
-                <div className="flex justify-center">
-                  <Button
-                    onClick={() => setIsClaimingProceeds(true)}
-                    className="mt-4"
-                  >
-                    CLAIM PROCEEDS
-                  </Button>
-                </div>
-              )}
               {userHasBids && (
                 <div className="flex justify-center">
-                  <Button
-                    onClick={() => setIsClaimingBids(true)}
-                    className="mt-4"
-                  >
-                    CLAIM BIDS
+                  <Button onClick={() => setOpen(true)} className="mt-4">
+                    {cleared ? "CLAIM BIDS" : "CLAIM REFUND"}
                   </Button>
                 </div>
               )}
@@ -72,52 +65,54 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             value={`${auction.formatted?.purchased} ${auction.quoteToken.symbol}`}
           />
 
-          <InfoLabel
-            label="Rate"
-            value={`${auction.formatted?.marginalPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`}
-          />
-
-          <InfoLabel label="Total Bids" value={auction.bids.length} />
+          <InfoLabel label="Total Bids" value={batchAuction.bids.length} />
           <InfoLabel
             label="Unique Participants"
             value={auction.formatted?.uniqueBidders}
           />
 
           <InfoLabel label="Ended" value={auction.formatted?.endFormatted} />
-          <AuctionInfoLabel auction={auction} id="vestingDuration" />
+          {auction.linearVesting && (
+            <AuctionInfoLabel auction={auction} id="vestingDuration" />
+          )}
         </AuctionInfoCard>
         <div className="w-1/2">
           <ProjectInfoCard auction={auction} />
         </div>
       </div>
       <TransactionDialog
+        open={open}
         signatureMutation={claimBids.claimTx}
+        error={claimBids.claimTx.error}
+        onConfirm={claimBids.handleClaim}
         mutation={claimBids.claimReceipt}
         chainId={auction.chainId}
-        hash={claimBids.claimTx.data!}
-        onConfirm={claimBids.handleClaim}
-        open={isClaimBids}
-        onOpenChange={(open) => {
-          setIsClaimingBids(open);
-
-          if (claimBids.claimTx.isError) {
+        onOpenChange={(open: boolean) => {
+          if (!open) {
             claimBids.claimTx.reset();
           }
+          setOpen(open);
         }}
-      />
-      <TransactionDialog
-        signatureMutation={claimProceeds.claimTx}
-        mutation={claimProceeds.claimReceipt}
-        chainId={auction.chainId}
-        hash={claimProceeds.claimTx.data!}
-        onConfirm={claimProceeds.handleClaim}
-        open={isClaimingProceeds}
-        onOpenChange={(open) => {
-          setIsClaimingBids(open);
-
-          if (claimProceeds.claimTx.isError) {
-            claimProceeds.claimTx.reset();
-          }
+        hash={claimBids.claimTx.data}
+        disabled={isWaiting}
+        screens={{
+          idle: {
+            Component: () => (
+              <div className="text-center">
+                You&apos;re about to claim all of your outstanding refunds and
+                payouts for this auction.
+              </div>
+            ),
+            title: `Confirm Claim Bids`,
+          },
+          success: {
+            Component: () => (
+              <div className="flex justify-center text-center">
+                <p>Bids claimed successfully!</p>
+              </div>
+            ),
+            title: "Transaction Confirmed",
+          },
         }}
       />
     </div>

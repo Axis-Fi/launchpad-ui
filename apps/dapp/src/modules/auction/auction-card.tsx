@@ -7,16 +7,13 @@ import { AuctionStatusChip } from "./auction-status-chip";
 import { ImageBanner } from "components/image-banner";
 import { ChainIcon } from "components/chain-icon";
 import { auctionMetadata } from "./metadata";
+import { Link } from "react-router-dom";
 
-type AuctionCardProps = {
-  onClickView?: (auction: AuctionListed) => void;
-} & React.HTMLAttributes<HTMLDivElement> & { auction: AuctionListed };
+type AuctionCardProps = React.HTMLAttributes<HTMLDivElement> & {
+  auction: AuctionListed;
+};
 
-export function AuctionCard({
-  auction,
-  onClickView,
-  ...props
-}: AuctionCardProps) {
+export function AuctionCard({ auction, ...props }: AuctionCardProps) {
   const progress = calculatePercentage(
     auction.start,
     auction.conclusion,
@@ -88,13 +85,11 @@ export function AuctionCard({
       </div>
 
       <div className="mt-4 flex justify-center">
-        <Button
-          onClick={() => onClickView?.(auction)}
-          variant="outline"
-          className="mx-auto"
-        >
-          View Auction <ArrowRightIcon className="w-5" />
-        </Button>
+        <Link to={`/auction/${auction.auctionType}/${auction.id}`}>
+          <Button variant="outline" className="mx-auto">
+            View Auction <ArrowRightIcon className="w-5" />
+          </Button>
+        </Link>
       </div>
     </div>
   );

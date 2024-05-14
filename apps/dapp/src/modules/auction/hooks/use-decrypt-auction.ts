@@ -1,6 +1,5 @@
-import { axisContracts } from "@repo/deployments";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Auction } from "@repo/types";
+import { Auction, BatchAuction } from "@repo/types";
 import { useEffect } from "react";
 import { cloakClient } from "@repo/cloak";
 import {
@@ -9,42 +8,61 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useAuction } from "modules/auction/hooks/use-auction";
+import { getAuctionHouse, getContractsByModuleType } from "utils/contracts";
+import { Hex } from "viem";
 
 /** Used to manage decrypting the next set of bids */
-export const useDecryptBids = (auction: Auction) => {
-  const contracts = axisContracts.addresses[auction.chainId];
+export const useDecryptBids = (auction: BatchAuction) => {
+  const auctionHouse = getAuctionHouse(auction);
+  //Fixed priced auctions dont require decryption
+  const emp = getContractsByModuleType(auction);
+
   const { refetch: refetchAuction } = useAuction(
-    auction.lotId,
-    auction.chainId,
+    auction.id,
+    auction.auctionType,
   );
 
-  //Get the next bids from the API
+  const params = deriveParamsFromAuction(auction);
   const privateKeyQuery = useQuery({
-    queryKey: [
-      "decrypt",
-      auction.chainId,
-      auction.lotId,
-      contracts.auctionHouse,
-    ],
+    queryKey: ["get_private_key", auction.id, auctionHouse.address, params],
     queryFn: () =>
       cloakClient.keysApi.privateKeyLotIdGet({
-        xChainId: auction.chainId,
-        xAuctionHouse: contracts.auctionHouse,
-        lotId: Number(auction.lotId),
+        ...params,
+        xAuctionHouse: auctionHouse.address,
       }),
     placeholderData: keepPreviousData,
     enabled:
-      auction.bids.length - auction.refundedBids.length >
-      auction.bidsDecrypted.length,
+      auction.bids.length === 0 ||
+      auction.bids.length - auction.bidsRefunded.length >
+        auction.bidsDecrypted.length,
   });
+
+  const DECRYPT_NUM = 100; // TODO determine limit on amount per chain
+
+  const hintsQuery = useQuery({
+    queryKey: ["hints", auction.id, auctionHouse.address, params, DECRYPT_NUM],
+    queryFn: () =>
+      cloakClient.keysApi.hintsLotIdNumGet({
+        ...params,
+        xAuctionHouse: auctionHouse.address,
+        num: DECRYPT_NUM,
+      }),
+  });
+
+  const hints = hintsQuery.data as Hex[];
 
   //Send bids to the contract for decryption
   const { data: decryptCall, ...decryptCallQuery } = useSimulateContract({
-    address: contracts.empam,
-    abi: axisContracts.abis.empam,
+    address: emp.address,
+    abi: emp.abi,
     functionName: "submitPrivateKey",
     chainId: auction.chainId,
-    args: [BigInt(auction.lotId), BigInt(privateKeyQuery.data ?? 0n), 100n],
+    args: [
+      BigInt(auction.lotId),
+      BigInt(privateKeyQuery.data ?? 0),
+      BigInt(hints?.length ?? 0),
+      hints,
+    ],
     query: { enabled: privateKeyQuery.isSuccess },
   });
 
@@ -54,8 +72,8 @@ export const useDecryptBids = (auction: Auction) => {
   const handleDecryption = () => decrypt.writeContract(decryptCall!.request);
 
   useEffect(() => {
-    if (decryptReceipt.isSuccess && !privateKeyQuery.isRefetching) {
-      privateKeyQuery.refetch();
+    if (decryptReceipt.isSuccess && !hintsQuery.isRefetching) {
+      hintsQuery.refetch();
       refetchAuction();
     }
   }, [decryptReceipt.isSuccess, privateKeyQuery]);
@@ -75,3 +93,10 @@ export const useDecryptBids = (auction: Auction) => {
     error,
   };
 };
+
+function deriveParamsFromAuction(auction: Auction) {
+  return {
+    xChainId: auction.chainId,
+    lotId: Number(auction.lotId),
+  };
+}

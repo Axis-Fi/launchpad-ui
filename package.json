@@ -7,7 +7,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "clean": "turbo run clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,md,json,css,html,yaml}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json,css,html}\"",
     "prepare": "husky",
     "storybook": "turbo run storybook"
   },
@@ -18,7 +18,7 @@
     "prettier-plugin-tailwindcss": "^0.5.11",
     "turbo": "^1.12.4"
   },
-  "packageManager": "pnpm@8.9.2+sha256.8d62573d93061f2722b7b48c9739e96cd4603c3ab153bc81c619dcb9861a214e",
+  "packageManager": "pnpm@8.15.5+sha256.4b4efa12490e5055d59b9b9fc9438b7d581a6b7af3b5675eb5c5f447cee1a589",
   "resolutions": {
     "graphql": "16.8.1"
   }

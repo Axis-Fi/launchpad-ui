@@ -1,0 +1,209 @@
+{
+  "abi": [
+    {
+      "type": "constructor",
+      "inputs": [
+        {
+          "name": "auctionHouse_",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "auctionHouse",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAuctionsByBaseToken",
+      "inputs": [
+        {
+          "name": "baseToken_",
+          "type": "address",
+          "internalType": "contract ERC20"
+        },
+        { "name": "startId_", "type": "uint96", "internalType": "uint96" },
+        { "name": "count_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [
+        { "name": "", "type": "uint96[]", "internalType": "uint96[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAuctionsByQuoteToken",
+      "inputs": [
+        {
+          "name": "quoteToken_",
+          "type": "address",
+          "internalType": "contract ERC20"
+        },
+        { "name": "startId_", "type": "uint96", "internalType": "uint96" },
+        { "name": "count_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [
+        { "name": "", "type": "uint96[]", "internalType": "uint96[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAuctionsBySeller",
+      "inputs": [
+        { "name": "seller_", "type": "address", "internalType": "address" },
+        { "name": "startId_", "type": "uint96", "internalType": "uint96" },
+        { "name": "count_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [
+        { "name": "", "type": "uint96[]", "internalType": "uint96[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getAuctionsByType",
+      "inputs": [
+        {
+          "name": "auctionReference_",
+          "type": "bytes7",
+          "internalType": "Veecode"
+        },
+        { "name": "startId_", "type": "uint96", "internalType": "uint96" },
+        { "name": "count_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [
+        { "name": "", "type": "uint96[]", "internalType": "uint96[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getBidIds",
+      "inputs": [
+        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
+        { "name": "start_", "type": "uint256", "internalType": "uint256" },
+        { "name": "count_", "type": "uint256", "internalType": "uint256" }
+      ],
+      "outputs": [
+        { "name": "", "type": "uint64[]", "internalType": "uint64[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getLiveAuctions",
+      "inputs": [
+        { "name": "startId_", "type": "uint96", "internalType": "uint96" },
+        { "name": "count_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [
+        { "name": "", "type": "uint96[]", "internalType": "uint96[]" }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getMaxLotId",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "uint96", "internalType": "uint96" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getNumBids",
+      "inputs": [
+        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getRouting",
+      "inputs": [
+        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "internalType": "struct AuctionHouse.Routing",
+          "components": [
+            { "name": "seller", "type": "address", "internalType": "address" },
+            {
+              "name": "baseToken",
+              "type": "address",
+              "internalType": "contract ERC20"
+            },
+            {
+              "name": "quoteToken",
+              "type": "address",
+              "internalType": "contract ERC20"
+            },
+            {
+              "name": "auctionReference",
+              "type": "bytes7",
+              "internalType": "Veecode"
+            },
+            { "name": "funding", "type": "uint256", "internalType": "uint256" },
+            {
+              "name": "callbacks",
+              "type": "address",
+              "internalType": "contract ICallback"
+            },
+            {
+              "name": "derivativeReference",
+              "type": "bytes7",
+              "internalType": "Veecode"
+            },
+            {
+              "name": "wrapDerivative",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "derivativeParams",
+              "type": "bytes",
+              "internalType": "bytes"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "hasEnded",
+      "inputs": [
+        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "isLive",
+      "inputs": [
+        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "remainingCapacity",
+      "inputs": [
+        { "name": "lotId_", "type": "uint96", "internalType": "uint96" }
+      ],
+      "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+      "stateMutability": "view"
+    },
+    { "type": "error", "name": "InvalidParams", "inputs": [] }
+  ]
+}

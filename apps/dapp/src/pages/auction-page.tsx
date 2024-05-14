@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 import type { Address } from "viem";
-import { axisContracts } from "@repo/deployments";
 import { Avatar, Button, Skeleton, Tooltip } from "@repo/ui";
 import {
   type PropsWithAuction,
@@ -27,6 +26,7 @@ import {
 import { ChainIcon } from "components/chain-icon";
 import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
 import { getAuctionMetadata } from "modules/auction/metadata";
+import { getAuctionHouse } from "utils/contracts";
 
 const statuses: Record<
   AuctionStatus,
@@ -37,11 +37,12 @@ const statuses: Record<
   concluded: AuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
+  cancelled: () => <></>, // not displayed
 };
 
 /** Displays Auction details and status*/
 export default function AuctionPage() {
-  const { lotId, chainId } = useParams();
+  const { id, type } = useParams();
   const { address } = useAccount();
 
   const {
@@ -49,7 +50,7 @@ export default function AuctionPage() {
     isLoading: isAuctionLoading,
     refetch,
     isRefetching,
-  } = useAuction(lotId, Number(chainId));
+  } = useAuction(id!, type as AuctionType);
 
   if (isAuctionLoading) {
     return <AuctionPageLoading />;
@@ -57,7 +58,7 @@ export default function AuctionPage() {
 
   if (!auction) return <AuctionPageMissing />;
 
-  const contracts = axisContracts.addresses[auction.chainId];
+  const auctionHouse = getAuctionHouse(auction);
   const AuctionElement =
     auction.status === "concluded" &&
     auction.auctionType === AuctionType.FIXED_PRICE
@@ -117,7 +118,7 @@ export default function AuctionPage() {
               `Quote (${auction.quoteToken.symbol})`,
               auction.quoteToken.address as Address,
             ],
-            ["Auction House", contracts.auctionHouse],
+            ["Auction House", auctionHouse.address],
           ]}
         />
       </div>
@@ -163,8 +164,9 @@ function AuctionPageLoading() {
 }
 
 function AuctionPageMissing() {
-  const { lotId, chainId } = useParams();
-  const { refetch } = useAuction(lotId, Number(chainId));
+  const { id, type } = useParams();
+  const { refetch } = useAuction(id!, type as AuctionType);
+
   return (
     <div className="absolute inset-0 -top-40 flex h-full flex-col items-center justify-center text-center">
       <h4>

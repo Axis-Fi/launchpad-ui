@@ -1,15 +1,14 @@
 import { describe, it, expect, vi } from "vitest";
-import { type Address, zeroAddress } from "viem";
-import { abis } from "@repo/abis";
-import type { AxisDeployments } from "@repo/deployments";
+import { zeroAddress } from "viem";
 import * as functions from ".";
-import * as coreUtils from "../../utils";
 import * as publicClient from "../../public-client";
 import type { GetAuctionResult } from "../types";
+import { AuctionType } from "@repo/types";
+import * as deploymentsDep from "@repo/deployments";
 
 const mockAddress = zeroAddress;
 const mockChainId = 1;
-const mockTokenDecimals = 18;
+const mockAuctionType = "MOCK_AUCTION_TYPE" as AuctionType;
 
 const mockGetAuctionResult: GetAuctionResult = {
   seller: "0x1",
@@ -23,31 +22,6 @@ const mockGetAuctionResult: GetAuctionResult = {
   derivativeParams: "0x7",
 };
 
-const mockToken = (id: string, address: Address) => ({
-  decimals: mockTokenDecimals,
-  symbol: id,
-  name: `${id} token`,
-  address,
-  logoURI: "logoUri",
-  chainId: mockChainId,
-});
-
-const mockTokenList = {
-  tokens: [
-    mockToken("AXIS", mockGetAuctionResult.baseToken),
-    mockToken("USDC", mockGetAuctionResult.quoteToken),
-  ],
-};
-
-const mockDeployments = {
-  [mockChainId]: {
-    addresses: {
-      catalogue: mockAddress,
-    },
-    tokenList: mockTokenList,
-  },
-} as unknown as AxisDeployments;
-
 const mockReadContract = vi.fn(() => mockGetAuctionResult);
 
 vi.mock("../../public-client", () => ({
@@ -56,11 +30,21 @@ vi.mock("../../public-client", () => ({
   })),
 }));
 
+const mockCatalogue = { abi: "MOCK_ABI", address: mockAddress };
+
+vi.mock("@repo/deployments", () => ({
+  getCatalogue: vi.fn(() => mockCatalogue),
+}));
+
 describe("getAuction()", () => {
   it("returns auction details", async () => {
-    const params = { chainId: mockChainId, lotId: 1 };
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
 
-    const result = await functions.getAuction(params, mockDeployments);
+    const result = await functions.getAuction(params);
 
     expect(result).toMatchInlineSnapshot(`
       {
@@ -78,36 +62,46 @@ describe("getAuction()", () => {
   });
 
   it("calls createClient() with correct params", async () => {
-    const params = { chainId: mockChainId, lotId: 1 };
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
 
-    await functions.getAuction(params, mockDeployments);
+    await functions.getAuction(params);
 
     expect(publicClient.createClient).toHaveBeenCalledWith(params.chainId);
   });
 
   it("calls client.readContract() with correct params", async () => {
-    const params = { chainId: mockChainId, lotId: 1 };
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
 
-    await functions.getAuction(params, mockDeployments);
+    await functions.getAuction(params);
 
     expect(mockReadContract).toHaveBeenCalledWith({
-      address: mockAddress,
-      abi: abis.catalogue,
+      address: mockCatalogue.address,
+      abi: mockCatalogue.abi,
       functionName: "getRouting",
       args: [BigInt(params.lotId)],
     });
   });
 
-  it("calls getContractAddresses() with correct params", async () => {
-    vi.spyOn(coreUtils, "getContractAddresses");
+  it("calls getCatalogue() with correct params", async () => {
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
 
-    const params = { chainId: mockChainId, lotId: 1 };
+    await functions.getAuction(params);
 
-    await functions.getAuction(params, mockDeployments);
-
-    expect(coreUtils.getContractAddresses).toHaveBeenCalledWith(
-      params.chainId,
-      mockDeployments,
-    );
+    expect(deploymentsDep.getCatalogue).toHaveBeenCalledWith({
+      chainId: params.chainId,
+      auctionType: params.auctionType,
+    });
   });
 });

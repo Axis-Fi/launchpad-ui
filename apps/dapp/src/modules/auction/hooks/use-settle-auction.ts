@@ -1,25 +1,29 @@
-import { axisContracts } from "@repo/deployments";
 import { Auction } from "@repo/types";
 import React from "react";
-import { parseUnits } from "viem";
+import { parseUnits, toHex } from "viem";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { useAuction } from "./use-auction";
+import { getAuctionHouse } from "utils/contracts";
 
 /** Used to settle an auction after decryption*/
 export function useSettleAuction(auction: Auction) {
-  const axisAddresses = axisContracts.addresses[auction.chainId];
-  const { refetch } = useAuction(auction.lotId, auction.chainId);
+  const { address, abi } = getAuctionHouse(auction);
+  const { refetch } = useAuction(auction.id, auction.auctionType);
 
   const { data: settleCall, ...settleCallStatus } = useSimulateContract({
-    abi: axisContracts.abis.auctionHouse,
-    address: axisAddresses.auctionHouse,
+    abi,
+    address,
     functionName: "settle",
     chainId: auction.chainId,
-    args: [parseUnits(auction.lotId, 0)],
+    args: [
+      parseUnits(auction.lotId, 0),
+      100n, // number of bids to settle at once, TODO replace with value based on chain & gas limits
+      toHex(""), // TODO support callback data
+    ],
   });
 
   const settleTx = useWriteContract();

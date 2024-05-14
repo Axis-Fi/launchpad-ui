@@ -3,10 +3,16 @@ import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionInfoCard } from "../auction-info-card";
-import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
+import {
+  Auction,
+  AuctionType,
+  BatchAuction,
+  PropsWithAuction,
+} from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
+import { trimCurrency } from "utils";
 import { useBidAuction } from "../hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,8 +22,8 @@ import React from "react";
 import { AuctionInfoLabel } from "../auction-info-labels";
 
 const schema = z.object({
-  baseTokenAmount: z.coerce.number(),
-  quoteTokenAmount: z.coerce.number(),
+  baseTokenAmount: z.string(),
+  quoteTokenAmount: z.string(),
 });
 
 export type BidForm = z.infer<typeof schema>;
@@ -25,9 +31,7 @@ export type BidForm = z.infer<typeof schema>;
 export function AuctionLive({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
-  const maxPayoutPercentage = Number(
-    auction.formatted?.maxPayoutPercentage ?? 0,
-  ); // percentage 0.00-1.00 format
+
   const form = useForm<BidForm>({
     mode: "onTouched",
     resolver: zodResolver(
@@ -35,7 +39,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             isFixedPrice ||
-            data.quoteTokenAmount >= Number(auction.formatted?.minBidSize),
+            Number(data.quoteTokenAmount) >=
+              Number(auction.formatted?.minBidSize),
           {
             message: `Minimum bid is ${auction.formatted?.minBidSize}`,
             path: ["quoteTokenAmount"],
@@ -54,13 +59,27 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             !isFixedPrice ||
-            data.quoteTokenAmount <=
-              Number(auction.capacityInitial) * maxPayoutPercentage,
+            Number(data.quoteTokenAmount) <=
+              Number(auction.formatted?.maxAmount),
           {
-            message: `Max bid is ${
-              Number(auction.capacityInitial) * maxPayoutPercentage
-            }`,
+            message: `Max amount is ${trimCurrency(
+              auction.formatted?.maxAmount ?? 0,
+            )}`,
             path: ["quoteTokenAmount"],
+          },
+        )
+        .refine(
+          (data) => Number(data.quoteTokenAmount) <= Number(formattedBalance),
+          {
+            message: `Insufficient balance`,
+            path: ["quoteTokenAmount"],
+          },
+        )
+        .refine(
+          (data) => Number(data.baseTokenAmount) <= Number(auction.capacity),
+          {
+            message: "Amount out exceeds capacity",
+            path: ["baseTokenAmount"],
           },
         ),
     ),
@@ -71,22 +90,25 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     "baseTokenAmount",
   ]);
 
+  const parsedAmountIn = Number(amountIn);
+  const parsedMinAmountOut = Number(minAmountOut);
+
   const { balance, ...bid } = useBidAuction(
-    auction.lotId,
-    auction.chainId,
-    amountIn,
-    minAmountOut,
+    auction.id,
+    auction.auctionType,
+    parsedAmountIn,
+    parsedMinAmountOut,
+  );
+
+  const formattedBalance = formatUnits(
+    balance.data?.value ?? 0n,
+    balance.data?.decimals ?? 0,
   );
 
   // TODO Permit2 signature
   const handleSubmit = () => {
     bid.isSufficientAllowance ? bid.handleBid() : bid.approveCapacity();
   };
-
-  const formattedBalance = formatUnits(
-    balance.data?.value ?? 0n,
-    balance.data?.decimals ?? 0,
-  );
 
   const isValidInput = form.formState.isValid;
 
@@ -106,6 +128,20 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
+  const amountInInvalid =
+    (isFixedPrice && parsedAmountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
+    parsedAmountIn > Number(formattedBalance) || // greater than balance
+    parsedAmountIn === undefined ||
+    parsedAmountIn === 0; // zero or empty
+
+  const amountOutInvalid =
+    minAmountOut === undefined ||
+    parsedMinAmountOut === 0 || // zero or empty
+    parsedMinAmountOut > Number(auction.capacity) || // exceeds capacity
+    (isEMP &&
+      parsedAmountIn / parsedMinAmountOut <
+        Number(auction.formatted?.minPrice)); // less than min price
+
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
     <div className="flex justify-between">
@@ -120,12 +156,17 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             value={`${auction.formatted?.totalSupply} ${auction.baseToken.symbol}`}
           />
           <InfoLabel label="Deadline" value={auction.formatted?.endFormatted} />
-          <InfoLabel label="Creator" value={trimAddress(auction.owner)} />
+          <InfoLabel label="Creator" value={trimAddress(auction.seller)} />
           {auction.linearVesting && (
             <AuctionInfoLabel auction={auction} id="vestingDuration" />
           )}
           {auction.curatorApproved && (
-            <InfoLabel label="Curator" value={trimAddress(auction.curator)} />
+            <InfoLabel
+              label="Curator"
+              value={
+                auction.curated ? trimAddress(auction.curated.curator!) : ""
+              }
+            />
           )}
           {isEMP ? (
             <>
@@ -137,7 +178,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 label="Minimum Quantity"
                 value={`${auction.formatted?.minBidSize} ${auction.quoteToken.symbol}`}
               />
-              <InfoLabel label="Total Bids" value={auction.bids.length} />
+              <InfoLabel
+                label="Total Bids"
+                value={(auction as BatchAuction).bids.length}
+              />
               <InfoLabel
                 label="Total Bid Amount"
                 value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
@@ -166,14 +210,19 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <>
                 <AuctionBidInput
                   singleInput={isFixedPrice}
-                  balance={formattedBalance}
+                  balance={trimCurrency(formattedBalance)}
                   auction={auction}
                 />
                 <RequiresChain chainId={auction.chainId} className="mt-4">
                   <div className="mt-4 w-full">
                     <Button
                       className="w-full"
-                      disabled={isWaiting || isSigningApproval}
+                      disabled={
+                        isWaiting ||
+                        isSigningApproval ||
+                        amountInInvalid ||
+                        amountOutInvalid
+                      }
                       onClick={() =>
                         bid.isSufficientAllowance
                           ? setOpen(true)
@@ -246,11 +295,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
 function getConfirmCardText(
   auction: Auction,
-  amountIn: number,
-  amountOut: number,
+  amountIn: string,
+  amountOut: string,
 ) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
-  const empText = `You're about to place a bid of ${amountIn}{" "} ${auction.quoteToken.symbol} `;
+  const empText = `You're about to place a bid of ${amountIn} ${auction.quoteToken.symbol}`;
   const fpText = `You're about to purchase ${amountOut} ${auction.baseToken.symbol} for ${amountIn} ${auction.quoteToken.symbol}`;
   return isEMP ? empText : fpText;
 }

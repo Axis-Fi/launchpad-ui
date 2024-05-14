@@ -1,16 +1,18 @@
-import {
-  Address,
-  AuctionInfo,
-  RawSubgraphAuctionWithEvents,
-  Token,
-  TokenBase,
-} from "@repo/types";
+import type { Address, AuctionInfo, Token, TokenBase } from "@repo/types";
+import { Token as SubgraphToken } from "@repo/subgraph-client/src/generated";
 import { getChainId } from "utils/chain";
+import { formatUnits } from "viem";
 
-type AuctionTokens = Pick<
-  RawSubgraphAuctionWithEvents,
-  "quoteToken" | "baseToken" | "chain"
->;
+type InputToken = Omit<SubgraphToken, "id" | "decimals" | "totalSupply"> & {
+  decimals: number | string;
+  totalSupply?: bigint | string | undefined;
+};
+
+type AuctionTokens = {
+  quoteToken: InputToken;
+  baseToken: InputToken;
+  chain: string;
+};
 
 export function formatAuctionTokens(
   auction: AuctionTokens,
@@ -30,19 +32,23 @@ export function formatAuctionTokens(
 
   return {
     baseToken: parseToken(baseToken, chainId),
-    //@ts-expect-error ignore for debug
     quoteToken: parseToken(quoteToken, chainId),
   };
 }
 
 export function parseToken(
-  token: Omit<RawSubgraphAuctionWithEvents["baseToken"], "decimals"> & {
-    decimals: number | string;
+  token: InputToken & {
+    logoURI?: string | undefined;
   },
   chainId: number,
 ): Token {
+  const totalSupply = token.totalSupply?.toString();
+
   return {
     ...token,
+    totalSupply: totalSupply
+      ? formatUnits(BigInt(totalSupply ?? ""), Number(token.decimals))
+      : undefined,
     decimals: Number(token.decimals),
     address: token.address as Address,
     chainId,

@@ -11,10 +11,10 @@ const getAuctionTokenDecimals = async (
   params: GetAuctionTokenDecimalsParams,
   deployments: AxisDeployments,
 ): Promise<GetAuctionTokenDecimalsResult> => {
-  const { chainId, lotId } = params;
+  const { chainId, lotId, auctionType } = params;
   const tokenLists = [deployments[chainId]?.tokenList];
   const { baseToken: baseTokenAddress, quoteToken: quoteTokenAddress } =
-    await getAuction({ chainId, lotId }, deployments);
+    await getAuction({ chainId, lotId, auctionType });
 
   const baseTokenDecimalsPromise = getTokenDecimals({
     chainId,

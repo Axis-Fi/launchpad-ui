@@ -2,6 +2,7 @@ import { FormField, FormItemWrapper, IconedLabel, Input } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
 import { PropsWithAuction } from "@repo/types";
 import { BidForm } from "./status";
+import { formatUnits, parseUnits } from "viem";
 
 const formatRate = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 4,
@@ -23,7 +24,7 @@ export function AuctionBidInput({
     "baseTokenAmount",
   ]);
 
-  const rate = amount / minAmountOut;
+  const rate = Number(amount) / Number(minAmountOut);
   const formattedRate = isFinite(rate) ? formatRate(rate) : "?";
 
   return (
@@ -47,11 +48,21 @@ export function AuctionBidInput({
                     onChange={(e) => {
                       field.onChange(e);
                       if (singleInput && "price" in auction.auctionData!) {
-                        // auction is fixed price //TODO: improve
+                        // auction is fixed price
+                        // Use bigints to calculate value and return as string to avoid rounding errors with floats
+                        const value = parseUnits(
+                          e.target.value,
+                          auction.quoteToken.decimals,
+                        );
                         const amount =
-                          Number(e.target.value) /
-                          Number(auction.formatted?.price);
-                        form.setValue("baseTokenAmount", amount);
+                          (value *
+                            parseUnits("1", auction.baseToken.decimals)) /
+                          auction.auctionData!.price;
+                        const formattedAmount = formatUnits(
+                          amount,
+                          auction.baseToken.decimals,
+                        );
+                        form.setValue("baseTokenAmount", formattedAmount);
                       }
                     }}
                     variant="lg"

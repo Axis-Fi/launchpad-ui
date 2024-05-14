@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
-import { DayPicker } from "react-day-picker";
+import { DayPicker, DateBefore } from "react-day-picker";
 
 import { cn } from "@/utils";
 import { buttonVariants } from "@/components/primitives/button/button-variants";
@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/primitives/button/button-variants";
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
   onSelect: (date: Date) => void;
   placeholderDate?: Date;
+  minDate?: Date;
 };
 
 function Calendar({
@@ -16,6 +17,10 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: CalendarProps) {
+  const disabledMatcher = props.minDate
+    ? ({ before: props.minDate } as DateBefore)
+    : undefined;
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -64,6 +69,7 @@ function Calendar({
         IconLeft: () => <ChevronLeftIcon className="h-4 w-4" />,
         IconRight: () => <ChevronRightIcon className="h-4 w-4" />,
       }}
+      disabled={disabledMatcher}
       {...props}
     />
   );

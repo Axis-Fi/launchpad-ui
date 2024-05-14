@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Textarea, Label } from "@repo/ui";
+import { Textarea } from "@repo/ui";
 
 const meta = {
   title: "Design System/Textarea",

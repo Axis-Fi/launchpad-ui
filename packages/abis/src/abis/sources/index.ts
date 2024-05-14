@@ -1,24 +1,36 @@
-import catalogue from "./Catalogue.json";
-import auctionHouse from "./AuctionHouse.json";
+import atomicCatalogue from "./AtomicCatalogue.json";
+import batchCatalogue from "./BatchCatalogue.json";
+import _atomicAuctionHouse from "./AtomicAuctionHouse.json";
+import _batchAuctionHouse from "./BatchAuctionHouse.json";
+import encryptedMarginalPrice from "./EncryptedMarginalPrice.json";
+import fixedPriceSale from "./FixedPriceSale.json";
 import linearVesting from "./LinearVesting.json";
-import empam from "./EncryptedMarginalPriceAuctionModule.json";
-import fpam from "./FixedPriceAuctionModule.json";
 import testnetERC20 from "./TestnetERC20.json";
 
 //Fetch errors from modules to include in the AuctionHouse ABI
-const errors = [empam.abi, fpam.abi, linearVesting.abi].flatMap((e) =>
-  e.filter((e) => e.type === "error"),
-);
+const errors = [
+  encryptedMarginalPrice.abi,
+  fixedPriceSale.abi,
+  linearVesting.abi,
+].flatMap((e) => e.filter((e) => e.type === "error"));
 
-const _auctionHouse = {
-  abi: [...auctionHouse.abi, ...errors],
+//Merge errors
+const batchAuctionHouse = {
+  abi: [..._batchAuctionHouse.abi, ...errors],
+} as const;
+
+const atomicAuctionHouse = {
+  abi: [..._atomicAuctionHouse.abi, ...errors],
 } as const;
 
 export { testnetERC20 };
+
 export default {
-  catalogue,
-  auctionHouse: _auctionHouse,
+  atomicCatalogue,
+  atomicAuctionHouse,
+  batchCatalogue,
+  batchAuctionHouse,
+  encryptedMarginalPrice,
+  fixedPriceSale,
   linearVesting,
-  empam,
-  fpam,
 } as const;

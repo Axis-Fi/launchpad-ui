@@ -9,13 +9,14 @@ import * as auction from ".";
 
 type GetAuctionParams = v.Input<typeof GetAuctionParamsSchema>;
 type GetAuctionResult = ContractFunctionReturn<
-  typeof abis.catalogue,
+  typeof abis.batchCatalogue, // TODO multiple catalogue types
   "getRouting"
 >;
 
 type GetAuctionTokenDecimalsParams = v.Input<
   typeof GetAuctionTokenDecimalsParamsSchema
 >;
+
 type GetAuctionTokenDecimalsResult = {
   baseTokenDecimals: number;
   quoteTokenDecimals: number;

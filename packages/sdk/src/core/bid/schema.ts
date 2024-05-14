@@ -1,5 +1,6 @@
 import { Address } from "abitype";
 import * as v from "valibot";
+import { AuctionType } from "@repo/types";
 
 // TODO: hoist to top/common area
 const AddressSchema = v.special<Address>(
@@ -11,6 +12,7 @@ const BidParamsSchema = v.object({
   amountIn: v.number(),
   amountOut: v.number(),
   chainId: v.number(),
+  auctionType: v.enum_(AuctionType),
   bidderAddress: AddressSchema,
   referrerAddress: AddressSchema,
   signedPermit2Approval: v.optional(v.string()),

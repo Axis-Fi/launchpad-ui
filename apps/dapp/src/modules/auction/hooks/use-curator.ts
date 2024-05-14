@@ -3,11 +3,11 @@ import { useAccount } from "wagmi";
 
 /** Utility to read Curator data for the connected address*/
 export function useCurator() {
-  const { address } = useAccount();
-  const { result } = useAuctions();
+  const { address, isConnected } = useAccount();
+  const { data } = useAuctions();
 
-  const auctionsCuratedByUser = result.filter(
-    (a) => a.curator.toLocaleLowerCase() === address?.toLocaleLowerCase(),
+  const auctionsCuratedByUser = data.filter(
+    (a) => a.curator?.toLocaleLowerCase() === address?.toLocaleLowerCase(),
   );
 
   const pendingCurations = auctionsCuratedByUser.filter(
@@ -17,7 +17,7 @@ export function useCurator() {
   );
 
   return {
-    isCurator: !!auctionsCuratedByUser.length,
+    isCurator: isConnected && !!auctionsCuratedByUser.length,
     hasPendingCurations: !!pendingCurations.length,
     pendingCurationsCount: pendingCurations.length,
   };

@@ -6,9 +6,13 @@ const status: { [key in AuctionStatus]: number } = {
   concluded: 2,
   decrypted: 3,
   settled: 4,
+  cancelled: 5,
 };
 
+/** Required fields for an auction to be comparable */
+type SortableAuction = Pick<BaseAuction, "status">;
+
 /** Sorts an auction by status */
-export function sortAuction(a: BaseAuction, b: BaseAuction) {
+export function sortAuction(a: SortableAuction, b: SortableAuction) {
   return status[a.status] - status[b.status];
 }

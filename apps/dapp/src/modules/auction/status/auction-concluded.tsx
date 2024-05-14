@@ -2,16 +2,21 @@ import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
 import { AuctionInfoCard } from "../auction-info-card";
-import { PropsWithAuction } from "@repo/types";
+import { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import React from "react";
 
 export function AuctionConcluded({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
-  const decrypt = useDecryptBids(auction);
+  const decrypt = useDecryptBids(auction as BatchAuction);
 
-  const disableButton =
-    auction.formatted?.totalBids === 0 || decrypt.decryptTx.isPending;
+  const disableButton = decrypt.decryptTx.isPending;
+  // removed totalBids === 0 from this because an auction that has no bids must either be decrypted + settled
+  // or aborted so that the seller gets a refund
+
+  const totalBidsRemaining =
+    (auction.formatted?.totalBids ?? 0) -
+    (auction.formatted?.totalBidsClaimed ?? 0);
 
   return (
     <div>
@@ -69,8 +74,8 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
               <p className="text-6xl">/</p>
 
               <div>
-                <h1 className="text-4xl">{auction.formatted?.totalBids}</h1>
-                <p>Total Bids</p>
+                <h1 className="text-4xl">{totalBidsRemaining}</h1>
+                <p>Total Remaining Bids</p>
               </div>
             </div>
           </AuctionInputCard>

@@ -1,5 +1,4 @@
-import type { TokenList, AxisContractAddresses } from "@repo/types";
-import { abis } from "@repo/abis";
+import type { TokenList } from "@repo/types";
 import { createDeployment, createDeploymentRecord } from "./deployment-creator";
 import testnetConfigs from "../chains/testnet";
 import mainnetConfigs from "../chains/mainnet";
@@ -10,17 +9,6 @@ export const mainnetDeployments = mainnetConfigs.map(createDeployment);
 export const testnetDeployments = testnetConfigs.map(createDeployment);
 
 export const allDeployments = [testnetDeployments, mainnetDeployments];
-
-const addressesPerChain: Record<number, AxisContractAddresses> = allDeployments
-  .flat()
-  .reduce((acc, deployment) => {
-    return { ...acc, [deployment.chain.id]: deployment.addresses };
-  }, {});
-
-export const axisContracts = {
-  addresses: addressesPerChain,
-  abis,
-};
 
 //Indexes deployments by chain for ease of use
 export const testnets = createDeploymentRecord(mainnetDeployments);

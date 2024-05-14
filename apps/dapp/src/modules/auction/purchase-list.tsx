@@ -1,16 +1,17 @@
-import { Auction } from "@repo/types";
+import { AtomicAuction, AuctionPurchase } from "@repo/types";
 import { DataTable } from "@repo/ui";
 import { createColumnHelper } from "@tanstack/react-table";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { Address } from "viem";
 import { formatDate } from "utils/date";
+import { trimCurrency } from "utils/currency";
 
 type PurchaseListProps = {
-  auction: Auction;
+  auction: AtomicAuction;
 };
 
 const column = createColumnHelper<
-  Auction["purchases"] & { auction: Auction }
+  AtomicAuction["purchases"] & { auction: AtomicAuction }
 >();
 
 const cols = [
@@ -29,17 +30,20 @@ const cols = [
   column.accessor("amount", {
     header: "Amount",
     cell: (info) =>
-      `${info.getValue()} ${info.row.original.auction.quoteToken.symbol}`,
+      `${trimCurrency(info.getValue() as string)} ${
+        info.row.original.auction.quoteToken.symbol
+      }`,
   }),
   column.accessor("payout", {
     header: "Payout",
     cell: (info) =>
-      `${info.getValue()} ${info.row.original.auction.baseToken.symbol}`,
+      `${trimCurrency(info.getValue() as string)} ${
+        info.row.original.auction.baseToken.symbol
+      }`,
   }),
-  column.accessor("blockTimestamp", {
+  column.accessor("date", {
     header: "Date",
-    cell: (info) =>
-      formatDate.full(new Date((info.getValue() as number) * 1000)),
+    cell: (info) => formatDate.full(info.getValue() as Date),
   }),
   column.accessor("transactionHash", {
     header: "Transaction Hash",
@@ -54,15 +58,12 @@ const cols = [
 ];
 
 export function PurchaseList(props: PurchaseListProps) {
-  const purchases = props.auction.purchases.map((p) => ({
+  //TODO: figure out why type is missing here
+  const purchases = props.auction.purchases.map((p: AuctionPurchase) => ({
     ...p,
     auction: props.auction,
   }));
 
-  return (
-    <>
-      {/*@ts-expect-error //TODO: fix type mismatch*/}
-      <DataTable columns={cols} data={purchases} />
-    </>
-  );
+  //@ts-expect-error something wrong is not right, compiler sez its not array
+  return <DataTable columns={cols} data={purchases} />;
 }

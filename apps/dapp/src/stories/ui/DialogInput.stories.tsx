@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { DialogInput } from "@repo/ui";
-import { Primary as SelectStory } from "./Select.stories";
+// import { Primary as SelectStory } from "./Select.stories";
 import logo from "../assets/dai.png";
 
 const meta = {

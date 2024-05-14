@@ -1,4 +1,5 @@
-import { axisContracts } from "@repo/deployments";
+import { AuctionType } from "@repo/types";
+import { getAuctionHouse } from "utils/contracts";
 import { toHex } from "viem";
 import {
   useSimulateContract,
@@ -6,12 +7,16 @@ import {
   useWriteContract,
 } from "wagmi";
 
-export function useCurateAuction(lotId: string, chainId: number) {
-  const axisAddresses = axisContracts.addresses[chainId];
+export function useCurateAuction(
+  lotId: string,
+  chainId: number,
+  auctionType: AuctionType,
+) {
+  const auctionHouse = getAuctionHouse({ chainId, auctionType });
 
   const { data: curateCall } = useSimulateContract({
-    abi: axisContracts.abis.auctionHouse,
-    address: axisAddresses?.auctionHouse,
+    abi: auctionHouse.abi,
+    address: auctionHouse.address,
     chainId,
     functionName: "curate",
     args: [BigInt(lotId), toHex("")], //TODO: REVIEW PARAMETERS

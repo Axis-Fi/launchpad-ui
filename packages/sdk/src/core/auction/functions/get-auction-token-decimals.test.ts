@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { type Address, zeroAddress } from "viem";
+import { AuctionType } from "@repo/types";
 import type { AxisDeployments } from "@repo/deployments";
 import * as functions from ".";
 import type { GetAuctionResult } from "../types";
@@ -12,6 +13,7 @@ vi.mock("./get-auction", () => ({
 const mockAddress = zeroAddress;
 const mockChainId = 1;
 const mockTokenDecimals = 18;
+const mockAuctionType = "MOCK_AUCTION_TYPE" as AuctionType;
 
 const mockGetAuctionResult: GetAuctionResult = {
   seller: "0x1",
@@ -52,7 +54,11 @@ const mockDeployments = {
 
 describe("getAuctionTokenDecimals()", () => {
   it("returns base and quote token decimals for the supplied auction", async () => {
-    const params = { chainId: mockChainId, lotId: 1 };
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
 
     const result = await functions.getAuctionTokenDecimals(
       params,
@@ -69,11 +75,15 @@ describe("getAuctionTokenDecimals()", () => {
   });
 
   it("calls getAuction with correct params", async () => {
-    const params = { chainId: mockChainId, lotId: 1 };
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
 
     await functions.getAuctionTokenDecimals(params, mockDeployments);
 
-    expect(functions.getAuction).toHaveBeenCalledWith(params, mockDeployments);
+    expect(functions.getAuction).toHaveBeenCalledWith(params);
   });
 
   it("calls getTokenDecimals for base and quote token with correct params", async () => {
@@ -81,7 +91,11 @@ describe("getAuctionTokenDecimals()", () => {
       .spyOn(utils, "getTokenDecimals")
       .mockResolvedValue(mockTokenDecimals);
 
-    const params = { chainId: mockChainId, lotId: 1 };
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
 
     await functions.getAuctionTokenDecimals(params, mockDeployments);
 
@@ -110,7 +124,11 @@ describe("getAuctionTokenDecimals()", () => {
     // 1st getTokenDecimals() call = base token
     vi.spyOn(utils, "getTokenDecimals").mockResolvedValue(undefined);
 
-    const params = { chainId: mockChainId, lotId: 1 };
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
     const fnPromise = functions.getAuctionTokenDecimals(
       params,
       mockDeployments,
@@ -126,7 +144,11 @@ describe("getAuctionTokenDecimals()", () => {
       .mockResolvedValueOnce(mockTokenDecimals) // 1st getTokenDecimals() call = base token
       .mockResolvedValueOnce(undefined); // 2nd getTokenDecimals() call = quote token
 
-    const params = { chainId: mockChainId, lotId: 1 };
+    const params = {
+      chainId: mockChainId,
+      lotId: 1,
+      auctionType: mockAuctionType,
+    };
     const fnPromise = functions.getAuctionTokenDecimals(
       params,
       mockDeployments,

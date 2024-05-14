@@ -1,5 +1,5 @@
-import { Auction, PropsWithAuction } from "@repo/types";
-import { InfoLabel } from "@repo/ui";
+import { AtomicAuction, Auction, PropsWithAuction } from "@repo/types";
+import { formatDate, InfoLabel } from "@repo/ui";
 
 const handlers = {
   totalBidAmount: {
@@ -23,7 +23,9 @@ const handlers = {
   price: {
     label: "Price",
     handler: (auction: Auction) =>
-      `${auction.formatted?.price} ${auction.formatted?.tokenPairSymbols}`,
+      //TODO: improve types here
+      `${(auction as AtomicAuction).fixedPriceSale?.price} ${auction.formatted
+        ?.tokenPairSymbols}`,
   },
 
   sold: {
@@ -34,7 +36,15 @@ const handlers = {
 
   vestingDuration: {
     label: "Vesting",
-    handler: (auction: Auction) => `${auction.linearVesting?.days} days`,
+    handler: (auction: Auction) =>
+      // TODO: move to formatters
+      `${Math.floor(
+        (Number(auction.linearVesting?.expiryTimestamp) -
+          Number(auction.linearVesting?.startTimestamp)) /
+          86400,
+      )} days starting   ${formatDate.fullLocal(
+        new Date(Number(auction.linearVesting?.startTimestamp) * 1000),
+      )}`,
   },
 };
 

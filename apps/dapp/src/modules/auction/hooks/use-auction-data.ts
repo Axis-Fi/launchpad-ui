@@ -2,11 +2,12 @@ import { axisContracts } from "@repo/deployments";
 import {
   EMPAuctionData,
   AuctionType,
-  AxisContractAddresses,
+  AxisModuleContractNames,
   FixedPriceAuctionData,
 } from "@repo/types";
 import { parseUnits } from "viem";
 import { useReadContract } from "wagmi";
+import { moduleMap } from "utils/contracts";
 
 type UseAuctionDataParameters = {
   lotId?: string;
@@ -20,13 +21,13 @@ export function useAuctionData({
   chainId,
   type = AuctionType.SEALED_BID,
 }: UseAuctionDataParameters) {
-  const auctionType = type.toLocaleLowerCase() as keyof AxisContractAddresses;
+  const auctionModule = moduleMap[type] as AxisModuleContractNames;
 
   const auctionDataQuery = useReadContract({
-    abi: axisContracts.abis[auctionType],
+    abi: axisContracts.abis[auctionModule],
     address: !chainId
       ? undefined
-      : axisContracts.addresses[chainId][auctionType],
+      : axisContracts.addresses[chainId][auctionModule],
     functionName: "auctionData",
     args: [parseUnits(lotId ?? "0", 0)],
     query: { enabled: !!chainId && !!lotId },
@@ -54,30 +55,31 @@ function mapEMPAuctionData(
     | readonly [
         bigint,
         bigint,
-        bigint,
-        bigint,
-        bigint,
-        bigint,
         number,
+        bigint,
+        bigint,
+        bigint,
+        bigint,
         bigint,
         { x: bigint; y: bigint },
         bigint,
+        bigint[],
       ]
     | undefined,
 ): EMPAuctionData | undefined {
   if (!data) return undefined;
-
   return {
     nextBidId: data[0],
-    marginalPrice: data[1],
-    minimumPrice: data[2],
-    nextDecryptIndex: data[3],
-    minFilled: data[4],
-    minBidSize: data[5],
-    status: data[6],
-    marginalBidId: data[7],
+    nextDecryptIndex: data[1],
+    status: data[2],
+    marginalBidId: data[3],
+    marginalPrice: data[4],
+    minimumPrice: data[5],
+    minFilled: data[6],
+    minBidSize: data[7],
     publicKey: data[8],
     privateKey: data[9],
+    bidIds: data[10],
   };
 }
 
@@ -86,6 +88,6 @@ function mapFixedPriceData(
 ): FixedPriceAuctionData | undefined {
   return {
     price: data[0],
-    maxPayoutPercentage: data[1],
+    maxPayout: data[1],
   };
 }

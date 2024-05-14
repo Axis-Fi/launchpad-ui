@@ -20,22 +20,22 @@ const idle = {
   isSuccess: false,
 };
 
-const pending = {
-  ...idle,
-  isPending: true,
-  isIdle: false,
-};
+// const pending = {
+//   ...idle,
+//   isPending: true,
+//   isIdle: false,
+// };
 
 const success = {
   ...idle,
   isSuccess: true,
 };
-const error = {
-  ...idle,
-  error: {
-    message: "Something went wrong",
-  },
-};
+// const error = {
+//   ...idle,
+//   error: {
+//     message: "Something went wrong",
+//   },
+// };
 
 export const Primary: Story = {
   args: {

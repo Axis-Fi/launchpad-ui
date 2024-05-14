@@ -19,7 +19,7 @@ import { EnhancedMutation } from "./types";
  *
  * @example
  * const { data: auction, error, status } = useSdkQuery(
- *   sdk => sdk.getAuction({ lotId: lotId, chainId }),
+ *   sdk => sdk.getAuction({ lotId, chainId, auctionType }),
  *   {
  *     queryKey: ["get-auction", lotId, chainId],
  *     enabled: !!lotId && !!chainId,
@@ -59,6 +59,7 @@ const useSdkQuery = <TResult>(
  *   amountIn: 100,
  *   amountOut: 10,
  *   chainId: 1,
+ *   auctionType: "encryptedMarginalPrice",
  *   referrerAddress: "0x000...",
  *   bidderAddress: "0x000...",
  *   signedPermit2Approval: "0x000...",

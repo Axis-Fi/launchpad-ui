@@ -1,17 +1,23 @@
 import { Button, DataTable, Tooltip, trimAddress } from "@repo/ui";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
-import type { AuctionListed } from "@repo/types";
+import { AuctionType, type AuctionListed } from "@repo/types";
 import { useAccount } from "wagmi";
 import { AuctionStatusChip } from "./auction-status-chip";
 import { CheckIcon, XIcon } from "lucide-react";
 import React from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useCurateAuction } from "./hooks/use-curate-auction";
+import { ChainIcon } from "components/chain-icon";
 
 const col = createColumnHelper<AuctionListed>();
 const cols = [
-  col.accessor("owner", {
+  col.accessor("chainId", {
+    header: "Chain",
+    cell: (info) => <ChainIcon chainId={info.getValue()} />,
+  }),
+
+  col.accessor("seller", {
     header: "Creator",
     cell: (info) => trimAddress(info.getValue()),
   }),
@@ -32,13 +38,22 @@ const cols = [
 export function CuratableAuctionList() {
   const auctions = useAuctions();
   const { address } = useAccount();
-  const data = auctions.result.filter(
-    (a) => a.curator.toLocaleLowerCase() === address?.toLocaleLowerCase(),
+  const data = auctions.data.filter(
+    (a) => a.curator?.toLocaleLowerCase() === address?.toLocaleLowerCase(),
   );
-  const [curating, setCurating] = React.useState({ lotId: "", chainId: 0 });
+  const [curating, setCurating] = React.useState({
+    lotId: "",
+    chainId: 0,
+    auctionType: AuctionType.SEALED_BID,
+  });
+
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
-  const curate = useCurateAuction(curating.lotId, curating.chainId);
+  const curate = useCurateAuction(
+    curating.lotId,
+    curating.chainId,
+    curating.auctionType,
+  );
 
   const columns = React.useMemo(
     () => [
@@ -61,6 +76,7 @@ export function CuratableAuctionList() {
                 setCurating({
                   lotId: info.row.original.lotId,
                   chainId: info.row.original.chainId,
+                  auctionType: info.row.original.auctionType,
                 });
                 setIsDialogOpen(true);
               }}
@@ -70,12 +86,16 @@ export function CuratableAuctionList() {
         },
       }),
     ],
-    [auctions.result],
+    [auctions.data],
   );
 
   return (
     <>
-      <DataTable columns={columns} data={data} />
+      <DataTable
+        //@ts-expect-error TODO: debug -> Adding chain column introduced a compile error fsr
+        columns={columns}
+        data={data}
+      />
       <TransactionDialog
         signatureMutation={curate.curateTx}
         open={isDialogOpen}

@@ -3,12 +3,13 @@ import {
   createCloakClient,
   Configuration,
 } from "@repo/cloak";
+import * as core from "../core";
 import { type AxisDeployments, deployments } from "@repo/deployments";
 import { type OriginConfig } from "../types";
 import type { BidParams, BidConfig } from "../core/bid";
 import type { GetAuctionParams, GetAuctionResult } from "../core/auction";
 import type { Core } from "../core";
-import * as core from "../core";
+import type { GetTokenPriceParams } from "../core/tokens";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -59,13 +60,24 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const auction = await sdk.getAuction({ lotId: 1, chainId: 1 })
+   *   const auction = await sdk.getAuction({ lotId: 1, chainId: 1, auctionType: AuctionType.SEALED_BID })
    * } catch (error: SdkError) {
    *   console.log(error.message, error.issues)
    * }
    */
   async getAuction(params: GetAuctionParams): Promise<GetAuctionResult> {
-    return this.core.auction.functions.getAuction(params, this.deployments);
+    return this.core.auction.functions.getAuction(params);
+  }
+
+  async getTokenPrice(params: GetTokenPriceParams): Promise<number> {
+    return this.core.tokens.functions.getTokenPrice(
+      params.token,
+      params.timestamp,
+    );
+  }
+
+  isUsdToken(symbol: string): boolean {
+    return this.core.tokens.functions.isUsdToken(symbol);
   }
 
   /**
@@ -89,6 +101,7 @@ class OriginSdk {
    *     chainId: 1,
    *     amountIn: 100,
    *     amountOut: 100,
+   *     auctionType: AuctionType.SEALED_BID,
    *     bidderAddress: "0x123...",
    *     referrerAddress: "0x456...",
    *     signedPermit2Approval: "0x789...",

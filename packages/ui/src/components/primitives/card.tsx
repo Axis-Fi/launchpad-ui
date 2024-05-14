@@ -74,11 +74,13 @@ const CardFooter = React.forwardRef<
 CardFooter.displayName = "CardFooter";
 
 type CardProps = {
-  title?: string;
+  title?: React.ReactNode;
   description?: string;
   footer?: React.ReactNode;
 };
-export function Card(props: React.HTMLAttributes<HTMLDivElement> & CardProps) {
+export function Card(
+  props: Omit<React.HTMLAttributes<HTMLDivElement>, "title"> & CardProps,
+) {
   return (
     <CardRoot className={cn("min-w-[300px]", props.className)}>
       <CardHeader>

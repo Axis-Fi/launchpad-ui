@@ -1,28 +1,42 @@
-import { axisContracts } from "@repo/deployments";
 import {
   useAccount,
+  useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { toKeycode } from "utils/hex";
 import { AuctionType } from "@repo/types";
-import { toBasisPoints } from "utils/number";
+import { fromBasisPoints, toBasisPoints } from "utils/number";
+import { getAuctionHouse } from "utils/contracts";
 
-export function useCuratorFees(chainId: number, feePercentage?: number) {
-  const { address } = useAccount({});
-  const axisAddresses = axisContracts.addresses[chainId];
+/**Reads and sets the curator fee for an auction house*/
+export function useCuratorFees(
+  chainId: number,
+  feePercentage: number,
+  auctionType: AuctionType,
+) {
+  const { address, isConnected } = useAccount();
+  const auctionHouse = getAuctionHouse({ chainId, auctionType });
+  const keycode = toKeycode(auctionType);
 
-  const currentFee = 0; //TODO: Figure out to fetch current curator fee
+  const { data: currentFee } = useReadContract({
+    chainId,
+    abi: auctionHouse.abi,
+    address: auctionHouse.address,
+    functionName: "getCuratorFee",
+    args: [toKeycode(auctionType), address!],
+    query: { enabled: isConnected },
+  });
+
   const newFee = toBasisPoints(feePercentage!); // Fees are in basis points
 
   const { data: setFeeCall, ...feeSimulation } = useSimulateContract({
     chainId,
-    abi: axisContracts.abis.auctionHouse,
-    address: axisAddresses.auctionHouse,
+    abi: auctionHouse.abi,
+    address: auctionHouse.address,
     functionName: "setCuratorFee",
-    //TODO: add support for different auctions
-    args: [toKeycode(AuctionType.SEALED_BID), newFee],
+    args: [keycode, newFee],
     query: {
       enabled: !!address && !!chainId && isFinite(newFee),
     },
@@ -33,10 +47,12 @@ export function useCuratorFees(chainId: number, feePercentage?: number) {
   const handleSetFee = () => feeTx.writeContract(setFeeCall!.request);
 
   return {
-    fee: currentFee,
+    fee: fromBasisPoints(currentFee ?? 0),
     feeSimulation,
     feeTx,
     feeReceipt,
     handleSetFee,
+    //TODO: add better error handling
+    isError: [feeSimulation, feeTx, feeReceipt].some((r) => r.isError),
   };
 }

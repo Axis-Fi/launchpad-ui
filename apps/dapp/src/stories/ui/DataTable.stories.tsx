@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { DataTable } from "@repo/ui";
 import { createColumnHelper } from "@tanstack/react-table";
 
-const column = createColumnHelper<any>();
+const column = createColumnHelper<unknown>();
 
 const cols = [
   column.accessor("GM", {}),

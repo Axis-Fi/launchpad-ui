@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
-import { mockAuction } from "../mocks/auction";
+// import { mockAuction } from "../mocks/auction";
 
-const url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+// const url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
 const meta = {
   title: "Auctions/SettledAuctionChart",

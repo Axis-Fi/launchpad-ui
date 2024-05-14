@@ -24,7 +24,6 @@ const mintABI = [
 export function useMintToken(token: Token, amount: string) {
   const { address: userAddress } = useAccount();
   const parsedAmount = parseUnits(amount, token?.decimals);
-  console.log({ token, amount });
 
   const mintCall = useSimulateContract({
     abi: mintABI,

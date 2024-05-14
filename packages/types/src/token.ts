@@ -3,6 +3,7 @@ import { Address } from "viem";
 export type TokenBase = {
   chainId: number;
   address: Address;
+  totalSupply?: string;
 };
 
 /** Tokenlist's Token Definition */
@@ -12,6 +13,7 @@ export type Token = TokenBase & {
   name: string;
   logoURI?: string;
   mintable?: boolean;
+  totalSupply?: string;
 };
 
 //Tokenlist Standard

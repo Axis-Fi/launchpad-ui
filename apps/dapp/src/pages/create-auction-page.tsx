@@ -31,7 +31,6 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { axisContracts } from "@repo/deployments";
 import {
   Address,
   fromHex,
@@ -58,13 +57,17 @@ import { RequiresChain } from "components/requires-chain";
 import { PageHeader } from "modules/app/page-header";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
+import { getAuctionHouse } from "utils/contracts";
+import { Chain } from "@rainbow-me/rainbowkit";
+
+const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
 const tokenSchema = z.object({
   address: z.string().regex(/^(0x)?[0-9a-fA-F]{40}$/, "Invalid address"),
   chainId: z.coerce.number(),
   decimals: z.coerce.number(),
   symbol: z.string(),
-  logoURI: z.string().url().optional(),
+  logoURI: optionalURL,
 });
 
 const schema = z
@@ -74,7 +77,7 @@ const schema = z
     capacity: z.string(),
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
-    minBidPercent: z.array(z.number()).optional(),
+    minBidSize: z.array(z.number()).optional(),
     minPrice: z.string().optional(),
     price: z.string().optional(),
     maxPayoutPercent: z.array(z.number()).optional(),
@@ -100,17 +103,37 @@ const schema = z
     name: z.string(),
     description: z.string(),
     projectLogo: z.string().url().optional(),
-    twitter: z.string().url().optional(),
-    discord: z.string().url().optional(),
-    website: z.string().url().optional(),
-    farcaster: z.string().url().optional(),
-    payoutTokenLogo: z.string().url().optional(),
+    twitter: optionalURL,
+    discord: optionalURL,
+    website: optionalURL,
+    farcaster: optionalURL,
+    payoutTokenLogo: optionalURL,
+  })
+  .refine((data) => (!data.isVested ? true : data.vestingDuration), {
+    message: "Vesting duration is required",
+    path: ["vestingDuration"],
+  })
+  // TODO do we need to add a max vesting duration check?
+  // .refine(
+  //   (data) => (!data.isVested ? true : data.vestingDuration && Number(data.vestingDuration) <= 270),
+  //   {
+  //     message: "Max vesting duration is 270 days",
+  //     path: ["vestingStart"],
+  //   },
+  // )
+  .refine((data) => (!data.isVested ? true : data.vestingStart), {
+    message: "Vesting start is required",
+    path: ["vestingStart"],
   })
   .refine(
-    (data) => (!data.isVested ? true : data.isVested && data.vestingDuration),
+    (data) =>
+      !data.isVested
+        ? true
+        : data.vestingStart &&
+          data.vestingStart.getTime() >= data.deadline.getTime(),
     {
-      message: "Vesting duration is required",
-      path: ["vestingDuration"],
+      message: "Vesting start needs to be on or after the auction deadline",
+      path: ["vestingStart"],
     },
   )
   .refine((data) => data.start.getTime() > new Date().getTime(), {
@@ -123,6 +146,15 @@ const schema = z
       message: "Deadline needs to be at least 1 day after the start",
       path: ["deadline"],
     },
+  )
+  .refine(
+    (data) =>
+      data.auctionType === AuctionType.FIXED_PRICE ||
+      (!!data.minPrice && isFinite(Number(data.minPrice))),
+    {
+      message: "Price must be set",
+      path: ["minPrice"],
+    },
   );
 
 export type CreateAuctionForm = z.infer<typeof schema>;
@@ -131,7 +163,7 @@ export default function CreateAuctionPage() {
   const navigate = useNavigate();
   const auctionDefaultValues = {
     minFillPercent: [50],
-    minBidPercent: [5],
+    minBidSize: [1], // TODO allows users to specify this value in the UI
     maxPayoutPercent: [50],
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
@@ -140,28 +172,41 @@ export default function CreateAuctionPage() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
 
+  const { chain } = useAccount();
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onBlur",
     defaultValues: auctionDefaultValues,
   });
 
-  const [isVested, payoutToken, _chainId, capacity, auctionType] = form.watch([
+  const [
+    isVested,
+    payoutToken,
+    _chainId,
+    capacity,
+    auctionType,
+    start,
+    deadline,
+  ] = form.watch([
     "isVested",
     "payoutToken",
     "quoteToken.chainId",
     "capacity",
     "auctionType",
+    "start",
+    "deadline",
   ]);
 
   const chainId = _chainId ?? connectedChainId;
 
-  const axisAddresses = axisContracts.addresses[chainId];
   const createAuctionTx = useWriteContract();
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
-  const lotId = getCreatedAuctionId(createTxReceipt.data);
+  const lotId = getCreatedAuctionId(
+    createTxReceipt.data,
+    auctionType as AuctionType,
+  );
 
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
@@ -210,11 +255,19 @@ export default function CreateAuctionPage() {
   const handleCreation = async (values: CreateAuctionForm) => {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
+    const isEMP = auctionType === AuctionType.SEALED_BID;
+    const code = isEMP ? "EMPA" : "FPSA";
 
-    const publicKey =
-      auctionType === AuctionType.SEALED_BID
-        ? await generateKeyPairMutation.mutateAsync()
-        : undefined;
+    const auctionTypeKeycode = toKeycode(code);
+
+    const { address: contractAddress, abi } = getAuctionHouse({
+      auctionType,
+      chainId,
+    });
+
+    const publicKey = isEMP
+      ? await generateKeyPairMutation.mutateAsync()
+      : undefined;
 
     const auctionSpecificParams = getAuctionCreateParams(
       auctionType,
@@ -224,12 +277,12 @@ export default function CreateAuctionPage() {
 
     createAuctionTx.writeContract(
       {
-        abi: axisContracts.abis.auctionHouse,
-        address: axisAddresses.auctionHouse,
+        abi,
+        address: contractAddress,
         functionName: "auction",
         args: [
           {
-            auctionType: toKeycode(auctionType),
+            auctionType: auctionTypeKeycode,
             baseToken: getAddress(values.payoutToken.address),
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
@@ -248,7 +301,6 @@ export default function CreateAuctionPage() {
             wrapDerivative: false,
             //TODO: enable callback data support
             callbackData: toHex(""),
-            prefunded: true,
           },
           {
             start: getTimestamp(values.start),
@@ -262,16 +314,18 @@ export default function CreateAuctionPage() {
         ],
       },
       {
-        onError: (error) => {
-          console.error("Error during submission:", error);
-        },
+        onError: (error) => console.error("Error during submission:", error),
       },
     );
   };
+
   const { isSufficientAllowance, execute, approveReceipt, approveTx } =
     useAllowance({
+      spenderAddress: getAuctionHouse({
+        chainId,
+        auctionType: auctionType as AuctionType,
+      }).address,
       ownerAddress: address,
-      spenderAddress: axisAddresses?.auctionHouse,
       tokenAddress: payoutToken?.address as Address,
       decimals: payoutToken?.decimals,
       chainId: payoutToken?.chainId,
@@ -282,7 +336,14 @@ export default function CreateAuctionPage() {
   const createAuction = form.handleSubmit(handleCreation);
   const isValid = form.formState.isValid;
 
-  const onSubmit = () => (isSufficientAllowance ? createAuction() : execute());
+  const onSubmit = () => {
+    isSufficientAllowance ? createAuction() : execute();
+  };
+
+  // Handle form validation on token picker modal
+  const payoutModalInvalid =
+    form.getFieldState("payoutToken.address").invalid ||
+    form.getFieldState("payoutToken.logoURI").invalid;
 
   return (
     <>
@@ -422,6 +483,7 @@ export default function CreateAuctionPage() {
                         {...field}
                         title="Select Payout Token"
                         triggerContent={"Select token"}
+                        disabled={payoutModalInvalid}
                       >
                         <TokenPicker name="payoutToken" />
                       </DialogInput>
@@ -499,11 +561,7 @@ export default function CreateAuctionPage() {
                           label="Minimum Payout Token Price"
                           tooltip="The minimum number of quote tokens to receive per payout token."
                         >
-                          <Input
-                            placeholder="100000000"
-                            type="number"
-                            {...field}
-                          />
+                          <Input placeholder="1" type="number" {...field} />
                         </FormItemWrapper>
                       )}
                     />
@@ -659,7 +717,11 @@ export default function CreateAuctionPage() {
                         time
                         placeholderDate={addDays(addHours(new Date(), 1), 7)}
                         content={formatDate.fullLocal(
-                          dateMath.addDays(new Date(), 7),
+                          addDays(start ? (start as Date) : new Date(), 7),
+                        )}
+                        minDate={addDays(
+                          start ? (start as Date) : new Date(),
+                          1,
                         )}
                         {...field}
                       />
@@ -741,6 +803,11 @@ export default function CreateAuctionPage() {
                           placeholderDate={addMinutes(new Date(), 5)}
                           content={formatDate.fullLocal(new Date())}
                           {...field}
+                          minDate={
+                            deadline
+                              ? (deadline as Date)
+                              : addDays(new Date(), 1)
+                          }
                         />
                       </FormItemWrapper>
                     )}
@@ -785,7 +852,17 @@ export default function CreateAuctionPage() {
                   tx={createAuctionTx}
                   txReceipt={createTxReceipt}
                   onSubmit={onSubmit}
-                  onSuccess={() => navigate(`/auction/${chainId}/${lotId}`)}
+                  onSuccess={() => {
+                    if (lotId && chain) {
+                      navigate(
+                        generateAuctionURL(
+                          auctionType as AuctionType,
+                          lotId,
+                          chain,
+                        ),
+                      );
+                    }
+                  }}
                 />
               </div>
             </DialogContent>
@@ -799,8 +876,29 @@ export default function CreateAuctionPage() {
 
 function getCreatedAuctionId(
   value: UseWaitForTransactionReceiptReturnType["data"],
+  auctionType: AuctionType,
 ) {
-  const lotIdHex = value?.logs[1].topics[1];
+  //TODO: find a better way to handle this
+  //on EMP auctioniD is on log index 1 pos 1
+  //on FPS on log 1 pos 1
+  const logIndex = auctionType === AuctionType.FIXED_PRICE ? 0 : 1;
+  const lotIdHex = value?.logs[logIndex].topics[1];
   if (!lotIdHex) return null;
   return fromHex(lotIdHex, "number");
+}
+
+function generateAuctionURL(
+  auctionType: AuctionType,
+  lotId: number,
+  chain: Chain,
+) {
+  //Transform viem/rainbowkit names into subgraph format
+  const chainName = chain.name.replace(" ", "-").toLowerCase();
+
+  const { address: auctionHouse } = getAuctionHouse({
+    auctionType,
+    chainId: chain.id,
+  });
+
+  return `/auction/${auctionType}/${chainName}-${auctionHouse.toLowerCase()}-${lotId}`;
 }

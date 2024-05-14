@@ -1,9 +1,9 @@
 import { AuctionType } from "./auction-modules";
 import {
-  RawSubgraphAuction,
-  RawSubgraphAuctionWithEvents,
+  AtomicSubgraphAuction,
+  BatchSubgraphAuction,
 } from "./subgraph-queries";
-import { Token } from "./token";
+import type { Token } from "./token";
 
 export type BaseAuction = {
   chainId: number;
@@ -14,17 +14,23 @@ export type BaseAuction = {
   auctionData?: EMPAuctionData | FixedPriceAuctionData;
   auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
-  linearVesting?: LinearVestingData;
+  //linearVesting?: LinearVestingData;
 };
 
-export type Auction = BaseAuction &
-  Omit<RawSubgraphAuctionWithEvents, "baseToken" | "quoteToken">;
+export type Auction = AtomicAuction | BatchAuction;
 
-export type AuctionListed = Omit<BaseAuction, "auctionData" | "formatted"> &
-  Omit<RawSubgraphAuction, "baseToken" | "quoteToken">;
+export type AtomicAuction = BaseAuction &
+  Omit<AtomicSubgraphAuction, "baseToken" | "quoteToken">;
+
+export type BatchAuction = BaseAuction &
+  Omit<BatchSubgraphAuction, "baseToken" | "quoteToken">;
+
+//TODO: see if necessary again, used to branch between auctions in list and detailed view
+export type AuctionListed = Auction; //Omit<BaseAuction, "auctionData" | "formatted"> & Omit<RawSubgraphAuction, "baseToken" | "quoteToken">;
 
 export type AuctionStatus =
   | "created"
+  | "cancelled"
   | "live"
   | "concluded"
   | "decrypted"
@@ -56,11 +62,12 @@ export type EMPAuctionData = {
   marginalBidId: bigint;
   publicKey: { x: bigint; y: bigint };
   privateKey: bigint;
+  bidIds: bigint[];
 };
 
 export type FixedPriceAuctionData = {
   price: bigint;
-  maxPayoutPercentage: bigint;
+  maxPayout: bigint;
 };
 
 export type AuctionFormattedInfo = {
@@ -70,10 +77,6 @@ export type AuctionFormattedInfo = {
   endFormatted: string;
   startDistance: string;
   endDistance: string;
-  totalBids: number;
-  totalBidsDecrypted: number;
-  totalBidAmount: string;
-  uniqueBidders: number;
   rate?: string;
   purchased: string;
   sold: string;
@@ -83,13 +86,20 @@ export type AuctionFormattedInfo = {
   capacity: string;
   totalSupply: string;
   price?: string;
-  maxPayoutPercentage?: number;
+  maxPayout?: string;
+  maxAmount?: string;
   auctionType?: string;
 } & Partial<EMPFormattedInfo>;
 
 //TODO: add remaining fields
 type EMPFormattedInfo = {
   marginalPrice: string;
+  totalBids: number;
+  totalBidsDecrypted: number;
+  totalBidsClaimed: number;
+  totalBidAmount: string;
+  uniqueBidders: number;
+  cleared: boolean;
 };
 
 export type LinearVestingData = {

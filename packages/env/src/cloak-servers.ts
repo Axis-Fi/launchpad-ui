@@ -1,17 +1,19 @@
 import { Environment } from "./environment";
 
+const v2URL = "https://api-testnet-v2.up.railway.app";
+
 export default {
   development: {
     description: "Local",
-    url: "https://api-testnet-d2e7.up.railway.app",
+    url: "http://localhost:8080",
   },
   testing: {
     description: "Testnet",
-    url: "https://api-testnet-d2e7.up.railway.app",
+    url: v2URL,
   },
   staging: {
-    description: "Testnet",
-    url: "https://cloak-api-mainnet.up.railway.app",
+    description: "Staging",
+    url: v2URL,
   },
   production: {
     description: "Mainnet",

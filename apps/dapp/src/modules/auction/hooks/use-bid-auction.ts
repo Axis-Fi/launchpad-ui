@@ -1,5 +1,4 @@
 import React from "react";
-import { axisContracts } from "@repo/deployments";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import {
@@ -18,25 +17,29 @@ import {
 } from "wagmi";
 import { useReferrer } from "state/referral";
 import { AuctionType } from "@repo/types";
+import { getAuctionHouse } from "utils/contracts";
 import { useDeferredQuery } from "@repo/sdk/react";
 
 export function useBidAuction(
-  lotId: string,
-  chainId: number,
+  id: string,
+  auctionType: AuctionType,
   amountIn: number,
   amountOut: number,
 ) {
-  const { result: auction, ...auctionQuery } = useAuction(lotId, chainId);
+  const { result: auction, ...auctionQuery } = useAuction(id, auctionType);
 
-  if (!auction) throw new Error(`Unable to find auction ${lotId}`);
+  if (!auction) throw new Error(`Unable to find auction ${id}`);
+  const lotId = auction.lotId;
 
-  const { address } = useAccount();
+  const { address: bidderAddress } = useAccount();
   const referrer = useReferrer();
   const bidTx = useWriteContract();
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
+  const auctionHouse = getAuctionHouse(auction);
+
   const bidConfig = useDeferredQuery((sdk) => {
-    if (address === undefined) {
+    if (bidderAddress === undefined) {
       throw new Error("Wallet not connected. Please connect your wallet.");
     }
 
@@ -44,32 +47,26 @@ export function useBidAuction(
       lotId: Number(lotId),
       amountIn: Number(amountIn),
       amountOut: Number(amountOut),
-      chainId,
+      chainId: auction.chainId,
+      auctionType: auctionType,
       referrerAddress: referrer,
-      bidderAddress: address,
+      bidderAddress: bidderAddress,
       signedPermit2Approval: toHex(""), // TODO implement permit2
     });
   });
 
-  const axisAddresses = axisContracts.addresses[auction.chainId];
-
   // Main action, calls SDK which encrypts the bid and returns contract configuration data
   const handleBid = async () => {
-    if (address === undefined) {
+    if (bidderAddress === undefined) {
       throw new Error("Not connected. Try connecting your wallet.");
     }
-    const config = await bidConfig();
+    const { abi, address, functionName, args } = await bidConfig();
 
-    bidTx.writeContract({
-      abi: config.abi,
-      address: config.address,
-      functionName: config.functionName,
-      args: config.args,
-    });
+    bidTx.writeContract({ abi, address, functionName, args });
   };
 
   const handlePurchase = async () => {
-    if (!address || !isAddress(address)) {
+    if (!bidderAddress || !isAddress(bidderAddress)) {
       throw new Error("Not connected");
     }
     const minAmountOut = parseUnits(
@@ -83,14 +80,14 @@ export function useBidAuction(
     );
 
     bidTx.writeContract({
-      abi: axisContracts.abis.auctionHouse,
-      address: axisAddresses.auctionHouse,
+      abi: auctionHouse.abi,
+      address: auctionHouse.address,
       functionName: "purchase",
       args: [
         {
           lotId: BigInt(lotId),
           referrer,
-          recipient: address,
+          recipient: bidderAddress,
           amount: parseUnits(
             amountIn.toString(),
             Number(auction.quoteToken.decimals),
@@ -99,17 +96,17 @@ export function useBidAuction(
             amountOut.toString(),
             Number(auction.baseToken.decimals),
           ),
-          permit2Data: "0x",
+          permit2Data: toHex(""), // TODO support permit2
           auctionData,
         },
-        "0x",
+        toHex(""), // No callback parameters being passed. TODO update when callback support is added.
       ],
     });
   };
 
   // We need to know user's balance and allowance
   const balance = useBalance({
-    address,
+    address: bidderAddress,
     token: auction.quoteToken.address as Address,
     chainId: auction.chainId,
   });
@@ -121,8 +118,8 @@ export function useBidAuction(
     allowance,
     ...allowanceUtils
   } = useAllowance({
-    ownerAddress: address,
-    spenderAddress: axisAddresses.auctionHouse,
+    ownerAddress: bidderAddress,
+    spenderAddress: auctionHouse.address,
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,

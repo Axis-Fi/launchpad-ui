@@ -9,11 +9,14 @@ describe("getContractAddresses()", () => {
 
     expect(addresses).toMatchInlineSnapshot(`
       {
-        "auctionHouse": "0x000000009DB7a64d0B3f92E2F0e026a2AF9Cf9b3",
-        "catalogue": "0xc94404218178149EBeBfc1F47f0DF14B5FD881C5",
-        "empam": "0xF3e2578C66071a637F06cc02b1c11DeC0784C1A6",
-        "fpam": "0x9f3a5566AB27F79c0cF090f70FFc73B7F9962b36",
-        "linearVesting": "0xDe6D096f14812182F434D164AD6d184cC9A150Fd",
+        "atomicAuctionHouse": "0xAA000000721026c5B83e3b3d969DC5A7Dac20B7F",
+        "atomicCatalogue": "0xEa25Ea0EC643826Ac99077c84934FEee3B735332",
+        "atomicLinearVesting": "0xfF0FE629C1a515437A9c939509769A7b6842778f",
+        "batchAuctionHouse": "0xBA00000073E5050EE216afbcE08ca4666DB37232",
+        "batchCatalogue": "0x963385faC528159E0771091e656De5666e8A0776",
+        "batchLinearVesting": "0x58F17242Ab609c7561fe72Dc89b6A56999e227Cd",
+        "encryptedMarginalPrice": "0x8dA4D2f56d6f353E36220f567221aD4e1E84cB04",
+        "fixedPriceSale": "0x296Dc8a6d40D819bFE7E4da7133961C8B007FC42",
       }
     `);
   });
