@@ -13,6 +13,7 @@ import { useTokenLists } from "state/tokenlist";
 import { multihashRegex } from "utils/ipfs";
 import { useQueryAll } from "loaders/use-query-all";
 import { getAuctionType } from "../utils/get-auction-type";
+import { isSecureAuction } from "../utils/malicious-auction-filters";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -70,6 +71,7 @@ export function useAuctions(): AuctionsResult {
         auctionInfo,
       };
     })
+    .filter((auction) => isSecureAuction(auction))
     .sort(sortAuction);
 
   return {

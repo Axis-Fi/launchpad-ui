@@ -27,6 +27,7 @@ import { ChainIcon } from "components/chain-icon";
 import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
 import { getAuctionMetadata } from "modules/auction/metadata";
 import { getAuctionHouse } from "utils/contracts";
+import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
 
 const statuses: Record<
   AuctionStatus,
@@ -56,7 +57,7 @@ export default function AuctionPage() {
     return <AuctionPageLoading />;
   }
 
-  if (!auction) return <AuctionPageMissing />;
+  if (!auction || !isSecureAuction(auction)) return <AuctionPageMissing />;
 
   const auctionHouse = getAuctionHouse(auction);
   const AuctionElement =
