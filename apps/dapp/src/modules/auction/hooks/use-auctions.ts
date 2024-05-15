@@ -62,16 +62,23 @@ export function useAuctions(): AuctionsResult {
       if (!type) {
         throw new Error(`Type not found for auction ${auction.auctionType}`);
       }
-      return {
+
+      const chainId = getChainId(auction.chain);
+
+      const preparedAuction = {
         ...auction,
         auctionType: type,
         ...formatAuctionTokens(auction, getToken, auctionInfo),
-        chainId: getChainId(auction.chain),
         status: getAuctionStatus(auction),
+        chainId,
         auctionInfo,
       };
+
+      return {
+        ...preparedAuction,
+        isSecure: isSecureAuction(preparedAuction),
+      };
     })
-    .filter((auction) => isSecureAuction(auction))
     .sort(sortAuction);
 
   return {

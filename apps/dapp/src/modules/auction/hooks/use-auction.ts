@@ -28,6 +28,7 @@ import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
 //import { useDerivativeData } from "./use-derivative-data";
 import { parseAuctionId } from "../utils/parse-auction-id";
+import { isSecureAuction } from "../utils/malicious-auction-filters";
 
 export type AuctionResult = {
   result?: Auction;
@@ -126,14 +127,19 @@ export function useAuction(
 
   const formatted = formatAuction(auction, auctionType, auctionData);
 
+  const preparedAuction = {
+    ...auction,
+    ...tokens,
+    auctionData,
+    auctionType,
+    formatted,
+  };
+
   return {
     refetch,
     result: {
-      ...auction,
-      ...tokens,
-      auctionData,
-      auctionType,
-      formatted,
+      ...preparedAuction,
+      isSecure: isSecureAuction(preparedAuction),
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,

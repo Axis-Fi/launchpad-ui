@@ -14,6 +14,8 @@ export type BaseAuction = {
   auctionData?: EMPAuctionData | FixedPriceAuctionData;
   auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
+  /** Whether the auction passes the malicious auction verification */
+  isSecure?: boolean;
   //linearVesting?: LinearVestingData;
 };
 

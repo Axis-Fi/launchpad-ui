@@ -26,8 +26,8 @@ export function isAxisCallback(auction: Auction) {
 
 /** Calls auction filters */
 export function isSecureAuction(auction: Auction) {
-  return (
+  return Boolean(
     !environment.isProduction ||
-    (isAllowedCurator(auction) && isAxisCallback(auction))
+      (isAllowedCurator(auction) && isAxisCallback(auction)),
   );
 }
