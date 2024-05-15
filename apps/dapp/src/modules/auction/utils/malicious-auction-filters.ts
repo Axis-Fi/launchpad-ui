@@ -1,7 +1,7 @@
 import { Auction } from "@repo/types";
 import { isAddress } from "viem";
 import { axisContracts } from "@repo/deployments";
-import { allowedCurators } from "@repo/env";
+import { allowedCurators, environment } from "@repo/env";
 
 /** Checks if the curator address on an Auction exists in an address list */
 export function isAllowedCurator(auction: Auction) {
@@ -26,5 +26,8 @@ export function isAxisCallback(auction: Auction) {
 
 /** Calls auction filters */
 export function isSecureAuction(auction: Auction) {
-  return isAllowedCurator(auction) && isAxisCallback(auction);
+  return (
+    !environment.isProduction ||
+    (isAllowedCurator(auction) && isAxisCallback(auction))
+  );
 }
