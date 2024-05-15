@@ -1,3 +1,4 @@
+import { hashFn } from "wagmi/query";
 import { WagmiProvider, createConfig } from "wagmi";
 import { chains } from "@repo/env";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,6 +10,7 @@ const activeConfig = chains.activeConfig;
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      queryKeyHashFn: hashFn, // TanStack Query can't handle bigint queryKey data type by default
       refetchOnWindowFocus: false,
     },
   },

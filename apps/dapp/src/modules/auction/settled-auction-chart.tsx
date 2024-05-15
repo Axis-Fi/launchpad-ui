@@ -14,7 +14,6 @@ import {
 } from "recharts";
 import { format } from "date-fns";
 import type { Auction, BatchAuction, EMPAuctionData } from "@repo/types";
-import { useAuctionData } from "modules/auction/hooks/use-auction-data";
 import { abbreviateNumber } from "utils/currency";
 import { formatDate, getTimestamp } from "utils/date";
 import { useGetToggledUsdAmount } from "./hooks/use-get-toggled-usd-amount";
@@ -89,7 +88,7 @@ const filterWinningBids = (bids: SortedBid[]) => {
 };
 
 export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
-  const { data: auctionData } = useAuctionData(auction);
+  const auctionData = auction.auctionData;
 
   const auctionEndTimestamp = auction?.formatted
     ? getTimestamp(auction.formatted.endDate)
@@ -177,9 +176,7 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
             // @ts-expect-error TODO
             formatter={formatter}
             wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
-            content={(props) => {
-              return <CustomTooltip {...props} auction={auction} />;
-            }}
+            content={(props) => <CustomTooltip {...props} auction={auction} />}
           />
           <Legend
             align="left"
