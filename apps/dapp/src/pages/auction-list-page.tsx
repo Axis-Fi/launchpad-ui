@@ -27,12 +27,13 @@ export default function AuctionListPage() {
   const [filters, setFilters] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
+  const secureAuctions = auctions.filter((a) => a.isSecure);
 
   const filteredAuctions = filters.length
-    ? auctions
+    ? secureAuctions
         .filter((a) => filters.includes(a.status))
         .filter((a) => !searchText.length || searchObject(a, searchText))
-    : auctions;
+    : secureAuctions;
 
   const { rows, ...pagination } = usePagination(filteredAuctions, 9);
 
