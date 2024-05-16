@@ -1,6 +1,10 @@
 module.exports = {
   plugins: {
-    "tailwindcss/nesting": {}, // Enables nested CSS: https://tailwindcss.com/docs/using-with-preprocessors#nesting
+    /**
+      Our code doesn't use nested CSS, but Storybook itself does, which seems to require this line.
+      File: node_modules/@storybook/core-common/templates/base-preview-head.html
+    */
+    "tailwindcss/nesting": {},
     tailwindcss: {},
     autoprefixer: {},
   },
