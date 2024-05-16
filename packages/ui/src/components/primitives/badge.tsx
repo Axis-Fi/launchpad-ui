@@ -2,14 +2,15 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/utils";
+import { Avatar } from "./avatar";
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center justify-center rounded-full border p-0.5 pr-2 uppercase transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
+          "border-transparent bg-background text-foreground shadow hover:bg-primary/80",
         secondary:
           "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive:
@@ -18,6 +19,7 @@ const badgeVariants = cva(
       },
       size: {
         round: "rounded-full w-fit px-1 py-0",
+        lg: "px-4 py-2",
       },
     },
     defaultVariants: {
@@ -28,14 +30,16 @@ const badgeVariants = cva(
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  icon?: string;
+}
 
-function Badge({ className, variant, size, ...props }: BadgeProps) {
+function Badge({ className, variant, size, children, ...props }: BadgeProps) {
   return (
-    <div
-      className={cn(badgeVariants({ variant, size }), className)}
-      {...props}
-    />
+    <div className={cn(badgeVariants({ variant, size }), className)} {...props}>
+      {props.icon && <Avatar className="mr-1 size-6" src={props.icon} />}
+      {children}
+    </div>
   );
 }
 
