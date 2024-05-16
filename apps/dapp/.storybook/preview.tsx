@@ -1,18 +1,18 @@
 import type { Preview } from "@storybook/react";
+import { withRouter } from "storybook-addon-remix-react-router";
 import "@repo/ui/style.css";
 import "../src/index.css";
 import { Providers } from "../src/context/providers";
-import { TooltipProvider } from "@repo/ui";
 import React from "react";
 
 const preview: Preview = {
+  tags: ["autodocs"], // Autogenerates a Storybook docs page for every story
   parameters: {
     options: {
       storySort: {
         order: ["Design System"],
       },
     },
-    actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -29,9 +29,11 @@ const preview: Preview = {
       ],
     },
   },
+
   decorators: [
+    withRouter,
     (Story) => (
-      <Providers>
+      <Providers disableDevTools>
         <Story />
       </Providers>
     ),

@@ -12,9 +12,13 @@ const sdk = new OriginSdk({
   },
 });
 
-export function Providers(props: React.PropsWithChildren) {
+type ProviderProps = React.PropsWithChildren<{
+  disableDevTools?: boolean;
+}>;
+
+export function Providers(props: ProviderProps) {
   return (
-    <BlockchainProvider>
+    <BlockchainProvider disableDevTools={props.disableDevTools}>
       <OriginSdkProvider sdk={sdk}>
         <TooltipProvider delayDuration={350}>{props.children}</TooltipProvider>
       </OriginSdkProvider>

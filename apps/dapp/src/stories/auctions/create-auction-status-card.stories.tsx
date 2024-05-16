@@ -12,6 +12,7 @@ const meta = {
 } satisfies Meta<typeof AuctionCreationStatus>;
 
 export default meta;
+
 type Story = StoryObj<typeof meta>;
 
 const idle = {
@@ -19,23 +20,10 @@ const idle = {
   isIdle: true,
   isSuccess: false,
 };
-
-// const pending = {
-//   ...idle,
-//   isPending: true,
-//   isIdle: false,
-// };
-
 const success = {
   ...idle,
   isSuccess: true,
 };
-// const error = {
-//   ...idle,
-//   error: {
-//     message: "Something went wrong",
-//   },
-// };
 
 export const Primary: Story = {
   args: {
