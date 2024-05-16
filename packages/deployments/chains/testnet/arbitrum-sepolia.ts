@@ -1,5 +1,6 @@
 import { arbitrumSepolia } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
+import { usdc, weth } from "../../tokens/common";
 
 const config: AxisDeploymentConfig = {
   name: "arbitrum-sepolia",
@@ -22,21 +23,14 @@ const config: AxisDeploymentConfig = {
     "https://arb-sepolia.g.alchemy.com/v2/ijPbOvV9qNWHPGz-x-7JRvPwzUdBn1TJ",
   tokenList: [
     {
-      name: "USDC",
-      symbol: "USDC",
+      ...usdc,
       address: "0x4f3cf5d09a3e47bf9d6a9d295e4a643c79c43429",
       decimals: 18,
       mintable: true,
-      logoURI:
-        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/USDC.png",
     },
-
     {
+      ...weth,
       address: "0x67dac8d7aeacc88c512f089a0abfff17e714535e",
-      name: "Wrapped Ether",
-      symbol: "WETH",
-      logoURI:
-        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/WETH.png",
       decimals: 18,
       mintable: true,
     },
