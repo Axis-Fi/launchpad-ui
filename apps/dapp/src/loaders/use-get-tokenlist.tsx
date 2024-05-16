@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { validateTokenlist } from "src/utils/tokenlist";
+//import { validateTokenlist } from "src/utils/tokenlist";
 import { TokenList } from "@repo/types";
 import { z } from "zod";
 import { useTokenLists } from "state/tokenlist";
@@ -14,7 +14,7 @@ export function useGetTokenList(path?: string) {
     queryFn: async () => {
       const response = await fetch(path!);
       const list: TokenList = await response.json();
-      validateTokenlist(list); //Throws error on invalid list
+      //validateTokenlist(list); //Throws error on invalid list
 
       tokenlist.addList(list);
 
