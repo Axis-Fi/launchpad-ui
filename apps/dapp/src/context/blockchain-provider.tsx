@@ -21,14 +21,16 @@ const wagmiConfig = createConfig({ ...activeConfig, connectors });
 
 export function BlockchainProvider({
   children,
+  disableDevTools,
 }: {
   children: React.ReactNode;
+  disableDevTools?: boolean;
 }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={wagmiConfig}>
         <WalletProvider>{children}</WalletProvider>
-        <ReactQueryDevtools />
+        {!disableDevTools && <ReactQueryDevtools />}
       </WagmiProvider>
     </QueryClientProvider>
   );

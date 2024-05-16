@@ -170,6 +170,7 @@ export enum AtomicAuctionCancelled_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInQuote = "lot__capacityInQuote",
   lot__capacityInitial = "lot__capacityInitial",
@@ -322,6 +323,7 @@ export enum AtomicAuctionCreated_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInQuote = "lot__capacityInQuote",
   lot__capacityInitial = "lot__capacityInitial",
@@ -464,6 +466,7 @@ export enum AtomicAuctionCurated_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInQuote = "lot__capacityInQuote",
   lot__capacityInitial = "lot__capacityInitial",
@@ -497,6 +500,7 @@ export type AtomicAuctionLot = {
   auctionHouse: Scalars["Bytes"]["output"];
   auctionType: Scalars["String"]["output"];
   baseToken: Token;
+  callbacks: Scalars["Bytes"]["output"];
   cancelled?: Maybe<AtomicAuctionCancelled>;
   capacity: Scalars["BigDecimal"]["output"];
   capacityInQuote: Scalars["Boolean"]["output"];
@@ -595,6 +599,16 @@ export type AtomicAuctionLot_Filter = {
   baseToken_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   baseToken_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   baseToken_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  callbacks?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  callbacks_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   cancelled_?: InputMaybe<AtomicAuctionCancelled_Filter>;
   capacity?: InputMaybe<Scalars["BigDecimal"]["input"]>;
   capacityInQuote?: InputMaybe<Scalars["Boolean"]["input"]>;
@@ -909,6 +923,7 @@ export enum AtomicAuctionLot_OrderBy {
   baseToken__name = "baseToken__name",
   baseToken__symbol = "baseToken__symbol",
   baseToken__totalSupply = "baseToken__totalSupply",
+  Callbacks = "callbacks",
   Cancelled = "cancelled",
   cancelled__auctionRef = "cancelled__auctionRef",
   cancelled__blockNumber = "cancelled__blockNumber",
@@ -1042,6 +1057,7 @@ export enum AtomicFixedPriceSaleLot_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInQuote = "lot__capacityInQuote",
   lot__capacityInitial = "lot__capacityInitial",
@@ -1182,6 +1198,7 @@ export enum AtomicLinearVestingLot_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInQuote = "lot__capacityInQuote",
   lot__capacityInitial = "lot__capacityInitial",
@@ -1355,6 +1372,7 @@ export enum AtomicPurchase_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInQuote = "lot__capacityInQuote",
   lot__capacityInitial = "lot__capacityInitial",
@@ -1840,6 +1858,7 @@ export enum BatchAuctionAborted_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -1992,6 +2011,7 @@ export enum BatchAuctionCancelled_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -2154,6 +2174,7 @@ export enum BatchAuctionCreated_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -2306,6 +2327,7 @@ export enum BatchAuctionCurated_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -2344,6 +2366,7 @@ export type BatchAuctionLot = {
   bidsClaimed: Array<BatchBidClaimed>;
   bidsDecrypted: Array<BatchBidDecrypted>;
   bidsRefunded: Array<BatchBidRefunded>;
+  callbacks: Scalars["Bytes"]["output"];
   cancelled?: Maybe<BatchAuctionCancelled>;
   capacity: Scalars["BigDecimal"]["output"];
   capacityInitial: Scalars["BigDecimal"]["output"];
@@ -2471,6 +2494,16 @@ export type BatchAuctionLot_Filter = {
   bidsDecrypted_?: InputMaybe<BatchBidDecrypted_Filter>;
   bidsRefunded_?: InputMaybe<BatchBidRefunded_Filter>;
   bids_?: InputMaybe<BatchBid_Filter>;
+  callbacks?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  callbacks_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  callbacks_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   cancelled_?: InputMaybe<BatchAuctionCancelled_Filter>;
   capacity?: InputMaybe<Scalars["BigDecimal"]["input"]>;
   capacityInitial?: InputMaybe<Scalars["BigDecimal"]["input"]>;
@@ -2799,6 +2832,7 @@ export enum BatchAuctionLot_OrderBy {
   bidsClaimed = "bidsClaimed",
   bidsDecrypted = "bidsDecrypted",
   bidsRefunded = "bidsRefunded",
+  Callbacks = "callbacks",
   Cancelled = "cancelled",
   cancelled__auctionRef = "cancelled__auctionRef",
   cancelled__blockNumber = "cancelled__blockNumber",
@@ -2988,6 +3022,7 @@ export enum BatchAuctionSettled_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -3212,6 +3247,7 @@ export enum BatchBidClaimed_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -3416,6 +3452,7 @@ export enum BatchBidDecrypted_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -3612,6 +3649,7 @@ export enum BatchBidRefunded_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -3925,6 +3963,7 @@ export enum BatchBid_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -4108,6 +4147,7 @@ export enum BatchEncryptedMarginalPriceLot_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",
@@ -4263,6 +4303,7 @@ export enum BatchLinearVestingLot_OrderBy {
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
   lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
   Lot__capacity = "lot__capacity",
   lot__capacityInitial = "lot__capacityInitial",
   Lot__chain = "lot__chain",

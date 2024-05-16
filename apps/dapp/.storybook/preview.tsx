@@ -33,7 +33,7 @@ const preview: Preview = {
   decorators: [
     withRouter,
     (Story) => (
-      <Providers>
+      <Providers disableDevTools>
         <Story />
       </Providers>
     ),
