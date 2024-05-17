@@ -1,12 +1,23 @@
+import { cn } from "..";
 import { Avatar } from "./primitives/avatar";
 
-export function IconedLabel(
-  props: React.PropsWithChildren<{ src?: string; label?: string }>,
-) {
+type IconedLabelProps = React.PropsWithChildren<{
+  src?: string;
+  label?: string;
+  large?: boolean;
+}>;
+
+export function IconedLabel(props: IconedLabelProps) {
   return (
     <div className="flex items-center justify-start gap-x-2">
-      <Avatar src={props.src} alt={props.label} />
-      {props.label ?? props.children}
+      <Avatar
+        src={props.src}
+        alt={props.label}
+        className={cn(props.large && "size-12")}
+      />
+      <p className={cn(props.large && "text-3xl")}>
+        {props.label ?? props.children}
+      </p>
     </div>
   );
 }
