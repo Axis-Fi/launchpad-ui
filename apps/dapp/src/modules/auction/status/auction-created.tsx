@@ -1,20 +1,18 @@
 import { InfoLabel, trimAddress } from "@repo/ui";
-import { AuctionInfoCard } from "../auction-info-card";
+import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { PropsWithAuction } from "@repo/types";
 import { AuctionInputCard } from "../auction-input-card";
+import { AuctionMetric } from "../auction-metric";
 
 export function AuctionCreated({ auction }: PropsWithAuction) {
   return (
     <div className="flex justify-between">
       <div className="w-1/2">
-        <AuctionInfoCard>
-          <InfoLabel
-            label="Capacity"
-            value={`${auction.formatted?.capacity} ${auction.baseToken.symbol}`}
-          />
+        <AuctionMetricsContainer auction={auction}>
+          <AuctionMetric id="capacity" />
           <InfoLabel label="Creator" value={trimAddress(auction.seller)} />
           <InfoLabel label="Ends in" value={auction.formatted?.endDistance} />
-        </AuctionInfoCard>
+        </AuctionMetricsContainer>
       </div>
 
       <div className="w-[40%]">

@@ -15,7 +15,7 @@ export function IconedLabel(props: IconedLabelProps) {
         alt={props.label}
         className={cn(props.large && "size-12")}
       />
-      <p className={cn(props.large && "text-3xl")}>
+      <p className={cn(props.large && "text-3xl font-light")}>
         {props.label ?? props.children}
       </p>
     </div>

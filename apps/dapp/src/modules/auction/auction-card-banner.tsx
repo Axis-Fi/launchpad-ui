@@ -24,7 +24,7 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
       style={{ backgroundImage: `url(${props.image})` }}
     >
       <div className="flex justify-between">
-        <Badge icon={props.chain.iconUrl as string}>{props.chain.name}</Badge>
+        <Badge icon={props.chain?.iconUrl as string}>{props.chain.name}</Badge>
       </div>
 
       <div className="flex items-end justify-between">

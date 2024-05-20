@@ -24,3 +24,9 @@ export function getChainId(chainName?: string): number {
 
   return chainId;
 }
+
+export function getChainById(chainId: number): Chain {
+  const chain = activeChains.find((c) => c.id === chainId);
+  if (!chain) throw new Error(`Unable to find chain ${chainId}`);
+  return chain;
+}
