@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Text, Label } from "@repo/ui";
+import { Text } from "@repo/ui";
 
 const meta = {
   title: "Design System/Text",
@@ -32,9 +32,11 @@ export const Variants: Story = {
         <Text weight="light">Light</Text>
       </Container>
       <Container title="Size">
-        <Text size="xl">Size=xl</Text>
+        <Text size="3xl">Size=3xl</Text>
+        <Text size="2xl">Size=2xl</Text>
         <Text>Size=default</Text>
         <Text size="sm">Size=sm</Text>
+        <Text size="xs">Size=xs</Text>
       </Container>
     </div>
   ),
