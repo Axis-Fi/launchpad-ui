@@ -9,7 +9,7 @@ export function Avatar({
   ...props
 }: React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>) {
   return (
-    <AvatarRoot className={cn("h-7 w-7", "text-[8px]", className)}>
+    <AvatarRoot className={cn("size-7", "text-[8px]", className)}>
       <AvatarImage {...props} />
       <AvatarFallback>
         {props.alt?.substring(0, 3).toUpperCase()}
@@ -26,7 +26,7 @@ const AvatarRoot = React.forwardRef<
   <AvatarPrimitive.Root
     ref={ref}
     className={cn(
-      "relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full",
+      "relative flex size-10 shrink-0 overflow-hidden rounded-full",
       className,
     )}
     {...props}

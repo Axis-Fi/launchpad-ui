@@ -84,7 +84,7 @@ export function Card(
   props: Omit<React.HTMLAttributes<HTMLDivElement>, "title"> & CardProps,
 ) {
   return (
-    <CardRoot className={cn("min-w-[300px]", props.className)}>
+    <CardRoot className={cn("", props.className)}>
       {(props.title || props.headerRightElement) && (
         <CardHeader>
           <CardTitle>{props.title}</CardTitle>

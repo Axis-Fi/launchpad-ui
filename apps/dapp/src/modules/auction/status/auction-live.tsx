@@ -2,7 +2,7 @@ import { Button, InfoLabel, trimAddress } from "@repo/ui";
 import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
-import { AuctionInfoCard } from "../auction-info-card";
+import { AuctionMetricsContainer } from "../auction-metrics-container";
 import {
   Auction,
   AuctionType,
@@ -19,7 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React from "react";
-import { AuctionInfoLabel } from "../auction-info-labels";
+import { AuctionMetric } from "../auction-metric";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -146,7 +146,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   return (
     <div className="flex justify-between">
       <div className="w-1/2">
-        <AuctionInfoCard>
+        <AuctionMetricsContainer auction={auction}>
           <InfoLabel
             label="Capacity"
             value={`${auction.formatted?.capacity} ${auction.baseToken.symbol}`}
@@ -157,9 +157,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           />
           <InfoLabel label="Deadline" value={auction.formatted?.endFormatted} />
           <InfoLabel label="Creator" value={trimAddress(auction.seller)} />
-          {auction.linearVesting && (
-            <AuctionInfoLabel auction={auction} id="vestingDuration" />
-          )}
+          {auction.linearVesting && <AuctionMetric id="vestingDuration" />}
           {auction.curatorApproved && (
             <InfoLabel
               label="Curator"
@@ -195,7 +193,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               />
             </>
           )}
-        </AuctionInfoCard>
+        </AuctionMetricsContainer>
       </div>
 
       <div className="w-[40%]">

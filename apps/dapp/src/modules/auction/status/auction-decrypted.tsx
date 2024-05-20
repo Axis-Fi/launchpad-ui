@@ -1,5 +1,5 @@
 import { InfoLabel } from "@repo/ui";
-import { AuctionInfoCard } from "../auction-info-card";
+import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
@@ -12,7 +12,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
 
   return (
     <div className="flex justify-between">
-      <AuctionInfoCard>
+      <AuctionMetricsContainer auction={auction}>
         <InfoLabel
           label="Total Bid Amount"
           value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
@@ -21,7 +21,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
           label="Rate"
           value={`${auction.formatted?.rate} ${auction.formatted?.tokenPairSymbols}`}
         />
-      </AuctionInfoCard>
+      </AuctionMetricsContainer>
       <div className="w-[50%]">
         <AuctionInputCard
           showTrigger

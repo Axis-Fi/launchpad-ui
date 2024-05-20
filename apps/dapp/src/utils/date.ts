@@ -35,8 +35,19 @@ export const getCountdown = (end: Date, start = new Date()) => {
   const { days, hours, minutes, seconds } = intervalToDuration({ start, end });
   return [days, hours, minutes, seconds]
     .filter((d) => Boolean(d) || d === 0)
-    .map((s) => String(s).padStart(2, "0"))
+    .map((s) => String(s).padStart(2, "0")) //Ensures there's always 2 zeros
     .join(":");
+};
+
+/**Gets the ellapsed time between two dates in percent*/
+export const getDurationAsPercentage = (
+  start: string | number,
+  end: string | number,
+  current: string | number,
+) => {
+  return (
+    ((Number(current) - Number(start)) / (Number(end) - Number(start))) * 100
+  );
 };
 
 type ValidDateTypes = Date | number | string;

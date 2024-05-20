@@ -1,7 +1,7 @@
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
-import { AuctionInfoCard } from "../auction-info-card";
+import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import React from "react";
@@ -21,7 +21,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
   return (
     <div>
       <div className="flex justify-between">
-        <AuctionInfoCard className="w-1/2">
+        <AuctionMetricsContainer className="w-1/2" auction={auction}>
           <InfoLabel label="Total Bids" value={auction.formatted?.totalBids} />
           <InfoLabel
             label="Total Bid Amount"
@@ -35,7 +35,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
             label="Ended"
             value={`${auction.formatted?.endDistance} ago`}
           />
-        </AuctionInfoCard>
+        </AuctionMetricsContainer>
         <div className="w-[40%]">
           <TransactionDialog
             signatureMutation={decrypt.decryptTx}
