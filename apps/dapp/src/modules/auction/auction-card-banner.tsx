@@ -1,5 +1,5 @@
 import { Chain } from "@repo/types";
-import { Badge } from "@repo/ui";
+import { Badge, cn } from "@repo/ui";
 import { isBefore } from "date-fns";
 import { getCountdown } from "utils/date";
 
@@ -27,7 +27,12 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
         <Badge icon={props.chain?.iconUrl as string}>{props.chain.name}</Badge>
       </div>
 
-      <div className="flex items-end justify-between">
+      <div
+        className={cn(
+          "flex items-end justify-between",
+          !props.curator && "justify-end",
+        )}
+      >
         {props.curator && (
           <Badge icon={props.curator?.avatar as string} className="normal-case">
             {props.curator.name}

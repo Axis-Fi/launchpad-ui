@@ -11,7 +11,7 @@ import { ReloadButton } from "components/reload-button";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
-import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
+import { AuctionCard } from "modules/auction/auction-card";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -68,15 +68,14 @@ export default function AuctionListPage() {
           <h3>There aren&apos;t any auctions in this state</h3>
         </div>
       )}
-      <div className={cn("mt-4 grid grid-cols-3 gap-4", isLoading && "mask")}>
-        {isLoading
-          ? [...new Array(6)].map((_e, i) => <AuctionCardLoading key={i} />)
-          : rows.map((auction) => (
-              <AuctionCard
-                key={auction.chainId + auction.id}
-                auction={auction}
-              />
-            ))}
+      <div className={cn("mt-4", isLoading && "mask")}>
+        {rows.map((auction) => (
+          <AuctionCard
+            loading={isLoading}
+            key={auction.chainId + auction.id}
+            auction={auction}
+          />
+        ))}
       </div>
       <Pagination className="mt-6" {...pagination} />
 
