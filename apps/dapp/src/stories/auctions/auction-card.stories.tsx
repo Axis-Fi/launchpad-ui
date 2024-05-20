@@ -1,25 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
-import { getBatchAuctionMock } from "../mocks/batch-auction";
+import { AuctionCard as AuctionCardV2 } from "modules/auction/auction-card";
+import { getAuctionMock } from "../mocks/auction";
 
 const meta = {
   title: "Auctions/AuctionCard",
-  component: AuctionCard,
+  component: AuctionCardV2,
   args: {
-    auction: getBatchAuctionMock(),
+    auction: getAuctionMock(),
   },
-  decorators: [
-    (Story) => (
-      <div className="w-[400px]">
-        <Story />
-      </div>
-    ),
-  ],
-} satisfies Meta<typeof AuctionCard>;
+  decorators: [(Story) => <Story />],
+} satisfies Meta<typeof AuctionCardV2>;
 
 export default meta;
 
-type Story = StoryObj<typeof AuctionCard>;
+type Story = StoryObj<typeof AuctionCardV2>;
 
 export const Created: Story = {
   args: { ...meta.args, auction: { ...meta.args.auction, status: "created" } },
@@ -55,5 +49,14 @@ export const Settled: Story = {
 };
 
 export const Loading: Story = {
-  render: () => <AuctionCardLoading />,
+  args: {
+    loading: true,
+  },
+  decorators: [
+    (Story) => (
+      <div className="h-[396px] w-[954px]">
+        <Story />
+      </div>
+    ),
+  ],
 };

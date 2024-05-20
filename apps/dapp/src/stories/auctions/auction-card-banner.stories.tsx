@@ -23,7 +23,7 @@ export const Primary: Story = {
     deadline: new Date(1715981309 * 1000),
     curator: {
       name: "aphex",
-      avatar: "/afx.png",
+      avatar: "https://github.com/wenfix.png",
     },
   },
 };
