@@ -15,7 +15,7 @@
   }
 
   body {
-    @apply font-aeonfono max-h-dvh bg-black;
+    @apply font-aeonfono max-h-dvh;
   }
 
   input {

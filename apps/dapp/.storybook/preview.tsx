@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/react";
 import { withRouter } from "storybook-addon-remix-react-router";
+import { ThemeProvider } from "@repo/ui";
 import "@repo/ui/style.css";
 import "../src/index.css";
 import { Providers } from "../src/context/providers";
@@ -33,9 +34,11 @@ const preview: Preview = {
   decorators: [
     withRouter,
     (Story) => (
-      <Providers disableDevTools>
-        <Story />
-      </Providers>
+      <ThemeProvider>
+        <Providers disableDevTools>
+          <Story />
+        </Providers>
+      </ThemeProvider>
     ),
   ],
 };
