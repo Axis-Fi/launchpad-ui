@@ -3,8 +3,8 @@ import { cva } from "class-variance-authority";
 export const textVariants = cva("text-sans", {
   variants: {
     color: {
-      primary: "text-text-primary",
-      secondary: "text-text-secondary",
+      primary: "text-foreground-primary",
+      secondary: "text-foreground-secondary",
     },
     size: {
       default: "text-base",

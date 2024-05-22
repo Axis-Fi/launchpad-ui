@@ -11,7 +11,9 @@ export function AuctionStatusBadge({
   large?: boolean;
 } & React.HTMLAttributes<HTMLParagraphElement>) {
   const statusColor =
-    status === "concluded" ? "bg-destructive text-foreground" : "bg-primary";
+    status === "concluded"
+      ? "bg-destructive text-foreground"
+      : "bg-feedback-success";
 
   return (
     <Badge

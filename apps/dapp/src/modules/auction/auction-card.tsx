@@ -21,7 +21,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
   return (
     <Card
       className={cn(
-        "hover:bg-champagne hover:border-secondary group size-full overflow-hidden",
+        "border-surface-tertiary hover:bg-surface-tertiary group size-full overflow-hidden hover:border-neutral-400",
         props.isGrid
           ? "relative h-[368px] w-[377px] gap-y-3"
           : "w-[1000px] p-8",
@@ -83,7 +83,7 @@ function AuctionCardDetails(
             {props.auction.auctionInfo?.description}
           </Text>
           <Text color="secondary" className="group-hover:hidden">
-            {props.auction.auctionInfo?.shortDescription}
+            {props.auction.auctionInfo?.description}
           </Text>
         </div>
       </div>
@@ -100,13 +100,15 @@ function AuctionCardDetails(
         </AuctionMetricsContainer>
       )}
 
-      <Link to={`/auction/${props.auction.auctionType}/${props.auction.id}`}>
+      <Link
+        className={cn("self-end", !props.isGrid && "hidden group-hover:block")}
+        to={`/auction/${props.auction.auctionType}/${props.auction.id}`}
+      >
         <Button
           className={cn(
-            "w-1/3 self-end uppercase transition-all ",
+            "self-end uppercase transition-all ",
             props.isGrid &&
               "absolute bottom-0 right-0 mb-3 mr-3 opacity-0 group-hover:opacity-100",
-            !props.isGrid && "hidden group-hover:block",
           )}
         >
           View Auction
