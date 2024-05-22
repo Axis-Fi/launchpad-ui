@@ -1,21 +1,17 @@
 import { Button, Card, IconedLabel, Skeleton, Text, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
-import {
-  Auction,
-  AuctionListed,
-  AuctionType,
-  PropsWithAuction,
-} from "@repo/types";
+import { AuctionListed, AuctionType, PropsWithAuction } from "@repo/types";
 import { AuctionCardBanner } from "./auction-card-banner";
 import { getChainById } from "utils";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
 import { AuctionStatusBadge } from "./auction-status-badge";
+import React from "react";
+import { Link } from "react-router-dom";
 
 type AuctionCardProps = React.HTMLAttributes<HTMLDivElement> & {
   auction: AuctionListed;
   loading?: boolean;
-  onViewAuction: (auction: Auction) => void;
   isGrid?: boolean;
 };
 
@@ -29,6 +25,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
         props.isGrid
           ? "relative h-[368px] w-[377px] gap-y-3"
           : "w-[1000px] p-8",
+        props.className,
       )}
     >
       {props.loading ? (
@@ -43,15 +40,11 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
           <AuctionCardBanner
             //TODO: replace with a better named property, likely projectBanner
             image={auction.auctionInfo?.links?.projectLogo}
-            deadline={auction.formatted.endDate}
+            deadline={auction.formatted?.endDate}
             chain={chain}
             isGrid={props.isGrid}
           />
-          <AuctionCardDetails
-            isGrid={props.isGrid}
-            auction={auction}
-            onViewAuction={props.onViewAuction}
-          />
+          <AuctionCardDetails isGrid={props.isGrid} auction={auction} />
         </div>
       )}
     </Card>
@@ -60,7 +53,6 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
 
 function AuctionCardDetails(
   props: PropsWithAuction & {
-    onViewAuction: (auction: Auction) => void;
     isGrid?: boolean;
   },
 ) {
@@ -108,14 +100,18 @@ function AuctionCardDetails(
         </AuctionMetricsContainer>
       )}
 
-      <Button
-        className={cn(
-          "w-1/3 self-end uppercase opacity-0 transition-all duration-500 group-hover:opacity-100",
-          props.isGrid && "absolute bottom-0 right-0 mb-3 mr-3",
-        )}
-      >
-        View Auction
-      </Button>
+      <Link to={`/auction/${props.auction.auctionType}/${props.auction.id}`}>
+        <Button
+          className={cn(
+            "w-1/3 self-end uppercase transition-all ",
+            props.isGrid &&
+              "absolute bottom-0 right-0 mb-3 mr-3 opacity-0 group-hover:opacity-100",
+            !props.isGrid && "hidden group-hover:block",
+          )}
+        >
+          View Auction
+        </Button>
+      </Link>
     </div>
   );
 }

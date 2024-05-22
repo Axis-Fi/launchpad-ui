@@ -3,6 +3,8 @@ import {
   DropdownChecker,
   IconnedInput,
   Pagination,
+  ToggleGroup,
+  ToggleGroupItem,
   Tooltip,
   cn,
   usePagination,
@@ -14,6 +16,7 @@ import { PageContainer } from "modules/app/page-container";
 import { AuctionCard } from "modules/auction/auction-card";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { DashboardIcon, RowsIcon } from "@radix-ui/react-icons";
 
 const options = [
   { value: "created", label: "Created" },
@@ -26,6 +29,7 @@ const options = [
 export default function AuctionListPage() {
   const [filters, setFilters] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
+  const [gridView, setGridView] = useState(false);
   const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
 
   const filteredAuctions = filters.length
@@ -55,6 +59,17 @@ export default function AuctionListPage() {
             placeholder="Search"
             onChange={(e) => setSearchText(e.target.value)}
           />
+          <ToggleGroup
+            type="single"
+            onValueChange={(value) => setGridView(value === "grid")}
+          >
+            <ToggleGroupItem value="grid">
+              <DashboardIcon />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="list">
+              <RowsIcon />
+            </ToggleGroupItem>
+          </ToggleGroup>
 
           <ReloadButton
             tooltip="Reload Auctions"
@@ -68,11 +83,18 @@ export default function AuctionListPage() {
           <h3>There aren&apos;t any auctions in this state</h3>
         </div>
       )}
-      <div className={cn("mt-4", isLoading && "mask")}>
+      <div
+        className={cn(
+          "mt-4 ",
+          gridView ? "mx-auto grid grid-cols-3 gap-4" : "space-y-4",
+        )}
+      >
         {rows.map((auction) => (
           <AuctionCard
+            isGrid={gridView}
+            className="mx-auto"
             loading={isLoading}
-            key={auction.chainId + auction.id}
+            key={auction.chainId + auction.id + "_" + gridView}
             auction={auction}
           />
         ))}

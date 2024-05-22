@@ -5,7 +5,7 @@ import { getCountdown } from "utils/date";
 
 type AuctionCardBannerProps = {
   chain: Chain;
-  deadline: Date;
+  deadline?: Date;
   image?: string;
   curator?: {
     name: string;
@@ -16,13 +16,13 @@ type AuctionCardBannerProps = {
 };
 
 export function AuctionCardBanner(props: AuctionCardBannerProps) {
-  const isOngoing = isBefore(Date.now(), props.deadline);
-  const countdown = isOngoing && getCountdown(props.deadline);
+  const isOngoing = props.deadline && isBefore(Date.now(), props.deadline);
+  const countdown = props.deadline && isOngoing && getCountdown(props.deadline);
 
   return (
     <div
       className={cn(
-        "flex flex-col justify-between rounded-sm bg-cover p-4 transition-all duration-500",
+        "flex flex-col justify-between rounded-sm bg-cover p-4 transition-all",
         props.isGrid
           ? "mb-2 h-[192px] w-full p-2 group-hover:h-[64px]"
           : "h-[330px] w-[580px]",

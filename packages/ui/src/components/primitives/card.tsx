@@ -80,11 +80,12 @@ type CardProps = {
   headerRightElement?: React.ReactNode;
 };
 
-export function Card(
-  props: Omit<React.HTMLAttributes<HTMLDivElement>, "title"> & CardProps,
-) {
+const Card = React.forwardRef<
+  HTMLDivElement,
+  Omit<React.HTMLAttributes<HTMLDivElement>, "title"> & CardProps
+>((props, ref) => {
   return (
-    <CardRoot className={cn("transition-all duration-500", props.className)}>
+    <CardRoot ref={ref} className={cn("transition-all", props.className)}>
       {(props.title || props.headerRightElement) && (
         <CardHeader>
           <CardTitle>{props.title}</CardTitle>
@@ -94,9 +95,12 @@ export function Card(
       <CardContent className="h-full">{props.children}</CardContent>
     </CardRoot>
   );
-}
+});
+
+Card.displayName = "Card";
 
 export {
+  Card,
   CardRoot,
   CardHeader,
   CardFooter,

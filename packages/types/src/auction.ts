@@ -13,7 +13,7 @@ export type BaseAuction = {
   auctionInfo?: AuctionInfo;
   auctionData?: EMPAuctionData | FixedPriceAuctionData;
   auctionType: AuctionType;
-  formatted: AuctionFormattedInfo;
+  formatted?: AuctionFormattedInfo;
   //linearVesting?: LinearVestingData;
 };
 

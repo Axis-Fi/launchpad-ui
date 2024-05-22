@@ -12,7 +12,6 @@ import { SocialRow } from "components/social-row";
 import { ProjectInfoCard } from "modules/auction/project-info-card";
 import { ContractAddressCard } from "modules/auction/contract-address-card";
 import { PageHeader } from "modules/app/page-header";
-import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { ImageBanner } from "components/image-banner";
 import { ReloadButton } from "components/reload-button";
@@ -144,13 +143,6 @@ function AuctionPageLoading() {
 
         <div className="mt-5">
           <div className="flex justify-between gap-x-4">
-            <AuctionInfoCard className="w-1/2">
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-            </AuctionInfoCard>
-
             <Skeleton className="h-72 w-[40%]" />
           </div>
         </div>
