@@ -11,11 +11,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Variants: Story = {
   render: () => (
-    <div className="grid grid-cols-2 gap-3 bg-black p-5">
+    <div className="grid grid-cols-2 gap-3 bg-white p-5">
       <Button>Primary</Button>
       <Button variant="secondary">Secondary</Button>
-      <Button variant="destructive">Destructive</Button>
-      <Button variant="outline">Outline</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="link">Link</Button>
       <Button size="sm">Sm</Button>

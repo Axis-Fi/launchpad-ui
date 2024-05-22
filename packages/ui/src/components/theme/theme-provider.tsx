@@ -14,7 +14,7 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-  theme: "dark",
+  theme: "light",
   setTheme: () => null,
 };
 
@@ -23,7 +23,7 @@ export const ThemeProviderContext =
 
 export function ThemeProvider({
   children,
-  defaultTheme = "dark",
+  defaultTheme = "light",
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
@@ -34,6 +34,9 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
+    /** 
+     * TODO: force light mode until/if we decide to resupport dark mode
+     * 
     root.classList.remove("light", "dark");
 
     if (theme === "system") {
@@ -43,10 +46,13 @@ export function ThemeProvider({
         : "light";
 
       root.classList.add(systemTheme);
+
       return;
     }
 
     root.classList.add(theme);
+    */
+    root.classList.add("light");
   }, [theme]);
 
   const value = {
