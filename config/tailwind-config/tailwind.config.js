@@ -14,6 +14,7 @@ module.exports = {
     },
     extend: {
       boxShadow: {
+        active: "0 0 0 2px hsl(var(--primary-500))",
         "3xl": "0 0 28px 0 hsl(40, 100%, 77%)",
       },
       /* Tailwind convenience color shortcuts */
@@ -30,10 +31,20 @@ module.exports = {
 
         /* Theme colors */
         surface: {
-          DEFAULT: "hsl(var(--surface-primary))",
-          secondary: "hsl(var(--surface-secondary))",
-          tertiary: "hsl(var(--surface-tertiary))",
-          highlight: "hsl(var(--surface-highlight))",
+          DEFAULT: "hsl(var(--surface-primary-fill))",
+          outline: "hsl(var(--surface-primary-outline))",
+          secondary: {
+            DEFAULT: "hsl(var(--surface-secondary-fill))",
+            outline: "hsl(var(--surface-secondary-outline))",
+          },
+          tertiary: {
+            DEFAULT: "hsl(var(--surface-tertiary-fill))",
+            outline: "hsl(var(--surface-tertiary-outline))",
+          },
+          highlight: {
+            DEFAULT: "hsl(var(--surface-highlight-fill))",
+            outline: "hsl(var(--surface-highlight-outline))",
+          },
         },
         feedback: {
           alert: "hsl(var(--feedback-alert))",
@@ -46,6 +57,8 @@ module.exports = {
           tertiary: "hsl(var(--text-tertiary))",
           highlight: "hsl(var(--text-highlight))",
           disabled: "hsl(var(--text-disabled))",
+          success: "hsl(var(--text-success))",
+          alert: "hsl(var(--text-alert))",
         },
         "primary-500": "hsl(var(--primary-500))",
         "primary-600": "hsl(var(--primary-600))",
