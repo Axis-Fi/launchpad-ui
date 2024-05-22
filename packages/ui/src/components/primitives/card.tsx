@@ -84,14 +84,14 @@ export function Card(
   props: Omit<React.HTMLAttributes<HTMLDivElement>, "title"> & CardProps,
 ) {
   return (
-    <CardRoot className={cn("", props.className)}>
+    <CardRoot className={cn("transition-all duration-500", props.className)}>
       {(props.title || props.headerRightElement) && (
         <CardHeader>
           <CardTitle>{props.title}</CardTitle>
           {props.headerRightElement}
         </CardHeader>
       )}
-      <CardContent>{props.children}</CardContent>
+      <CardContent className="h-full">{props.children}</CardContent>
     </CardRoot>
   );
 }

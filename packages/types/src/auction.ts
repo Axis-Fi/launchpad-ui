@@ -13,7 +13,7 @@ export type BaseAuction = {
   auctionInfo?: AuctionInfo;
   auctionData?: EMPAuctionData | FixedPriceAuctionData;
   auctionType: AuctionType;
-  formatted?: AuctionFormattedInfo;
+  formatted: AuctionFormattedInfo;
   //linearVesting?: LinearVestingData;
 };
 
@@ -40,6 +40,7 @@ export type AuctionInfo = {
   key?: string;
   name?: string;
   description?: string;
+  shortDescription?: string;
   links?: {
     projectLogo?: string;
     website?: string;
