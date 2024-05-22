@@ -5,7 +5,7 @@ import { cn } from "@/utils";
 import { Avatar } from "./avatar";
 
 const badgeVariants = cva(
-  "inline-flex h-min items-center justify-center rounded-full border p-0.5 pr-2 uppercase transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex h-min items-center justify-center rounded-full border uppercase transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
@@ -18,12 +18,14 @@ const badgeVariants = cva(
         outline: "text-foreground",
       },
       size: {
+        default: "p-0.5 px-2",
         round: "rounded-full w-fit px-1 py-0",
         lg: "px-4 py-2",
       },
     },
     defaultVariants: {
       variant: "default",
+      size: "default",
     },
   },
 );
@@ -36,7 +38,14 @@ export interface BadgeProps
 
 function Badge({ className, variant, size, children, ...props }: BadgeProps) {
   return (
-    <div className={cn(badgeVariants({ variant, size }), className)} {...props}>
+    <div
+      className={cn(
+        badgeVariants({ variant, size }),
+        className,
+        props.icon && "pr-2",
+      )}
+      {...props}
+    >
       {props.icon && <Avatar className="mr-1 size-6" src={props.icon} />}
       {children}
     </div>

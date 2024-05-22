@@ -3,7 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { AuctionType, type AuctionListed } from "@repo/types";
 import { useAccount } from "wagmi";
-import { AuctionStatusChip } from "./auction-status-chip";
+import { AuctionStatusBadge } from "./auction-status-badge";
 import { CheckIcon, XIcon } from "lucide-react";
 import React from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -30,7 +30,7 @@ const cols = [
   col.accessor("status", {
     header: "Status",
     cell: (info) => (
-      <AuctionStatusChip className="w-1/2" status={info.getValue()} />
+      <AuctionStatusBadge className="w-1/2" status={info.getValue()} />
     ),
   }),
 ];
