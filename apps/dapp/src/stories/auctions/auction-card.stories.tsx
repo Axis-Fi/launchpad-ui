@@ -48,6 +48,12 @@ export const Settled: Story = {
   args: { ...meta.args, auction: { ...meta.args.auction, status: "settled" } },
 };
 
+export const GridView: Story = {
+  args: {
+    isGrid: true,
+  },
+};
+
 export const Loading: Story = {
   args: {
     loading: true,
@@ -59,4 +65,12 @@ export const Loading: Story = {
       </div>
     ),
   ],
+};
+
+export const GridLoading: Story = {
+  args: {
+    ...Loading.args,
+    isGrid: true,
+  },
+  decorators: Loading.decorators,
 };

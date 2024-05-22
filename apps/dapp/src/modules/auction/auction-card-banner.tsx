@@ -12,6 +12,7 @@ type AuctionCardBannerProps = {
     address: string;
     avatar: string;
   };
+  isGrid?: boolean;
 };
 
 export function AuctionCardBanner(props: AuctionCardBannerProps) {
@@ -20,7 +21,12 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
 
   return (
     <div
-      className="flex h-[330px] w-[580px] flex-col justify-between bg-cover p-4"
+      className={cn(
+        "flex flex-col justify-between rounded-sm bg-cover p-4 transition-all duration-500",
+        props.isGrid
+          ? "mb-2 h-[192px] w-full p-2 group-hover:h-[64px]"
+          : "h-[330px] w-[580px]",
+      )}
       style={{ backgroundImage: `url(${props.image})` }}
     >
       <div className="flex justify-between">

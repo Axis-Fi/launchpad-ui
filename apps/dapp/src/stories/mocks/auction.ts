@@ -194,6 +194,8 @@ const getAuctionMock = (
     auctionInfo: {
       name: "ZYN Protocol",
       description:
+        "The real ZYN coin. Join us ZYNNERs and be apart of the best attempt at bringing nicotine on-chain. And some more stuff.",
+      shortDescription:
         "The real ZYN coin. Join us ZYNNERs and be apart of the best attempt at bringing nicotine on-chain. ",
       links: {
         projectLogo:
