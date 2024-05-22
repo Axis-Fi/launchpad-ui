@@ -18,18 +18,18 @@ export function SocialRow(props: SocialURLs) {
     <div className={cn("flex h-9 items-center gap-x-4 pl-2", props.className)}>
       {props.twitter && (
         <Link href={props.twitter}>
-          <TwitterLogoIcon className="hover:text-[#1DA1F2]" />
+          <TwitterLogoIcon className="size-4 hover:text-[#1DA1F2]" />
         </Link>
       )}
 
       {props.discord && (
         <Link href={props.discord}>
-          <DiscordLogoIcon className="hover:text-[#7289da]" />
+          <DiscordLogoIcon className="size-4 hover:text-[#7289da]" />
         </Link>
       )}
       {props.website && (
         <Link href={props.website}>
-          <GlobeIcon className="hover:text-primary transition-all" />
+          <GlobeIcon className="hover:text-primary size-4 transition-all" />
         </Link>
       )}
     </div>

@@ -7,7 +7,7 @@ import {
   cn,
 } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
-import { AuctionStatusChip } from "./auction-status-chip";
+import { AuctionStatusBadge } from "./auction-status-badge";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { RequiresChain } from "components/requires-chain";
 
@@ -34,7 +34,7 @@ export function AuctionInputCard({
           !isLive && "justify-end",
         )}
       >
-        <AuctionStatusChip status={auction.status} className="self-start" />
+        <AuctionStatusBadge status={auction.status} className="self-start" />
       </CardHeader>
       <CardContent>{props.children}</CardContent>
       <CardFooter className="flex justify-center">

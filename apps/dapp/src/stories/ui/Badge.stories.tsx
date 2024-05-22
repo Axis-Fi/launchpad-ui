@@ -17,6 +17,12 @@ export const Primary: Story = {
   },
 };
 
+export const TextOnly: Story = {
+  args: {
+    children: "CURATOR",
+  },
+};
+
 export const Round: Story = {
   args: {
     children: 70,
