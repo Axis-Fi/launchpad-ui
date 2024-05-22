@@ -1,4 +1,5 @@
 import {
+  Text,
   Button,
   DropdownChecker,
   IconnedInput,
@@ -44,7 +45,7 @@ export default function AuctionListPage() {
     <PageContainer>
       <div className="flex items-center justify-between">
         <Tooltip content={"Origin is a modular Auction suite"}>
-          <h1>Origin</h1>
+          <Text size="2xl">Token Launches</Text>
         </Tooltip>
         <div className="flex gap-x-2">
           <DropdownChecker
@@ -104,7 +105,7 @@ export default function AuctionListPage() {
       <div className="flex flex-col items-center justify-center py-8">
         <p className="font-aeonpro pb-2">Want to create an auction?</p>
         <Link to="/create/auction">
-          <Button variant="outline">
+          <Button variant="ghost">
             Create Sealed Bid Auction <ArrowRightIcon className="w-6 pl-1" />
           </Button>
         </Link>
