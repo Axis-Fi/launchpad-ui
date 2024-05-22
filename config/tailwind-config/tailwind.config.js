@@ -13,50 +13,77 @@ module.exports = {
       },
     },
     extend: {
+      boxShadow: {
+        active: "0 0 0 2px hsl(var(--primary-500))",
+        "3xl": "0 0 28px 0 hsl(40, 100%, 77%)",
+      },
+      /* Tailwind convenience color shortcuts */
       colors: {
+        /* TODO: these aren't defined yet */
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
 
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        "axis-light": "hsl(var(--axis-light))",
-        "axis-light-mid": "hsl(var(--axis-light-mid))",
-        "axis-dark": "hsl(var(--axis-dark))",
-        "axis-dark-mid": "hsl(var(--axis-dark-mid))",
-        "axis-blue": "hsl(var(--axis-blue))",
-        "axis-teal": "hsl(var(--axis-teal))",
-        "axis-green": "hsl(var(--axis-green))",
-        "axis-orange": "hsl(var(--axis-orange))",
-        "axis-red": "hsl(var(--axis-red))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+        background: "hsl(var(--app))",
+
+        /* Primary brand color */
+        primary: "hsl(var(--primary-600))",
+
+        /* Theme colors */
+        surface: {
+          DEFAULT: "hsl(var(--surface-primary-fill))",
+          outline: "hsl(var(--surface-primary-outline))",
+          secondary: {
+            DEFAULT: "hsl(var(--surface-secondary-fill))",
+            outline: "hsl(var(--surface-secondary-outline))",
+          },
+          tertiary: {
+            DEFAULT: "hsl(var(--surface-tertiary-fill))",
+            outline: "hsl(var(--surface-tertiary-outline))",
+          },
+          highlight: {
+            DEFAULT: "hsl(var(--surface-highlight-fill))",
+            outline: "hsl(var(--surface-highlight-outline))",
+          },
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+        feedback: {
+          alert: "hsl(var(--feedback-alert))",
+          success: "hsl(var(--feedback-success))",
+          warning: "hsl(var(--feedback-warning))",
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+        foreground: {
+          DEFAULT: "hsl(var(--text-primary))",
+          secondary: "hsl(var(--text-secondary))",
+          tertiary: "hsl(var(--text-tertiary))",
+          highlight: "hsl(var(--text-highlight))",
+          disabled: "hsl(var(--text-disabled))",
+          success: "hsl(var(--text-success))",
+          alert: "hsl(var(--text-alert))",
         },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
+        "primary-500": "hsl(var(--primary-500))",
+        "primary-600": "hsl(var(--primary-600))",
+
+        "neutral-50": "hsl(var(--neutral-50))",
+        "neutral-100": "hsl(var(--neutral-100))",
+        "neutral-200": "hsl(var(--neutral-200))",
+        "neutral-300": "hsl(var(--neutral-300))",
+        "neutral-400": "hsl(var(--neutral-400))",
+        "neutral-500": "hsl(var(--neutral-500))",
+        "neutral-600": "hsl(var(--neutral-600))",
+        "neutral-650": "hsl(var(--neutral-650))",
+        "neutral-700": "hsl(var(--neutral-700))",
+        "neutral-800": "hsl(var(--neutral-800))",
+        "neutral-900": "hsl(var(--neutral-900))",
+
+        "secondary-100": "hsl(var(--secondary-100))",
+        "secondary-200": "hsl(var(--secondary-200))",
+        "secondary-300": "hsl(var(--secondary-300))",
+        "secondary-400": "hsl(var(--secondary-400))",
+
+        "tertiary-200": "hsl(var(--tertiary-200))",
+        "tertiary-300": "hsl(var(--tertiary-300))",
+        "tertiary-500": "hsl(var(--tertiary-500))",
+        "tertiary-600": "hsl(var(--tertiary-600))",
       },
       borderRadius: {
         lg: "var(--radius)",
