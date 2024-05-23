@@ -19,6 +19,7 @@ import { useReferrer } from "state/referral";
 import { AuctionType } from "@repo/types";
 import { getAuctionHouse } from "utils/contracts";
 import { useDeferredQuery } from "@repo/sdk/react";
+import { useAuctionFees } from "./use-auction-fees";
 
 export function useBidAuction(
   id: string,
@@ -37,6 +38,7 @@ export function useBidAuction(
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
   const auctionHouse = getAuctionHouse(auction);
+  const fees = useAuctionFees(auction);
 
   const bidConfig = useDeferredQuery((sdk) => {
     if (bidderAddress === undefined) {
@@ -69,8 +71,10 @@ export function useBidAuction(
     if (!bidderAddress || !isAddress(bidderAddress)) {
       throw new Error("Not connected");
     }
+    const feeAdjustedAmountOut = fees.subtractFee(amountOut);
+
     const minAmountOut = parseUnits(
-      amountOut.toString(),
+      feeAdjustedAmountOut.toString(),
       Number(auction.baseToken.decimals),
     );
 
@@ -93,7 +97,7 @@ export function useBidAuction(
             Number(auction.quoteToken.decimals),
           ),
           minAmountOut: parseUnits(
-            amountOut.toString(),
+            feeAdjustedAmountOut.toString(),
             Number(auction.baseToken.decimals),
           ),
           permit2Data: toHex(""), // TODO support permit2

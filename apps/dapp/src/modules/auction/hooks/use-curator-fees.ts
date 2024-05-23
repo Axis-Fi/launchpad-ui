@@ -13,8 +13,8 @@ import { getAuctionHouse } from "utils/contracts";
 /**Reads and sets the curator fee for an auction house*/
 export function useCuratorFees(
   chainId: number,
-  feePercentage: number,
   auctionType: AuctionType,
+  feePercentage?: number,
 ) {
   const { address, isConnected } = useAccount();
   const auctionHouse = getAuctionHouse({ chainId, auctionType });

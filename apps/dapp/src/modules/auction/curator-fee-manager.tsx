@@ -32,7 +32,7 @@ export function CuratorFeeManager({
   } = useFees(chainId, ah.address, auctionType);
 
   const [fee, setFee] = React.useState<string>("");
-  const curatorFees = useCuratorFees(chainId, parseFloat(fee), auctionType);
+  const curatorFees = useCuratorFees(chainId, auctionType, parseFloat(fee));
   const parsedAmount = parseFloat(fee);
 
   return (
