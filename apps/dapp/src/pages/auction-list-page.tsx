@@ -18,6 +18,10 @@ import { AuctionCard } from "modules/auction/auction-card";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DashboardIcon, RowsIcon } from "@radix-ui/react-icons";
+import {
+  Link as ScrollLink,
+  Element as ScrollTargetElement,
+} from "react-scroll";
 
 const options = [
   { value: "created", label: "Created" },
@@ -57,14 +61,16 @@ export default function AuctionListPage() {
             send copy plis mi familia
           </Text>
           <div className="mx-auto mt-6 flex w-min gap-x-2">
-            <Button className="uppercase" size="lg">
-              <div className="flex items-center">
-                Upcoming Sales
-                <div className="size-6">
-                  <ArrowDownIcon />
+            <ScrollLink to="auctions" offset={-10} smooth={true}>
+              <Button className="uppercase" size="lg">
+                <div className="flex items-center">
+                  Upcoming Sales
+                  <div className="size-6">
+                    <ArrowDownIcon />
+                  </div>
                 </div>
-              </div>
-            </Button>
+              </Button>
+            </ScrollLink>
 
             <Button className="uppercase" size="lg" variant="secondary">
               Apply for Launch
@@ -73,76 +79,79 @@ export default function AuctionListPage() {
         </div>
       </div>
 
-      <PageContainer>
-        <div className="flex items-center justify-between">
-          <Tooltip content={"Origin is a modular Auction suite"}>
-            <Text size="2xl">Token Launches</Text>
-          </Tooltip>
-          <div className="flex gap-x-2">
-            <DropdownChecker
-              setFilters={setFilters}
-              filters={filters}
-              options={options}
-              label="Auction Status"
-            />
-            <IconnedInput
-              icon={<SearchIcon />}
-              className="placeholder:text-foreground"
-              placeholder="Search"
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-            <ToggleGroup
-              type="single"
-              defaultValue="list"
-              onValueChange={(value) => setGridView(value === "grid")}
-            >
-              <ToggleGroupItem value="list">
-                <RowsIcon />
-              </ToggleGroupItem>
-              <ToggleGroupItem value="grid">
-                <DashboardIcon />
-              </ToggleGroupItem>
-            </ToggleGroup>
+      <ScrollTargetElement name="auctions">
+        <PageContainer>
+          <div className="flex items-center justify-between">
+            <Tooltip content={"Origin is a modular Auction suite"}>
+              <Text size="2xl">Token Launches</Text>
+            </Tooltip>
+            <div className="flex gap-x-2">
+              <DropdownChecker
+                setFilters={setFilters}
+                filters={filters}
+                options={options}
+                label="Auction Status"
+              />
+              <IconnedInput
+                icon={<SearchIcon />}
+                className="placeholder:text-foreground"
+                placeholder="Search"
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+              <ToggleGroup
+                type="single"
+                defaultValue="list"
+                onValueChange={(value) => setGridView(value === "grid")}
+              >
+                <ToggleGroupItem value="list">
+                  <RowsIcon />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="grid">
+                  <DashboardIcon />
+                </ToggleGroupItem>
+              </ToggleGroup>
 
-            <ReloadButton
-              tooltip="Reload Auctions"
-              refetching={isRefetching}
-              onClick={() => refetch()}
-            />
+              <ReloadButton
+                tooltip="Reload Auctions"
+                refetching={isRefetching}
+                onClick={() => refetch()}
+              />
+            </div>
           </div>
-        </div>
-        {!isLoading && !filteredAuctions.length && (
-          <div className="flex h-[400px] w-full items-center justify-center">
-            <h3>There aren&apos;t any auctions in this state</h3>
-          </div>
-        )}
-        <div
-          className={cn(
-            "mt-4 ",
-            gridView ? "mx-auto grid grid-cols-3 gap-4" : "space-y-4",
+          {!isLoading && !filteredAuctions.length && (
+            <div className="flex h-[400px] w-full items-center justify-center">
+              <h3>There aren&apos;t any auctions in this state</h3>
+            </div>
           )}
-        >
-          {rows.map((auction) => (
-            <AuctionCard
-              isGrid={gridView}
-              className="mx-auto"
-              loading={isLoading}
-              key={auction.chainId + auction.id + "_" + gridView}
-              auction={auction}
-            />
-          ))}
-        </div>
-        <Pagination className="mt-6" {...pagination} />
+          <div
+            className={cn(
+              "mt-4 ",
+              gridView ? "mx-auto grid grid-cols-3 gap-4" : "space-y-4",
+            )}
+          >
+            {rows.map((auction) => (
+              <AuctionCard
+                isGrid={gridView}
+                className="mx-auto"
+                loading={isLoading}
+                key={auction.chainId + auction.id + "_" + gridView}
+                auction={auction}
+              />
+            ))}
+          </div>
+          <Pagination className="mt-6" {...pagination} />
 
-        <div className="flex flex-col items-center justify-center py-8">
-          <p className="font-aeonpro pb-2">Want to create an auction?</p>
-          <Link to="/create/auction">
-            <Button variant="ghost">
-              Create Sealed Bid Auction <ArrowRightIcon className="w-6 pl-1" />
-            </Button>
-          </Link>
-        </div>
-      </PageContainer>
+          <div className="flex flex-col items-center justify-center py-8">
+            <p className="pb-2 font-sans">Want to create an auction?</p>
+            <Link to="/create/auction">
+              <Button variant="ghost">
+                Create Sealed Bid Auction{" "}
+                <ArrowRightIcon className="w-6 pl-1" />
+              </Button>
+            </Link>
+          </div>
+        </PageContainer>
+      </ScrollTargetElement>
     </div>
   );
 }

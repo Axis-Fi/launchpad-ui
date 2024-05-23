@@ -26,7 +26,6 @@ export function AppHeader() {
           <ConnectButton />
         </div>
       </div>
-      <div className="nav-separator" />
     </div>
   );
 }

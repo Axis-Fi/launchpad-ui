@@ -13,7 +13,7 @@ function App() {
       <div className="flex h-dvh flex-col justify-between">
         <div className="mx-auto w-full">
           <AppHeader />
-          <div className="mx-auto mt-10 w-full">
+          <div className="mx-auto w-full">
             <Outlet />
           </div>
         </div>
