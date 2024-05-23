@@ -4,6 +4,7 @@ import React from "react";
 import { cn } from "@/utils";
 
 const sizeMap = {
+  "7xl": "h1",
   "3xl": "h3",
   "2xl": "h3",
   xl: "h3",

@@ -10,10 +10,10 @@ function App() {
     <Providers>
       <ScrollToTop />
       <ReferrerChecker />
-      <div className="mx-auto flex h-dvh max-w-[1340px] flex-col justify-between px-4">
-        <div>
+      <div className="flex h-dvh flex-col justify-between">
+        <div className="mx-auto w-full">
           <AppHeader />
-          <div className="mx-auto mt-10 w-full max-w-[1258px]">
+          <div className="mx-auto mt-10 w-full">
             <Outlet />
           </div>
         </div>

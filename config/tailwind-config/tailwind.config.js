@@ -106,7 +106,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["AeonikPro", ...defaultTheme.fontFamily.sans],
-        mono: [...defaultTheme.fontFamily.mono],
+        mono: ["AeonikFono", ...defaultTheme.fontFamily.mono],
         aeonpro: ["AeonikPro", ...defaultTheme.fontFamily.sans],
         aeonfono: ["AeonikFono", ...defaultTheme.fontFamily.sans],
       },

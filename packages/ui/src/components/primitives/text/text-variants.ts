@@ -13,6 +13,7 @@ export const textVariants = cva("text-sans", {
       lg: "text-lg",
       "2xl": "text-2xl font-medium",
       "3xl": "text-3xl",
+      "7xl": "text-7xl",
     },
     weight: {
       default: "font-regular",

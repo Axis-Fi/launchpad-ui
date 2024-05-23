@@ -12,7 +12,7 @@ import {
 } from "@repo/ui";
 import { ReloadButton } from "components/reload-button";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
-import { ArrowRightIcon, SearchIcon } from "lucide-react";
+import { ArrowDownIcon, ArrowRightIcon, SearchIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
 import { AuctionCard } from "modules/auction/auction-card";
 import { useState } from "react";
@@ -42,75 +42,108 @@ export default function AuctionListPage() {
   const { rows, ...pagination } = usePagination(filteredAuctions, 9);
 
   return (
-    <PageContainer>
-      <div className="flex items-center justify-between">
-        <Tooltip content={"Origin is a modular Auction suite"}>
-          <Text size="2xl">Token Launches</Text>
-        </Tooltip>
-        <div className="flex gap-x-2">
-          <DropdownChecker
-            setFilters={setFilters}
-            filters={filters}
-            options={options}
-            label="Auction Status"
-          />
-          <IconnedInput
-            icon={<SearchIcon />}
-            className="placeholder:text-foreground"
-            placeholder="Search"
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <ToggleGroup
-            type="single"
-            onValueChange={(value) => setGridView(value === "grid")}
+    <div className="">
+      <div className="bg-hero-banner flex h-[582px] w-full items-end justify-center">
+        <div className="mb-10">
+          <Text size="7xl" mono>
+            Welcome to Origin
+          </Text>
+
+          <Text
+            size="3xl"
+            color="secondary"
+            className="mx-auto w-fit text-nowrap"
           >
-            <ToggleGroupItem value="grid">
-              <DashboardIcon />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="list">
-              <RowsIcon />
-            </ToggleGroupItem>
-          </ToggleGroup>
+            send copy plis mi familia
+          </Text>
+          <div className="mx-auto mt-6 flex w-min gap-x-2">
+            <Button className="uppercase" size="lg">
+              <div className="flex items-center">
+                Upcoming Sales
+                <div className="size-6">
+                  <ArrowDownIcon />
+                </div>
+              </div>
+            </Button>
 
-          <ReloadButton
-            tooltip="Reload Auctions"
-            refetching={isRefetching}
-            onClick={() => refetch()}
-          />
+            <Button className="uppercase" size="lg" variant="secondary">
+              Apply for Launch
+            </Button>
+          </div>
         </div>
       </div>
-      {!isLoading && !filteredAuctions.length && (
-        <div className="flex h-[400px] w-full items-center justify-center">
-          <h3>There aren&apos;t any auctions in this state</h3>
+
+      <PageContainer>
+        <div className="flex items-center justify-between">
+          <Tooltip content={"Origin is a modular Auction suite"}>
+            <Text size="2xl">Token Launches</Text>
+          </Tooltip>
+          <div className="flex gap-x-2">
+            <DropdownChecker
+              setFilters={setFilters}
+              filters={filters}
+              options={options}
+              label="Auction Status"
+            />
+            <IconnedInput
+              icon={<SearchIcon />}
+              className="placeholder:text-foreground"
+              placeholder="Search"
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <ToggleGroup
+              type="single"
+              defaultValue="list"
+              onValueChange={(value) => setGridView(value === "grid")}
+            >
+              <ToggleGroupItem value="list">
+                <RowsIcon />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="grid">
+                <DashboardIcon />
+              </ToggleGroupItem>
+            </ToggleGroup>
+
+            <ReloadButton
+              tooltip="Reload Auctions"
+              refetching={isRefetching}
+              onClick={() => refetch()}
+            />
+          </div>
         </div>
-      )}
-      <div
-        className={cn(
-          "mt-4 ",
-          gridView ? "mx-auto grid grid-cols-3 gap-4" : "space-y-4",
+        {!isLoading && !filteredAuctions.length && (
+          <div className="flex h-[400px] w-full items-center justify-center">
+            <h3>There aren&apos;t any auctions in this state</h3>
+          </div>
         )}
-      >
-        {rows.map((auction) => (
-          <AuctionCard
-            isGrid={gridView}
-            className="mx-auto"
-            loading={isLoading}
-            key={auction.chainId + auction.id + "_" + gridView}
-            auction={auction}
-          />
-        ))}
-      </div>
-      <Pagination className="mt-6" {...pagination} />
+        <div
+          className={cn(
+            "mt-4 ",
+            gridView ? "mx-auto grid grid-cols-3 gap-4" : "space-y-4",
+          )}
+        >
+          {rows.map((auction) => (
+            <AuctionCard
+              isGrid={gridView}
+              className="mx-auto"
+              loading={isLoading}
+              key={auction.chainId + auction.id + "_" + gridView}
+              auction={auction}
+            />
+          ))}
+        </div>
+        <Pagination className="mt-6" {...pagination} />
 
-      <div className="flex flex-col items-center justify-center py-8">
-        <p className="font-aeonpro pb-2">Want to create an auction?</p>
-        <Link to="/create/auction">
-          <Button variant="ghost">
-            Create Sealed Bid Auction <ArrowRightIcon className="w-6 pl-1" />
-          </Button>
-        </Link>
-      </div>
-    </PageContainer>
+        <div className="flex flex-col items-center justify-center py-8">
+          <p className="font-aeonpro pb-2">Want to create an auction?</p>
+          <Link to="/create/auction">
+            <Button variant="ghost">
+              Create Sealed Bid Auction <ArrowRightIcon className="w-6 pl-1" />
+            </Button>
+          </Link>
+        </div>
+      </PageContainer>
+    </div>
   );
 }
 

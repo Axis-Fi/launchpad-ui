@@ -218,4 +218,13 @@
       hsla(40, 100%, 77%, 1)
     );
   }
+
+  .bg-hero-banner {
+    background: linear-gradient(
+      42deg,
+      #cdf675 0%,
+      #75c8f6 49.99%,
+      #75a1f6 99.97%
+    );
+  }
 }
