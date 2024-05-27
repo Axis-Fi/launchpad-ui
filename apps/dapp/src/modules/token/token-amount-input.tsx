@@ -1,30 +1,41 @@
 import { Input, Text, Button, cn } from "@repo/ui";
 
-type TokenAmountInputProps = {
+type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
   label: string;
   symbol: string;
-  usdPrice: string;
-  balance: string;
+  usdPrice?: string;
+  balance?: string;
   error?: string;
 };
 
-export function TokenAmountInput(props: TokenAmountInputProps) {
+export function TokenAmountInput({
+  label,
+  symbol,
+  usdPrice,
+  balance,
+  error,
+  ...props
+}: TokenAmountInputProps) {
   return (
     <div
       className={cn(
         "hover:bg-surface-secondary bg-surface-tertiary group rounded border-2 border-transparent p-4 transition-all",
-        props.error && "border-feedback-alert",
+        error && "border-feedback-alert",
       )}
     >
-      <Text color="secondary">{props.label}</Text>
+      <Text color="secondary">{label}</Text>
       <div className="mt-0.5 flex items-center">
         <Text color="secondary" size="2xl">
-          {props.symbol}{" "}
+          {symbol}{" "}
         </Text>
         <Input
+          {...props}
           type="number"
           variant="lg"
-          className="hover:bg-surface-secondary"
+          className={cn(
+            "hover:bg-surface-secondary",
+            error && "text-feedback-alert",
+          )}
         />
         <Button
           uppercase
@@ -36,20 +47,20 @@ export function TokenAmountInput(props: TokenAmountInputProps) {
         </Button>
       </div>
       <div className="flex justify-between">
-        {props.usdPrice && (
+        {usdPrice && (
           <Text size="xs" color="secondary">
-            {props.usdPrice}
+            {usdPrice}
           </Text>
         )}
-        {props.balance && (
+        {balance && (
           <Text size="xs" color="secondary" uppercase>
-            Balance: {props.balance}
+            Balance: {balance}
           </Text>
         )}
       </div>
-      {props.error && (
+      {error && (
         <div className="bg-feedback-alert mt-1.5 rounded p-2">
-          <Text color="tertiary">{props.error}</Text>
+          <Text color="tertiary">{error}</Text>
         </div>
       )}
     </div>
