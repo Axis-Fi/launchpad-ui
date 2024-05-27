@@ -46,6 +46,7 @@ const ToggleGroupItem = React.forwardRef<
           size: context.size || size,
         }),
         className,
+        "data-[state=on]:border-primary-500 rounded-none border border-transparent",
       )}
       {...props}
     >

@@ -11,9 +11,28 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    title: "Haii",
-    description: "Wen tokenlist?",
-    children: <div className="h-[80px] text-center">im inside a card</div>,
-    footer: "Haii from footer",
+    children: <div className="">i'm content inside a card</div>,
+  },
+};
+
+export const Title: Story = {
+  args: {
+    title: "Title",
+    children: Primary.args.children,
+  },
+};
+
+export const HeaderElement: Story = {
+  args: {
+    ...Title.args,
+    headerRightElement: "Right Element",
+  },
+};
+
+export const HeaderElementOnly: Story = {
+  args: {
+    ...Primary.args,
+    ...HeaderElement.args,
+    title: "",
   },
 };

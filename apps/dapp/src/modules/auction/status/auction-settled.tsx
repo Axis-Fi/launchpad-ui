@@ -1,13 +1,13 @@
 import React from "react";
 import { Button, InfoLabel, cn } from "@repo/ui";
-import { AuctionInfoCard } from "../auction-info-card";
+import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
 import { ProjectInfoCard } from "../project-info-card";
 import { useAccount } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
-import { AuctionInfoLabel } from "../auction-info-labels";
+import { AuctionMetric } from "../auction-metric";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { SettledAuctionCard } from "modules/auction/settled-auction-card";
 
@@ -59,7 +59,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
         </div>
       </div>
       <div className="flex justify-between">
-        <AuctionInfoCard>
+        <AuctionMetricsContainer auction={auction}>
           <InfoLabel
             label="Total Raised"
             value={`${auction.formatted?.purchased} ${auction.quoteToken.symbol}`}
@@ -73,9 +73,9 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
 
           <InfoLabel label="Ended" value={auction.formatted?.endFormatted} />
           {auction.linearVesting && (
-            <AuctionInfoLabel auction={auction} id="vestingDuration" />
+            <AuctionMetric auction={auction} id="vestingDuration" />
           )}
-        </AuctionInfoCard>
+        </AuctionMetricsContainer>
         <div className="w-1/2">
           <ProjectInfoCard auction={auction} />
         </div>

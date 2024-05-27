@@ -1,121 +1,117 @@
-import { Avatar, Button, Progress, Skeleton, Tooltip } from "@repo/ui";
+import { Button, Card, IconedLabel, Skeleton, Text, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
-import { formatDistanceToNow } from "date-fns";
-import { ArrowRightIcon } from "lucide-react";
-import { AuctionListed } from "@repo/types";
-import { AuctionStatusChip } from "./auction-status-chip";
-import { ImageBanner } from "components/image-banner";
-import { ChainIcon } from "components/chain-icon";
-import { auctionMetadata } from "./metadata";
+import { AuctionListed, AuctionType, PropsWithAuction } from "@repo/types";
+import { AuctionCardBanner } from "./auction-card-banner";
+import { getChainById } from "utils";
+import { AuctionMetricsContainer } from "./auction-metrics-container";
+import { AuctionMetric } from "./auction-metric";
+import { AuctionStatusBadge } from "./auction-status-badge";
+import React from "react";
 import { Link } from "react-router-dom";
 
 type AuctionCardProps = React.HTMLAttributes<HTMLDivElement> & {
   auction: AuctionListed;
+  loading?: boolean;
+  isGrid?: boolean;
 };
 
 export function AuctionCard({ auction, ...props }: AuctionCardProps) {
-  const progress = calculatePercentage(
-    auction.start,
-    auction.conclusion,
-    new Date().getTime() / 1000,
+  const chain = getChainById(auction.chainId);
+
+  return (
+    <Card
+      className={cn(
+        "border-surface-tertiary hover:bg-surface-tertiary group size-full overflow-hidden hover:border-neutral-400",
+        props.isGrid ? "relative h-[368px] gap-y-3" : "p-8",
+        props.className,
+      )}
+    >
+      {props.loading ? (
+        <Skeleton className="h-[332px] w-full" />
+      ) : (
+        <div
+          className={cn(
+            "flex h-full gap-x-8",
+            props.isGrid ? "flex-col" : "*:w-1/2",
+          )}
+        >
+          <AuctionCardBanner
+            //TODO: replace with a better named property, likely projectBanner
+            image={auction.auctionInfo?.links?.projectLogo}
+            deadline={auction.formatted?.endDate}
+            chain={chain}
+            isGrid={props.isGrid}
+          />
+          <AuctionCardDetails isGrid={props.isGrid} auction={auction} />
+        </div>
+      )}
+    </Card>
   );
+}
 
-  const remainingTime = formatDistanceToNow(
-    new Date(Number(auction.conclusion) * 1000),
-  );
-
-  const metadata = auctionMetadata[auction.auctionType];
-
+function AuctionCardDetails(
+  props: PropsWithAuction & {
+    isGrid?: boolean;
+  },
+) {
+  const isEMP = props.auction.auctionType === AuctionType.SEALED_BID;
   return (
     <div
-      className="bg-secondary flex w-full max-w-[400px] flex-col justify-between rounded-sm p-2"
-      {...props}
+      className={cn("flex flex-col justify-between", props.isGrid && "h-1/2")}
     >
       <div>
-        <div className="flex justify-between">
-          <div className="flex items-center justify-center gap-x-2">
-            <AuctionStatusChip status={auction.status} />{" "}
-            <Tooltip content={metadata.tooltip}>
-              <p className="text-xs">{metadata.label}</p>
-            </Tooltip>
-          </div>
-          <div className="flex items-center gap-x-3">
-            <SocialRow
-              {...(auction.auctionInfo?.links ?? {})}
-              className="h-6"
-            />
-            <ChainIcon chainId={auction.chainId} />
-          </div>
+        <div
+          className={cn("flex justify-between", props.isGrid && "items-center")}
+        >
+          <IconedLabel
+            large
+            src={props.auction.auctionInfo?.links?.projectLogo}
+          >
+            {props.auction.auctionInfo?.name}
+          </IconedLabel>
+          <AuctionStatusBadge
+            large={!props.isGrid}
+            className={cn(!props.isGrid && "-mr-6 -mt-6")}
+            status={props.auction.status}
+          />
         </div>
+        <SocialRow {...props.auction.auctionInfo?.links} />
+        <div className="flex h-full flex-col items-end text-wrap">
+          <Text color="secondary" className="hidden group-hover:block">
+            {props.auction.auctionInfo?.description}
+          </Text>
+          <Text color="secondary" className="group-hover:hidden">
+            {props.auction.auctionInfo?.description}
+          </Text>
+        </div>
+      </div>
 
-        <div className="mt-4 flex flex-col rounded-sm">
-          <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>
-            <div className="flex items-center gap-x-1 px-4 pt-4">
-              <Avatar
-                className="text-md h-12 w-12"
-                src={auction.auctionInfo?.links?.payoutTokenLogo}
-                alt={auction.baseToken.symbol}
-              />
-              <p>{auction.baseToken.name}</p>
-            </div>
-            <Progress
-              className="auction-progress relative mt-4 w-[100%] self-end"
-              value={progress > 100 ? 100 : progress}
-            />
-          </ImageBanner>
-        </div>
-        <div className="font-aeonfono mt-2 text-center ">
-          {auction.status === "concluded" ||
-          auction.status === "decrypted" ||
-          auction.status === "settled" ? (
-            <h4>Auction has ended</h4>
-          ) : (
-            <>
-              <h4 className="leading-none">{remainingTime}</h4>
-              <p className="leading-none">remaining</p>
-            </>
+      {isEMP && !props.isGrid && (
+        <AuctionMetricsContainer
+          className="group-hover:hidden"
+          auction={props.auction}
+        >
+          <AuctionMetric id="targetRaise" />
+          <AuctionMetric id="minRaise" />
+          <AuctionMetric id="minPrice" small />
+          <AuctionMetric id="auctionnedSupply" small />
+        </AuctionMetricsContainer>
+      )}
+
+      <Link
+        className={cn("self-end", !props.isGrid && "hidden group-hover:block")}
+        to={`/auction/${props.auction.auctionType}/${props.auction.id}`}
+      >
+        <Button
+          className={cn(
+            "self-end uppercase transition-all ",
+            props.isGrid &&
+              "absolute bottom-0 right-0 mb-3 mr-3 opacity-0 group-hover:opacity-100",
           )}
-          <div>
-            <p className="my-4 px-4 text-xl">{auction.auctionInfo?.name}</p>
-            <p className="px-2 text-left leading-5">
-              {auction.auctionInfo?.description}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 flex justify-center">
-        <Link to={`/auction/${auction.auctionType}/${auction.id}`}>
-          <Button variant="outline" className="mx-auto">
-            View Auction <ArrowRightIcon className="w-5" />
-          </Button>
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function calculatePercentage(
-  start: string | number,
-  end: string | number,
-  current: string | number,
-) {
-  return (
-    ((Number(current) - Number(start)) / (Number(end) - Number(start))) * 100
-  );
-}
-
-export function AuctionCardLoading() {
-  return (
-    <div className="bg-secondary h-[220px] max-w-[390px] rounded-sm p-2">
-      <div className="flex justify-between">
-        <Skeleton className="h-6 w-32 rounded-full" />
-        <Skeleton className="h-6 w-32 rounded-full" />
-      </div>
-      <Skeleton className="mt-4 h-20 w-full" />
-      <div className="flex flex-col items-center justify-around">
-        <Skeleton className="mt-4 h-14 w-full" />
-      </div>
+        >
+          View Auction
+        </Button>
+      </Link>
     </div>
   );
 }

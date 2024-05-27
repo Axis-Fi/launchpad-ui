@@ -9,14 +9,14 @@ export const PaginationSelector = (props: {
 }) => {
   const isSelected = props.value === props.currentPage;
   const selectedStyle =
-    "border-light-secondary text-light-secondary rounded-lg border";
+    "border-light-secondary text-light-secondary rounded-sm border";
 
   const handleClick = () => props.onClickPage(props.value);
 
   return (
     <div
       onClick={handleClick}
-      className={`flex h-8 w-8 max-w-[32px] cursor-pointer select-none items-center justify-center p-1 text-center text-[14px] hover:rounded-lg hover:border ${
+      className={`flex h-8 w-8 max-w-[32px] cursor-pointer select-none items-center justify-center p-1 text-center text-[14px] hover:rounded-sm hover:border ${
         isSelected && selectedStyle
       } ${props.className} `}
     >

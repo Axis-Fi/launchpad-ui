@@ -109,6 +109,9 @@ importers:
       react-router-dom:
         specifier: ^6.21.3
         version: 6.21.3(react-dom@18.2.0)(react@18.2.0)
+      react-scroll:
+        specifier: ^1.9.0
+        version: 1.9.0(react-dom@18.2.0)(react@18.2.0)
       recharts:
         specifier: ^2.12.0
         version: 2.12.0(react-dom@18.2.0)(react@18.2.0)
@@ -167,6 +170,9 @@ importers:
       "@types/react-dom":
         specifier: ^18.2.18
         version: 18.2.18
+      "@types/react-scroll":
+        specifier: ^1.8.10
+        version: 1.8.10
       "@vitejs/plugin-react":
         specifier: ^4.2.1
         version: 4.2.1(vite@5.0.10)
@@ -10614,6 +10620,15 @@ packages:
       }
     dependencies:
       "@types/react": 18.2.48
+
+  /@types/react-scroll@1.8.10:
+    resolution:
+      {
+        integrity: sha512-RD4Z7grbdNGOKwKnUBKar6zNxqaW3n8m9QSrfvljW+gmkj1GArb8AFBomVr6xMOgHPD3v1uV3BrIf01py57daQ==,
+      }
+    dependencies:
+      "@types/react": 18.2.48
+    dev: true
 
   /@types/react@18.2.48:
     resolution:
@@ -23255,6 +23270,21 @@ packages:
     dependencies:
       "@remix-run/router": 1.14.2
       react: 18.2.0
+
+  /react-scroll@1.9.0(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-mamNcaX9Ng+JeSbBu97nWwRhYvL2oba+xR2GxvyXsbDeGP+gkYIKZ+aDMMj/n20TbV9SCWm/H7nyuNTSiXA6yA==,
+      }
+    peerDependencies:
+      react: ^15.5.4 || ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^15.5.4 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      lodash.throttle: 4.1.1
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /react-shallow-renderer@16.15.0(react@18.2.0):
     resolution:

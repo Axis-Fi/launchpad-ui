@@ -6,7 +6,7 @@ import { AppVersion } from "./app-version";
 
 export function AppHeader() {
   return (
-    <div>
+    <div className="mx-auto max-w-[1440px]">
       <div className="mx-auto flex max-h-[88px] justify-between py-6">
         <div className="flex cursor-pointer items-center gap-x-4 text-4xl">
           <Link to="/">
@@ -26,7 +26,6 @@ export function AppHeader() {
           <ConnectButton />
         </div>
       </div>
-      <div className="nav-separator" />
     </div>
   );
 }

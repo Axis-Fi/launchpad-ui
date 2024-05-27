@@ -12,7 +12,6 @@ import { SocialRow } from "components/social-row";
 import { ProjectInfoCard } from "modules/auction/project-info-card";
 import { ContractAddressCard } from "modules/auction/contract-address-card";
 import { PageHeader } from "modules/app/page-header";
-import { AuctionInfoCard } from "modules/auction/auction-info-card";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { ImageBanner } from "components/image-banner";
 import { ReloadButton } from "components/reload-button";
@@ -27,6 +26,7 @@ import { ChainIcon } from "components/chain-icon";
 import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
 import { getAuctionMetadata } from "modules/auction/metadata";
 import { getAuctionHouse } from "utils/contracts";
+import { PageContainer } from "modules/app/page-container";
 
 const statuses: Record<
   AuctionStatus,
@@ -68,7 +68,7 @@ export default function AuctionPage() {
   const metadata = getAuctionMetadata(auction.auctionType);
 
   return (
-    <div>
+    <PageContainer>
       <PageHeader>
         <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
       </PageHeader>
@@ -129,36 +129,31 @@ export default function AuctionPage() {
         isLoading={isAuctionLoading}
         address={address}
       />
-    </div>
+    </PageContainer>
   );
 }
 
 function AuctionPageLoading() {
   return (
     <div className="mask">
-      <PageHeader />
-      <div>
-        <div className="bg-secondary rounded-sm p-4 ">
-          <Skeleton className="h-22 mt-20 w-full" />
-        </div>
-
-        <div className="mt-5">
-          <div className="flex justify-between gap-x-4">
-            <AuctionInfoCard className="w-1/2">
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-            </AuctionInfoCard>
-
-            <Skeleton className="h-72 w-[40%]" />
+      <PageContainer>
+        <PageHeader />
+        <div>
+          <div className="bg-secondary rounded-sm p-4 ">
+            <Skeleton className="h-22 mt-20 w-full" />
           </div>
+
+          <div className="mt-5">
+            <div className="flex justify-between gap-x-4">
+              <Skeleton className="h-72 w-[40%]" />
+            </div>
+          </div>
+          <h3 className="mt-5">About</h3>
+          <Skeleton className="h-20 w-[40%]" />
+          <h3 className="mt-5">Contract Addresses</h3>
+          <Skeleton className="h-32 w-[40%]" />
         </div>
-        <h3 className="mt-5">About</h3>
-        <Skeleton className="h-20 w-[40%]" />
-        <h3 className="mt-5">Contract Addresses</h3>
-        <Skeleton className="h-32 w-[40%]" />
-      </div>
+      </PageContainer>
     </div>
   );
 }

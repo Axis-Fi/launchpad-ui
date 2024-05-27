@@ -6,20 +6,20 @@ export function AuctionInfoCard(
 ) {
   return (
     <div className={props.className}>
-      <h4 className="text-3xl tracking-wide">Auction Info</h4>
-      <div className="mt-4 grid grid-cols-2 gap-x-10 gap-y-6">
-        {props.children}
-      </div>
+      <div className="grid grid-cols-2 gap-x-10 gap-y-6">{props.children}</div>
     </div>
   );
 }
 
 type AuctionLabelChildren = React.ReactElement<PropsWithAuction>;
 
-export function AuctionInfoContainer(
+export function AuctionMetricsContainer(
   props: React.HtmlHTMLAttributes<HTMLDivElement> &
     PropsWithAuction & {
-      children?: AuctionLabelChildren | AuctionLabelChildren[];
+      children?:
+        | AuctionLabelChildren
+        | AuctionLabelChildren[]
+        | React.ReactNode;
     },
 ) {
   if (!props.children) {
@@ -28,7 +28,7 @@ export function AuctionInfoContainer(
 
   const children = Array.isArray(props.children)
     ? props.children.map((c) => cloneWithAuction(c, props.auction))
-    : cloneWithAuction(props.children, props.auction);
+    : cloneWithAuction(props.children as AuctionLabelChildren, props.auction);
 
   return (
     <AuctionInfoCard className={props.className}>{children}</AuctionInfoCard>
