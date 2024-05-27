@@ -5,7 +5,7 @@ import {
   PropsWithAuction,
 } from "@repo/types";
 import { formatDate, Metric, MetricProps } from "@repo/ui";
-import { trimCurrency } from "utils/currency";
+import { abbreviateNumber, trimCurrency } from "utils/currency";
 
 const handlers = {
   targetRaise: {
@@ -99,6 +99,16 @@ const handlers = {
       )} days starting   ${formatDate.fullLocal(
         new Date(Number(auction.linearVesting?.startTimestamp) * 1000),
       )}`,
+  },
+  minPriceFDV: {
+    label: "Min. Price FDV",
+    handler: (auction: Auction) => {
+      const _auction = auction as BatchAuction;
+      const fdv =
+        Number(auction.baseToken.totalSupply) *
+        Number(_auction.encryptedMarginalPrice?.minPrice);
+      return `${abbreviateNumber(fdv)} ${auction.quoteToken.symbol}`;
+    },
   },
 };
 

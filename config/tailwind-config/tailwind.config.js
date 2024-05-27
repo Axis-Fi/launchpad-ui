@@ -45,6 +45,9 @@ module.exports = {
             DEFAULT: "hsl(var(--surface-highlight-fill))",
             outline: "hsl(var(--surface-highlight-outline))",
           },
+          progress: {
+            DEFAULT: "hsl(var(--surface-progress-fill))",
+          },
         },
         feedback: {
           alert: "hsl(var(--feedback-alert))",

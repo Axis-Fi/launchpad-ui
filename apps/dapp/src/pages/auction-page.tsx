@@ -27,6 +27,7 @@ import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-a
 import { getAuctionMetadata } from "modules/auction/metadata";
 import { getAuctionHouse } from "utils/contracts";
 import { PageContainer } from "modules/app/page-container";
+import { AuctionLaunchMetrics } from "modules/auction/auction-launch-metrics";
 
 const statuses: Record<
   AuctionStatus,
@@ -99,6 +100,7 @@ export default function AuctionPage() {
           </div>
         </div>
       </ImageBanner>
+      <AuctionLaunchMetrics auction={auction} />
       <div className="mt-8">
         <AuctionElement auction={auction} />
       </div>

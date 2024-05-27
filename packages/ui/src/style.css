@@ -56,6 +56,8 @@
     --surface-highlight-fill: var(--neutral-50);
     --surface-highlight-outline: var(--primary-600);
 
+    --surface-progress-fill: var(--green-100);
+
     --text-primary: var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-tertiary: var(--neutral-600);

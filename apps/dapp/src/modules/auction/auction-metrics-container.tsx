@@ -6,7 +6,7 @@ export function AuctionInfoCard(
 ) {
   return (
     <div className={props.className}>
-      <div className="grid grid-cols-2 gap-x-10 gap-y-6">{props.children}</div>
+      <div className="flex justify-between">{props.children}</div>
     </div>
   );
 }

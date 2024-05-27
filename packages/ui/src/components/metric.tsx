@@ -1,3 +1,4 @@
+import { cn } from "..";
 import { Text } from "./primitives";
 
 export type MetricProps = React.HTMLProps<HTMLDivElement> & {
@@ -9,10 +10,19 @@ export function Metric(props: MetricProps) {
   const size = props.small ? "default" : "2xl";
   return (
     <div>
-      <Text uppercase spaced mono size="xs" color="secondary">
+      <Text
+        uppercase
+        spaced
+        mono
+        size="xs"
+        color="secondary"
+        className="leading-none"
+      >
         {props.label}
       </Text>
-      <Text size={size}>{props.children}</Text>
+      <Text size={size} className={cn(props.small && "leading-none")}>
+        {props.children}
+      </Text>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Progress } from "@repo/ui";
+import { Progress, Metric } from "@repo/ui";
 
 const meta = {
   title: "Design System/Progress",
@@ -8,7 +8,7 @@ const meta = {
     value: 50,
   },
   decorators: (Story) => (
-    <div className="w-[180px]">
+    <div className="h-[100px] w-[480px]">
       <Story />
     </div>
   ),
@@ -18,3 +18,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {};
+
+export const WithMetric: Story = {
+  args: {
+    children: (
+      <Metric small label="Minimum Raise">
+        $100,000,000
+      </Metric>
+    ),
+  },
+};
