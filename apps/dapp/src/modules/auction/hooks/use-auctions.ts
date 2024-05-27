@@ -13,6 +13,7 @@ import { useTokenLists } from "state/tokenlist";
 import { multihashRegex } from "utils/ipfs";
 import { useQueryAll } from "loaders/use-query-all";
 import { getAuctionType } from "../utils/get-auction-type";
+import { isSecureAuction } from "../utils/malicious-auction-filters";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -61,13 +62,21 @@ export function useAuctions(): AuctionsResult {
       if (!type) {
         throw new Error(`Type not found for auction ${auction.auctionType}`);
       }
-      return {
+
+      const chainId = getChainId(auction.chain);
+
+      const preparedAuction = {
         ...auction,
         auctionType: type,
         ...formatAuctionTokens(auction, getToken, auctionInfo),
-        chainId: getChainId(auction.chain),
         status: getAuctionStatus(auction),
+        chainId,
         auctionInfo,
+      };
+
+      return {
+        ...preparedAuction,
+        isSecure: isSecureAuction(preparedAuction),
       };
     })
     .sort(sortAuction);

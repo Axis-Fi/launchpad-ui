@@ -56,7 +56,7 @@ export default function AuctionPage() {
     return <AuctionPageLoading />;
   }
 
-  if (!auction) return <AuctionPageMissing />;
+  if (!auction || !auction.isSecure) return <AuctionPageMissing />;
 
   const auctionHouse = getAuctionHouse(auction);
   const AuctionElement =

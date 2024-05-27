@@ -5345,6 +5345,7 @@ export type AtomicCommonFieldsFragment = {
   seller: string;
   derivativeType?: string | null;
   wrapDerivative: boolean;
+  callbacks: string;
   curator?: string | null;
   curatorApproved: boolean;
   curatorFee: string;
@@ -5397,6 +5398,7 @@ export type BatchCommonFieldsFragment = {
   seller: string;
   derivativeType?: string | null;
   wrapDerivative: boolean;
+  callbacks: string;
   curator?: string | null;
   curatorApproved: boolean;
   curatorFee: string;
@@ -5502,6 +5504,7 @@ export type GetAuctionLotsQuery = {
     seller: string;
     derivativeType?: string | null;
     wrapDerivative: boolean;
+    callbacks: string;
     curator?: string | null;
     curatorApproved: boolean;
     curatorFee: string;
@@ -5587,6 +5590,7 @@ export type GetAuctionLotsQuery = {
     seller: string;
     derivativeType?: string | null;
     wrapDerivative: boolean;
+    callbacks: string;
     curator?: string | null;
     curatorApproved: boolean;
     curatorFee: string;
@@ -5655,6 +5659,7 @@ export type GetAtomicAuctionLotQuery = {
     seller: string;
     derivativeType?: string | null;
     wrapDerivative: boolean;
+    callbacks: string;
     curator?: string | null;
     curatorApproved: boolean;
     curatorFee: string;
@@ -5723,6 +5728,7 @@ export type GetBatchAuctionLotQuery = {
     seller: string;
     derivativeType?: string | null;
     wrapDerivative: boolean;
+    callbacks: string;
     curator?: string | null;
     curatorApproved: boolean;
     curatorFee: string;
@@ -5821,6 +5827,7 @@ export const AtomicCommonFieldsFragmentDoc = `
   seller
   derivativeType
   wrapDerivative
+  callbacks
   curator
   curatorApproved
   curatorFee
@@ -5878,6 +5885,7 @@ export const BatchCommonFieldsFragmentDoc = `
   seller
   derivativeType
   wrapDerivative
+  callbacks
   curator
   curatorApproved
   curatorFee
