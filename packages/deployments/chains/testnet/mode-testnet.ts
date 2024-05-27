@@ -1,5 +1,6 @@
 import { modeTestnet } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
+import { usdc, weth } from "../../tokens/common";
 
 const config: AxisDeploymentConfig = {
   name: "mode-testnet",
@@ -20,21 +21,14 @@ const config: AxisDeploymentConfig = {
   rpcURL: "https://sepolia.mode.network",
   tokenList: [
     {
-      name: "USDC",
-      symbol: "USDC",
+      ...usdc,
       address: "0xfc3156a0a9295dcd83b8f405bae7a4b73f4e2306",
       decimals: 18,
       mintable: true,
-      logoURI:
-        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/USDC.png",
     },
-
     {
+      ...weth,
       address: "0xfdf5fe07a9c888f383aea34f152dee04baee7a2e",
-      name: "Wrapped Ether",
-      symbol: "WETH",
-      logoURI:
-        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/WETH.png",
       decimals: 18,
       mintable: true,
     },

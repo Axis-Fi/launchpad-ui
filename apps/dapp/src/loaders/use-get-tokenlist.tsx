@@ -16,7 +16,7 @@ export function useGetTokenList(path?: string) {
       const list: TokenList = await response.json();
       validateTokenlist(list); //Throws error on invalid list
 
-      tokenlist.addList(list);
+      tokenlist.addList({ ...list, isActive: true });
 
       return list;
     },

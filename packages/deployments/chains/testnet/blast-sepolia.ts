@@ -1,5 +1,6 @@
 import { blastSepolia } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
+import { weth } from "../../tokens/common";
 
 const config: AxisDeploymentConfig = {
   name: "blast-testnet",
@@ -30,13 +31,10 @@ const config: AxisDeploymentConfig = {
         "https://assets-global.website-files.com/65a6baa1a3f8ed336f415cb4/65c67eafd3569b7e2f834b8d_usdb-icon-yellow.svg",
     },
     {
+      ...weth,
       mintable: true,
       decimals: 18,
-      symbol: "WETH",
-      name: "Wrapped Ether",
       address: "0x1095e2650accccc10daaac305b380f23158f1d94",
-      logoURI:
-        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/WETH.png",
     },
     {
       decimals: 18,
