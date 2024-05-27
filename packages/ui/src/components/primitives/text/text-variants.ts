@@ -5,6 +5,7 @@ export const textVariants = cva("text-sans", {
     color: {
       primary: "text-foreground-primary",
       secondary: "text-foreground-secondary",
+      tertiary: "text-surface", //TODO: couldnt find a light color for text in the DS
     },
     size: {
       default: "text-base",
