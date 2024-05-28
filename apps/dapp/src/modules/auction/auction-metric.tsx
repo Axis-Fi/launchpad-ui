@@ -1,13 +1,66 @@
+import { differenceInDays } from "date-fns";
 import {
-  AtomicAuction,
-  Auction,
-  BatchAuction,
-  PropsWithAuction,
+  AuctionDerivatives,
+  type AtomicAuction,
+  type Auction,
+  type BatchAuction,
+  type PropsWithAuction,
 } from "@repo/types";
 import { formatDate, Metric, MetricProps } from "@repo/ui";
 import { abbreviateNumber, trimCurrency } from "utils/currency";
 
 const handlers = {
+  derivative: {
+    label: "Derivative",
+    handler: (auction: Auction) => {
+      switch (auction.derivativeType) {
+        case AuctionDerivatives.LINEAR_VESTING: {
+          return "Vesting";
+        }
+        default:
+          return "None";
+      }
+    },
+  },
+  minFill: {
+    label: "Min. Fill",
+    handler: (auction: Auction) => {
+      const _auction = auction as BatchAuction;
+      const fill = Math.round(
+        +_auction.encryptedMarginalPrice!.minFilled / +_auction.capacity,
+      );
+      return `${fill}%`;
+    },
+  },
+  protocolFee: {
+    label: "Protocol Fee",
+    handler: (auction: Auction) => {
+      return `${+auction.protocolFee}%`;
+    },
+  },
+  referrerFee: {
+    label: "Referrer Fee",
+    handler: (auction: Auction) => {
+      return `${+auction.referrerFee}%`;
+    },
+  },
+  duration: {
+    label: "Duration",
+    handler: (auction: Auction) => {
+      const days = differenceInDays(
+        new Date(+auction.conclusion * 1000),
+        new Date(+auction.start * 1000),
+      );
+      return `${days} days`;
+    },
+  },
+  totalRaised: {
+    label: "Total Raised",
+    handler: (auction: Auction) => {
+      const _auction = auction as BatchAuction;
+      return `${_auction.formatted?.purchased} ${_auction.quoteToken.symbol}`;
+    },
+  },
   targetRaise: {
     label: "Target Raise",
     handler: (auction: Auction) => {
@@ -20,7 +73,7 @@ const handlers = {
     },
   },
   minRaise: {
-    label: "Minimum Raise",
+    label: "Min. Raise",
     handler: (auction: Auction) => {
       const _auction = auction as BatchAuction;
       const minRaise =
@@ -32,7 +85,7 @@ const handlers = {
   },
 
   minPrice: {
-    label: "Minimum Price",
+    label: "Min. Price",
     handler: (auction: Auction) => {
       //TODO: revamp this
       if ("encryptedMarginalPrice" in auction) {
@@ -77,8 +130,8 @@ const handlers = {
       `${auction.formatted?.sold} ${auction.baseToken.symbol}`,
   },
 
-  auctionnedSupply: {
-    label: "Auctionned Supply",
+  auctionedSupply: {
+    label: "Auctioned Supply",
     handler: (auction: Auction) => {
       const res =
         (Number(auction.capacityInitial) /
@@ -114,6 +167,7 @@ const handlers = {
 
 type AuctionMetricsProps = Partial<PropsWithAuction> & {
   id: keyof typeof handlers;
+  className?: string;
 } & Pick<MetricProps, "metricSize">;
 
 export function AuctionMetric(props: AuctionMetricsProps) {
@@ -124,7 +178,11 @@ export function AuctionMetric(props: AuctionMetricsProps) {
   const value = element.handler(props.auction);
 
   return (
-    <Metric metricSize={props.metricSize} label={element.label}>
+    <Metric
+      className="min-w-[180px]"
+      metricSize={props.metricSize}
+      label={element.label}
+    >
       {value}
     </Metric>
   );

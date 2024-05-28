@@ -82,7 +82,7 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
           />
         </>
       )}
-      <Metric label="Participants">
+      <Metric label="Participants" className="min-w-[188px] flex-grow">
         {batchAuction.formatted?.uniqueBidders}
       </Metric>
     </div>

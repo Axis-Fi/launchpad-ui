@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, Card, InfoLabel } from "@repo/ui";
-import { AuctionMetricsContainer } from "../auction-metrics-container";
+import { Button } from "@repo/ui";
+import { AuctionInfoCard } from "../auction-metrics-container";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
 import { useAccount } from "wagmi";
@@ -33,25 +33,16 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
       <div className="flex flex-grow flex-col justify-between gap-y-[16px]">
         {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
 
-        <Card>
-          <AuctionMetricsContainer auction={auction}>
-            <InfoLabel
-              label="Total Raised"
-              value={`${auction.formatted?.purchased} ${auction.quoteToken.symbol}`}
-            />
-
-            <InfoLabel label="Total Bids" value={batchAuction.bids.length} />
-            <InfoLabel
-              label="Unique Participants"
-              value={auction.formatted?.uniqueBidders}
-            />
-
-            <InfoLabel label="Ended" value={auction.formatted?.endFormatted} />
-            {auction.linearVesting && (
-              <AuctionMetric auction={auction} id="vestingDuration" />
-            )}
-          </AuctionMetricsContainer>
-        </Card>
+        <AuctionInfoCard>
+          <div className="flex-start align-start flex flex-wrap gap-y-[16px]">
+            <AuctionMetric auction={auction} id="protocolFee" />
+            <AuctionMetric auction={auction} id="minFill" />
+            <AuctionMetric auction={auction} id="derivative" />
+            <AuctionMetric auction={auction} id="referrerFee" />
+            <AuctionMetric auction={auction} id="minPrice" />
+            <AuctionMetric auction={auction} id="duration" />
+          </div>
+        </AuctionInfoCard>
 
         <ProjectInfoCard auction={auction} />
 

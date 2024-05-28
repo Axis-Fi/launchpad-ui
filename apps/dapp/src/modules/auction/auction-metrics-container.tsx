@@ -1,13 +1,14 @@
-import { Auction, PropsWithAuction } from "@repo/types";
+import type { Auction, PropsWithAuction } from "@repo/types";
+import { Card, cn } from "@repo/ui";
 import React from "react";
 
 export function AuctionInfoCard(
   props: React.HtmlHTMLAttributes<HTMLDivElement>,
 ) {
   return (
-    <div className={props.className}>
+    <Card className={cn(props.className)} title="Launch Info">
       <div className="flex justify-between">{props.children}</div>
-    </div>
+    </Card>
   );
 }
 

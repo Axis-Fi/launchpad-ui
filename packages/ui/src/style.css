@@ -234,8 +234,8 @@
     background: linear-gradient(
       42deg,
       #d3d3d3 0%,
-      /* Light gray */ #a9a9a9 49.99%,
-      /* Dark gray */ #696969 99.97% /* Dim gray */
+      #a9a9a9 49.99%,
+      #696969 99.97%
     );
   }
 }

@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import { cn } from "@/utils";
+import { textVariants } from "./text";
 
 const CardRoot = React.forwardRef<
   HTMLDivElement,
@@ -35,7 +36,11 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn("font-light leading-none tracking-tight", className)}
+    className={cn(
+      textVariants({ color: "secondary", size: "3xl", weight: "light" }),
+      "font-mono leading-none tracking-tight",
+      className,
+    )}
     {...props}
   />
 ));

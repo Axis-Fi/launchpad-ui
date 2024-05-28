@@ -17,15 +17,12 @@ export function AuctionBidsCard({
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
 
   return (
-    <Card {...props}>
-      {isFixedPrice ? <h3>Purchases</h3> : <h3>Bids</h3>}
-      <div className="mt-2">
-        {isFixedPrice ? (
-          <PurchaseList auction={auction as AtomicAuction} />
-        ) : (
-          <BidList auction={auction} address={address} />
-        )}
-      </div>
+    <Card {...props} title={isFixedPrice ? "Purchases" : "Bids"}>
+      {isFixedPrice ? (
+        <PurchaseList auction={auction as AtomicAuction} />
+      ) : (
+        <BidList auction={auction} address={address} />
+      )}
     </Card>
   );
 }
