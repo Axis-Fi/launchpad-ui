@@ -2,8 +2,6 @@ import { Button } from "@repo/ui";
 import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
-import { AuctionLaunchMetrics } from "../auction-launch-metrics";
-import { ProjectInfoCard } from "../project-info-card";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
@@ -140,12 +138,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
     <div className="flex justify-between">
-      <div className="w-1/2">
-        {isEMP && <AuctionLaunchMetrics auction={auction} />}
-        <ProjectInfoCard auction={auction} />
-      </div>
+      <div className="w-1/2"></div>
 
-      <div className="w-[40%]">
+      <div className="">
         <FormProvider {...form}>
           <form onSubmit={(e) => e.preventDefault()}>
             <AuctionInputCard

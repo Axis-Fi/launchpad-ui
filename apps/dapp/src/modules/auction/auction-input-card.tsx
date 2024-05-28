@@ -1,15 +1,6 @@
-import {
-  Button,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardRoot,
-  cn,
-} from "@repo/ui";
+import { Card, Text } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
-import { AuctionStatusBadge } from "./auction-status-badge";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
-import { RequiresChain } from "components/requires-chain";
 
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {
@@ -19,45 +10,15 @@ type AuctionInputCardProps = PropsWithAuction &
     TriggerElement?: typeof TransactionDialog;
   };
 
-export function AuctionInputCard({
-  auction,
-  TriggerElement,
-  ...props
-}: AuctionInputCardProps) {
-  const isLive = auction.status === "live";
-
+export function AuctionInputCard({ ...props }: AuctionInputCardProps) {
   return (
-    <CardRoot className="text-secondary">
-      <CardHeader
-        className={cn(
-          "flex-row items-center justify-end pt-2",
-          !isLive && "justify-end",
-        )}
-      >
-        <AuctionStatusBadge status={auction.status} className="self-start" />
-      </CardHeader>
-      <CardContent>{props.children}</CardContent>
-      <CardFooter className="flex justify-center">
-        {props.showTrigger && (
-          <RequiresChain chainId={auction.chainId}>
-            {TriggerElement ? (
-              //@ts-expect-error //TODO: revamp
-              <TriggerElement onConfirm={(e) => props.onClick?.(e)} />
-            ) : (
-              props.submitText &&
-              props.onClick && (
-                <Button
-                  className="w-full"
-                  disabled={props.disabled}
-                  onClick={props.onClick}
-                >
-                  {props.submitText}
-                </Button>
-              )
-            )}
-          </RequiresChain>
-        )}
-      </CardFooter>
-    </CardRoot>
+    <Card>
+      <div>
+        <Text size="3xl" weight="light">
+          Place your bid
+        </Text>
+        <div className="mt-4">{props.children}</div>
+      </div>
+    </Card>
   );
 }

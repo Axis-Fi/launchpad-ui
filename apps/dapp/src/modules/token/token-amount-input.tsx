@@ -1,11 +1,22 @@
 import { Input, Text, Button, cn } from "@repo/ui";
 
 type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
+  /** the input's label */
   label: string;
+  /** the token's symbol */
   symbol: string;
+  /** the USD price of the token*/
   usdPrice?: string;
+  /** the user's balance */
   balance?: string;
+  /** an optional error message */
   error?: string;
+  /** an optional status message */
+  message?: string;
+  /** the current input value */
+  value?: string;
+  /** whether to disable the input */
+  disabled?: boolean;
 };
 
 export function TokenAmountInput({
@@ -14,6 +25,9 @@ export function TokenAmountInput({
   usdPrice,
   balance,
   error,
+  message,
+  value,
+  disabled,
   ...props
 }: TokenAmountInputProps) {
   return (
@@ -21,6 +35,7 @@ export function TokenAmountInput({
       className={cn(
         "hover:bg-surface-secondary bg-surface-tertiary group rounded border-2 border-transparent p-4 transition-all",
         error && "border-feedback-alert",
+        disabled && "opacity-50",
       )}
     >
       <Text color="secondary">{label}</Text>
@@ -30,14 +45,17 @@ export function TokenAmountInput({
         </Text>
         <Input
           {...props}
+          value={value}
           type="number"
           variant="lg"
+          disabled={disabled}
           className={cn(
             "hover:bg-surface-secondary",
             error && "text-feedback-alert",
           )}
         />
         <Button
+          disabled={disabled}
           uppercase
           variant="secondary"
           size="sm"
@@ -61,6 +79,12 @@ export function TokenAmountInput({
       {error && (
         <div className="bg-feedback-alert mt-1.5 rounded p-2">
           <Text color="tertiary">{error}</Text>
+        </div>
+      )}
+
+      {message && (
+        <div className="mt-1.5 rounded border border-neutral-500 p-2">
+          <Text color="secondary">{message}</Text>
         </div>
       )}
     </div>

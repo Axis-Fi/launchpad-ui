@@ -24,3 +24,10 @@ export const Error: Story = {
     error: "Your size is not size.",
   },
 };
+
+export const Message: Story = {
+  args: {
+    ...Primary.args,
+    message: "You'll get a gazillion jillion tokens",
+  },
+};
