@@ -1,18 +1,27 @@
-import { Text } from "./primitives";
+import { Text, type Size, type Weight } from "./primitives";
 
 export type MetricProps = React.HTMLProps<HTMLDivElement> & {
   label: string;
-  small?: boolean;
+  metricSize?: Size;
+  metricWeight?: Weight;
+  className?: string;
 };
 
-export function Metric(props: MetricProps) {
-  const size = props.small ? "default" : "2xl";
+export function Metric({
+  label,
+  children,
+  className,
+  metricSize = "2xl",
+  metricWeight = "default",
+}: MetricProps) {
   return (
-    <div>
+    <div className={className}>
       <Text uppercase spaced mono size="xs" color="secondary">
-        {props.label}
+        {label}
       </Text>
-      <Text size={size}>{props.children}</Text>
+      <Text mono size={metricSize} weight={metricWeight}>
+        {children}
+      </Text>
     </div>
   );
 }

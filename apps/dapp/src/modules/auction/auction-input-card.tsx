@@ -27,7 +27,7 @@ export function AuctionInputCard({
   const isLive = auction.status === "live";
 
   return (
-    <CardRoot className="bg-foreground text-secondary w-full">
+    <CardRoot className="text-secondary">
       <CardHeader
         className={cn(
           "flex-row items-center justify-end pt-2",

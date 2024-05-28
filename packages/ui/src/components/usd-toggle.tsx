@@ -1,5 +1,5 @@
 import { useToggle } from "../hooks";
-import { ToggleGroup, ToggleGroupItem } from "./primitives";
+import { Chip, ToggleGroup, ToggleGroupItem } from "./primitives";
 
 const UsdToggle: React.FC<{ currencySymbol: string }> = ({
   currencySymbol,
@@ -8,24 +8,17 @@ const UsdToggle: React.FC<{ currencySymbol: string }> = ({
 
   return (
     <ToggleGroup
-      className="focus-visible:ring-ring flex items-center justify-center gap-1 whitespace-nowrap rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
       type="single"
       onValueChange={toggle}
       value={isToggled ? "USD" : currencySymbol}
     >
-      <ToggleGroupItem
-        className="h-8 rounded-3xl px-3 text-xs"
-        variant={isToggled ? "default" : "outline"}
-        value="USD"
-      >
-        USD
+      <ToggleGroupItem value="USD" className="border-none p-0">
+        <Chip variant={isToggled ? "active" : "default"}>USD</Chip>
       </ToggleGroupItem>
-      <ToggleGroupItem
-        className="h-8 rounded-3xl px-3 text-xs"
-        variant={!isToggled ? "default" : "outline"}
-        value={currencySymbol}
-      >
-        {currencySymbol}
+      <ToggleGroupItem value={currencySymbol} className="border-none p-0">
+        <Chip variant={!isToggled ? "active" : "default"}>
+          {currencySymbol}
+        </Chip>
       </ToggleGroupItem>
     </ToggleGroup>
   );

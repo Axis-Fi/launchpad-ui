@@ -1,9 +1,8 @@
 import React from "react";
-import { Button, InfoLabel, cn } from "@repo/ui";
+import { Button, Card, InfoLabel, cn } from "@repo/ui";
 import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
-import { ProjectInfoCard } from "../project-info-card";
 import { useAccount } from "wagmi";
 import { useClaimBids } from "../hooks/use-claim-bids";
 import { RequiresChain } from "components/requires-chain";
@@ -29,16 +28,15 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
     claimBids.claimTx.isPending || claimBids.claimReceipt.isLoading;
 
   return (
-    <div className="w-full">
-      <div className="mb-8 flex justify-between">
-        {isEMP && (
-          <SettledAuctionCard
-            className="mr-6 w-[60%]"
-            auction={auction as BatchAuction}
-          />
-        )}
-        <div className={cn("w-[40%]", !isEMP && "w-full")}>
-          <AuctionInputCard submitText={""} auction={auction}>
+    <>
+      <div className="flex justify-between gap-x-[32px]">
+        {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
+        <div className={cn("w-[496px]", !isEMP && "w-full")}>
+          <AuctionInputCard
+            className="w-[496px]"
+            submitText={""}
+            auction={auction}
+          >
             <div className="text-center">
               {cleared ? (
                 <h4>Payout for this auction can be claimed!</h4>
@@ -58,7 +56,8 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           </AuctionInputCard>
         </div>
       </div>
-      <div className="flex justify-between">
+
+      <Card>
         <AuctionMetricsContainer auction={auction}>
           <InfoLabel
             label="Total Raised"
@@ -76,10 +75,8 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             <AuctionMetric auction={auction} id="vestingDuration" />
           )}
         </AuctionMetricsContainer>
-        <div className="w-1/2">
-          <ProjectInfoCard auction={auction} />
-        </div>
-      </div>
+      </Card>
+
       <TransactionDialog
         open={open}
         signatureMutation={claimBids.claimTx}
@@ -115,6 +112,6 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           },
         }}
       />
-    </div>
+    </>
   );
 }

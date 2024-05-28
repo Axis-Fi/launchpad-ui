@@ -18,7 +18,7 @@ export const SettledAuctionChartOverlay = ({ auction }: PropsWithAuction) => {
         zIndex: 1,
       }}
     >
-      <div className="mr-8 mt-4 flex justify-end">
+      <div className="mr-4 mt-4 flex justify-end">
         <UsdToggle currencySymbol={auction.quoteToken.symbol} />
       </div>
     </div>

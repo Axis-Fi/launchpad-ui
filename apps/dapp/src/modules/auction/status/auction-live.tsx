@@ -243,6 +243,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 </RequiresChain>
               </>
             </AuctionInputCard>
+
             <TransactionDialog
               open={open}
               signatureMutation={bid.bidTx}
