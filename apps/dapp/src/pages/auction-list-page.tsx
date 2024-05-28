@@ -117,7 +117,6 @@ export default function AuctionListPage() {
                 placeholder="Sort By"
                 options={options}
                 onChange={(value) => {
-                  console.log({ value });
                   setSortByStatus(value);
                 }}
               />

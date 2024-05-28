@@ -1,14 +1,10 @@
-import { Button, InfoLabel, trimAddress } from "@repo/ui";
+import { Button } from "@repo/ui";
 import { formatUnits } from "viem";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
-import { AuctionMetricsContainer } from "../auction-metrics-container";
-import {
-  Auction,
-  AuctionType,
-  BatchAuction,
-  PropsWithAuction,
-} from "@repo/types";
+import { AuctionLaunchMetrics } from "../auction-launch-metrics";
+import { ProjectInfoCard } from "../project-info-card";
+import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
@@ -19,7 +15,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React from "react";
-import { AuctionMetric } from "../auction-metric";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -146,54 +141,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   return (
     <div className="flex justify-between">
       <div className="w-1/2">
-        <AuctionMetricsContainer auction={auction}>
-          <InfoLabel
-            label="Capacity"
-            value={`${auction.formatted?.capacity} ${auction.baseToken.symbol}`}
-          />
-          <InfoLabel
-            label="Total Supply"
-            value={`${auction.formatted?.totalSupply} ${auction.baseToken.symbol}`}
-          />
-          <InfoLabel label="Deadline" value={auction.formatted?.endFormatted} />
-          <InfoLabel label="Creator" value={trimAddress(auction.seller)} />
-          {auction.linearVesting && <AuctionMetric id="vestingDuration" />}
-          {auction.curatorApproved && (
-            <InfoLabel
-              label="Curator"
-              value={
-                auction.curated ? trimAddress(auction.curated.curator!) : ""
-              }
-            />
-          )}
-          {isEMP ? (
-            <>
-              <InfoLabel
-                label="Minimum Price"
-                value={`${auction.formatted?.minPrice} ${auction.formatted?.tokenPairSymbols}`}
-              />
-              <InfoLabel
-                label="Minimum Quantity"
-                value={`${auction.formatted?.minBidSize} ${auction.quoteToken.symbol}`}
-              />
-              <InfoLabel
-                label="Total Bids"
-                value={(auction as BatchAuction).bids.length}
-              />
-              <InfoLabel
-                label="Total Bid Amount"
-                value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
-              />
-            </>
-          ) : (
-            <>
-              <InfoLabel
-                label="Price"
-                value={`${auction.formatted?.price} ${auction.formatted?.tokenPairSymbols}`}
-              />
-            </>
-          )}
-        </AuctionMetricsContainer>
+        {isEMP && <AuctionLaunchMetrics auction={auction} />}
+        <ProjectInfoCard auction={auction} />
       </div>
 
       <div className="w-[40%]">
@@ -243,6 +192,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 </RequiresChain>
               </>
             </AuctionInputCard>
+
             <TransactionDialog
               open={open}
               signatureMutation={bid.bidTx}

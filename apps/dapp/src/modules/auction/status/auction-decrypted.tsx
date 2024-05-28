@@ -5,6 +5,7 @@ import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import React from "react";
+import { ProjectInfoCard } from "../project-info-card";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -12,17 +13,21 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
 
   return (
     <div className="flex justify-between">
-      <AuctionMetricsContainer auction={auction}>
-        <InfoLabel
-          label="Total Bid Amount"
-          value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
-        />
-        <InfoLabel
-          label="Rate"
-          value={`${auction.formatted?.rate} ${auction.formatted?.tokenPairSymbols}`}
-        />
-      </AuctionMetricsContainer>
       <div className="w-[50%]">
+        <AuctionMetricsContainer auction={auction}>
+          <InfoLabel
+            label="Total Bid Amount"
+            value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
+          />
+          <InfoLabel
+            label="Rate"
+            value={`${auction.formatted?.rate} ${auction.formatted?.tokenPairSymbols}`}
+          />
+        </AuctionMetricsContainer>
+        <ProjectInfoCard auction={auction} />
+      </div>
+
+      <div className="w-[40%]">
         <AuctionInputCard
           showTrigger
           submitText="SETTLE AUCTION"

@@ -6,14 +6,15 @@ type ReloadButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
   tooltip?: string;
 };
 
-export function ReloadButton(props: ReloadButtonProps) {
-  const tooltip = props.tooltip ?? "Reload page data";
+export function ReloadButton({
+  refetching,
+  tooltip = "Reload page data",
+  ...rest
+}: ReloadButtonProps) {
   return (
     <Tooltip content={tooltip}>
-      <Button {...props} size="icon" variant="ghost">
-        <RefreshCwIcon
-          className={cn(props.refetching && "loading-indicator-fast")}
-        />
+      <Button {...rest} size="icon" variant="ghost">
+        <RefreshCwIcon className={cn(refetching && "loading-indicator-fast")} />
       </Button>
     </Tooltip>
   );

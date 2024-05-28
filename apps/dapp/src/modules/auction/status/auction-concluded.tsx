@@ -1,6 +1,7 @@
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { AuctionInputCard } from "../auction-input-card";
 import { InfoLabel } from "@repo/ui";
+import { ProjectInfoCard } from "../project-info-card";
 import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -21,21 +22,29 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
   return (
     <div>
       <div className="flex justify-between">
-        <AuctionMetricsContainer className="w-1/2" auction={auction}>
-          <InfoLabel label="Total Bids" value={auction.formatted?.totalBids} />
-          <InfoLabel
-            label="Total Bid Amount"
-            value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
-          />
-          <InfoLabel
-            label="Started"
-            value={`${auction.formatted?.startDistance} ago`}
-          />
-          <InfoLabel
-            label="Ended"
-            value={`${auction.formatted?.endDistance} ago`}
-          />
-        </AuctionMetricsContainer>
+        <div className="w-1/2">
+          <AuctionMetricsContainer auction={auction}>
+            <InfoLabel
+              label="Total Bids"
+              value={auction.formatted?.totalBids}
+            />
+            <InfoLabel
+              label="Total Bid Amount"
+              value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
+            />
+            <InfoLabel
+              label="Started"
+              value={`${auction.formatted?.startDistance} ago`}
+            />
+            <InfoLabel
+              label="Ended"
+              value={`${auction.formatted?.endDistance} ago`}
+            />
+          </AuctionMetricsContainer>
+
+          <ProjectInfoCard auction={auction} />
+        </div>
+
         <div className="w-[40%]">
           <TransactionDialog
             signatureMutation={decrypt.decryptTx}

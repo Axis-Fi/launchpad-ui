@@ -22,7 +22,7 @@ export const Primary: Story = {};
 export const WithMetric: Story = {
   args: {
     children: (
-      <Metric small label="Minimum Raise">
+      <Metric metricSize="default" label="Minimum Raise">
         $100,000,000
       </Metric>
     ),

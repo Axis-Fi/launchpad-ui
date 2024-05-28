@@ -3,6 +3,7 @@ import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { PropsWithAuction } from "@repo/types";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionMetric } from "../auction-metric";
+import { ProjectInfoCard } from "../project-info-card";
 
 export function AuctionCreated({ auction }: PropsWithAuction) {
   return (
@@ -13,6 +14,8 @@ export function AuctionCreated({ auction }: PropsWithAuction) {
           <InfoLabel label="Creator" value={trimAddress(auction.seller)} />
           <InfoLabel label="Ends in" value={auction.formatted?.endDistance} />
         </AuctionMetricsContainer>
+
+        <ProjectInfoCard auction={auction} />
       </div>
 
       <div className="w-[40%]">
