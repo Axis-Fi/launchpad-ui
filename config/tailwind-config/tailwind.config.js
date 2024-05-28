@@ -13,6 +13,9 @@ module.exports = {
       },
     },
     extend: {
+      maxWidth: {
+        limit: "1440px",
+      },
       boxShadow: {
         active: "0 0 0 2px hsl(var(--primary-500))",
         "3xl": "0 0 28px 0 hsl(40, 100%, 77%)",

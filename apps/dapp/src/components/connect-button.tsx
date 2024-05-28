@@ -37,14 +37,14 @@ export default function ConnectButton({ className }: { className?: string }) {
               }
               if (chain.unsupported) {
                 return (
-                  <Button variant="destructive" onClick={openChainModal}>
+                  <Button variant="secondary" onClick={openChainModal}>
                     Wrong network
                   </Button>
                 );
               }
               return (
                 <div className="flex items-center gap-x-1">
-                  <Button variant="outline" onClick={openAccountModal}>
+                  <Button variant="ghost" onClick={openAccountModal}>
                     {account.displayName}
                     {/*account.displayBalance ? ` (${account.displayBalance})` : ""*/}
                   </Button>
