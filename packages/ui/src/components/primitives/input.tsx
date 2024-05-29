@@ -14,7 +14,7 @@ const inputVariants = cva(
       },
       textSize: {
         lg: "text-3xl",
-        xl: "text-4xl",
+        xl: "text-4xl font-medium",
       },
     },
     defaultVariants: {

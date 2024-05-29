@@ -5,12 +5,16 @@ import { calculateAuctionProgress } from "./utils/get-auction-progress";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
 
-export function AuctionLaunchMetrics(props: PropsWithAuction) {
+export function AuctionLaunchMetrics(
+  props: PropsWithAuction & { className?: string },
+) {
   const auction = props.auction as BatchAuction;
   const progress = calculateAuctionProgress(auction);
+  const showProgress = auction.status === "live";
+
   return (
-    <Card>
-      <div className="flex flex-col gap-y-4">
+    <Card className={props.className}>
+      <div className="flex h-full flex-col justify-between gap-y-4">
         <div className="flex items-center justify-between">
           <Text weight="light" size="3xl" spaced>
             Launch Info
@@ -33,16 +37,18 @@ export function AuctionLaunchMetrics(props: PropsWithAuction) {
           </div>
         </div>
 
-        <div>
-          <Text uppercase size="xs" spaced>
-            Auction Progress
-          </Text>
-          <Progress value={progress} className="mt-1">
-            <Metric metricSize="default" label="Minimum Raise">
-              {auction.formatted?.minFilled} {auction.quoteToken.symbol}
-            </Metric>
-          </Progress>
-        </div>
+        {showProgress && (
+          <div>
+            <Text uppercase size="xs" spaced>
+              Auction Progress
+            </Text>
+            <Progress value={progress} className="mt-1">
+              <Metric metricSize="default" label="Minimum Raise">
+                {auction.formatted?.minFilled} {auction.quoteToken.symbol}
+              </Metric>
+            </Progress>
+          </div>
+        )}
 
         <AuctionMetricsContainer auction={auction}>
           <AuctionMetric id="targetRaise" />

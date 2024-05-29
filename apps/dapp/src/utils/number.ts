@@ -52,3 +52,9 @@ export function fromBasisPoints(percentage: string | number) {
 
   return _basisPoints / 1000;
 }
+
+export function formatPercentage(percentage: number) {
+  return new Intl.NumberFormat("en-us", {
+    maximumFractionDigits: 2,
+  }).format(percentage);
+}

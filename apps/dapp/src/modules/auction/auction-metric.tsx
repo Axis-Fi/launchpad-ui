@@ -4,8 +4,9 @@ import {
   BatchAuction,
   PropsWithAuction,
 } from "@repo/types";
-import { formatDate, Metric, MetricProps } from "@repo/ui";
+import { Metric, MetricProps } from "@repo/ui";
 import { abbreviateNumber, trimCurrency } from "utils/currency";
+import { formatPercentage } from "utils/number";
 
 const handlers = {
   targetRaise: {
@@ -85,20 +86,21 @@ const handlers = {
           Number(auction.baseToken.totalSupply)) *
         100;
 
-      return `${res}%`;
+      return `${formatPercentage(res)}%`;
     },
   },
   vestingDuration: {
     label: "Vesting",
-    handler: (auction: Auction) =>
+    handler: (auction: Auction) => {
       // TODO: move to formatters
-      `${Math.floor(
+      const duration = Math.floor(
         (Number(auction.linearVesting?.expiryTimestamp) -
           Number(auction.linearVesting?.startTimestamp)) /
           86400,
-      )} days starting   ${formatDate.fullLocal(
-        new Date(Number(auction.linearVesting?.startTimestamp) * 1000),
-      )}`,
+      );
+
+      return `${duration} days`;
+    },
   },
   minPriceFDV: {
     label: "Min. Price FDV",

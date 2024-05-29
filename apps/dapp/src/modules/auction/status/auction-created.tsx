@@ -1,30 +1,19 @@
-import { InfoLabel, trimAddress } from "@repo/ui";
-import { AuctionMetricsContainer } from "../auction-metrics-container";
+import { Card, Text } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
-import { AuctionInputCard } from "../auction-input-card";
-import { AuctionMetric } from "../auction-metric";
-import { ProjectInfoCard } from "../project-info-card";
+import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 
 export function AuctionCreated({ auction }: PropsWithAuction) {
   return (
-    <div className="flex justify-between">
-      <div className="w-1/2">
-        <AuctionMetricsContainer auction={auction}>
-          <AuctionMetric id="capacity" />
-          <InfoLabel label="Creator" value={trimAddress(auction.seller)} />
-          <InfoLabel label="Ends in" value={auction.formatted?.endDistance} />
-        </AuctionMetricsContainer>
+    <div className="flex h-full items-stretch justify-between gap-x-4">
+      <AuctionLaunchMetrics className="w-2/3" auction={auction} />
 
-        <ProjectInfoCard auction={auction} />
-      </div>
-
-      <div className="w-[40%]">
-        <AuctionInputCard auction={auction} submitText="">
-          <h3 className="text-center">
-            Auction starts in {auction.formatted?.startDistance} at{" "}
-            {auction.formatted?.startFormatted}.
-          </h3>
-        </AuctionInputCard>
+      <div className="items-strech h-full w-1/3">
+        <Card>
+          <Text size="2xl" className="text-center">
+            Auction starts in {auction.formatted?.startDistance} <br />
+            at {auction.formatted?.startFormatted}.
+          </Text>
+        </Card>
       </div>
     </div>
   );

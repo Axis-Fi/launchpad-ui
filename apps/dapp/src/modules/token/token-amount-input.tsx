@@ -40,26 +40,27 @@ export function TokenAmountInput({
     >
       <Text color="secondary">{label}</Text>
       <div className="mt-0.5 flex items-center">
-        <Text color="secondary" size="2xl">
-          {symbol}{" "}
-        </Text>
         <Input
           {...props}
           value={value}
           type="number"
           variant="lg"
           disabled={disabled}
+          placeholder="0"
           className={cn(
-            "hover:bg-surface-secondary",
+            "hover:bg-surface-secondary ml-0 pl-0",
             error && "text-feedback-alert",
           )}
         />
+        <Text className="text-nowrap" color="secondary" size="2xl">
+          {symbol}{" "}
+        </Text>
         <Button
           disabled={disabled}
           uppercase
           variant="secondary"
           size="sm"
-          className="h-min rounded-full px-1.5 py-1 leading-none"
+          className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
         >
           Max
         </Button>
@@ -67,7 +68,7 @@ export function TokenAmountInput({
       <div className="flex justify-between">
         {usdPrice && (
           <Text size="xs" color="secondary">
-            {usdPrice}
+            ={usdPrice}
           </Text>
         )}
         {balance && (

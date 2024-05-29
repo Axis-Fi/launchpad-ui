@@ -1,6 +1,5 @@
-import { Button } from "@repo/ui";
+import { Button, Card, Text } from "@repo/ui";
 import { formatUnits } from "viem";
-import { AuctionInputCard } from "../auction-input-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -13,6 +12,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React from "react";
+import { AuctionMetricsContainer } from "../auction-metrics-container";
+import { AuctionLaunchMetrics } from "../auction-launch-metrics";
+import { AuctionMetric } from "../auction-metric";
+import { ProjectInfoCard } from "../project-info-card";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -135,26 +138,49 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       parsedAmountIn / parsedMinAmountOut <
         Number(auction.formatted?.minPrice)); // less than min price
 
+  console.log({ amountInInvalid, amountOutInvalid, formattedBalance });
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
-    <div className="flex justify-between">
-      <div className="w-1/2"></div>
+    <div className="flex justify-between gap-x-8">
+      <div className="w-2/3 space-y-4">
+        <AuctionLaunchMetrics auction={auction} />
+        <Card>
+          <Text size="3xl" weight="light">
+            Token Info
+          </Text>
+          <AuctionMetricsContainer className="mt-4" auction={auction}>
+            <AuctionMetric id="minPriceFDV" />
+            <AuctionMetric id="totalSupply" />
+            {auction.linearVesting && <AuctionMetric id="vestingDuration" />}
+            <AuctionMetric id="auctionnedSupply" />
+          </AuctionMetricsContainer>
+        </Card>
+        <ProjectInfoCard auction={auction} />
+      </div>
 
-      <div className="">
+      <div className="w-1/3">
         <FormProvider {...form}>
           <form onSubmit={(e) => e.preventDefault()}>
-            <AuctionInputCard
-              disabled={shouldDisable}
-              auction={auction}
-              onClick={handleSubmit}
-              submitText={""}
-            >
+            <Card>
               <>
+                <Text size="3xl" weight="light" className="mb-4" spaced>
+                  {isFixedPrice ? `Acquire tokens` : `Place your bid`}
+                </Text>
                 <AuctionBidInput
                   singleInput={isFixedPrice}
                   balance={trimCurrency(formattedBalance)}
                   auction={auction}
                 />
+                <div className="mx-auto mt-4 w-full">
+                  {!isFixedPrice && (
+                    <Text size="sm">
+                      You’re bidding on a blind auction. Auctions can only be
+                      decrypted after conclusion. Save your bid after bidding.
+                      <a className="text-primary ml-1 uppercase">Learn More</a>
+                    </Text>
+                  )}
+                </div>
+
                 <RequiresChain chainId={auction.chainId} className="mt-4">
                   <div className="mt-4 w-full">
                     <Button
@@ -177,6 +203,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                       ) : isWaiting ? (
                         <div className="flex">
                           Waiting for confirmation...
+                          <div className="w-1/2"></div>
                           <LoadingIndicator />
                         </div>
                       ) : (
@@ -186,13 +213,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                   </div>
                 </RequiresChain>
               </>
-            </AuctionInputCard>
+            </Card>
 
             <TransactionDialog
               open={open}
               signatureMutation={bid.bidTx}
               error={bid.error}
-              onConfirm={() => bid.handleBid()}
+              onConfirm={handleSubmit}
               mutation={bid.bidReceipt}
               chainId={auction.chainId}
               onOpenChange={(open) => {

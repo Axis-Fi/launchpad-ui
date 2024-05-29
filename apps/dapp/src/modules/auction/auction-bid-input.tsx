@@ -29,14 +29,14 @@ export function AuctionBidInput({
   ]);
 
   const rate = Number(amount) / Number(minAmountOut);
-  const formattedRate = isFinite(rate) ? formatRate(rate) : "?";
+  const formattedRate = isFinite(rate) ? formatRate(rate) : "";
   const showAmountOut =
     form.formState.isValid && isFinite(Number(minAmountOut));
 
   return (
     <div className="text-foreground flex flex-col gap-y-2">
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
-        <div>
+      <div className="bg-secondary flex justify-between rounded-sm pt-1">
+        <div className="">
           <FormField
             name="quoteTokenAmount"
             control={form.control}
@@ -74,7 +74,7 @@ export function AuctionBidInput({
         </div>
       </div>
 
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
+      <div className="bg-secondary flex justify-between rounded-sm pt-1">
         <div>
           {singleInput ? (
             <TokenAmountInput
@@ -92,7 +92,7 @@ export function AuctionBidInput({
                 <FormItemWrapperSlim>
                   <TokenAmountInput
                     label="Maximum Bid Amount"
-                    symbol={auction.formatted?.tokenPairSymbols ?? ""}
+                    symbol={`per ${auction.baseToken.symbol}`}
                     usdPrice={formattedRate}
                     message={
                       showAmountOut
