@@ -3,6 +3,7 @@ import type {
   TokenList,
   AxisContractAddresses,
   Chain,
+  AxisCallbackAddresses,
 } from "@repo/types";
 
 /** Describes an Axis Deployment per chain */
@@ -11,6 +12,7 @@ export type AxisDeployment = {
   tokenList: TokenList;
   subgraphURL: string;
   addresses: AxisContractAddresses;
+  callbacks?: AxisCallbackAddresses;
 };
 
 /** Raw deployment data used to generate the final config*/

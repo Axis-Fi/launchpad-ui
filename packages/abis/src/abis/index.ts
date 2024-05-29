@@ -9,4 +9,7 @@ export default {
   fixedPriceSale: abis.fixedPriceSaleAbi,
   atomicLinearVesting: abis.linearVestingAbi,
   batchLinearVesting: abis.linearVestingAbi,
+  merkleAllowlist: abis.merkleAllowlistAbi,
+  cappedMerkleAllowlist: abis.cappedMerkleAllowlistAbi,
+  tokenAllowlist: abis.tokenAllowlistAbi,
 } as const;

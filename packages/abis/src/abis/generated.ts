@@ -1898,6 +1898,160 @@ export const batchCatalogueAbi = [
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// cappedMerkleAllowlist
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const cappedMerkleAllowlistAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      {
+        name: "permissions_",
+        internalType: "struct Callbacks.Permissions",
+        type: "tuple",
+        components: [
+          { name: "onCreate", internalType: "bool", type: "bool" },
+          { name: "onCancel", internalType: "bool", type: "bool" },
+          { name: "onCurate", internalType: "bool", type: "bool" },
+          { name: "onPurchase", internalType: "bool", type: "bool" },
+          { name: "onBid", internalType: "bool", type: "bool" },
+          { name: "onSettle", internalType: "bool", type: "bool" },
+          { name: "receiveQuoteTokens", internalType: "bool", type: "bool" },
+          { name: "sendBaseTokens", internalType: "bool", type: "bool" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotBuyerLimit",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "", internalType: "uint96", type: "uint96" },
+      { name: "", internalType: "address", type: "address" },
+    ],
+    name: "lotBuyerSpent",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotMerkleRoot",
+    outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  { type: "error", inputs: [], name: "Callback_ExceedsLimit" },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // encryptedMarginalPrice
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3382,5 +3536,284 @@ export const linearVestingAbi = [
     type: "error",
     inputs: [{ name: "token_", internalType: "address", type: "address" }],
     name: "UnsupportedToken",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// merkleAllowlist
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const merkleAllowlistAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      {
+        name: "permissions_",
+        internalType: "struct Callbacks.Permissions",
+        type: "tuple",
+        components: [
+          { name: "onCreate", internalType: "bool", type: "bool" },
+          { name: "onCancel", internalType: "bool", type: "bool" },
+          { name: "onCurate", internalType: "bool", type: "bool" },
+          { name: "onPurchase", internalType: "bool", type: "bool" },
+          { name: "onBid", internalType: "bool", type: "bool" },
+          { name: "onSettle", internalType: "bool", type: "bool" },
+          { name: "receiveQuoteTokens", internalType: "bool", type: "bool" },
+          { name: "sendBaseTokens", internalType: "bool", type: "bool" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotMerkleRoot",
+    outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// tokenAllowlist
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const tokenAllowlistAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      {
+        name: "permissions_",
+        internalType: "struct Callbacks.Permissions",
+        type: "tuple",
+        components: [
+          { name: "onCreate", internalType: "bool", type: "bool" },
+          { name: "onCancel", internalType: "bool", type: "bool" },
+          { name: "onCurate", internalType: "bool", type: "bool" },
+          { name: "onPurchase", internalType: "bool", type: "bool" },
+          { name: "onBid", internalType: "bool", type: "bool" },
+          { name: "onSettle", internalType: "bool", type: "bool" },
+          { name: "receiveQuoteTokens", internalType: "bool", type: "bool" },
+          { name: "sendBaseTokens", internalType: "bool", type: "bool" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotChecks",
+    outputs: [
+      {
+        name: "token",
+        internalType: "contract ITokenBalance",
+        type: "address",
+      },
+      { name: "threshold", internalType: "uint256", type: "uint256" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
   },
 ] as const;
