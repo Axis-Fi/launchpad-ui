@@ -16,6 +16,16 @@ module.exports = {
       maxWidth: {
         limit: "1440px",
       },
+      spacing: {
+        "2xs": "var(--spacing-xxs)",
+        xs: "var(--spacing-xs)",
+        sm: "var(--spacing-sm)",
+        md: "var(--spacing-md)",
+        lg: "var(--spacing-lg)",
+        xl: "var(--spacing-xl)",
+        "2xl": "var(--spacing-2xl)",
+        "3xl": "var(--spacing-3xl)",
+      },
       boxShadow: {
         active: "0 0 0 2px hsl(var(--primary-500))",
         "3xl": "0 0 28px 0 hsl(40, 100%, 77%)",
