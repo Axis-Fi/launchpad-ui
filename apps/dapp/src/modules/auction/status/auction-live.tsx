@@ -16,6 +16,7 @@ import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
+import { AuctionInputCard } from "../auction-input-card";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -138,21 +139,18 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       parsedAmountIn / parsedMinAmountOut <
         Number(auction.formatted?.minPrice)); // less than min price
 
-  console.log({ amountInInvalid, amountOutInvalid, formattedBalance });
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
     <div className="flex justify-between gap-x-8">
       <div className="w-2/3 space-y-4">
         <AuctionLaunchMetrics auction={auction} />
-        <Card>
-          <Text size="3xl" weight="light">
-            Token Info
-          </Text>
+
+        <Card title="Token Info">
           <AuctionMetricsContainer className="mt-4" auction={auction}>
             <AuctionMetric id="minPriceFDV" />
             <AuctionMetric id="totalSupply" />
             {auction.linearVesting && <AuctionMetric id="vestingDuration" />}
-            <AuctionMetric id="auctionnedSupply" />
+            <AuctionMetric id="auctionedSupply" />
           </AuctionMetricsContainer>
         </Card>
         <ProjectInfoCard auction={auction} />
@@ -161,59 +159,61 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       <div className="w-1/3">
         <FormProvider {...form}>
           <form onSubmit={(e) => e.preventDefault()}>
-            <Card>
-              <>
-                <Text size="3xl" weight="light" className="mb-4" spaced>
-                  {isFixedPrice ? `Acquire tokens` : `Place your bid`}
-                </Text>
-                <AuctionBidInput
-                  singleInput={isFixedPrice}
-                  balance={trimCurrency(formattedBalance)}
-                  auction={auction}
-                />
-                <div className="mx-auto mt-4 w-full">
-                  {!isFixedPrice && (
-                    <Text size="sm">
-                      You’re bidding on a blind auction. Auctions can only be
-                      decrypted after conclusion. Save your bid after bidding.
-                      <a className="text-primary ml-1 uppercase">Learn More</a>
-                    </Text>
-                  )}
-                </div>
+            <AuctionInputCard
+              auction={auction}
+              title={
+                isFixedPrice
+                  ? `Buy ${auction.baseToken.symbol}`
+                  : `Place your bid`
+              }
+            >
+              <AuctionBidInput
+                singleInput={isFixedPrice}
+                balance={trimCurrency(formattedBalance)}
+                auction={auction}
+              />
+              <div className="mx-auto mt-4 w-full">
+                {isEMP && (
+                  <Text size="sm">
+                    You’re bidding on a blind auction. Auctions can only be
+                    decrypted after conclusion. Save your bid after bidding.
+                    <a className="text-primary ml-1 uppercase">Learn More</a>
+                  </Text>
+                )}
+              </div>
 
-                <RequiresChain chainId={auction.chainId} className="mt-4">
-                  <div className="mt-4 w-full">
-                    <Button
-                      className="w-full"
-                      disabled={
-                        isWaiting ||
-                        isSigningApproval ||
-                        amountInInvalid ||
-                        amountOutInvalid
-                      }
-                      onClick={() =>
-                        bid.isSufficientAllowance
-                          ? setOpen(true)
-                          : bid.approveCapacity()
-                      }
-                    >
-                      {/*TODO: simplify*/}
-                      {bid.isSufficientAllowance ? (
-                        actionKeyword.toUpperCase()
-                      ) : isWaiting ? (
-                        <div className="flex">
-                          Waiting for confirmation...
-                          <div className="w-1/2"></div>
-                          <LoadingIndicator />
-                        </div>
-                      ) : (
-                        "APPROVE"
-                      )}
-                    </Button>
-                  </div>
-                </RequiresChain>
-              </>
-            </Card>
+              <RequiresChain chainId={auction.chainId} className="mt-4">
+                <div className="mt-4 w-full">
+                  <Button
+                    className="w-full"
+                    disabled={
+                      isWaiting ||
+                      isSigningApproval ||
+                      amountInInvalid ||
+                      amountOutInvalid
+                    }
+                    onClick={() =>
+                      bid.isSufficientAllowance
+                        ? setOpen(true)
+                        : bid.approveCapacity()
+                    }
+                  >
+                    {/*TODO: simplify*/}
+                    {bid.isSufficientAllowance ? (
+                      actionKeyword.toUpperCase()
+                    ) : isWaiting ? (
+                      <div className="flex">
+                        Waiting for confirmation...
+                        <div className="w-1/2"></div>
+                        <LoadingIndicator />
+                      </div>
+                    ) : (
+                      "APPROVE"
+                    )}
+                  </Button>
+                </div>
+              </RequiresChain>
+            </AuctionInputCard>
 
             <TransactionDialog
               open={open}

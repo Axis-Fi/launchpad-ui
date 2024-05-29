@@ -1,11 +1,12 @@
+import React from "react";
+import { Card } from "@repo/ui";
+import type { BatchAuction, PropsWithAuction } from "@repo/types";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { AuctionInputCard } from "../auction-input-card";
-import { InfoLabel } from "@repo/ui";
 import { ProjectInfoCard } from "../project-info-card";
-import { AuctionMetricsContainer } from "../auction-metrics-container";
-import { BatchAuction, PropsWithAuction } from "@repo/types";
-import { TransactionDialog } from "modules/transaction/transaction-dialog";
-import React from "react";
+import { AuctionMetric } from "../auction-metric";
+import { AuctionMetrics } from "../auction-metrics";
 
 export function AuctionConcluded({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
@@ -22,26 +23,15 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
   return (
     <div>
       <div className="flex justify-between">
-        <div className="w-1/2">
-          <AuctionMetricsContainer auction={auction}>
-            <InfoLabel
-              label="Total Bids"
-              value={auction.formatted?.totalBids}
-            />
-            <InfoLabel
-              label="Total Bid Amount"
-              value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
-            />
-            <InfoLabel
-              label="Started"
-              value={`${auction.formatted?.startDistance} ago`}
-            />
-            <InfoLabel
-              label="Ended"
-              value={`${auction.formatted?.endDistance} ago`}
-            />
-          </AuctionMetricsContainer>
-
+        <div className="flex w-1/2 flex-col gap-y-4">
+          <Card title="Launch Info">
+            <AuctionMetrics>
+              <AuctionMetric auction={auction} id="totalBids" />
+              <AuctionMetric auction={auction} id="totalBidAmount" />
+              <AuctionMetric auction={auction} id="started" />
+              <AuctionMetric auction={auction} id="ended" />
+            </AuctionMetrics>
+          </Card>
           <ProjectInfoCard auction={auction} />
         </div>
 
@@ -65,13 +55,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
               }
             }}
           />
-          <AuctionInputCard
-            auction={auction}
-            onClick={() => setOpen(true)}
-            submitText="DECRYPT"
-            showTrigger={true}
-            disabled={disableButton}
-          >
+          <AuctionInputCard auction={auction} onClick={() => setOpen(true)}>
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
               <div>
                 <h1 className="text-4xl">

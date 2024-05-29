@@ -13,50 +13,47 @@ export function AuctionLaunchMetrics(
   const showProgress = auction.status === "live";
 
   return (
-    <Card className={props.className}>
-      <div className="flex h-full flex-col justify-between gap-y-4">
-        <div className="flex items-center justify-between">
-          <Text weight="light" size="3xl" spaced>
-            Launch Info
-          </Text>
-          <div className="flex gap-x-2">
-            <Metric metricSize="default" label="Quote Token Address">
-              <BlockExplorerLink
-                trim
-                chainId={auction.chainId}
-                address={auction.quoteToken.address}
-              />
-            </Metric>
-            <Metric metricSize="default" label="Base Token Address">
-              <BlockExplorerLink
-                trim
-                chainId={auction.chainId}
-                address={auction.baseToken.address}
-              />
-            </Metric>
-          </div>
+    <Card
+      className={props.className}
+      title="Launch Info"
+      headerRightElement={
+        <div className="flex gap-x-2">
+          <Metric metricSize="default" label="Quote Token Address">
+            <BlockExplorerLink
+              trim
+              chainId={auction.chainId}
+              address={auction.quoteToken.address}
+            />
+          </Metric>
+          <Metric metricSize="default" label="Base Token Address">
+            <BlockExplorerLink
+              trim
+              chainId={auction.chainId}
+              address={auction.baseToken.address}
+            />
+          </Metric>
         </div>
+      }
+    >
+      {showProgress && (
+        <div className="mb-4">
+          <Text uppercase size="xs" spaced>
+            Auction Progress
+          </Text>
+          <Progress value={progress} className="mt-1">
+            <Metric metricSize="default" label="Minimum Raise">
+              {auction.formatted?.minFilled} {auction.quoteToken.symbol}
+            </Metric>
+          </Progress>
+        </div>
+      )}
 
-        {showProgress && (
-          <div>
-            <Text uppercase size="xs" spaced>
-              Auction Progress
-            </Text>
-            <Progress value={progress} className="mt-1">
-              <Metric metricSize="default" label="Minimum Raise">
-                {auction.formatted?.minFilled} {auction.quoteToken.symbol}
-              </Metric>
-            </Progress>
-          </div>
-        )}
-
-        <AuctionMetricsContainer auction={auction}>
-          <AuctionMetric id="targetRaise" />
-          <AuctionMetric id="minRaise" />
-          <AuctionMetric id="minPrice" />
-          <AuctionMetric id="capacity" />
-        </AuctionMetricsContainer>
-      </div>
+      <AuctionMetricsContainer auction={auction}>
+        <AuctionMetric id="targetRaise" />
+        <AuctionMetric id="minRaise" />
+        <AuctionMetric id="minPrice" />
+        <AuctionMetric id="capacity" />
+      </AuctionMetricsContainer>
     </Card>
   );
 }

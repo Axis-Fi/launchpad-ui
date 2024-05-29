@@ -1,15 +1,6 @@
-import { Auction, PropsWithAuction } from "@repo/types";
+import type { Auction, PropsWithAuction } from "@repo/types";
 import React from "react";
-
-export function AuctionInfoCard(
-  props: React.HtmlHTMLAttributes<HTMLDivElement>,
-) {
-  return (
-    <div className={props.className}>
-      <div className="flex justify-between">{props.children}</div>
-    </div>
-  );
-}
+import { AuctionMetrics } from "./auction-metrics";
 
 type AuctionLabelChildren = React.ReactElement<PropsWithAuction>;
 
@@ -35,7 +26,7 @@ export function AuctionMetricsContainer(
       );
 
   return (
-    <AuctionInfoCard className={props.className}>{children}</AuctionInfoCard>
+    <AuctionMetrics className={props.className}>{children}</AuctionMetrics>
   );
 }
 

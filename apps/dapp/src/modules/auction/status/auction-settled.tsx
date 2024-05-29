@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, Card, InfoLabel } from "@repo/ui";
-import { AuctionMetricsContainer } from "../auction-metrics-container";
+import { Button, Card } from "@repo/ui";
+import { AuctionMetrics } from "../auction-metrics";
 import { AuctionInputCard } from "../auction-input-card";
 import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
 import { useAccount } from "wagmi";
@@ -33,24 +33,15 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
       <div className="flex flex-grow flex-col justify-between gap-y-[16px]">
         {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
 
-        <Card>
-          <AuctionMetricsContainer auction={auction}>
-            <InfoLabel
-              label="Total Raised"
-              value={`${auction.formatted?.purchased} ${auction.quoteToken.symbol}`}
-            />
-
-            <InfoLabel label="Total Bids" value={batchAuction.bids.length} />
-            <InfoLabel
-              label="Unique Participants"
-              value={auction.formatted?.uniqueBidders}
-            />
-
-            <InfoLabel label="Ended" value={auction.formatted?.endFormatted} />
-            {auction.linearVesting && (
-              <AuctionMetric auction={auction} id="vestingDuration" />
-            )}
-          </AuctionMetricsContainer>
+        <Card title="Launch Info">
+          <AuctionMetrics>
+            <AuctionMetric auction={auction} id="protocolFee" />
+            <AuctionMetric auction={auction} id="minFill" />
+            <AuctionMetric auction={auction} id="derivative" />
+            <AuctionMetric auction={auction} id="referrerFee" />
+            <AuctionMetric auction={auction} id="minPrice" />
+            <AuctionMetric auction={auction} id="duration" />
+          </AuctionMetrics>
         </Card>
 
         <ProjectInfoCard auction={auction} />
@@ -92,11 +83,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
         />
       </div>
       <div className={"flex w-[496px] items-start"}>
-        <AuctionInputCard
-          className="w-[496px]"
-          submitText={""}
-          auction={auction}
-        >
+        <AuctionInputCard title="Claim" className="w-[496px]" auction={auction}>
           <div className="text-center">
             {cleared ? (
               <h4>Payout for this auction can be claimed!</h4>

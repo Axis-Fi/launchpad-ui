@@ -1,24 +1,16 @@
-import { Card, Text } from "@repo/ui";
-import { PropsWithAuction } from "@repo/types";
-import { TransactionDialog } from "modules/transaction/transaction-dialog";
+import React from "react";
+import { Card } from "@repo/ui";
+import type { PropsWithAuction } from "@repo/types";
 
 type AuctionInputCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLButtonElement> & {
-    submitText: string | React.ReactNode;
-    disabled?: boolean;
-    showTrigger?: boolean;
-    TriggerElement?: typeof TransactionDialog;
+    title?: React.ReactNode;
   };
 
-export function AuctionInputCard({ ...props }: AuctionInputCardProps) {
+export function AuctionInputCard(props: AuctionInputCardProps) {
   return (
-    <Card>
-      <div>
-        <Text size="3xl" weight="light">
-          Place your bid
-        </Text>
-        <div className="mt-4">{props.children}</div>
-      </div>
+    <Card title={props.title ? props.title : "Place your bid"}>
+      <div className="mt-4">{props.children}</div>
     </Card>
   );
 }
