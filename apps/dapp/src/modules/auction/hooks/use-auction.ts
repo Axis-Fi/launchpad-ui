@@ -240,6 +240,7 @@ function addEMPFields(
     rate: trimCurrency(marginalPrice),
     minPrice: trimCurrency(minPrice),
     minBidSize: trimCurrency(minBidSize),
+    minFilled: trimCurrency(auction.encryptedMarginalPrice!.minFilled!),
     totalBidAmount: trimCurrency(totalBidAmount),
     totalBids: auction.bids.length,
     totalBidsDecrypted,

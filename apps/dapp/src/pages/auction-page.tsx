@@ -1,20 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
-import type { Address } from "viem";
-import { Avatar, Button, Skeleton, Tooltip } from "@repo/ui";
+import { Button, Skeleton, Text } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
   AuctionType,
 } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
-import { SocialRow } from "components/social-row";
-import { ProjectInfoCard } from "modules/auction/project-info-card";
-import { ContractAddressCard } from "modules/auction/contract-address-card";
 import { PageHeader } from "modules/app/page-header";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { ImageBanner } from "components/image-banner";
-import { ReloadButton } from "components/reload-button";
 import {
   AuctionConcluded,
   AuctionCreated,
@@ -22,11 +17,9 @@ import {
   AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
-import { ChainIcon } from "components/chain-icon";
 import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
-import { getAuctionMetadata } from "modules/auction/metadata";
-import { getAuctionHouse } from "utils/contracts";
 import { PageContainer } from "modules/app/page-container";
+import { ReloadButton } from "components/reload-button";
 
 const statuses: Record<
   AuctionStatus,
@@ -58,84 +51,51 @@ export default function AuctionPage() {
 
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
 
-  const auctionHouse = getAuctionHouse(auction);
   const AuctionElement =
     auction.status === "concluded" &&
     auction.auctionType === AuctionType.FIXED_PRICE
       ? FixedPriceAuctionConcluded
       : statuses[auction.status];
 
-  const metadata = getAuctionMetadata(auction.auctionType);
-
   return (
-    <PageContainer>
-      <PageHeader>
-        <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
-      </PageHeader>
+    <>
+      <ImageBanner imgUrl={auction.auctionInfo?.links?.projectLogo}>
+        <div className="mb-10">
+          <Text size="7xl" mono>
+            {auction.auctionInfo?.name}
+          </Text>
 
-      <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>
-        <div className="relative rounded-sm p-4">
-          <div className="flex justify-between">
-            <div>
-              <div className="flex items-center gap-x-1 ">
-                <Avatar
-                  className="size-12 text-lg"
-                  alt={auction.baseToken.symbol}
-                  src={auction.auctionInfo?.links?.payoutTokenLogo}
-                />
-                <h1 className="text-[40px]">{auction.baseToken.name}</h1>
-              </div>
-              <SocialRow
-                className="gap-x-2"
-                {...(auction.auctionInfo?.links ?? {})}
-              />
-            </div>
-            <div className="flex items-start gap-x-1">
-              <Tooltip content={metadata.tooltip}>
-                <h4>{metadata.label}</h4>
-              </Tooltip>
-              <ChainIcon chainId={auction.chainId} />
-            </div>
-          </div>
+          <Text
+            size="3xl"
+            color="secondary"
+            className="mx-auto w-fit text-nowrap"
+          >
+            send copy plis mi familia
+          </Text>
         </div>
       </ImageBanner>
-      <div className="mt-8">
+
+      <PageContainer>
+        <PageHeader>
+          <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
+        </PageHeader>
+
         <AuctionElement auction={auction} />
-      </div>
 
-      <div className="mt-8 flex justify-between gap-x-4">
-        {auction.status !== "settled" && (
-          <ProjectInfoCard className="w-[50%]" auction={auction} />
-        )}
-        <ContractAddressCard
-          chainId={auction.chainId}
-          addresses={[
-            [
-              `Payout (${auction.baseToken.symbol})`,
-              auction.baseToken.address as Address,
-            ],
-            [
-              `Quote (${auction.quoteToken.symbol})`,
-              auction.quoteToken.address as Address,
-            ],
-            ["Auction House", auctionHouse.address],
-          ]}
+        <AuctionBidsCard
+          auction={auction}
+          isLoading={isAuctionLoading}
+          address={address}
         />
-      </div>
-
-      <AuctionBidsCard
-        className="mt-12"
-        auction={auction}
-        isLoading={isAuctionLoading}
-        address={address}
-      />
-    </PageContainer>
+      </PageContainer>
+    </>
   );
 }
 
 function AuctionPageLoading() {
   return (
     <div className="mask">
+      <ImageBanner />
       <PageContainer>
         <PageHeader />
         <div>

@@ -1,10 +1,11 @@
-import { InfoLabel } from "@repo/ui";
-import { AuctionMetricsContainer } from "../auction-metrics-container";
-import { AuctionInputCard } from "../auction-input-card";
+import React from "react";
+import { Card } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
-import React from "react";
+import { ProjectInfoCard } from "../project-info-card";
+import { AuctionMetric } from "../auction-metric";
+import { AuctionMetrics } from "../auction-metrics";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -12,28 +13,28 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
 
   return (
     <div className="flex justify-between">
-      <AuctionMetricsContainer auction={auction}>
-        <InfoLabel
-          label="Total Bid Amount"
-          value={`${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`}
-        />
-        <InfoLabel
-          label="Rate"
-          value={`${auction.formatted?.rate} ${auction.formatted?.tokenPairSymbols}`}
-        />
-      </AuctionMetricsContainer>
-      <div className="w-[50%]">
-        <AuctionInputCard
-          showTrigger
-          submitText="SETTLE AUCTION"
-          onClick={() => setIsDialogOpen(true)}
-          auction={auction}
+      <div className="flex w-[50%] flex-col justify-between gap-y-4">
+        <Card title="Launch Info">
+          <AuctionMetrics>
+            <AuctionMetric auction={auction} id="totalBidAmount" />
+            <AuctionMetric auction={auction} id="rate" />
+          </AuctionMetrics>
+        </Card>
+
+        <ProjectInfoCard auction={auction} />
+      </div>
+
+      <div className="w-[40%]">
+        <Card
+          title="Concluded"
+          // onClick={() => setIsDialogOpen(true)}
         >
           <div className="bg-secondary text-foreground flex justify-center rounded-sm p-2">
             <h3>All bids have been decrypted</h3>
           </div>
-        </AuctionInputCard>
+        </Card>
       </div>
+
       <TransactionDialog
         signatureMutation={settle.settleTx}
         error={settle.error}

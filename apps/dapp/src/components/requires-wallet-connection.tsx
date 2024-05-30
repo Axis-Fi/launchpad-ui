@@ -10,6 +10,6 @@ export function RequiresWalletConnection(
   return account.isConnected ? (
     <>{props.children}</>
   ) : (
-    <ConnectButton className={props.className} />
+    <ConnectButton className={props.className} size="lg" />
   );
 }

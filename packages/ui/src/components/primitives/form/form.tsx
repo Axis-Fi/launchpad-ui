@@ -62,10 +62,18 @@ FormLabel.displayName = "FormLabel";
 
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
-  React.ComponentPropsWithoutRef<typeof Slot>
->(({ ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof Slot> & {
+    children: React.ReactElement<{ error?: string }>;
+  }
+>(({ children }, ref) => {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
+
+  const input = React.isValidElement(children)
+    ? React.cloneElement(children, {
+        error: error?.message,
+      })
+    : children;
 
   return (
     <Slot
@@ -78,8 +86,9 @@ const FormControl = React.forwardRef<
           : `${formDescriptionId} ${formMessageId}`
       }
       aria-invalid={!!error}
-      {...props}
-    />
+    >
+      {input}
+    </Slot>
   );
 });
 FormControl.displayName = "FormControl";
@@ -138,8 +147,22 @@ const FormItemWrapper = React.forwardRef<
     </FormItem>
   );
 });
-
 FormItemWrapper.displayName = "FormItemWrapper";
+
+const FormItemWrapperSlim = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & {
+    children: React.ReactElement<{ error?: string }>;
+  }
+>((props, ref) => {
+  return (
+    <FormItem {...props} ref={ref}>
+      <FormControl>{props.children}</FormControl>
+    </FormItem>
+  );
+});
+
+FormItemWrapperSlim.displayName = "FormItemWrapperSlim";
 
 export {
   Form,
@@ -150,4 +173,5 @@ export {
   FormMessage,
   FormField,
   FormItemWrapper,
+  FormItemWrapperSlim,
 };

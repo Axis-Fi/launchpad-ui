@@ -1,76 +1,90 @@
-import { formatUnits } from "viem";
-import { InfoLabel, ToggleProvider, type InfoLabelProps } from "@repo/ui";
-import type {
-  Token,
-  EMPAuctionData,
-  PropsWithAuction,
-  BatchAuction,
-} from "@repo/types";
+import {
+  Card,
+  cn,
+  Metric,
+  ToggleProvider,
+  type TextSize,
+  type TextWeight,
+} from "@repo/ui";
+import type { Token, PropsWithAuction, BatchAuction } from "@repo/types";
 import { SettledAuctionChart } from "./settled-auction-chart";
 import { useToggleUsdAmount } from "./hooks/use-toggle-usd-amount";
 import { getTimestamp } from "utils/date";
 
-type ToggledAmountLabelProps = {
+type ToggledAmountProps = {
+  label: string;
   token: Token;
   amount: number;
   timestamp?: number;
-} & Omit<InfoLabelProps, "value">;
+  size?: TextSize;
+  weight?: TextWeight;
+  className?: string;
+};
 
-const ToggledAmountLabel = ({
+const ToggledAmount = ({
+  label,
   token,
   amount,
   timestamp,
-  ...rest
-}: ToggledAmountLabelProps) => {
-  const usdAmount = useToggleUsdAmount({ token, amount, timestamp });
-  return <InfoLabel {...rest} value={usdAmount} />;
+  className,
+  size,
+  weight = "default",
+}: ToggledAmountProps) => {
+  const toggledAmount = useToggleUsdAmount({ token, amount, timestamp });
+  return (
+    <Metric
+      label={label}
+      className={cn("flex-grow", className)}
+      metricSize={size}
+      metricWeight={weight}
+    >
+      {toggledAmount}
+    </Metric>
+  );
 };
 
 const AuctionHeader = ({ auction }: PropsWithAuction) => {
+  const batchAuction = auction as BatchAuction;
+
   const clearingPrice = Number(
-    formatUnits(
-      (auction?.auctionData as EMPAuctionData)?.marginalPrice ?? 0,
-      Number(auction.quoteToken.decimals),
-    ),
+    batchAuction.encryptedMarginalPrice?.marginalPrice ?? 0,
   );
-  const fdv = (Number(auction.baseToken.totalSupply) ?? 0) * clearingPrice;
-  const auctionEndTimestamp = auction?.formatted
-    ? getTimestamp(auction.formatted.endDate)
+  const fdv = Number(batchAuction.baseToken.totalSupply ?? 0) * clearingPrice;
+  const auctionEndTimestamp = batchAuction?.formatted
+    ? getTimestamp(batchAuction.formatted.endDate)
     : undefined;
 
   return (
-    <div className="my-5 mr-16 flex items-end justify-between">
-      {auction.formatted?.cleared && (
+    <div className="flex- flex items-end gap-x-[8px] pb-[16px]">
+      {batchAuction.formatted?.cleared && (
         <>
-          <ToggledAmountLabel
-            reverse={true}
+          <ToggledAmount
             label="Clearing price"
             amount={clearingPrice}
-            token={auction.quoteToken}
-            valueSize="lg"
+            token={batchAuction.quoteToken}
             timestamp={auctionEndTimestamp}
+            size="xl"
+            className="min-w-[292px]"
           />
-          <ToggledAmountLabel
-            reverse={true}
-            label={`${auction.quoteToken.symbol} Raised`}
-            amount={Number(auction?.purchased) ?? 0}
-            token={auction.quoteToken}
+          <ToggledAmount
+            label={`${batchAuction.quoteToken.symbol} Raised`}
+            amount={Number(batchAuction.purchased) ?? 0}
+            token={batchAuction.quoteToken}
             timestamp={auctionEndTimestamp}
+            className="min-w-[188px]"
           />
-          <ToggledAmountLabel
-            reverse={true}
+          <ToggledAmount
             label="FDV"
-            token={auction.quoteToken}
+            token={batchAuction.quoteToken}
             amount={fdv ?? 0}
             timestamp={auctionEndTimestamp}
+            className="min-w-[188px]"
           />
         </>
       )}
-      <InfoLabel
-        reverse={true}
-        label="Participants"
-        value={auction.formatted?.uniqueBidders}
-      />
+      <Metric label="Participants" className="min-w-[188px] flex-grow">
+        {batchAuction.formatted?.uniqueBidders}
+      </Metric>
     </div>
   );
 };
@@ -78,17 +92,15 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
 const SettledAuctionCard = (
   props: React.HTMLAttributes<HTMLDivElement> & PropsWithAuction,
 ) => {
-  const { className, auction } = props;
+  const { auction } = props;
 
   return (
-    <div className={className} style={{ backgroundColor: "#252026" }}>
-      <div className="mx-4 mb-3">
-        <ToggleProvider initialIsToggled={true}>
-          <AuctionHeader auction={auction} />
-          <SettledAuctionChart auction={auction as BatchAuction} />
-        </ToggleProvider>
-      </div>
-    </div>
+    <Card className="h-[640px] flex-grow gap-16">
+      <ToggleProvider initialToggle={true}>
+        <AuctionHeader auction={auction} />
+        <SettledAuctionChart auction={auction as BatchAuction} />
+      </ToggleProvider>
+    </Card>
   );
 };
 

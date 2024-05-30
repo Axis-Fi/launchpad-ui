@@ -1,8 +1,10 @@
-import { FormField, FormItemWrapper, IconedLabel, Input } from "@repo/ui";
+import { FormField, FormItemWrapperSlim } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
 import { PropsWithAuction } from "@repo/types";
 import { BidForm } from "./status";
 import { formatUnits, parseUnits } from "viem";
+import { TokenAmountInput } from "modules/token/token-amount-input";
+import { trimCurrency } from "utils/currency";
 
 const formatRate = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 4,
@@ -13,9 +15,11 @@ export function AuctionBidInput({
   auction,
   balance = "0",
   singleInput,
+  disabled,
 }: {
   balance?: string;
   singleInput?: boolean;
+  disabled?: boolean;
 } & PropsWithAuction) {
   const form = useFormContext<BidForm>();
 
@@ -25,78 +29,58 @@ export function AuctionBidInput({
   ]);
 
   const rate = Number(amount) / Number(minAmountOut);
-  const formattedRate = isFinite(rate) ? formatRate(rate) : "?";
+  const formattedRate = isFinite(rate) ? formatRate(rate) : "";
+  const showAmountOut =
+    form.formState.isValid && isFinite(Number(minAmountOut));
 
   return (
     <div className="text-foreground flex flex-col gap-y-2">
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
-        <div>
-          <p className="mb-1">You pay</p>
-          <IconedLabel
-            src={auction.quoteToken?.logoURI}
-            label={auction.quoteToken.symbol}
-          />
+      <div className="bg-secondary flex justify-between rounded-sm pt-1">
+        <div className="">
           <FormField
             name="quoteTokenAmount"
             control={form.control}
             render={({ field }) => (
-              <FormItemWrapper errorClassName="-top-16 text-nowrap">
-                <div className="flex">
-                  <Input
-                    type="number"
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      if (singleInput && "price" in auction.auctionData!) {
-                        // auction is fixed price
-                        // Use bigints to calculate value and return as string to avoid rounding errors with floats
-                        const value = parseUnits(
-                          e.target.value,
-                          auction.quoteToken.decimals,
-                        );
-                        const amount =
-                          (value *
-                            parseUnits("1", auction.baseToken.decimals)) /
-                          auction.auctionData!.price;
-                        const formattedAmount = formatUnits(
-                          amount,
-                          auction.baseToken.decimals,
-                        );
-                        form.setValue("baseTokenAmount", formattedAmount);
-                      }
-                    }}
-                    variant="lg"
-                    className="mt-4 w-full"
-                    placeholder="0.00"
-                  />
-
-                  <div className="flex w-full cursor-pointer flex-col items-end justify-end">
-                    <p className="text-foreground/50">
-                      Balance:{" "}
-                      <span className="text-foreground inline">
-                        {balance} {auction.quoteToken.symbol}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </FormItemWrapper>
+              <FormItemWrapperSlim>
+                <TokenAmountInput
+                  {...field}
+                  disabled={disabled}
+                  label="Spend Amount"
+                  balance={balance}
+                  symbol={auction.quoteToken.symbol}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    if (singleInput && "price" in auction.auctionData!) {
+                      // auction is fixed price
+                      // Use bigints to calculate value and return as string to avoid rounding errors with floats
+                      const value = parseUnits(
+                        e.target.value,
+                        auction.quoteToken.decimals,
+                      );
+                      const amount =
+                        (value * parseUnits("1", auction.baseToken.decimals)) /
+                        auction.auctionData!.price;
+                      const formattedAmount = formatUnits(
+                        amount,
+                        auction.baseToken.decimals,
+                      );
+                      form.setValue("baseTokenAmount", formattedAmount);
+                    }
+                  }}
+                />
+              </FormItemWrapperSlim>
             )}
           />
         </div>
       </div>
 
-      <div className="bg-secondary flex justify-between rounded-sm p-2 pt-1">
+      <div className="bg-secondary flex justify-between rounded-sm pt-1">
         <div>
-          <p className="mb-1">You get</p>
-          <IconedLabel
-            src={auction.baseToken.logoURI}
-            label={auction.baseToken.symbol}
-          />
           {singleInput ? (
-            <Input
-              type="number"
-              className="mt-4"
-              variant="lg"
+            <TokenAmountInput
+              disabled={disabled}
+              symbol={auction.baseToken.symbol}
+              label="Amount Received"
               value={minAmountOut}
               onChange={() => {}}
             />
@@ -105,26 +89,21 @@ export function AuctionBidInput({
               name="baseTokenAmount"
               control={form.control}
               render={({ field }) => (
-                <FormItemWrapper errorClassName="-top-16">
-                  <div className="flex">
-                    <Input
-                      type="number"
-                      {...field}
-                      variant="lg"
-                      className="mt-4 w-full"
-                      placeholder="0.00"
-                    />
-                    <div className="flex w-full flex-col items-end justify-end">
-                      <p className="text-foreground/50">
-                        Rate:{" "}
-                        <span className="text-foreground inline">
-                          {formattedRate} {auction.quoteToken.symbol}/
-                          {auction.baseToken.symbol}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </FormItemWrapper>
+                <FormItemWrapperSlim>
+                  <TokenAmountInput
+                    label="Maximum Bid Amount"
+                    symbol={`per ${auction.baseToken.symbol}`}
+                    usdPrice={formattedRate}
+                    message={
+                      showAmountOut
+                        ? `If successful, you will receive at least: ${trimCurrency(
+                            minAmountOut,
+                          )} ${auction.baseToken.symbol}`
+                        : ""
+                    }
+                    {...field}
+                  />
+                </FormItemWrapperSlim>
               )}
             />
           )}

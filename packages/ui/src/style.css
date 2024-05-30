@@ -56,6 +56,8 @@
     --surface-highlight-fill: var(--neutral-50);
     --surface-highlight-outline: var(--primary-600);
 
+    --surface-progress-fill: var(--green-100);
+
     --text-primary: var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-tertiary: var(--neutral-600);
@@ -63,6 +65,26 @@
     --text-disabled: var(--neutral-400);
     --text-success: var(--secondary-500);
     --text-alert: var(--tertiary-600);
+
+    --spacing-100: 2px;
+    --spacing-200: 4px;
+    --spacing-300: 8px;
+    --spacing-350: 14px;
+    --spacing-400: 16px;
+    --spacing-500: 24px;
+    --spacing-600: 32px;
+    --spacing-700: 48px;
+    --spacing-800: 64px;
+
+    --sizing-100: 8px;
+    --sizing-150: 14px;
+    --sizing-200: 16px;
+    --sizing-300: 24px;
+    --sizing-400: 32px;
+    --sizing-500: 40px;
+    --sizing-600: 48px;
+    --sizing-700: 64px;
+    --sizing-800: 88px;
 
     /* TODO: radius is from the old root - decide whether to leave these helpers or not */
     --radius: 0.5rem;
@@ -222,6 +244,24 @@
   .bg-hero-banner {
     background: linear-gradient(
       42deg,
+      #cdf675 0%,
+      #75c8f6 49.99%,
+      #75a1f6 99.97%
+    );
+  }
+
+  .loading-gradient {
+    background: linear-gradient(
+      42deg,
+      #d3d3d3 0%,
+      #a9a9a9 49.99%,
+      #696969 99.97%
+    );
+  }
+
+  .auction-ended-gradient {
+    background: linear-gradient(
+      72deg,
       #cdf675 0%,
       #75c8f6 49.99%,
       #75a1f6 99.97%

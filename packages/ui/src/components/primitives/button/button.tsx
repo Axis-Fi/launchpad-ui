@@ -9,6 +9,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  uppercase?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -17,7 +18,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <>
         <Comp
-          className={cn(buttonVariants({ variant, size, className }))}
+          className={cn(
+            buttonVariants({ variant, size, className }),
+            props.uppercase && "uppercase",
+          )}
           ref={ref}
           {...props}
         />

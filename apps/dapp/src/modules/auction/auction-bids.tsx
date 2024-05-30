@@ -1,6 +1,7 @@
 import { BidList } from "./bid-list";
 import { AtomicAuction, AuctionType, PropsWithAuction } from "@repo/types";
 import { PurchaseList } from "./purchase-list";
+import { Card } from "@repo/ui";
 
 type AuctionBidsCard = {
   isLoading?: boolean;
@@ -16,15 +17,12 @@ export function AuctionBidsCard({
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
 
   return (
-    <div {...props}>
-      {isFixedPrice ? <h3>Purchases</h3> : <h3>Bids</h3>}
-      <div className="mt-2">
-        {isFixedPrice ? (
-          <PurchaseList auction={auction as AtomicAuction} />
-        ) : (
-          <BidList auction={auction} address={address} />
-        )}
-      </div>
-    </div>
+    <Card {...props} title={isFixedPrice ? "Purchases" : "Bids"}>
+      {isFixedPrice ? (
+        <PurchaseList auction={auction as AtomicAuction} />
+      ) : (
+        <BidList auction={auction} address={address} />
+      )}
+    </Card>
   );
 }
