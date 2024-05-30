@@ -1,6 +1,5 @@
 import React from "react";
 import { Card } from "@repo/ui";
-import { AuctionInputCard } from "../auction-input-card";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -26,14 +25,14 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       </div>
 
       <div className="w-[40%]">
-        <AuctionInputCard
-          onClick={() => setIsDialogOpen(true)}
-          auction={auction}
+        <Card
+          title="Concluded"
+          // onClick={() => setIsDialogOpen(true)}
         >
           <div className="bg-secondary text-foreground flex justify-center rounded-sm p-2">
             <h3>All bids have been decrypted</h3>
           </div>
-        </AuctionInputCard>
+        </Card>
       </div>
 
       <TransactionDialog

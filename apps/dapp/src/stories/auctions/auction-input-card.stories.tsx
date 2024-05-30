@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AuctionInputCard } from "modules/auction/auction-input-card";
+import { AuctionActionCard } from "modules/auction/auction-action-card";
 import { getBatchAuctionMock } from "../mocks/batch-auction";
 
 const meta = {
   title: "Auctions/AuctionInputCard",
-  component: AuctionInputCard,
+  component: AuctionActionCard,
   args: {
     auction: getBatchAuctionMock(),
     submitText: "Bid",
@@ -16,7 +16,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof AuctionInputCard>;
+} satisfies Meta<typeof AuctionActionCard>;
 
 export default meta;
 

@@ -16,7 +16,7 @@ export function AppHeader() {
         </div>
 
         <div className="flex items-center justify-end gap-x-2">
-          <ConnectButton />
+          <ConnectButton size="md" />
         </div>
       </div>
     </div>

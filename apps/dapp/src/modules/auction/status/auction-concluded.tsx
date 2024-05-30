@@ -3,7 +3,6 @@ import { Card } from "@repo/ui";
 import type { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
-import { AuctionInputCard } from "../auction-input-card";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionMetric } from "../auction-metric";
 import { AuctionMetrics } from "../auction-metrics";
@@ -55,7 +54,10 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
               }
             }}
           />
-          <AuctionInputCard auction={auction} onClick={() => setOpen(true)}>
+          <Card
+            title="Concluded"
+            // onClick={() => setOpen(true)}
+          >
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
               <div>
                 <h1 className="text-4xl">
@@ -71,7 +73,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
                 <p>Total Remaining Bids</p>
               </div>
             </div>
-          </AuctionInputCard>
+          </Card>
         </div>
       </div>
     </div>

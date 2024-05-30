@@ -18,14 +18,14 @@ export function AuctionLaunchMetrics(
       title="Launch Info"
       headerRightElement={
         <div className="flex gap-x-2">
-          <Metric metricSize="default" label="Quote Token Address">
+          <Metric metricSize="sm" label="Quote Token Address">
             <BlockExplorerLink
               trim
               chainId={auction.chainId}
               address={auction.quoteToken.address}
             />
           </Metric>
-          <Metric metricSize="default" label="Base Token Address">
+          <Metric metricSize="sm" label="Base Token Address">
             <BlockExplorerLink
               trim
               chainId={auction.chainId}
@@ -41,7 +41,7 @@ export function AuctionLaunchMetrics(
             Auction Progress
           </Text>
           <Progress value={progress} className="mt-1">
-            <Metric metricSize="default" label="Minimum Raise">
+            <Metric label="Minimum Raise">
               {auction.formatted?.minFilled} {auction.quoteToken.symbol}
             </Metric>
           </Progress>

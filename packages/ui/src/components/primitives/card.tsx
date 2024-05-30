@@ -111,4 +111,5 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
+  type CardProps,
 };

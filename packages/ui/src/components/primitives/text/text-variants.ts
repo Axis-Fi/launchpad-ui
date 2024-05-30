@@ -4,7 +4,9 @@ const size = {
   default: "text-base",
   xs: "text-xs",
   sm: "text-sm",
+  md: "text-md",
   lg: "text-lg",
+  xl: "text-xl",
   "2xl": "text-2xl font-medium",
   "3xl": "text-3xl",
   "7xl": "text-7xl",
@@ -16,8 +18,8 @@ const weight = {
   bold: "font-bold",
 } as const;
 
-export type Size = keyof typeof size;
-export type Weight = keyof typeof weight;
+export type TextSize = keyof typeof size;
+export type TextWeight = keyof typeof weight;
 
 export const textVariants = cva("text-sans", {
   variants: {

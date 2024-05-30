@@ -3,8 +3,8 @@ import {
   cn,
   Metric,
   ToggleProvider,
-  type Size,
-  type Weight,
+  type TextSize,
+  type TextWeight,
 } from "@repo/ui";
 import type { Token, PropsWithAuction, BatchAuction } from "@repo/types";
 import { SettledAuctionChart } from "./settled-auction-chart";
@@ -16,8 +16,8 @@ type ToggledAmountProps = {
   token: Token;
   amount: number;
   timestamp?: number;
-  size?: Size;
-  weight?: Weight;
+  size?: TextSize;
+  weight?: TextWeight;
   className?: string;
 };
 
@@ -26,8 +26,8 @@ const ToggledAmount = ({
   token,
   amount,
   timestamp,
-  className = "",
-  size = "2xl",
+  className,
+  size,
   weight = "default",
 }: ToggledAmountProps) => {
   const toggledAmount = useToggleUsdAmount({ token, amount, timestamp });
@@ -63,7 +63,7 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
             amount={clearingPrice}
             token={batchAuction.quoteToken}
             timestamp={auctionEndTimestamp}
-            size="3xl"
+            size="xl"
             className="min-w-[292px]"
           />
           <ToggledAmount

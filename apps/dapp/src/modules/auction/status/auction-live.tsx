@@ -16,7 +16,6 @@ import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
-import { AuctionInputCard } from "../auction-input-card";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -159,8 +158,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       <div className="w-1/3">
         <FormProvider {...form}>
           <form onSubmit={(e) => e.preventDefault()}>
-            <AuctionInputCard
-              auction={auction}
+            <Card
               title={
                 isFixedPrice
                   ? `Buy ${auction.baseToken.symbol}`
@@ -213,7 +211,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                   </Button>
                 </div>
               </RequiresChain>
-            </AuctionInputCard>
+            </Card>
 
             <TransactionDialog
               open={open}

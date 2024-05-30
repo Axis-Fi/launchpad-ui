@@ -103,7 +103,7 @@ export default function AuctionListPage() {
         <PageContainer>
           <div className="flex items-center justify-between">
             <Tooltip content={"Origin is a modular Auction suite"}>
-              <Text size="2xl">Token Launches</Text>
+              <Text size="lg">Token Launches</Text>
             </Tooltip>
             <div className="flex gap-x-2">
               <IconnedInput

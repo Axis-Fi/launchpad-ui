@@ -1,7 +1,13 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
-import { Avatar, Button, cn } from "@repo/ui";
+import { Avatar, Button, cn, type ButtonProps } from "@repo/ui";
 
-export default function ConnectButton({ className }: { className?: string }) {
+export default function ConnectButton({
+  className,
+  size,
+}: {
+  className?: string;
+  size?: ButtonProps["size"];
+}) {
   return (
     <RKConnectButton.Custom>
       {({
@@ -30,21 +36,33 @@ export default function ConnectButton({ className }: { className?: string }) {
             {(() => {
               if (!connected) {
                 return (
-                  <Button className="w-full" onClick={openConnectModal}>
-                    CONNECT
+                  <Button
+                    size={size}
+                    className="w-full"
+                    onClick={openConnectModal}
+                  >
+                    CONNECT WALLET
                   </Button>
                 );
               }
               if (chain.unsupported) {
                 return (
-                  <Button variant="secondary" onClick={openChainModal}>
+                  <Button
+                    size={size}
+                    variant="secondary"
+                    onClick={openChainModal}
+                  >
                     Wrong network
                   </Button>
                 );
               }
               return (
                 <div className="flex items-center gap-x-1">
-                  <Button variant="ghost" onClick={openAccountModal}>
+                  <Button
+                    size={size}
+                    variant="ghost"
+                    onClick={openAccountModal}
+                  >
                     {account.displayName}
                     {/*account.displayBalance ? ` (${account.displayBalance})` : ""*/}
                   </Button>

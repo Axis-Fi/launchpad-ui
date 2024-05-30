@@ -52,7 +52,7 @@ export function TokenAmountInput({
             error && "text-feedback-alert",
           )}
         />
-        <Text className="text-nowrap" color="secondary" size="2xl">
+        <Text className="text-nowrap" color="secondary" size="lg">
           {symbol}{" "}
         </Text>
         <Button
