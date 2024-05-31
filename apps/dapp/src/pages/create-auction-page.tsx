@@ -891,10 +891,10 @@ export default function CreateAuctionPage() {
                               value: CallbacksType.TOKEN_ALLOWLIST,
                               label: "Token Allowlist",
                             },
-                            {
-                              value: CallbacksType.CUSTOM,
-                              label: "Custom",
-                            },
+                            // {
+                            //   value: CallbacksType.CUSTOM,
+                            //   label: "Custom",
+                            // },
                           ]}
                           {...field}
                         />
@@ -968,6 +968,42 @@ export default function CreateAuctionPage() {
                       />
                     </>
                   )}
+                  {/* {callbacksType === CallbacksType.CUSTOM && (
+                    <>
+                      <FormField
+                        name="callbacks"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Custom Callbacks Address"
+                            tooltip={
+                              "The address of the custom callbacks contract."
+                            }
+                          >
+                            <Input
+                              {...field}
+                              placeholder={trimAddress("0x0000000")}
+                            />
+                          </FormItemWrapper>
+                        )}
+                      />
+                      <FormField
+                        name="customCallbackData"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Calldata for Custom Callback"
+                            tooltip={
+                              "The calldata to pass to the custom callback on auction creation."
+                            }
+                          >
+                            <Input
+                              {...field}
+                              placeholder={trimAddress("0x0000000")}
+                            />
+                          </FormItemWrapper>
+                        )}
+                      />
+                    </>
+                  )} */}
                   <FormField
                     name="curator"
                     render={({ field }) => (
