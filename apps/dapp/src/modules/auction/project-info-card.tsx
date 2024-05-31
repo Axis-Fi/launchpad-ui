@@ -15,7 +15,7 @@ export function ProjectInfoCard({
   return (
     <Card
       className={props.className}
-      title={`About ${auction.auctionInfo?.name}`}
+      title={`About ${auction.auctionInfo?.name || ""}`}
     >
       <div className="flex justify-between">
         {website && (

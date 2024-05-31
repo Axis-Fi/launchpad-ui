@@ -1,8 +1,8 @@
 import { axisContracts } from "@repo/deployments";
 import {
   AuctionType,
-  type EMPAuctionData,
   type AxisModuleContractNames,
+  type EMPAuctionData,
   type FixedPriceAuctionData,
   type FixedPriceBatchAuctionData,
 } from "@repo/types";

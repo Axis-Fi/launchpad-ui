@@ -9,7 +9,7 @@ export function AuctionCreated({ auction }: PropsWithAuction) {
 
       <div className="items-strech h-full w-1/3">
         <Card>
-          <Text size="2xl" className="text-center">
+          <Text className="text-center">
             Auction starts in {auction.formatted?.startDistance} <br />
             at {auction.formatted?.startFormatted}.
           </Text>

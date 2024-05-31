@@ -1,6 +1,7 @@
 import { differenceInDays } from "date-fns";
 import {
   AuctionDerivatives,
+  AuctionType,
   type AtomicAuction,
   type Auction,
   type BatchAuction,
@@ -89,7 +90,7 @@ const handlers = {
     label: "Min Price",
     handler: (auction: Auction) => {
       //TODO: revamp this
-      if ("encryptedMarginalPrice" in auction) {
+      if (auction.auctionType === AuctionType.SEALED_BID) {
         return (
           trimCurrency(
             (auction as BatchAuction).encryptedMarginalPrice!.minPrice,
@@ -113,7 +114,9 @@ const handlers = {
   capacity: {
     label: "Capacity",
     handler: (auction: Auction) =>
-      `${auction.formatted?.capacity} ${auction.baseToken.symbol}`,
+      `${auction.formatted?.capacity || shorten(Number(auction.capacity))} ${
+        auction.baseToken.symbol
+      }`,
   },
 
   totalSupply: {
@@ -126,8 +129,16 @@ const handlers = {
     label: "Price",
     handler: (auction: Auction) =>
       //TODO: improve types here
-      `${(auction as AtomicAuction).fixedPriceSale?.price} ${auction.formatted
-        ?.tokenPairSymbols}`,
+      `${(auction as AtomicAuction).fixedPriceSale?.price} ${auction.quoteToken
+        ?.symbol}`,
+  },
+
+  fixedPrice: {
+    label: "Price",
+    handler: (auction: Auction) =>
+      `${(auction as BatchAuction).fixedPrice?.price} ${
+        auction.quoteToken.symbol
+      }`,
   },
 
   sold: {
@@ -171,6 +182,16 @@ const handlers = {
       const fdv =
         Number(auction.baseToken.totalSupply) *
         Number(_auction.encryptedMarginalPrice?.minPrice);
+      return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
+    },
+  },
+  fixedPriceFDV: {
+    label: "Fixed Price FDV",
+    handler: (auction: Auction) => {
+      const _auction = auction as BatchAuction;
+      const fdv =
+        Number(auction.baseToken.totalSupply) *
+        Number(_auction.fixedPrice?.price);
       return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
     },
   },

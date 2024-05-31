@@ -150,12 +150,22 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         <AuctionLaunchMetrics auction={auction} />
 
         <Card title="Token Info">
-          <AuctionMetricsContainer className="mt-4" auction={auction}>
-            <AuctionMetric id="minPriceFDV" />
-            <AuctionMetric id="totalSupply" />
-            <AuctionMetric id="vestingDuration" />
-            <AuctionMetric id="auctionedSupply" />
-          </AuctionMetricsContainer>
+          {isEMP && (
+            <AuctionMetricsContainer className="mt-4" auction={auction}>
+              <AuctionMetric id="minPriceFDV" />
+              <AuctionMetric id="totalSupply" />
+              <AuctionMetric id="vestingDuration" />
+              <AuctionMetric id="auctionedSupply" />
+            </AuctionMetricsContainer>
+          )}
+          {isFixedPrice && (
+            <AuctionMetricsContainer className="mt-4" auction={auction}>
+              <AuctionMetric id="fixedPriceFDV" />
+              <AuctionMetric id="totalSupply" />
+              <AuctionMetric id="vestingDuration" />
+              <AuctionMetric id="auctionedSupply" />
+            </AuctionMetricsContainer>
+          )}
         </Card>
         <ProjectInfoCard auction={auction} />
       </div>

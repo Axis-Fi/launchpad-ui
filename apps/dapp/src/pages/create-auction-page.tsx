@@ -528,7 +528,7 @@ export default function CreateAuctionPage() {
                           },
 
                           {
-                            value: AuctionType.FIXED_PRICE,
+                            value: AuctionType.FIXED_PRICE_BATCH,
                             label: "Fixed Price",
                           },
                         ]}

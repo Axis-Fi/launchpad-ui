@@ -55,6 +55,7 @@ function AuctionCardDetails(
   },
 ) {
   const isEMP = props.auction.auctionType === AuctionType.SEALED_BID;
+  const isFP = props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   return (
     <div
       className={cn("flex flex-col justify-between", props.isGrid && "h-1/2")}
@@ -94,6 +95,18 @@ function AuctionCardDetails(
           <AuctionMetric id="targetRaise" />
           <AuctionMetric id="minRaise" />
           <AuctionMetric id="minPrice" size="s" />
+          <AuctionMetric id="auctionedSupply" size="s" />
+        </AuctionMetricsContainer>
+      )}
+
+      {isFP && !props.isGrid && (
+        <AuctionMetricsContainer
+          className="group-hover:hidden md:grid-cols-2"
+          auction={props.auction}
+        >
+          <AuctionMetric id="totalSupply" />
+          <AuctionMetric id="capacity" />
+          <AuctionMetric id="fixedPrice" size="s" />
           <AuctionMetric id="auctionedSupply" size="s" />
         </AuctionMetricsContainer>
       )}
