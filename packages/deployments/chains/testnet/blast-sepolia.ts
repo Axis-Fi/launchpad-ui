@@ -13,6 +13,7 @@ const config: AxisDeploymentConfig = {
     batchCatalogue: "0x7F6Af3993d64cbC3A97617C98A2BCe03c1f5Ec30",
     encryptedMarginalPrice: "0x96B52Ab3e5CAc0BbF49Be5039F2f9ef5d53bD322",
     fixedPriceSale: "0x3661B7704F7032103B3122C7796B5E03fAC715b5",
+    fixedPriceBatch: "0xEDa0cC0bbb45D8cd6354755856053d6Ea646E201",
     atomicLinearVesting: "0x8270f3e8D874De8b974A0Bf928abDFf92171B1b2",
     batchLinearVesting: "0xFb1B55504E6f996D192f1F1B8fDfD4E987355552",
   },

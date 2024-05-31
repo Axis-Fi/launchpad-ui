@@ -7,6 +7,7 @@ export default {
   batchCatalogue: abis.batchCatalogueAbi,
   encryptedMarginalPrice: abis.encryptedMarginalPriceAbi,
   fixedPriceSale: abis.fixedPriceSaleAbi,
+  fixedPriceBatch: abis.fixedPriceBatchAbi,
   atomicLinearVesting: abis.linearVestingAbi,
   batchLinearVesting: abis.linearVestingAbi,
 } as const;
