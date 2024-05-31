@@ -93,11 +93,8 @@ const schema = z
       .optional(),
     allowlist: z.array(z.array(z.string())).optional(),
     cappedAllowlistLimit: z.string().optional(),
-    tokenAllowlistAddress: z
-      .string()
-      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-      .optional(),
-    tokenAllowlistThreshold: z.string().optional(),
+    allowlistToken: tokenSchema.optional(),
+    allowlistTokenThreshold: z.string().optional(),
     customCallbackData: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]$/)
@@ -345,8 +342,11 @@ export default function CreateAuctionPage() {
         break;
       }
       case CallbacksType.TOKEN_ALLOWLIST: {
-        const allowlistToken = values.tokenAllowlistAddress ?? zeroAddress;
-        const threshold = BigInt(values.tokenAllowlistThreshold ?? ""); // TODO multiply by token decimals. Need to attach an ABI to token then
+        const allowlistToken = values.allowlistToken?.address;
+        const threshold = parseUnits(
+          values.allowlistTokenThreshold ?? "0",
+          values.allowlistToken?.decimals ?? 0,
+        ); // TODO multiply by token decimals. Need to attach an ABI to token then
         callbackData = encodeAbiParameters(
           [{ token: "address" }, { threshold: "uint256" }],
           [allowlistToken, threshold] as never,
@@ -424,9 +424,13 @@ export default function CreateAuctionPage() {
     form.getFieldState("payoutToken.address").invalid ||
     form.getFieldState("payoutToken.logoURI").invalid;
 
+  const allowlistTokenModalInvalid =
+    form.getFieldState("allowlistToken.address").invalid ||
+    form.getFieldState("allowlistToken.logoURI").invalid;
+
   // Handle validation and parsing of the allowlist file
 
-  // TODO probably move this somewhere else
+  // TODO move this
   type AllowlistEntry = {
     address: `0x${string}`;
   };
@@ -459,6 +463,9 @@ export default function CreateAuctionPage() {
           }
 
           form.setValue("allowlist", allowlist);
+
+          // TODO enable setting a visual indicator of whether the file was parsed successfully
+          // message: `Parsed ${allowlist.length} addresses from file with ${results.data.length - allowlist.length} errors.`,
 
           console.log(form.getValues("allowlist"));
         },
@@ -856,6 +863,7 @@ export default function CreateAuctionPage() {
                 <h3 className="form-div">6 Advanced Settings</h3>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
+                    control={form.control}
                     name="callbacksType"
                     render={({ field }) => (
                       <FormItemWrapper
@@ -895,6 +903,7 @@ export default function CreateAuctionPage() {
                   />
                   {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
                     callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
+                    // TODO not a FormField, running into conflicts with the file input
                     <FormItemWrapper
                       label="Allowlist"
                       tooltip={
@@ -902,13 +911,62 @@ export default function CreateAuctionPage() {
                       }
                     >
                       <Input
-                        label="Allowlist"
                         type="file"
                         accept=".csv"
                         onChange={handleAllowlistFileSelect}
                         className="pt-1"
                       />
                     </FormItemWrapper>
+                  )}
+                  {callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST && (
+                    <FormField
+                      control={form.control}
+                      name="cappedAllowlistLimit"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Per User Spend Limit"
+                          tooltip="The number of quote tokens each allowlisted address can spend."
+                        >
+                          <Input placeholder="10" type="number" {...field} />
+                        </FormItemWrapper>
+                      )}
+                    />
+                  )}
+                  {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
+                    <>
+                      <FormField
+                        name="allowlistToken"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Allowlist Token"
+                            tooltip={
+                              "The address of the token to use for the allowlist."
+                            }
+                          >
+                            <DialogInput
+                              {...field}
+                              title="Select Allowlist Token"
+                              triggerContent={"Select token"}
+                              disabled={allowlistTokenModalInvalid}
+                            >
+                              <TokenPicker name="allowlistToken" />
+                            </DialogInput>
+                          </FormItemWrapper>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="allowlistTokenThreshold"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Required Token Balance"
+                            tooltip="The number of tokens the address must hold to qualify for the allowlist."
+                          >
+                            <Input placeholder="1" type="number" {...field} />
+                          </FormItemWrapper>
+                        )}
+                      />
+                    </>
                   )}
                   <FormField
                     name="curator"
