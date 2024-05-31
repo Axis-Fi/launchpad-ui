@@ -1,4 +1,4 @@
-import { Link } from "@repo/ui";
+import { Card, Link } from "@repo/ui";
 import { ArrowUpRightIcon } from "lucide-react";
 import { PropsWithAuction } from "@repo/types";
 
@@ -13,9 +13,11 @@ export function ProjectInfoCard({
   const website = auction.auctionInfo?.links?.website;
 
   return (
-    <div className={props.className}>
-      <div className="mb-2 flex justify-between">
-        <h3 className="w-1/2">About {auction.auctionInfo?.name}</h3>
+    <Card
+      className={props.className}
+      title={`About ${auction.auctionInfo?.name}`}
+    >
+      <div className="flex justify-between">
         {website && (
           <Link className="text-primary flex items-end" href={website}>
             GO TO WEBSITE
@@ -24,6 +26,6 @@ export function ProjectInfoCard({
         )}
       </div>
       {description}
-    </div>
+    </Card>
   );
 }

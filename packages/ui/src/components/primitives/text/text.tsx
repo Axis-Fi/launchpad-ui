@@ -9,8 +9,9 @@ const sizeMap = {
   "2xl": "h3",
   xl: "h3",
   lg: "h4",
-  xs: "p",
+  md: "h4",
   sm: "p",
+  xs: "p",
   default: "p",
 };
 
@@ -23,16 +24,19 @@ export interface TextProps
 }
 
 const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
-  ({ className, color, size, weight, ...props }, ref) => {
+  (
+    { className, color, size, weight, mono, uppercase, spaced, ...props },
+    ref,
+  ) => {
     const Element = (size ? sizeMap[size] : sizeMap.default) as "div";
 
     return (
       <Element
         className={cn(
           textVariants({ color, size, weight, className }),
-          props.mono && "font-mono",
-          props.uppercase && "uppercase",
-          props.spaced && "tracking-[1.2px]",
+          mono && "font-mono",
+          uppercase && "uppercase",
+          spaced && "tracking-[1.2px]",
         )}
         ref={ref}
         {...props}

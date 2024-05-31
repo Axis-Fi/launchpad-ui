@@ -1,15 +1,6 @@
-import { Auction, PropsWithAuction } from "@repo/types";
+import type { Auction, PropsWithAuction } from "@repo/types";
 import React from "react";
-
-export function AuctionInfoCard(
-  props: React.HtmlHTMLAttributes<HTMLDivElement>,
-) {
-  return (
-    <div className={props.className}>
-      <div className="grid grid-cols-2 gap-x-10 gap-y-6">{props.children}</div>
-    </div>
-  );
-}
+import { AuctionMetrics } from "./auction-metrics";
 
 type AuctionLabelChildren = React.ReactElement<PropsWithAuction>;
 
@@ -27,16 +18,24 @@ export function AuctionMetricsContainer(
   }
 
   const children = Array.isArray(props.children)
-    ? props.children.map((c) => cloneWithAuction(c, props.auction))
-    : cloneWithAuction(props.children as AuctionLabelChildren, props.auction);
+    ? props.children.map((c, idx) => cloneWithAuction(c, props.auction, idx))
+    : cloneWithAuction(
+        props.children as AuctionLabelChildren,
+        props.auction,
+        0,
+      );
 
   return (
-    <AuctionInfoCard className={props.className}>{children}</AuctionInfoCard>
+    <AuctionMetrics className={props.className}>{children}</AuctionMetrics>
   );
 }
 
-function cloneWithAuction(children: AuctionLabelChildren, auction: Auction) {
+function cloneWithAuction(
+  children: AuctionLabelChildren,
+  auction: Auction,
+  key: number,
+) {
   return React.isValidElement(children)
-    ? React.cloneElement(children, { auction })
+    ? React.cloneElement(children, { auction, key })
     : children;
 }

@@ -88,13 +88,13 @@ function AuctionCardDetails(
 
       {isEMP && !props.isGrid && (
         <AuctionMetricsContainer
-          className="group-hover:hidden"
+          className="group-hover:hidden md:grid-cols-2"
           auction={props.auction}
         >
           <AuctionMetric id="targetRaise" />
           <AuctionMetric id="minRaise" />
-          <AuctionMetric id="minPrice" small />
-          <AuctionMetric id="auctionnedSupply" small />
+          <AuctionMetric id="minPrice" size="s" />
+          <AuctionMetric id="auctionedSupply" size="s" />
         </AuctionMetricsContainer>
       )}
 

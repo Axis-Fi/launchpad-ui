@@ -101,6 +101,7 @@ type EMPFormattedInfo = {
   totalBidsDecrypted: number;
   totalBidsClaimed: number;
   totalBidAmount: string;
+  minFilled: string;
   uniqueBidders: number;
   cleared: boolean;
 };

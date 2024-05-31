@@ -1,3 +1,4 @@
+import { environment } from "@repo/env";
 import {
   Badge,
   Button,
@@ -18,16 +19,23 @@ const testnetLinks = [
   { title: "Deploy", href: "/deploy" },
 ];
 
+const defaultLinks = [
+  { title: "Launches", href: "/#" },
+  { title: "Contact", href: "mailto:launch@axis.finance" },
+  { title: "Docs", href: "https://docs.axis.finance" },
+];
+
 export default function Navbar() {
   const isRoot = window.location.hash === "#/";
   const { isCurator, pendingCurationsCount } = useCurator();
+  const isProd = environment.isProduction;
 
   //Only show curator link if connected address is a curator for any auction
-  const links = React.useMemo(
-    () =>
-      isCurator ? [curator, refer, ...testnetLinks] : [refer, ...testnetLinks],
-    [isCurator],
-  );
+  const links = React.useMemo(() => {
+    let _links = isCurator ? [curator] : [];
+    _links = isProd ? [] : [..._links, ...testnetLinks];
+    return [...defaultLinks, refer, ..._links];
+  }, [isCurator]);
 
   return (
     <NavigationMenu>
@@ -44,7 +52,7 @@ export default function Navbar() {
                     <Button
                       variant="link"
                       className={cn(
-                        "px-2 uppercase",
+                        "text-foreground px-2 uppercase",
                         (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
                           "text-primary",
                       )}

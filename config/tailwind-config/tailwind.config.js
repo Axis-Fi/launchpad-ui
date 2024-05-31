@@ -13,6 +13,27 @@ module.exports = {
       },
     },
     extend: {
+      maxWidth: {
+        limit: "1440px",
+      },
+      spacing: {
+        "2xs": "var(--spacing-100)",
+        xs: "var(--spacing-200)",
+        sm: "var(--spacing-300)",
+        md: "var(--spacing-400)",
+        lg: "var(--spacing-500)",
+        xl: "var(--spacing-600)",
+        "2xl": "var(--spacing-700)",
+        "3xl": "var(--spacing-800)",
+      },
+      fontSize: {
+        base: "var(--sizing-200)",
+        sm: "var(--sizing-150)",
+        md: "var(--sizing-200)",
+        lg: "var(--sizing-300)",
+        xl: "var(--sizing-400)",
+        "2xl": "var(--sizing-700)",
+      },
       boxShadow: {
         active: "0 0 0 2px hsl(var(--primary-500))",
         "3xl": "0 0 28px 0 hsl(40, 100%, 77%)",
@@ -25,6 +46,7 @@ module.exports = {
         ring: "hsl(var(--ring))",
 
         background: "hsl(var(--app))",
+        app: "hsl(var(--app))",
 
         /* Primary brand color */
         primary: "hsl(var(--primary-600))",
@@ -44,6 +66,9 @@ module.exports = {
           highlight: {
             DEFAULT: "hsl(var(--surface-highlight-fill))",
             outline: "hsl(var(--surface-highlight-outline))",
+          },
+          progress: {
+            DEFAULT: "hsl(var(--surface-progress-fill))",
           },
         },
         feedback: {

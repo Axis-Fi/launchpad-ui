@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { format } from "date-fns";
 import type { Auction, BatchAuction, EMPAuctionData } from "@repo/types";
-import { abbreviateNumber } from "utils/currency";
+import { shorten } from "utils/number";
 import { formatDate, getTimestamp } from "utils/date";
 import { useGetToggledUsdAmount } from "./hooks/use-get-toggled-usd-amount";
 import { SettledAuctionChartOverlay } from "./settled-auction-chart-overlay";
@@ -25,7 +25,7 @@ import {
 } from "./hooks/use-sorted-bids";
 import { OriginIcon } from "./origin-icon";
 
-type SettledTooltipProps = {
+type BidTooltipProps = {
   auction?: Auction;
 } & TooltipProps<number, "timestamp" | "price" | "amountIn">;
 
@@ -43,7 +43,15 @@ const formatter = (value: unknown, _name: string, props: FormatterProps) => {
   return value;
 };
 
-const CustomTooltip = (props: SettledTooltipProps) => {
+/*
+  Recharts <Legend> component renders the legend text the same color as the legend icon color.
+  This formatter renders default text color, without affecting the colored icons.
+*/
+const plainTextFormatter = (value: string) => (
+  <span className="text-foreground">{value}</span>
+);
+
+const BidTooltip = (props: BidTooltipProps) => {
   const auctionEndTimestamp = props?.auction?.formatted
     ? getTimestamp(props.auction.formatted.endDate)
     : undefined;
@@ -67,12 +75,11 @@ const CustomTooltip = (props: SettledTooltipProps) => {
   const { timestamp, price, amountIn, settledAmountOut } = payload;
 
   return (
-    <div className="bg-secondary rounded-sm px-4 py-2">
+    <div className="bg-surface border-surface-outline text-foreground rounded-sm border p-4">
       <div>Amount: {getToggledUsdAmount(amountIn)}</div>
       <div>Price: {getToggledUsdAmount(price)}</div>
       <div>
-        Settled: {abbreviateNumber(settledAmountOut)}{" "}
-        {props.auction?.baseToken.symbol}
+        Settled: {shorten(settledAmountOut)} {props.auction?.baseToken.symbol}
       </div>
       <div>At: {formatDate.fullLocal(new Date(timestamp ?? 0))}</div>
     </div>
@@ -88,8 +95,15 @@ const filterWinningBids = (bids: SortedBid[]) => {
 };
 
 export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
-  const auctionData = auction.auctionData;
+  /* Recharts doesn't support classNames, so we obtain the colors from the stylesheet */
+  const primary500 = `hsl(var(--primary-500))`;
+  const red500 = `hsl(var(--red-500))`;
+  const textSecondary = `hsl(var(--text-secondary))`;
+  const textTertiary = `hsl(var(--text-tertiary))`;
+  const neutral400 = `hsl(var(--neutral-400))`;
 
+  const batchAuction = auction as BatchAuction;
+  const auctionData = auction.auctionData;
   const auctionEndTimestamp = auction?.formatted
     ? getTimestamp(auction.formatted.endDate)
     : undefined;
@@ -100,18 +114,19 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
   );
 
   const bids = useSortedBids(auction, auctionData as EMPAuctionData);
-  const marginalPrice = Number(auction?.formatted?.marginalPrice);
-  const amountRaised = Number(auction?.sold) * marginalPrice;
+  const clearingPrice = Number(
+    batchAuction.encryptedMarginalPrice?.marginalPrice ?? 0,
+  );
+  const amountRaised = Number(auction?.sold) * clearingPrice;
   const winning = filterWinningBids(bids);
 
   return (
-    <div className="size-full" style={{ position: "relative", height: 488 }}>
+    <div className="relative h-[504px] w-[100%]">
       {auction && <SettledAuctionChartOverlay auction={auction} />}
-
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer className="font-mono">
         <ComposedChart data={bids}>
           <CartesianGrid
-            stroke="#D7D7C1"
+            stroke={neutral400}
             strokeDasharray="0"
             strokeWidth={0.5}
             vertical={false}
@@ -119,35 +134,30 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
           <XAxis
             dataKey="cumulativeAmountIn"
             type="number"
-            tick={{ fill: "#D7D7C1", fontSize: 14 }}
-            tickFormatter={(value) => abbreviateNumber(value, 0)}
+            tick={{ fill: textTertiary, fontSize: 14 }}
+            tickFormatter={(value) => shorten(value, 0)}
             tickLine={false}
           />
           <YAxis
             dataKey="price"
             type="number"
-            tick={{ fill: "#D7D7C1", fontSize: 14 }}
+            tick={{ fill: textTertiary, fontSize: 14 }}
             tickFormatter={(value) => getToggledUsdAmount(value, false)}
             tickLine={false}
-          />
-          <ReferenceLine
-            x={amountRaised}
-            stroke="#D7D7C1"
-            strokeDasharray="6 6"
           />
           <Area
             data={winning}
             type="stepBefore"
             dataKey="price"
-            stroke="#75C8F6"
             dot={false}
-            strokeWidth={2}
+            fill={neutral400}
+            stroke="none"
           />
           <Line
             data={bids}
             type="stepBefore"
             dataKey="price"
-            stroke="#75C8F6"
+            stroke={primary500}
             dot={false}
             strokeWidth={2}
           />
@@ -158,16 +168,34 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
                   key={index}
                   segment={[
                     { x: bid.cumulativeAmountIn, y: 0 },
-                    { x: bid.cumulativeAmountIn, y: bid.price },
+                    {
+                      x: bid.cumulativeAmountIn,
+                      y: bids[index + 1]?.price || bid.price,
+                    },
                   ]}
-                  stroke="#75C8F6"
-                  strokeWidth={2}
+                  stroke={textSecondary}
+                  strokeWidth={1}
                 />
               ),
           )}
+          <ReferenceLine
+            x={amountRaised}
+            stroke={textSecondary}
+            strokeDasharray="8 8"
+            strokeWidth={2}
+          />
+          <ReferenceLine
+            segment={[
+              { x: 0, y: clearingPrice },
+              { x: amountRaised, y: clearingPrice },
+            ]}
+            stroke={red500}
+            strokeDasharray="8 8"
+            strokeWidth={2}
+          />
           <ReferenceDot
             x={amountRaised}
-            y={marginalPrice}
+            y={clearingPrice}
             isFront={true}
             shape={(props) => <OriginIcon cx={props.cx} cy={props.cy} />}
           />
@@ -175,22 +203,30 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
             cursor={{ strokeDasharray: "3 3" }}
             // @ts-expect-error TODO
             formatter={formatter}
-            wrapperStyle={{ backgroundColor: "transparent", outline: "none" }}
-            content={(props) => <CustomTooltip {...props} auction={auction} />}
+            content={(props) => <BidTooltip {...props} auction={auction} />}
           />
           <Legend
             align="left"
+            wrapperStyle={{ position: "relative", padding: 0, margin: 0 }}
+            formatter={plainTextFormatter}
             payload={[
               {
                 value: "Bid price (y) and Amount (x)",
-                type: "rect",
-                color: "#D7D7C1",
+                type: "plainline",
+                color: primary500,
+                payload: { strokeDasharray: "1 0" },
               },
               {
-                value: "USDB raised",
+                value: `${auction.quoteToken.symbol} raised`,
                 type: "plainline",
-                color: "#D7D7C1",
-                payload: { strokeDasharray: "6 6" },
+                color: textTertiary,
+                payload: { strokeDasharray: "8 8" },
+              },
+              {
+                value: `Clearing price`,
+                type: "plainline",
+                color: red500,
+                payload: { strokeDasharray: "8 8" },
               },
             ]}
           />

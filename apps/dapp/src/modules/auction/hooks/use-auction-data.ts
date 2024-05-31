@@ -22,8 +22,8 @@ export function useAuctionData({
   type = AuctionType.SEALED_BID,
 }: UseAuctionDataParameters) {
   const auctionModule = moduleMap[type] as AxisModuleContractNames;
-
   const auctionDataQuery = useReadContract({
+    chainId,
     abi: axisContracts.abis[auctionModule],
     address: !chainId
       ? undefined
