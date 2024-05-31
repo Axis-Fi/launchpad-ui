@@ -1,7 +1,7 @@
+import type { Hex } from "viem";
 import * as v from "valibot";
 import type { Address } from "@repo/types";
 import { abis } from "@repo/abis";
-import type { EncryptLotIdPost200Response } from "@repo/cloak";
 import * as bid from ".";
 import type { ContractConfig } from "../../types";
 
@@ -17,7 +17,7 @@ type PrimedBidParams = Pick<
 > & {
   auctionHouseAddress: Address;
   quoteTokenDecimals: number;
-  encryptedBid: EncryptLotIdPost200Response;
+  auctionData?: Hex;
 };
 
 type EncryptBidParams = Pick<

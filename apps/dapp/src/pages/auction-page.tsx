@@ -66,7 +66,6 @@ export default function AuctionPage() {
       : statuses[auction.status];
 
   const metadata = getAuctionMetadata(auction.auctionType);
-
   return (
     <div>
       <PageHeader>

@@ -12,7 +12,12 @@ export const auctionMetadata: Record<
   [AuctionType.FIXED_PRICE]: {
     label: "Fixed-Price Sale",
     tooltip:
-      "Fixed-Price Sale is a fully on-chain, fixed-price batch auction system",
+      "Fixed-Price Sale is a fully on-chain, fixed-price atomic auction system",
+  },
+  [AuctionType.FIXED_PRICE_BATCH]: {
+    label: "Fixed-Price Batch",
+    tooltip:
+      "Fixed-Price batch is a fully on-chain, fixed-price batch auction system",
   },
 };
 

@@ -1,7 +1,6 @@
 import { toHex, parseUnits } from "viem";
 import { abis } from "@repo/abis";
 import type { BidConfig, PrimedBidParams } from "../types";
-import { encodeEncryptedBid } from "../utils";
 
 const getConfigFromPrimedParams = (params: PrimedBidParams): BidConfig => {
   const {
@@ -11,7 +10,7 @@ const getConfigFromPrimedParams = (params: PrimedBidParams): BidConfig => {
     referrerAddress,
     auctionHouseAddress,
     quoteTokenDecimals,
-    encryptedBid,
+    auctionData,
   } = params;
 
   const callbackData = toHex(""); //TODO: callbackData - decide best way to handle this
@@ -26,7 +25,7 @@ const getConfigFromPrimedParams = (params: PrimedBidParams): BidConfig => {
         bidder: bidderAddress,
         referrer: referrerAddress,
         amount: parseUnits(amountIn.toString(), quoteTokenDecimals),
-        auctionData: encodeEncryptedBid(encryptedBid),
+        auctionData: auctionData || toHex(""),
         permit2Data: toHex(""), // TODO: handle permit2Data
       },
       callbackData,
