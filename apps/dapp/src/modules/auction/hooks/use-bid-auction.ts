@@ -138,7 +138,8 @@ export function useBidAuction(
 
   return {
     handleBid:
-      auction.auctionType === AuctionType.SEALED_BID
+      auction.auctionType === AuctionType.SEALED_BID ||
+      auction.auctionType === AuctionType.FIXED_PRICE_BATCH
         ? handleBid
         : handlePurchase,
     approveCapacity,

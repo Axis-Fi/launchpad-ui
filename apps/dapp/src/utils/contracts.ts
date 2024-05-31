@@ -10,11 +10,13 @@ import { Address } from "viem";
 const auctionHouseMap = {
   [AuctionType.SEALED_BID]: "batchAuctionHouse",
   [AuctionType.FIXED_PRICE]: "atomicAuctionHouse",
+  [AuctionType.FIXED_PRICE_BATCH]: "batchAuctionHouse",
 };
 
 export const moduleMap = {
   [AuctionType.SEALED_BID]: "encryptedMarginalPrice",
   [AuctionType.FIXED_PRICE]: "fixedPriceSale",
+  [AuctionType.FIXED_PRICE_BATCH]: "fixedPriceBatch",
 };
 
 export function getContractsByModuleType(auction: Auction) {

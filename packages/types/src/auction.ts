@@ -11,7 +11,10 @@ export type BaseAuction = {
   quoteToken: Token;
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
-  auctionData?: EMPAuctionData | FixedPriceAuctionData;
+  auctionData?:
+    | EMPAuctionData
+    | FixedPriceAuctionData
+    | FixedPriceBatchAuctionData;
   auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
   //linearVesting?: LinearVestingData;
@@ -68,6 +71,15 @@ export type EMPAuctionData = {
 export type FixedPriceAuctionData = {
   price: bigint;
   maxPayout: bigint;
+};
+
+export type FixedPriceBatchAuctionData = {
+  price: bigint;
+  status: number;
+  nextBidId: bigint;
+  settlementCleared: boolean;
+  totalBidAmount: bigint;
+  minFilled: bigint;
 };
 
 export type AuctionFormattedInfo = {

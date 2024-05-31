@@ -7,6 +7,8 @@ import type { BidConfig, BidParams } from "../types";
 import { encryptBid } from "../utils";
 import type { AuctionModule } from "../../auction";
 import { getConfigFromPrimedParams } from "./get-config-from-primed-params";
+import { AuctionType } from "@repo/types";
+import { encodeEncryptedBid } from "../utils";
 
 const getConfig = async (
   params: BidParams,
@@ -54,7 +56,11 @@ const getConfig = async (
     auctionHouseAddress,
   };
 
-  const encryptedBid = await encryptBid(encryptBidParams, cloakClient);
+  const shouldEncryptBid = auctionType === AuctionType.SEALED_BID;
+
+  const encryptedBid = shouldEncryptBid
+    ? encodeEncryptedBid(await encryptBid(encryptBidParams, cloakClient))
+    : undefined;
 
   return getConfigFromPrimedParams({
     lotId,
@@ -63,7 +69,7 @@ const getConfig = async (
     referrerAddress,
     auctionHouseAddress,
     quoteTokenDecimals,
-    encryptedBid,
+    auctionData: encryptedBid,
   });
 };
 

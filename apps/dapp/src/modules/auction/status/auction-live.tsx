@@ -30,7 +30,11 @@ export type BidForm = z.infer<typeof schema>;
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
-  const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
+  const isFixedPrice =
+    auction.auctionType === AuctionType.FIXED_PRICE ||
+    auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+  const isFixedPriceBatch =
+    auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
   const form = useForm<BidForm>({
     mode: "onTouched",
@@ -59,6 +63,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             !isFixedPrice ||
+            isFixedPriceBatch ||
             Number(data.quoteTokenAmount) <=
               Number(auction.formatted?.maxAmount),
           {
@@ -191,7 +196,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             <>
               <InfoLabel
                 label="Price"
-                value={`${auction.formatted?.price} ${auction.formatted?.tokenPairSymbols}`}
+                value={`${auction.formatted?.price ?? "Unknown"} ${auction
+                  .formatted?.tokenPairSymbols}`}
               />
             </>
           )}

@@ -8,7 +8,8 @@ export type AxisCoreContractNames =
 
 export type AxisModuleContractNames =
   | "encryptedMarginalPrice"
-  | "fixedPriceSale";
+  | "fixedPriceSale"
+  | "fixedPriceBatch";
 
 export type AxisDerivativeContractNames =
   | "atomicLinearVesting"

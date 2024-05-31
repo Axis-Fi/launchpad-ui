@@ -36,10 +36,23 @@ const parameterMap = {
       ],
     },
   ] as const,
+  [AuctionType.FIXED_PRICE_BATCH]: [
+    {
+      name: "FixedPriceBatchParams",
+      internalType: "struct FixedPriceBatchParams",
+      type: "tuple",
+      components: [
+        { name: "price", type: "uint96" },
+        { name: "minFillPercent", type: "uint24" },
+      ],
+    },
+  ] as const,
 };
+
 const handlers = {
   [AuctionType.SEALED_BID]: handleEMP,
   [AuctionType.FIXED_PRICE]: handleFP,
+  [AuctionType.FIXED_PRICE_BATCH]: handleFPB,
 };
 
 export function getAuctionCreateParams(
@@ -81,6 +94,19 @@ function handleFP(values: CreateAuctionForm) {
     {
       price: parseUnits(values.price, values.quoteToken.decimals),
       maxPayoutPercent: toBasisPoints(values.maxPayoutPercent[0]),
+    },
+  ];
+}
+
+function handleFPB(values: CreateAuctionForm) {
+  if (!values.price || !values.minFillPercent) {
+    throw new Error("handleFPB called without the correct values");
+  }
+
+  return [
+    {
+      price: parseUnits(values.price, values.quoteToken.decimals),
+      minFillPercent: getPercentage(Number(values.minFillPercent[0])),
     },
   ];
 }

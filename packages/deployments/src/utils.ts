@@ -12,16 +12,19 @@ import mainnetTokenList from "./mainnet-tokenlist.json";
 const auctionHouseMap = {
   [AuctionType.SEALED_BID]: "batchAuctionHouse",
   [AuctionType.FIXED_PRICE]: "atomicAuctionHouse",
+  [AuctionType.FIXED_PRICE_BATCH]: "batchAuctionHouse",
 };
 
 const catalogueMap = {
   [AuctionType.SEALED_BID]: "batchCatalogue",
   [AuctionType.FIXED_PRICE]: "atomicCatalogue",
+  [AuctionType.FIXED_PRICE_BATCH]: "batchCatalogue",
 };
 
 const moduleMap = {
   [AuctionType.SEALED_BID]: "encryptedMarginalPrice",
   [AuctionType.FIXED_PRICE]: "fixedPriceSale",
+  [AuctionType.FIXED_PRICE_BATCH]: "fixedPriceBatch",
 };
 
 function getContractsByModuleType(auction: Auction) {
