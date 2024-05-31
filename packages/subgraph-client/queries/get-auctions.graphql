@@ -171,6 +171,15 @@ fragment BatchAuctionFields on BatchAuctionLot {
     marginalPrice
     hasPartialFill
   }
+  fixedPrice {
+    id
+    status
+    settlementSuccessful
+    price
+    minFilled
+    hasPartialFill
+    partialBidId
+  }
   settled {
     id
   }

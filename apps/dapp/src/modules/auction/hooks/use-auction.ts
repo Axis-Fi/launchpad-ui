@@ -39,6 +39,7 @@ export type AuctionResult = {
 const hookMap = {
   [AuctionType.SEALED_BID]: useGetBatchAuctionLotQuery,
   [AuctionType.FIXED_PRICE]: useGetAtomicAuctionLotQuery,
+  [AuctionType.FIXED_PRICE_BATCH]: useGetBatchAuctionLotQuery,
 };
 
 export function useAuction(
