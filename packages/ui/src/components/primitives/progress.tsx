@@ -18,7 +18,7 @@ const Progress = React.forwardRef<
         transform: `translateX(-${100 - (value || 0)}%)`,
       }}
     />
-    <div className="absolute right-5 top-1.5">{props.children}</div>
+    <div className="absolute right-12 top-1.5">{props.children}</div>
   </ProgressPrimitive.Root>
 ));
 Progress.displayName = ProgressPrimitive.Root.displayName;

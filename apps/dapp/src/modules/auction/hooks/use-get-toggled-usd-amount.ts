@@ -1,6 +1,6 @@
 import { useToggle } from "@repo/ui";
 import type { Token } from "@repo/types";
-import { abbreviateNumber } from "utils/currency";
+import { shorten } from "utils/number";
 import { useGetUsdAmount } from "./use-get-usd-amount";
 
 const useGetToggledUsdAmount = (
@@ -16,7 +16,7 @@ const useGetToggledUsdAmount = (
     amount: number,
     showTokenSymbol: boolean = true,
   ): string => {
-    const formattedAmount = `${abbreviateNumber(Number(amount))} ${
+    const formattedAmount = `${shorten(Number(amount))} ${
       showTokenSymbol ? token.symbol : ""
     }`;
 

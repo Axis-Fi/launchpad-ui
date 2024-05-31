@@ -3,7 +3,7 @@ import {
   cn,
   Metric,
   ToggleProvider,
-  type TextSize,
+  type MetricProps,
   type TextWeight,
 } from "@repo/ui";
 import type { Token, PropsWithAuction, BatchAuction } from "@repo/types";
@@ -16,10 +16,9 @@ type ToggledAmountProps = {
   token: Token;
   amount: number;
   timestamp?: number;
-  size?: TextSize;
   weight?: TextWeight;
   className?: string;
-};
+} & Pick<MetricProps, "size">;
 
 const ToggledAmount = ({
   label,
@@ -35,7 +34,7 @@ const ToggledAmount = ({
     <Metric
       label={label}
       className={cn("flex-grow", className)}
-      metricSize={size}
+      size={size}
       metricWeight={weight}
     >
       {toggledAmount}

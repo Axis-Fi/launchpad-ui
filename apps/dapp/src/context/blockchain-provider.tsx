@@ -10,7 +10,11 @@ const activeConfig = chains.activeConfig;
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryKeyHashFn: hashFn, // TanStack Query can't handle bigint queryKey data type by default
+      /*
+        TanStack Query can't handle bigint queryKey data type by default.
+        Wagmi hashFn handles bigints for this purpose.
+      */
+      queryKeyHashFn: hashFn,
       refetchOnWindowFocus: false,
     },
   },

@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { format } from "date-fns";
 import type { Auction, BatchAuction, EMPAuctionData } from "@repo/types";
-import { abbreviateNumber } from "utils/currency";
+import { shorten } from "utils/number";
 import { formatDate, getTimestamp } from "utils/date";
 import { useGetToggledUsdAmount } from "./hooks/use-get-toggled-usd-amount";
 import { SettledAuctionChartOverlay } from "./settled-auction-chart-overlay";
@@ -79,8 +79,7 @@ const BidTooltip = (props: BidTooltipProps) => {
       <div>Amount: {getToggledUsdAmount(amountIn)}</div>
       <div>Price: {getToggledUsdAmount(price)}</div>
       <div>
-        Settled: {abbreviateNumber(settledAmountOut)}{" "}
-        {props.auction?.baseToken.symbol}
+        Settled: {shorten(settledAmountOut)} {props.auction?.baseToken.symbol}
       </div>
       <div>At: {formatDate.fullLocal(new Date(timestamp ?? 0))}</div>
     </div>
@@ -136,7 +135,7 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
             dataKey="cumulativeAmountIn"
             type="number"
             tick={{ fill: textTertiary, fontSize: 14 }}
-            tickFormatter={(value) => abbreviateNumber(value, 0)}
+            tickFormatter={(value) => shorten(value, 0)}
             tickLine={false}
           />
           <YAxis

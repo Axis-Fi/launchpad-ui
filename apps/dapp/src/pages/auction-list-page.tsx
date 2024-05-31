@@ -46,7 +46,7 @@ export default function AuctionListPage() {
         .filter((a) => !searchText.length || searchObject(a, searchText))
     : secureAuctions;
 
-  const sortedAuctions = filteredAuctions.sort((a, b) => {
+  const sortedAuctions = [...filteredAuctions].sort((a, b) => {
     if (a.status === sortByStatus && b.status === sortByStatus) {
       //If they're both the same, order by starting date
       return Number(a.start) - Number(b.start);

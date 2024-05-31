@@ -91,7 +91,7 @@ export function AuctionBidInput({
               render={({ field }) => (
                 <FormItemWrapperSlim>
                   <TokenAmountInput
-                    label="Maximum Bid Amount"
+                    label="Bid Price"
                     symbol={`per ${auction.baseToken.symbol}`}
                     usdPrice={formattedRate}
                     message={

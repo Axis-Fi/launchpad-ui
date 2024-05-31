@@ -15,7 +15,7 @@ export function Metric({
   size = "m",
   metricWeight = "default",
 }: MetricProps) {
-  const metricSize = size === "l" ? "xl" : size === "m" ? "lg" : "sm";
+  const metricSize = size === "l" ? "xl" : size === "m" ? "lg" : "md";
 
   return (
     <div className={className}>

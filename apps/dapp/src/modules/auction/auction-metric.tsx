@@ -7,8 +7,8 @@ import {
   type PropsWithAuction,
 } from "@repo/types";
 import { Metric, MetricProps } from "@repo/ui";
-import { abbreviateNumber, trimCurrency } from "utils/currency";
-import { formatPercentage } from "utils/number";
+import { trimCurrency } from "utils/currency";
+import { shorten, formatPercentage } from "utils/number";
 
 const handlers = {
   derivative: {
@@ -119,7 +119,7 @@ const handlers = {
   totalSupply: {
     label: "Total Supply",
     handler: (auction: Auction) =>
-      `${auction.formatted?.totalSupply} ${auction.baseToken.symbol}`,
+      shorten(Number(auction.baseToken.totalSupply)),
   },
 
   price: {
@@ -150,10 +150,14 @@ const handlers = {
   vestingDuration: {
     label: "Vesting",
     handler: (auction: Auction) => {
+      if (!auction.linearVesting) {
+        return "None";
+      }
+
       // TODO: move to formatters
       const duration = Math.floor(
-        (Number(auction.linearVesting?.expiryTimestamp) -
-          Number(auction.linearVesting?.startTimestamp)) /
+        (Number(auction.linearVesting.expiryTimestamp) -
+          Number(auction.linearVesting.startTimestamp)) /
           86400,
       );
 
@@ -167,7 +171,7 @@ const handlers = {
       const fdv =
         Number(auction.baseToken.totalSupply) *
         Number(_auction.encryptedMarginalPrice?.minPrice);
-      return `${abbreviateNumber(fdv)} ${auction.quoteToken.symbol}`;
+      return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
     },
   },
   rate: {
@@ -193,7 +197,7 @@ const handlers = {
 type AuctionMetricProps = Partial<PropsWithAuction> & {
   id: keyof typeof handlers;
   className?: string;
-} & Pick<MetricProps, "metricSize">;
+} & Pick<MetricProps, "size">;
 
 export function AuctionMetric(props: AuctionMetricProps) {
   const element = handlers[props.id];
@@ -204,7 +208,7 @@ export function AuctionMetric(props: AuctionMetricProps) {
   const value = element.handler(props.auction);
 
   return (
-    <Metric metricSize={props.metricSize} label={element.label}>
+    <Metric size={props.size} label={element.label}>
       {value}
     </Metric>
   );

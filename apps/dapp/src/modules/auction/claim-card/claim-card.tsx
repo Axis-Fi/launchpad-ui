@@ -1,13 +1,9 @@
 import { useAccount } from "wagmi";
-import type { Address, Auction, BatchAuction } from "@repo/types";
-import { NotConnected } from "./not-connected";
-import { UserHasNoBids } from "./user-has-no-bids";
-import { UserHasBids } from "./user-has-bids";
-import { Vesting } from "./vesting";
-
-type ClaimProps = {
-  auction: Auction;
-};
+import type { Address, BatchAuction, PropsWithAuction } from "@repo/types";
+import { NotConnectedClaimCard } from "./not-connected";
+import { NoUserBidsClaimCard } from "./no-user-bids-claim-card";
+import { UserBidsClaimCard } from "./user-bids-claim-card";
+import { VestingClaimCard } from "./vesting-claim-card";
 
 type ClaimStatusProps = {
   auction: BatchAuction;
@@ -53,7 +49,7 @@ const getClaimStatus = ({
   return "USER_HAS_NO_BIDS";
 };
 
-export function ClaimCard({ auction: _auction }: ClaimProps) {
+export function ClaimCard({ auction: _auction }: PropsWithAuction) {
   const auction = _auction as BatchAuction; /* TODO: sort out auction types */
 
   const { address: userAddress, isConnected: isWalletConnected } = useAccount();
@@ -62,7 +58,7 @@ export function ClaimCard({ auction: _auction }: ClaimProps) {
 
   switch (status) {
     case "NOT_CONNECTED": {
-      return <NotConnected auction={auction} />;
+      return <NotConnectedClaimCard auction={auction} />;
     }
 
     case "AUCTION_FAILED": {
@@ -70,15 +66,15 @@ export function ClaimCard({ auction: _auction }: ClaimProps) {
     }
 
     case "USER_HAS_BIDS": {
-      return <UserHasBids auction={auction} />;
+      return <UserBidsClaimCard auction={auction} />;
     }
 
     case "VESTING": {
-      return <Vesting />;
+      return <VestingClaimCard />;
     }
 
     default: {
-      return <UserHasNoBids />;
+      return <NoUserBidsClaimCard />;
     }
   }
 }

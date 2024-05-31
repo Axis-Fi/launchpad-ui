@@ -93,8 +93,8 @@ function AuctionCardDetails(
         >
           <AuctionMetric id="targetRaise" />
           <AuctionMetric id="minRaise" />
-          <AuctionMetric id="minPrice" metricSize="sm" />
-          <AuctionMetric id="auctionedSupply" metricSize="sm" />
+          <AuctionMetric id="minPrice" size="s" />
+          <AuctionMetric id="auctionedSupply" size="s" />
         </AuctionMetricsContainer>
       )}
 

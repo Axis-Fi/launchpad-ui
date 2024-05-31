@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "lucide-react";
 import { Badge, Button, Card, Text } from "@repo/ui";
 
-export function UserHasNoBids() {
+export function NoUserBidsClaimCard() {
   return (
     <Card
       title="Claim"
