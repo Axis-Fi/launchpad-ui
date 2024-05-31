@@ -1,9 +1,10 @@
 import { axisContracts } from "@repo/deployments";
 import {
-  EMPAuctionData,
   AuctionType,
-  AxisModuleContractNames,
-  FixedPriceAuctionData,
+  type EMPAuctionData,
+  type AxisModuleContractNames,
+  type FixedPriceAuctionData,
+  type FixedPriceBatchAuctionData,
 } from "@repo/types";
 import { parseUnits } from "viem";
 import { useReadContract } from "wagmi";
@@ -28,11 +29,11 @@ export function useAuctionData({
     address: !chainId
       ? undefined
       : axisContracts.addresses[chainId][auctionModule],
-    functionName: "auctionData",
+    functionName:
+      type === AuctionType.FIXED_PRICE_BATCH ? "getAuctionData" : "auctionData",
     args: [parseUnits(lotId ?? "0", 0)],
     query: { enabled: !!chainId && !!lotId },
   });
-
   const handle = handlers[type];
 
   return {
@@ -47,6 +48,7 @@ export function useAuctionData({
 const handlers = {
   [AuctionType.SEALED_BID]: mapEMPAuctionData,
   [AuctionType.FIXED_PRICE]: mapFixedPriceData,
+  [AuctionType.FIXED_PRICE_BATCH]: mapFixedPriceBatchData,
 };
 
 /** Maps the result of view function auctionData into a readable format */
@@ -90,4 +92,10 @@ function mapFixedPriceData(
     price: data[0],
     maxPayout: data[1],
   };
+}
+
+function mapFixedPriceBatchData(
+  data: FixedPriceBatchAuctionData | undefined,
+): FixedPriceBatchAuctionData | undefined {
+  return data;
 }
