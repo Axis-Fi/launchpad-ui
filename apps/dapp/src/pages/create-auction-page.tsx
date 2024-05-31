@@ -42,7 +42,7 @@ import {
 } from "viem";
 import { getDuration, getTimestamp, formatDate, dateMath } from "src/utils";
 
-import { AuctionInfo, AuctionType } from "@repo/types";
+import { AuctionInfo, AuctionType, CallbacksType } from "@repo/types";
 
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
@@ -59,6 +59,8 @@ import { getLinearVestingParams } from "modules/auction/utils/get-derivative-par
 import { useNavigate } from "react-router-dom";
 import { getAuctionHouse } from "utils/contracts";
 import { Chain } from "@rainbow-me/rainbowkit";
+import Papa from "papaparse";
+// import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -83,15 +85,12 @@ const schema = z
     maxPayoutPercent: z.array(z.number()).optional(),
     start: z.date(),
     deadline: z.date(),
-    hooks: z
+    callbacksType: z.string(),
+    callbacks: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
-    allowlist: z
-      .string()
-      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-      .optional(),
-    allowlistParams: z.string().optional(),
+    allowlist: z.array(z.array(z.string())).optional(),
     isVested: z.boolean().optional(),
     curator: z
       .string()
@@ -185,6 +184,7 @@ export default function CreateAuctionPage() {
     _chainId,
     capacity,
     auctionType,
+    callbacksType,
     start,
     deadline,
   ] = form.watch([
@@ -193,6 +193,7 @@ export default function CreateAuctionPage() {
     "quoteToken.chainId",
     "capacity",
     "auctionType",
+    "callbacksType",
     "start",
     "deadline",
   ]);
@@ -286,7 +287,9 @@ export default function CreateAuctionPage() {
             baseToken: getAddress(values.payoutToken.address),
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
-            callbacks: !values.hooks ? zeroAddress : getAddress(values.hooks),
+            callbacks: !values.callbacks
+              ? zeroAddress
+              : getAddress(values.callbacks),
             //TODO: Extract into derivative helper function
             derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
             derivativeParams:
@@ -344,6 +347,50 @@ export default function CreateAuctionPage() {
   const payoutModalInvalid =
     form.getFieldState("payoutToken.address").invalid ||
     form.getFieldState("payoutToken.logoURI").invalid;
+
+  // Handle validation and parsing of the allowlist file
+
+  // TODO probably move this somewhere else
+  type AllowlistEntry = {
+    address: `0x${string}`;
+  };
+
+  // Populate the allowlist in the form data
+  const handleAllowlistFileSelect = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const contents = e.target?.result;
+      Papa.parse(contents, {
+        header: true,
+        complete: function (results: { data: AllowlistEntry[] }) {
+          // Iterate through, validate data, and store for submission
+          const allowlist: string[][] = [];
+          for (const entry of results.data) {
+            // Ensure address is valid
+            if (entry.address.length == 0) continue;
+            if (!entry.address.match(/^(0x)?[0-9a-fA-F]{40}$/)) {
+              console.error(`Invalid address: ${entry.address}`);
+              continue;
+            }
+            allowlist.push([entry.address]);
+          }
+
+          form.setValue("allowlist", allowlist);
+
+          console.log(form.getValues("allowlist"));
+        },
+      });
+    };
+
+    reader.readAsText(file);
+  };
 
   return (
     <>
@@ -733,21 +780,60 @@ export default function CreateAuctionPage() {
                 <h3 className="form-div">6 Advanced Settings</h3>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
-                    name="hooks"
+                    name="callbacksType"
                     render={({ field }) => (
                       <FormItemWrapper
                         label="Callback"
                         tooltip={
-                          "The address of the contract implementing callbacks"
+                          "The type of callback contract to use for the auction."
                         }
                       >
-                        <Input
+                        <Select
+                          defaultValue={CallbacksType.NONE}
+                          options={[
+                            {
+                              value: CallbacksType.NONE,
+                              label: "None",
+                            },
+                            {
+                              value: CallbacksType.MERKLE_ALLOWLIST,
+                              label: "Offchain Allowlist",
+                            },
+                            {
+                              value: CallbacksType.CAPPED_MERKLE_ALLOWLIST,
+                              label: "Capped Offchain Allowlist",
+                            },
+                            {
+                              value: CallbacksType.TOKEN_ALLOWLIST,
+                              label: "Token Allowlist",
+                            },
+                            {
+                              value: CallbacksType.CUSTOM,
+                              label: "Custom",
+                            },
+                          ]}
                           {...field}
-                          placeholder={trimAddress("0x0000000")}
                         />
                       </FormItemWrapper>
                     )}
                   />
+                  {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
+                    callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
+                    <FormItemWrapper
+                      label="Allowlist"
+                      tooltip={
+                        "File containing list of addresses on the allowlist in CSV format."
+                      }
+                    >
+                      <Input
+                        label="Allowlist"
+                        type="file"
+                        accept=".csv"
+                        onChange={handleAllowlistFileSelect}
+                        className="pt-1"
+                      />
+                    </FormItemWrapper>
+                  )}
                   <FormField
                     name="curator"
                     render={({ field }) => (

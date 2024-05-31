@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@fleekhq/fleek-storage-js": "^1.0.24",
+    "@openzeppelin/merkle-tree": "^1.0.6",
     "@rainbow-me/rainbowkit": "^2.0.2",
     "@repo/abis": "workspace:*",
     "@repo/cloak": "workspace:*",
@@ -39,6 +40,7 @@
     "express": "^4.18.2",
     "jotai": "^2.7.0",
     "lucide-react": "^0.314.0",
+    "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.3",
