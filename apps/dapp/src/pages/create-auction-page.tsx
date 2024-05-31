@@ -33,6 +33,7 @@ import {
 } from "wagmi";
 import {
   Address,
+  encodeAbiParameters,
   fromHex,
   getAddress,
   isHex,
@@ -57,10 +58,10 @@ import { RequiresChain } from "components/requires-chain";
 import { PageHeader } from "modules/app/page-header";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
-import { getAuctionHouse } from "utils/contracts";
+import { getAuctionHouse, getCallbacks } from "utils/contracts";
 import { Chain } from "@rainbow-me/rainbowkit";
 import Papa from "papaparse";
-// import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
+import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -91,6 +92,16 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
     allowlist: z.array(z.array(z.string())).optional(),
+    cappedAllowlistLimit: z.string().optional(),
+    tokenAllowlistAddress: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    tokenAllowlistThreshold: z.string().optional(),
+    customCallbackData: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]$/)
+      .optional(),
     isVested: z.boolean().optional(),
     curator: z
       .string()
@@ -276,6 +287,74 @@ export default function CreateAuctionPage() {
       publicKey,
     );
 
+    // Callbacks
+
+    const callbacksType = values.callbacksType as CallbacksType;
+
+    // Set the callbacks address
+    let callbacks;
+
+    // Two main cases:
+    // 1. No callback or custom callback
+    // 2. Selected one of our standard callbacks
+    if (
+      values.callbacksType === CallbacksType.CUSTOM ||
+      values.callbacksType === CallbacksType.NONE
+    ) {
+      callbacks = values.callbacks ? getAddress(values.callbacks) : zeroAddress;
+    } else {
+      callbacks = getCallbacks(chainId, callbacksType).address;
+    }
+
+    // Set the callback data based on the type and user inputs
+    let callbackData;
+
+    switch (callbacksType) {
+      case CallbacksType.NONE: {
+        callbackData = toHex("");
+        break;
+      }
+      case CallbacksType.CUSTOM: {
+        callbackData = toHex(values.customCallbackData ?? "");
+        break;
+      }
+      case CallbacksType.MERKLE_ALLOWLIST: {
+        // TODO need to handle errors here
+        const allowlistTree =
+          values.allowlist &&
+          StandardMerkleTree.of(values.allowlist, ["address"]);
+        const root = toHex(allowlistTree?.root ?? "");
+        callbackData = encodeAbiParameters([{ merkleRoot: "bytes32" }], [
+          root,
+        ] as never);
+        break;
+      }
+      case CallbacksType.CAPPED_MERKLE_ALLOWLIST: {
+        const cap = parseUnits(
+          values.cappedAllowlistLimit ?? "0",
+          values.quoteToken.decimals,
+        );
+        const allowlistTree =
+          values.allowlist &&
+          StandardMerkleTree.of(values.allowlist, ["address"]);
+        const root = toHex(allowlistTree?.root ?? "");
+        callbackData = encodeAbiParameters(
+          [{ merkleRoot: "bytes32" }, { cap: "uint256" }],
+          [root, cap] as never,
+        );
+        break;
+      }
+      case CallbacksType.TOKEN_ALLOWLIST: {
+        const allowlistToken = values.tokenAllowlistAddress ?? zeroAddress;
+        const threshold = BigInt(values.tokenAllowlistThreshold ?? ""); // TODO multiply by token decimals. Need to attach an ABI to token then
+        callbackData = encodeAbiParameters(
+          [{ token: "address" }, { threshold: "uint256" }],
+          [allowlistToken, threshold] as never,
+        );
+        break;
+      }
+    }
+
     createAuctionTx.writeContract(
       {
         abi,
@@ -287,9 +366,7 @@ export default function CreateAuctionPage() {
             baseToken: getAddress(values.payoutToken.address),
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
-            callbacks: !values.callbacks
-              ? zeroAddress
-              : getAddress(values.callbacks),
+            callbacks: callbacks,
             //TODO: Extract into derivative helper function
             derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
             derivativeParams:
@@ -302,14 +379,13 @@ export default function CreateAuctionPage() {
                     start: getTimestamp(values.vestingStart ?? values.start),
                   }),
             wrapDerivative: false,
-            //TODO: enable callback data support
-            callbackData: toHex(""),
+            callbackData: callbackData,
           },
           {
             start: getTimestamp(values.start),
             duration:
               getTimestamp(values.deadline) - getTimestamp(values.start),
-            capacityInQuote: false, // Disabled for LSBBA
+            capacityInQuote: false, // Batch auctions do not allow capacity in quote
             capacity: parseUnits(values.capacity, values.payoutToken.decimals),
             implParams: auctionSpecificParams,
           },
@@ -334,7 +410,7 @@ export default function CreateAuctionPage() {
       chainId: payoutToken?.chainId,
       amount: Number(capacity),
     });
-  // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
+  // TODO add note on pre-funding: the capacity will be transferred upon creation
 
   const createAuction = form.handleSubmit(handleCreation);
   const isValid = form.formState.isValid;

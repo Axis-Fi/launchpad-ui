@@ -3,7 +3,9 @@ import {
   Auction,
   AuctionType,
   AxisContractNames,
+  AxisCallbackNames,
   AxisModuleContractNames,
+  CallbacksType,
 } from "@repo/types";
 import { Address } from "viem";
 
@@ -49,5 +51,23 @@ export function getAuctionHouse(
   return {
     abi: axisContracts.abis[contractName],
     address: axisContracts.addresses[auction.chainId][contractName] as Address,
+  };
+}
+
+// TODO add DTL contracts once they exist
+const callbackMap = {
+  [CallbacksType.NONE]: "",
+  [CallbacksType.CUSTOM]: "",
+  [CallbacksType.MERKLE_ALLOWLIST]: "merkleAllowlist",
+  [CallbacksType.CAPPED_MERKLE_ALLOWLIST]: "cappedMerkleAllowlist",
+  [CallbacksType.TOKEN_ALLOWLIST]: "tokenAllowlist",
+};
+
+export function getCallbacks(chainId: number, callbackType: CallbacksType) {
+  const contractName = callbackMap[callbackType] as AxisCallbackNames;
+
+  return {
+    abi: axisContracts.abis[contractName],
+    address: axisContracts.addresses[chainId][contractName] as Address,
   };
 }

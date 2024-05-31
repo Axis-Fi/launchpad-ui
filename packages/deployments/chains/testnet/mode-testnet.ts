@@ -20,8 +20,6 @@ const config: AxisDeploymentConfig = {
     merkleAllowlist: "0x98e59Cb79a866d3eF974F5e0B4D86d7Bbc0D7C7b",
     cappedMerkleAllowlist: "0x98d89517aab4b257C5Ef2Cf8387F8231287B179b",
     tokenAllowlist: "0x98B8491486e6B29E7d2B923DD3CD523E7940162B",
-    dtlUniV2: "0x",
-    dtlUniV3: "0x",
   },
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mode-testnet/<VERSION>/gn",

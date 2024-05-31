@@ -20,8 +20,6 @@ export type AxisContractNames =
   | AxisDerivativeContractNames;
 
 export type AxisCallbackNames =
-  | "dtlUniV2"
-  | "dtlUniV3"
   | "tokenAllowlist"
   | "merkleAllowlist"
   | "cappedMerkleAllowlist";
