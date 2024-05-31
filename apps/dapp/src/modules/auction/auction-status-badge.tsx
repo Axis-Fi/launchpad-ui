@@ -1,24 +1,20 @@
-import { Badge, cn } from "@repo/ui";
+import { Badge } from "@repo/ui";
 import { AuctionStatus } from "@repo/types";
 
 /** Displays a indicator with the auction's current status */
 export function AuctionStatusBadge({
   status,
   className,
-  large,
+  large = false,
 }: {
   status: AuctionStatus;
   large?: boolean;
 } & React.HTMLAttributes<HTMLParagraphElement>) {
-  const statusColor =
-    status === "concluded"
-      ? "bg-destructive text-foreground"
-      : "bg-feedback-success";
-
   return (
     <Badge
-      size={large ? "lg" : "default"}
-      className={cn(statusColor, className)}
+      size={status === "live" && large ? "xl" : "m"}
+      className={className}
+      color={status !== "live" ? "ghost" : "active"}
     >
       {status}
     </Badge>

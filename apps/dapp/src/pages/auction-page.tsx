@@ -93,6 +93,7 @@ export default function AuctionPage() {
 }
 
 function AuctionPageLoading() {
+  /* TODO skeletons not working since redesign */
   return (
     <div className="mask">
       <ImageBanner />
@@ -108,9 +109,9 @@ function AuctionPageLoading() {
               <Skeleton className="h-72 w-[40%]" />
             </div>
           </div>
-          <h3 className="mt-5">About</h3>
-          <Skeleton className="h-20 w-[40%]" />
-          <h3 className="mt-5">Contract Addresses</h3>
+          <Text size="lg" className="mt-5">
+            About
+          </Text>
           <Skeleton className="h-32 w-[40%]" />
         </div>
       </PageContainer>
