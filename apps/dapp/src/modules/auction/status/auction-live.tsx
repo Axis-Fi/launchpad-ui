@@ -191,7 +191,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             <>
               <InfoLabel
                 label="Price"
-                value={`${auction.formatted?.price} ${auction.formatted?.tokenPairSymbols}`}
+                value={`${auction.formatted?.price ?? "Unknown"} ${auction
+                  .formatted?.tokenPairSymbols}`}
               />
             </>
           )}

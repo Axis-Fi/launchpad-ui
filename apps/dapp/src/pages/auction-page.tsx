@@ -91,8 +91,8 @@ export default function AuctionPage() {
               />
             </div>
             <div className="flex items-start gap-x-1">
-              <Tooltip content={metadata.tooltip}>
-                <h4>{metadata.label}</h4>
+              <Tooltip content={metadata?.tooltip}>
+                <h4>{metadata?.label}</h4>
               </Tooltip>
               <ChainIcon chainId={auction.chainId} />
             </div>

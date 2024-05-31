@@ -157,16 +157,20 @@ export function formatAuction(
   const startDistance = formatDistanceToNow(startDate);
   const endDistance = formatDistanceToNow(endDate);
 
-  const moduleFields =
-    auctionType === AuctionType.SEALED_BID
-      ? addEMPFields(
-          auctionData as EMPAuctionData,
-          auction as BatchSubgraphAuction,
-        )
-      : addFPFields(
-          auctionData as FixedPriceAuctionData,
-          auction as AtomicSubgraphAuction,
-        );
+  let moduleFields;
+  if (auctionType === AuctionType.SEALED_BID) {
+    moduleFields = addEMPFields(
+      auctionData as EMPAuctionData,
+      auction as BatchSubgraphAuction,
+    );
+  } else if (auctionType === AuctionType.FIXED_PRICE) {
+    moduleFields = addFPFields(
+      auctionData as FixedPriceAuctionData,
+      auction as AtomicSubgraphAuction,
+    );
+  } else if (auctionType === AuctionType.FIXED_PRICE_BATCH) {
+    moduleFields = addFPBFields(auction as BatchSubgraphAuction);
+  }
 
   return {
     startDate,
@@ -267,5 +271,13 @@ function addFPFields(
     price,
     maxPayout,
     maxAmount,
+  };
+}
+
+function addFPBFields(auction: BatchSubgraphAuction) {
+  if (!auction) return;
+
+  return {
+    price: auction.fixedPrice?.price,
   };
 }
