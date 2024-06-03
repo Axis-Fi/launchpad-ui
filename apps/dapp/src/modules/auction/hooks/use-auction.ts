@@ -300,6 +300,9 @@ function addFPBFields(auction: BatchSubgraphAuction) {
     .map((b) => b.bidder)
     .filter((b, i, a) => a.lastIndexOf(b) === i).length;
   const cleared = auction.fixedPrice?.settlementSuccessful;
+  const minFilled = auction.fixedPrice?.minFilled
+    ? trimCurrency(auction.fixedPrice?.minFilled)
+    : undefined;
 
   return {
     price: auction.fixedPrice?.price,
@@ -308,5 +311,6 @@ function addFPBFields(auction: BatchSubgraphAuction) {
     totalBidAmount: trimCurrency(totalBidAmount),
     uniqueBidders,
     cleared,
+    minFilled,
   };
 }

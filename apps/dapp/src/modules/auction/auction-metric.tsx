@@ -28,9 +28,14 @@ const handlers = {
     label: "Min Fill",
     handler: (auction: Auction) => {
       const _auction = auction as BatchAuction;
-      const fill = Math.round(
-        +_auction.encryptedMarginalPrice!.minFilled / +_auction.capacity,
-      );
+      const fill = _auction.encryptedMarginalPrice
+        ? Math.round(
+            (+_auction.encryptedMarginalPrice!.minFilled * 100) /
+              +_auction.capacity,
+          )
+        : Math.round(
+            (+_auction.fixedPrice!.minFilled * 100) / +_auction.capacity,
+          );
       return `${fill}%`;
     },
   },
@@ -77,12 +82,23 @@ const handlers = {
   minRaise: {
     label: "Min Raise",
     handler: (auction: Auction) => {
-      const _auction = auction as BatchAuction;
-      const minRaise =
-        Number(_auction.encryptedMarginalPrice?.minFilled) *
-        Number(_auction.encryptedMarginalPrice?.minPrice);
+      if (auction.auctionType === AuctionType.SEALED_BID) {
+        const _auction = auction as BatchAuction;
+        const minRaise =
+          Number(_auction.encryptedMarginalPrice?.minFilled) *
+          Number(_auction.encryptedMarginalPrice?.minPrice);
 
-      return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
+        return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
+      }
+
+      if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
+        const _auction = auction as BatchAuction;
+        const minRaise =
+          Number(_auction.fixedPrice?.minFilled) *
+          Number(_auction.fixedPrice?.price);
+
+        return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
+      }
     },
   },
 
@@ -95,6 +111,13 @@ const handlers = {
           trimCurrency(
             (auction as BatchAuction).encryptedMarginalPrice!.minPrice,
           ) + ` ${auction.quoteToken.symbol}`
+        );
+      }
+
+      if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
+        return (
+          trimCurrency((auction as BatchAuction).fixedPrice!.price) +
+          ` ${auction.quoteToken.symbol}`
         );
       }
     },
