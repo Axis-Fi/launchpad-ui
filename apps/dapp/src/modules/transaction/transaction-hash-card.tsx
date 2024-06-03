@@ -14,7 +14,7 @@ export function TransactionHashCard(props: TransactionHashCardProps) {
       {props.error && <TransactionErrorDialog error={props.error} />}
       {!props.error &&
         (props.message ? (
-          <h3>{props.message}</h3>
+          <h2>{props.message}</h2>
         ) : (
           <div className="flex w-full items-center justify-center gap-x-1">
             {message} <LoadingIndicator className="fill-foreground size-4" />{" "}
