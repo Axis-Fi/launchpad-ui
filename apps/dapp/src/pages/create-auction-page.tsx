@@ -150,8 +150,9 @@ const schema = z
   .refine(
     (data) =>
       // Only required for EMP
-      data.auctionType === AuctionType.SEALED_BID ||
-      (!!data.minPrice && isFinite(Number(data.minPrice))),
+      data.auctionType === AuctionType.SEALED_BID
+        ? !!data.minPrice && isFinite(Number(data.minPrice))
+        : true,
     {
       message: "Minimum Price must be set",
       path: ["minPrice"],
@@ -161,8 +162,9 @@ const schema = z
     (data) =>
       // Only required for FPB and FPA
       data.auctionType === AuctionType.FIXED_PRICE_BATCH ||
-      data.auctionType === AuctionType.FIXED_PRICE ||
-      (!!data.price && isFinite(Number(data.price))),
+      data.auctionType === AuctionType.FIXED_PRICE
+        ? !!data.price && isFinite(Number(data.price))
+        : true,
     {
       message: "Price must be set",
       path: ["price"],
@@ -172,8 +174,9 @@ const schema = z
     (data) =>
       // Only required for FPB and EMP
       data.auctionType === AuctionType.FIXED_PRICE_BATCH ||
-      data.auctionType === AuctionType.SEALED_BID ||
-      (!!data.minFillPercent && isFinite(Number(data.minFillPercent[0]))),
+      data.auctionType === AuctionType.SEALED_BID
+        ? !!data.minFillPercent && isFinite(Number(data.minFillPercent[0]))
+        : true,
     {
       message: "Minimum filled percentage must be set",
       path: ["minFillPercent"],
@@ -359,10 +362,6 @@ export default function CreateAuctionPage() {
 
   const createAuction = form.handleSubmit(handleCreation);
   const isValid = form.formState.isValid;
-
-  if (!isValid) {
-    console.log(JSON.stringify(form.formState.errors, null, 2));
-  }
 
   const onSubmit = () => {
     isSufficientAllowance ? createAuction() : execute();
