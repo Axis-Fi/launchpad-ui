@@ -288,7 +288,25 @@ function addFPFields(
 function addFPBFields(auction: BatchSubgraphAuction) {
   if (!auction) return;
 
+  const totalBids = auction.bids.length;
+  const totalBidsClaimed = auction.bids.filter(
+    (b) => b.status === "claimed",
+  ).length;
+  const totalBidAmount = auction.bids.reduce(
+    (total, b) => total + Number(b.amountIn),
+    0,
+  );
+  const uniqueBidders = auction.bids
+    .map((b) => b.bidder)
+    .filter((b, i, a) => a.lastIndexOf(b) === i).length;
+  const cleared = auction.fixedPrice?.settlementSuccessful;
+
   return {
     price: auction.fixedPrice?.price,
+    totalBids,
+    totalBidsClaimed,
+    totalBidAmount: trimCurrency(totalBidAmount),
+    uniqueBidders,
+    cleared,
   };
 }

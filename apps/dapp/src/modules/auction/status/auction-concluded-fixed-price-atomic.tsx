@@ -3,7 +3,7 @@ import { Card } from "@repo/ui";
 import type { PropsWithAuction } from "@repo/types";
 import { AuctionMetric } from "../auction-metric";
 
-export function FixedPriceAuctionConcluded(props: PropsWithAuction) {
+export function FixedPriceAtomicAuctionConcluded(props: PropsWithAuction) {
   return (
     <Card title="Launch Info">
       <AuctionMetricsContainer auction={props.auction}>
