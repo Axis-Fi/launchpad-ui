@@ -1958,9 +1958,9 @@ export const cappedMerkleAllowlistAbi = [
   {
     stateMutability: "view",
     type: "function",
-    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotMerkleRoot",
-    outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+    outputs: [{ name: "merkleRoot", internalType: "bytes32", type: "bytes32" }],
   },
   {
     stateMutability: "nonpayable",
@@ -2039,6 +2039,30 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "merkleRoot_", internalType: "bytes32", type: "bytes32" },
+    ],
+    name: "setMerkleRoot",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: false },
+      {
+        name: "merkleRoot",
+        internalType: "bytes32",
+        type: "bytes32",
+        indexed: false,
+      },
+    ],
+    name: "MerkleRootSet",
   },
   { type: "error", inputs: [], name: "Callback_ExceedsLimit" },
   { type: "error", inputs: [], name: "Callback_InvalidParams" },
@@ -3583,9 +3607,9 @@ export const merkleAllowlistAbi = [
   {
     stateMutability: "view",
     type: "function",
-    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotMerkleRoot",
-    outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+    outputs: [{ name: "merkleRoot", internalType: "bytes32", type: "bytes32" }],
   },
   {
     stateMutability: "nonpayable",
@@ -3664,6 +3688,30 @@ export const merkleAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "merkleRoot_", internalType: "bytes32", type: "bytes32" },
+    ],
+    name: "setMerkleRoot",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: false },
+      {
+        name: "merkleRoot",
+        internalType: "bytes32",
+        type: "bytes32",
+        indexed: false,
+      },
+    ],
+    name: "MerkleRootSet",
   },
   { type: "error", inputs: [], name: "Callback_InvalidParams" },
   { type: "error", inputs: [], name: "Callback_NotAuthorized" },

@@ -34,6 +34,7 @@ import {
 import {
   Address,
   encodeAbiParameters,
+  formatUnits,
   fromHex,
   getAddress,
   isHex,
@@ -189,6 +190,7 @@ export default function CreateAuctionPage() {
   const [
     isVested,
     payoutToken,
+    quoteToken,
     _chainId,
     capacity,
     auctionType,
@@ -198,6 +200,7 @@ export default function CreateAuctionPage() {
   ] = form.watch([
     "isVested",
     "payoutToken",
+    "quoteToken",
     "quoteToken.chainId",
     "capacity",
     "auctionType",
@@ -304,7 +307,7 @@ export default function CreateAuctionPage() {
     }
 
     // Set the callback data based on the type and user inputs
-    let callbackData;
+    let callbackData = toHex("");
 
     switch (callbacksType) {
       case CallbacksType.NONE: {
@@ -339,6 +342,17 @@ export default function CreateAuctionPage() {
           [{ merkleRoot: "bytes32" }, { cap: "uint256" }],
           [root, cap] as never,
         );
+        break;
+      }
+      case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST: {
+        // TODO need to handle errors here
+        const allowlistTree =
+          values.allowlist &&
+          StandardMerkleTree.of(values.allowlist, ["address", "uint256"]);
+        const root = toHex(allowlistTree?.root ?? "");
+        callbackData = encodeAbiParameters([{ merkleRoot: "bytes32" }], [
+          root,
+        ] as never);
         break;
       }
       case CallbacksType.TOKEN_ALLOWLIST: {
@@ -435,11 +449,75 @@ export default function CreateAuctionPage() {
     address: `0x${string}`;
   };
 
+  type AllocatedAllowlistEntry = {
+    address: `0x${string}`;
+    allocation: string;
+  };
+
+  const parseAllowlistFile = (results: { data: AllowlistEntry[] }) => {
+    // Iterate through, validate data, and store for submission
+    const allowlist: string[][] = [];
+    for (const entry of results.data) {
+      // Ensure address is valid
+      if (entry.address.length == 0) continue;
+      if (!entry.address.match(/^(0x)?[0-9a-fA-F]{40}$/)) {
+        console.error(`Invalid address: ${entry.address}`);
+        continue;
+      }
+      allowlist.push([entry.address]);
+    }
+
+    form.setValue("allowlist", allowlist);
+
+    // TODO enable setting a visual indicator of whether the file was parsed successfully
+    // message: `Parsed ${allowlist.length} addresses from file with ${results.data.length - allowlist.length} errors.`,
+
+    console.log(form.getValues("allowlist"));
+  };
+
+  const parseAllocatedAllowlistFile = (results: {
+    data: AllocatedAllowlistEntry[];
+  }) => {
+    // Iterate through, validate data, and store for submission
+    const allowlist: string[][] = [];
+    for (const entry of results.data) {
+      // Ensure address is valid
+      if (entry.address.length == 0) continue;
+      if (!entry.address.match(/^(0x)?[0-9a-fA-F]{40}$/)) {
+        console.error(`Invalid address: ${entry.address}`);
+        continue;
+      }
+
+      // Ensure allocation is valid
+      let allocation;
+      try {
+        allocation = parseUnits(entry.allocation, quoteToken.decimals);
+      } catch (e) {
+        console.log("Invalid allocation: ", entry.allocation);
+        continue;
+      }
+
+      // Add
+      allowlist.push([entry.address, formatUnits(allocation, 0)]);
+    }
+
+    form.setValue("allowlist", allowlist);
+
+    // TODO enable setting a visual indicator of whether the file was parsed successfully
+    // message: `Parsed ${allowlist.length} addresses from file with ${results.data.length - allowlist.length} errors.`,
+
+    console.log(form.getValues("allowlist"));
+  };
+
   // Populate the allowlist in the form data
   const handleAllowlistFileSelect = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
+    const parseFn =
+      callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST
+        ? parseAllocatedAllowlistFile
+        : parseAllowlistFile;
 
     if (!file) return;
 
@@ -449,26 +527,7 @@ export default function CreateAuctionPage() {
       const contents = e.target?.result;
       Papa.parse(contents, {
         header: true,
-        complete: function (results: { data: AllowlistEntry[] }) {
-          // Iterate through, validate data, and store for submission
-          const allowlist: string[][] = [];
-          for (const entry of results.data) {
-            // Ensure address is valid
-            if (entry.address.length == 0) continue;
-            if (!entry.address.match(/^(0x)?[0-9a-fA-F]{40}$/)) {
-              console.error(`Invalid address: ${entry.address}`);
-              continue;
-            }
-            allowlist.push([entry.address]);
-          }
-
-          form.setValue("allowlist", allowlist);
-
-          // TODO enable setting a visual indicator of whether the file was parsed successfully
-          // message: `Parsed ${allowlist.length} addresses from file with ${results.data.length - allowlist.length} errors.`,
-
-          console.log(form.getValues("allowlist"));
-        },
+        complete: parseFn,
       });
     };
 
@@ -885,7 +944,11 @@ export default function CreateAuctionPage() {
                             },
                             {
                               value: CallbacksType.CAPPED_MERKLE_ALLOWLIST,
-                              label: "Capped Offchain Allowlist",
+                              label: "Offchain Allowlist with Spend Cap",
+                            },
+                            {
+                              value: CallbacksType.ALLOCATED_MERKLE_ALLOWLIST,
+                              label: "Offchain Allowlist with Allocations",
                             },
                             {
                               value: CallbacksType.TOKEN_ALLOWLIST,
@@ -931,6 +994,22 @@ export default function CreateAuctionPage() {
                         </FormItemWrapper>
                       )}
                     />
+                  )}
+                  {callbacksType ===
+                    CallbacksType.ALLOCATED_MERKLE_ALLOWLIST && (
+                    <FormItemWrapper
+                      label="Allowlist"
+                      tooltip={
+                        "File containing list of addresses and allocations in CSV format."
+                      }
+                    >
+                      <Input
+                        type="file"
+                        accept=".csv"
+                        onChange={handleAllowlistFileSelect}
+                        className="pt-1"
+                      />
+                    </FormItemWrapper>
                   )}
                   {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
                     <>
