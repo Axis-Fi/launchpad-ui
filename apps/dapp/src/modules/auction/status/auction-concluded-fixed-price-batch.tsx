@@ -1,10 +1,20 @@
 import { AuctionMetricsContainer } from "../auction-metrics-container";
-import { Card } from "@repo/ui";
+import { Button, Card } from "@repo/ui";
 import type { PropsWithAuction } from "@repo/types";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
+import React from "react";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
+import { useSettleAuction } from "../hooks/use-settle-auction";
+import { RequiresChain } from "components/requires-chain";
+import { LoadingIndicator } from "modules/app/loading-indicator";
 
 export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const settle = useSettleAuction(props.auction);
+
+  const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
+
   return (
     <div>
       <div className="flex justify-between">
@@ -20,7 +30,43 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
           <ProjectInfoCard auction={props.auction} />
         </div>
         <div className="w-[40%]">
-          <Card title="Concluded"></Card>
+          <TransactionDialog
+            signatureMutation={settle.settleTx}
+            error={settle.error}
+            mutation={settle.settleReceipt}
+            chainId={props.auction.chainId}
+            hash={settle.settleTx.data!}
+            onConfirm={settle.handleSettle}
+            open={isDialogOpen}
+            onOpenChange={(open) => {
+              setIsDialogOpen(open);
+
+              if (settle.settleTx.isError) {
+                settle.settleTx.reset();
+              }
+            }}
+          />
+          <Card title="Concluded">
+            <RequiresChain chainId={props.auction.chainId} className="mt-4">
+              <div className="mt-4 w-full">
+                <Button
+                  className="w-full"
+                  disabled={isWaiting}
+                  onClick={() => setIsDialogOpen(true)}
+                >
+                  {isWaiting ? (
+                    <div className="flex">
+                      Waiting for confirmation...
+                      <div className="w-1/2"></div>
+                      <LoadingIndicator />
+                    </div>
+                  ) : (
+                    "Settle"
+                  )}
+                </Button>
+              </div>
+            </RequiresChain>
+          </Card>
         </div>
       </div>
     </div>
