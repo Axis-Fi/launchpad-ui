@@ -56,7 +56,8 @@ export default function AuctionPage() {
     auction.status === "concluded" &&
     auction.auctionType === AuctionType.FIXED_PRICE
       ? FixedPriceAtomicAuctionConcluded
-      : auction.auctionType === AuctionType.FIXED_PRICE_BATCH
+      : auction.status === "concluded" &&
+          auction.auctionType === AuctionType.FIXED_PRICE_BATCH
         ? FixedPriceBatchAuctionConcluded
         : statuses[auction.status];
 
