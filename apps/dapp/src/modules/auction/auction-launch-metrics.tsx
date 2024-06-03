@@ -15,6 +15,8 @@ export function AuctionLaunchMetrics(
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+  const hasCurator = !!auction.curator && auction.curatorApproved;
+
   return (
     <Card
       className={props.className}
@@ -57,6 +59,15 @@ export function AuctionLaunchMetrics(
         {isFixedPrice && <AuctionMetric id="price" />}
         {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
         <AuctionMetric id="capacity" />
+        {hasCurator && (
+          <Metric label="Curator">
+            <BlockExplorerLink
+              trim
+              chainId={auction.chainId}
+              address={auction.curator!}
+            />
+          </Metric>
+        )}
       </AuctionMetricsContainer>
     </Card>
   );

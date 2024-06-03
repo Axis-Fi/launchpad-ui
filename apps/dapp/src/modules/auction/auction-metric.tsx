@@ -7,7 +7,7 @@ import {
   type BatchAuction,
   type PropsWithAuction,
 } from "@repo/types";
-import { Metric, MetricProps } from "@repo/ui";
+import { Metric, MetricProps, trimAddress } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
 
@@ -234,6 +234,14 @@ const handlers = {
     label: "Ended",
     handler: (auction: Auction) => {
       return `${auction.formatted?.endDistance} ago`;
+    },
+  },
+  curator: {
+    label: "Curator",
+    handler: (auction: Auction) => {
+      if (!auction.curator) return undefined;
+
+      return trimAddress(auction.curator, 6);
     },
   },
 };
