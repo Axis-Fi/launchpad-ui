@@ -164,7 +164,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <AuctionMetric id="totalSupply" />
               <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
-              <AuctionMetric id="minRaise" />
             </AuctionMetricsContainer>
           )}
         </Card>
