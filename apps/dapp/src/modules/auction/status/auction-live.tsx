@@ -16,6 +16,7 @@ import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
+// import { getCallbacksType } from "../utils/get-callbacks-type";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -27,6 +28,14 @@ export type BidForm = z.infer<typeof schema>;
 export function AuctionLive({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
+
+  // const callbacksType = getCallbacksType(auction);
+  // TODO
+  // - check allowlist based on callbacksType.
+  // - implement additional validation for the submit button
+  // - display a field that says this is an allowlisted auction
+  // - display the user's allowlisted status
+  // - display amount they can spend (which is the total amount minus what they've already spent), if capped or allocated allowlist
 
   const form = useForm<BidForm>({
     mode: "onTouched",
