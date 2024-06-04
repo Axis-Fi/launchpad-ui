@@ -17,6 +17,8 @@ type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
   value?: string;
   /** whether to disable the input */
   disabled?: boolean;
+  /** whether to disable the max button */
+  disableMaxButton?: boolean;
 };
 
 export function TokenAmountInput({
@@ -28,6 +30,7 @@ export function TokenAmountInput({
   message,
   value,
   disabled,
+  disableMaxButton,
   ...props
 }: TokenAmountInputProps) {
   return (
@@ -55,15 +58,17 @@ export function TokenAmountInput({
         <Text className="text-nowrap" color="secondary" size="lg">
           {symbol}{" "}
         </Text>
-        <Button
-          disabled={disabled}
-          uppercase
-          variant="secondary"
-          size="sm"
-          className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
-        >
-          Max
-        </Button>
+        {!disableMaxButton && (
+          <Button
+            disabled={disabled}
+            uppercase
+            variant="secondary"
+            size="sm"
+            className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
+          >
+            Max
+          </Button>
+        )}
       </div>
       <div className="flex justify-between">
         {usdPrice && (

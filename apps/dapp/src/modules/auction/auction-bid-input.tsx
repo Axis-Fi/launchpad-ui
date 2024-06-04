@@ -94,7 +94,8 @@ export function AuctionBidInput({
               <FormItemWrapperSlim>
                 <TokenAmountInput
                   label="Bid Price"
-                  symbol={`${auction.quoteToken.symbol} per ${auction.baseToken.symbol}`}
+                  disableMaxButton={true}
+                  symbol={`per ${auction.baseToken.symbol}`}
                   message={
                     showAmountOut
                       ? `If successful, you will receive at least: ${trimCurrency(
