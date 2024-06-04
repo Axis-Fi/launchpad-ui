@@ -36,9 +36,8 @@ export function AuctionBidInput({
     form.formState.isValid && isFinite(Number(minAmountOut));
 
   // USD amount
-  const [bidTimestamp] = useState<number>(Math.floor(Date.now() / 1000));
+  const [bidTimestamp] = useState<number>(Math.floor(Date.now() / 1000)); // Capture the timestamp when the page loads initially, otherwise the value will keep changing on every render, and the USD value will be refreshed on every render
   const [amountIn, setAmountIn] = useState<number | undefined>();
-  // TODO fix the timestamp
   const { getUsdAmount } = useGetUsdAmount(auction.quoteToken, bidTimestamp);
   const [amountInUsd, setAmountInUsd] = useState<string | undefined>();
 
@@ -48,7 +47,13 @@ export function AuctionBidInput({
       return;
     }
 
-    setAmountInUsd(getUsdAmount(amountIn));
+    const fetchedUsdAmount = getUsdAmount(amountIn);
+    if (!fetchedUsdAmount) {
+      setAmountInUsd(undefined);
+      return;
+    }
+
+    setAmountInUsd(fetchedUsdAmount);
   }, [amountIn, getUsdAmount]);
 
   return (
