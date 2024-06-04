@@ -5,6 +5,8 @@ import { BidForm } from "./status";
 import { formatUnits, parseUnits } from "viem";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { trimCurrency } from "utils/currency";
+import { useEffect, useState } from "react";
+import { useGetUsdAmount } from "./hooks/use-get-usd-amount";
 
 const formatRate = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 4,
@@ -33,6 +35,27 @@ export function AuctionBidInput({
   const showAmountOut =
     form.formState.isValid && isFinite(Number(formattedRate));
 
+  // USD amount
+  const [bidTimestamp] = useState<number>(Math.floor(Date.now() / 1000)); // Capture the timestamp when the page loads initially, otherwise the value will keep changing on every render, and the USD value will be refreshed on every render
+  const [amountIn, setAmountIn] = useState<number | undefined>();
+  const { getUsdAmount } = useGetUsdAmount(auction.quoteToken, bidTimestamp);
+  const [amountInUsd, setAmountInUsd] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (!amountIn) {
+      setAmountInUsd(undefined);
+      return;
+    }
+
+    const fetchedUsdAmount = getUsdAmount(amountIn);
+    if (!fetchedUsdAmount) {
+      setAmountInUsd(undefined);
+      return;
+    }
+
+    setAmountInUsd(fetchedUsdAmount);
+  }, [amountIn, getUsdAmount]);
+
   return (
     <div className="text-foreground flex flex-col gap-y-2">
       <div className="bg-secondary flex justify-between rounded-sm pt-1">
@@ -47,24 +70,30 @@ export function AuctionBidInput({
                   disabled={disabled}
                   label="Spend Amount"
                   balance={balance}
+                  usdPrice={amountInUsd}
                   symbol={auction.quoteToken.symbol}
                   onChange={(e) => {
                     field.onChange(e);
                     if (singleInput && "price" in auction.auctionData!) {
                       // auction is fixed price
                       // Use bigints to calculate value and return as string to avoid rounding errors with floats
-                      const value = parseUnits(
-                        e.target.value,
+                      const rawAmountIn = e.target.value as string;
+                      const amountIn = parseUnits(
+                        rawAmountIn,
                         auction.quoteToken.decimals,
                       );
-                      const amount =
-                        (value * parseUnits("1", auction.baseToken.decimals)) /
+                      const amountOut =
+                        (amountIn *
+                          parseUnits("1", auction.baseToken.decimals)) /
                         auction.auctionData!.price;
-                      const formattedAmount = formatUnits(
-                        amount,
+                      const formattedAmountOut = formatUnits(
+                        amountOut,
                         auction.baseToken.decimals,
                       );
-                      form.setValue("baseTokenAmount", formattedAmount);
+                      form.setValue("baseTokenAmount", formattedAmountOut);
+
+                      // Trigger refresh of USD value
+                      setAmountIn(Number(rawAmountIn));
                     }
                   }}
                 />
