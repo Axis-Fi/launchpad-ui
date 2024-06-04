@@ -33,7 +33,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
   return (
     <>
       {isManaging ? (
-        <DialogContent className="max-w-sm">
+        <DialogContent className="bg-surface max-w-sm">
           <DialogHeader className="flex-row items-center gap-x-2">
             <Button
               onClick={() => setIsManaging(false)}
@@ -48,7 +48,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
           <TokenListManager />
         </DialogContent>
       ) : (
-        <DialogContent className="max-w-sm">
+        <DialogContent className="bg-surface max-w-sm">
           <DialogHeader>
             <DialogTitle>Select Token</DialogTitle>
           </DialogHeader>
