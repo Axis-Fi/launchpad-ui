@@ -74,10 +74,14 @@ export function AuctionBidInput({
                   symbol={auction.quoteToken.symbol}
                   onChange={(e) => {
                     field.onChange(e);
+
+                    // Display USD value of input amount
+                    const rawAmountIn = e.target.value as string;
+                    setAmountIn(Number(rawAmountIn));
+
                     if (singleInput && "price" in auction.auctionData!) {
                       // auction is fixed price
                       // Use bigints to calculate value and return as string to avoid rounding errors with floats
-                      const rawAmountIn = e.target.value as string;
                       const amountIn = parseUnits(
                         rawAmountIn,
                         auction.quoteToken.decimals,
@@ -91,9 +95,6 @@ export function AuctionBidInput({
                         auction.baseToken.decimals,
                       );
                       form.setValue("baseTokenAmount", formattedAmountOut);
-
-                      // Trigger refresh of USD value
-                      setAmountIn(Number(rawAmountIn));
                     }
                   }}
                 />
