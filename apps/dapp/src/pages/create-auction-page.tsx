@@ -38,6 +38,7 @@ import {
   fromHex,
   getAddress,
   isHex,
+  parseAbiParameters,
   parseUnits,
   toHex,
   zeroAddress,
@@ -316,7 +317,6 @@ export default function CreateAuctionPage() {
     );
 
     // Callbacks
-
     const callbacksType = values.callbacksType as CallbacksType;
 
     // Set the callbacks address
@@ -352,10 +352,11 @@ export default function CreateAuctionPage() {
         const allowlistTree =
           values.allowlist &&
           StandardMerkleTree.of(values.allowlist, ["address"]);
-        const root = toHex(allowlistTree?.root ?? "");
-        callbackData = encodeAbiParameters([{ merkleRoot: "bytes32" }], [
-          root,
-        ] as never);
+        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+        callbackData = encodeAbiParameters(
+          parseAbiParameters("bytes32 merkleRoot"),
+          [root],
+        );
         break;
       }
       case CallbacksType.CAPPED_MERKLE_ALLOWLIST: {
@@ -366,10 +367,10 @@ export default function CreateAuctionPage() {
         const allowlistTree =
           values.allowlist &&
           StandardMerkleTree.of(values.allowlist, ["address"]);
-        const root = toHex(allowlistTree?.root ?? "");
+        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
         callbackData = encodeAbiParameters(
-          [{ merkleRoot: "bytes32" }, { cap: "uint256" }],
-          [root, cap] as never,
+          parseAbiParameters("bytes32 merkleRoot, uint256 cap"),
+          [root, cap],
         );
         break;
       }
@@ -378,10 +379,11 @@ export default function CreateAuctionPage() {
         const allowlistTree =
           values.allowlist &&
           StandardMerkleTree.of(values.allowlist, ["address", "uint256"]);
-        const root = toHex(allowlistTree?.root ?? "");
-        callbackData = encodeAbiParameters([{ merkleRoot: "bytes32" }], [
-          root,
-        ] as never);
+        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+        callbackData = encodeAbiParameters(
+          parseAbiParameters("bytes32 merkleRoot"),
+          [root],
+        );
         break;
       }
       case CallbacksType.TOKEN_ALLOWLIST: {
@@ -1078,13 +1080,17 @@ export default function CreateAuctionPage() {
                     <FormItemWrapper
                       label="Allowlist"
                       tooltip={
-                        "File containing list of addresses and allocations in CSV format."
+                        "File containing list of addresses and allocations in CSV format." +
+                        (quoteToken === undefined
+                          ? " Please select a quote token first."
+                          : "")
                       }
                     >
                       <Input
                         type="file"
                         accept=".csv"
                         onChange={handleAllowlistFileSelect}
+                        disabled={quoteToken === undefined}
                         className="pt-1"
                       />
                     </FormItemWrapper>
