@@ -87,7 +87,7 @@ const schema = z
     maxPayoutPercent: z.array(z.number()).optional(),
     start: z.date(),
     deadline: z.date(),
-    callbacksType: z.string(),
+    callbacksType: z.string().optional(),
     callbacks: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
@@ -298,6 +298,7 @@ export default function CreateAuctionPage() {
     // 1. No callback or custom callback
     // 2. Selected one of our standard callbacks
     if (
+      values.callbacksType === undefined ||
       values.callbacksType === CallbacksType.CUSTOM ||
       values.callbacksType === CallbacksType.NONE
     ) {
