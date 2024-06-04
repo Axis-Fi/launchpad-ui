@@ -47,6 +47,7 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
             }}
           />
           <Card title="Concluded">
+            Auction has ended
             <RequiresChain chainId={props.auction.chainId} className="mt-4">
               <div className="mt-4 w-full">
                 <Button
