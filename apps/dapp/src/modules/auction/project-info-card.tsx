@@ -1,5 +1,4 @@
 import { Card, Link } from "@repo/ui";
-import { ArrowUpRightIcon } from "lucide-react";
 import { PropsWithAuction } from "@repo/types";
 
 export function ProjectInfoCard({
@@ -11,21 +10,40 @@ export function ProjectInfoCard({
     "No description found for this project.";
 
   const website = auction.auctionInfo?.links?.website;
+  const twitter = auction.auctionInfo?.links?.twitter;
+  const discord = auction.auctionInfo?.links?.discord;
+  const farcaster = auction.auctionInfo?.links?.farcaster;
+
+  // TODO add SVG icons for links
 
   return (
     <Card
       className={props.className}
       title={`About ${auction.auctionInfo?.name || ""}`}
     >
-      <div className="flex justify-between">
+      <div className="mb-4 flex">{description}</div>
+      <div className="flex-start flex space-x-4">
         {website && (
-          <Link className="text-primary flex items-end" href={website}>
-            GO TO WEBSITE
-            <ArrowUpRightIcon className="inline" />
+          <Link className="text-primary flex" href={website}>
+            WEBSITE
+          </Link>
+        )}
+        {twitter && (
+          <Link className="text-primary flex" href={twitter}>
+            TWITTER
+          </Link>
+        )}
+        {discord && (
+          <Link className="text-primary flex" href={discord}>
+            DISCORD
+          </Link>
+        )}
+        {farcaster && (
+          <Link className="text-primary flex" href={farcaster}>
+            FARCASTER
           </Link>
         )}
       </div>
-      {description}
     </Card>
   );
 }
