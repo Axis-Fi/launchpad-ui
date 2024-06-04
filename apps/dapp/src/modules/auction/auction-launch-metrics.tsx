@@ -45,11 +45,7 @@ export function AuctionLaunchMetrics(
           <Text uppercase size="xs" spaced>
             Auction Progress
           </Text>
-          <Progress value={progress} className="mt-1">
-            <Metric label="Bids" size="s">
-              {auction.formatted?.minFilled} {auction.quoteToken.symbol}
-            </Metric>
-          </Progress>
+          <Progress value={progress} className="mt-1" />
         </div>
       )}
 
