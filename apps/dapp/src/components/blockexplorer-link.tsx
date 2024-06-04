@@ -32,7 +32,7 @@ export function BlockExplorerLink({
 
   return (
     <Link
-      className="inline-flex items-center text-xs leading-none"
+      className="text-md inline-flex items-center leading-none"
       href={blockExplorer.url + path + target}
     >
       {trim

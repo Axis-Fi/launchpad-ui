@@ -4,6 +4,7 @@ import _atomicAuctionHouse from "./AtomicAuctionHouse.json";
 import _batchAuctionHouse from "./BatchAuctionHouse.json";
 import encryptedMarginalPrice from "./EncryptedMarginalPrice.json";
 import fixedPriceSale from "./FixedPriceSale.json";
+import fixedPriceBatch from "./FixedPriceBatch.json";
 import linearVesting from "./LinearVesting.json";
 import testnetERC20 from "./TestnetERC20.json";
 import merkleAllowlist from "./MerkleAllowlist.json";
@@ -14,6 +15,7 @@ import tokenAllowlist from "./TokenAllowlist.json";
 const errors = [
   encryptedMarginalPrice.abi,
   fixedPriceSale.abi,
+  fixedPriceBatch.abi,
   linearVesting.abi,
 ].flatMap((e) => e.filter((e) => e.type === "error"));
 
@@ -35,6 +37,7 @@ export default {
   batchAuctionHouse,
   encryptedMarginalPrice,
   fixedPriceSale,
+  fixedPriceBatch,
   linearVesting,
   merkleAllowlist,
   cappedMerkleAllowlist,

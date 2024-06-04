@@ -1,10 +1,8 @@
 import { Badge, Card, Text } from "@repo/ui";
-import type { Auction, BatchAuction } from "@repo/types";
+import type { BatchAuction, PropsWithAuction } from "@repo/types";
 import { RequiresChain } from "components/requires-chain";
 
-type NotConnectedProps = { auction: Auction };
-
-export function NotConnected({ auction: _auction }: NotConnectedProps) {
+export function NotConnectedClaimCard({ auction: _auction }: PropsWithAuction) {
   const auction = _auction as BatchAuction;
 
   return (

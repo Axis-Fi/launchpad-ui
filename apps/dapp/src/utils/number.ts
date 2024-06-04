@@ -1,3 +1,5 @@
+import { currencyFormatter, trimCurrency } from "./currency";
+
 export function getPercentage(percentage: number, base: number = 1e5): number {
   // 10.12% => 101200
   return (percentage * base) / 100;
@@ -58,3 +60,14 @@ export function formatPercentage(percentage: number) {
     maximumFractionDigits: 2,
   }).format(percentage);
 }
+
+export const shorten = (num: number, ignoreLessThan: number = 0): string => {
+  if (num < ignoreLessThan) return currencyFormatter.format(num);
+  const symbols = ["", "k", "M", "B", "T", "Q", "GMI"];
+  const sign = Math.sign(num);
+  num = Math.abs(num);
+  const mag = Math.min(Math.floor(Math.log10(num) / 3), symbols.length - 1);
+  const shortNum = Number((num / Math.pow(10, mag * 3)).toFixed(1)) * sign;
+  if (mag < 1) return trimCurrency(num);
+  return `${shortNum}${symbols[mag]}`;
+};

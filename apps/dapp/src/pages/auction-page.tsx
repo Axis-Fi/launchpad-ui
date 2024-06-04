@@ -17,9 +17,10 @@ import {
   AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
-import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
 import { PageContainer } from "modules/app/page-container";
 import { ReloadButton } from "components/reload-button";
+import { FixedPriceAtomicAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-atomic";
+import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
 
 const statuses: Record<
   AuctionStatus,
@@ -54,8 +55,11 @@ export default function AuctionPage() {
   const AuctionElement =
     auction.status === "concluded" &&
     auction.auctionType === AuctionType.FIXED_PRICE
-      ? FixedPriceAuctionConcluded
-      : statuses[auction.status];
+      ? FixedPriceAtomicAuctionConcluded
+      : auction.status === "concluded" &&
+          auction.auctionType === AuctionType.FIXED_PRICE_BATCH
+        ? FixedPriceBatchAuctionConcluded
+        : statuses[auction.status];
 
   return (
     <>
@@ -93,6 +97,7 @@ export default function AuctionPage() {
 }
 
 function AuctionPageLoading() {
+  /* TODO skeletons not working since redesign */
   return (
     <div className="mask">
       <ImageBanner />
@@ -108,9 +113,9 @@ function AuctionPageLoading() {
               <Skeleton className="h-72 w-[40%]" />
             </div>
           </div>
-          <h3 className="mt-5">About</h3>
-          <Skeleton className="h-20 w-[40%]" />
-          <h3 className="mt-5">Contract Addresses</h3>
+          <Text size="lg" className="mt-5">
+            About
+          </Text>
           <Skeleton className="h-32 w-[40%]" />
         </div>
       </PageContainer>

@@ -1,4 +1,4 @@
-import { BatchAuction, PropsWithAuction } from "@repo/types";
+import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
 import { Card, Text, Metric, Progress } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { calculateAuctionProgress } from "./utils/get-auction-progress";
@@ -11,6 +11,11 @@ export function AuctionLaunchMetrics(
   const auction = props.auction as BatchAuction;
   const progress = calculateAuctionProgress(auction);
   const showProgress = auction.status === "live";
+  const isSealedBid = auction.auctionType === AuctionType.SEALED_BID;
+  const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
+  const isFixedPriceBatch =
+    auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+  const hasCurator = !!auction.curator && auction.curatorApproved;
 
   return (
     <Card
@@ -18,14 +23,14 @@ export function AuctionLaunchMetrics(
       title="Launch Info"
       headerRightElement={
         <div className="flex gap-x-2">
-          <Metric metricSize="sm" label="Quote Token Address">
+          <Metric size="s" label="Quote Token Address">
             <BlockExplorerLink
               trim
               chainId={auction.chainId}
               address={auction.quoteToken.address}
             />
           </Metric>
-          <Metric metricSize="sm" label="Base Token Address">
+          <Metric size="s" label="Base Token Address">
             <BlockExplorerLink
               trim
               chainId={auction.chainId}
@@ -41,7 +46,7 @@ export function AuctionLaunchMetrics(
             Auction Progress
           </Text>
           <Progress value={progress} className="mt-1">
-            <Metric label="Minimum Raise">
+            <Metric label="Bids" size="s">
               {auction.formatted?.minFilled} {auction.quoteToken.symbol}
             </Metric>
           </Progress>
@@ -49,10 +54,20 @@ export function AuctionLaunchMetrics(
       )}
 
       <AuctionMetricsContainer auction={auction}>
-        <AuctionMetric id="targetRaise" />
-        <AuctionMetric id="minRaise" />
-        <AuctionMetric id="minPrice" />
+        {/* <AuctionMetric id="minRaise" /> // TODO: minRaise = minFilled */}
+        {isSealedBid && <AuctionMetric id="minPrice" />}
+        {isFixedPrice && <AuctionMetric id="price" />}
+        {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
         <AuctionMetric id="capacity" />
+        {hasCurator && (
+          <Metric label="Curator">
+            <BlockExplorerLink
+              trim
+              chainId={auction.chainId}
+              address={auction.curator!}
+            />
+          </Metric>
+        )}
       </AuctionMetricsContainer>
     </Card>
   );

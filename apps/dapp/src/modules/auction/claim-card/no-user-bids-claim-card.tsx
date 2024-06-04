@@ -1,6 +1,8 @@
-import { Badge, Card, Text } from "@repo/ui";
+import { Link } from "react-router-dom";
+import { ArrowRightIcon } from "lucide-react";
+import { Badge, Button, Card, Text } from "@repo/ui";
 
-export function UserHasNoBids() {
+export function NoUserBidsClaimCard() {
   return (
     <Card
       title="Claim"
@@ -16,9 +18,14 @@ export function UserHasNoBids() {
               alt="Axis Logo"
             />
             <Text size="xl">Auction has ended</Text>
-            <Text>Claim your tokens</Text>
+            <Text>You missed this auction.</Text>
           </div>
         </div>
+        <Link to="/auctions">
+          <Button size="lg" variant="secondary" className="w-full">
+            View live auctions <ArrowRightIcon className="size-6" />
+          </Button>
+        </Link>
       </div>
     </Card>
   );

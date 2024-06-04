@@ -27,7 +27,11 @@ export type BidForm = z.infer<typeof schema>;
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
-  const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
+  const isFixedPrice =
+    auction.auctionType === AuctionType.FIXED_PRICE ||
+    auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+  const isFixedPriceBatch =
+    auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
   // const callbacksType = getCallbacksType(auction);
   // TODO
@@ -64,6 +68,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             !isFixedPrice ||
+            isFixedPriceBatch ||
             Number(data.quoteTokenAmount) <=
               Number(auction.formatted?.maxAmount),
           {
@@ -154,12 +159,23 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         <AuctionLaunchMetrics auction={auction} />
 
         <Card title="Token Info">
-          <AuctionMetricsContainer className="mt-4" auction={auction}>
-            <AuctionMetric id="minPriceFDV" />
-            <AuctionMetric id="totalSupply" />
-            {auction.linearVesting && <AuctionMetric id="vestingDuration" />}
-            <AuctionMetric id="auctionedSupply" />
-          </AuctionMetricsContainer>
+          {isEMP && (
+            <AuctionMetricsContainer className="mt-4" auction={auction}>
+              <AuctionMetric id="minPriceFDV" />
+              <AuctionMetric id="totalSupply" />
+              <AuctionMetric id="vestingDuration" />
+              <AuctionMetric id="auctionedSupply" />
+            </AuctionMetricsContainer>
+          )}
+          {isFixedPrice && (
+            <AuctionMetricsContainer className="mt-4" auction={auction}>
+              <AuctionMetric id="fixedPriceFDV" />
+              <AuctionMetric id="totalSupply" />
+              <AuctionMetric id="vestingDuration" />
+              <AuctionMetric id="auctionedSupply" />
+              <AuctionMetric id="minRaise" />
+            </AuctionMetricsContainer>
+          )}
         </Card>
         <ProjectInfoCard auction={auction} />
       </div>

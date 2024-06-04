@@ -5,28 +5,29 @@ import { cn } from "@/utils";
 import { Avatar } from "./avatar";
 
 const badgeVariants = cva(
-  "inline-flex h-min items-center justify-center rounded-full border uppercase transition-colors border-0 text-md",
+  "inline-flex h-min items-center justify-center rounded-full border uppercase transition-colors border-0",
   {
     variants: {
       color: {
         active: "bg-feedback-success",
         alert: "bg-feedback-success text-neutral-50",
-        ghost: "bg-app border border-surface-secondary-fill",
+        ghost: "bg-app",
       },
       size: {
-        default: "p-2 h-xl",
+        s: "p-2 h-xl text-sm",
+        m: "p-2 text-md",
+        xl: "p-2 text-lg",
         round: "rounded-full w-fit px-1 py-0",
-        lg: "px-4 py-2",
       },
     },
     defaultVariants: {
-      size: "default",
-      color: "active",
+      size: "m",
+      color: "ghost",
     },
   },
 );
 
-type BadgeProps = React.HTMLAttributes<HTMLDivElement> &
+type BadgeProps = Omit<React.HTMLAttributes<HTMLDivElement>, "color" | "size"> &
   VariantProps<typeof badgeVariants> & {
     icon?: string;
   };

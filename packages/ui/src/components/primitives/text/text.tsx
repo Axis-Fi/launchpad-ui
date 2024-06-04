@@ -9,8 +9,9 @@ const sizeMap = {
   "2xl": "h3",
   xl: "h3",
   lg: "h4",
-  xs: "p",
+  md: "h4",
   sm: "p",
+  xs: "p",
   default: "p",
 };
 

@@ -46,7 +46,7 @@ export default function AuctionListPage() {
         .filter((a) => !searchText.length || searchObject(a, searchText))
     : secureAuctions;
 
-  const sortedAuctions = filteredAuctions.sort((a, b) => {
+  const sortedAuctions = [...filteredAuctions].sort((a, b) => {
     if (a.status === sortByStatus && b.status === sortByStatus) {
       //If they're both the same, order by starting date
       return Number(a.start) - Number(b.start);
@@ -168,8 +168,7 @@ export default function AuctionListPage() {
             <p className="pb-2 font-sans">Want to create an auction?</p>
             <Link to="/create/auction">
               <Button variant="ghost">
-                Create Sealed Bid Auction{" "}
-                <ArrowRightIcon className="w-6 pl-1" />
+                Create Auction <ArrowRightIcon className="w-6 pl-1" />
               </Button>
             </Link>
           </div>
