@@ -31,7 +31,7 @@ export function AuctionBidInput({
   const rate = Number(amount) / Number(minAmountOut);
   const formattedRate = isFinite(rate) ? formatRate(rate) : "";
   const showAmountOut =
-    form.formState.isValid && isFinite(Number(minAmountOut));
+    form.formState.isValid && isFinite(Number(formattedRate));
 
   return (
     <div className="text-foreground flex flex-col gap-y-2">
@@ -92,12 +92,11 @@ export function AuctionBidInput({
                 <FormItemWrapperSlim>
                   <TokenAmountInput
                     label="Bid Price"
-                    symbol={`per ${auction.baseToken.symbol}`}
-                    usdPrice={formattedRate}
+                    symbol={`${auction.quoteToken.symbol} per ${auction.baseToken.symbol}`}
                     message={
                       showAmountOut
                         ? `If successful, you will receive at least: ${trimCurrency(
-                            minAmountOut,
+                            formattedRate,
                           )} ${auction.baseToken.symbol}`
                         : ""
                     }
