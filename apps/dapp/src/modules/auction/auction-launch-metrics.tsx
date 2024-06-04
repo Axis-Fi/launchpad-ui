@@ -54,7 +54,8 @@ export function AuctionLaunchMetrics(
       )}
 
       <AuctionMetricsContainer auction={auction}>
-        {/* <AuctionMetric id="minRaise" /> // TODO: minRaise = minFilled */}
+        <AuctionMetric id="targetRaise" />
+        <AuctionMetric id="minRaise" />
         {isSealedBid && <AuctionMetric id="minPrice" />}
         {isFixedPrice && <AuctionMetric id="price" />}
         {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}

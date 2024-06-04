@@ -72,9 +72,15 @@ const handlers = {
     label: "Target Raise",
     handler: (auction: Auction) => {
       const _auction = auction as BatchAuction;
-      const targetRaise =
-        Number(auction.capacityInitial) *
-        Number(_auction.encryptedMarginalPrice?.minPrice);
+
+      // Get the price, based on the auction type
+      // TODO we need a generic helper to get the price
+      const price =
+        _auction.auctionType === AuctionType.SEALED_BID
+          ? _auction.encryptedMarginalPrice?.minPrice
+          : _auction.fixedPrice?.price;
+
+      const targetRaise = Number(auction.capacityInitial) * Number(price);
 
       return `${trimCurrency(targetRaise)} ${auction.quoteToken.symbol}`;
     },
@@ -135,7 +141,7 @@ const handlers = {
   },
 
   capacity: {
-    label: "Capacity",
+    label: "Tokens Available",
     handler: (auction: Auction) =>
       `${auction.formatted?.capacity || shorten(Number(auction.capacity))} ${
         auction.baseToken.symbol
