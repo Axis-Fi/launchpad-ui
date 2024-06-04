@@ -21,20 +21,20 @@ export function AuctionBidInputSingle({
 
   // USD amount
   const [bidTimestamp] = useState<number>(Math.floor(Date.now() / 1000)); // Capture the timestamp when the page loads initially, otherwise the value will keep changing on every render, and the USD value will be refreshed on every render
-  const [amountIn, setAmountIn] = useState<number | undefined>();
+  const [amountIn, setAmountIn] = useState<number>(0);
   const { getUsdAmount } = useGetUsdAmount(auction.quoteToken, bidTimestamp);
-  const [amountInUsd, setAmountInUsd] = useState<string | undefined>();
+  const [amountInUsd, setAmountInUsd] = useState<string>("");
 
   // Calculates the USD amount when the amountIn changes
   useEffect(() => {
     if (!amountIn) {
-      setAmountInUsd(undefined);
+      setAmountInUsd("");
       return;
     }
 
     const fetchedUsdAmount = getUsdAmount(amountIn);
     if (!fetchedUsdAmount) {
-      setAmountInUsd(undefined);
+      setAmountInUsd("");
       return;
     }
 
@@ -60,7 +60,6 @@ export function AuctionBidInputSingle({
                   onChange={(e) => {
                     field.onChange(e);
 
-                    // Display USD value of input amount
                     const rawAmountIn = e.target.value as string;
                     setAmountIn(Number(rawAmountIn));
 
