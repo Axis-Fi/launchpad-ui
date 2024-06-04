@@ -1,4 +1,4 @@
-import { Button, Card, Text } from "@repo/ui";
+import { Button, Card, Metric, Text } from "@repo/ui";
 import { formatUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
@@ -143,6 +143,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       parsedAmountIn / parsedMinAmountOut <
         Number(auction.formatted?.minPrice)); // less than min price
 
+  // TODO calculate bid FDV
+  // TODO calculate coin rank
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
     <div className="flex justify-between gap-x-8">
@@ -271,6 +273,24 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             />
           </form>
         </FormProvider>
+        {isEMP && (
+          <div className="mt-4">
+            <Card title="Bid Info">
+              <div className="gap-y-md flex">
+                <div className="p-sm rounded">
+                  <Metric size="s" label="Your Estimated FDV">
+                    1b
+                  </Metric>
+                </div>
+                <div className="p-sm rounded">
+                  <Metric size="s" label="Est. Coin Rank">
+                    # 7457
+                  </Metric>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
