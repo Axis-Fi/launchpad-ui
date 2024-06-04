@@ -67,14 +67,18 @@ export function TokenAmountInput({
       </div>
       <div className="flex justify-between">
         {usdPrice && (
-          <Text size="xs" color="secondary">
-            ≈{usdPrice}
-          </Text>
+          <div className="flex items-start">
+            <Text size="xs" color="secondary">
+              ≈{usdPrice}
+            </Text>
+          </div>
         )}
         {balance && (
-          <Text size="xs" color="secondary" uppercase>
-            Balance: {balance}
-          </Text>
+          <div className="ml-auto flex items-end">
+            <Text size="xs" color="secondary" uppercase>
+              Balance: {balance}
+            </Text>
+          </div>
         )}
       </div>
       {error && (
