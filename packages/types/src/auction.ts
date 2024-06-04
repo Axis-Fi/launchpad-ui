@@ -44,6 +44,7 @@ export type AuctionInfo = {
   name?: string;
   description?: string;
   shortDescription?: string;
+  allowlist?: string[][];
   links?: {
     projectLogo?: string;
     website?: string;

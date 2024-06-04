@@ -226,6 +226,7 @@ export default function CreateAuctionPage() {
         key: `${values.auctionType}-${values.payoutToken.chainId}_${values.payoutToken.address}`,
         name: values.name,
         description: values.description,
+        allowlist: values.allowlist,
         links: {
           projectLogo: values.projectLogo,
           payoutTokenLogo: values.payoutToken.logoURI,
