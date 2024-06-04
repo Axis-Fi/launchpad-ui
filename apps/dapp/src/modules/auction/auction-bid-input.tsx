@@ -105,33 +105,6 @@ export function AuctionBidInput({
 
       <div className="bg-secondary flex justify-between rounded-sm pt-1">
         <div>
-          <TokenAmountInput
-            label="Bid Price"
-            disableMaxButton={true}
-            symbol={`per ${auction.baseToken.symbol}`}
-            message={
-              showAmountOut
-                ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`
-                : ""
-            }
-            onChange={(e) => {
-              // Update amount out value
-              const rawPrice = e.target.value as string;
-              setBidPrice(rawPrice);
-              const price = parseUnits(rawPrice, auction.quoteToken.decimals);
-
-              const minAmountOut = getMinAmountOut(
-                parseUnits(formAmount, auction.quoteToken.decimals),
-                price,
-              );
-              const minAmountOutDecimal = formatUnits(
-                minAmountOut,
-                auction.baseToken.decimals,
-              );
-              form.setValue("baseTokenAmount", minAmountOutDecimal);
-              setMinAmountOutFormatted(trimCurrency(minAmountOutDecimal));
-            }}
-          />
           {/* TODO No errors are displaying, but the form is marked as invalid. This section below should be removed once the error is determined. */}
           <FormField
             name="baseTokenAmount"
@@ -140,14 +113,46 @@ export function AuctionBidInput({
               <FormItemWrapperSlim>
                 <TokenAmountInput
                   {...field}
-                  disabled={true}
+                  label="Bid Price"
                   disableMaxButton={true}
-                  label="Receive Amount"
-                  symbol={auction.baseToken.symbol}
-                  {...field}
+                  symbol={`per ${auction.baseToken.symbol}`}
+                  message={
+                    showAmountOut
+                      ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`
+                      : ""
+                  }
+                  onChange={(e) => {
+                    // Update amount out value
+                    const rawPrice = e.target.value as string;
+                    field.onChange(rawPrice);
+
+                    setBidPrice(rawPrice);
+
+                    const price = parseUnits(
+                      rawPrice,
+                      auction.quoteToken.decimals,
+                    );
+
+                    const minAmountOut = getMinAmountOut(
+                      parseUnits(formAmount, auction.quoteToken.decimals),
+                      price,
+                    );
+                    const minAmountOutDecimal = formatUnits(
+                      minAmountOut,
+                      auction.baseToken.decimals,
+                    );
+                    setMinAmountOutFormatted(trimCurrency(minAmountOutDecimal));
+                  }}
                 />
               </FormItemWrapperSlim>
             )}
+          />
+          <TokenAmountInput
+            disabled={true}
+            disableMaxButton={true}
+            label="Receive Amount"
+            symbol={auction.baseToken.symbol}
+            value={minAmountOutFormatted}
           />
         </div>
       </div>
