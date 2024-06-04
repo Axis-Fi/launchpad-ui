@@ -16,6 +16,7 @@ import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
+import { AuctionBidInputSingle } from "../auction-bid-input-single";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -181,11 +182,18 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                   : `Place your bid`
               }
             >
-              <AuctionBidInput
-                singleInput={isFixedPrice}
-                balance={trimCurrency(formattedBalance)}
-                auction={auction}
-              />
+              {isFixedPrice ? (
+                <AuctionBidInputSingle
+                  balance={trimCurrency(formattedBalance)}
+                  auction={auction}
+                />
+              ) : (
+                <AuctionBidInput
+                  singleInput={isFixedPrice}
+                  balance={trimCurrency(formattedBalance)}
+                  auction={auction}
+                />
+              )}
               <div className="mx-auto mt-4 w-full">
                 {isEMP && (
                   <Text size="sm">
