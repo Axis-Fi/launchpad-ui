@@ -10,6 +10,7 @@ import testnetERC20 from "./TestnetERC20.json";
 import merkleAllowlist from "./MerkleAllowlist.json";
 import cappedMerkleAllowlist from "./CappedMerkleAllowlist.json";
 import tokenAllowlist from "./TokenAllowlist.json";
+import allocatedMerkleAllowlist from "./AllocatedMerkleAllowlist.json";
 
 //Fetch errors from modules to include in the AuctionHouse ABI
 const errors = [
@@ -42,4 +43,5 @@ export default {
   merkleAllowlist,
   cappedMerkleAllowlist,
   tokenAllowlist,
+  allocatedMerkleAllowlist,
 } as const;

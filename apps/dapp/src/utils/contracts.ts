@@ -63,10 +63,12 @@ const callbackMap = {
   [CallbacksType.MERKLE_ALLOWLIST]: "merkleAllowlist",
   [CallbacksType.CAPPED_MERKLE_ALLOWLIST]: "cappedMerkleAllowlist",
   [CallbacksType.TOKEN_ALLOWLIST]: "tokenAllowlist",
+  [CallbacksType.ALLOCATED_MERKLE_ALLOWLIST]: "allocatedMerkleAllowlist",
 };
 
 export function getCallbacks(chainId: number, callbackType: CallbacksType) {
   const contractName = callbackMap[callbackType] as AxisCallbackNames;
+  console.log(axisContracts.addresses);
 
   return {
     abi: axisContracts.abis[contractName],

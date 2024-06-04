@@ -6,6 +6,8 @@ const addressesPerChain: Record<
   number,
   AxisContractAddresses & AxisCallbackAddresses
 > = allDeployments.flat().reduce((acc, deployment) => {
+  console.log(deployment.callbacks);
+
   return {
     ...acc,
     [deployment.chain.id]: { ...deployment.addresses, ...deployment.callbacks },
