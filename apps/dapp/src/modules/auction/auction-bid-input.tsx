@@ -6,11 +6,7 @@ import { TokenAmountInput } from "modules/token/token-amount-input";
 import { trimCurrency } from "utils/currency";
 import { useEffect, useState } from "react";
 import { useGetUsdAmount } from "./hooks/use-get-usd-amount";
-
-const formatRate = new Intl.NumberFormat("en-US", {
-  maximumFractionDigits: 4,
-  minimumFractionDigits: 0,
-}).format;
+import { formatUnits, parseUnits } from "viem";
 
 export function AuctionBidInput({
   auction,
@@ -22,38 +18,45 @@ export function AuctionBidInput({
 } & PropsWithAuction) {
   const form = useFormContext<BidForm>();
 
-  const [formAmount, formMinAmountOut] = form.watch([
-    "quoteTokenAmount",
-    "baseTokenAmount",
-  ]);
-
-  const rate = Number(formAmount) / Number(formMinAmountOut);
-  const formattedRate = isFinite(rate) ? formatRate(rate) : "";
-  const showAmountOut =
-    form.formState.isValid && isFinite(Number(formattedRate));
+  const [formAmount] = form.watch(["quoteTokenAmount"]);
 
   // USD amount
-  const [bidTimestamp] = useState<number>(Math.floor(Date.now() / 1000)); // Capture the timestamp when the page loads initially, otherwise the value will keep changing on every render, and the USD value will be refreshed on every render
-  const [quoteTokenAmountDecimal, setQuoteTokenAmountDecimal] =
-    useState<number>(0);
+  const [bidTimestamp] = useState<number>(Math.floor(Date.now() / 1000)); // Capture the timestamp when the page loads initially, otherwise the value will keep changing on every render, and the USD value will be refreshed on every render);
   const { getUsdAmount } = useGetUsdAmount(auction.quoteToken, bidTimestamp);
   const [quoteTokenAmountUsd, setQuoteTokenAmountUsd] = useState<string>("");
 
   // Calculates the USD amount when the amountIn changes
   useEffect(() => {
-    if (!quoteTokenAmountDecimal) {
+    if (!formAmount || isNaN(Number(formAmount))) {
       setQuoteTokenAmountUsd("");
       return;
     }
 
-    const fetchedUsdAmount = getUsdAmount(quoteTokenAmountDecimal);
+    const fetchedUsdAmount = getUsdAmount(Number(formAmount));
     if (!fetchedUsdAmount) {
       setQuoteTokenAmountUsd("");
       return;
     }
 
     setQuoteTokenAmountUsd(fetchedUsdAmount);
-  }, [quoteTokenAmountDecimal, getUsdAmount]);
+  }, [formAmount, getUsdAmount]);
+
+  const [bidPrice, setBidPrice] = useState<string>("");
+
+  const [minAmountOutFormatted, setMinAmountOutFormatted] =
+    useState<string>("");
+  const showAmountOut =
+    form.formState.isValid && isFinite(Number(minAmountOutFormatted));
+  console.log("isValid", form.formState.isValid);
+  console.log("errors", JSON.stringify(form.formState.errors));
+
+  const getMinAmountOut = (amountIn: bigint, price: bigint): bigint => {
+    if (!amountIn || !price) {
+      return BigInt(0);
+    }
+
+    return (amountIn * parseUnits("1", auction.baseToken.decimals)) / price;
+  };
 
   return (
     <div className="text-foreground flex flex-col gap-y-2">
@@ -76,7 +79,22 @@ export function AuctionBidInput({
 
                     // Display USD value of input amount
                     const rawAmountIn = e.target.value as string;
-                    setQuoteTokenAmountDecimal(Number(rawAmountIn));
+
+                    // Update amount out value
+                    const amountIn = parseUnits(
+                      rawAmountIn,
+                      auction.quoteToken.decimals,
+                    );
+                    const minAmountOut = getMinAmountOut(
+                      amountIn,
+                      parseUnits(bidPrice, auction.quoteToken.decimals),
+                    );
+                    const minAmountOutDecimal = formatUnits(
+                      minAmountOut,
+                      auction.baseToken.decimals,
+                    );
+                    form.setValue("baseTokenAmount", minAmountOutDecimal);
+                    setMinAmountOutFormatted(trimCurrency(minAmountOutDecimal));
                   }}
                 />
               </FormItemWrapperSlim>
@@ -87,26 +105,46 @@ export function AuctionBidInput({
 
       <div className="bg-secondary flex justify-between rounded-sm pt-1">
         <div>
+          <TokenAmountInput
+            label="Bid Price"
+            disableMaxButton={true}
+            symbol={`per ${auction.baseToken.symbol}`}
+            message={
+              showAmountOut
+                ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`
+                : ""
+            }
+            onChange={(e) => {
+              // Update amount out value
+              const rawPrice = e.target.value as string;
+              setBidPrice(rawPrice);
+              const price = parseUnits(rawPrice, auction.quoteToken.decimals);
+
+              const minAmountOut = getMinAmountOut(
+                parseUnits(formAmount, auction.quoteToken.decimals),
+                price,
+              );
+              const minAmountOutDecimal = formatUnits(
+                minAmountOut,
+                auction.baseToken.decimals,
+              );
+              form.setValue("baseTokenAmount", minAmountOutDecimal);
+              setMinAmountOutFormatted(trimCurrency(minAmountOutDecimal));
+            }}
+          />
+          {/* TODO No errors are displaying, but the form is marked as invalid. This section below should be removed once the error is determined. */}
           <FormField
             name="baseTokenAmount"
             control={form.control}
             render={({ field }) => (
               <FormItemWrapperSlim>
                 <TokenAmountInput
-                  label="Bid Price"
-                  disableMaxButton={true}
-                  symbol={`per ${auction.baseToken.symbol}`}
-                  message={
-                    showAmountOut
-                      ? `If successful, you will receive at least: ${trimCurrency(
-                          formattedRate,
-                        )} ${auction.baseToken.symbol}`
-                      : ""
-                  }
                   {...field}
-                  onChange={() => {
-                    // Calculate the minAmountOut for the base token
-                  }}
+                  disabled={true}
+                  disableMaxButton={true}
+                  label="Receive Amount"
+                  symbol={auction.baseToken.symbol}
+                  {...field}
                 />
               </FormItemWrapperSlim>
             )}
