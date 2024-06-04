@@ -11,8 +11,8 @@ export const testnetDeployments = testnetConfigs.map(createDeployment);
 export const allDeployments = [testnetDeployments, mainnetDeployments];
 
 //Indexes deployments by chain for ease of use
-export const testnets = createDeploymentRecord(mainnetDeployments);
-export const mainnets = createDeploymentRecord(testnetDeployments);
+export const testnets = createDeploymentRecord(testnetDeployments);
+export const mainnets = createDeploymentRecord(mainnetDeployments);
 export const deployments = { ...testnets, ...mainnets };
 
 const lists = [mainnetDeployments, testnetDeployments].flatMap((list) =>
