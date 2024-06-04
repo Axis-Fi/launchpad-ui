@@ -41,6 +41,7 @@ export function AuctionBidInput({
   const { getUsdAmount } = useGetUsdAmount(auction.quoteToken, bidTimestamp);
   const [amountInUsd, setAmountInUsd] = useState<string | undefined>();
 
+  // Calculates the USD amount when the amountIn changes
   useEffect(() => {
     if (!amountIn) {
       setAmountInUsd(undefined);
