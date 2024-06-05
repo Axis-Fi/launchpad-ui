@@ -21,6 +21,7 @@ import { PageContainer } from "modules/app/page-container";
 import { ReloadButton } from "components/reload-button";
 import { FixedPriceAtomicAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-atomic";
 import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
+import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 
 const statuses: Record<
   AuctionStatus,
@@ -64,18 +65,23 @@ export default function AuctionPage() {
   return (
     <>
       <ImageBanner imgUrl={auction.auctionInfo?.links?.projectLogo}>
-        <div className="mb-10">
-          <Text size="7xl" mono>
-            {auction.auctionInfo?.name}
-          </Text>
+        <div className="flex h-full w-full flex-col items-start justify-between">
+          <div className="mr-4 mt-4 self-end">
+            <AuctionStatusBadge status={auction.status} />
+          </div>
+          <div className="mb-10 self-center">
+            <Text size="7xl" mono>
+              {auction.auctionInfo?.name}
+            </Text>
 
-          <Text
-            size="3xl"
-            color="secondary"
-            className="mx-auto w-fit text-nowrap"
-          >
-            send copy plis mi familia
-          </Text>
+            <Text
+              size="3xl"
+              color="secondary"
+              className="mx-auto w-fit text-nowrap"
+            >
+              send copy plis mi familia
+            </Text>
+          </div>
         </div>
       </ImageBanner>
 
