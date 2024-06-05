@@ -41,7 +41,11 @@ export function TokenAmountInput({
         disabled && "opacity-50",
       )}
     >
-      <Text color="secondary">{label}</Text>
+      <div className="flex">
+        <div className="flex-start">
+          <Text color="secondary">{label}</Text>
+        </div>
+      </div>
       <div className="mt-0.5 flex items-center">
         <Input
           {...props}
