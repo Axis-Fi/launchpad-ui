@@ -14,8 +14,6 @@ export function ProjectInfoCard({
   const discord = auction.auctionInfo?.links?.discord;
   const farcaster = auction.auctionInfo?.links?.farcaster;
 
-  // TODO add SVG icons for links
-
   return (
     <Card
       className={props.className}
@@ -23,24 +21,36 @@ export function ProjectInfoCard({
     >
       <div className="mb-4 flex">{description}</div>
       <div className="flex-start flex space-x-4">
-        {website && (
-          <Link className="text-primary flex" href={website}>
-            WEBSITE
-          </Link>
-        )}
         {twitter && (
           <Link className="text-primary flex" href={twitter}>
-            TWITTER
+            <img
+              src="/images/twitter-logo.svg"
+              alt="twitter logo"
+              width="35px"
+            />
           </Link>
         )}
         {discord && (
           <Link className="text-primary flex" href={discord}>
-            DISCORD
+            <img
+              src="/images/discord-logo.svg"
+              alt="discord logo"
+              width="35px"
+            />
           </Link>
         )}
         {farcaster && (
           <Link className="text-primary flex" href={farcaster}>
-            FARCASTER
+            <img
+              src="/images/farcaster-logo.svg"
+              alt="farcaster logo"
+              width="35px"
+            />
+          </Link>
+        )}
+        {website && (
+          <Link className="text-primary flex" href={website}>
+            <img src="/images/web-logo.svg" alt="web logo" width="35px" />
           </Link>
         )}
       </div>
