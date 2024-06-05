@@ -206,6 +206,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
               <RequiresChain chainId={auction.chainId} className="mt-4">
                 <div className="mt-4 w-full">
+                  {/* TODO should disable this button if incorrect chain or no wallet */}
                   <Button
                     className="w-full"
                     disabled={

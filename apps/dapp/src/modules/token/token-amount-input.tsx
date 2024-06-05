@@ -66,6 +66,7 @@ export function TokenAmountInput({
             size="sm"
             className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
           >
+            {/* TODO implement Max button */}
             Max
           </Button>
         )}
