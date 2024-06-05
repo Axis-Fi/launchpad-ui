@@ -251,7 +251,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                         <LoadingIndicator />
                       </div>
                     ) : (
-                      "APPROVE"
+                      `APPROVE TO ${actionKeyword.toUpperCase()}`
                     )}
                   </Button>
                 </div>
