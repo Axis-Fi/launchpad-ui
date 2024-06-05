@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
-import { Button, Skeleton, Text } from "@repo/ui";
+import { Badge, Button, Skeleton, Text } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
@@ -22,6 +22,7 @@ import { ReloadButton } from "components/reload-button";
 import { FixedPriceAtomicAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-atomic";
 import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
 import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
+import { getCountdown } from "utils/date";
 
 const statuses: Record<
   AuctionStatus,
@@ -53,6 +54,16 @@ export default function AuctionPage() {
 
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
 
+  const isOngoing =
+    auction.formatted &&
+    auction.formatted?.startDate < new Date() &&
+    auction.formatted?.endDate > new Date();
+  const countdown =
+    isOngoing &&
+    auction.formatted &&
+    auction.formatted.endDate &&
+    getCountdown(auction.formatted?.endDate);
+
   const AuctionElement =
     auction.status === "concluded" &&
     auction.auctionType === AuctionType.FIXED_PRICE
@@ -65,22 +76,29 @@ export default function AuctionPage() {
   return (
     <>
       <ImageBanner imgUrl={auction.auctionInfo?.links?.projectLogo}>
-        <div className="flex h-full w-full flex-col items-start justify-between">
-          <div className="mr-4 mt-4 self-end">
-            <AuctionStatusBadge status={auction.status} />
+        <div className="flex h-full w-full flex-row flex-wrap">
+          <div className="flex w-full flex-row justify-end">
+            <div className="mr-4 mt-4">
+              <AuctionStatusBadge status={auction.status} />
+            </div>
           </div>
-          <div className="mb-10 self-center">
-            <Text size="7xl" mono>
-              {auction.auctionInfo?.name}
-            </Text>
+          <div className="flex w-full flex-col justify-end">
+            <div className="self-center align-bottom">
+              <Text size="7xl" mono>
+                {auction.auctionInfo?.name}
+              </Text>
 
-            <Text
-              size="3xl"
-              color="secondary"
-              className="mx-auto w-fit text-nowrap"
-            >
-              send copy plis mi familia
-            </Text>
+              <Text
+                size="3xl"
+                color="secondary"
+                className="mx-auto w-fit text-nowrap"
+              >
+                send copy plis mi familia
+              </Text>
+            </div>
+            <div className="mb-4 ml-4 self-start">
+              {isOngoing && <Badge>{countdown}</Badge>}
+            </div>
           </div>
         </div>
       </ImageBanner>
