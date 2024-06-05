@@ -9,6 +9,7 @@ import {
   parseUnits,
   toHex,
   zeroAddress,
+  erc20Abi,
 } from "viem";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 
@@ -80,34 +81,11 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     BigInt(0),
   ];
 
-  // Check if the user has enough tokens to bid and get info about the token
-  const abi = [
-    {
-      type: "function",
-      name: "balanceOf",
-      stateMutability: "view",
-      inputs: [{ name: "account", type: "address" }],
-      outputs: [{ type: "uint256" }],
-    },
-    {
-      type: "function",
-      name: "decimals",
-      stateMutability: "view",
-      inputs: [],
-      outputs: [{ type: "uint8" }],
-    },
-    {
-      type: "function",
-      name: "symbol",
-      stateMutability: "view",
-      inputs: [],
-      outputs: [{ type: "string" }],
-    },
-  ];
   const tokenContract = {
     address: tokenAddress,
-    abi,
+    abi: erc20Abi,
   };
+
   const { data } = useReadContracts({
     contracts: [
       {
