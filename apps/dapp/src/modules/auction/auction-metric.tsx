@@ -11,6 +11,40 @@ import { Metric, MetricProps, trimAddress } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
 
+const getPrice = (auction: Auction): number | undefined => {
+  // Fixed Price Sale
+  if (auction.auctionType === AuctionType.FIXED_PRICE) {
+    return Number((auction as AtomicAuction).fixedPriceSale?.price);
+  }
+
+  // Fixed Price Batch
+  if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
+    return Number((auction as BatchAuction).fixedPrice?.price);
+  }
+
+  // EMP
+  if (auction.auctionType === AuctionType.SEALED_BID) {
+    return Number((auction as BatchAuction).fixedPrice?.price);
+  }
+
+  // Unknown
+  return undefined;
+};
+
+const getMinFilled = (auction: Auction): number | undefined => {
+  // Fixed Price Batch
+  if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
+    return Number((auction as BatchAuction).fixedPrice?.minFilled);
+  }
+
+  // EMP
+  if (auction.auctionType === AuctionType.SEALED_BID) {
+    return Number((auction as BatchAuction).encryptedMarginalPrice?.minFilled);
+  }
+
+  return undefined;
+};
+
 const handlers = {
   derivative: {
     label: "Derivative",
@@ -27,15 +61,10 @@ const handlers = {
   minFill: {
     label: "Min Fill",
     handler: (auction: Auction) => {
-      const _auction = auction as BatchAuction;
-      const fill = _auction.encryptedMarginalPrice
-        ? Math.round(
-            (+_auction.encryptedMarginalPrice!.minFilled * 100) /
-              +_auction.capacity,
-          )
-        : Math.round(
-            (+_auction.fixedPrice!.minFilled * 100) / +_auction.capacity,
-          );
+      const minFilled = getMinFilled(auction);
+      if (!minFilled) return undefined;
+
+      const fill = Math.round((minFilled * 100) / +auction.capacity);
       return `${fill}%`;
     },
   },
@@ -71,14 +100,8 @@ const handlers = {
   targetRaise: {
     label: "Target Raise",
     handler: (auction: Auction) => {
-      const _auction = auction as BatchAuction;
-
-      // Get the price, based on the auction type
-      // TODO we need a generic helper to get the price
-      const price =
-        _auction.auctionType === AuctionType.SEALED_BID
-          ? _auction.encryptedMarginalPrice?.minPrice
-          : _auction.fixedPrice?.price;
+      const price = getPrice(auction);
+      if (!price) return undefined;
 
       const targetRaise = Number(auction.capacityInitial) * Number(price);
 
@@ -88,44 +111,24 @@ const handlers = {
   minRaise: {
     label: "Min Raise",
     handler: (auction: Auction) => {
-      if (auction.auctionType === AuctionType.SEALED_BID) {
-        const _auction = auction as BatchAuction;
-        const minRaise =
-          Number(_auction.encryptedMarginalPrice?.minFilled) *
-          Number(_auction.encryptedMarginalPrice?.minPrice);
+      const price = getPrice(auction);
+      const minFilled = getMinFilled(auction);
 
-        return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
-      }
+      if (!price || !minFilled) return undefined;
 
-      if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
-        const _auction = auction as BatchAuction;
-        const minRaise =
-          Number(_auction.fixedPrice?.minFilled) *
-          Number(_auction.fixedPrice?.price);
+      const minRaise = minFilled * price;
 
-        return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
-      }
+      return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
     },
   },
 
   minPrice: {
     label: "Min Price",
     handler: (auction: Auction) => {
-      //TODO: revamp this
-      if (auction.auctionType === AuctionType.SEALED_BID) {
-        return (
-          trimCurrency(
-            (auction as BatchAuction).encryptedMarginalPrice!.minPrice,
-          ) + ` ${auction.quoteToken.symbol}`
-        );
-      }
+      const price = getPrice(auction);
+      if (!price) return undefined;
 
-      if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
-        return (
-          trimCurrency((auction as BatchAuction).fixedPrice!.price) +
-          ` ${auction.quoteToken.symbol}`
-        );
-      }
+      return `${trimCurrency(price)} ${auction.quoteToken.symbol}`;
     },
   },
   totalBids: {
@@ -157,17 +160,13 @@ const handlers = {
   price: {
     label: "Price",
     handler: (auction: Auction) =>
-      //TODO: improve types here
-      `${(auction as AtomicAuction).fixedPriceSale?.price} ${auction.quoteToken
-        ?.symbol}`,
+      `${getPrice(auction)} ${auction.quoteToken?.symbol}`,
   },
 
   fixedPrice: {
     label: "Price",
     handler: (auction: Auction) =>
-      `${(auction as BatchAuction).fixedPrice?.price} ${
-        auction.quoteToken.symbol
-      }`,
+      `${getPrice(auction)} ${auction.quoteToken.symbol}`,
   },
 
   sold: {
@@ -207,20 +206,20 @@ const handlers = {
   minPriceFDV: {
     label: "Min Price FDV",
     handler: (auction: Auction) => {
-      const _auction = auction as BatchAuction;
-      const fdv =
-        Number(auction.baseToken.totalSupply) *
-        Number(_auction.encryptedMarginalPrice?.minPrice);
+      const price = getPrice(auction);
+      if (!price) return undefined;
+
+      const fdv = Number(auction.baseToken.totalSupply) * price;
       return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
     },
   },
   fixedPriceFDV: {
     label: "Fixed Price FDV",
     handler: (auction: Auction) => {
-      const _auction = auction as BatchAuction;
-      const fdv =
-        Number(auction.baseToken.totalSupply) *
-        Number(_auction.fixedPrice?.price);
+      const price = getPrice(auction);
+      if (!price) return undefined;
+
+      const fdv = Number(auction.baseToken.totalSupply) * price;
       return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
     },
   },
