@@ -127,6 +127,7 @@ export function AuctionBidInput({
                 <TokenAmountInput
                   {...field}
                   label="Bid Price"
+                  disabled={disabled}
                   disableMaxButton={true}
                   symbol={`per ${auction.baseToken.symbol}`}
                   usdPrice={bidPriceUsd}

@@ -17,6 +17,7 @@ import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
+import { useAccount, useChainId } from "wagmi";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -28,6 +29,9 @@ export type BidForm = z.infer<typeof schema>;
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
+  const currentChainId = useChainId();
+  const walletAccount = useAccount();
+
   const isFixedPrice =
     auction.auctionType === AuctionType.FIXED_PRICE ||
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
@@ -144,6 +148,9 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       parsedAmountIn / parsedMinAmountOut <
         Number(auction.formatted?.minPrice)); // less than min price
 
+  const isWalletChainIncorrect =
+    auction.chainId !== currentChainId || !walletAccount.isConnected;
+
   const [bidPrice] = form.watch(["bidPrice"]);
   // Calculate FDV based on the bid
   const [bidFdv, setBidFdv] = useState<string>("");
@@ -199,11 +206,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 <AuctionBidInputSingle
                   balance={trimCurrency(formattedBalance)}
                   auction={auction}
+                  disabled={isWalletChainIncorrect}
                 />
               ) : (
                 <AuctionBidInput
                   balance={trimCurrency(formattedBalance)}
                   auction={auction}
+                  disabled={isWalletChainIncorrect}
                 />
               )}
               <div className="mx-auto mt-4 w-full">
@@ -218,7 +227,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
               <RequiresChain chainId={auction.chainId} className="mt-4">
                 <div className="mt-4 w-full">
-                  {/* TODO should disable this button if incorrect chain or no wallet */}
                   <Button
                     className="w-full"
                     disabled={
