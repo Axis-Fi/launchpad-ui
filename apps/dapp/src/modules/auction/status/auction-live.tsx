@@ -204,13 +204,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             >
               {isFixedPrice ? (
                 <AuctionBidInputSingle
-                  balance={trimCurrency(formattedBalance)}
+                  balance={Number(formattedBalance)}
                   auction={auction}
                   disabled={isWalletChainIncorrect}
                 />
               ) : (
                 <AuctionBidInput
-                  balance={trimCurrency(formattedBalance)}
+                  balance={Number(formattedBalance)}
                   auction={auction}
                   disabled={isWalletChainIncorrect}
                 />

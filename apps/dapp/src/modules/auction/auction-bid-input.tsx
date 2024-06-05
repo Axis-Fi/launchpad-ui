@@ -10,10 +10,10 @@ import { formatUnits, parseUnits } from "viem";
 
 export function AuctionBidInput({
   auction,
-  balance = "0",
+  balance = 0,
   disabled,
 }: {
-  balance?: string;
+  balance?: number;
   disabled?: boolean;
 } & PropsWithAuction) {
   const form = useFormContext<BidForm>();
@@ -85,7 +85,7 @@ export function AuctionBidInput({
                   {...field}
                   disabled={disabled}
                   label="Spend Amount"
-                  balance={balance}
+                  balance={trimCurrency(balance)}
                   usdPrice={quoteTokenAmountUsd}
                   symbol={auction.quoteToken.symbol}
                   onChange={(e) => {
@@ -109,6 +109,11 @@ export function AuctionBidInput({
                     );
                     form.setValue("baseTokenAmount", minAmountOutDecimal);
                     setMinAmountOutFormatted(trimCurrency(minAmountOutDecimal));
+                  }}
+                  onClickMaxButton={() => {
+                    form.setValue("quoteTokenAmount", balance.toString());
+                    // Force re-validation
+                    form.trigger("quoteTokenAmount");
                   }}
                 />
               </FormItemWrapperSlim>

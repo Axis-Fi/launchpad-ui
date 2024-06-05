@@ -19,6 +19,8 @@ type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
   disabled?: boolean;
   /** whether to disable the max button */
   disableMaxButton?: boolean;
+  /** callback when the max button is clicked */
+  onClickMaxButton?: () => void;
 };
 
 export function TokenAmountInput({
@@ -31,6 +33,7 @@ export function TokenAmountInput({
   value,
   disabled,
   disableMaxButton,
+  onClickMaxButton,
   ...props
 }: TokenAmountInputProps) {
   return (
@@ -69,8 +72,10 @@ export function TokenAmountInput({
             variant="secondary"
             size="sm"
             className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
+            onClick={() => {
+              onClickMaxButton?.();
+            }}
           >
-            {/* TODO implement Max button */}
             Max
           </Button>
         )}

@@ -6,13 +6,14 @@ import { formatUnits, parseUnits } from "viem";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { useEffect, useState } from "react";
 import { useGetUsdAmount } from "./hooks/use-get-usd-amount";
+import { trimCurrency } from "utils/currency";
 
 export function AuctionBidInputSingle({
   auction,
-  balance = "0",
+  balance = 0,
   disabled,
 }: {
-  balance?: string;
+  balance?: number;
   disabled?: boolean;
 } & PropsWithAuction) {
   const form = useFormContext<BidForm>();
@@ -55,7 +56,7 @@ export function AuctionBidInputSingle({
                   {...field}
                   disabled={disabled}
                   label="Spend Amount"
-                  balance={balance}
+                  balance={trimCurrency(balance)}
                   usdPrice={quoteTokenAmountUsd}
                   symbol={auction.quoteToken.symbol}
                   onChange={(e) => {
@@ -85,6 +86,11 @@ export function AuctionBidInputSingle({
                     );
                     form.setValue("baseTokenAmount", formattedAmountOut);
                   }}
+                  onClickMaxButton={() => {
+                    form.setValue("quoteTokenAmount", balance.toString());
+                    // Force re-validation
+                    form.trigger("quoteTokenAmount");
+                  }}
                 />
               </FormItemWrapperSlim>
             )}
@@ -96,6 +102,7 @@ export function AuctionBidInputSingle({
         <div>
           <TokenAmountInput
             disabled={disabled}
+            disableMaxButton={true}
             symbol={auction.baseToken.symbol}
             label="Amount Received"
             value={formAmountOut}
