@@ -13,4 +13,5 @@ export default {
   merkleAllowlist: abis.merkleAllowlistAbi,
   cappedMerkleAllowlist: abis.cappedMerkleAllowlistAbi,
   tokenAllowlist: abis.tokenAllowlistAbi,
+  allocatedMerkleAllowlist: abis.allocatedMerkleAllowlistAbi,
 } as const;

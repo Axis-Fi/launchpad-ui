@@ -59,6 +59,7 @@ export function AuctionLaunchMetrics(
         {isFixedPrice && <AuctionMetric id="price" />}
         {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
         <AuctionMetric id="capacity" />
+        <AuctionMetric id="saleType" />
         {hasCurator && (
           <Metric label="Curator">
             <BlockExplorerLink

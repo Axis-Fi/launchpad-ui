@@ -13,14 +13,15 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   // Check if the callback address on the auction matches one of the first-party callbacks
   // Otherwise, return custom (which isn't supported)
-  switch (auction.callbacks) {
-    case chainAddresses.merkleAllowlist:
+  // Convert to lower case to avoid comparison of checksummed vs. non-checksummed addresses
+  switch (auction.callbacks.toLowerCase()) {
+    case chainAddresses.merkleAllowlist.toLowerCase():
       return CallbacksType.MERKLE_ALLOWLIST;
-    case chainAddresses.cappedMerkleAllowlist:
+    case chainAddresses.cappedMerkleAllowlist.toLowerCase():
       return CallbacksType.CAPPED_MERKLE_ALLOWLIST;
-    case chainAddresses.allocatedMerkleAllowlist:
+    case chainAddresses.allocatedMerkleAllowlist.toLowerCase():
       return CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
-    case chainAddresses.tokenAllowlist:
+    case chainAddresses.tokenAllowlist.toLowerCase():
       return CallbacksType.TOKEN_ALLOWLIST;
     default:
       return CallbacksType.CUSTOM;

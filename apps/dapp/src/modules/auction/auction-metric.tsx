@@ -2,6 +2,7 @@ import { differenceInDays } from "date-fns";
 import {
   AuctionDerivatives,
   AuctionType,
+  CallbacksType,
   type AtomicAuction,
   type Auction,
   type BatchAuction,
@@ -10,6 +11,7 @@ import {
 import { Metric, MetricProps, trimAddress } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
+import { getCallbacksType } from "./utils/get-callbacks-type";
 
 const handlers = {
   derivative: {
@@ -242,6 +244,25 @@ const handlers = {
       if (!auction.curator) return undefined;
 
       return trimAddress(auction.curator, 6);
+    },
+  },
+  saleType: {
+    label: "Sale Type",
+    handler: (auction: Auction) => {
+      const callbacksType = getCallbacksType(auction);
+
+      switch (callbacksType) {
+        case CallbacksType.MERKLE_ALLOWLIST:
+          return "Private";
+        case CallbacksType.CAPPED_MERKLE_ALLOWLIST:
+          return "Private (Capped)";
+        case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST:
+          return "Private (Allocated)";
+        case CallbacksType.TOKEN_ALLOWLIST:
+          return "Private (Token-Gated)";
+        default:
+          return "Public";
+      }
     },
   },
 };
