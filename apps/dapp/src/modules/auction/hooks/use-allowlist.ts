@@ -2,13 +2,22 @@ import { Auction, CallbacksType } from "@repo/types";
 import { getCallbacksType } from "../utils/get-callbacks-type";
 import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { axisContracts } from "@repo/deployments";
-import { formatUnits, parseUnits, zeroAddress } from "viem";
+import {
+  encodeAbiParameters,
+  parseAbiParameters,
+  formatUnits,
+  parseUnits,
+  toHex,
+  zeroAddress,
+} from "viem";
+import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 
 export type AllowlistResult = {
   canBid: boolean;
   amountLimited: boolean;
   limit: string; // number of quote tokens as a formatted string
   criteria: string;
+  callbackData: `0x${string}`;
 };
 
 export function useAllowlist(auction: Auction): AllowlistResult {
@@ -28,6 +37,13 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
     callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
 
+  // Set default values for the return variables
+  let canBid = false;
+  let amountLimited = false;
+  let limit = BigInt(0);
+  let criteria = "";
+  let callbackData = toHex("");
+
   // Use hooks before conditional logic
 
   // Query the amount the user has already spent from the contract
@@ -39,9 +55,6 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     query: { enabled: hasLimit },
   });
   spent = spent ?? BigInt(0);
-
-  let amountLimited = false;
-  let limit = BigInt(0);
 
   // For capped allowlists, the global per user limit is also on the contract
   const { data: cap } = useReadContract({
@@ -125,32 +138,70 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   // For merkle allowlists, we need to check if the user is on the allowlist
   if (isMerkle) {
     // Check if the account is on the allowlist
-    const canBid =
+    canBid =
       auction.auctionInfo?.allowlist
         ?.map(
           (entry: string[]) => entry[0].toLowerCase() === user.toLowerCase(),
         )
         .reduce((acc: boolean, curr: boolean) => acc || curr, false) ?? false;
 
-    const criteria = "users that are on the allowlist provided by the seller";
+    criteria = "users that are on the allowlist provided by the seller";
 
-    // Check if the allowlist enforces a spend limit and set values if so
-    if (hasLimit) {
-      amountLimited = true;
-
+    // Get the merkle proof and limit for the user if they can bid
+    if (canBid) {
+      // Handle conditional logic for the different allowlist types and set the callback data
       switch (callbacksType) {
+        case CallbacksType.MERKLE_ALLOWLIST: {
+          // Generate the proof for inclusion in callback data
+          const tree = StandardMerkleTree.of(
+            auction.auctionInfo?.allowlist ?? [],
+            ["address"],
+          );
+          const proof = tree.getProof([user]) as `0x${string}`[];
+          callbackData = encodeAbiParameters(parseAbiParameters("bytes32[]"), [
+            proof,
+          ]);
+          break;
+        }
         case CallbacksType.CAPPED_MERKLE_ALLOWLIST: {
+          // For capped allowlists, the user's limit is the global limit minus what they've already spent
+          amountLimited = true;
           limit = (cap ?? BigInt(0)) - spent;
+
+          // Generate the proof for inclusion in callback data
+          const tree = StandardMerkleTree.of(
+            auction.auctionInfo?.allowlist ?? [],
+            ["address"],
+          );
+          const proof = tree.getProof([user]) as `0x${string}`[];
+          callbackData = encodeAbiParameters(parseAbiParameters("bytes32[]"), [
+            proof,
+          ]);
           break;
         }
         case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST: {
           // For allocated allowlists, the user's limit is in the allowlist
+          amountLimited = true;
+
+          // Get the allocation and calculate their remaining limit from that
           const allocation =
             auction.auctionInfo?.allowlist?.find(
               (entry: string[]) =>
                 entry[0].toLowerCase() === user?.toLowerCase(),
             )?.[1] ?? "0";
-          limit = parseUnits(allocation, auction.quoteToken.decimals) - spent;
+          limit = BigInt(allocation) - spent;
+
+          // Generate the proof for inclusion in callback data
+          const tree = StandardMerkleTree.of(
+            auction.auctionInfo?.allowlist ?? [],
+            ["address", "uint256"],
+          );
+          console.log(tree.root);
+          const proof = tree.getProof([user, allocation]) as `0x${string}`[];
+          callbackData = encodeAbiParameters(
+            parseAbiParameters("bytes32[] proof,uint256 allocation"),
+            [proof, BigInt(allocation)],
+          );
           break;
         }
         default: {
@@ -165,22 +216,23 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       amountLimited,
       limit: formatUnits(limit, auction.quoteToken.decimals),
       criteria,
+      callbackData,
     };
   }
 
   // For token allowlists, we need to check if the user has enough tokens to bid and set values
   if (callbacksType === CallbacksType.TOKEN_ALLOWLIST) {
     // Check if the user has enough tokens to bid
-    const canBid = balance >= threshold;
+    canBid = balance >= threshold;
 
-    const criteria = `users that have at least ${formatUnits(
+    criteria = `users that have at least ${formatUnits(
       threshold,
       Number(decimals),
     )} ${symbol} in their wallet`;
 
-    return { canBid, amountLimited: false, limit: "0", criteria };
+    return { canBid, amountLimited, limit: "0", criteria, callbackData };
   }
 
   // Auction is public and doesn't have an allowlist
-  return { canBid: true, amountLimited: false, limit: "0", criteria: "" };
+  return { canBid: true, amountLimited, limit: "0", criteria, callbackData };
 }

@@ -35,12 +35,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
   // Allowlist callback support
-  // - [x] determine if the auction is allowlisted
-  // - [x] display a field that says this is an allowlisted auction
-  // - [x] display the user's allowlisted status
-  // - [x] if on the allowlist, validate amount they can spend (which is the total amount minus what they've already spent), if capped or allocated allowlist
-
-  const { canBid, amountLimited, limit, criteria } = useAllowlist(auction);
+  // Handles determining if an allowlist callback is being used
+  // and provides variables for displaying on the UI and submitting the bid transaction
+  const { canBid, amountLimited, limit, criteria, callbackData } =
+    useAllowlist(auction);
 
   const form = useForm<BidForm>({
     mode: "onTouched",
@@ -97,7 +95,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           (data) =>
             amountLimited && Number(data.quoteTokenAmount) <= Number(limit),
           {
-            message: `Exceeds your allocated spend of ${limit} ${auction.quoteToken.symbol}`,
+            message: `Exceeds your remaining allocation of ${limit} ${auction.quoteToken.symbol}`,
             path: ["quoteTokenAmount"],
           },
         ),
@@ -117,6 +115,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     auction.auctionType,
     parsedAmountIn,
     parsedMinAmountOut,
+    callbackData,
   );
 
   const formattedBalance = formatUnits(

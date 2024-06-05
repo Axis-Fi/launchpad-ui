@@ -2,7 +2,10 @@ import { toHex, parseUnits } from "viem";
 import { abis } from "@repo/abis";
 import type { BidConfig, PrimedBidParams } from "../types";
 
-const getConfigFromPrimedParams = (params: PrimedBidParams): BidConfig => {
+const getConfigFromPrimedParams = (
+  params: PrimedBidParams,
+  callbackData: `0x${string}`,
+): BidConfig => {
   const {
     lotId,
     amountIn,
@@ -13,7 +16,7 @@ const getConfigFromPrimedParams = (params: PrimedBidParams): BidConfig => {
     auctionData,
   } = params;
 
-  const callbackData = toHex(""); //TODO: callbackData - decide best way to handle this
+  // const callbackData = toHex(""); //TODO: callbackData - decide best way to handle this
 
   return {
     abi: abis.batchAuctionHouse,
