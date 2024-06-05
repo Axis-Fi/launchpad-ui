@@ -21,6 +21,7 @@ import { AuctionBidInputSingle } from "../auction-bid-input-single";
 const schema = z.object({
   baseTokenAmount: z.string(),
   quoteTokenAmount: z.string(),
+  bidPrice: z.string().optional(), // Only used for bids that require the bid price to be specified
 });
 
 export type BidForm = z.infer<typeof schema>;
@@ -50,10 +51,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             isFixedPrice ||
-            Number(data.baseTokenAmount) >= Number(auction.formatted?.minPrice),
+            Number(data.bidPrice) >= Number(auction.formatted?.minPrice),
           {
             message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
-            path: ["baseTokenAmount"],
+            path: ["bidPrice"],
           },
         )
         .refine(

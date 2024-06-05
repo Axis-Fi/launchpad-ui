@@ -47,8 +47,6 @@ export function AuctionBidInput({
     useState<string>("");
   const showAmountOut =
     form.formState.isValid && isFinite(Number(minAmountOutFormatted));
-  console.log("isValid", form.formState.isValid);
-  console.log("errors", JSON.stringify(form.formState.errors));
 
   const getMinAmountOut = (amountIn: bigint, price: bigint): bigint => {
     if (!amountIn || !price) {
@@ -105,9 +103,8 @@ export function AuctionBidInput({
 
       <div className="bg-secondary flex justify-between rounded-sm pt-1">
         <div>
-          {/* TODO No errors are displaying, but the form is marked as invalid. This section below should be removed once the error is determined. */}
           <FormField
-            name="baseTokenAmount"
+            name="bidPrice"
             control={form.control}
             render={({ field }) => (
               <FormItemWrapperSlim>
@@ -122,12 +119,11 @@ export function AuctionBidInput({
                       : ""
                   }
                   onChange={(e) => {
+                    field.onChange(e);
+
                     // Update amount out value
                     const rawPrice = e.target.value as string;
-                    field.onChange(rawPrice);
-
                     setBidPrice(rawPrice);
-
                     const price = parseUnits(
                       rawPrice,
                       auction.quoteToken.decimals,
@@ -141,18 +137,12 @@ export function AuctionBidInput({
                       minAmountOut,
                       auction.baseToken.decimals,
                     );
+                    form.setValue("baseTokenAmount", minAmountOutDecimal);
                     setMinAmountOutFormatted(trimCurrency(minAmountOutDecimal));
                   }}
                 />
               </FormItemWrapperSlim>
             )}
-          />
-          <TokenAmountInput
-            disabled={true}
-            disableMaxButton={true}
-            label="Receive Amount"
-            symbol={auction.baseToken.symbol}
-            value={minAmountOutFormatted}
           />
         </div>
       </div>
