@@ -24,7 +24,7 @@ const getPrice = (auction: Auction): number | undefined => {
 
   // EMP
   if (auction.auctionType === AuctionType.SEALED_BID) {
-    return Number((auction as BatchAuction).fixedPrice?.price);
+    return Number((auction as BatchAuction).encryptedMarginalPrice?.minPrice);
   }
 
   // Unknown
