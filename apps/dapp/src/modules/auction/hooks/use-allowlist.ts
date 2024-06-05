@@ -124,14 +124,13 @@ export function useAllowlist(auction: Auction): AllowlistResult {
         functionName: "symbol",
       },
     ],
-    query: { enabled: callbacksType === CallbacksType.TOKEN_ALLOWLIST },
+    query: {
+      select: (data) => data.map((r) => r.result) as [bigint, bigint, string],
+      enabled: callbacksType === CallbacksType.TOKEN_ALLOWLIST,
+    },
   });
-  // TODO: help with TS types here
-  const [balance, decimals, symbol] = (data as unknown as [
-    bigint,
-    bigint,
-    string,
-  ]) || [BigInt(0), BigInt(0), ""];
+
+  const [balance, decimals, symbol] = data ?? [BigInt(0), BigInt(0), ""];
 
   // Set values based on conditional logic
 
