@@ -264,10 +264,9 @@ export function AuctionMetric(props: AuctionMetricProps) {
 
   const value = element.handler(props.auction);
 
-  // TODO display loading indicator if the value is undefined
   return (
     <Metric size={props.size} label={element.label}>
-      {value}
+      {value || "-"}
     </Metric>
   );
 }

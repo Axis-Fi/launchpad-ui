@@ -299,12 +299,12 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <div className="gap-y-md flex">
                 <div className="p-sm rounded">
                   <Metric size="s" label="Your Estimated FDV">
-                    {bidFdv}
+                    {bidFdv || "-"}
                   </Metric>
                 </div>
                 <div className="p-sm rounded">
                   <Metric size="s" label="Est. Coin Rank">
-                    # 7457
+                    {"-"}
                   </Metric>
                 </div>
               </div>
