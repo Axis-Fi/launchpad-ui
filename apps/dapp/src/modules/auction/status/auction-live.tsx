@@ -5,13 +5,13 @@ import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
-import { trimCurrency } from "utils";
+import { shorten, trimCurrency } from "utils";
 import { useBidAuction } from "../hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 import { AuctionMetric } from "../auction-metric";
@@ -144,7 +144,19 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       parsedAmountIn / parsedMinAmountOut <
         Number(auction.formatted?.minPrice)); // less than min price
 
-  // TODO calculate bid FDV
+  const [bidPrice] = form.watch(["bidPrice"]);
+  // Calculate FDV based on the bid
+  const [bidFdv, setBidFdv] = useState<string>("");
+  useEffect(() => {
+    if (!bidPrice || !auction.baseToken.totalSupply) {
+      setBidFdv("");
+      return;
+    }
+
+    const fdv = Number(auction.baseToken.totalSupply) * Number(bidPrice);
+    setBidFdv(`${shorten(fdv)} ${auction.quoteToken.symbol}`);
+  }, [bidPrice, auction.baseToken.totalSupply, auction.quoteToken.symbol]);
+
   // TODO calculate coin rank
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
   return (
@@ -287,7 +299,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <div className="gap-y-md flex">
                 <div className="p-sm rounded">
                   <Metric size="s" label="Your Estimated FDV">
-                    1b
+                    {bidFdv}
                   </Metric>
                 </div>
                 <div className="p-sm rounded">
