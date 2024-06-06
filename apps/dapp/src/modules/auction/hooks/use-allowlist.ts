@@ -9,6 +9,7 @@ import {
   parseUnits,
   toHex,
   zeroAddress,
+  erc20Abi,
 } from "viem";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 
@@ -80,34 +81,11 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     BigInt(0),
   ];
 
-  // Check if the user has enough tokens to bid and get info about the token
-  const abi = [
-    {
-      type: "function",
-      name: "balanceOf",
-      stateMutability: "view",
-      inputs: [{ name: "account", type: "address" }],
-      outputs: [{ type: "uint256" }],
-    },
-    {
-      type: "function",
-      name: "decimals",
-      stateMutability: "view",
-      inputs: [],
-      outputs: [{ type: "uint8" }],
-    },
-    {
-      type: "function",
-      name: "symbol",
-      stateMutability: "view",
-      inputs: [],
-      outputs: [{ type: "string" }],
-    },
-  ];
   const tokenContract = {
     address: tokenAddress,
-    abi,
+    abi: erc20Abi,
   };
+
   const { data } = useReadContracts({
     contracts: [
       {
@@ -124,14 +102,13 @@ export function useAllowlist(auction: Auction): AllowlistResult {
         functionName: "symbol",
       },
     ],
-    query: { enabled: callbacksType === CallbacksType.TOKEN_ALLOWLIST },
+    query: {
+      select: (data) => data.map((r) => r.result) as [bigint, bigint, string],
+      enabled: callbacksType === CallbacksType.TOKEN_ALLOWLIST,
+    },
   });
-  // TODO: help with TS types here
-  const [balance, decimals, symbol] = (data as unknown as [
-    bigint,
-    bigint,
-    string,
-  ]) || [BigInt(0), BigInt(0), ""];
+
+  const [balance, decimals, symbol] = data ?? [BigInt(0), BigInt(0), ""];
 
   // Set values based on conditional logic
 
