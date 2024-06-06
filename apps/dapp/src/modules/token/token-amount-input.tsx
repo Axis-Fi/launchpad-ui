@@ -9,6 +9,8 @@ type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
   usdPrice?: string;
   /** the user's balance */
   balance?: string;
+  /** limit on how much the user can spend */
+  limit?: string;
   /** an optional error message */
   error?: string;
   /** an optional status message */
@@ -24,6 +26,7 @@ export function TokenAmountInput({
   symbol,
   usdPrice,
   balance,
+  limit,
   error,
   message,
   value,
@@ -73,7 +76,7 @@ export function TokenAmountInput({
         )}
         {balance && (
           <Text size="xs" color="secondary" uppercase>
-            Balance: {balance}
+            Balance: {balance} {limit ? `Limit: ${limit}` : ""}
           </Text>
         )}
       </div>

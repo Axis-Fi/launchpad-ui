@@ -204,6 +204,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 <AuctionBidInput
                   singleInput={isFixedPrice}
                   balance={trimCurrency(formattedBalance)}
+                  limit={amountLimited ? trimCurrency(limit) : undefined}
                   auction={auction}
                 />
                 <div className="mx-auto mt-4 w-full">

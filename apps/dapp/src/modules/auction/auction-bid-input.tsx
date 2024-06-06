@@ -14,10 +14,12 @@ const formatRate = new Intl.NumberFormat("en-US", {
 export function AuctionBidInput({
   auction,
   balance = "0",
+  limit,
   singleInput,
   disabled,
 }: {
   balance?: string;
+  limit?: string;
   singleInput?: boolean;
   disabled?: boolean;
 } & PropsWithAuction) {
@@ -47,6 +49,7 @@ export function AuctionBidInput({
                   disabled={disabled}
                   label="Spend Amount"
                   balance={balance}
+                  limit={limit}
                   symbol={auction.quoteToken.symbol}
                   onChange={(e) => {
                     field.onChange(e);
