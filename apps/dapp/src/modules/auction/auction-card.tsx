@@ -55,7 +55,9 @@ function AuctionCardDetails(
   },
 ) {
   const isEMP = props.auction.auctionType === AuctionType.SEALED_BID;
-  const isFP = props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+  const isFP =
+    props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH ||
+    props.auction.auctionType === AuctionType.FIXED_PRICE;
   const hasCurator = !!props.auction.curator && props.auction.curatorApproved;
 
   return (
