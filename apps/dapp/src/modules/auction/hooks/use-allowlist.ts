@@ -173,7 +173,6 @@ export function useAllowlist(auction: Auction): AllowlistResult {
             auction.auctionInfo?.allowlist ?? [],
             ["address", "uint256"],
           );
-          console.log(tree.root);
           const proof = tree.getProof([user, allocation]) as `0x${string}`[];
           callbackData = encodeAbiParameters(
             parseAbiParameters("bytes32[] proof,uint256 allocation"),

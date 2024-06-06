@@ -93,7 +93,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         )
         .refine(
           (data) =>
-            amountLimited && Number(data.quoteTokenAmount) <= Number(limit),
+            !amountLimited ||
+            (amountLimited && Number(data.quoteTokenAmount) <= Number(limit)),
           {
             message: `Exceeds your remaining allocation of ${limit} ${auction.quoteToken.symbol}`,
             path: ["quoteTokenAmount"],
