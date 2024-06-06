@@ -168,8 +168,7 @@ export default function AuctionListPage() {
             <p className="pb-2 font-sans">Want to create an auction?</p>
             <Link to="/create/auction">
               <Button variant="ghost">
-                Create Sealed Bid Auction{" "}
-                <ArrowRightIcon className="w-6 pl-1" />
+                Create Auction <ArrowRightIcon className="w-6 pl-1" />
               </Button>
             </Link>
           </div>

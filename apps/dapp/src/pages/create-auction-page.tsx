@@ -149,11 +149,37 @@ const schema = z
   )
   .refine(
     (data) =>
-      data.auctionType === AuctionType.FIXED_PRICE ||
-      (!!data.minPrice && isFinite(Number(data.minPrice))),
+      // Only required for EMP
+      data.auctionType === AuctionType.SEALED_BID
+        ? !!data.minPrice && isFinite(Number(data.minPrice))
+        : true,
+    {
+      message: "Minimum Price must be set",
+      path: ["minPrice"],
+    },
+  )
+  .refine(
+    (data) =>
+      // Only required for FPB and FPA
+      data.auctionType === AuctionType.FIXED_PRICE_BATCH ||
+      data.auctionType === AuctionType.FIXED_PRICE
+        ? !!data.price && isFinite(Number(data.price))
+        : true,
     {
       message: "Price must be set",
-      path: ["minPrice"],
+      path: ["price"],
+    },
+  )
+  .refine(
+    (data) =>
+      // Only required for FPB and EMP
+      data.auctionType === AuctionType.FIXED_PRICE_BATCH ||
+      data.auctionType === AuctionType.SEALED_BID
+        ? !!data.minFillPercent && isFinite(Number(data.minFillPercent[0]))
+        : true,
+    {
+      message: "Minimum filled percentage must be set",
+      path: ["minFillPercent"],
     },
   );
 
@@ -256,7 +282,8 @@ export default function CreateAuctionPage() {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
-    const code = isEMP ? "EMPA" : "FPSA";
+    const isFPB = auctionType === AuctionType.FIXED_PRICE_BATCH;
+    const code = isEMP ? "EMPA" : isFPB ? "FPBA" : "unknown";
 
     const auctionTypeKeycode = toKeycode(code);
 
@@ -528,7 +555,7 @@ export default function CreateAuctionPage() {
                           },
 
                           {
-                            value: AuctionType.FIXED_PRICE,
+                            value: AuctionType.FIXED_PRICE_BATCH,
                             label: "Fixed Price",
                           },
                         ]}
@@ -673,6 +700,55 @@ export default function CreateAuctionPage() {
                               defaultValue={
                                 auctionDefaultValues.maxPayoutPercent
                               }
+                              value={field.value}
+                              onValueChange={(v) => {
+                                field.onChange(v);
+                              }}
+                            />
+                          </>
+                        </FormItemWrapper>
+                      )}
+                    />
+                  </>
+                )}
+                {auctionType === AuctionType.FIXED_PRICE_BATCH && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Price"
+                          tooltip="The amount of quote tokens per payout token"
+                        >
+                          <Input placeholder="1" type="number" {...field} />
+                        </FormItemWrapper>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="minFillPercent"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          className="mt-4"
+                          label="Minimum Filled Percentage"
+                          tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
+                        >
+                          <>
+                            <Input
+                              disabled
+                              className="disabled:opacity-100"
+                              value={`${
+                                field.value?.[0] ??
+                                auctionDefaultValues.minFillPercent
+                              }%`}
+                            />
+                            <Slider
+                              {...field}
+                              className="cursor-pointer pt-2"
+                              min={1}
+                              max={100}
+                              defaultValue={auctionDefaultValues.minFillPercent}
                               value={field.value}
                               onValueChange={(v) => {
                                 field.onChange(v);

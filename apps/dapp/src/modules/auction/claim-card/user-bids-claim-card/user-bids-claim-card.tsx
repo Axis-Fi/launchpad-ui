@@ -55,7 +55,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
 
             {userTotalUnsuccessfulBidAmount > 0 && (
               <div className="bg-surface-tertiary p-sm rounded">
-                <Metric size="l" label="Your losing bids">
+                <Metric size="l" label="Your refunded bids">
                   {shorten(userTotalUnsuccessfulBidAmount)}{" "}
                   {auction.quoteToken.symbol}
                 </Metric>

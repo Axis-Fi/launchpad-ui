@@ -17,9 +17,10 @@ import {
   AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
-import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
 import { PageContainer } from "modules/app/page-container";
 import { ReloadButton } from "components/reload-button";
+import { FixedPriceAtomicAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-atomic";
+import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
 
 const statuses: Record<
   AuctionStatus,
@@ -54,8 +55,11 @@ export default function AuctionPage() {
   const AuctionElement =
     auction.status === "concluded" &&
     auction.auctionType === AuctionType.FIXED_PRICE
-      ? FixedPriceAuctionConcluded
-      : statuses[auction.status];
+      ? FixedPriceAtomicAuctionConcluded
+      : auction.status === "concluded" &&
+          auction.auctionType === AuctionType.FIXED_PRICE_BATCH
+        ? FixedPriceBatchAuctionConcluded
+        : statuses[auction.status];
 
   return (
     <>

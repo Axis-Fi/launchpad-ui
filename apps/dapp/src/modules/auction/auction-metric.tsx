@@ -1,12 +1,13 @@
 import { differenceInDays } from "date-fns";
 import {
   AuctionDerivatives,
+  AuctionType,
   type AtomicAuction,
   type Auction,
   type BatchAuction,
   type PropsWithAuction,
 } from "@repo/types";
-import { Metric, MetricProps } from "@repo/ui";
+import { Metric, MetricProps, trimAddress } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
 
@@ -27,9 +28,14 @@ const handlers = {
     label: "Min Fill",
     handler: (auction: Auction) => {
       const _auction = auction as BatchAuction;
-      const fill = Math.round(
-        +_auction.encryptedMarginalPrice!.minFilled / +_auction.capacity,
-      );
+      const fill = _auction.encryptedMarginalPrice
+        ? Math.round(
+            (+_auction.encryptedMarginalPrice!.minFilled * 100) /
+              +_auction.capacity,
+          )
+        : Math.round(
+            (+_auction.fixedPrice!.minFilled * 100) / +_auction.capacity,
+          );
       return `${fill}%`;
     },
   },
@@ -76,12 +82,23 @@ const handlers = {
   minRaise: {
     label: "Min Raise",
     handler: (auction: Auction) => {
-      const _auction = auction as BatchAuction;
-      const minRaise =
-        Number(_auction.encryptedMarginalPrice?.minFilled) *
-        Number(_auction.encryptedMarginalPrice?.minPrice);
+      if (auction.auctionType === AuctionType.SEALED_BID) {
+        const _auction = auction as BatchAuction;
+        const minRaise =
+          Number(_auction.encryptedMarginalPrice?.minFilled) *
+          Number(_auction.encryptedMarginalPrice?.minPrice);
 
-      return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
+        return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
+      }
+
+      if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
+        const _auction = auction as BatchAuction;
+        const minRaise =
+          Number(_auction.fixedPrice?.minFilled) *
+          Number(_auction.fixedPrice?.price);
+
+        return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
+      }
     },
   },
 
@@ -89,11 +106,18 @@ const handlers = {
     label: "Min Price",
     handler: (auction: Auction) => {
       //TODO: revamp this
-      if ("encryptedMarginalPrice" in auction) {
+      if (auction.auctionType === AuctionType.SEALED_BID) {
         return (
           trimCurrency(
             (auction as BatchAuction).encryptedMarginalPrice!.minPrice,
           ) + ` ${auction.quoteToken.symbol}`
+        );
+      }
+
+      if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
+        return (
+          trimCurrency((auction as BatchAuction).fixedPrice!.price) +
+          ` ${auction.quoteToken.symbol}`
         );
       }
     },
@@ -113,7 +137,9 @@ const handlers = {
   capacity: {
     label: "Capacity",
     handler: (auction: Auction) =>
-      `${auction.formatted?.capacity} ${auction.baseToken.symbol}`,
+      `${auction.formatted?.capacity || shorten(Number(auction.capacity))} ${
+        auction.baseToken.symbol
+      }`,
   },
 
   totalSupply: {
@@ -126,8 +152,16 @@ const handlers = {
     label: "Price",
     handler: (auction: Auction) =>
       //TODO: improve types here
-      `${(auction as AtomicAuction).fixedPriceSale?.price} ${auction.formatted
-        ?.tokenPairSymbols}`,
+      `${(auction as AtomicAuction).fixedPriceSale?.price} ${auction.quoteToken
+        ?.symbol}`,
+  },
+
+  fixedPrice: {
+    label: "Price",
+    handler: (auction: Auction) =>
+      `${(auction as BatchAuction).fixedPrice?.price} ${
+        auction.quoteToken.symbol
+      }`,
   },
 
   sold: {
@@ -174,6 +208,16 @@ const handlers = {
       return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
     },
   },
+  fixedPriceFDV: {
+    label: "Fixed Price FDV",
+    handler: (auction: Auction) => {
+      const _auction = auction as BatchAuction;
+      const fdv =
+        Number(auction.baseToken.totalSupply) *
+        Number(_auction.fixedPrice?.price);
+      return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
+    },
+  },
   rate: {
     label: "Rate",
     handler: (auction: Auction) => {
@@ -190,6 +234,14 @@ const handlers = {
     label: "Ended",
     handler: (auction: Auction) => {
       return `${auction.formatted?.endDistance} ago`;
+    },
+  },
+  curator: {
+    label: "Curator",
+    handler: (auction: Auction) => {
+      if (!auction.curator) return undefined;
+
+      return trimAddress(auction.curator, 6);
     },
   },
 };
