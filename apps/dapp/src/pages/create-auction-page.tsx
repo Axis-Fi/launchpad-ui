@@ -387,14 +387,15 @@ export default function CreateAuctionPage() {
         break;
       }
       case CallbacksType.TOKEN_ALLOWLIST: {
-        const allowlistToken = values.allowlistToken?.address;
+        const allowlistToken = (values.allowlistToken?.address ??
+          zeroAddress) as `0x${string}`;
         const threshold = parseUnits(
           values.allowlistTokenThreshold ?? "0",
           values.allowlistToken?.decimals ?? 0,
-        ); // TODO multiply by token decimals. Need to attach an ABI to token then
+        );
         callbackData = encodeAbiParameters(
-          [{ token: "address" }, { threshold: "uint256" }],
-          [allowlistToken, threshold] as never,
+          parseAbiParameters("address token, uint256 threshold"),
+          [allowlistToken, threshold],
         );
         break;
       }
