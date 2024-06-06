@@ -19,6 +19,10 @@ type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
   value?: string;
   /** whether to disable the input */
   disabled?: boolean;
+  /** whether to disable the max button */
+  disableMaxButton?: boolean;
+  /** callback when the max button is clicked */
+  onClickMaxButton?: () => void;
 };
 
 export function TokenAmountInput({
@@ -31,6 +35,8 @@ export function TokenAmountInput({
   message,
   value,
   disabled,
+  disableMaxButton,
+  onClickMaxButton,
   ...props
 }: TokenAmountInputProps) {
   return (
@@ -41,7 +47,11 @@ export function TokenAmountInput({
         disabled && "opacity-50",
       )}
     >
-      <Text color="secondary">{label}</Text>
+      <div className="flex">
+        <div className="flex-start">
+          <Text color="secondary">{label}</Text>
+        </div>
+      </div>
       <div className="mt-0.5 flex items-center">
         <Input
           {...props}
@@ -58,26 +68,35 @@ export function TokenAmountInput({
         <Text className="text-nowrap" color="secondary" size="lg">
           {symbol}{" "}
         </Text>
-        <Button
-          disabled={disabled}
-          uppercase
-          variant="secondary"
-          size="sm"
-          className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
-        >
-          Max
-        </Button>
+        {!disableMaxButton && (
+          <Button
+            disabled={disabled}
+            uppercase
+            variant="secondary"
+            size="sm"
+            className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
+            onClick={() => {
+              onClickMaxButton?.();
+            }}
+          >
+            Max
+          </Button>
+        )}
       </div>
       <div className="flex justify-between">
         {usdPrice && (
-          <Text size="xs" color="secondary">
-            ={usdPrice}
-          </Text>
+          <div className="flex items-start">
+            <Text size="xs" color="secondary">
+              ≈{usdPrice}
+            </Text>
+          </div>
         )}
         {balance && (
-          <Text size="xs" color="secondary" uppercase>
-            Balance: {balance} {limit ? `Limit: ${limit}` : ""}
-          </Text>
+          <div className="ml-auto flex items-end">
+            <Text size="xs" color="secondary" uppercase>
+              Balance: {balance} {limit ? `Limit: ${limit}` : ""}
+            </Text>
+          </div>
         )}
       </div>
       {error && (

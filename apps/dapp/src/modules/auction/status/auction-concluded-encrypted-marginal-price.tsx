@@ -1,17 +1,23 @@
 import React from "react";
-import { Card } from "@repo/ui";
+import { Badge, Button, Card, Metric } from "@repo/ui";
 import type { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionMetric } from "../auction-metric";
 import { AuctionMetrics } from "../auction-metrics";
+import { RequiresChain } from "components/requires-chain";
+import { LoadingIndicator } from "modules/app/loading-indicator";
+import { BlockExplorerLink } from "components/blockexplorer-link";
 
-export function AuctionConcluded({ auction }: PropsWithAuction) {
+export function EncryptedMarginalPriceAuctionConcluded({
+  auction,
+}: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const decrypt = useDecryptBids(auction as BatchAuction);
 
-  const disableButton = decrypt.decryptTx.isPending;
+  const isWaiting =
+    decrypt.decryptTx.isPending || decrypt.decryptReceipt.isLoading;
   // removed totalBids === 0 from this because an auction that has no bids must either be decrypted + settled
   // or aborted so that the seller gets a refund
 
@@ -23,7 +29,20 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     <div>
       <div className="flex justify-between">
         <div className="flex w-1/2 flex-col gap-y-4">
-          <Card title="Launch Info">
+          <Card
+            title="Launch Info"
+            headerRightElement={
+              <div className="flex gap-x-2">
+                <Metric size="s" label="Token Address">
+                  <BlockExplorerLink
+                    trim
+                    chainId={auction.chainId}
+                    address={auction.baseToken.address}
+                  />
+                </Metric>
+              </div>
+            }
+          >
             <AuctionMetrics>
               <AuctionMetric auction={auction} id="totalBids" />
               <AuctionMetric auction={auction} id="totalBidAmount" />
@@ -37,7 +56,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
         <div className="w-[40%]">
           <TransactionDialog
             signatureMutation={decrypt.decryptTx}
-            disabled={disableButton}
+            disabled={isWaiting}
             chainId={auction.chainId}
             hash={decrypt.decryptTx.data!}
             error={decrypt.error}
@@ -56,8 +75,12 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
           />
           <Card
             title="Concluded"
-            // onClick={() => setOpen(true)}
+            className="w-[496px]"
+            headerRightElement={<Badge>Auction Closed</Badge>}
           >
+            <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm">
+              The bids must be decrypted before the auction can be settled.
+            </div>
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
               <div>
                 <h1 className="text-4xl">
@@ -73,6 +96,25 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
                 <p>Total Remaining Bids</p>
               </div>
             </div>
+            <RequiresChain chainId={auction.chainId} className="mt-4">
+              <div className="mt-4 w-full">
+                <Button
+                  className="w-full"
+                  disabled={isWaiting}
+                  onClick={() => setOpen(true)}
+                >
+                  {isWaiting ? (
+                    <div className="flex">
+                      Waiting for confirmation...
+                      <div className="w-1/2"></div>
+                      <LoadingIndicator />
+                    </div>
+                  ) : (
+                    "Decrypt Bids"
+                  )}
+                </Button>
+              </div>
+            </RequiresChain>
           </Card>
         </div>
       </div>

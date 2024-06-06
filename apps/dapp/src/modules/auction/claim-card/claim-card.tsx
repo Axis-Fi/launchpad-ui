@@ -4,6 +4,7 @@ import { NotConnectedClaimCard } from "./not-connected";
 import { NoUserBidsClaimCard } from "./no-user-bids-claim-card";
 import { UserBidsClaimCard } from "./user-bids-claim-card";
 import { VestingClaimCard } from "./vesting-claim-card";
+import { AuctionFailedClaimCard } from "./auction-failed-claim-card";
 
 type ClaimStatusProps = {
   auction: BatchAuction;
@@ -62,7 +63,7 @@ export function ClaimCard({ auction: _auction }: PropsWithAuction) {
     }
 
     case "AUCTION_FAILED": {
-      return "//TODO";
+      return <AuctionFailedClaimCard auction={auction} />;
     }
 
     case "USER_HAS_BIDS": {

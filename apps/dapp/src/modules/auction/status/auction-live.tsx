@@ -1,33 +1,38 @@
-import { Button, Card, Text } from "@repo/ui";
+import { Button, Card, Metric, Text } from "@repo/ui";
 import { formatUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
-import { trimCurrency } from "utils";
+import { shorten, trimCurrency } from "utils";
 import { useBidAuction } from "../hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
-// import { getCallbacksType } from "../utils/get-callbacks-type";
+import { AuctionBidInputSingle } from "../auction-bid-input-single";
+import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
   quoteTokenAmount: z.string(),
+  bidPrice: z.string().optional(), // Only used for bids that require the bid price to be specified
 });
 
 export type BidForm = z.infer<typeof schema>;
 
 export function AuctionLive({ auction }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
+  const currentChainId = useChainId();
+  const walletAccount = useAccount();
+
   const isFixedPrice =
     auction.auctionType === AuctionType.FIXED_PRICE ||
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
@@ -44,6 +49,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     mode: "onTouched",
     resolver: zodResolver(
       schema
+        .refine((data) => Number(data.quoteTokenAmount) > 0, {
+          message: "Amount must be greater than 0",
+          path: ["quoteTokenAmount"],
+        })
+        .refine((data) => isFixedPrice || Number(data.bidPrice) > 0, {
+          message: "Bid price must be greater than 0",
+          path: ["bidPrice"],
+        })
         .refine(
           (data) =>
             isFixedPrice ||
@@ -57,11 +70,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             isFixedPrice ||
-            Number(data.quoteTokenAmount) / Number(data.baseTokenAmount) >=
-              Number(auction.formatted?.minPrice),
+            Number(data.bidPrice) >= Number(auction.formatted?.minPrice),
           {
             message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
-            path: ["baseTokenAmount"],
+            path: ["bidPrice"],
           },
         )
         .refine(
@@ -161,6 +173,23 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       parsedAmountIn / parsedMinAmountOut <
         Number(auction.formatted?.minPrice)); // less than min price
 
+  const isWalletChainIncorrect =
+    auction.chainId !== currentChainId || !walletAccount.isConnected;
+
+  const [bidPrice] = form.watch(["bidPrice"]);
+  // Calculate FDV based on the bid
+  const [bidFdv, setBidFdv] = useState<string>("");
+  useEffect(() => {
+    if (!bidPrice || !auction.baseToken.totalSupply) {
+      setBidFdv("");
+      return;
+    }
+
+    const fdv = Number(auction.baseToken.totalSupply) * Number(bidPrice);
+    setBidFdv(`${shorten(fdv)} ${auction.quoteToken.symbol}`);
+  }, [bidPrice, auction.baseToken.totalSupply, auction.quoteToken.symbol]);
+
+  // TODO calculate coin rank
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
 
   return (
@@ -183,7 +212,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <AuctionMetric id="totalSupply" />
               <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
-              <AuctionMetric id="minRaise" />
             </AuctionMetricsContainer>
           )}
         </Card>
@@ -201,12 +229,21 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     : `Place your bid`
                 }
               >
-                <AuctionBidInput
-                  singleInput={isFixedPrice}
-                  balance={trimCurrency(formattedBalance)}
-                  limit={amountLimited ? trimCurrency(limit) : undefined}
-                  auction={auction}
-                />
+                {isFixedPrice ? (
+                  <AuctionBidInputSingle
+                    balance={Number(formattedBalance)}
+                    limit={amountLimited ? Number(limit) : undefined}
+                    auction={auction}
+                    disabled={isWalletChainIncorrect}
+                  />
+                ) : (
+                  <AuctionBidInput
+                    balance={Number(formattedBalance)}
+                    limit={amountLimited ? Number(limit) : undefined}
+                    auction={auction}
+                    disabled={isWalletChainIncorrect}
+                  />
+                )}
                 <div className="mx-auto mt-4 w-full">
                   {isEMP && (
                     <Text size="sm">
@@ -243,7 +280,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                           <LoadingIndicator />
                         </div>
                       ) : (
-                        "APPROVE"
+                        `APPROVE TO ${actionKeyword.toUpperCase()}`
                       )}
                     </Button>
                   </div>
@@ -298,6 +335,24 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             <p>This sale is restricted to {criteria}.</p>
             <p>The connected wallet is not approved to bid.</p>
           </Card>
+        )}
+        {canBid && isEMP && (
+          <div className="mt-4">
+            <Card title="Bid Info">
+              <div className="gap-y-md flex">
+                <div className="p-sm rounded">
+                  <Metric size="s" label="Your Estimated FDV">
+                    {bidFdv || "-"}
+                  </Metric>
+                </div>
+                <div className="p-sm rounded">
+                  <Metric size="s" label="Est. Coin Rank">
+                    {"-"}
+                  </Metric>
+                </div>
+              </div>
+            </Card>
+          </div>
         )}
       </div>
     </div>

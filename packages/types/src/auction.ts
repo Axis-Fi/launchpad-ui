@@ -87,6 +87,11 @@ export type FixedPriceBatchAuctionData = {
   minFilled: bigint;
 };
 
+export type AuctionData =
+  | EMPAuctionData
+  | FixedPriceAuctionData
+  | FixedPriceBatchAuctionData;
+
 export type AuctionFormattedInfo = {
   startDate: Date;
   endDate: Date;
