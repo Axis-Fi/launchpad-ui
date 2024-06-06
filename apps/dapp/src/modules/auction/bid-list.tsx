@@ -7,7 +7,7 @@ import {
 } from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
-import { Button, DataTable, Text } from "@repo/ui";
+import { Button, DataTable, Text, Tooltip } from "@repo/ui";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -57,6 +57,7 @@ const cols = [
   column.accessor("submittedPrice", {
     header: "Bid Price",
     enableSorting: true,
+
     cell: (info) => {
       let value = Number(info.getValue());
       const bid = info.row.original;
@@ -64,15 +65,32 @@ const cols = [
       //@ts-expect-error update type
       const amountOut = bid.amountOut;
 
-      if (amountOut && auction.status === "live") {
+      const isUserBid = amountOut && auction.status === "live";
+      if (isUserBid) {
         value = Number(bid.amountIn) / amountOut;
       }
 
-      return value
+      const display = value
         ? `${trimCurrency(value)} ${
             info.row.original.auction.quoteToken.symbol
           }`
         : "-";
+
+      return (
+        <Tooltip
+          content={
+            isUserBid ? (
+              <>
+                Your estimate payout out at this price is{" "}
+                {trimCurrency(amountOut)} {auction.baseToken.symbol}.<br />
+                (Only you can see your bids&apos; price.)
+              </>
+            ) : null
+          }
+        >
+          {display}
+        </Tooltip>
+      );
     },
   }),
   column.accessor("bidder", {
