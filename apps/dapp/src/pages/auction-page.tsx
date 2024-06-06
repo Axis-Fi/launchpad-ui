@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import { useAccount } from "wagmi";
 import { Badge, Button, Skeleton, Text } from "@repo/ui";
 import {
   type PropsWithAuction,
@@ -40,7 +39,6 @@ const statuses: Record<
 /** Displays Auction details and status*/
 export default function AuctionPage() {
   const { id, type } = useParams();
-  const { address } = useAccount();
 
   const {
     result: auction,
@@ -130,11 +128,7 @@ export default function AuctionPage() {
 
         <AuctionElement auction={auction} />
 
-        <AuctionBidsCard
-          auction={auction}
-          isLoading={isAuctionLoading}
-          address={address}
-        />
+        <AuctionBidsCard auction={auction} isLoading={isAuctionLoading} />
       </PageContainer>
     </>
   );

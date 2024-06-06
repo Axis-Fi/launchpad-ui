@@ -9,11 +9,7 @@ type AuctionBidsCard = {
 } & React.HTMLAttributes<HTMLDivElement> &
   PropsWithAuction;
 
-export function AuctionBidsCard({
-  auction,
-  address,
-  ...props
-}: AuctionBidsCard) {
+export function AuctionBidsCard({ auction, ...props }: AuctionBidsCard) {
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
 
   return (
@@ -21,7 +17,7 @@ export function AuctionBidsCard({
       {isFixedPrice ? (
         <PurchaseList auction={auction as AtomicAuction} />
       ) : (
-        <BidList auction={auction} address={address} />
+        <BidList auction={auction} />
       )}
     </Card>
   );
