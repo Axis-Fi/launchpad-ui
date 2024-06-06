@@ -23,14 +23,7 @@ export function AuctionLaunchMetrics(
       title="Launch Info"
       headerRightElement={
         <div className="flex gap-x-2">
-          <Metric size="s" label="Quote Token Address">
-            <BlockExplorerLink
-              trim
-              chainId={auction.chainId}
-              address={auction.quoteToken.address}
-            />
-          </Metric>
-          <Metric size="s" label="Base Token Address">
+          <Metric size="s" label="Token Address">
             <BlockExplorerLink
               trim
               chainId={auction.chainId}
