@@ -63,7 +63,7 @@ export const useDecryptBids = (auction: BatchAuction) => {
       BigInt(hints?.length ?? 0),
       hints,
     ],
-    query: { enabled: privateKeyQuery.isSuccess },
+    query: { enabled: privateKeyQuery.isSuccess && hintsQuery.isSuccess },
   });
 
   const decrypt = useWriteContract();

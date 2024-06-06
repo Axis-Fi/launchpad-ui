@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card } from "@repo/ui";
+import { Badge, Button, Card, Metric } from "@repo/ui";
 import type { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
@@ -8,8 +8,11 @@ import { AuctionMetric } from "../auction-metric";
 import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
+import { BlockExplorerLink } from "components/blockexplorer-link";
 
-export function AuctionConcluded({ auction }: PropsWithAuction) {
+export function EncryptedMarginalPriceAuctionConcluded({
+  auction,
+}: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const decrypt = useDecryptBids(auction as BatchAuction);
 
@@ -17,7 +20,6 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     decrypt.decryptTx.isPending || decrypt.decryptReceipt.isLoading;
   // removed totalBids === 0 from this because an auction that has no bids must either be decrypted + settled
   // or aborted so that the seller gets a refund
-  // TODO rename this to be emp-specific
 
   const totalBidsRemaining =
     (auction.formatted?.totalBids ?? 0) -
@@ -27,7 +29,20 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     <div>
       <div className="flex justify-between">
         <div className="flex w-1/2 flex-col gap-y-4">
-          <Card title="Launch Info">
+          <Card
+            title="Launch Info"
+            headerRightElement={
+              <div className="flex gap-x-2">
+                <Metric size="s" label="Token Address">
+                  <BlockExplorerLink
+                    trim
+                    chainId={auction.chainId}
+                    address={auction.baseToken.address}
+                  />
+                </Metric>
+              </div>
+            }
+          >
             <AuctionMetrics>
               <AuctionMetric auction={auction} id="totalBids" />
               <AuctionMetric auction={auction} id="totalBidAmount" />
@@ -58,7 +73,14 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
               }
             }}
           />
-          <Card title="Concluded">
+          <Card
+            title="Concluded"
+            className="w-[496px]"
+            headerRightElement={<Badge>Auction Closed</Badge>}
+          >
+            <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm">
+              The bids must be decrypted before the auction can be settled.
+            </div>
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
               <div>
                 <h1 className="text-4xl">
@@ -88,7 +110,7 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
                       <LoadingIndicator />
                     </div>
                   ) : (
-                    "Decrypt"
+                    "Decrypt Bids"
                   )}
                 </Button>
               </div>

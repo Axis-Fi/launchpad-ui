@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "lucide-react";
 
-import { Button, Card, Metric } from "@repo/ui";
+import { Badge, Button, Card, Metric } from "@repo/ui";
 import type { BatchAuction, PropsWithAuction } from "@repo/types";
 import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -18,6 +18,10 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
   const claimBidsTxn = useClaimBids(auction);
   const userBids = auction.bids.filter(
     (bid) => bid.bidder.toLowerCase() === address?.toLowerCase(),
+  );
+  const userTotalBidAmount = userBids.reduce(
+    (acc, bid) => acc + Number(bid.amountIn ?? 0),
+    0,
   );
   const userTotalSuccessfulBidAmount = userBids.reduce(
     (acc, bid) => acc + Number(bid.settledAmountIn ?? 0),
@@ -39,23 +43,26 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
     claimBidsTxn.claimTx.isPending || claimBidsTxn.claimReceipt.isLoading;
 
   const buttonText =
-    userTotalSuccessfulBidAmount > 0 ? "Claim tokens" : "Claim refund";
+    userTotalSuccessfulBidAmount > 0 ? "Claim winnings" : "Claim refund";
 
   return (
     <div className="gap-y-md flex flex-col">
-      <Card title="Claim" className="w-[496px]">
+      <Card
+        title="Claim"
+        className="w-[496px]"
+        headerRightElement={<Badge color="active">You Won!</Badge>}
+      >
         <RequiresChain chainId={auction.chainId}>
           <div className="gap-y-md flex flex-col">
             <div className="bg-surface-tertiary p-sm rounded">
-              <Metric size="l" label="Your winning bids">
-                {shorten(userTotalSuccessfulBidAmount)}{" "}
-                {auction.quoteToken.symbol}
+              <Metric size="l" label="You Bid">
+                {shorten(userTotalBidAmount)} {auction.quoteToken.symbol}
               </Metric>
             </div>
 
             {userTotalUnsuccessfulBidAmount > 0 && (
               <div className="bg-surface-tertiary p-sm rounded">
-                <Metric size="l" label="Your refunded bids">
+                <Metric size="l" label="Your Refund">
                   {shorten(userTotalUnsuccessfulBidAmount)}{" "}
                   {auction.quoteToken.symbol}
                 </Metric>
@@ -63,7 +70,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
             )}
 
             <div className="bg-surface-tertiary p-sm rounded">
-              <Metric size="l" label="Your tokens">
+              <Metric size="l" label="You Get">
                 {shorten(userTotalTokensObtained)} {auction.baseToken.symbol}
               </Metric>
             </div>

@@ -16,7 +16,7 @@ type UseAuctionDataParameters = {
   type?: AuctionType;
 };
 
-/** Reads auctionData for a specific auction on chain and parses it*/
+/** Reads and parses auctionData for a specific auction on chain */
 export function useAuctionData({
   lotId,
   chainId,

@@ -10,7 +10,7 @@ const badgeVariants = cva(
     variants: {
       color: {
         active: "bg-feedback-success",
-        alert: "bg-feedback-success text-neutral-50",
+        alert: "bg-feedback-alert text-neutral-50",
         ghost: "bg-app",
       },
       size: {

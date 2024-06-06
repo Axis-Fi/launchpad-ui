@@ -910,7 +910,7 @@ export default function CreateAuctionPage() {
             open={isDialogOpen}
             onOpenChange={(open) => !open && setIsDialogOpen(false)}
           >
-            <DialogContent className="max-w-sm">
+            <DialogContent className="bg-surface max-w-sm">
               <DialogHeader>
                 <DialogTitle>
                   {createTxReceipt.isSuccess ? "Success" : "Creating Auction"}
