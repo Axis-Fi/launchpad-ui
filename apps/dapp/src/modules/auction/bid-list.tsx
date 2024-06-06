@@ -72,7 +72,9 @@ const cols = [
     cell: (info) => {
       const value = info.getValue();
       return value
-        ? `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
+        ? `${trimCurrency(value)} ${
+            info.row.original.auction.quoteToken.symbol
+          }`
         : "-";
     },
   }),

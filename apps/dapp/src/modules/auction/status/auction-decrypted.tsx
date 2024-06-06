@@ -1,15 +1,19 @@
 import React from "react";
-import { Card } from "@repo/ui";
+import { Button, Card } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionMetric } from "../auction-metric";
 import { AuctionMetrics } from "../auction-metrics";
+import { RequiresChain } from "components/requires-chain";
+import { LoadingIndicator } from "modules/app/loading-indicator";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const settle = useSettleAuction(auction);
+
+  const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
   return (
     <div className="flex justify-between">
@@ -25,13 +29,45 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
       </div>
 
       <div className="w-[40%]">
-        <Card
-          title="Concluded"
-          // onClick={() => setIsDialogOpen(true)}
-        >
+        <TransactionDialog
+          signatureMutation={settle.settleTx}
+          disabled={isWaiting}
+          chainId={auction.chainId}
+          hash={settle.settleTx.data!}
+          error={settle.error}
+          onConfirm={settle.handleSettle}
+          mutation={settle.settleReceipt}
+          open={isDialogOpen}
+          onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (settle.settleReceipt.isSuccess || settle.settleTx.isError) {
+              settle.settleTx.reset();
+            }
+          }}
+        />
+        <Card title="Decrypted">
           <div className="bg-secondary text-foreground flex justify-center rounded-sm p-2">
-            <h3>All bids have been decrypted</h3>
+            <p>All bids have been decrypted</p>
           </div>
+          <RequiresChain chainId={auction.chainId} className="mt-4">
+            <div className="mt-4 w-full">
+              <Button
+                className="w-full"
+                disabled={isWaiting}
+                onClick={() => setIsDialogOpen(true)}
+              >
+                {isWaiting ? (
+                  <div className="flex">
+                    Waiting for confirmation...
+                    <div className="w-1/2"></div>
+                    <LoadingIndicator />
+                  </div>
+                ) : (
+                  "Settle"
+                )}
+              </Button>
+            </div>
+          </RequiresChain>
         </Card>
       </div>
 
