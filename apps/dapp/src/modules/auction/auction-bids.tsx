@@ -17,7 +17,7 @@ export function AuctionBidsCard({
   const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
 
   return (
-    <Card {...props} title={isFixedPrice ? "Purchases" : "Bids"}>
+    <Card {...props} title={isFixedPrice ? "Purchases" : "Bid History"}>
       {isFixedPrice ? (
         <PurchaseList auction={auction as AtomicAuction} />
       ) : (

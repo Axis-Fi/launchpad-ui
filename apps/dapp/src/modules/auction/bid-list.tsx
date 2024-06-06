@@ -7,7 +7,7 @@ import {
 } from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
-import { Button, DataTable, Tooltip } from "@repo/ui";
+import { Button, DataTable, Text } from "@repo/ui";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
@@ -15,24 +15,32 @@ import React from "react";
 import { useAuction } from "./hooks/use-auction";
 import { getAuctionHouse } from "utils/contracts";
 import { useBidIndex } from "./hooks/use-bid-index";
-import { formatUnits } from "viem";
+import { format } from "date-fns";
 
 const column = createColumnHelper<BatchAuctionBid & { auction: Auction }>();
 
 const cols = [
-  column.accessor("bidder", {
-    header: "Bidder",
+  column.accessor("blockTimestamp", {
+    header: "Date",
     enableSorting: true,
-    cell: (info) => (
-      <BlockExplorerLink
-        chainId={info.row.original.auction.chainId}
-        address={info.getValue()}
-        icon={false}
-        trim
-      />
-    ),
-  }),
+    cell: (info) => {
+      // Convert to Date
+      const date = new Date(Number(info.getValue()) * 1000);
 
+      // Format to YYYY.MM.DD
+      const dateString = format(date, "yyyy.MM.dd");
+      const timeString = format(date, "HH:mm z");
+
+      return (
+        <div className="flex flex-col items-start">
+          <Text size="sm">{dateString}</Text>
+          <Text size="xs" color="secondary">
+            {timeString}
+          </Text>
+        </div>
+      );
+    },
+  }),
   column.accessor("amountIn", {
     header: "Amount In",
     enableSorting: true,
@@ -40,31 +48,6 @@ const cols = [
       `${trimCurrency(info.getValue())} ${
         info.row.original.auction.quoteToken.symbol
       }`,
-  }),
-  column.accessor("rawAmountOut", {
-    header: "Amount Out",
-    enableSorting: true,
-    cell: (info) => {
-      const size = Math.random() * 80 + 60;
-      const value = info.getValue();
-      return value ? (
-        `${trimCurrency(
-          formatUnits(
-            BigInt(value),
-            info.row.original.auction.baseToken.decimals,
-          ),
-        )} ${info.row.original.auction.baseToken.symbol}`
-      ) : (
-        <Tooltip content="The amount out is not accessible until after the conclusion of the auction">
-          <div
-            className="w-30 bg-foreground h-5"
-            style={{ width: `${size}px` }}
-          >
-            {" "}
-          </div>
-        </Tooltip>
-      );
-    },
   }),
   column.accessor("submittedPrice", {
     header: "Bid Price",
@@ -78,25 +61,31 @@ const cols = [
         : "-";
     },
   }),
-  column.accessor("settledAmountOut", {
-    header: "Settled Amount",
+  column.accessor("bidder", {
+    header: "Bidder",
     enableSorting: true,
     cell: (info) => {
-      const value = info.getValue();
-      return value
-        ? `${trimCurrency(value)} ${info.row.original.auction.baseToken.symbol}`
-        : "-";
-    },
-  }),
-
-  column.accessor("status", {
-    header: "Status",
-    enableSorting: true,
-    cell: (info) => {
-      const status = info.getValue();
+      // Define the outcome or status of the bid
+      const bidStatus = info.row.original.status;
+      const bidOutcome = info.row.original.outcome;
       const amountOut = info.row.original.settledAmountOut;
-      const isRefunded = status === "claimed" && !amountOut;
-      return isRefunded ? "refunded" : status;
+      const isRefunded = bidStatus === "claimed" && !amountOut;
+      const status = isRefunded ? "refunded" : bidOutcome;
+      const statusColour = status === "won" ? "green" : "red";
+
+      return (
+        <div className="flex flex-col items-end">
+          <BlockExplorerLink
+            chainId={info.row.original.auction.chainId}
+            address={info.getValue()}
+            icon={true}
+            trim
+          />
+          <Text size="xs" className={`text-${statusColour}-500`}>
+            {status}
+          </Text>
+        </div>
+      );
     },
   }),
 ];
