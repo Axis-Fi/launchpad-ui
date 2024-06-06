@@ -103,7 +103,7 @@ const useSortedBids = (
     settledAmountOut: 0,
     timestamp: 0,
     cumulativeAmountIn: 0,
-    price: sortedBids[0].price,
+    price: sortedBids.length ? sortedBids[0].price : 0,
     outcome: "won",
   });
 
