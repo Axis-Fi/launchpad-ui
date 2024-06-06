@@ -60,6 +60,9 @@ export function EncryptedMarginalPriceAuctionConcluded({
             }}
           />
           <Card title="Concluded">
+            <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm">
+              The bids must be decrypted before the auction can be settled.
+            </div>
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
               <div>
                 <h1 className="text-4xl">
@@ -89,7 +92,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
                       <LoadingIndicator />
                     </div>
                   ) : (
-                    "Decrypt"
+                    "Decrypt Bids"
                   )}
                 </Button>
               </div>
