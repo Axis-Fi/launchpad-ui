@@ -76,6 +76,7 @@ export function useAuction(
     | GetAtomicAuctionLotQuery["atomicAuctionLot"]
     | GetBatchAuctionLotQuery["batchAuctionLot"];
 
+  console.log({ data });
   if (isSuccess && auctionType === AuctionType.FIXED_PRICE) {
     rawAuction = (data as GetAtomicAuctionLotQuery)?.atomicAuctionLot;
   } else {
@@ -95,6 +96,7 @@ export function useAuction(
     lotId,
     type: auctionType,
   });
+  console.log({ auctionData });
 
   //TODO: needs updating
   // const { data: linearVesting } = useDerivativeData({
@@ -112,7 +114,7 @@ export function useAuction(
     };
   }
 
-  const status = getAuctionStatus(rawAuction);
+  const status = getAuctionStatus(rawAuction, auctionData);
 
   const auction = {
     ...rawAuction,

@@ -1,13 +1,28 @@
-import { AuctionStatus, SubgraphAuction } from "@repo/types";
+import {
+  AuctionData,
+  AuctionStatus,
+  EMPAuctionData,
+  SubgraphAuction,
+} from "@repo/types";
+
+enum LotContractStatus {
+  Created,
+  Decrypted,
+  Settled,
+}
 
 /** Determines Auction status */
-export function getAuctionStatus(auction: SubgraphAuction): AuctionStatus {
+export function getAuctionStatus(
+  auction: SubgraphAuction,
+  auctionData?: AuctionData,
+): AuctionStatus {
   const { start, conclusion, capacity } = auction;
   const isConcluded =
     Date.now() > new Date(Number(conclusion) * 1000).getTime();
 
   if ("bids" in auction) {
-    const { bids, capacity } = auction; // TODO subgraph was not returning correct values for bidsDecrypted and bidsRefunded
+    const status = (auctionData as EMPAuctionData)?.status;
+    const { capacity } = auction;
 
     // bids implies batch auction
     // if a batch auction has a capacity of zero, it means it was cancelled before it started
@@ -15,25 +30,14 @@ export function getAuctionStatus(auction: SubgraphAuction): AuctionStatus {
       return "cancelled";
     }
 
-    const numBids = bids.length;
-    const numBidsDecrypted = bids.filter(
-      (b) => b.status === "decrypted",
-    ).length;
-    const numBidsClaimed = bids.filter((b) => b.status === "claimed").length;
-
-    const isSettled = !!auction.settled;
-    // If the auction is settled, it is settled
-    if (isSettled) {
+    // TODO: probably redudant but verify
+    if (!!auction.settled || status === LotContractStatus.Settled) {
       return "settled";
     }
 
     // Check if auction has been fully decrypted
     // TODO: Doesn't work for auctions that end with 0 total bids
-    if (
-      isConcluded &&
-      numBids > 0 &&
-      numBids === numBidsDecrypted + numBidsClaimed
-    ) {
+    if (status === LotContractStatus.Decrypted) {
       return "decrypted";
     }
   }
