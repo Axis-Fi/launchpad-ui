@@ -23,6 +23,7 @@ import { FixedPriceAtomicAuctionConcluded } from "modules/auction/status/auction
 import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
 import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 import { getCountdown } from "utils/date";
+import { useEffect, useState } from "react";
 
 const statuses: Record<
   AuctionStatus,
@@ -48,21 +49,29 @@ export default function AuctionPage() {
     isRefetching,
   } = useAuction(id!, type as AuctionType);
 
+  // Countdown
+  const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
+  const isOngoing =
+    auction &&
+    auction.formatted &&
+    auction.formatted?.startDate < new Date() &&
+    auction.formatted?.endDate > new Date();
+  // Refresh the countdown every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isOngoing && auction.formatted?.endDate) {
+        setTimeRemaining(getCountdown(auction.formatted?.endDate));
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOngoing, auction, auction?.formatted?.endDate]);
+
   if (isAuctionLoading) {
     return <AuctionPageLoading />;
   }
 
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
-
-  const isOngoing =
-    auction.formatted &&
-    auction.formatted?.startDate < new Date() &&
-    auction.formatted?.endDate > new Date();
-  const countdown =
-    isOngoing &&
-    auction.formatted &&
-    auction.formatted.endDate &&
-    getCountdown(auction.formatted?.endDate);
 
   const AuctionElement =
     auction.status === "concluded" &&
@@ -97,7 +106,18 @@ export default function AuctionPage() {
               </Text>
             </div>
             <div className="mb-4 ml-4 self-start">
-              {isOngoing && <Badge>{countdown}</Badge>}
+              {isOngoing && (
+                <Badge>
+                  <div className="ml-2 mr-2 flex flex-col items-center justify-center">
+                    <div className="text-center">
+                      <Text uppercase mono size="xs" color="secondary">
+                        Remaining:
+                      </Text>
+                    </div>
+                    <div className="text-center">{timeRemaining}</div>
+                  </div>
+                </Badge>
+              )}
             </div>
           </div>
         </div>
