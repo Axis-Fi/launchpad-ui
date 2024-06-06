@@ -4,6 +4,7 @@ import { useAuction } from "modules/auction/hooks/use-auction";
 import {
   Address,
   encodeAbiParameters,
+  fromHex,
   isAddress,
   parseAbiParameters,
   parseUnits,
@@ -19,6 +20,7 @@ import { useReferrer } from "state/referral";
 import { AuctionType } from "@repo/types";
 import { getAuctionHouse } from "utils/contracts";
 import { useDeferredQuery } from "@repo/sdk/react";
+import { useStoreBid } from "state/bids/handlers";
 
 export function useBidAuction(
   id: string,
@@ -27,6 +29,7 @@ export function useBidAuction(
   amountOut: number,
 ) {
   const { result: auction, ...auctionQuery } = useAuction(id, auctionType);
+  const storeBidLocally = useStoreBid();
 
   if (!auction) throw new Error(`Unable to find auction ${id}`);
   const lotId = auction.lotId;
@@ -62,7 +65,7 @@ export function useBidAuction(
     }
     const { abi, address, functionName, args } = await bidConfig();
 
-    bidTx.writeContract({ abi, address, functionName, args });
+    bidTx.writeContractAsync({ abi, address, functionName, args });
   };
 
   const handlePurchase = async () => {
@@ -126,11 +129,30 @@ export function useBidAuction(
     amount: Number(amountIn),
   });
 
+  console.log({ bidReceipt });
   React.useEffect(() => {
+    // Refetch balance, allowance, refetches delayed auction info
+    // and stores bid if EMP
     if (bidReceipt.isSuccess) {
       balance.refetch();
       allowance.refetch();
+      // Delay refetching to ensure subgraph has caught up with the changes
       setTimeout(() => auctionQuery.refetch(), 5000); //TODO: ideas on how to improve this
+
+      // Store user's bid amount locally
+      if (auction.auctionType === AuctionType.SEALED_BID) {
+        const hexBidId = bidReceipt.data.logs[1].topics[2];
+
+        const bidId = fromHex(hexBidId!, "number").toString();
+
+        //Stores bid using
+        storeBidLocally({
+          auctionId: auction.id,
+          address: bidderAddress!,
+          bidId,
+          amountOut,
+        });
+      }
     }
   }, [bidReceipt.isSuccess]);
 

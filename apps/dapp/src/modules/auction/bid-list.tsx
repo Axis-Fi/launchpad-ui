@@ -7,8 +7,12 @@ import {
 } from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
-import { Button, DataTable, Text } from "@repo/ui";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { Button, DataTable, Text, Tooltip } from "@repo/ui";
+import {
+  useAccount,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+} from "wagmi";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import React from "react";
@@ -16,6 +20,7 @@ import { useAuction } from "./hooks/use-auction";
 import { getAuctionHouse } from "utils/contracts";
 import { useBidIndex } from "./hooks/use-bid-index";
 import { format } from "date-fns";
+import { useStorageBids } from "state/bids/handlers";
 
 const column = createColumnHelper<BatchAuctionBid & { auction: Auction }>();
 
@@ -52,13 +57,40 @@ const cols = [
   column.accessor("submittedPrice", {
     header: "Bid Price",
     enableSorting: true,
+
     cell: (info) => {
-      const value = info.getValue();
-      return value
+      let value = Number(info.getValue());
+      const bid = info.row.original;
+      const auction = bid.auction;
+      //@ts-expect-error update type
+      const amountOut = bid.amountOut;
+
+      const isUserBid = amountOut && auction.status === "live";
+      if (isUserBid) {
+        value = Number(bid.amountIn) / amountOut;
+      }
+
+      const display = value
         ? `${trimCurrency(value)} ${
             info.row.original.auction.quoteToken.symbol
           }`
         : "-";
+
+      return (
+        <Tooltip
+          content={
+            isUserBid ? (
+              <>
+                Your estimate payout out at this price is{" "}
+                {trimCurrency(amountOut)} {auction.baseToken.symbol}.<br />
+                (Only you can see your bids&apos; price.)
+              </>
+            ) : null
+          }
+        >
+          {display}
+        </Tooltip>
+      );
     },
   }),
   column.accessor("bidder", {
@@ -110,11 +142,18 @@ type BidListProps = PropsWithAuction & {
 };
 
 export function BidList(props: BidListProps) {
+  const { address } = useAccount();
+
+  const userBids = useStorageBids({
+    auctionId: props.auction.id,
+    address,
+  });
+
   const auction = props.auction as BatchAuction;
 
   const auctionHouse = getAuctionHouse(props.auction);
-  const address = props.address ? props.address.toLowerCase() : undefined;
   const encryptedBids = auction?.bids ?? [];
+
   const { refetch: refetchAuction } = useAuction(
     props.auction.id,
     props.auction.auctionType,
@@ -131,8 +170,17 @@ export function BidList(props: BidListProps) {
 
   const mappedBids =
     encryptedBids.map((bid) => {
+      //Checks if its a user bid and in local storage
+      const storedBid =
+        userBids.find(
+          (storageBid) =>
+            storageBid.bidId === bid.bidId &&
+            bid.bidder.toLowerCase() === address?.toLowerCase(),
+        ) ?? {};
+
       return {
         ...bid,
+        ...storedBid,
         auction: props.auction,
       };
     }) ?? [];
