@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card } from "@repo/ui";
+import { Badge, Button, Card, Metric } from "@repo/ui";
 import type { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
@@ -8,6 +8,7 @@ import { AuctionMetric } from "../auction-metric";
 import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
+import { BlockExplorerLink } from "components/blockexplorer-link";
 
 export function EncryptedMarginalPriceAuctionConcluded({
   auction,
@@ -28,7 +29,20 @@ export function EncryptedMarginalPriceAuctionConcluded({
     <div>
       <div className="flex justify-between">
         <div className="flex w-1/2 flex-col gap-y-4">
-          <Card title="Launch Info">
+          <Card
+            title="Launch Info"
+            headerRightElement={
+              <div className="flex gap-x-2">
+                <Metric size="s" label="Token Address">
+                  <BlockExplorerLink
+                    trim
+                    chainId={auction.chainId}
+                    address={auction.baseToken.address}
+                  />
+                </Metric>
+              </div>
+            }
+          >
             <AuctionMetrics>
               <AuctionMetric auction={auction} id="totalBids" />
               <AuctionMetric auction={auction} id="totalBidAmount" />
@@ -59,7 +73,11 @@ export function EncryptedMarginalPriceAuctionConcluded({
               }
             }}
           />
-          <Card title="Concluded">
+          <Card
+            title="Concluded"
+            className="w-[496px]"
+            headerRightElement={<Badge>Auction Closed</Badge>}
+          >
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm">
               The bids must be decrypted before the auction can be settled.
             </div>

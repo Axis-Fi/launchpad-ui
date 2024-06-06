@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card } from "@repo/ui";
+import { Button, Card, Metric } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -8,6 +8,7 @@ import { AuctionMetric } from "../auction-metric";
 import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
+import { BlockExplorerLink } from "components/blockexplorer-link";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -18,7 +19,20 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
   return (
     <div className="flex justify-between">
       <div className="flex w-[50%] flex-col justify-between gap-y-4">
-        <Card title="Launch Info">
+        <Card
+          title="Launch Info"
+          headerRightElement={
+            <div className="flex gap-x-2">
+              <Metric size="s" label="Token Address">
+                <BlockExplorerLink
+                  trim
+                  chainId={auction.chainId}
+                  address={auction.baseToken.address}
+                />
+              </Metric>
+            </div>
+          }
+        >
           <AuctionMetrics>
             <AuctionMetric auction={auction} id="totalBidAmount" />
             <AuctionMetric auction={auction} id="rate" />
