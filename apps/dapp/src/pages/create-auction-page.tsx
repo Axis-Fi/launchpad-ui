@@ -348,7 +348,7 @@ export default function CreateAuctionPage() {
         break;
       }
       case CallbacksType.MERKLE_ALLOWLIST: {
-        // TODO need to handle errors here
+        // TODO need to handle errors here? May not be necessary since we are validating the file format
         const allowlistTree =
           values.allowlist &&
           StandardMerkleTree.of(values.allowlist, ["address"]);
@@ -375,7 +375,7 @@ export default function CreateAuctionPage() {
         break;
       }
       case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST: {
-        // TODO need to handle errors here
+        // TODO need to handle errors here? May not be necessary since we are validating the file format
         const allowlistTree =
           values.allowlist &&
           StandardMerkleTree.of(values.allowlist, ["address", "uint256"]);
@@ -475,7 +475,7 @@ export default function CreateAuctionPage() {
 
   // Handle validation and parsing of the allowlist file
 
-  // TODO move this
+  // TODO move this?
   type AllowlistEntry = {
     address: `0x${string}`;
   };
@@ -485,9 +485,22 @@ export default function CreateAuctionPage() {
     allocation: string;
   };
 
+  const [fileLoadMessage, setFileLoadMessage] = React.useState<string | null>(
+    null,
+  );
+
   const parseAllowlistFile = (results: { data: AllowlistEntry[] }) => {
-    // Iterate through, validate data, and store for submission
+    // Create allowlist variable
     const allowlist: string[][] = [];
+
+    // Check that the file contains the expected columns
+    if (!results.data[0]?.address) {
+      form.setValue("allowlist", allowlist);
+      setFileLoadMessage("Error: Missing address column in file.");
+      return;
+    }
+
+    // Iterate through, validate data, and store for submission
     for (const entry of results.data) {
       // Ensure address is valid
       if (entry.address.length == 0) continue;
@@ -500,17 +513,33 @@ export default function CreateAuctionPage() {
 
     form.setValue("allowlist", allowlist);
 
-    // TODO enable setting a visual indicator of whether the file was parsed successfully
-    // message: `Parsed ${allowlist.length} addresses from file with ${results.data.length - allowlist.length} errors.`,
-
-    console.log(form.getValues("allowlist"));
+    setFileLoadMessage(
+      `Parsed ${allowlist.length} addresses from file and had ${
+        results.data.length - 1 - allowlist.length
+      } errors.`,
+    );
   };
 
   const parseAllocatedAllowlistFile = (results: {
     data: AllocatedAllowlistEntry[];
   }) => {
-    // Iterate through, validate data, and store for submission
+    // Create allowlist variable
     const allowlist: string[][] = [];
+
+    // Check that the file contains the expected columns
+    if (!results.data[0]?.address) {
+      form.setValue("allowlist", allowlist);
+      setFileLoadMessage('Error: Missing "address" column in file.');
+      return;
+    }
+
+    if (!results.data[0]?.allocation) {
+      form.setValue("allowlist", allowlist);
+      setFileLoadMessage('Error: Missing "allocation" column in file.');
+      return;
+    }
+
+    // Iterate through, validate data, and store for submission
     for (const entry of results.data) {
       // Ensure address is valid
       if (entry.address.length == 0) continue;
@@ -534,10 +563,11 @@ export default function CreateAuctionPage() {
 
     form.setValue("allowlist", allowlist);
 
-    // TODO enable setting a visual indicator of whether the file was parsed successfully
-    // message: `Parsed ${allowlist.length} addresses from file with ${results.data.length - allowlist.length} errors.`,
-
-    console.log(form.getValues("allowlist"));
+    setFileLoadMessage(
+      `Parsed ${allowlist.length} addresses from file and had ${
+        results.data.length - 1 - allowlist.length
+      } errors.`,
+    );
   };
 
   // Populate the allowlist in the form data
@@ -564,6 +594,11 @@ export default function CreateAuctionPage() {
 
     reader.readAsText(file);
   };
+
+  React.useEffect(() => {
+    // Clear the file load message if the callbacks type is changed
+    setFileLoadMessage(null);
+  }, [callbacksType]);
 
   return (
     <>
@@ -1046,7 +1081,6 @@ export default function CreateAuctionPage() {
                   />
                   {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
                     callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
-                    // TODO not a FormField, running into conflicts with the file input
                     <FormItemWrapper
                       label="Allowlist"
                       tooltip={
@@ -1058,6 +1092,7 @@ export default function CreateAuctionPage() {
                         accept=".csv"
                         onChange={handleAllowlistFileSelect}
                         className="pt-1"
+                        error={fileLoadMessage ?? ""}
                       />
                     </FormItemWrapper>
                   )}
@@ -1092,6 +1127,7 @@ export default function CreateAuctionPage() {
                         onChange={handleAllowlistFileSelect}
                         disabled={quoteToken === undefined}
                         className="pt-1"
+                        error={fileLoadMessage ?? ""}
                       />
                     </FormItemWrapper>
                   )}

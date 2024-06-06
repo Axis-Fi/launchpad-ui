@@ -32,14 +32,17 @@ export interface InputProps
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, variant, textSize, ...props }, ref) => {
+  ({ className, type, variant, textSize, error, ...props }, ref) => {
     return (
-      <input
-        type={type}
-        className={cn(inputVariants({ variant, textSize, className }))}
-        ref={ref}
-        {...props}
-      />
+      <div className="relative">
+        <input
+          type={type}
+          className={cn(inputVariants({ variant, textSize, className }))}
+          ref={ref}
+          {...props}
+        />
+        <p className="text-destructive text-xs">{error ?? ""}</p>
+      </div>
     );
   },
 );
