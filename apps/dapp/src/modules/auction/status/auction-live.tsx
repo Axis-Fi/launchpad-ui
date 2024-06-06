@@ -42,6 +42,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     mode: "onTouched",
     resolver: zodResolver(
       schema
+        .refine((data) => Number(data.quoteTokenAmount) > 0, {
+          message: "Amount must be greater than 0",
+          path: ["quoteTokenAmount"],
+        })
+        .refine((data) => isFixedPrice || Number(data.bidPrice) > 0, {
+          message: "Bid price must be greater than 0",
+          path: ["bidPrice"],
+        })
         .refine(
           (data) =>
             isFixedPrice ||
