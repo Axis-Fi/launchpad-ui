@@ -9,7 +9,9 @@ import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 
-export function AuctionConcluded({ auction }: PropsWithAuction) {
+export function EncryptedMarginalPriceAuctionConcluded({
+  auction,
+}: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const decrypt = useDecryptBids(auction as BatchAuction);
 
@@ -17,7 +19,6 @@ export function AuctionConcluded({ auction }: PropsWithAuction) {
     decrypt.decryptTx.isPending || decrypt.decryptReceipt.isLoading;
   // removed totalBids === 0 from this because an auction that has no bids must either be decrypted + settled
   // or aborted so that the seller gets a refund
-  // TODO rename this to be emp-specific
 
   const totalBidsRemaining =
     (auction.formatted?.totalBids ?? 0) -

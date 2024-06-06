@@ -11,7 +11,7 @@ import { PageHeader } from "modules/app/page-header";
 import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { ImageBanner } from "components/image-banner";
 import {
-  AuctionConcluded,
+  EncryptedMarginalPriceAuctionConcluded,
   AuctionCreated,
   AuctionDecrypted,
   AuctionLive,
@@ -31,7 +31,7 @@ const statuses: Record<
 > = {
   created: AuctionCreated,
   live: AuctionLive,
-  concluded: AuctionConcluded,
+  concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
   cancelled: () => <></>, // not displayed
