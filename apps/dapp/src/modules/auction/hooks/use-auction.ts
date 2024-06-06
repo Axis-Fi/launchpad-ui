@@ -245,6 +245,7 @@ function addEMPFields(
 
   const cleared = auctionData?.marginalPrice !== UNCLEARED_MARGINAL_PRICE;
 
+  // TODO return these as numbers and format them in the UI
   return {
     cleared,
     marginalPrice: trimCurrency(marginalPrice),

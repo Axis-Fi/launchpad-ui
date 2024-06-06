@@ -9,7 +9,7 @@ export function NotConnectedClaimCard({ auction: _auction }: PropsWithAuction) {
     <Card
       title="Claim"
       className="w-[496px]"
-      headerRightElement={<Badge>Auction concluded</Badge>}
+      headerRightElement={<Badge>Auction Closed</Badge>}
     >
       <div className="flex flex-col gap-y-4">
         <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">
