@@ -34,8 +34,10 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
           }
         >
           <AuctionMetrics>
+            <AuctionMetric auction={auction} id="totalBids" />
             <AuctionMetric auction={auction} id="totalBidAmount" />
-            <AuctionMetric auction={auction} id="rate" />
+            <AuctionMetric auction={auction} id="started" />
+            <AuctionMetric auction={auction} id="ended" />
           </AuctionMetrics>
         </Card>
 
