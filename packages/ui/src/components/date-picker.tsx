@@ -54,7 +54,7 @@ export function DatePicker({
           {date ? formatDate.fullLocal(date) : <span>{content}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="flex w-auto flex-col items-center p-0">
+      <PopoverContent className="bg-surface flex w-auto flex-col items-center p-0">
         <Calendar
           {...props}
           mode="single"
