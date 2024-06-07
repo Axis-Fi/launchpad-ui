@@ -5,7 +5,7 @@ import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
-import { shorten, trimCurrency } from "utils";
+import { shorten } from "utils";
 import { useBidAuction } from "../hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,18 +71,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           {
             message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
             path: ["bidPrice"],
-          },
-        )
-        .refine(
-          (data) =>
-            isFixedPriceBatch ||
-            Number(data.quoteTokenAmount) <=
-              Number(auction.formatted?.maxAmount),
-          {
-            message: `Max amount is ${trimCurrency(
-              auction.formatted?.maxAmount ?? 0,
-            )}`,
-            path: ["quoteTokenAmount"],
           },
         )
         .refine(
@@ -156,8 +144,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
   const amountInInvalid =
-    (isFixedPriceBatch &&
-      parsedAmountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
     parsedAmountIn > Number(formattedBalance) || // greater than balance
     parsedAmountIn === undefined ||
     parsedAmountIn === 0; // zero or empty

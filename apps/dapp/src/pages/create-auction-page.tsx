@@ -85,7 +85,6 @@ const schema = z
     minBidSize: z.array(z.number()).optional(),
     minPrice: z.string().optional(),
     price: z.string().optional(),
-    maxPayoutPercent: z.array(z.number()).optional(),
     start: z.date(),
     deadline: z.date(),
     callbacksType: z.string().optional(),
@@ -198,7 +197,6 @@ export default function CreateAuctionPage() {
   const auctionDefaultValues = {
     minFillPercent: [50],
     minBidSize: [1], // TODO allows users to specify this value in the UI
-    maxPayoutPercent: [50],
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
   };
