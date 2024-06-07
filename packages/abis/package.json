@@ -12,6 +12,6 @@
     "@wagmi/cli": "^2.1.0"
   },
   "scripts": {
-    "build": "wagmi generate"
+    "build": "wagmi generate && prettier --write src"
   }
 }
