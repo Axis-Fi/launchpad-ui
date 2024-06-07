@@ -1,19 +1,12 @@
 export type Address = `0x${string}`;
 
-export type AxisCoreContractNames =
-  | "atomicAuctionHouse"
-  | "atomicCatalogue"
-  | "batchAuctionHouse"
-  | "batchCatalogue";
+export type AxisCoreContractNames = "batchAuctionHouse" | "batchCatalogue";
 
 export type AxisModuleContractNames =
   | "encryptedMarginalPrice"
-  | "fixedPriceSale"
   | "fixedPriceBatch";
 
-export type AxisDerivativeContractNames =
-  | "atomicLinearVesting"
-  | "batchLinearVesting";
+export type AxisDerivativeContractNames = "batchLinearVesting";
 
 export type AxisContractNames =
   | AxisCoreContractNames
