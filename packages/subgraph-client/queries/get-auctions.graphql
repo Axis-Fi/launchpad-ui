@@ -1,61 +1,3 @@
-fragment AtomicCommonFields on AtomicAuctionLot {
-  id
-  chain
-  auctionHouse
-  lotId
-  createdBlockNumber
-  createdBlockTimestamp
-  createdDate
-  createdTransactionHash
-  capacityInitial
-  start
-  conclusion
-  auctionType
-  seller
-  derivativeType
-  wrapDerivative
-  callbacks
-  curator
-  curatorApproved
-  curatorFee
-  protocolFee
-  referrerFee
-  capacity
-  sold
-  purchased
-  lastUpdatedBlockNumber
-  lastUpdatedBlockTimestamp
-  lastUpdatedDate
-  lastUpdatedTransactionHash
-  linearVesting {
-    id
-    startDate
-    expiryDate
-    startTimestamp
-    expiryTimestamp
-  }
-  baseToken {
-    totalSupply
-    address
-    decimals
-    symbol
-    name
-  }
-  quoteToken {
-    address
-    decimals
-    symbol
-    name
-  }
-  #cancelled
-  created {
-    infoHash
-  }
-  curated {
-    curator
-  }
-}
-
 fragment BatchCommonFields on BatchAuctionLot {
   id
   chain
@@ -111,23 +53,6 @@ fragment BatchCommonFields on BatchAuctionLot {
   }
   curated {
     curator
-  }
-}
-
-fragment AtomicAuctionFields on AtomicAuctionLot {
-  capacityInQuote
-  purchases {
-    amount
-    buyer
-    date
-    payout
-    transactionHash
-    referrer
-  }
-  fixedPriceSale {
-    maxPayout
-    price
-    id
   }
 }
 
@@ -191,17 +116,6 @@ query getAuctionLots {
   batchAuctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
     ...BatchCommonFields
     ...BatchAuctionFields
-  }
-  atomicAuctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
-    ...AtomicCommonFields
-    ...AtomicAuctionFields
-  }
-}
-
-query getAtomicAuctionLot($id: ID!) {
-  atomicAuctionLot(id: $id) {
-    ...AtomicCommonFields
-    ...AtomicAuctionFields
   }
 }
 

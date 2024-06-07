@@ -1,7 +1,5 @@
 import {
-  GetAtomicAuctionLotQuery,
   GetBatchAuctionLotQuery,
-  useGetAtomicAuctionLotQuery,
   useGetBatchAuctionLotQuery,
 } from "@repo/subgraph-client/src/generated";
 import type { UseQueryResult } from "@tanstack/react-query";
@@ -11,14 +9,12 @@ import {
   EMPAuctionData,
   AuctionFormattedInfo,
   AuctionType,
-  FixedPriceAuctionData,
   BatchSubgraphAuction,
-  AtomicSubgraphAuction,
   FixedPriceBatchAuctionData,
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
 import { trimCurrency } from "utils";
@@ -34,13 +30,12 @@ import { isSecureAuction } from "../utils/malicious-auction-filters";
 export type AuctionResult = {
   result?: Auction;
 } & Pick<
-  ReturnType<typeof useGetAtomicAuctionLotQuery>,
+  ReturnType<typeof useGetBatchAuctionLotQuery>,
   "refetch" | "isLoading" | "isRefetching"
 >;
 
 const hookMap = {
   [AuctionType.SEALED_BID]: useGetBatchAuctionLotQuery,
-  [AuctionType.FIXED_PRICE]: useGetAtomicAuctionLotQuery,
   [AuctionType.FIXED_PRICE_BATCH]: useGetBatchAuctionLotQuery,
 };
 
@@ -61,26 +56,18 @@ export function useAuction(
     refetch,
     isLoading,
     isRefetching,
-    isSuccess,
-  }: UseQueryResult<GetAtomicAuctionLotQuery | GetBatchAuctionLotQuery> =
-    useGetAuction(
-      {
-        endpoint: deployments[chainId!].subgraphURL,
-        fetchParams,
-      },
-      { id: id! },
-      { enabled: !!chainId && !!id },
-    );
+  }: UseQueryResult<GetBatchAuctionLotQuery> = useGetAuction(
+    {
+      endpoint: deployments[chainId!].subgraphURL,
+      fetchParams,
+    },
+    { id: id! },
+    { enabled: !!chainId && !!id },
+  );
 
-  let rawAuction:
-    | GetAtomicAuctionLotQuery["atomicAuctionLot"]
-    | GetBatchAuctionLotQuery["batchAuctionLot"];
-
-  if (isSuccess && auctionType === AuctionType.FIXED_PRICE) {
-    rawAuction = (data as GetAtomicAuctionLotQuery)?.atomicAuctionLot;
-  } else {
-    rawAuction = (data as GetBatchAuctionLotQuery)?.batchAuctionLot;
-  }
+  const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (
+    data as GetBatchAuctionLotQuery
+  )?.batchAuctionLot;
 
   const enabled = !!rawAuction && !!rawAuction?.created.infoHash;
 
@@ -112,6 +99,11 @@ export function useAuction(
     };
   }
 
+  // Check that the rawAuction has a callback in the format of 0x...
+  if (!rawAuction.callbacks.match(/^0x[0-9a-fA-F]{40}$/)) {
+    throw new Error(`Invalid callback address: ${rawAuction.callbacks}`);
+  }
+
   const status = getAuctionStatus(rawAuction, auctionData);
 
   const auction = {
@@ -135,6 +127,7 @@ export function useAuction(
     auctionData,
     auctionType,
     formatted,
+    callbacks: auction.callbacks as `0x${string}`, // Has been checked above
   };
 
   return {
@@ -148,14 +141,11 @@ export function useAuction(
   };
 }
 
-/** Formats Auction information for displaying purporses */
+/** Formats Auction information for displaying purposes */
 export function formatAuction(
-  auction: AtomicSubgraphAuction | BatchSubgraphAuction,
+  auction: BatchSubgraphAuction,
   auctionType: AuctionType,
-  auctionData?:
-    | EMPAuctionData
-    | FixedPriceAuctionData
-    | FixedPriceBatchAuctionData,
+  auctionData?: EMPAuctionData | FixedPriceBatchAuctionData,
 ): AuctionFormattedInfo {
   if (!auction) throw new Error("No Auction provided to formatAuction");
 
@@ -169,17 +159,9 @@ export function formatAuction(
 
   let moduleFields;
   if (auctionType === AuctionType.SEALED_BID) {
-    moduleFields = addEMPFields(
-      auctionData as EMPAuctionData,
-      auction as BatchSubgraphAuction,
-    );
-  } else if (auctionType === AuctionType.FIXED_PRICE) {
-    moduleFields = addFPFields(
-      auctionData as FixedPriceAuctionData,
-      auction as AtomicSubgraphAuction,
-    );
+    moduleFields = addEMPFields(auctionData as EMPAuctionData, auction);
   } else if (auctionType === AuctionType.FIXED_PRICE_BATCH) {
-    moduleFields = addFPBFields(auction as BatchSubgraphAuction);
+    moduleFields = addFPBFields(auction);
   }
 
   return {
@@ -256,33 +238,6 @@ function addEMPFields(
     totalBidsDecrypted,
     totalBidsClaimed,
     uniqueBidders,
-  };
-}
-
-function addFPFields(
-  auctionData: FixedPriceAuctionData,
-  auction: AtomicSubgraphAuction,
-) {
-  if (!auctionData || !auction) return;
-
-  const price = formatUnits(
-    auctionData.price,
-    Number(auction.quoteToken.decimals),
-  );
-  const capacity = parseUnits(
-    auction.capacity,
-    Number(auction.baseToken.decimals),
-  );
-  const maxPayout = formatUnits(
-    capacity > auctionData.maxPayout ? auctionData.maxPayout : capacity,
-    Number(auction.baseToken.decimals),
-  );
-  const maxAmount = (Number(maxPayout) * Number(price)).toString(); // TODO not sure whether to do toLocaleString() or toString()
-
-  return {
-    price,
-    maxPayout,
-    maxAmount,
   };
 }
 

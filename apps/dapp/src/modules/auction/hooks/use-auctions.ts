@@ -26,11 +26,10 @@ export function useAuctions(): AuctionsResult {
   const { data, refetch, isLoading, isSuccess, isRefetching } =
     useQueryAll<GetAuctionLotsQuery>({
       document: GetAuctionLotsDocument,
-      fields: ["batchAuctionLots", "atomicAuctionLots"],
+      fields: ["batchAuctionLots"],
     });
 
-  const rawAuctions =
-    [...data.atomicAuctionLots, ...data.batchAuctionLots].flat() ?? [];
+  const rawAuctions = [...data.batchAuctionLots].flat() ?? [];
 
   // Filter out cancelled batch auctions before querying additional data
   const filteredAuctions = rawAuctions.filter(
