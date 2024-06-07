@@ -58,7 +58,10 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
         !open && props.onBlur?.();
       }}
       triggerElement={
-        <Button variant="input" className="flex w-full justify-start">
+        <Button
+          variant="input"
+          className="bg-surface-secondary flex w-full justify-start"
+        >
           {triggerContent}
         </Button>
       }

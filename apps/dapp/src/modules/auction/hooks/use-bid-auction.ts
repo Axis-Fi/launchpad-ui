@@ -1,15 +1,7 @@
 import React from "react";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
-import {
-  Address,
-  encodeAbiParameters,
-  fromHex,
-  isAddress,
-  parseAbiParameters,
-  parseUnits,
-  toHex,
-} from "viem";
+import { Address, fromHex, toHex } from "viem";
 import {
   useAccount,
   useBalance,
@@ -72,45 +64,6 @@ export function useBidAuction(
     bidTx.writeContractAsync({ abi, address, functionName, args });
   };
 
-  const handlePurchase = async () => {
-    if (!bidderAddress || !isAddress(bidderAddress)) {
-      throw new Error("Not connected");
-    }
-    const minAmountOut = parseUnits(
-      amountOut.toString(),
-      Number(auction.baseToken.decimals),
-    );
-
-    const auctionData = encodeAbiParameters(
-      parseAbiParameters("uint96 minAmountOut"),
-      [minAmountOut],
-    );
-
-    bidTx.writeContract({
-      abi: auctionHouse.abi,
-      address: auctionHouse.address,
-      functionName: "purchase",
-      args: [
-        {
-          lotId: BigInt(lotId),
-          referrer,
-          recipient: bidderAddress,
-          amount: parseUnits(
-            amountIn.toString(),
-            Number(auction.quoteToken.decimals),
-          ),
-          minAmountOut: parseUnits(
-            amountOut.toString(),
-            Number(auction.baseToken.decimals),
-          ),
-          permit2Data: toHex(""), // TODO support permit2
-          auctionData,
-        },
-        toHex(""), // No callback parameters being passed. TODO update when callback support is added.
-      ],
-    });
-  };
-
   // We need to know user's balance and allowance
   const balance = useBalance({
     address: bidderAddress,
@@ -163,11 +116,7 @@ export function useBidAuction(
   const error = [bidReceipt, bidTx, bidConfig].find((m) => m.isError)?.error;
 
   return {
-    handleBid:
-      auction.auctionType === AuctionType.SEALED_BID ||
-      auction.auctionType === AuctionType.FIXED_PRICE_BATCH
-        ? handleBid
-        : handlePurchase,
+    handleBid,
     approveCapacity,
     balance,
     isSufficientAllowance,

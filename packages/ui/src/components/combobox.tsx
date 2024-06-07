@@ -40,7 +40,7 @@ export function ComboBox({
       <Button
         asChild={props.triggerElement}
         id={props.id}
-        variant="outline"
+        variant="secondary"
         role="combobox"
         aria-expanded={open}
         className="text-muted-foreground justify-between"
@@ -60,7 +60,7 @@ export function ComboBox({
       <PopoverTrigger asChild={!props.triggerElement}>
         {triggerElement}
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="bg-surface w-[200px] p-0">
         <Command
           filter={(value, search) => {
             const current = options.find((o) => o.value === value);

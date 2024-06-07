@@ -9,14 +9,10 @@ describe("getContractAddresses()", () => {
 
     expect(addresses).toMatchInlineSnapshot(`
       {
-        "atomicAuctionHouse": "0xAA000000721026c5B83e3b3d969DC5A7Dac20B7F",
-        "atomicCatalogue": "0xEa25Ea0EC643826Ac99077c84934FEee3B735332",
-        "atomicLinearVesting": "0xfF0FE629C1a515437A9c939509769A7b6842778f",
         "batchAuctionHouse": "0xBA00000073E5050EE216afbcE08ca4666DB37232",
         "batchCatalogue": "0x963385faC528159E0771091e656De5666e8A0776",
         "batchLinearVesting": "0x58F17242Ab609c7561fe72Dc89b6A56999e227Cd",
         "encryptedMarginalPrice": "0x8dA4D2f56d6f353E36220f567221aD4e1E84cB04",
-        "fixedPriceSale": "0x296Dc8a6d40D819bFE7E4da7133961C8B007FC42",
       }
     `);
   });

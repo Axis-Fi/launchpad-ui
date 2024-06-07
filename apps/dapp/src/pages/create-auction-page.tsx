@@ -170,8 +170,7 @@ const schema = z
   .refine(
     (data) =>
       // Only required for FPB and FPA
-      data.auctionType === AuctionType.FIXED_PRICE_BATCH ||
-      data.auctionType === AuctionType.FIXED_PRICE
+      data.auctionType === AuctionType.FIXED_PRICE_BATCH
         ? !!data.price && isFinite(Number(data.price))
         : true,
     {
@@ -890,56 +889,6 @@ export default function CreateAuctionPage() {
                     /> */}
                   </>
                 )}
-                {auctionType === AuctionType.FIXED_PRICE && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="price"
-                      render={({ field }) => (
-                        <FormItemWrapper
-                          label="Price"
-                          tooltip="The amount of quote tokens per payout token"
-                        >
-                          <Input placeholder="1" type="number" {...field} />
-                        </FormItemWrapper>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="maxPayoutPercent"
-                      render={({ field }) => (
-                        <FormItemWrapper
-                          label="Max Payout Percentage"
-                          className="mt-4"
-                          tooltip="The maximum percentage of the auction capacity that can be purchased per transaction"
-                        >
-                          <>
-                            <Input
-                              disabled
-                              className="disabled:opacity-100"
-                              value={`${
-                                field.value ??
-                                auctionDefaultValues.maxPayoutPercent
-                              }%`}
-                            />
-                            <Slider
-                              {...field}
-                              className="cursor-pointer pt-2"
-                              max={100}
-                              defaultValue={
-                                auctionDefaultValues.maxPayoutPercent
-                              }
-                              value={field.value}
-                              onValueChange={(v) => {
-                                field.onChange(v);
-                              }}
-                            />
-                          </>
-                        </FormItemWrapper>
-                      )}
-                    />
-                  </>
-                )}
                 {auctionType === AuctionType.FIXED_PRICE_BATCH && (
                   <>
                     <FormField
@@ -1332,12 +1281,13 @@ export default function CreateAuctionPage() {
 
 function getCreatedAuctionId(
   value: UseWaitForTransactionReceiptReturnType["data"],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   auctionType: AuctionType,
 ) {
   //TODO: find a better way to handle this
   //on EMP auctioniD is on log index 1 pos 1
   //on FPS on log 1 pos 1
-  const logIndex = auctionType === AuctionType.FIXED_PRICE ? 0 : 1;
+  const logIndex = 1;
   const lotIdHex = value?.logs[logIndex].topics[1];
   if (!lotIdHex) return null;
   return fromHex(lotIdHex, "number");

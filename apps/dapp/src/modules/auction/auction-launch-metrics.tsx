@@ -12,7 +12,6 @@ export function AuctionLaunchMetrics(
   const progress = calculateAuctionProgress(auction);
   const showProgress = auction.status === "live";
   const isSealedBid = auction.auctionType === AuctionType.SEALED_BID;
-  const isFixedPrice = auction.auctionType === AuctionType.FIXED_PRICE;
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const hasCurator = !!auction.curator && auction.curatorApproved;
@@ -44,9 +43,7 @@ export function AuctionLaunchMetrics(
 
       <AuctionMetricsContainer auction={auction}>
         <AuctionMetric id="targetRaise" />
-        {!isFixedPrice && <AuctionMetric id="minRaise" />}
         {isSealedBid && <AuctionMetric id="minPrice" />}
-        {isFixedPrice && <AuctionMetric id="price" />}
         {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
         <AuctionMetric id="capacity" />
         <AuctionMetric id="saleType" />

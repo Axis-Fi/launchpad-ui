@@ -57,7 +57,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
               {tokens.map((t, i) => (
                 <Button
                   key={i}
-                  variant="outline"
+                  variant="secondary"
                   size="lg"
                   className="block w-full rounded-none border-x border-b-0 border-t px-2 first:rounded-t-sm last:rounded-b-sm last:border-b"
                   onClick={() => {

@@ -3,7 +3,6 @@ import {
   AuctionDerivatives,
   AuctionType,
   CallbacksType,
-  type AtomicAuction,
   type Auction,
   type BatchAuction,
   type PropsWithAuction,
@@ -14,11 +13,6 @@ import { shorten, formatPercentage } from "utils/number";
 import { getCallbacksType } from "./utils/get-callbacks-type";
 
 const getPrice = (auction: Auction): number | undefined => {
-  // Fixed Price Sale
-  if (auction.auctionType === AuctionType.FIXED_PRICE) {
-    return Number((auction as AtomicAuction).fixedPriceSale?.price);
-  }
-
   // Fixed Price Batch
   if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
     return Number((auction as BatchAuction).fixedPrice?.price);
@@ -66,8 +60,7 @@ const handlers = {
       const minFilled = getMinFilled(auction);
       if (!minFilled) return undefined;
 
-      const fill = Math.round((minFilled * 100) / +auction.capacity);
-      return `${fill}%`;
+      return `${trimCurrency(minFilled)} ${auction.baseToken.symbol}`;
     },
   },
   protocolFee: {

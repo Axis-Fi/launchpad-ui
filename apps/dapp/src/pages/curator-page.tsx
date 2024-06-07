@@ -38,8 +38,8 @@ export function CuratorPage() {
         >
           <div className="flex">
             <CuratorFeeManager
-              modules={[AuctionType.FIXED_PRICE]}
-              auctionType={AuctionType.FIXED_PRICE}
+              modules={[AuctionType.FIXED_PRICE_BATCH]}
+              auctionType={AuctionType.FIXED_PRICE_BATCH}
             />
             <CuratorFeeManager
               modules={[AuctionType.SEALED_BID]}

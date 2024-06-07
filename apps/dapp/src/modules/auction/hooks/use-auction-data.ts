@@ -3,7 +3,6 @@ import {
   AuctionType,
   type AxisModuleContractNames,
   type EMPAuctionData,
-  type FixedPriceAuctionData,
   type FixedPriceBatchAuctionData,
 } from "@repo/types";
 import { parseUnits } from "viem";
@@ -47,7 +46,6 @@ export function useAuctionData({
 
 const handlers = {
   [AuctionType.SEALED_BID]: mapEMPAuctionData,
-  [AuctionType.FIXED_PRICE]: mapFixedPriceData,
   [AuctionType.FIXED_PRICE_BATCH]: mapFixedPriceBatchData,
 };
 
@@ -82,15 +80,6 @@ function mapEMPAuctionData(
     publicKey: data[8],
     privateKey: data[9],
     bidIds: data[10],
-  };
-}
-
-function mapFixedPriceData(
-  data: readonly [bigint, bigint],
-): FixedPriceAuctionData | undefined {
-  return {
-    price: data[0],
-    maxPayout: data[1],
   };
 }
 

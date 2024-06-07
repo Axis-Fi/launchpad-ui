@@ -1,8 +1,5 @@
 import { AuctionType } from "./auction-modules";
-import {
-  AtomicSubgraphAuction,
-  BatchSubgraphAuction,
-} from "./subgraph-queries";
+import { BatchSubgraphAuction } from "./subgraph-queries";
 import type { Token } from "./token";
 
 export type BaseAuction = {
@@ -12,10 +9,7 @@ export type BaseAuction = {
   callbacks: `0x${string}`;
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
-  auctionData?:
-    | EMPAuctionData
-    | FixedPriceAuctionData
-    | FixedPriceBatchAuctionData;
+  auctionData?: EMPAuctionData | FixedPriceBatchAuctionData;
   auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
   /** Whether the auction passes the malicious auction verification */
@@ -23,10 +17,7 @@ export type BaseAuction = {
   //linearVesting?: LinearVestingData;
 };
 
-export type Auction = AtomicAuction | BatchAuction;
-
-export type AtomicAuction = BaseAuction &
-  Omit<AtomicSubgraphAuction, "baseToken" | "quoteToken">;
+export type Auction = BatchAuction;
 
 export type BatchAuction = BaseAuction &
   Omit<BatchSubgraphAuction, "baseToken" | "quoteToken">;
@@ -73,11 +64,6 @@ export type EMPAuctionData = {
   bidIds: bigint[];
 };
 
-export type FixedPriceAuctionData = {
-  price: bigint;
-  maxPayout: bigint;
-};
-
 export type FixedPriceBatchAuctionData = {
   price: bigint;
   status: number;
@@ -87,10 +73,7 @@ export type FixedPriceBatchAuctionData = {
   minFilled: bigint;
 };
 
-export type AuctionData =
-  | EMPAuctionData
-  | FixedPriceAuctionData
-  | FixedPriceBatchAuctionData;
+export type AuctionData = EMPAuctionData | FixedPriceBatchAuctionData;
 
 export type AuctionFormattedInfo = {
   startDate: Date;

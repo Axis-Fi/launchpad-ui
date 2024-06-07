@@ -47,7 +47,7 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
 
         <div>
           {isOngoing && (
-            <Badge size="lg">
+            <Badge size="xl">
               <div className="text-center">
                 <p className="uppercase">Remaining</p>
                 <p className="text-2xl">{countdown}</p>

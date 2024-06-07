@@ -5526,59 +5526,6 @@ export enum _SubgraphErrorPolicy_ {
   Deny = "deny",
 }
 
-export type AtomicCommonFieldsFragment = {
-  id: string;
-  chain: string;
-  auctionHouse: string;
-  lotId: string;
-  createdBlockNumber: string;
-  createdBlockTimestamp: string;
-  createdDate: string;
-  createdTransactionHash: string;
-  capacityInitial: string;
-  start: string;
-  conclusion: string;
-  auctionType: string;
-  seller: string;
-  derivativeType?: string | null;
-  wrapDerivative: boolean;
-  callbacks: string;
-  curator?: string | null;
-  curatorApproved: boolean;
-  curatorFee: string;
-  protocolFee: string;
-  referrerFee: string;
-  capacity: string;
-  sold: string;
-  purchased: string;
-  lastUpdatedBlockNumber: string;
-  lastUpdatedBlockTimestamp: string;
-  lastUpdatedDate: string;
-  lastUpdatedTransactionHash: string;
-  linearVesting?: {
-    id: string;
-    startDate: string;
-    expiryDate: string;
-    startTimestamp: string;
-    expiryTimestamp: string;
-  } | null;
-  baseToken: {
-    totalSupply: string;
-    address: string;
-    decimals: string;
-    symbol: string;
-    name: string;
-  };
-  quoteToken: {
-    address: string;
-    decimals: string;
-    symbol: string;
-    name: string;
-  };
-  created: { infoHash: string };
-  curated?: { curator: string } | null;
-};
-
 export type BatchCommonFieldsFragment = {
   id: string;
   chain: string;
@@ -5630,19 +5577,6 @@ export type BatchCommonFieldsFragment = {
   };
   created: { infoHash: string };
   curated?: { curator: string } | null;
-};
-
-export type AtomicAuctionFieldsFragment = {
-  capacityInQuote: boolean;
-  purchases: Array<{
-    amount: string;
-    buyer: string;
-    date: string;
-    payout: string;
-    transactionHash: string;
-    referrer: string;
-  }>;
-  fixedPriceSale?: { maxPayout: string; price: string; id: string } | null;
 };
 
 export type BatchAuctionFieldsFragment = {
@@ -5789,137 +5723,6 @@ export type GetAuctionLotsQuery = {
     } | null;
     settled?: { id: string } | null;
   }>;
-  atomicAuctionLots: Array<{
-    id: string;
-    chain: string;
-    auctionHouse: string;
-    lotId: string;
-    createdBlockNumber: string;
-    createdBlockTimestamp: string;
-    createdDate: string;
-    createdTransactionHash: string;
-    capacityInitial: string;
-    start: string;
-    conclusion: string;
-    auctionType: string;
-    seller: string;
-    derivativeType?: string | null;
-    wrapDerivative: boolean;
-    callbacks: string;
-    curator?: string | null;
-    curatorApproved: boolean;
-    curatorFee: string;
-    protocolFee: string;
-    referrerFee: string;
-    capacity: string;
-    sold: string;
-    purchased: string;
-    lastUpdatedBlockNumber: string;
-    lastUpdatedBlockTimestamp: string;
-    lastUpdatedDate: string;
-    lastUpdatedTransactionHash: string;
-    capacityInQuote: boolean;
-    linearVesting?: {
-      id: string;
-      startDate: string;
-      expiryDate: string;
-      startTimestamp: string;
-      expiryTimestamp: string;
-    } | null;
-    baseToken: {
-      totalSupply: string;
-      address: string;
-      decimals: string;
-      symbol: string;
-      name: string;
-    };
-    quoteToken: {
-      address: string;
-      decimals: string;
-      symbol: string;
-      name: string;
-    };
-    created: { infoHash: string };
-    curated?: { curator: string } | null;
-    purchases: Array<{
-      amount: string;
-      buyer: string;
-      date: string;
-      payout: string;
-      transactionHash: string;
-      referrer: string;
-    }>;
-    fixedPriceSale?: { maxPayout: string; price: string; id: string } | null;
-  }>;
-};
-
-export type GetAtomicAuctionLotQueryVariables = Exact<{
-  id: Scalars["ID"]["input"];
-}>;
-
-export type GetAtomicAuctionLotQuery = {
-  atomicAuctionLot?: {
-    id: string;
-    chain: string;
-    auctionHouse: string;
-    lotId: string;
-    createdBlockNumber: string;
-    createdBlockTimestamp: string;
-    createdDate: string;
-    createdTransactionHash: string;
-    capacityInitial: string;
-    start: string;
-    conclusion: string;
-    auctionType: string;
-    seller: string;
-    derivativeType?: string | null;
-    wrapDerivative: boolean;
-    callbacks: string;
-    curator?: string | null;
-    curatorApproved: boolean;
-    curatorFee: string;
-    protocolFee: string;
-    referrerFee: string;
-    capacity: string;
-    sold: string;
-    purchased: string;
-    lastUpdatedBlockNumber: string;
-    lastUpdatedBlockTimestamp: string;
-    lastUpdatedDate: string;
-    lastUpdatedTransactionHash: string;
-    capacityInQuote: boolean;
-    linearVesting?: {
-      id: string;
-      startDate: string;
-      expiryDate: string;
-      startTimestamp: string;
-      expiryTimestamp: string;
-    } | null;
-    baseToken: {
-      totalSupply: string;
-      address: string;
-      decimals: string;
-      symbol: string;
-      name: string;
-    };
-    quoteToken: {
-      address: string;
-      decimals: string;
-      symbol: string;
-      name: string;
-    };
-    created: { infoHash: string };
-    curated?: { curator: string } | null;
-    purchases: Array<{
-      amount: string;
-      buyer: string;
-      date: string;
-      payout: string;
-      transactionHash: string;
-      referrer: string;
-    }>;
-    fixedPriceSale?: { maxPayout: string; price: string; id: string } | null;
-  } | null;
 };
 
 export type GetBatchAuctionLotQueryVariables = Exact<{
@@ -6034,64 +5837,6 @@ export type GetInstalledModulesQuery = {
   }>;
 };
 
-export const AtomicCommonFieldsFragmentDoc = `
-    fragment AtomicCommonFields on AtomicAuctionLot {
-  id
-  chain
-  auctionHouse
-  lotId
-  createdBlockNumber
-  createdBlockTimestamp
-  createdDate
-  createdTransactionHash
-  capacityInitial
-  start
-  conclusion
-  auctionType
-  seller
-  derivativeType
-  wrapDerivative
-  callbacks
-  curator
-  curatorApproved
-  curatorFee
-  protocolFee
-  referrerFee
-  capacity
-  sold
-  purchased
-  lastUpdatedBlockNumber
-  lastUpdatedBlockTimestamp
-  lastUpdatedDate
-  lastUpdatedTransactionHash
-  linearVesting {
-    id
-    startDate
-    expiryDate
-    startTimestamp
-    expiryTimestamp
-  }
-  baseToken {
-    totalSupply
-    address
-    decimals
-    symbol
-    name
-  }
-  quoteToken {
-    address
-    decimals
-    symbol
-    name
-  }
-  created {
-    infoHash
-  }
-  curated {
-    curator
-  }
-}
-    `;
 export const BatchCommonFieldsFragmentDoc = `
     fragment BatchCommonFields on BatchAuctionLot {
   id
@@ -6147,24 +5892,6 @@ export const BatchCommonFieldsFragmentDoc = `
   }
   curated {
     curator
-  }
-}
-    `;
-export const AtomicAuctionFieldsFragmentDoc = `
-    fragment AtomicAuctionFields on AtomicAuctionLot {
-  capacityInQuote
-  purchases {
-    amount
-    buyer
-    date
-    payout
-    transactionHash
-    referrer
-  }
-  fixedPriceSale {
-    maxPayout
-    price
-    id
   }
 }
     `;
@@ -6231,15 +5958,9 @@ export const GetAuctionLotsDocument = `
     ...BatchCommonFields
     ...BatchAuctionFields
   }
-  atomicAuctionLots(orderBy: createdBlockNumber, orderDirection: asc) {
-    ...AtomicCommonFields
-    ...AtomicAuctionFields
-  }
 }
     ${BatchCommonFieldsFragmentDoc}
-${BatchAuctionFieldsFragmentDoc}
-${AtomicCommonFieldsFragmentDoc}
-${AtomicAuctionFieldsFragmentDoc}`;
+${BatchAuctionFieldsFragmentDoc}`;
 
 export const useGetAuctionLotsQuery = <
   TData = GetAuctionLotsQuery,
@@ -6263,48 +5984,6 @@ export const useGetAuctionLotsQuery = <
       dataSource.endpoint,
       dataSource.fetchParams || {},
       GetAuctionLotsDocument,
-      variables,
-    ),
-    ...options,
-  });
-};
-
-export const GetAtomicAuctionLotDocument = `
-    query getAtomicAuctionLot($id: ID!) {
-  atomicAuctionLot(id: $id) {
-    ...AtomicCommonFields
-    ...AtomicAuctionFields
-  }
-}
-    ${AtomicCommonFieldsFragmentDoc}
-${AtomicAuctionFieldsFragmentDoc}`;
-
-export const useGetAtomicAuctionLotQuery = <
-  TData = GetAtomicAuctionLotQuery,
-  TError = unknown,
->(
-  dataSource: { endpoint: string; fetchParams?: RequestInit },
-  variables: GetAtomicAuctionLotQueryVariables,
-  options?: Omit<
-    UseQueryOptions<GetAtomicAuctionLotQuery, TError, TData>,
-    "queryKey"
-  > & {
-    queryKey?: UseQueryOptions<
-      GetAtomicAuctionLotQuery,
-      TError,
-      TData
-    >["queryKey"];
-  },
-) => {
-  return useQuery<GetAtomicAuctionLotQuery, TError, TData>({
-    queryKey: ["getAtomicAuctionLot", variables],
-    queryFn: fetcher<
-      GetAtomicAuctionLotQuery,
-      GetAtomicAuctionLotQueryVariables
-    >(
-      dataSource.endpoint,
-      dataSource.fetchParams || {},
-      GetAtomicAuctionLotDocument,
       variables,
     ),
     ...options,

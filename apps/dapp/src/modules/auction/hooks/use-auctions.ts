@@ -2,7 +2,7 @@ import {
   GetAuctionLotsDocument,
   GetAuctionLotsQuery,
 } from "@repo/subgraph-client/src/generated";
-import { Auction } from "@repo/types";
+import { Address, Auction } from "@repo/types";
 import { getAuctionStatus } from "../utils/get-auction-status";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
@@ -22,15 +22,24 @@ export type AuctionsResult = {
   "refetch" | "isSuccess" | "isLoading" | "isRefetching"
 >;
 
+/** Patched auction lots query that treats callbacks as Address
+ *  simpler than casting it further down the line */
+type GetAuctionLots = {
+  batchAuctionLots: Array<
+    GetAuctionLotsQuery["batchAuctionLots"][0] & {
+      callbacks: Address;
+    }
+  >;
+};
+
 export function useAuctions(): AuctionsResult {
   const { data, refetch, isLoading, isSuccess, isRefetching } =
-    useQueryAll<GetAuctionLotsQuery>({
+    useQueryAll<GetAuctionLots>({
       document: GetAuctionLotsDocument,
-      fields: ["batchAuctionLots", "atomicAuctionLots"],
+      fields: ["batchAuctionLots"],
     });
 
-  const rawAuctions =
-    [...data.atomicAuctionLots, ...data.batchAuctionLots].flat() ?? [];
+  const rawAuctions = [...data.batchAuctionLots].flat() ?? [];
 
   // Filter out cancelled batch auctions before querying additional data
   const filteredAuctions = rawAuctions.filter(

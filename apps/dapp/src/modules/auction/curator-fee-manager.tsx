@@ -22,7 +22,6 @@ export function CuratorFeeManager({
   const connectedChainId = useChainId();
   const chainId = props.chainId ?? connectedChainId;
   const ah = getAuctionHouse({ chainId, auctionType });
-  const isAtomicAH = auctionType === AuctionType.FIXED_PRICE;
   const modules = props.modules.map((m) => auctionMetadata[m].label);
 
   const chain = activeChains.find((c) => c.id === chainId);
@@ -39,15 +38,13 @@ export function CuratorFeeManager({
     <div className="gap-x-8">
       <div className="flex items-end justify-start">
         <Tooltip
-          content={`Your current fee for the ${
-            isAtomicAH ? "Atomic" : "Batch"
-          } Auction House on ${chain?.name}. It includes the following auction modules:\n${modules.join(
+          content={`Your current fee for the Batch Auction House on ${chain?.name}. It includes the following auction modules:\n${modules.join(
             " ,",
           )}`}
         >
           <InfoLabel
             editable
-            label={isAtomicAH ? "Atomic Auctions" : "Batch Auctions"}
+            label={"Batch Auctions"}
             value={fee || curatorFees.fee + "%"}
             inputClassName="w-24 min-w-0 pl-0"
             onChange={(e) => {

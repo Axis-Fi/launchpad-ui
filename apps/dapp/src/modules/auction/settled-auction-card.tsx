@@ -62,7 +62,7 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
             amount={clearingPrice}
             token={batchAuction.quoteToken}
             timestamp={auctionEndTimestamp}
-            size="xl"
+            size="l"
             className="min-w-[292px]"
           />
           <ToggledAmount
