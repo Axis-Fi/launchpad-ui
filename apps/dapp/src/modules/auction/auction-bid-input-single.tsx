@@ -81,7 +81,8 @@ export function AuctionBidInputSingle({
                   onChange={(e) => {
                     field.onChange(e);
 
-                    const rawAmountIn = e.target.value as string;
+                    const rawAmountIn = (e.target as HTMLInputElement)
+                      .value as string;
                     setQuoteTokenAmountDecimal(Number(rawAmountIn));
 
                     // Update amount out value, if applicable
