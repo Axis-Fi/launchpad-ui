@@ -1,4 +1,5 @@
 import {
+  Text,
   Button,
   DatePicker,
   DialogContent,
@@ -64,6 +65,7 @@ import { getAuctionHouse, getCallbacks } from "utils/contracts";
 import { Chain } from "@rainbow-me/rainbowkit";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
+import { PageContainer } from "modules/app/page-container";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -601,12 +603,12 @@ export default function CreateAuctionPage() {
   }, [callbacksType]);
 
   return (
-    <>
-      <PageHeader className="items-center justify-start pb-10">
+    <PageContainer>
+      <PageHeader className="items-center justify-start">
         <h1 className="text-5xl">Create Your Auction</h1>
       </PageHeader>
       <Form {...form}>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={(e) => e.preventDefault()} className="pb-16">
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
               {/* <div> */}
@@ -623,7 +625,9 @@ export default function CreateAuctionPage() {
               {/* </div> */}
 
               <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
-                <h3 className="form-div">1 Your Project</h3>
+                <Text size="3xl" className="form-div">
+                  1 - Your Project
+                </Text>
 
                 <FormField
                   control={form.control}
@@ -725,7 +729,9 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div ">2 Tokens</h3>
+                <Text size="3xl" className="form-div">
+                  2 - Tokens
+                </Text>
 
                 <FormField
                   name="payoutToken"
@@ -765,7 +771,10 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div">3 Style</h3>
+                <Text size="3xl" className="form-div">
+                  3 - Style
+                </Text>
+
                 <FormField
                   control={form.control}
                   name="auctionType"
@@ -804,7 +813,9 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div">4 Auction Guard Rails</h3>
+                <Text size="3xl" className="form-div">
+                  4 - Auction Guard Rails
+                </Text>
 
                 {auctionType === AuctionType.SEALED_BID && (
                   <>
@@ -825,14 +836,13 @@ export default function CreateAuctionPage() {
                       name="minFillPercent"
                       render={({ field }) => (
                         <FormItemWrapper
-                          className="mt-4"
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
-                          <>
+                          <div className="flex items-center">
                             <Input
                               disabled
-                              className="disabled:opacity-100"
+                              className="w-14 disabled:opacity-100"
                               value={`${
                                 field.value?.[0] ??
                                 auctionDefaultValues.minFillPercent
@@ -840,7 +850,7 @@ export default function CreateAuctionPage() {
                             />
                             <Slider
                               {...field}
-                              className="cursor-pointer pt-2"
+                              className="cursor-pointer"
                               min={1}
                               max={100}
                               defaultValue={auctionDefaultValues.minFillPercent}
@@ -849,7 +859,7 @@ export default function CreateAuctionPage() {
                                 field.onChange(v);
                               }}
                             />
-                          </>
+                          </div>
                         </FormItemWrapper>
                       )}
                     />
@@ -912,10 +922,10 @@ export default function CreateAuctionPage() {
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
-                          <>
+                          <div className="flex items-center">
                             <Input
                               disabled
-                              className="disabled:opacity-100"
+                              className="w-16 disabled:opacity-100"
                               value={`${
                                 field.value?.[0] ??
                                 auctionDefaultValues.minFillPercent
@@ -932,14 +942,16 @@ export default function CreateAuctionPage() {
                                 field.onChange(v);
                               }}
                             />
-                          </>
+                          </div>
                         </FormItemWrapper>
                       )}
                     />
                   </>
                 )}
 
-                <h3 className="form-div">5 Schedule</h3>
+                <Text size="3xl" className="form-div">
+                  5 - Schedule
+                </Text>
 
                 <FormField
                   control={form.control}
@@ -984,7 +996,9 @@ export default function CreateAuctionPage() {
                 />
               </div>
               <div>
-                <h3 className="form-div">6 Advanced Settings</h3>
+                <Text size="3xl" className="form-div">
+                  6 - Advanced Settings
+                </Text>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
                     control={form.control}
@@ -1275,7 +1289,7 @@ export default function CreateAuctionPage() {
           <DevTool control={form.control} />
         </form>
       </Form>
-    </>
+    </PageContainer>
   );
 }
 

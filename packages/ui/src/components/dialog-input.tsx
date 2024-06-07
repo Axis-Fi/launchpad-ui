@@ -60,7 +60,7 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
       triggerElement={
         <Button
           variant="input"
-          className="bg-surface-secondary flex w-full justify-start"
+          className="bg-surface-secondary flex w-full justify-start text-sm normal-case"
         >
           {triggerContent}
         </Button>
