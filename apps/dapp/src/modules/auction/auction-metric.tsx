@@ -60,8 +60,7 @@ const handlers = {
       const minFilled = getMinFilled(auction);
       if (!minFilled) return undefined;
 
-      const fill = Math.round((minFilled * 100) / +auction.capacity);
-      return `${fill}%`;
+      return `${trimCurrency(minFilled)} ${auction.baseToken.symbol}`;
     },
   },
   protocolFee: {
