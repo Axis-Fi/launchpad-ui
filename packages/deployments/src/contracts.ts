@@ -6,7 +6,12 @@ const addressesPerChain: Record<
   number,
   AxisContractAddresses & AxisCallbackAddresses
 > = allDeployments.flat().reduce((acc, deployment) => {
-  return { ...acc, [deployment.chain.id]: deployment.addresses };
+  console.log(deployment.callbacks);
+
+  return {
+    ...acc,
+    [deployment.chain.id]: { ...deployment.addresses, ...deployment.callbacks },
+  };
 }, {});
 
 export const axisContracts = {

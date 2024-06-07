@@ -27,6 +27,7 @@ export function useBidAuction(
   auctionType: AuctionType,
   amountIn: number,
   amountOut: number,
+  callbackData: `0x${string}`,
 ) {
   const { result: auction, ...auctionQuery } = useAuction(id, auctionType);
   const storeBidLocally = useStoreBid();
@@ -46,16 +47,19 @@ export function useBidAuction(
       throw new Error("Wallet not connected. Please connect your wallet.");
     }
 
-    return sdk.bid({
-      lotId: Number(lotId),
-      amountIn: Number(amountIn),
-      amountOut: Number(amountOut),
-      chainId: auction.chainId,
-      auctionType: auctionType,
-      referrerAddress: referrer,
-      bidderAddress: bidderAddress,
-      signedPermit2Approval: toHex(""), // TODO implement permit2
-    });
+    return sdk.bid(
+      {
+        lotId: Number(lotId),
+        amountIn: Number(amountIn),
+        amountOut: Number(amountOut),
+        chainId: auction.chainId,
+        auctionType: auctionType,
+        referrerAddress: referrer,
+        bidderAddress: bidderAddress,
+        signedPermit2Approval: toHex(""), // TODO implement permit2
+      },
+      callbackData,
+    );
   });
 
   // Main action, calls SDK which encrypts the bid and returns contract configuration data

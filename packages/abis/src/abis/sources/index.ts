@@ -7,6 +7,10 @@ import fixedPriceSale from "./FixedPriceSale.json";
 import fixedPriceBatch from "./FixedPriceBatch.json";
 import linearVesting from "./LinearVesting.json";
 import testnetERC20 from "./TestnetERC20.json";
+import merkleAllowlist from "./MerkleAllowlist.json";
+import cappedMerkleAllowlist from "./CappedMerkleAllowlist.json";
+import tokenAllowlist from "./TokenAllowlist.json";
+import allocatedMerkleAllowlist from "./AllocatedMerkleAllowlist.json";
 
 //Fetch errors from modules to include in the AuctionHouse ABI
 const errors = [
@@ -36,4 +40,8 @@ export default {
   fixedPriceSale,
   fixedPriceBatch,
   linearVesting,
+  merkleAllowlist,
+  cappedMerkleAllowlist,
+  tokenAllowlist,
+  allocatedMerkleAllowlist,
 } as const;

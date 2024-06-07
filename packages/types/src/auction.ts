@@ -9,6 +9,7 @@ export type BaseAuction = {
   chainId: number;
   baseToken: Token;
   quoteToken: Token;
+  callbacks: `0x${string}`;
   status: AuctionStatus;
   auctionInfo?: AuctionInfo;
   auctionData?:
@@ -46,6 +47,7 @@ export type AuctionInfo = {
   name?: string;
   description?: string;
   shortDescription?: string;
+  allowlist?: string[][];
   links?: {
     projectLogo?: string;
     website?: string;

@@ -33,16 +33,19 @@ import {
 } from "wagmi";
 import {
   Address,
+  encodeAbiParameters,
+  formatUnits,
   fromHex,
   getAddress,
   isHex,
+  parseAbiParameters,
   parseUnits,
   toHex,
   zeroAddress,
 } from "viem";
 import { getDuration, getTimestamp, formatDate, dateMath } from "src/utils";
 
-import { AuctionInfo, AuctionType } from "@repo/types";
+import { AuctionInfo, AuctionType, CallbacksType } from "@repo/types";
 
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
@@ -57,8 +60,10 @@ import { RequiresChain } from "components/requires-chain";
 import { PageHeader } from "modules/app/page-header";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
-import { getAuctionHouse } from "utils/contracts";
+import { getAuctionHouse, getCallbacks } from "utils/contracts";
 import { Chain } from "@rainbow-me/rainbowkit";
+import Papa from "papaparse";
+import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -83,15 +88,19 @@ const schema = z
     maxPayoutPercent: z.array(z.number()).optional(),
     start: z.date(),
     deadline: z.date(),
-    hooks: z
+    callbacksType: z.string().optional(),
+    callbacks: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
-    allowlist: z
+    allowlist: z.array(z.array(z.string())).optional(),
+    cappedAllowlistLimit: z.string().optional(),
+    allowlistToken: tokenSchema.optional(),
+    allowlistTokenThreshold: z.string().optional(),
+    customCallbackData: z
       .string()
-      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .regex(/^(0x)?[0-9a-fA-F]$/)
       .optional(),
-    allowlistParams: z.string().optional(),
     isVested: z.boolean().optional(),
     curator: z
       .string()
@@ -208,17 +217,21 @@ export default function CreateAuctionPage() {
   const [
     isVested,
     payoutToken,
+    quoteToken,
     _chainId,
     capacity,
     auctionType,
+    callbacksType,
     start,
     deadline,
   ] = form.watch([
     "isVested",
     "payoutToken",
+    "quoteToken",
     "quoteToken.chainId",
     "capacity",
     "auctionType",
+    "callbacksType",
     "start",
     "deadline",
   ]);
@@ -240,6 +253,7 @@ export default function CreateAuctionPage() {
         key: `${values.auctionType}-${values.payoutToken.chainId}_${values.payoutToken.address}`,
         name: values.name,
         description: values.description,
+        allowlist: values.allowlist,
         links: {
           projectLogo: values.projectLogo,
           payoutTokenLogo: values.payoutToken.logoURI,
@@ -302,6 +316,91 @@ export default function CreateAuctionPage() {
       publicKey,
     );
 
+    // Callbacks
+    const callbacksType = values.callbacksType as CallbacksType;
+
+    // Set the callbacks address
+    let callbacks;
+
+    // Two main cases:
+    // 1. No callback or custom callback
+    // 2. Selected one of our standard callbacks
+    if (
+      values.callbacksType === undefined ||
+      values.callbacksType === CallbacksType.CUSTOM ||
+      values.callbacksType === CallbacksType.NONE
+    ) {
+      callbacks = values.callbacks ? getAddress(values.callbacks) : zeroAddress;
+    } else {
+      callbacks = getCallbacks(chainId, callbacksType).address;
+    }
+
+    // Set the callback data based on the type and user inputs
+    let callbackData = toHex("");
+
+    switch (callbacksType) {
+      case CallbacksType.NONE: {
+        callbackData = toHex("");
+        break;
+      }
+      case CallbacksType.CUSTOM: {
+        callbackData = toHex(values.customCallbackData ?? "");
+        break;
+      }
+      case CallbacksType.MERKLE_ALLOWLIST: {
+        // TODO need to handle errors here? May not be necessary since we are validating the file format
+        const allowlistTree =
+          values.allowlist &&
+          StandardMerkleTree.of(values.allowlist, ["address"]);
+        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+        callbackData = encodeAbiParameters(
+          parseAbiParameters("bytes32 merkleRoot"),
+          [root],
+        );
+        break;
+      }
+      case CallbacksType.CAPPED_MERKLE_ALLOWLIST: {
+        const cap = parseUnits(
+          values.cappedAllowlistLimit ?? "0",
+          values.quoteToken.decimals,
+        );
+        const allowlistTree =
+          values.allowlist &&
+          StandardMerkleTree.of(values.allowlist, ["address"]);
+        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+        callbackData = encodeAbiParameters(
+          parseAbiParameters("bytes32 merkleRoot, uint256 cap"),
+          [root, cap],
+        );
+        break;
+      }
+      case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST: {
+        // TODO need to handle errors here? May not be necessary since we are validating the file format
+        const allowlistTree =
+          values.allowlist &&
+          StandardMerkleTree.of(values.allowlist, ["address", "uint256"]);
+        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+        callbackData = encodeAbiParameters(
+          parseAbiParameters("bytes32 merkleRoot"),
+          [root],
+        );
+        break;
+      }
+      case CallbacksType.TOKEN_ALLOWLIST: {
+        const allowlistToken = (values.allowlistToken?.address ??
+          zeroAddress) as `0x${string}`;
+        const threshold = parseUnits(
+          values.allowlistTokenThreshold ?? "0",
+          values.allowlistToken?.decimals ?? 0,
+        );
+        callbackData = encodeAbiParameters(
+          parseAbiParameters("address token, uint256 threshold"),
+          [allowlistToken, threshold],
+        );
+        break;
+      }
+    }
+
     createAuctionTx.writeContract(
       {
         abi,
@@ -313,7 +412,7 @@ export default function CreateAuctionPage() {
             baseToken: getAddress(values.payoutToken.address),
             quoteToken: getAddress(values.quoteToken.address),
             curator: !values.curator ? zeroAddress : getAddress(values.curator),
-            callbacks: !values.hooks ? zeroAddress : getAddress(values.hooks),
+            callbacks: callbacks,
             //TODO: Extract into derivative helper function
             derivativeType: !values.isVested ? toKeycode("") : toKeycode("LIV"),
             derivativeParams:
@@ -326,14 +425,13 @@ export default function CreateAuctionPage() {
                     start: getTimestamp(values.vestingStart ?? values.start),
                   }),
             wrapDerivative: false,
-            //TODO: enable callback data support
-            callbackData: toHex(""),
+            callbackData: callbackData,
           },
           {
             start: getTimestamp(values.start),
             duration:
               getTimestamp(values.deadline) - getTimestamp(values.start),
-            capacityInQuote: false, // Disabled for LSBBA
+            capacityInQuote: false, // Batch auctions do not allow capacity in quote
             capacity: parseUnits(values.capacity, values.payoutToken.decimals),
             implParams: auctionSpecificParams,
           },
@@ -358,7 +456,7 @@ export default function CreateAuctionPage() {
       chainId: payoutToken?.chainId,
       amount: Number(capacity),
     });
-  // TODO add note on pre-funding (LSBBA-specific): the capacity will be transferred upon creation
+  // TODO add note on pre-funding: the capacity will be transferred upon creation
 
   const createAuction = form.handleSubmit(handleCreation);
   const isValid = form.formState.isValid;
@@ -371,6 +469,137 @@ export default function CreateAuctionPage() {
   const payoutModalInvalid =
     form.getFieldState("payoutToken.address").invalid ||
     form.getFieldState("payoutToken.logoURI").invalid;
+
+  const allowlistTokenModalInvalid =
+    form.getFieldState("allowlistToken.address").invalid ||
+    form.getFieldState("allowlistToken.logoURI").invalid;
+
+  // Handle validation and parsing of the allowlist file
+
+  // TODO move this?
+  type AllowlistEntry = {
+    address: `0x${string}`;
+  };
+
+  type AllocatedAllowlistEntry = {
+    address: `0x${string}`;
+    allocation: string;
+  };
+
+  const [fileLoadMessage, setFileLoadMessage] = React.useState<string | null>(
+    null,
+  );
+
+  const parseAllowlistFile = (results: { data: AllowlistEntry[] }) => {
+    // Create allowlist variable
+    const allowlist: string[][] = [];
+
+    // Check that the file contains the expected columns
+    if (!results.data[0]?.address) {
+      form.setValue("allowlist", allowlist);
+      setFileLoadMessage("Error: Missing address column in file.");
+      return;
+    }
+
+    // Iterate through, validate data, and store for submission
+    for (const entry of results.data) {
+      // Ensure address is valid
+      if (entry.address.length == 0) continue;
+      if (!entry.address.match(/^(0x)?[0-9a-fA-F]{40}$/)) {
+        console.error(`Invalid address: ${entry.address}`);
+        continue;
+      }
+      allowlist.push([entry.address]);
+    }
+
+    form.setValue("allowlist", allowlist);
+
+    setFileLoadMessage(
+      `Parsed ${allowlist.length} addresses from file and had ${
+        results.data.length - 1 - allowlist.length
+      } errors.`,
+    );
+  };
+
+  const parseAllocatedAllowlistFile = (results: {
+    data: AllocatedAllowlistEntry[];
+  }) => {
+    // Create allowlist variable
+    const allowlist: string[][] = [];
+
+    // Check that the file contains the expected columns
+    if (!results.data[0]?.address) {
+      form.setValue("allowlist", allowlist);
+      setFileLoadMessage('Error: Missing "address" column in file.');
+      return;
+    }
+
+    if (!results.data[0]?.allocation) {
+      form.setValue("allowlist", allowlist);
+      setFileLoadMessage('Error: Missing "allocation" column in file.');
+      return;
+    }
+
+    // Iterate through, validate data, and store for submission
+    for (const entry of results.data) {
+      // Ensure address is valid
+      if (entry.address.length == 0) continue;
+      if (!entry.address.match(/^(0x)?[0-9a-fA-F]{40}$/)) {
+        console.error(`Invalid address: ${entry.address}`);
+        continue;
+      }
+
+      // Ensure allocation is valid
+      let allocation;
+      try {
+        allocation = parseUnits(entry.allocation, quoteToken.decimals);
+      } catch (e) {
+        console.log("Invalid allocation: ", entry.allocation);
+        continue;
+      }
+
+      // Add
+      allowlist.push([entry.address, formatUnits(allocation, 0)]);
+    }
+
+    form.setValue("allowlist", allowlist);
+
+    setFileLoadMessage(
+      `Parsed ${allowlist.length} addresses from file and had ${
+        results.data.length - 1 - allowlist.length
+      } errors.`,
+    );
+  };
+
+  // Populate the allowlist in the form data
+  const handleAllowlistFileSelect = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    const parseFn =
+      callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST
+        ? parseAllocatedAllowlistFile
+        : parseAllowlistFile;
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const contents = e.target?.result;
+      Papa.parse(contents, {
+        header: true,
+        complete: parseFn,
+      });
+    };
+
+    reader.readAsText(file);
+  };
+
+  React.useEffect(() => {
+    // Clear the file load message if the callbacks type is changed
+    setFileLoadMessage(null);
+  }, [callbacksType]);
 
   return (
     <>
@@ -809,21 +1038,172 @@ export default function CreateAuctionPage() {
                 <h3 className="form-div">6 Advanced Settings</h3>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
-                    name="hooks"
+                    control={form.control}
+                    name="callbacksType"
                     render={({ field }) => (
                       <FormItemWrapper
                         label="Callback"
                         tooltip={
-                          "The address of the contract implementing callbacks"
+                          "The type of callback contract to use for the auction."
                         }
                       >
-                        <Input
+                        <Select
+                          defaultValue={CallbacksType.NONE}
+                          options={[
+                            {
+                              value: CallbacksType.NONE,
+                              label: "None",
+                            },
+                            {
+                              value: CallbacksType.MERKLE_ALLOWLIST,
+                              label: "Offchain Allowlist",
+                            },
+                            {
+                              value: CallbacksType.CAPPED_MERKLE_ALLOWLIST,
+                              label: "Offchain Allowlist with Spend Cap",
+                            },
+                            {
+                              value: CallbacksType.ALLOCATED_MERKLE_ALLOWLIST,
+                              label: "Offchain Allowlist with Allocations",
+                            },
+                            {
+                              value: CallbacksType.TOKEN_ALLOWLIST,
+                              label: "Token Allowlist",
+                            },
+                            // {
+                            //   value: CallbacksType.CUSTOM,
+                            //   label: "Custom",
+                            // },
+                          ]}
                           {...field}
-                          placeholder={trimAddress("0x0000000")}
                         />
                       </FormItemWrapper>
                     )}
                   />
+                  {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
+                    callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
+                    <FormItemWrapper
+                      label="Allowlist"
+                      tooltip={
+                        "File containing list of addresses on the allowlist in CSV format."
+                      }
+                    >
+                      <Input
+                        type="file"
+                        accept=".csv"
+                        onChange={handleAllowlistFileSelect}
+                        className="pt-1"
+                        error={fileLoadMessage ?? ""}
+                      />
+                    </FormItemWrapper>
+                  )}
+                  {callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST && (
+                    <FormField
+                      control={form.control}
+                      name="cappedAllowlistLimit"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Per User Spend Limit"
+                          tooltip="The number of quote tokens each allowlisted address can spend."
+                        >
+                          <Input placeholder="10" type="number" {...field} />
+                        </FormItemWrapper>
+                      )}
+                    />
+                  )}
+                  {callbacksType ===
+                    CallbacksType.ALLOCATED_MERKLE_ALLOWLIST && (
+                    <FormItemWrapper
+                      label="Allowlist"
+                      tooltip={
+                        "File containing list of addresses and allocations in CSV format." +
+                        (quoteToken === undefined
+                          ? " Please select a quote token first."
+                          : "")
+                      }
+                    >
+                      <Input
+                        type="file"
+                        accept=".csv"
+                        onChange={handleAllowlistFileSelect}
+                        disabled={quoteToken === undefined}
+                        className="pt-1"
+                        error={fileLoadMessage ?? ""}
+                      />
+                    </FormItemWrapper>
+                  )}
+                  {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
+                    <>
+                      <FormField
+                        name="allowlistToken"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Allowlist Token"
+                            tooltip={
+                              "The address of the token to use for the allowlist."
+                            }
+                          >
+                            <DialogInput
+                              {...field}
+                              title="Select Allowlist Token"
+                              triggerContent={"Select token"}
+                              disabled={allowlistTokenModalInvalid}
+                            >
+                              <TokenPicker name="allowlistToken" />
+                            </DialogInput>
+                          </FormItemWrapper>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="allowlistTokenThreshold"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Required Token Balance"
+                            tooltip="The number of tokens the address must hold to qualify for the allowlist."
+                          >
+                            <Input placeholder="1" type="number" {...field} />
+                          </FormItemWrapper>
+                        )}
+                      />
+                    </>
+                  )}
+                  {/* {callbacksType === CallbacksType.CUSTOM && (
+                    <>
+                      <FormField
+                        name="callbacks"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Custom Callbacks Address"
+                            tooltip={
+                              "The address of the custom callbacks contract."
+                            }
+                          >
+                            <Input
+                              {...field}
+                              placeholder={trimAddress("0x0000000")}
+                            />
+                          </FormItemWrapper>
+                        )}
+                      />
+                      <FormField
+                        name="customCallbackData"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Calldata for Custom Callback"
+                            tooltip={
+                              "The calldata to pass to the custom callback on auction creation."
+                            }
+                          >
+                            <Input
+                              {...field}
+                              placeholder={trimAddress("0x0000000")}
+                            />
+                          </FormItemWrapper>
+                        )}
+                      />
+                    </>
+                  )} */}
                   <FormField
                     name="curator"
                     render={({ field }) => (

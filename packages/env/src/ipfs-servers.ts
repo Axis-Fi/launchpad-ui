@@ -7,7 +7,7 @@ export default {
   },
   testing: {
     description: "Testing",
-    url: "https://ipfs-api-staging.onrender.com",
+    url: "http://localhost:4000",
   },
   staging: {
     description: "Staging",

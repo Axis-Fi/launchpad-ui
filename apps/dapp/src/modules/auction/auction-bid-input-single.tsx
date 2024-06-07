@@ -11,9 +11,11 @@ import { trimCurrency } from "utils/currency";
 export function AuctionBidInputSingle({
   auction,
   balance = 0,
+  limit,
   disabled,
 }: {
   balance?: number;
+  limit?: number;
   disabled?: boolean;
 } & PropsWithAuction) {
   const form = useFormContext<BidForm>();
@@ -43,6 +45,22 @@ export function AuctionBidInputSingle({
     setQuoteTokenAmountUsd(fetchedUsdAmount);
   }, [quoteTokenAmountDecimal, getUsdAmount]);
 
+  function handleAmountOutChange(value: string) {
+    if (!auction.auctionData || !("price" in auction.auctionData)) return;
+
+    // auction is fixed price
+    // Use bigints to calculate value and return as string to avoid rounding errors with floats
+    const amountIn = parseUnits(value, auction.quoteToken.decimals);
+    const amountOut =
+      (amountIn * parseUnits("1", auction.baseToken.decimals)) /
+      auction.auctionData!.price;
+    const formattedAmountOut = formatUnits(
+      amountOut,
+      auction.baseToken.decimals,
+    );
+    form.setValue("baseTokenAmount", formattedAmountOut);
+  }
+
   return (
     <div className="text-foreground flex flex-col gap-y-2">
       <div className="bg-secondary flex justify-between rounded-sm pt-1">
@@ -57,6 +75,7 @@ export function AuctionBidInputSingle({
                   disabled={disabled}
                   label="Spend Amount"
                   balance={trimCurrency(balance)}
+                  limit={limit ? trimCurrency(limit) : undefined}
                   usdPrice={quoteTokenAmountUsd}
                   symbol={auction.quoteToken.symbol}
                   onChange={(e) => {
@@ -65,31 +84,24 @@ export function AuctionBidInputSingle({
                     const rawAmountIn = e.target.value as string;
                     setQuoteTokenAmountDecimal(Number(rawAmountIn));
 
-                    if (
-                      !auction.auctionData ||
-                      !("price" in auction.auctionData)
-                    )
-                      return;
-
-                    // auction is fixed price
-                    // Use bigints to calculate value and return as string to avoid rounding errors with floats
-                    const amountIn = parseUnits(
-                      rawAmountIn,
-                      auction.quoteToken.decimals,
-                    );
-                    const amountOut =
-                      (amountIn * parseUnits("1", auction.baseToken.decimals)) /
-                      auction.auctionData!.price;
-                    const formattedAmountOut = formatUnits(
-                      amountOut,
-                      auction.baseToken.decimals,
-                    );
-                    form.setValue("baseTokenAmount", formattedAmountOut);
+                    // Update amount out value, if applicable
+                    handleAmountOutChange(rawAmountIn);
                   }}
                   onClickMaxButton={() => {
-                    form.setValue("quoteTokenAmount", balance.toString());
+                    // Take the minimum of the balance and the limit
+                    let maxSpend = balance;
+                    if (limit) {
+                      maxSpend = balance < limit ? balance : limit;
+                    }
+
+                    const maxSpendStr = maxSpend.toString();
+
+                    form.setValue("quoteTokenAmount", maxSpendStr);
                     // Force re-validation
                     form.trigger("quoteTokenAmount");
+
+                    // Update amount out value, if applicable
+                    handleAmountOutChange(maxSpendStr);
                   }}
                 />
               </FormItemWrapperSlim>

@@ -18,6 +18,7 @@ import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
 import { useAccount, useChainId } from "wagmi";
+import { useAllowlist } from "../hooks/use-allowlist";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -37,6 +38,12 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+
+  // Allowlist callback support
+  // Handles determining if an allowlist callback is being used
+  // and provides variables for displaying on the UI and submitting the bid transaction
+  const { canBid, amountLimited, limit, criteria, callbackData } =
+    useAllowlist(auction);
 
   const form = useForm<BidForm>({
     mode: "onTouched",
@@ -95,6 +102,15 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             message: "Amount out exceeds capacity",
             path: ["baseTokenAmount"],
           },
+        )
+        .refine(
+          (data) =>
+            !amountLimited ||
+            (amountLimited && Number(data.quoteTokenAmount) <= Number(limit)),
+          {
+            message: `Exceeds your remaining allocation of ${limit} ${auction.quoteToken.symbol}`,
+            path: ["quoteTokenAmount"],
+          },
         ),
     ),
   });
@@ -112,6 +128,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     auction.auctionType,
     parsedAmountIn,
     parsedMinAmountOut,
+    callbackData,
   );
 
   const formattedBalance = formatUnits(
@@ -174,6 +191,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   // TODO calculate coin rank
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
+
   return (
     <div className="flex justify-between gap-x-8">
       <div className="w-2/3 space-y-4">
@@ -201,115 +219,124 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       </div>
 
       <div className="w-1/3">
-        <FormProvider {...form}>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <Card
-              title={
-                isFixedPrice
-                  ? `Buy ${auction.baseToken.symbol}`
-                  : `Place your bid`
-              }
-            >
-              {isFixedPrice ? (
-                <AuctionBidInputSingle
-                  balance={Number(formattedBalance)}
-                  auction={auction}
-                  disabled={isWalletChainIncorrect}
-                />
-              ) : (
-                <AuctionBidInput
-                  balance={Number(formattedBalance)}
-                  auction={auction}
-                  disabled={isWalletChainIncorrect}
-                />
-              )}
-              <div className="mx-auto mt-4 w-full">
-                {isEMP && (
-                  <Text size="sm">
-                    You’re bidding on a blind auction. Auctions can only be
-                    decrypted after conclusion. Save your bid after bidding.
-                    <a className="text-primary ml-1 uppercase">Learn More</a>
-                  </Text>
-                )}
-              </div>
-
-              <RequiresChain chainId={auction.chainId} className="mt-4">
-                <div className="mt-4 w-full">
-                  <Button
-                    className="w-full"
-                    disabled={
-                      isWaiting ||
-                      isSigningApproval ||
-                      amountInInvalid ||
-                      amountOutInvalid
-                    }
-                    onClick={() =>
-                      bid.isSufficientAllowance
-                        ? setOpen(true)
-                        : bid.approveCapacity()
-                    }
-                  >
-                    {/*TODO: simplify*/}
-                    {bid.isSufficientAllowance ? (
-                      actionKeyword.toUpperCase()
-                    ) : isWaiting ? (
-                      <div className="flex">
-                        Waiting for confirmation...
-                        <div className="w-1/2"></div>
-                        <LoadingIndicator />
-                      </div>
-                    ) : (
-                      `APPROVE TO ${actionKeyword.toUpperCase()}`
-                    )}
-                  </Button>
-                </div>
-              </RequiresChain>
-            </Card>
-
-            <TransactionDialog
-              open={open}
-              signatureMutation={bid.bidTx}
-              error={bid.error}
-              onConfirm={handleSubmit}
-              mutation={bid.bidReceipt}
-              chainId={auction.chainId}
-              onOpenChange={(open) => {
-                if (!open) {
-                  bid.bidTx.reset();
+        {canBid ? (
+          <FormProvider {...form}>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <Card
+                title={
+                  isFixedPrice
+                    ? `Buy ${auction.baseToken.symbol}`
+                    : `Place your bid`
                 }
-                setOpen(open);
-              }}
-              hash={bid.bidTx.data}
-              disabled={shouldDisable || isWaiting}
-              screens={{
-                idle: {
-                  Component: () => (
-                    <div className="text-center">
-                      {getConfirmCardText(auction, amountIn, minAmountOut)}
-                    </div>
-                  ),
-                  title: `Confirm ${actionKeyword}`,
-                },
-                success: {
-                  Component: () => (
-                    <div className="flex justify-center text-center">
-                      {isEMP ? (
-                        <>
-                          <LockIcon className="mr-1" />
-                          Bid encrypted and stored successfully!
-                        </>
+              >
+                {isFixedPrice ? (
+                  <AuctionBidInputSingle
+                    balance={Number(formattedBalance)}
+                    limit={amountLimited ? Number(limit) : undefined}
+                    auction={auction}
+                    disabled={isWalletChainIncorrect}
+                  />
+                ) : (
+                  <AuctionBidInput
+                    balance={Number(formattedBalance)}
+                    limit={amountLimited ? Number(limit) : undefined}
+                    auction={auction}
+                    disabled={isWalletChainIncorrect}
+                  />
+                )}
+                <div className="mx-auto mt-4 w-full">
+                  {isEMP && (
+                    <Text size="sm">
+                      You’re bidding on a blind auction. Auctions can only be
+                      decrypted after conclusion. Save your bid after bidding.
+                      <a className="text-primary ml-1 uppercase">Learn More</a>
+                    </Text>
+                  )}
+                </div>
+
+                <RequiresChain chainId={auction.chainId} className="mt-4">
+                  <div className="mt-4 w-full">
+                    <Button
+                      className="w-full"
+                      disabled={
+                        isWaiting ||
+                        isSigningApproval ||
+                        amountInInvalid ||
+                        amountOutInvalid
+                      }
+                      onClick={() =>
+                        bid.isSufficientAllowance
+                          ? setOpen(true)
+                          : bid.approveCapacity()
+                      }
+                    >
+                      {/*TODO: simplify*/}
+                      {bid.isSufficientAllowance ? (
+                        actionKeyword.toUpperCase()
+                      ) : isWaiting ? (
+                        <div className="flex">
+                          Waiting for confirmation...
+                          <div className="w-1/2"></div>
+                          <LoadingIndicator />
+                        </div>
                       ) : (
-                        <p>Purchase completed!</p>
+                        `APPROVE TO ${actionKeyword.toUpperCase()}`
                       )}
-                    </div>
-                  ),
-                  title: "Transaction Confirmed",
-                },
-              }}
-            />
-          </form>
-        </FormProvider>
-        {isEMP && (
+                    </Button>
+                  </div>
+                </RequiresChain>
+              </Card>
+
+              <TransactionDialog
+                open={open}
+                signatureMutation={bid.bidTx}
+                error={bid.error}
+                onConfirm={handleSubmit}
+                mutation={bid.bidReceipt}
+                chainId={auction.chainId}
+                onOpenChange={(open) => {
+                  if (!open) {
+                    bid.bidTx.reset();
+                  }
+                  setOpen(open);
+                }}
+                hash={bid.bidTx.data}
+                disabled={shouldDisable || isWaiting}
+                screens={{
+                  idle: {
+                    Component: () => (
+                      <div className="text-center">
+                        {getConfirmCardText(auction, amountIn, minAmountOut)}
+                      </div>
+                    ),
+                    title: `Confirm ${actionKeyword}`,
+                  },
+                  success: {
+                    Component: () => (
+                      <div className="flex justify-center text-center">
+                        {isEMP ? (
+                          <>
+                            <LockIcon className="mr-1" />
+                            Bid encrypted and stored successfully!
+                          </>
+                        ) : (
+                          <p>Purchase completed!</p>
+                        )}
+                      </div>
+                    ),
+                    title: "Transaction Confirmed",
+                  },
+                }}
+              />
+            </form>
+          </FormProvider>
+        ) : (
+          <Card title="Private Sale">
+            <p>This sale is restricted to {criteria}.</p>
+            <p>The connected wallet is not approved to bid.</p>
+          </Card>
+        )}
+        {canBid && isEMP && (
           <div className="mt-4">
             <Card title="Bid Info">
               <div className="gap-y-md flex">

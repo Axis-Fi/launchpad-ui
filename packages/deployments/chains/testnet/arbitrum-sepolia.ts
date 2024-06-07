@@ -18,6 +18,12 @@ const config: AxisDeploymentConfig = {
     atomicLinearVesting: "0xA7413717C633175Bc5B669E94625a4d3FE009870",
     batchLinearVesting: "0xC818f1f000f9C24D014BCe2c5334e14B1360d9CD",
   },
+  callbacks: {
+    cappedMerkleAllowlist: "0x98Bc9615c54fA03C7E31cD0e6599938f1a418d1b",
+    merkleAllowlist: "0x98Cd72f2271BC8485474E6277eAadA28c8Da4C59",
+    tokenAllowlist: "0x98d7b3E03DEAA5039ff06D977EdE2EF2b6cD3169",
+    allocatedMerkleAllowlist: "0x98Dd423FD18cfbf34c78E24B8E923dadE7bcFCC0",
+  },
   subgraphURL:
     "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v<VERSION>/api",
   rpcURL:

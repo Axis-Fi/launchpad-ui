@@ -12,6 +12,7 @@ import { encodeEncryptedBid } from "../utils";
 
 const getConfig = async (
   params: BidParams,
+  callbackData: `0x${string}`,
   cloakClient: CloakClient,
   auction: AuctionModule,
   deployments: AxisDeployments,
@@ -62,15 +63,18 @@ const getConfig = async (
     ? encodeEncryptedBid(await encryptBid(encryptBidParams, cloakClient))
     : undefined;
 
-  return getConfigFromPrimedParams({
-    lotId,
-    amountIn,
-    bidderAddress,
-    referrerAddress,
-    auctionHouseAddress,
-    quoteTokenDecimals,
-    auctionData: encryptedBid,
-  });
+  return getConfigFromPrimedParams(
+    {
+      lotId,
+      amountIn,
+      bidderAddress,
+      referrerAddress,
+      auctionHouseAddress,
+      quoteTokenDecimals,
+      auctionData: encryptedBid,
+    },
+    callbackData,
+  );
 };
 
 export { getConfig };

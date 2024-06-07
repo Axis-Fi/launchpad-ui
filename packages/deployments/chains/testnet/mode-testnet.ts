@@ -17,6 +17,12 @@ const config: AxisDeploymentConfig = {
     atomicLinearVesting: "0x408fB738592232372069B592022F03BF3a241613",
     batchLinearVesting: "0x6CC5b76C2c98cB347F07C07a74a88134265312FF",
   },
+  callbacks: {
+    cappedMerkleAllowlist: "0x98565d59C0E85cB2922822B941342b24e0B36710",
+    merkleAllowlist: "0x98281879DF6b77eBfc3c7B584325cFE3cf3a499D",
+    tokenAllowlist: "0x98Db66f6F636D6e863229c32662AFF11bE8Ab53F",
+    allocatedMerkleAllowlist: "0x98aAA09Fba83eD888Fa57eBb42c2e54fA6BF3611",
+  },
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mode-testnet/<VERSION>/gn",
   rpcURL: "https://sepolia.mode.network",

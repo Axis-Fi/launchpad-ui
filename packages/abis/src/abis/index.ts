@@ -10,4 +10,8 @@ export default {
   fixedPriceBatch: abis.fixedPriceBatchAbi,
   atomicLinearVesting: abis.linearVestingAbi,
   batchLinearVesting: abis.linearVestingAbi,
+  merkleAllowlist: abis.merkleAllowlistAbi,
+  cappedMerkleAllowlist: abis.cappedMerkleAllowlistAbi,
+  tokenAllowlist: abis.tokenAllowlistAbi,
+  allocatedMerkleAllowlist: abis.allocatedMerkleAllowlistAbi,
 } as const;
