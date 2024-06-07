@@ -46,7 +46,7 @@ export function DatePicker({
         <Button
           variant="input"
           className={cn(
-            "w-full max-w-sm justify-start text-left font-normal",
+            "bg-surface-secondary w-full max-w-sm justify-start text-left font-normal",
             !date && "text-foreground/50",
           )}
         >
