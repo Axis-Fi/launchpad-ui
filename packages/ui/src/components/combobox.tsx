@@ -40,7 +40,7 @@ export function ComboBox({
       <Button
         asChild={props.triggerElement}
         id={props.id}
-        variant="outline"
+        variant="secondary"
         role="combobox"
         aria-expanded={open}
         className="text-muted-foreground justify-between"
