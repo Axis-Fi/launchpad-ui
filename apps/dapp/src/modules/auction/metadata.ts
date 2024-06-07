@@ -9,11 +9,6 @@ export const auctionMetadata: Record<
     tooltip:
       "Encrypted Marginal Price Auction is a fully on-chain, sealed-bid, batch auction system built on the Axis Protocol that uses ECIES encryption and a multi-step settlement process to avoid issues of previous sealed bid auction designs.",
   },
-  [AuctionType.FIXED_PRICE]: {
-    label: "Fixed-Price Sale",
-    tooltip:
-      "Fixed-Price Sale is a fully on-chain, fixed-price atomic auction system",
-  },
   [AuctionType.FIXED_PRICE_BATCH]: {
     label: "Fixed-Price Batch",
     tooltip:

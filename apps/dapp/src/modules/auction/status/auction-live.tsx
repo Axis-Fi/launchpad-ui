@@ -33,9 +33,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const currentChainId = useChainId();
   const walletAccount = useAccount();
 
-  const isFixedPrice =
-    auction.auctionType === AuctionType.FIXED_PRICE ||
-    auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
@@ -53,13 +50,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           message: "Amount must be greater than 0",
           path: ["quoteTokenAmount"],
         })
-        .refine((data) => isFixedPrice || Number(data.bidPrice) > 0, {
+        .refine((data) => isFixedPriceBatch || Number(data.bidPrice) > 0, {
           message: "Bid price must be greater than 0",
           path: ["bidPrice"],
         })
         .refine(
           (data) =>
-            isFixedPrice ||
+            isFixedPriceBatch ||
             Number(data.quoteTokenAmount) >=
               Number(auction.formatted?.minBidSize),
           {
@@ -69,7 +66,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         )
         .refine(
           (data) =>
-            isFixedPrice ||
+            isFixedPriceBatch ||
             Number(data.bidPrice) >= Number(auction.formatted?.minPrice),
           {
             message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
@@ -78,7 +75,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         )
         .refine(
           (data) =>
-            !isFixedPrice ||
             isFixedPriceBatch ||
             Number(data.quoteTokenAmount) <=
               Number(auction.formatted?.maxAmount),
@@ -160,7 +156,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
   const amountInInvalid =
-    (isFixedPrice && parsedAmountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
+    (isFixedPriceBatch &&
+      parsedAmountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
     parsedAmountIn > Number(formattedBalance) || // greater than balance
     parsedAmountIn === undefined ||
     parsedAmountIn === 0; // zero or empty
@@ -206,7 +203,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <AuctionMetric id="auctionedSupply" />
             </AuctionMetricsContainer>
           )}
-          {isFixedPrice && (
+          {isFixedPriceBatch && (
             <AuctionMetricsContainer className="mt-4" auction={auction}>
               <AuctionMetric id="fixedPriceFDV" />
               <AuctionMetric id="totalSupply" />
@@ -224,12 +221,12 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             <form onSubmit={(e) => e.preventDefault()}>
               <Card
                 title={
-                  isFixedPrice
+                  isFixedPriceBatch
                     ? `Buy ${auction.baseToken.symbol}`
                     : `Place your bid`
                 }
               >
-                {isFixedPrice ? (
+                {isFixedPriceBatch ? (
                   <AuctionBidInputSingle
                     balance={Number(formattedBalance)}
                     limit={amountLimited ? Number(limit) : undefined}

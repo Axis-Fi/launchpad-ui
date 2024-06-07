@@ -31,7 +31,7 @@ export function useDerivativeData({
 }
 
 type LotRoutingStruct = UseReadContractReturnType<
-  typeof axisContracts.abis.atomicAuctionHouse,
+  typeof axisContracts.abis.batchAuctionHouse,
   "lotRouting"
 >["data"];
 

@@ -5,7 +5,6 @@ export default {
   batchCatalogue: abis.batchCatalogueAbi,
   encryptedMarginalPrice: abis.encryptedMarginalPriceAbi,
   fixedPriceBatch: abis.fixedPriceBatchAbi,
-  atomicLinearVesting: abis.linearVestingAbi,
   batchLinearVesting: abis.linearVestingAbi,
   merkleAllowlist: abis.merkleAllowlistAbi,
   cappedMerkleAllowlist: abis.cappedMerkleAllowlistAbi,

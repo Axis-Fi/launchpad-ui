@@ -55,9 +55,7 @@ function AuctionCardDetails(
   },
 ) {
   const isEMP = props.auction.auctionType === AuctionType.SEALED_BID;
-  const isFP =
-    props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH ||
-    props.auction.auctionType === AuctionType.FIXED_PRICE;
+  const isFPB = props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const hasCurator = !!props.auction.curator && props.auction.curatorApproved;
 
   return (
@@ -104,7 +102,7 @@ function AuctionCardDetails(
         </AuctionMetricsContainer>
       )}
 
-      {isFP && !props.isGrid && (
+      {isFPB && !props.isGrid && (
         <AuctionMetricsContainer
           className="group-hover:hidden md:grid-cols-2"
           auction={props.auction}
