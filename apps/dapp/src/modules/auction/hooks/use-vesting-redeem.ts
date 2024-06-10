@@ -1,28 +1,24 @@
-import { BatchAuction } from "@repo/types";
-import { useDerivativeModule } from "./use-derivative-module";
+import { Address } from "@repo/types";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
 import { linearVestingAbi } from "@repo/abis/src/abis/generated";
-import { useVestingTokenId } from "./use-vesting-tokenid";
 
-export function useVestingRedeem({ auction }: { auction: BatchAuction }) {
-  // Get the address of the derivative module
-  const { data: derivativeModuleAddress } = useDerivativeModule({
-    lotId: auction.lotId,
-    chainId: auction.chainId,
-    auctionType: auction.auctionType,
-  });
-
-  // Get the id of the vesting token
-  const { data: vestingTokenId } = useVestingTokenId({ auction });
-
+export function useVestingRedeem({
+  vestingTokenId,
+  chainId,
+  derivativeModuleAddress,
+}: {
+  vestingTokenId?: bigint;
+  chainId?: number;
+  derivativeModuleAddress?: Address;
+}) {
   const redeemCall = useSimulateContract({
     abi: linearVestingAbi,
     address: derivativeModuleAddress,
-    chainId: auction.chainId,
+    chainId: chainId,
     functionName: "redeemMax",
     args: [vestingTokenId || 0n],
     query: { enabled: !!derivativeModuleAddress && !!vestingTokenId },
@@ -49,7 +45,7 @@ export function useVestingRedeem({ auction }: { auction: BatchAuction }) {
     redeemTx.writeContract({
       abi: linearVestingAbi,
       address: derivativeModuleAddress,
-      chainId: auction.chainId,
+      chainId: chainId,
       functionName: "redeemMax",
       args: [vestingTokenId],
     });

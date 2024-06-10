@@ -3,8 +3,11 @@ import { Badge, Button, Card, Metric, Progress, Text } from "@repo/ui";
 import { RequiresChain } from "components/requires-chain";
 import { trimCurrency } from "utils/currency";
 import { shorten } from "utils/number";
-import { useAccount } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { useDerivativeData } from "../hooks/use-derivative-data";
+import { useVestingTokenId } from "../hooks/use-vesting-tokenid";
+import { useVestingRedeemable } from "../hooks/use-vesting-redeemable";
+import { useDerivativeModule } from "../hooks/use-derivative-module";
 
 const calculateVestingProgress = (start?: number, end?: number): number => {
   if (!start || !end) return 0;
@@ -26,6 +29,29 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
     chainId: auction.chainId,
     lotId: auction.lotId,
     auctionType: auction.auctionType,
+  });
+
+  const { data: vestingModuleAddress } = useDerivativeModule({
+    lotId: auction.lotId,
+    chainId: auction.chainId,
+    auctionType: auction.auctionType,
+  });
+
+  const { data: vestingTokenId } = useVestingTokenId({
+    linearVestingData,
+    baseToken: auction.baseToken,
+    derivativeModuleAddress: vestingModuleAddress,
+  });
+
+  const { data: redeemableAmount } = useVestingRedeemable({
+    account: address,
+    tokenId: vestingTokenId,
+    chainId: auction.chainId,
+    derivativeModuleAddress: vestingModuleAddress,
+  });
+
+  const { data: claimedAmount } = useBalance({
+    address: auction.baseToken.address,
   });
 
   // If the auction does not have vesting enabled, return early
@@ -53,9 +79,6 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
     linearVestingData?.start,
     linearVestingData?.expiry,
   );
-
-  const claimedAmount = 2500;
-  const claimableAmount = 10000;
 
   return (
     <div className="gap-y-md flex flex-col">
@@ -97,12 +120,18 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
             <div className="">
               {/* TODO spacing between label and content */}
               <Metric size="s" label="Claimable">
-                {trimCurrency(claimableAmount)} {auction.baseToken.symbol}
+                {redeemableAmount
+                  ? trimCurrency(Number(redeemableAmount))
+                  : "-"}{" "}
+                {auction.baseToken.symbol}
               </Metric>
             </div>
             <div>
               <Metric size="s" label="Claimed">
-                {trimCurrency(claimedAmount)} {auction.baseToken.symbol}
+                {claimedAmount
+                  ? trimCurrency(Number(claimedAmount.value))
+                  : "-"}{" "}
+                {auction.baseToken.symbol}
               </Metric>
             </div>
           </div>
@@ -112,7 +141,7 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
               <Button
                 size="lg"
                 className="w-full"
-                disabled={!claimableAmount}
+                disabled={!redeemableAmount}
                 // onClick={() => setTxnDialogOpen(true)}
               >
                 Claim {auction.baseToken.symbol}
