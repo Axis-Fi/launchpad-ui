@@ -7,7 +7,6 @@ import {
 } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { PageHeader } from "modules/app/page-header";
-import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { ImageBanner } from "components/image-banner";
 import {
   EncryptedMarginalPriceAuctionConcluded,
@@ -22,6 +21,7 @@ import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-
 import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 import { getCountdown } from "utils/date";
 import { useEffect, useState } from "react";
+import { BidList } from "modules/auction/bid-list";
 
 const statuses: Record<
   AuctionStatus,
@@ -127,7 +127,7 @@ export default function AuctionPage() {
 
         <AuctionElement auction={auction} />
 
-        <AuctionBidsCard auction={auction} isLoading={isAuctionLoading} />
+        <BidList auction={auction} />
       </PageContainer>
     </>
   );

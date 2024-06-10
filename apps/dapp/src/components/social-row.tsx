@@ -20,7 +20,7 @@ export function SocialRow(props: SocialURLs) {
       {props.twitter && (
         <Link href={props.twitter}>
           <TwitterLogoIcon
-            className={cn("size-8 hover:text-[#1DA1F2]", props.iconClassName)}
+            className={cn("size-4 hover:text-[#1DA1F2]", props.iconClassName)}
           />
         </Link>
       )}
@@ -28,7 +28,7 @@ export function SocialRow(props: SocialURLs) {
       {props.discord && (
         <Link href={props.discord}>
           <DiscordLogoIcon
-            className={cn("size-8 hover:text-[#7289da]", props.iconClassName)}
+            className={cn("size-4 hover:text-[#7289da]", props.iconClassName)}
           />
         </Link>
       )}
@@ -36,7 +36,7 @@ export function SocialRow(props: SocialURLs) {
         <Link href={props.website}>
           <GlobeIcon
             className={cn(
-              "hover:text-primary size-8 transition-all",
+              "hover:text-primary size-4 transition-all",
               props.iconClassName,
             )}
           />
