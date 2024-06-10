@@ -1,25 +1,17 @@
-import { PropsWithAuction } from "@repo/types";
-import { useDerivativeModule } from "./use-derivative-module";
-import { useDerivativeData } from "./use-derivative-data";
+import { LinearVestingData, Token } from "@repo/types";
 import { encodeAbiParameters, isAddress } from "viem";
 import { useReadContract } from "wagmi";
 import { linearVestingAbi } from "@repo/abis/src/abis/generated";
 
-export function useVestingTokenId({ auction }: PropsWithAuction) {
-  // Get the address of the derivative module
-  const { data: derivativeModuleAddress } = useDerivativeModule({
-    lotId: auction.lotId,
-    chainId: auction.chainId,
-    auctionType: auction.auctionType,
-  });
-
-  // Get the derivative data
-  const { data: linearVestingData } = useDerivativeData({
-    lotId: auction.lotId,
-    chainId: auction.chainId,
-    auctionType: auction.auctionType,
-  });
-
+export function useVestingTokenId({
+  linearVestingData,
+  baseToken,
+  derivativeModuleAddress,
+}: {
+  linearVestingData?: LinearVestingData;
+  baseToken: Token;
+  derivativeModuleAddress?: string;
+}) {
   // Fetch the tokenId of the vesting token
   const response = useReadContract({
     abi: linearVestingAbi,
@@ -29,7 +21,7 @@ export function useVestingTokenId({ auction }: PropsWithAuction) {
         : undefined,
     functionName: "computeId",
     args: [
-      auction.baseToken.address, // base token
+      baseToken.address, // base token
       encodeAbiParameters(
         [
           { name: "start", type: "uint48" }, // vesting start
