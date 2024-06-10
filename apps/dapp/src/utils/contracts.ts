@@ -62,6 +62,8 @@ const callbackMap = {
   [CallbacksType.CAPPED_MERKLE_ALLOWLIST]: "cappedMerkleAllowlist",
   [CallbacksType.TOKEN_ALLOWLIST]: "tokenAllowlist",
   [CallbacksType.ALLOCATED_MERKLE_ALLOWLIST]: "allocatedMerkleAllowlist",
+  [CallbacksType.UNIV2_DTL]: "uniV2Dtl",
+  [CallbacksType.UNIV3_DTL]: "uniV3Dtl",
 };
 
 export function getCallbacks(chainId: number, callbackType: CallbacksType) {

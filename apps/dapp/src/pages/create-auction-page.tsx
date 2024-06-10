@@ -39,6 +39,7 @@ import {
   fromHex,
   getAddress,
   isHex,
+  isAddress,
   parseAbiParameters,
   parseUnits,
   toHex,
@@ -98,6 +99,15 @@ const schema = z
     cappedAllowlistLimit: z.string().optional(),
     allowlistToken: tokenSchema.optional(),
     allowlistTokenThreshold: z.string().optional(),
+    dtlProceedsPercent: z.array(z.number()).optional(),
+    dtlIsVested: z.boolean().optional(),
+    dtlVestingStart: z.date().optional(),
+    dtlVestingDuration: z.string().optional(),
+    dtlRecipient: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    dtlUniV3PoolFee: z.string().optional(),
     customCallbackData: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]$/)
@@ -191,6 +201,58 @@ const schema = z
       message: "Minimum filled percentage must be set",
       path: ["minFillPercent"],
     },
+  )
+  .refine(
+    (data) =>
+      !data.dtlIsVested
+        ? true
+        : data.dtlVestingStart &&
+          data.dtlVestingStart.getTime() >= data.deadline.getTime(),
+    {
+      message:
+        "Liquidity vesting start needs to be on or after the auction deadline",
+      path: ["dtlVestingStart"],
+    },
+  )
+  .refine((data) => (!data.dtlIsVested ? true : data.dtlVestingDuration), {
+    message: "Liquidity vesting duration is required",
+    path: ["dtlVestingDuration"],
+  })
+  .refine(
+    (data) =>
+      !(
+        data.callbacksType === CallbacksType.UNIV2_DTL ||
+        data.callbacksType === CallbacksType.UNIV3_DTL
+      )
+        ? true
+        : data.dtlRecipient,
+    {
+      message: "Liquidity recipient is required",
+      path: ["dtlRecipient"],
+    },
+  )
+  .refine(
+    (data) =>
+      !(
+        data.callbacksType === CallbacksType.UNIV2_DTL ||
+        data.callbacksType === CallbacksType.UNIV3_DTL
+      )
+        ? true
+        : data.dtlProceedsPercent,
+    {
+      message: "Liquidity proceeds percent is required",
+      path: ["dtlProceedsPercent"],
+    },
+  )
+  .refine(
+    (data) =>
+      !(data.callbacksType === CallbacksType.UNIV3_DTL)
+        ? true
+        : data.dtlUniV3PoolFee,
+    {
+      message: "UniV3 pool fee is required",
+      path: ["dtlUniV3PoolFee"],
+    },
   );
 
 export type CreateAuctionForm = z.infer<typeof schema>;
@@ -222,6 +284,7 @@ export default function CreateAuctionPage() {
     capacity,
     auctionType,
     callbacksType,
+    dtlIsVested,
     start,
     deadline,
   ] = form.watch([
@@ -232,6 +295,7 @@ export default function CreateAuctionPage() {
     "capacity",
     "auctionType",
     "callbacksType",
+    "dtlIsVested",
     "start",
     "deadline",
   ]);
@@ -293,6 +357,7 @@ export default function CreateAuctionPage() {
   });
 
   const handleCreation = async (values: CreateAuctionForm) => {
+    console.log(values);
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
@@ -334,6 +399,7 @@ export default function CreateAuctionPage() {
     } else {
       callbacks = getCallbacks(chainId, callbacksType).address;
     }
+    console.log("callbacks", callbacks);
 
     // Set the callback data based on the type and user inputs
     let callbackData = toHex("");
@@ -397,6 +463,71 @@ export default function CreateAuctionPage() {
           parseAbiParameters("address token, uint256 threshold"),
           [allowlistToken, threshold],
         );
+        break;
+      }
+      case CallbacksType.UNIV2_DTL: {
+        const proceedsPercent = values.dtlProceedsPercent
+          ? (values.dtlProceedsPercent[0] ?? 0) * 1000
+          : 0;
+        const vestingStart = values.dtlVestingStart
+          ? getTimestamp(values.dtlVestingStart)
+          : 0;
+        const vestingExpiry =
+          vestingStart === 0
+            ? 0
+            : vestingStart +
+              getDuration(Number(values.dtlVestingDuration ?? 0));
+        const recipient = !values.dtlRecipient
+          ? zeroAddress
+          : getAddress(values.dtlRecipient);
+        const implParams = toHex("");
+        console.log("recipient is address", isAddress(recipient));
+        console.log("recipient", recipient);
+        console.log("implParams is address", isAddress(implParams));
+        console.log("implParams is hex", isHex(implParams));
+        console.log("implParams", implParams);
+        callbackData = encodeAbiParameters(
+          parseAbiParameters(
+            "uint24 proceedsUtilisationPercent, uint48 vestingStart, uint48 vestingExpiry, address recipient, bytes implParams",
+          ),
+          [proceedsPercent, vestingStart, vestingExpiry, recipient, implParams],
+        );
+        console.log("callbackData", callbackData);
+        break;
+      }
+      case CallbacksType.UNIV3_DTL: {
+        const proceedsPercent = values.dtlProceedsPercent
+          ? (values.dtlProceedsPercent[0] ?? 0) * 1000
+          : 0;
+        const vestingStart = values.dtlVestingStart
+          ? getTimestamp(values.dtlVestingStart)
+          : 0;
+        const vestingExpiry =
+          vestingStart === 0
+            ? 0
+            : vestingStart +
+              getDuration(Number(values.dtlVestingDuration ?? 0));
+        const recipient = (values.dtlRecipient ?? zeroAddress) as `0x${string}`;
+        const poolFee = values.dtlUniV3PoolFee
+          ? Number(values.dtlUniV3PoolFee)
+          : 0;
+        const implParams = encodeAbiParameters(
+          parseAbiParameters("uint24 poolFee"),
+          [poolFee],
+        );
+        console.log("recipient is address", isAddress(recipient));
+        console.log("recipient", recipient);
+        console.log("implParams is address", isAddress(implParams));
+        console.log("implParams is hex", isHex(implParams));
+        console.log("implParams", implParams);
+
+        callbackData = encodeAbiParameters(
+          parseAbiParameters(
+            "uint24 proceedsUtilisationPercent, uint48 vestingStart, uint48 vestingExpiry, address recipient, bytes implParams",
+          ),
+          [proceedsPercent, vestingStart, vestingExpiry, recipient, implParams],
+        );
+        console.log("callbackData", callbackData);
         break;
       }
     }
@@ -602,6 +733,8 @@ export default function CreateAuctionPage() {
     // Clear the file load message if the callbacks type is changed
     setFileLoadMessage(null);
   }, [callbacksType]);
+
+  // TODO: if DTL is selected, need to add a check to see if a pool is already created for the quote and payout token on the target chain/factory
 
   return (
     <PageContainer>
@@ -1002,6 +1135,73 @@ export default function CreateAuctionPage() {
                 </Text>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
+                    name="curator"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Curator"
+                        tooltip={"The address of the auction curator"}
+                      >
+                        <Input
+                          {...field}
+                          placeholder={trimAddress("0x0000000")}
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />{" "}
+                  <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
+                    <FormField
+                      name="isVested"
+                      render={({ field }) => (
+                        <FormItemWrapper className="mt-4 w-min">
+                          <div className="flex items-center gap-x-2">
+                            <Switch onCheckedChange={field.onChange} />
+                            <Label>Vested</Label>
+                          </div>
+                        </FormItemWrapper>
+                      )}
+                    />
+
+                    <FormField
+                      name="vestingDuration"
+                      render={({ field }) => (
+                        <FormItemWrapper label="Vesting Days">
+                          <Input
+                            type="number"
+                            placeholder="7"
+                            disabled={!isVested}
+                            required={isVested}
+                            {...field}
+                          />
+                        </FormItemWrapper>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="vestingStart"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Vesting Start"
+                        tooltip="The start date/time of the vesting"
+                      >
+                        <DatePicker
+                          time
+                          placeholderDate={addMinutes(new Date(), 5)}
+                          content={formatDate.fullLocal(new Date())}
+                          {...field}
+                          minDate={
+                            deadline
+                              ? (deadline as Date)
+                              : addDays(new Date(), 1)
+                          }
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />
+                </div>
+                <h3 className="form-div">7 Additional Features</h3>
+                <div className="grid grid-cols-2 place-items-center gap-4">
+                  <FormField
                     control={form.control}
                     name="callbacksType"
                     render={({ field }) => (
@@ -1033,6 +1233,14 @@ export default function CreateAuctionPage() {
                             {
                               value: CallbacksType.TOKEN_ALLOWLIST,
                               label: "Token Allowlist",
+                            },
+                            {
+                              value: CallbacksType.UNIV2_DTL,
+                              label: "Deposit to Uniswap V2 Pool",
+                            },
+                            {
+                              value: CallbacksType.UNIV3_DTL,
+                              label: "Deposit to Uniswap V3 Pool",
                             },
                             // {
                             //   value: CallbacksType.CUSTOM,
@@ -1132,6 +1340,139 @@ export default function CreateAuctionPage() {
                       />
                     </>
                   )}
+                  {(callbacksType === CallbacksType.UNIV2_DTL ||
+                    callbacksType === CallbacksType.UNIV3_DTL) && (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="dtlProceedsPercent"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            className="mt-4"
+                            label="Percent of Proceeds to Deposit"
+                            tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
+                          >
+                            <>
+                              <Input
+                                disabled
+                                className="disabled:opacity-100"
+                                value={`${field.value?.[0] ?? [75]}%`}
+                              />
+                              <Slider
+                                {...field}
+                                className="cursor-pointer pt-2"
+                                min={1}
+                                max={100}
+                                defaultValue={[75]}
+                                value={field.value}
+                                onValueChange={(v) => {
+                                  field.onChange(v);
+                                }}
+                              />
+                            </>
+                          </FormItemWrapper>
+                        )}
+                      />
+                      <FormField
+                        name="dtlRecipient"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Liquidity Recipient"
+                            tooltip={
+                              "The address that will receive the liquidity tokens"
+                            }
+                          >
+                            <Input
+                              {...field}
+                              placeholder={trimAddress("0x0000000")}
+                            />
+                          </FormItemWrapper>
+                        )}
+                      />{" "}
+                      <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
+                        <FormField
+                          name="dtlIsVested"
+                          render={({ field }) => (
+                            <FormItemWrapper className="mt-4 w-min">
+                              <div className="flex items-center gap-x-2">
+                                <Switch onCheckedChange={field.onChange} />
+                                <Label>Liquidity Vested</Label>
+                              </div>
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          name="dtlVestingDuration"
+                          render={({ field }) => (
+                            <FormItemWrapper label="Liquidity Vesting Days">
+                              <Input
+                                type="number"
+                                placeholder="7"
+                                disabled={!dtlIsVested}
+                                required={dtlIsVested}
+                                {...field}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name="dtlVestingStart"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Liquidity Vesting Start"
+                            tooltip="The start date/time of the liquidity vesting"
+                          >
+                            <DatePicker
+                              time
+                              placeholderDate={addMinutes(new Date(), 5)}
+                              content={formatDate.fullLocal(new Date())}
+                              {...field}
+                              minDate={
+                                deadline
+                                  ? (deadline as Date)
+                                  : addDays(new Date(), 1)
+                              }
+                            />
+                          </FormItemWrapper>
+                        )}
+                      />
+                    </>
+                  )}
+                  {callbacksType === CallbacksType.UNIV3_DTL && (
+                    <FormField
+                      control={form.control}
+                      name="dtlUniV3PoolFee"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="UniV3 Pool Fee"
+                          tooltip={
+                            "The fee to set on the Uniswap V3 pool on creation."
+                          }
+                        >
+                          <Select
+                            defaultValue={"3000"}
+                            options={[
+                              {
+                                value: "500",
+                                label: "0.05%",
+                              },
+                              {
+                                value: "3000",
+                                label: "0.3%",
+                              },
+                              {
+                                value: "10000",
+                                label: "1.0%",
+                              },
+                            ]}
+                            {...field}
+                          />
+                        </FormItemWrapper>
+                      )}
+                    />
+                  )}
                   {/* {callbacksType === CallbacksType.CUSTOM && (
                     <>
                       <FormField
@@ -1168,70 +1509,6 @@ export default function CreateAuctionPage() {
                       />
                     </>
                   )} */}
-                  <FormField
-                    name="curator"
-                    render={({ field }) => (
-                      <FormItemWrapper
-                        label="Curator"
-                        tooltip={"The address of the auction curator"}
-                      >
-                        <Input
-                          {...field}
-                          placeholder={trimAddress("0x0000000")}
-                        />
-                      </FormItemWrapper>
-                    )}
-                  />{" "}
-                  <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
-                    <FormField
-                      name="isVested"
-                      render={({ field }) => (
-                        <FormItemWrapper className="mt-4 w-min">
-                          <div className="flex items-center gap-x-2">
-                            <Switch onCheckedChange={field.onChange} />
-                            <Label>Vested</Label>
-                          </div>
-                        </FormItemWrapper>
-                      )}
-                    />
-
-                    <FormField
-                      name="vestingDuration"
-                      render={({ field }) => (
-                        <FormItemWrapper label="Vesting Days">
-                          <Input
-                            type="number"
-                            placeholder="7"
-                            disabled={!isVested}
-                            required={isVested}
-                            {...field}
-                          />
-                        </FormItemWrapper>
-                      )}
-                    />
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="vestingStart"
-                    render={({ field }) => (
-                      <FormItemWrapper
-                        label="Vesting Start"
-                        tooltip="The start date/time of the vesting"
-                      >
-                        <DatePicker
-                          time
-                          placeholderDate={addMinutes(new Date(), 5)}
-                          content={formatDate.fullLocal(new Date())}
-                          {...field}
-                          minDate={
-                            deadline
-                              ? (deadline as Date)
-                              : addDays(new Date(), 1)
-                          }
-                        />
-                      </FormItemWrapper>
-                    )}
-                  />
                 </div>
               </div>
             </div>
