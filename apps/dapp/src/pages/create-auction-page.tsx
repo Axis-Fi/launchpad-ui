@@ -124,6 +124,7 @@ const schema = z
     message: "Vesting duration is required",
     path: ["vestingDuration"],
   })
+
   // TODO do we need to add a max vesting duration check?
   // .refine(
   //   (data) => (!data.isVested ? true : data.vestingDuration && Number(data.vestingDuration) <= 270),

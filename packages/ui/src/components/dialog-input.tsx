@@ -31,8 +31,10 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
 
   const handleChange: DialogInputChangeHandler<T> = useCallback(
     (value, display) => {
-      setSelected(value);
-      setDisplay(display);
+      if (display?.label) {
+        setDisplay(display);
+        setSelected(value);
+      }
 
       onChange?.(value);
     },
