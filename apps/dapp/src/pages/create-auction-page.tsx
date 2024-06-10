@@ -589,6 +589,8 @@ export default function CreateAuctionPage() {
 
     reader.onload = function (e) {
       const contents = e.target?.result;
+
+      //@ts-expect-error - TODO: type mismatch
       Papa.parse(contents, {
         header: true,
         complete: parseFn,

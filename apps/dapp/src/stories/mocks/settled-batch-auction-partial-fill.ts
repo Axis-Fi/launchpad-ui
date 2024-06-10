@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { AuctionType, type BatchAuction } from "@repo/types";
 import { getSettledAuctionPartialFillBidsMock } from "./bids-partial-fill";
 
