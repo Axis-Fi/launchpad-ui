@@ -342,6 +342,13 @@ export const batchAuctionHouseAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getAuctionModuleForId",
+    outputs: [{ name: "", internalType: "contract IAuction", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getBatchModuleForId",
     outputs: [
       {
@@ -364,21 +371,21 @@ export const batchAuctionHouseAbi = [
   {
     stateMutability: "view",
     type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getDerivativeModuleForId",
+    outputs: [
+      { name: "", internalType: "contract IDerivative", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
     inputs: [{ name: "auctionType_", internalType: "Keycode", type: "bytes5" }],
     name: "getFees",
     outputs: [
       { name: "protocol", internalType: "uint48", type: "uint48" },
       { name: "referrer", internalType: "uint48", type: "uint48" },
       { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "getModuleForId",
-    outputs: [
-      { name: "", internalType: "contract AuctionModule", type: "address" },
     ],
   },
   {
@@ -458,8 +465,8 @@ export const batchAuctionHouseAbi = [
     name: "lotRouting",
     outputs: [
       { name: "seller", internalType: "address", type: "address" },
-      { name: "baseToken", internalType: "contract ERC20", type: "address" },
-      { name: "quoteToken", internalType: "contract ERC20", type: "address" },
+      { name: "baseToken", internalType: "address", type: "address" },
+      { name: "quoteToken", internalType: "address", type: "address" },
       { name: "auctionReference", internalType: "Veecode", type: "bytes7" },
       { name: "funding", internalType: "uint256", type: "uint256" },
       {
