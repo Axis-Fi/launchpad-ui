@@ -27,8 +27,8 @@ export function EncryptedMarginalPriceAuctionConcluded({
 
   return (
     <div>
-      <div className="flex justify-between">
-        <div className="flex w-1/2 flex-col gap-y-4">
+      <div className="flex justify-between gap-x-8">
+        <div className="flex w-full flex-col gap-y-4">
           <Card
             title="Launch Info"
             headerRightElement={
@@ -53,7 +53,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
           <ProjectInfoCard auction={auction} />
         </div>
 
-        <div className="w-[40%]">
+        <div>
           <TransactionDialog
             signatureMutation={decrypt.decryptTx}
             disabled={isWaiting}

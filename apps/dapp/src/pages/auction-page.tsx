@@ -118,7 +118,10 @@ export default function AuctionPage() {
       </ImageBanner>
 
       <PageContainer>
-        <PageHeader>
+        <PageHeader
+          backNavigationPath="/#"
+          backNavigationText="Back to Launches"
+        >
           <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
         </PageHeader>
 

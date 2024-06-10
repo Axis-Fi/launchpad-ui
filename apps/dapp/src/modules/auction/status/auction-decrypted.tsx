@@ -17,8 +17,8 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
   return (
-    <div className="flex justify-between">
-      <div className="flex w-[50%] flex-col justify-between gap-y-4">
+    <div className="flex justify-between gap-x-8">
+      <div className="flex w-full flex-col justify-between gap-y-4">
         <Card
           title="Launch Info"
           headerRightElement={
@@ -44,7 +44,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
         <ProjectInfoCard auction={auction} />
       </div>
 
-      <div className="w-[40%]">
+      <div className="w-full max-w-lg">
         <TransactionDialog
           signatureMutation={settle.settleTx}
           disabled={isWaiting}

@@ -18,8 +18,8 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
 
   return (
     <div>
-      <div className="flex justify-between">
-        <div className="flex w-1/2 flex-col gap-y-4">
+      <div className="flex justify-between gap-x-8">
+        <div className="flex w-full flex-col gap-y-4">
           <Card
             title="Launch Info"
             headerRightElement={
@@ -43,7 +43,7 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
           </Card>
           <ProjectInfoCard auction={props.auction} />
         </div>
-        <div className="w-[40%]">
+        <div>
           <TransactionDialog
             signatureMutation={settle.settleTx}
             error={settle.error}
