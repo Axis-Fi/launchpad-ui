@@ -6,19 +6,20 @@ const getBatchAuctionMock = (
   ({
     chainId: 168587773,
     baseToken: {
-      address: "0x08b87749b379f5bca1d74a7b3d4e9f3ded41c706",
-      decimals: 18,
       symbol: "ZYN",
+      decimals: 18,
       name: "Zyn Token",
+      address: "0x08b87749b379f5bca1d74a7b3d4e9f3ded41c706",
       chainId: 168587773,
     },
     quoteToken: {
-      address: "0xe292cf4e316191cbfebd74909356df3cd9455e96",
+      symbol: "USDC",
       decimals: 18,
       name: "USDC Token",
-      symbol: "USDC",
+      address: "0xe292cf4e316191cbfebd74909356df3cd9455e96",
       chainId: 168587773,
     },
+    callbacks: "0x0000000000000000000000000000000000000000",
     status: "settled",
     auctionInfo: {
       name: "Zyn Protocol",
