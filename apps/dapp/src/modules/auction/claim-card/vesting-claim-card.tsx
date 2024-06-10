@@ -54,6 +54,8 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
     address: auction.baseToken.address,
   });
 
+  // TODO redeem button & dialog
+
   // If the auction does not have vesting enabled, return early
   if (!auction.linearVesting) {
     return (
