@@ -29,7 +29,15 @@ const getClaimStatus = ({
   const userHasBids = auction.bids.some(
     (bid) => bid.bidder.toLowerCase() === userAddress?.toLowerCase(),
   );
-  const isVesting = false; // TODO: obtain this value
+  const userHasClaimed = auction.bids.every(
+    (bid) => bid.status === "claimed" || bid.status === "refunded",
+  );
+  const isAuctionLinearVesting =
+    auction.linearVesting?.id !== undefined && auction.linearVesting?.id !== "";
+
+  // For vesting to be active, the user has to have claimed their bids and linear vesting must be enabled.
+  const isVesting = isAuctionLinearVesting && userHasClaimed;
+  // const isVesting = true;
 
   if (!isWalletConnected) {
     return "NOT_CONNECTED";
@@ -71,7 +79,7 @@ export function ClaimCard({ auction: _auction }: PropsWithAuction) {
     }
 
     case "VESTING": {
-      return <VestingClaimCard />;
+      return <VestingClaimCard auction={auction} />;
     }
 
     default: {
