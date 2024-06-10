@@ -1,16 +1,31 @@
-import { activeChains } from "@repo/env/src/chains";
 import { Meta, StoryObj } from "@storybook/react";
-import { getBatchAuctionMock } from "../mocks/batch-auction";
+import { getFixedPriceBatchAuctionMock } from "../mocks/batch-auction";
 import { AuctionBidInputSingle } from "modules/auction/auction-bid-input-single";
 import { BidForm } from "modules/auction/status";
 import { useForm, FormProvider } from "react-hook-form";
+import { ReactNode } from "react";
+import { Card } from "@repo/ui";
 
-const form = useForm<BidForm>({
-  mode: "onTouched",
-});
+const StorybookFormProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const form = useForm<BidForm>({
+    mode: "onTouched",
+  });
+
+  return (
+    <FormProvider {...form}>
+      <form onSubmit={(e) => e.preventDefault()}>{children}</form>
+    </FormProvider>
+  );
+};
+
+const defaultAuction = {
+  ...getFixedPriceBatchAuctionMock(),
+};
+
 const defaultArgs = {
-  auction: getBatchAuctionMock(),
-  form: form,
+  auction: defaultAuction,
   balance: 100,
 };
 
@@ -20,9 +35,11 @@ const meta = {
   component: AuctionBidInputSingle,
   decorators: [
     (Story) => (
-      <FormProvider {...form}>
-        <Story />
-      </FormProvider>
+      <StorybookFormProvider>
+        <Card>
+          <Story />
+        </Card>
+      </StorybookFormProvider>
     ),
   ],
 } satisfies Meta<typeof AuctionBidInputSingle>;
@@ -31,4 +48,15 @@ export default meta;
 
 type Story = StoryObj<typeof AuctionBidInputSingle>;
 
-export const Default: Story = {};
+export const BalanceZero: Story = {
+  args: {
+    balance: 0,
+  },
+};
+
+// TODO:
+// [ ] No balance
+// [ ] No limit
+// [ ] Limit defined
+// [ ] Input amount more than remaining capacity
+// [ ] Input amount less than remaining capacity
