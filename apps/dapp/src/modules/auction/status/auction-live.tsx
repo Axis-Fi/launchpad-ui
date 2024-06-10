@@ -228,6 +228,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               >
                 {isFixedPriceBatch ? (
                   <AuctionBidInputSingle
+                    form={form}
                     balance={Number(formattedBalance)}
                     limit={amountLimited ? Number(limit) : undefined}
                     auction={auction}

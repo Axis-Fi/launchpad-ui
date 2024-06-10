@@ -1,5 +1,5 @@
 import { FormField, FormItemWrapperSlim } from "@repo/ui";
-import { useFormContext } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { PropsWithAuction } from "@repo/types";
 import { BidForm } from "./status";
 import { formatUnits, parseUnits } from "viem";
@@ -9,17 +9,17 @@ import { useGetUsdAmount } from "./hooks/use-get-usd-amount";
 import { trimCurrency } from "utils/currency";
 
 export function AuctionBidInputSingle({
+  form,
   auction,
   balance = 0,
   limit,
   disabled,
 }: {
+  form: UseFormReturn<BidForm>;
   balance?: number;
   limit?: number;
   disabled?: boolean;
 } & PropsWithAuction) {
-  const form = useFormContext<BidForm>();
-
   const [formAmountOut] = form.watch(["baseTokenAmount"]);
 
   // USD amount
