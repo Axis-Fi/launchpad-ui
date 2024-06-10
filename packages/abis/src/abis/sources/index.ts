@@ -8,6 +8,8 @@ import merkleAllowlist from "./MerkleAllowlist.json";
 import cappedMerkleAllowlist from "./CappedMerkleAllowlist.json";
 import tokenAllowlist from "./TokenAllowlist.json";
 import allocatedMerkleAllowlist from "./AllocatedMerkleAllowlist.json";
+import uniV2Dtl from "./UniswapV2DirectToLiquidity.json";
+import uniV3Dtl from "./UniswapV3DirectToLiquidity.json";
 
 //Fetch errors from modules to include in the AuctionHouse ABI
 const errors = [
@@ -33,4 +35,6 @@ export default {
   cappedMerkleAllowlist,
   tokenAllowlist,
   allocatedMerkleAllowlist,
+  uniV2Dtl,
+  uniV3Dtl,
 } as const;
