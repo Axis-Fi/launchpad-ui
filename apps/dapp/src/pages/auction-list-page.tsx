@@ -23,6 +23,12 @@ import {
   Element as ScrollTargetElement,
 } from "react-scroll";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
+import {
+  AuctionListSettingsActions,
+  auctionListSettingsAtom,
+} from "state/user-settings/auction-list-settings";
+import { useAtom } from "jotai";
+import React from "react";
 
 const options = [
   { value: "created", label: "Created" },
@@ -33,10 +39,13 @@ const options = [
 ];
 
 export default function AuctionListPage() {
+  const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
   const [filters] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [gridView, setGridView] = useState(false);
-  const [sortByStatus, setSortByStatus] = useState<string | undefined>();
+  const [gridView, setGridView] = useState(userSettings.gridView);
+  const [sortByStatus, setSortByStatus] = useState<string | undefined>(
+    userSettings.activeSort,
+  );
   const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
   const secureAuctions = auctions.filter((a) => a.isSecure);
 
@@ -58,6 +67,34 @@ export default function AuctionListPage() {
   });
 
   const { rows, ...pagination } = usePagination(sortedAuctions, 9);
+
+  //Load settings
+  React.useEffect(() => {
+    pagination.handleChangePage(userSettings.lastPage ?? 0);
+  }, []);
+
+  //Save current sort status
+  React.useEffect(() => {
+    dispatch({
+      type: AuctionListSettingsActions.UPDATE_SORT,
+      value: sortByStatus,
+    });
+  }, [sortByStatus]);
+
+  //Save current page
+  React.useEffect(() => {
+    dispatch({
+      type: AuctionListSettingsActions.UPDATE_PAGE,
+      value: pagination.selectedPage,
+    });
+  }, [pagination.selectedPage]);
+
+  React.useEffect(() => {
+    dispatch({
+      type: AuctionListSettingsActions.UPDATE_VIEW,
+      value: gridView,
+    });
+  }, [gridView]);
 
   return (
     <div className="">
@@ -116,6 +153,7 @@ export default function AuctionListPage() {
                 triggerClassName="w-[120px]"
                 placeholder="Sort By"
                 options={options}
+                defaultValue={sortByStatus}
                 onChange={(value) => {
                   setSortByStatus(value);
                 }}
@@ -123,7 +161,7 @@ export default function AuctionListPage() {
 
               <ToggleGroup
                 type="single"
-                defaultValue="list"
+                defaultValue={gridView ? "grid" : "list"}
                 onValueChange={(value) => setGridView(value === "grid")}
               >
                 <ToggleGroupItem variant="icon" value="list">
