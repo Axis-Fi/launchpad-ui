@@ -114,13 +114,14 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
           </div>
 
           <div>
-            <Text size="xs">Vesting Progress</Text>
-            <Progress value={vestingProgress} className="mt-1">
-              {/* TODO left-align this */}
-              <Metric size="s" label="Term">
-                6M
-              </Metric>
-            </Progress>
+            <Metric size="s" label="Vesting Progress">
+              <Progress value={vestingProgress} className="mt-1">
+                {/* TODO left-align this */}
+                <Metric size="s" label="Term">
+                  6M
+                </Metric>
+              </Progress>
+            </Metric>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
