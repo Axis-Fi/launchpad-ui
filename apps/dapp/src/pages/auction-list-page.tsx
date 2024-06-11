@@ -31,6 +31,7 @@ import {
 import { useAtom } from "jotai";
 import React from "react";
 import { useAccount } from "wagmi";
+import { environment } from "@repo/env";
 
 const options = [
   { value: "created", label: "Created" },
@@ -131,7 +132,6 @@ export default function AuctionListPage() {
     });
   }, [pagination.selectedPage]);
 
-  console.log({ searchText });
   return (
     <div className="">
       <div className="bg-hero-banner flex h-[582px] w-full items-end justify-center">
@@ -258,14 +258,16 @@ export default function AuctionListPage() {
           </div>
           <Pagination className="mt-6" {...pagination} />
 
-          <div className="flex flex-col items-center justify-center py-8">
-            <p className="pb-2 font-sans">Want to create an auction?</p>
-            <Link to="/create/auction">
-              <Button variant="ghost">
-                Create Auction <ArrowRightIcon className="w-6 pl-1" />
-              </Button>
-            </Link>
-          </div>
+          {!environment.isProduction && (
+            <div className="flex flex-col items-center justify-center py-8">
+              <p className="pb-2 font-sans">Want to create an auction?</p>
+              <Link to="/create/auction">
+                <Button variant="ghost">
+                  Create Auction <ArrowRightIcon className="w-6 pl-1" />
+                </Button>
+              </Link>
+            </div>
+          )}
         </PageContainer>
       </ScrollTargetElement>
     </div>
@@ -273,7 +275,6 @@ export default function AuctionListPage() {
 }
 
 function searchObject<T extends object>(obj: T, text: string): boolean {
-  console.log("oiiii", { obj });
   return Object.values(obj).some((value: unknown) => {
     return !!value && typeof value === "object"
       ? searchObject(value, text)
