@@ -68,6 +68,7 @@ function AuctionCardDetails(
         >
           <IconedLabel
             large
+            alt={props.auction.baseToken.symbol}
             src={props.auction.auctionInfo?.links?.projectLogo}
           >
             {props.auction.auctionInfo?.name}

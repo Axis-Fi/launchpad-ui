@@ -126,10 +126,10 @@ export default function AuctionListPage() {
                 defaultValue="list"
                 onValueChange={(value) => setGridView(value === "grid")}
               >
-                <ToggleGroupItem value="list">
+                <ToggleGroupItem variant="icon" value="list">
                   <RowsIcon />
                 </ToggleGroupItem>
-                <ToggleGroupItem value="grid">
+                <ToggleGroupItem variant="icon" value="grid">
                   <DashboardIcon />
                 </ToggleGroupItem>
               </ToggleGroup>
