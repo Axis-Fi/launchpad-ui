@@ -172,7 +172,10 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
           <TransactionDialog
             open={isTxnDialogOpen}
             signatureMutation={claimVestedTokensTx.redeemTx}
-            error={claimVestedTokensTx.redeemTx.error}
+            error={
+              claimVestedTokensTx.redeemCall.error ||
+              claimVestedTokensTx.redeemTx.error
+            } // Catch both simulation and execution errors
             onConfirm={claimVestedTokensTx.handleRedeem}
             mutation={claimVestedTokensTx.redeemReceipt}
             chainId={auction.chainId}
