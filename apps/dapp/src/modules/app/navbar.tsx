@@ -22,7 +22,7 @@ const testnetLinks = [
 const defaultLinks = [
   { title: "Launches", href: "/#" },
   { title: "Contact", href: "mailto:launch@axis.finance" },
-  { title: "Docs", href: "https://docs.axis.finance" },
+  { title: "Docs", href: "https://axis.finance/docs/overview" },
 ];
 
 export default function Navbar() {
