@@ -222,9 +222,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       ? Math.min(Number(allowlistLimit), maxBidAmount)
       : allowlistLimitsAmount
         ? Number(allowlistLimit)
-        : maxBidAmount !== undefined
-          ? maxBidAmount
-          : undefined;
+        : maxBidAmount;
 
   // TODO calculate coin rank
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
