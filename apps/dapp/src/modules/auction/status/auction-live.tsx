@@ -5,7 +5,7 @@ import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { LockIcon } from "lucide-react";
-import { shorten, trimCurrency } from "utils";
+import { shorten } from "utils";
 import { useBidAuction } from "../hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,12 +35,45 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+  const auctionFormatted = auction.formatted || undefined;
+
+  const [maxBidAmount, setMaxBidAmount] = useState<number | undefined>();
+
+  // Cache the max bid amount
+  useEffect(() => {
+    // Only for FPB, since we don't know the amount out for each bid in EMP
+    if (!isFixedPriceBatch || !auctionFormatted) {
+      setMaxBidAmount(undefined);
+      return;
+    }
+
+    // Calculate the remaining capacity in terms of quote tokens
+    const capacityInQuoteTokens =
+      Number(auction.capacityInitial) *
+      Number(auctionFormatted.price?.replace(/,/g, ""));
+
+    const remainingQuoteTokens =
+      capacityInQuoteTokens -
+      Number(auctionFormatted.totalBidAmount?.replace(/,/g, ""));
+
+    setMaxBidAmount(remainingQuoteTokens);
+  }, [
+    auction.capacityInitial,
+    auctionFormatted,
+    auctionFormatted?.totalBidAmount,
+    isFixedPriceBatch,
+  ]);
 
   // Allowlist callback support
   // Handles determining if an allowlist callback is being used
   // and provides variables for displaying on the UI and submitting the bid transaction
-  const { canBid, amountLimited, limit, criteria, callbackData } =
-    useAllowlist(auction);
+  const {
+    canBid,
+    amountLimited: allowlistLimitsAmount,
+    limit: allowlistLimit,
+    criteria,
+    callbackData,
+  } = useAllowlist(auction);
 
   const form = useForm<BidForm>({
     mode: "onTouched",
@@ -74,18 +107,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           },
         )
         .refine(
-          (data) =>
-            isFixedPriceBatch ||
-            Number(data.quoteTokenAmount) <=
-              Number(auction.formatted?.maxAmount),
-          {
-            message: `Max amount is ${trimCurrency(
-              auction.formatted?.maxAmount ?? 0,
-            )}`,
-            path: ["quoteTokenAmount"],
-          },
-        )
-        .refine(
           (data) => Number(data.quoteTokenAmount) <= Number(formattedBalance),
           {
             message: `Insufficient balance`,
@@ -101,10 +122,21 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         )
         .refine(
           (data) =>
-            !amountLimited ||
-            (amountLimited && Number(data.quoteTokenAmount) <= Number(limit)),
+            !allowlistLimitsAmount ||
+            (allowlistLimitsAmount &&
+              Number(data.quoteTokenAmount) <= Number(allowlistLimit)),
           {
-            message: `Exceeds your remaining allocation of ${limit} ${auction.quoteToken.symbol}`,
+            message: `Exceeds your remaining allocation of ${allowlistLimit} ${auction.quoteToken.symbol}`,
+            path: ["quoteTokenAmount"],
+          },
+        )
+        .refine(
+          (data) =>
+            !isFixedPriceBatch ||
+            maxBidAmount === undefined ||
+            Number(data.quoteTokenAmount) <= maxBidAmount,
+          {
+            message: `Exceeds remaining capacity of ${maxBidAmount} ${auction.quoteToken.symbol}`,
             path: ["quoteTokenAmount"],
           },
         ),
@@ -156,8 +188,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
   const amountInInvalid =
-    (isFixedPriceBatch &&
-      parsedAmountIn > Number(auction.formatted?.maxAmount)) || // greater than max amount on fixed price sale
     parsedAmountIn > Number(formattedBalance) || // greater than balance
     parsedAmountIn === undefined ||
     parsedAmountIn === 0; // zero or empty
@@ -185,6 +215,16 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     const fdv = Number(auction.baseToken.totalSupply) * Number(bidPrice);
     setBidFdv(`${shorten(fdv)} ${auction.quoteToken.symbol}`);
   }, [bidPrice, auction.baseToken.totalSupply, auction.quoteToken.symbol]);
+
+  // Calculate the limit for the user as the minimum of the allowlist limit (where applicable) and the max bid amount
+  const bidLimit =
+    allowlistLimitsAmount && maxBidAmount !== undefined
+      ? Math.min(Number(allowlistLimit), maxBidAmount)
+      : allowlistLimitsAmount
+        ? Number(allowlistLimit)
+        : maxBidAmount !== undefined
+          ? maxBidAmount
+          : undefined;
 
   // TODO calculate coin rank
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
@@ -229,14 +269,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 {isFixedPriceBatch ? (
                   <AuctionBidInputSingle
                     balance={Number(formattedBalance)}
-                    limit={amountLimited ? Number(limit) : undefined}
+                    limit={bidLimit}
                     auction={auction}
                     disabled={isWalletChainIncorrect}
                   />
                 ) : (
                   <AuctionBidInput
                     balance={Number(formattedBalance)}
-                    limit={amountLimited ? Number(limit) : undefined}
+                    limit={bidLimit}
                     auction={auction}
                     disabled={isWalletChainIncorrect}
                   />

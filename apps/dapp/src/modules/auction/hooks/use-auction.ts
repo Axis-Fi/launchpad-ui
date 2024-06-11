@@ -260,6 +260,7 @@ function addFPBFields(auction: BatchSubgraphAuction) {
     ? trimCurrency(auction.fixedPrice?.minFilled)
     : undefined;
 
+  // TODO include formatted and non-formatted/number values
   return {
     price: auction.fixedPrice?.price,
     totalBids,

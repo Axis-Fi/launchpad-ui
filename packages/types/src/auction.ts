@@ -91,8 +91,6 @@ export type AuctionFormattedInfo = {
   capacity: string;
   totalSupply: string;
   price?: string;
-  maxPayout?: string;
-  maxAmount?: string;
   auctionType?: string;
 } & Partial<EMPFormattedInfo>;
 
