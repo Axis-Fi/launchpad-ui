@@ -23,6 +23,18 @@ const calculateVestingProgress = (start?: number, end?: number): number => {
   return Math.min(100, (elapsed / total) * 100);
 };
 
+const calculateVestingTerm = (start?: number, end?: number): string => {
+  if (!start || !end) return "0";
+
+  const termDays = Math.floor((end - start) / 60 / 60 / 24);
+
+  // If less than a month, return days
+  if (termDays < 30) return `${termDays}D`;
+
+  // Return months
+  return `${Math.floor(termDays / 30)}M`;
+};
+
 export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
   const auction = _auction as BatchAuction;
   const { address } = useAccount();
@@ -93,6 +105,10 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
     linearVestingData?.start,
     linearVestingData?.expiry,
   );
+  const vestingTerm = calculateVestingTerm(
+    linearVestingData?.start,
+    linearVestingData?.expiry,
+  );
 
   const vestingBadgeColour = vestingProgress >= 100 ? "active" : "blue";
   const vestingBadgeText = vestingProgress >= 100 ? "Fully Vested" : "Vesting";
@@ -129,9 +145,8 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
             <Metric size="s" label="Vesting Progress">
               <Progress value={vestingProgress} className="mt-1">
                 {/* TODO left-align this */}
-                {/* TODO vesting term */}
                 <Metric size="s" label="Term">
-                  6M
+                  {vestingTerm}
                 </Metric>
               </Progress>
             </Metric>
