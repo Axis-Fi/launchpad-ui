@@ -8,12 +8,15 @@ import { useDerivativeData } from "../hooks/use-derivative-data";
 import { useVestingTokenId } from "../hooks/use-vesting-tokenid";
 import { useVestingRedeemable } from "../hooks/use-vesting-redeemable";
 import { useDerivativeModule } from "../hooks/use-derivative-module";
+import { useState } from "react";
+import { useVestingRedeem } from "../hooks/use-vesting-redeem";
+import { TransactionDialog } from "modules/transaction/transaction-dialog";
 
 const calculateVestingProgress = (start?: number, end?: number): number => {
   if (!start || !end) return 0;
 
   // Return the percentage of time elapsed between the start and end, expressed as 0-100
-  const now = Date.now();
+  const now = Date.now() / 1000;
   const elapsed = now - start;
   const total = end - start;
 
@@ -23,7 +26,7 @@ const calculateVestingProgress = (start?: number, end?: number): number => {
 export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
   const auction = _auction as BatchAuction;
   const { address } = useAccount();
-  // const [setTxnDialogOpen] = useState(false);
+  const [isTxnDialogOpen, setTxnDialogOpen] = useState(false);
 
   const { data: linearVestingData } = useDerivativeData({
     chainId: auction.chainId,
@@ -51,10 +54,19 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
   });
 
   const { data: claimedAmount } = useBalance({
-    address: auction.baseToken.address,
+    address: address,
+    token: auction.baseToken.address,
+    chainId: auction.chainId,
   });
 
-  // TODO redeem button & dialog
+  const claimVestedTokensTx = useVestingRedeem({
+    vestingTokenId: vestingTokenId,
+    chainId: auction.chainId,
+    derivativeModuleAddress: vestingModuleAddress,
+  });
+  const isTxWaiting =
+    claimVestedTokensTx.redeemTx.isPending ||
+    claimVestedTokensTx.redeemReceipt.isLoading;
 
   // If the auction does not have vesting enabled, return early
   if (!auction.linearVesting) {
@@ -117,6 +129,7 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
             <Metric size="s" label="Vesting Progress">
               <Progress value={vestingProgress} className="mt-1">
                 {/* TODO left-align this */}
+                {/* TODO vesting term */}
                 <Metric size="s" label="Term">
                   6M
                 </Metric>
@@ -149,12 +162,48 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
                 size="lg"
                 className="w-full"
                 disabled={!redeemableAmount}
-                // onClick={() => setTxnDialogOpen(true)}
+                onClick={() => setTxnDialogOpen(true)}
               >
                 Claim {auction.baseToken.symbol}
               </Button>
             </div>
           </RequiresChain>
+
+          <TransactionDialog
+            open={isTxnDialogOpen}
+            signatureMutation={claimVestedTokensTx.redeemTx}
+            error={claimVestedTokensTx.redeemTx.error}
+            onConfirm={claimVestedTokensTx.handleRedeem}
+            mutation={claimVestedTokensTx.redeemReceipt}
+            chainId={auction.chainId}
+            onOpenChange={(open: boolean) => {
+              if (!open) {
+                claimVestedTokensTx.redeemTx.reset();
+              }
+              setTxnDialogOpen(open);
+            }}
+            hash={claimVestedTokensTx.redeemTx.data}
+            disabled={isTxWaiting}
+            screens={{
+              idle: {
+                Component: () => (
+                  <div className="text-center">
+                    You&apos;re about to claim all of the redeemable vesting
+                    tokens from this auction.
+                  </div>
+                ),
+                title: `Confirm Claim ${auction.baseToken.symbol}`,
+              },
+              success: {
+                Component: () => (
+                  <div className="flex justify-center text-center">
+                    <p>Vesting tokens claimed successfully!</p>
+                  </div>
+                ),
+                title: "Transaction Confirmed",
+              },
+            }}
+          />
         </div>
       </Card>
     </div>
