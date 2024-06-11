@@ -90,7 +90,7 @@ export function TransactionDialog({
   return (
     <DialogRoot open={open} onOpenChange={onOpenChange}>
       {props.triggerContent && (
-        <DialogTrigger className="w-full " disabled={props.disabled}>
+        <DialogTrigger className="w-full max-w-lg" disabled={props.disabled}>
           <Button className="w-full max-w-sm" disabled={props.disabled}>
             {props.triggerContent}
           </Button>
