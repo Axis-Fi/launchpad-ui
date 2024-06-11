@@ -237,9 +237,12 @@ const schema = z
         data.callbacksType === CallbacksType.UNIV3_DTL
       )
         ? true
-        : data.dtlProceedsPercent,
+        : data.dtlProceedsPercent &&
+          data.dtlProceedsPercent.length > 0 &&
+          data.dtlProceedsPercent[0] >= 1 &&
+          data.dtlProceedsPercent[0] <= 100,
     {
-      message: "Liquidity proceeds percent is required",
+      message: "Liquidity proceeds percent must be 1-100",
       path: ["dtlProceedsPercent"],
     },
   )
