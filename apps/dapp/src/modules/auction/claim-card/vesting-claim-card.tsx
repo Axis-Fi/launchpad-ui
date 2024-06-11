@@ -82,12 +82,17 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
     linearVestingData?.expiry,
   );
 
+  const vestingBadgeColour = vestingProgress >= 100 ? "active" : "blue";
+  const vestingBadgeText = vestingProgress >= 100 ? "Fully Vested" : "Vesting";
+
   return (
     <div className="gap-y-md flex flex-col">
       <Card
         title="Claim"
         className="w-[496px]"
-        headerRightElement={<Badge color="blue">Vesting</Badge>}
+        headerRightElement={
+          <Badge color={vestingBadgeColour}>{vestingBadgeText}</Badge>
+        }
       >
         <div className="gap-y-md flex flex-col">
           <div>
