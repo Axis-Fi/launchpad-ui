@@ -9,6 +9,7 @@ import {
   cn,
   usePagination,
   Select,
+  Chip,
 } from "@repo/ui";
 import { ReloadButton } from "components/reload-button";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
@@ -29,6 +30,7 @@ import {
 } from "state/user-settings/auction-list-settings";
 import { useAtom } from "jotai";
 import React from "react";
+import { useAccount } from "wagmi";
 
 const options = [
   { value: "created", label: "Created" },
@@ -40,14 +42,29 @@ const options = [
 
 export default function AuctionListPage() {
   const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
-  const [filters] = useState<string[]>([]);
-  const [searchText, setSearchText] = useState<string>("");
+  const [onlyUserAuctions, setOnlyUserAuctions] = useState(
+    userSettings.onlyUserAuctions,
+  );
   const [gridView, setGridView] = useState(userSettings.gridView);
   const [sortByStatus, setSortByStatus] = useState<string | undefined>(
     userSettings.activeSort,
   );
+  const [filters] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState<string>("");
+
+  const { address } = useAccount();
   const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
-  const secureAuctions = auctions.filter((a) => a.isSecure);
+
+  const secureAuctions = auctions
+    .filter((a) => a.isSecure)
+    .filter(
+      // Filter only user created or participated auctions
+      (a) =>
+        !address ||
+        !onlyUserAuctions ||
+        a.seller === address.toLowerCase() ||
+        a.bids.some((b) => b.bidder.toLowerCase() === address.toLowerCase()),
+    );
 
   const filteredAuctions = filters.length
     ? secureAuctions
@@ -158,6 +175,18 @@ export default function AuctionListPage() {
                   setSortByStatus(value);
                 }}
               />
+
+              <Tooltip
+                triggerClassName="cursor-pointer"
+                content="Only show auctions you've created or participated in."
+              >
+                <Chip
+                  variant={onlyUserAuctions ? "active" : "default"}
+                  onClick={() => setOnlyUserAuctions((prev) => !prev)}
+                >
+                  My Launches
+                </Chip>
+              </Tooltip>
 
               <ToggleGroup
                 type="single"
