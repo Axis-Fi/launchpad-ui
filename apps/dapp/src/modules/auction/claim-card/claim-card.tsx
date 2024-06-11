@@ -37,7 +37,6 @@ const getClaimStatus = ({
 
   // For vesting to be active, the user has to have claimed their bids and linear vesting must be enabled.
   const isVesting = isAuctionLinearVesting && userHasClaimed;
-  // const isVesting = true;
 
   if (!isWalletConnected) {
     return "NOT_CONNECTED";
