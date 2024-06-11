@@ -9,24 +9,24 @@ import { AuctionStatusBadge } from "./auction-status-badge";
 import React from "react";
 import { Link } from "react-router-dom";
 
+type AuctionCardConditionalProps =
+  | { loading: true; auction?: never }
+  | { loading?: false; auction: AuctionListed };
+
 type AuctionCardProps = React.HTMLAttributes<HTMLDivElement> & {
-  auction: AuctionListed;
-  loading?: boolean;
   isGrid?: boolean;
-};
+} & AuctionCardConditionalProps;
 
 export function AuctionCard({ auction, ...props }: AuctionCardProps) {
-  const chain = getChainById(auction.chainId);
-
   return (
     <Card
       className={cn(
         "border-surface-tertiary hover:bg-surface-tertiary group size-full overflow-hidden hover:border-neutral-400",
-        props.isGrid ? "relative h-[368px] gap-y-3" : "p-8",
+        props.isGrid ? "relative h-[368px] min-w-[470px] gap-y-3" : "p-8",
         props.className,
       )}
     >
-      {props.loading ? (
+      {props.loading || !auction ? (
         <Skeleton className="h-[332px] w-full" />
       ) : (
         <div
@@ -39,7 +39,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
             //TODO: replace with a better named property, likely projectBanner
             image={auction.auctionInfo?.links?.projectLogo}
             deadline={auction.formatted?.endDate}
-            chain={chain}
+            chain={getChainById(auction?.chainId)}
             isGrid={props.isGrid}
           />
           <AuctionCardDetails isGrid={props.isGrid} auction={auction} />
