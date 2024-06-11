@@ -126,7 +126,6 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="">
-              {/* TODO spacing between label and content */}
               <Metric size="s" label="Claimable">
                 {redeemableAmount
                   ? trimCurrency(Number(redeemableAmount))
