@@ -66,11 +66,15 @@ export default function AuctionListPage() {
         a.bids.some((b) => b.bidder.toLowerCase() === address.toLowerCase()),
     );
 
-  const filteredAuctions = filters.length
-    ? secureAuctions
-        .filter((a) => filters.includes(a.status))
-        .filter((a) => !searchText.length || searchObject(a, searchText))
-    : secureAuctions;
+  const filteredAuctions =
+    filters.length || searchText.length
+      ? secureAuctions.filter(
+          (a) =>
+            filters.includes(a.status) ||
+            (searchText.length && searchObject(a, searchText)),
+        )
+      : //.filter((a) => searchObject(a, searchText))
+        secureAuctions;
 
   const sortedAuctions = [...filteredAuctions].sort((a, b) => {
     if (a.status === sortByStatus && b.status === sortByStatus) {
@@ -85,18 +89,39 @@ export default function AuctionListPage() {
 
   const { rows, ...pagination } = usePagination(sortedAuctions, 9);
 
-  //Load settings
-  React.useEffect(() => {
-    pagination.handleChangePage(userSettings.lastPage ?? 0);
-  }, []);
-
-  //Save current sort status
-  React.useEffect(() => {
+  const handleSorting = (value: string) => {
+    setSortByStatus(value);
     dispatch({
       type: AuctionListSettingsActions.UPDATE_SORT,
       value: sortByStatus,
     });
-  }, [sortByStatus]);
+  };
+
+  const handleSetUserAuctions = () => {
+    setOnlyUserAuctions((prev) => {
+      const value = !prev;
+      dispatch({
+        type: AuctionListSettingsActions.ONLY_USER_AUCTIONS,
+        value,
+      });
+      return value;
+    });
+  };
+
+  const handleViewChange = (value?: string) => {
+    const gridView = value === "grid";
+
+    setGridView(gridView);
+    dispatch({
+      type: AuctionListSettingsActions.UPDATE_VIEW,
+      value: gridView,
+    });
+  };
+
+  //Load settings
+  React.useEffect(() => {
+    pagination.handleChangePage(userSettings.lastPage ?? 0);
+  }, []);
 
   //Save current page
   React.useEffect(() => {
@@ -106,13 +131,7 @@ export default function AuctionListPage() {
     });
   }, [pagination.selectedPage]);
 
-  React.useEffect(() => {
-    dispatch({
-      type: AuctionListSettingsActions.UPDATE_VIEW,
-      value: gridView,
-    });
-  }, [gridView]);
-
+  console.log({ searchText });
   return (
     <div className="">
       <div className="bg-hero-banner flex h-[582px] w-full items-end justify-center">
@@ -132,7 +151,7 @@ export default function AuctionListPage() {
             <ScrollLink to="auctions" offset={-10} smooth={true}>
               <Button
                 onClick={() => {
-                  setSortByStatus("created");
+                  handleSorting("created");
                 }}
                 className="uppercase"
                 size="lg"
@@ -171,9 +190,7 @@ export default function AuctionListPage() {
                 placeholder="Sort By"
                 options={options}
                 defaultValue={sortByStatus}
-                onChange={(value) => {
-                  setSortByStatus(value);
-                }}
+                onChange={(value) => handleSorting(value)}
               />
 
               <Tooltip
@@ -182,7 +199,7 @@ export default function AuctionListPage() {
               >
                 <Chip
                   variant={onlyUserAuctions ? "active" : "default"}
-                  onClick={() => setOnlyUserAuctions((prev) => !prev)}
+                  onClick={() => handleSetUserAuctions()}
                 >
                   My Launches
                 </Chip>
@@ -191,7 +208,7 @@ export default function AuctionListPage() {
               <ToggleGroup
                 type="single"
                 defaultValue={gridView ? "grid" : "list"}
-                onValueChange={(value) => setGridView(value === "grid")}
+                onValueChange={(value) => handleViewChange(value)}
               >
                 <ToggleGroupItem variant="icon" value="list">
                   <RowsIcon />
@@ -256,6 +273,7 @@ export default function AuctionListPage() {
 }
 
 function searchObject<T extends object>(obj: T, text: string): boolean {
+  console.log("oiiii", { obj });
   return Object.values(obj).some((value: unknown) => {
     return !!value && typeof value === "object"
       ? searchObject(value, text)
