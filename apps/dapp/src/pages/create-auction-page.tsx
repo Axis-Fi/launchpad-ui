@@ -1254,316 +1254,322 @@ export default function CreateAuctionPage() {
                     )}
                   />
                 </div>
-                <h3 className="form-div">7 Additional Features</h3>
-                <div className="grid grid-cols-2 place-items-center gap-4">
-                  <FormField
-                    control={form.control}
-                    name="callbacksType"
-                    render={({ field }) => (
-                      <FormItemWrapper
-                        label="Callback"
-                        tooltip={
-                          "The type of callback contract to use for the auction."
-                        }
-                      >
-                        <Select
-                          defaultValue={CallbacksType.NONE}
-                          options={[
-                            {
-                              value: CallbacksType.NONE,
-                              label: "None",
-                            },
-                            {
-                              value: CallbacksType.MERKLE_ALLOWLIST,
-                              label: "Offchain Allowlist",
-                            },
-                            {
-                              value: CallbacksType.CAPPED_MERKLE_ALLOWLIST,
-                              label: "Offchain Allowlist with Spend Cap",
-                            },
-                            {
-                              value: CallbacksType.ALLOCATED_MERKLE_ALLOWLIST,
-                              label: "Offchain Allowlist with Allocations",
-                            },
-                            {
-                              value: CallbacksType.TOKEN_ALLOWLIST,
-                              label: "Token Allowlist",
-                            },
-                            {
-                              value: CallbacksType.UNIV2_DTL,
-                              label: "Deposit to Uniswap V2 Pool",
-                            },
-                            {
-                              value: CallbacksType.UNIV3_DTL,
-                              label: "Deposit to Uniswap V3 Pool",
-                            },
-                            // {
-                            //   value: CallbacksType.CUSTOM,
-                            //   label: "Custom",
-                            // },
-                          ]}
-                          {...field}
-                        />
-                      </FormItemWrapper>
-                    )}
-                  />
-                  {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
-                    callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
-                    <FormItemWrapper
-                      label="Allowlist"
-                      tooltip={
-                        "File containing list of addresses on the allowlist in CSV format."
-                      }
-                    >
-                      <Input
-                        type="file"
-                        accept=".csv"
-                        onChange={handleAllowlistFileSelect}
-                        className="pt-1"
-                        error={fileLoadMessage ?? ""}
-                      />
-                    </FormItemWrapper>
-                  )}
-                  {callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST && (
+                <div>
+                  <Text size="3xl" className="form-div">
+                    7 - Additional Features
+                  </Text>
+                  <div className="grid grid-cols-2 place-items-center gap-4">
                     <FormField
                       control={form.control}
-                      name="cappedAllowlistLimit"
+                      name="callbacksType"
                       render={({ field }) => (
                         <FormItemWrapper
-                          label="Per User Spend Limit"
-                          tooltip="The number of quote tokens each allowlisted address can spend."
-                        >
-                          <Input placeholder="10" type="number" {...field} />
-                        </FormItemWrapper>
-                      )}
-                    />
-                  )}
-                  {callbacksType ===
-                    CallbacksType.ALLOCATED_MERKLE_ALLOWLIST && (
-                    <FormItemWrapper
-                      label="Allowlist"
-                      tooltip={
-                        "File containing list of addresses and allocations in CSV format." +
-                        (quoteToken === undefined
-                          ? " Please select a quote token first."
-                          : "")
-                      }
-                    >
-                      <Input
-                        type="file"
-                        accept=".csv"
-                        onChange={handleAllowlistFileSelect}
-                        disabled={quoteToken === undefined}
-                        className="pt-1"
-                        error={fileLoadMessage ?? ""}
-                      />
-                    </FormItemWrapper>
-                  )}
-                  {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
-                    <>
-                      <FormField
-                        name="allowlistToken"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Allowlist Token"
-                            tooltip={
-                              "The address of the token to use for the allowlist."
-                            }
-                          >
-                            <DialogInput
-                              {...field}
-                              title="Select Allowlist Token"
-                              triggerContent={"Select token"}
-                              disabled={allowlistTokenModalInvalid}
-                            >
-                              <TokenPicker name="allowlistToken" />
-                            </DialogInput>
-                          </FormItemWrapper>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="allowlistTokenThreshold"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Required Token Balance"
-                            tooltip="The number of tokens the address must hold to qualify for the allowlist."
-                          >
-                            <Input placeholder="1" type="number" {...field} />
-                          </FormItemWrapper>
-                        )}
-                      />
-                    </>
-                  )}
-                  {(callbacksType === CallbacksType.UNIV2_DTL ||
-                    callbacksType === CallbacksType.UNIV3_DTL) && (
-                    <>
-                      <FormField
-                        control={form.control}
-                        name="dtlProceedsPercent"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            className="mt-4"
-                            label="Percent of Proceeds to Deposit"
-                            tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
-                          >
-                            <>
-                              <Input
-                                disabled
-                                className="disabled:opacity-100"
-                                value={`${field.value?.[0] ?? [75]}%`}
-                              />
-                              <Slider
-                                {...field}
-                                className="cursor-pointer pt-2"
-                                min={1}
-                                max={100}
-                                defaultValue={[75]}
-                                value={field.value}
-                                onValueChange={(v) => {
-                                  field.onChange(v);
-                                }}
-                              />
-                            </>
-                          </FormItemWrapper>
-                        )}
-                      />
-                      <FormField
-                        name="dtlRecipient"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Liquidity Recipient"
-                            tooltip={
-                              "The address that will receive the liquidity tokens"
-                            }
-                          >
-                            <Input
-                              {...field}
-                              placeholder={trimAddress("0x0000000")}
-                            />
-                          </FormItemWrapper>
-                        )}
-                      />{" "}
-                      <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
-                        <FormField
-                          name="dtlIsVested"
-                          render={({ field }) => (
-                            <FormItemWrapper className="mt-4 w-min">
-                              <div className="flex items-center gap-x-2">
-                                <Switch onCheckedChange={field.onChange} />
-                                <Label>Liquidity Vested</Label>
-                              </div>
-                            </FormItemWrapper>
-                          )}
-                        />
-                        <FormField
-                          name="dtlVestingDuration"
-                          render={({ field }) => (
-                            <FormItemWrapper label="Liquidity Vesting Days">
-                              <Input
-                                type="number"
-                                placeholder="7"
-                                disabled={!dtlIsVested}
-                                required={dtlIsVested}
-                                {...field}
-                              />
-                            </FormItemWrapper>
-                          )}
-                        />
-                      </div>
-                      <FormField
-                        control={form.control}
-                        name="dtlVestingStart"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Liquidity Vesting Start"
-                            tooltip="The start date/time of the liquidity vesting"
-                          >
-                            <DatePicker
-                              time
-                              placeholderDate={addMinutes(new Date(), 5)}
-                              content={formatDate.fullLocal(new Date())}
-                              {...field}
-                              minDate={
-                                deadline
-                                  ? (deadline as Date)
-                                  : addDays(new Date(), 1)
-                              }
-                            />
-                          </FormItemWrapper>
-                        )}
-                      />
-                    </>
-                  )}
-                  {callbacksType === CallbacksType.UNIV3_DTL && (
-                    <FormField
-                      control={form.control}
-                      name="dtlUniV3PoolFee"
-                      render={({ field }) => (
-                        <FormItemWrapper
-                          label="UniV3 Pool Fee"
+                          label="Callback"
                           tooltip={
-                            "The fee to set on the Uniswap V3 pool on creation."
+                            "The type of callback contract to use for the auction."
                           }
                         >
                           <Select
-                            defaultValue={"3000"}
+                            defaultValue={CallbacksType.NONE}
                             options={[
                               {
-                                value: "500",
-                                label: "0.05%",
+                                value: CallbacksType.NONE,
+                                label: "None",
                               },
                               {
-                                value: "3000",
-                                label: "0.3%",
+                                value: CallbacksType.MERKLE_ALLOWLIST,
+                                label: "Offchain Allowlist",
                               },
                               {
-                                value: "10000",
-                                label: "1.0%",
+                                value: CallbacksType.CAPPED_MERKLE_ALLOWLIST,
+                                label: "Offchain Allowlist with Spend Cap",
                               },
+                              {
+                                value: CallbacksType.ALLOCATED_MERKLE_ALLOWLIST,
+                                label: "Offchain Allowlist with Allocations",
+                              },
+                              {
+                                value: CallbacksType.TOKEN_ALLOWLIST,
+                                label: "Token Allowlist",
+                              },
+                              {
+                                value: CallbacksType.UNIV2_DTL,
+                                label: "Deposit to Uniswap V2 Pool",
+                              },
+                              {
+                                value: CallbacksType.UNIV3_DTL,
+                                label: "Deposit to Uniswap V3 Pool",
+                              },
+                              // {
+                              //   value: CallbacksType.CUSTOM,
+                              //   label: "Custom",
+                              // },
                             ]}
                             {...field}
                           />
                         </FormItemWrapper>
                       )}
                     />
-                  )}
-                  {/* {callbacksType === CallbacksType.CUSTOM && (
-                    <>
+                    {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
+                      callbacksType ==
+                        CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
+                      <FormItemWrapper
+                        label="Allowlist"
+                        tooltip={
+                          "File containing list of addresses on the allowlist in CSV format."
+                        }
+                      >
+                        <Input
+                          type="file"
+                          accept=".csv"
+                          onChange={handleAllowlistFileSelect}
+                          className="pt-1"
+                          error={fileLoadMessage ?? ""}
+                        />
+                      </FormItemWrapper>
+                    )}
+                    {callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST && (
                       <FormField
-                        name="callbacks"
+                        control={form.control}
+                        name="cappedAllowlistLimit"
                         render={({ field }) => (
                           <FormItemWrapper
-                            label="Custom Callbacks Address"
+                            label="Per User Spend Limit"
+                            tooltip="The number of quote tokens each allowlisted address can spend."
+                          >
+                            <Input placeholder="10" type="number" {...field} />
+                          </FormItemWrapper>
+                        )}
+                      />
+                    )}
+                    {callbacksType ===
+                      CallbacksType.ALLOCATED_MERKLE_ALLOWLIST && (
+                      <FormItemWrapper
+                        label="Allowlist"
+                        tooltip={
+                          "File containing list of addresses and allocations in CSV format." +
+                          (quoteToken === undefined
+                            ? " Please select a quote token first."
+                            : "")
+                        }
+                      >
+                        <Input
+                          type="file"
+                          accept=".csv"
+                          onChange={handleAllowlistFileSelect}
+                          disabled={quoteToken === undefined}
+                          className="pt-1"
+                          error={fileLoadMessage ?? ""}
+                        />
+                      </FormItemWrapper>
+                    )}
+                    {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
+                      <>
+                        <FormField
+                          name="allowlistToken"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Allowlist Token"
+                              tooltip={
+                                "The address of the token to use for the allowlist."
+                              }
+                            >
+                              <DialogInput
+                                {...field}
+                                title="Select Allowlist Token"
+                                triggerContent={"Select token"}
+                                disabled={allowlistTokenModalInvalid}
+                              >
+                                <TokenPicker name="allowlistToken" />
+                              </DialogInput>
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="allowlistTokenThreshold"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Required Token Balance"
+                              tooltip="The number of tokens the address must hold to qualify for the allowlist."
+                            >
+                              <Input placeholder="1" type="number" {...field} />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
+                    )}
+                    {(callbacksType === CallbacksType.UNIV2_DTL ||
+                      callbacksType === CallbacksType.UNIV3_DTL) && (
+                      <>
+                        <FormField
+                          control={form.control}
+                          name="dtlProceedsPercent"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Percent of Proceeds to Deposit"
+                              tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
+                            >
+                              <>
+                                <Input
+                                  disabled
+                                  className="disabled:opacity-100"
+                                  value={`${field.value?.[0] ?? [75]}%`}
+                                />
+                                <Slider
+                                  {...field}
+                                  className="cursor-pointer pt-2"
+                                  min={1}
+                                  max={100}
+                                  defaultValue={[75]}
+                                  value={field.value}
+                                  onValueChange={(v) => {
+                                    field.onChange(v);
+                                  }}
+                                />
+                              </>
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          name="dtlRecipient"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Liquidity Recipient"
+                              tooltip={
+                                "The address that will receive the liquidity tokens"
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />{" "}
+                        <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
+                          <FormField
+                            name="dtlIsVested"
+                            render={({ field }) => (
+                              <FormItemWrapper className="mt-4 w-min">
+                                <div className="flex items-center gap-x-2">
+                                  <Switch onCheckedChange={field.onChange} />
+                                  <Label>Liquidity Vested</Label>
+                                </div>
+                              </FormItemWrapper>
+                            )}
+                          />
+                          <FormField
+                            name="dtlVestingDuration"
+                            render={({ field }) => (
+                              <FormItemWrapper label="Liquidity Vesting Days">
+                                <Input
+                                  type="number"
+                                  placeholder="7"
+                                  disabled={!dtlIsVested}
+                                  required={dtlIsVested}
+                                  {...field}
+                                />
+                              </FormItemWrapper>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="dtlVestingStart"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Liquidity Vesting Start"
+                              tooltip="The start date/time of the liquidity vesting"
+                            >
+                              <DatePicker
+                                time
+                                placeholderDate={addMinutes(new Date(), 5)}
+                                content={formatDate.fullLocal(new Date())}
+                                {...field}
+                                minDate={
+                                  deadline
+                                    ? (deadline as Date)
+                                    : addDays(new Date(), 1)
+                                }
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
+                    )}
+                    {callbacksType === CallbacksType.UNIV3_DTL && (
+                      <FormField
+                        control={form.control}
+                        name="dtlUniV3PoolFee"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="UniV3 Pool Fee"
                             tooltip={
-                              "The address of the custom callbacks contract."
+                              "The fee to set on the Uniswap V3 pool on creation."
                             }
                           >
-                            <Input
+                            <Select
+                              defaultValue={"3000"}
+                              // TODO consider fetching the fee tiers from the Uniswap V3 factory address stored on the callback contract
+                              options={[
+                                {
+                                  value: "500",
+                                  label: "0.05%",
+                                },
+                                {
+                                  value: "3000",
+                                  label: "0.3%",
+                                },
+                                {
+                                  value: "10000",
+                                  label: "1.0%",
+                                },
+                              ]}
                               {...field}
-                              placeholder={trimAddress("0x0000000")}
                             />
                           </FormItemWrapper>
                         )}
                       />
-                      <FormField
-                        name="customCallbackData"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Calldata for Custom Callback"
-                            tooltip={
-                              "The calldata to pass to the custom callback on auction creation."
-                            }
-                          >
-                            <Input
-                              {...field}
-                              placeholder={trimAddress("0x0000000")}
-                            />
-                          </FormItemWrapper>
-                        )}
-                      />
-                    </>
-                  )} */}
+                    )}
+                    {/* {callbacksType === CallbacksType.CUSTOM && (
+                      <>
+                        <FormField
+                          name="callbacks"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Custom Callbacks Address"
+                              tooltip={
+                                "The address of the custom callbacks contract."
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          name="customCallbackData"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Calldata for Custom Callback"
+                              tooltip={
+                                "The calldata to pass to the custom callback on auction creation."
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
+                    )} */}
+                  </div>
                 </div>
               </div>
             </div>
