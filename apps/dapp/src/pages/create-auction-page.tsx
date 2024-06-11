@@ -39,7 +39,6 @@ import {
   fromHex,
   getAddress,
   isHex,
-  isAddress,
   parseAbiParameters,
   parseUnits,
   toHex,
@@ -399,7 +398,6 @@ export default function CreateAuctionPage() {
     } else {
       callbacks = getCallbacks(chainId, callbacksType).address;
     }
-    console.log("callbacks", callbacks);
 
     // Set the callback data based on the type and user inputs
     let callbackData = toHex("");
@@ -481,18 +479,45 @@ export default function CreateAuctionPage() {
           ? zeroAddress
           : getAddress(values.dtlRecipient);
         const implParams = toHex("");
-        console.log("recipient is address", isAddress(recipient));
-        console.log("recipient", recipient);
-        console.log("implParams is address", isAddress(implParams));
-        console.log("implParams is hex", isHex(implParams));
-        console.log("implParams", implParams);
         callbackData = encodeAbiParameters(
-          parseAbiParameters(
-            "uint24 proceedsUtilisationPercent, uint48 vestingStart, uint48 vestingExpiry, address recipient, bytes implParams",
-          ),
-          [proceedsPercent, vestingStart, vestingExpiry, recipient, implParams],
+          [
+            {
+              components: [
+                {
+                  type: "uint24",
+                  name: "proceedsUtilisationPercent",
+                },
+                {
+                  type: "uint48",
+                  name: "vestingStart",
+                },
+                {
+                  type: "uint48",
+                  name: "vestingExpiry",
+                },
+                {
+                  type: "address",
+                  name: "recipient",
+                },
+                {
+                  type: "bytes",
+                  name: "implParams",
+                },
+              ],
+              type: "tuple",
+              name: "OnCreateParams",
+            },
+          ],
+          [
+            {
+              proceedsUtilisationPercent: proceedsPercent,
+              vestingStart: vestingStart,
+              vestingExpiry: vestingExpiry,
+              recipient: recipient,
+              implParams: implParams,
+            },
+          ],
         );
-        console.log("callbackData", callbackData);
         break;
       }
       case CallbacksType.UNIV3_DTL: {
@@ -515,19 +540,46 @@ export default function CreateAuctionPage() {
           parseAbiParameters("uint24 poolFee"),
           [poolFee],
         );
-        console.log("recipient is address", isAddress(recipient));
-        console.log("recipient", recipient);
-        console.log("implParams is address", isAddress(implParams));
-        console.log("implParams is hex", isHex(implParams));
-        console.log("implParams", implParams);
 
         callbackData = encodeAbiParameters(
-          parseAbiParameters(
-            "uint24 proceedsUtilisationPercent, uint48 vestingStart, uint48 vestingExpiry, address recipient, bytes implParams",
-          ),
-          [proceedsPercent, vestingStart, vestingExpiry, recipient, implParams],
+          [
+            {
+              components: [
+                {
+                  type: "uint24",
+                  name: "proceedsUtilisationPercent",
+                },
+                {
+                  type: "uint48",
+                  name: "vestingStart",
+                },
+                {
+                  type: "uint48",
+                  name: "vestingExpiry",
+                },
+                {
+                  type: "address",
+                  name: "recipient",
+                },
+                {
+                  type: "bytes",
+                  name: "implParams",
+                },
+              ],
+              type: "tuple",
+              name: "OnCreateParams",
+            },
+          ],
+          [
+            {
+              proceedsUtilisationPercent: proceedsPercent,
+              vestingStart: vestingStart,
+              vestingExpiry: vestingExpiry,
+              recipient: recipient,
+              implParams: implParams,
+            },
+          ],
         );
-        console.log("callbackData", callbackData);
         break;
       }
     }
