@@ -30,7 +30,7 @@ export function TransactionErrorDialog(props: { error: Error }) {
             Show error details
           </AccordionTrigger>
           <AccordionContent className="space-y-3">
-            <p className="max-w-screen-md ">{error.message}</p>
+            <p className="max-w-md">{error.message}</p>
 
             <Button onClick={() => handleCopy()} className="mt-4 uppercase">
               Copy Error Details
