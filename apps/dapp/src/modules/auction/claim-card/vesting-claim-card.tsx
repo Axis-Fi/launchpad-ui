@@ -3,7 +3,7 @@ import { Badge, Button, Card, Metric, Progress, Text } from "@repo/ui";
 import { RequiresChain } from "components/requires-chain";
 import { trimCurrency } from "utils/currency";
 import { shorten } from "utils/number";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount } from "wagmi";
 import { useDerivativeData } from "../hooks/use-derivative-data";
 import { useVestingTokenId } from "../hooks/use-vesting-tokenid";
 import { useVestingRedeemable } from "../hooks/use-vesting-redeemable";
@@ -11,6 +11,7 @@ import { useDerivativeModule } from "../hooks/use-derivative-module";
 import { useState } from "react";
 import { useVestingRedeem } from "../hooks/use-vesting-redeem";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
+import { formatUnits } from "viem";
 
 const calculateVestingProgress = (start?: number, end?: number): number => {
   if (!start || !end) return 0;
@@ -64,12 +65,15 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
     chainId: auction.chainId,
     derivativeModuleAddress: vestingModuleAddress,
   });
+  const redeemableAmountDecimal = formatUnits(
+    redeemableAmount || BigInt(0),
+    auction.baseToken.decimals,
+  );
 
-  const { data: claimedAmount } = useBalance({
-    address: address,
-    token: auction.baseToken.address,
-    chainId: auction.chainId,
-  });
+  // TODO claimedAmount from Redeem events
+  const claimedAmount = 0;
+
+  // TODO refresh after claim
 
   const claimVestedTokensTx = useVestingRedeem({
     vestingTokenId: vestingTokenId,
@@ -156,16 +160,14 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
             <div className="">
               <Metric size="s" label="Claimable">
                 {redeemableAmount
-                  ? trimCurrency(Number(redeemableAmount))
+                  ? trimCurrency(Number(redeemableAmountDecimal))
                   : "-"}{" "}
                 {auction.baseToken.symbol}
               </Metric>
             </div>
             <div>
               <Metric size="s" label="Claimed">
-                {claimedAmount
-                  ? trimCurrency(Number(claimedAmount.value))
-                  : "-"}{" "}
+                {claimedAmount ? trimCurrency(Number(claimedAmount)) : "-"}{" "}
                 {auction.baseToken.symbol}
               </Metric>
             </div>

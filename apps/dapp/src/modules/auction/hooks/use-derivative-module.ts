@@ -18,6 +18,7 @@ export function useDerivativeModule({
   const response = useReadContract({
     abi: auctionHouse.abi,
     address: isAddress(auctionHouse.address) ? auctionHouse.address : undefined,
+    chainId: chainId,
     functionName: "getDerivativeModuleForId",
     args: [BigInt(lotId ?? 0n)],
     query: { enabled: !!lotId && !!chainId },

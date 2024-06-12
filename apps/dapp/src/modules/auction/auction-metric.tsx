@@ -45,13 +45,11 @@ const handlers = {
   derivative: {
     label: "Derivative",
     handler: (auction: Auction) => {
-      switch (auction.derivativeType) {
-        case AuctionDerivatives.LINEAR_VESTING: {
-          return "Vesting";
-        }
-        default:
-          return "None";
+      if (auction.derivativeType?.endsWith(AuctionDerivatives.LINEAR_VESTING)) {
+        return "Linear Vesting";
       }
+
+      return "None";
     },
   },
   minFill: {
