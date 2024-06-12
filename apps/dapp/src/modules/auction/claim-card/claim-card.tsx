@@ -42,16 +42,16 @@ const getClaimStatus = ({
     return "NOT_CONNECTED";
   }
 
+  if (isVesting) {
+    return "VESTING";
+  }
+
   if (!isAuctionCleared || isAuctionCancelled) {
     return "AUCTION_FAILED";
   }
 
   if (userHasBids) {
     return "USER_HAS_BIDS";
-  }
-
-  if (isVesting) {
-    return "VESTING";
   }
 
   return "USER_HAS_NO_BIDS";
