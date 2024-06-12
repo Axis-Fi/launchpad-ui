@@ -22,7 +22,7 @@ const testnetLinks = [
 const defaultLinks = [
   { title: "Launches", href: "/#" },
   { title: "Contact", href: "mailto:launch@axis.finance" },
-  { title: "Docs", href: "https://docs.axis.finance" },
+  { title: "Docs", href: "https://axis.finance/docs/overview" },
 ];
 
 export default function Navbar() {
@@ -32,9 +32,8 @@ export default function Navbar() {
 
   //Only show curator link if connected address is a curator for any auction
   const links = React.useMemo(() => {
-    let _links = isCurator ? [curator] : [];
-    _links = isProd ? [] : [..._links, ...testnetLinks];
-    return [...defaultLinks, refer, ..._links];
+    const _links = isProd ? [] : testnetLinks;
+    return [...defaultLinks, refer, ..._links, curator];
   }, [isCurator]);
 
   return (

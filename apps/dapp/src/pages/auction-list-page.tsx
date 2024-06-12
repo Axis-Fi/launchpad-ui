@@ -9,6 +9,7 @@ import {
   cn,
   usePagination,
   Select,
+  Chip,
 } from "@repo/ui";
 import { ReloadButton } from "components/reload-button";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
@@ -23,6 +24,14 @@ import {
   Element as ScrollTargetElement,
 } from "react-scroll";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
+import {
+  AuctionListSettingsActions,
+  auctionListSettingsAtom,
+} from "state/user-settings/auction-list-settings";
+import { useAtom } from "jotai";
+import React from "react";
+import { useAccount } from "wagmi";
+import { environment } from "@repo/env";
 
 const options = [
   { value: "created", label: "Created" },
@@ -33,18 +42,40 @@ const options = [
 ];
 
 export default function AuctionListPage() {
+  const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
+  const [onlyUserAuctions, setOnlyUserAuctions] = useState(
+    userSettings.onlyUserAuctions,
+  );
+  const [gridView, setGridView] = useState(userSettings.gridView);
+  const [sortByStatus, setSortByStatus] = useState<string | undefined>(
+    userSettings.activeSort,
+  );
   const [filters] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [gridView, setGridView] = useState(false);
-  const [sortByStatus, setSortByStatus] = useState<string | undefined>();
-  const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
-  const secureAuctions = auctions.filter((a) => a.isSecure);
 
-  const filteredAuctions = filters.length
-    ? secureAuctions
-        .filter((a) => filters.includes(a.status))
-        .filter((a) => !searchText.length || searchObject(a, searchText))
-    : secureAuctions;
+  const { address } = useAccount();
+  const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
+
+  const secureAuctions = auctions
+    .filter((a) => a.isSecure)
+    .filter(
+      // Filter only user created or participated auctions
+      (a) =>
+        !address ||
+        !onlyUserAuctions ||
+        a.seller === address.toLowerCase() ||
+        a.bids.some((b) => b.bidder.toLowerCase() === address.toLowerCase()),
+    );
+
+  const filteredAuctions =
+    filters.length || searchText.length
+      ? secureAuctions.filter(
+          (a) =>
+            filters.includes(a.status) ||
+            (searchText.length && searchObject(a, searchText)),
+        )
+      : //.filter((a) => searchObject(a, searchText))
+        secureAuctions;
 
   const sortedAuctions = [...filteredAuctions].sort((a, b) => {
     if (a.status === sortByStatus && b.status === sortByStatus) {
@@ -58,6 +89,48 @@ export default function AuctionListPage() {
   });
 
   const { rows, ...pagination } = usePagination(sortedAuctions, 9);
+
+  const handleSorting = (value: string) => {
+    setSortByStatus(value);
+    dispatch({
+      type: AuctionListSettingsActions.UPDATE_SORT,
+      value: sortByStatus,
+    });
+  };
+
+  const handleSetUserAuctions = () => {
+    setOnlyUserAuctions((prev) => {
+      const value = !prev;
+      dispatch({
+        type: AuctionListSettingsActions.ONLY_USER_AUCTIONS,
+        value,
+      });
+      return value;
+    });
+  };
+
+  const handleViewChange = (value?: string) => {
+    const gridView = value === "grid";
+
+    setGridView(gridView);
+    dispatch({
+      type: AuctionListSettingsActions.UPDATE_VIEW,
+      value: gridView,
+    });
+  };
+
+  //Load settings
+  React.useEffect(() => {
+    pagination.handleChangePage(userSettings.lastPage ?? 0);
+  }, []);
+
+  //Save current page
+  React.useEffect(() => {
+    dispatch({
+      type: AuctionListSettingsActions.UPDATE_PAGE,
+      value: pagination.selectedPage,
+    });
+  }, [pagination.selectedPage]);
 
   return (
     <div className="">
@@ -78,7 +151,7 @@ export default function AuctionListPage() {
             <ScrollLink to="auctions" offset={-10} smooth={true}>
               <Button
                 onClick={() => {
-                  setSortByStatus("created");
+                  handleSorting("created");
                 }}
                 className="uppercase"
                 size="lg"
@@ -116,20 +189,31 @@ export default function AuctionListPage() {
                 triggerClassName="w-[120px]"
                 placeholder="Sort By"
                 options={options}
-                onChange={(value) => {
-                  setSortByStatus(value);
-                }}
+                defaultValue={sortByStatus}
+                onChange={(value) => handleSorting(value)}
               />
+
+              <Tooltip
+                triggerClassName="cursor-pointer"
+                content="Only show auctions you've created or participated in."
+              >
+                <Chip
+                  variant={onlyUserAuctions ? "active" : "default"}
+                  onClick={() => handleSetUserAuctions()}
+                >
+                  My Launches
+                </Chip>
+              </Tooltip>
 
               <ToggleGroup
                 type="single"
-                defaultValue="list"
-                onValueChange={(value) => setGridView(value === "grid")}
+                defaultValue={gridView ? "grid" : "list"}
+                onValueChange={(value) => handleViewChange(value)}
               >
-                <ToggleGroupItem value="list">
+                <ToggleGroupItem variant="icon" value="list">
                   <RowsIcon />
                 </ToggleGroupItem>
-                <ToggleGroupItem value="grid">
+                <ToggleGroupItem variant="icon" value="grid">
                   <DashboardIcon />
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -174,14 +258,16 @@ export default function AuctionListPage() {
           </div>
           <Pagination className="mt-6" {...pagination} />
 
-          <div className="flex flex-col items-center justify-center py-8">
-            <p className="pb-2 font-sans">Want to create an auction?</p>
-            <Link to="/create/auction">
-              <Button variant="ghost">
-                Create Auction <ArrowRightIcon className="w-6 pl-1" />
-              </Button>
-            </Link>
-          </div>
+          {!environment.isProduction && (
+            <div className="flex flex-col items-center justify-center py-8">
+              <p className="pb-2 font-sans">Want to create an auction?</p>
+              <Link to="/create/auction">
+                <Button variant="ghost">
+                  Create Auction <ArrowRightIcon className="w-6 pl-1" />
+                </Button>
+              </Link>
+            </div>
+          )}
         </PageContainer>
       </ScrollTargetElement>
     </div>
