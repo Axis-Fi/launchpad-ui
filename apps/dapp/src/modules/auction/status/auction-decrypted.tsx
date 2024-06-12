@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Card, Metric } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
@@ -9,10 +9,25 @@ import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { SettleAuctionCallbackInput } from "./settle-callback-input";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const settle = useSettleAuction({ auction });
+
+  // Storage of encoded callback data for the callback contract
+  const [callbackData, setCallbackData] = useState<`0x${string}` | undefined>(
+    undefined,
+  );
+  const [callbackDataIsValid, setCallbackDataIsValid] = useState(false);
+
+  const settle = useSettleAuction({
+    auction: auction,
+    callbackData: callbackData,
+  });
+
+  const hasCallbacks =
+    auction.callbacks &&
+    auction.callbacks != "0x0000000000000000000000000000000000000000";
 
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
@@ -65,11 +80,20 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
           <div className="bg-secondary text-foreground flex justify-center rounded-sm p-2">
             <p>All bids have been decrypted</p>
           </div>
+          {hasCallbacks && (
+            <div>
+              <SettleAuctionCallbackInput
+                auction={auction}
+                setCallbackData={setCallbackData}
+                setCallbackDataIsValid={setCallbackDataIsValid}
+              />
+            </div>
+          )}
           <RequiresChain chainId={auction.chainId} className="mt-4">
             <div className="mt-4 w-full">
               <Button
                 className="w-full"
-                disabled={isWaiting}
+                disabled={isWaiting || !callbackDataIsValid}
                 onClick={() => setIsDialogOpen(true)}
               >
                 {isWaiting ? (
