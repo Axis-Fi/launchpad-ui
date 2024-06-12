@@ -103,7 +103,7 @@ export default function AuctionListPage() {
         <PageContainer>
           <div className="flex items-center justify-between">
             <Tooltip content={"Origin is a modular Auction suite"}>
-              <Text size="lg">Token Launches</Text>
+              <Text size="lg">{isLoading ? "Loading " : ""}Token Launches</Text>
             </Tooltip>
             <div className="flex gap-x-2">
               <IconnedInput
@@ -126,10 +126,10 @@ export default function AuctionListPage() {
                 defaultValue="list"
                 onValueChange={(value) => setGridView(value === "grid")}
               >
-                <ToggleGroupItem value="list">
+                <ToggleGroupItem variant="icon" value="list">
                   <RowsIcon />
                 </ToggleGroupItem>
-                <ToggleGroupItem value="grid">
+                <ToggleGroupItem variant="icon" value="grid">
                   <DashboardIcon />
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -150,17 +150,27 @@ export default function AuctionListPage() {
             className={cn(
               "mt-4 ",
               gridView ? "mx-auto grid grid-cols-3 gap-4" : "space-y-4",
+              isLoading && "mask",
             )}
           >
-            {rows.map((auction) => (
-              <AuctionCard
-                isGrid={gridView}
-                className="mx-auto"
-                loading={isLoading}
-                key={auction.chainId + auction.id + "_" + gridView}
-                auction={auction}
-              />
-            ))}
+            {isLoading
+              ? Array(3)
+                  .fill(0)
+                  .map((_e, i) => (
+                    <AuctionCard
+                      isGrid={gridView}
+                      loading={isLoading}
+                      key={i}
+                    />
+                  ))
+              : rows.map((auction) => (
+                  <AuctionCard
+                    isGrid={gridView}
+                    auction={auction}
+                    className="mx-auto"
+                    key={auction.chainId + auction.id + "_" + gridView}
+                  />
+                ))}
           </div>
           <Pagination className="mt-6" {...pagination} />
 

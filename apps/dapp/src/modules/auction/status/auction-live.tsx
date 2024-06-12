@@ -19,6 +19,7 @@ import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
 import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
+import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -187,6 +188,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
+  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
+    chainId: auction.chainId,
+    lotId: auction.lotId,
+    baseTokenDecimals: auction.baseToken.decimals,
+    callback: auction.callbacks,
+  });
+
   const amountInInvalid =
     parsedAmountIn > Number(formattedBalance) || // greater than balance
     parsedAmountIn === undefined ||
@@ -222,9 +230,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       ? Math.min(Number(allowlistLimit), maxBidAmount)
       : allowlistLimitsAmount
         ? Number(allowlistLimit)
-        : maxBidAmount !== undefined
-          ? maxBidAmount
-          : undefined;
+        : maxBidAmount;
 
   // TODO calculate coin rank
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
@@ -241,14 +247,36 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <AuctionMetric id="totalSupply" />
               <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
+              {dtlCallbackConfiguration && (
+                // TODO fix alignment of metric title
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
             </AuctionMetricsContainer>
           )}
           {isFixedPriceBatch && (
             <AuctionMetricsContainer className="mt-4" auction={auction}>
               <AuctionMetric id="fixedPriceFDV" />
               <AuctionMetric id="totalSupply" />
-              <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
+              <AuctionMetric id="vestingDuration" />
+              {dtlCallbackConfiguration && (
+                // TODO fix alignment of metric title
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
             </AuctionMetricsContainer>
           )}
         </Card>

@@ -1,4 +1,5 @@
 import {
+  Text,
   Button,
   DatePicker,
   DialogContent,
@@ -64,6 +65,7 @@ import { getAuctionHouse, getCallbacks } from "utils/contracts";
 import { Chain } from "@rainbow-me/rainbowkit";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
+import { PageContainer } from "modules/app/page-container";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -130,6 +132,7 @@ const schema = z
     message: "Vesting duration is required",
     path: ["vestingDuration"],
   })
+
   // TODO do we need to add a max vesting duration check?
   // .refine(
   //   (data) => (!data.isVested ? true : data.vestingDuration && Number(data.vestingDuration) <= 270),
@@ -234,9 +237,12 @@ const schema = z
         data.callbacksType === CallbacksType.UNIV3_DTL
       )
         ? true
-        : data.dtlProceedsPercent,
+        : data.dtlProceedsPercent &&
+          data.dtlProceedsPercent.length > 0 &&
+          data.dtlProceedsPercent[0] >= 1 &&
+          data.dtlProceedsPercent[0] <= 100,
     {
-      message: "Liquidity proceeds percent is required",
+      message: "Liquidity proceeds percent must be 1-100",
       path: ["dtlProceedsPercent"],
     },
   )
@@ -624,25 +630,68 @@ export default function CreateAuctionPage() {
     );
   };
 
-  const { isSufficientAllowance, execute, approveReceipt, approveTx } =
-    useAllowance({
-      spenderAddress: getAuctionHouse({
-        chainId,
-        auctionType: auctionType as AuctionType,
-      }).address,
-      ownerAddress: address,
-      tokenAddress: payoutToken?.address as Address,
-      decimals: payoutToken?.decimals,
-      chainId: payoutToken?.chainId,
-      amount: Number(capacity),
-    });
+  /// AuctionHouse allowance
+  const {
+    isSufficientAllowance: isSufficientAuctionHouseAllowance,
+    execute: executeApproveAuctionHouse,
+    approveReceipt: auctionHouseApproveReceipt,
+    approveTx: auctionHouseApproveTx,
+  } = useAllowance({
+    spenderAddress: getAuctionHouse({
+      chainId,
+      auctionType: auctionType as AuctionType,
+    }).address,
+    ownerAddress: address,
+    tokenAddress: payoutToken?.address as Address,
+    decimals: payoutToken?.decimals,
+    chainId: payoutToken?.chainId,
+    amount: Number(capacity),
+  });
   // TODO add note on pre-funding: the capacity will be transferred upon creation
 
   const createAuction = form.handleSubmit(handleCreation);
   const isValid = form.formState.isValid;
 
+  /// Callbacks allowance
+  const dtlProceedsPercentFormValue = form.getValues("dtlProceedsPercent");
+  const dtlProceedsPercent =
+    !dtlProceedsPercentFormValue || dtlProceedsPercentFormValue.length == 0
+      ? 0
+      : dtlProceedsPercentFormValue[0] / 100;
+  const {
+    isSufficientAllowance: isSufficientCallbacksAllowance,
+    execute: executeApproveCallback,
+    approveReceipt: callbackApproveReceipt,
+    approveTx: callbackApproveTx,
+  } = useAllowance({
+    spenderAddress: getCallbacks(chainId, callbacksType as CallbacksType)
+      .address,
+    ownerAddress: address,
+    tokenAddress: payoutToken?.address as Address,
+    decimals: payoutToken?.decimals,
+    chainId: payoutToken?.chainId,
+    amount: Number(capacity) * dtlProceedsPercent,
+  });
+  const requiresCallbacksApproval =
+    callbacksType === CallbacksType.UNIV2_DTL ||
+    callbacksType === CallbacksType.UNIV3_DTL;
+
   const onSubmit = () => {
-    isSufficientAllowance ? createAuction() : execute();
+    // 1. If we need to approve the auction house
+    if (!isSufficientAuctionHouseAllowance) {
+      executeApproveAuctionHouse();
+      return;
+    }
+
+    // 2. If we need to approve the callbacks
+    if (requiresCallbacksApproval && !isSufficientCallbacksAllowance) {
+      executeApproveCallback();
+      return;
+    }
+
+    // 3. Otherwise create
+    createAuction();
+    return;
   };
 
   // Handle form validation on token picker modal
@@ -767,6 +816,8 @@ export default function CreateAuctionPage() {
 
     reader.onload = function (e) {
       const contents = e.target?.result;
+
+      //@ts-expect-error - TODO: type mismatch
       Papa.parse(contents, {
         header: true,
         complete: parseFn,
@@ -784,12 +835,12 @@ export default function CreateAuctionPage() {
   // TODO: if DTL is selected, need to add a check to see if a pool is already created for the quote and payout token on the target chain/factory
 
   return (
-    <>
-      <PageHeader className="items-center justify-start pb-10">
+    <PageContainer>
+      <PageHeader className="items-center justify-start">
         <h1 className="text-5xl">Create Your Auction</h1>
       </PageHeader>
       <Form {...form}>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={(e) => e.preventDefault()} className="pb-16">
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
               {/* <div> */}
@@ -806,7 +857,9 @@ export default function CreateAuctionPage() {
               {/* </div> */}
 
               <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
-                <h3 className="form-div">1 Your Project</h3>
+                <Text size="3xl" className="form-div">
+                  1 - Your Project
+                </Text>
 
                 <FormField
                   control={form.control}
@@ -908,7 +961,9 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div ">2 Tokens</h3>
+                <Text size="3xl" className="form-div">
+                  2 - Tokens
+                </Text>
 
                 <FormField
                   name="payoutToken"
@@ -948,7 +1003,10 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div">3 Style</h3>
+                <Text size="3xl" className="form-div">
+                  3 - Style
+                </Text>
+
                 <FormField
                   control={form.control}
                   name="auctionType"
@@ -987,7 +1045,9 @@ export default function CreateAuctionPage() {
                   )}
                 />
 
-                <h3 className="form-div">4 Auction Guard Rails</h3>
+                <Text size="3xl" className="form-div">
+                  4 - Auction Guard Rails
+                </Text>
 
                 {auctionType === AuctionType.SEALED_BID && (
                   <>
@@ -1008,14 +1068,13 @@ export default function CreateAuctionPage() {
                       name="minFillPercent"
                       render={({ field }) => (
                         <FormItemWrapper
-                          className="mt-4"
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
-                          <>
+                          <div className="flex items-center">
                             <Input
                               disabled
-                              className="disabled:opacity-100"
+                              className="w-14 disabled:opacity-100"
                               value={`${
                                 field.value?.[0] ??
                                 auctionDefaultValues.minFillPercent
@@ -1023,7 +1082,7 @@ export default function CreateAuctionPage() {
                             />
                             <Slider
                               {...field}
-                              className="cursor-pointer pt-2"
+                              className="cursor-pointer"
                               min={1}
                               max={100}
                               defaultValue={auctionDefaultValues.minFillPercent}
@@ -1032,7 +1091,7 @@ export default function CreateAuctionPage() {
                                 field.onChange(v);
                               }}
                             />
-                          </>
+                          </div>
                         </FormItemWrapper>
                       )}
                     />
@@ -1095,10 +1154,10 @@ export default function CreateAuctionPage() {
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
-                          <>
+                          <div className="flex items-center">
                             <Input
                               disabled
-                              className="disabled:opacity-100"
+                              className="w-16 disabled:opacity-100"
                               value={`${
                                 field.value?.[0] ??
                                 auctionDefaultValues.minFillPercent
@@ -1115,14 +1174,16 @@ export default function CreateAuctionPage() {
                                 field.onChange(v);
                               }}
                             />
-                          </>
+                          </div>
                         </FormItemWrapper>
                       )}
                     />
                   </>
                 )}
 
-                <h3 className="form-div">5 Schedule</h3>
+                <Text size="3xl" className="form-div">
+                  5 - Schedule
+                </Text>
 
                 <FormField
                   control={form.control}
@@ -1167,7 +1228,9 @@ export default function CreateAuctionPage() {
                 />
               </div>
               <div>
-                <h3 className="form-div">6 Advanced Settings</h3>
+                <Text size="3xl" className="form-div">
+                  6 - Advanced Settings
+                </Text>
                 <div className="grid grid-cols-2 place-items-center gap-4">
                   <FormField
                     name="curator"
@@ -1234,316 +1297,322 @@ export default function CreateAuctionPage() {
                     )}
                   />
                 </div>
-                <h3 className="form-div">7 Additional Features</h3>
-                <div className="grid grid-cols-2 place-items-center gap-4">
-                  <FormField
-                    control={form.control}
-                    name="callbacksType"
-                    render={({ field }) => (
-                      <FormItemWrapper
-                        label="Callback"
-                        tooltip={
-                          "The type of callback contract to use for the auction."
-                        }
-                      >
-                        <Select
-                          defaultValue={CallbacksType.NONE}
-                          options={[
-                            {
-                              value: CallbacksType.NONE,
-                              label: "None",
-                            },
-                            {
-                              value: CallbacksType.MERKLE_ALLOWLIST,
-                              label: "Offchain Allowlist",
-                            },
-                            {
-                              value: CallbacksType.CAPPED_MERKLE_ALLOWLIST,
-                              label: "Offchain Allowlist with Spend Cap",
-                            },
-                            {
-                              value: CallbacksType.ALLOCATED_MERKLE_ALLOWLIST,
-                              label: "Offchain Allowlist with Allocations",
-                            },
-                            {
-                              value: CallbacksType.TOKEN_ALLOWLIST,
-                              label: "Token Allowlist",
-                            },
-                            {
-                              value: CallbacksType.UNIV2_DTL,
-                              label: "Deposit to Uniswap V2 Pool",
-                            },
-                            {
-                              value: CallbacksType.UNIV3_DTL,
-                              label: "Deposit to Uniswap V3 Pool",
-                            },
-                            // {
-                            //   value: CallbacksType.CUSTOM,
-                            //   label: "Custom",
-                            // },
-                          ]}
-                          {...field}
-                        />
-                      </FormItemWrapper>
-                    )}
-                  />
-                  {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
-                    callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
-                    <FormItemWrapper
-                      label="Allowlist"
-                      tooltip={
-                        "File containing list of addresses on the allowlist in CSV format."
-                      }
-                    >
-                      <Input
-                        type="file"
-                        accept=".csv"
-                        onChange={handleAllowlistFileSelect}
-                        className="pt-1"
-                        error={fileLoadMessage ?? ""}
-                      />
-                    </FormItemWrapper>
-                  )}
-                  {callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST && (
+                <div>
+                  <Text size="3xl" className="form-div">
+                    7 - Additional Features
+                  </Text>
+                  <div className="grid grid-cols-2 place-items-center gap-4">
                     <FormField
                       control={form.control}
-                      name="cappedAllowlistLimit"
+                      name="callbacksType"
                       render={({ field }) => (
                         <FormItemWrapper
-                          label="Per User Spend Limit"
-                          tooltip="The number of quote tokens each allowlisted address can spend."
-                        >
-                          <Input placeholder="10" type="number" {...field} />
-                        </FormItemWrapper>
-                      )}
-                    />
-                  )}
-                  {callbacksType ===
-                    CallbacksType.ALLOCATED_MERKLE_ALLOWLIST && (
-                    <FormItemWrapper
-                      label="Allowlist"
-                      tooltip={
-                        "File containing list of addresses and allocations in CSV format." +
-                        (quoteToken === undefined
-                          ? " Please select a quote token first."
-                          : "")
-                      }
-                    >
-                      <Input
-                        type="file"
-                        accept=".csv"
-                        onChange={handleAllowlistFileSelect}
-                        disabled={quoteToken === undefined}
-                        className="pt-1"
-                        error={fileLoadMessage ?? ""}
-                      />
-                    </FormItemWrapper>
-                  )}
-                  {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
-                    <>
-                      <FormField
-                        name="allowlistToken"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Allowlist Token"
-                            tooltip={
-                              "The address of the token to use for the allowlist."
-                            }
-                          >
-                            <DialogInput
-                              {...field}
-                              title="Select Allowlist Token"
-                              triggerContent={"Select token"}
-                              disabled={allowlistTokenModalInvalid}
-                            >
-                              <TokenPicker name="allowlistToken" />
-                            </DialogInput>
-                          </FormItemWrapper>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="allowlistTokenThreshold"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Required Token Balance"
-                            tooltip="The number of tokens the address must hold to qualify for the allowlist."
-                          >
-                            <Input placeholder="1" type="number" {...field} />
-                          </FormItemWrapper>
-                        )}
-                      />
-                    </>
-                  )}
-                  {(callbacksType === CallbacksType.UNIV2_DTL ||
-                    callbacksType === CallbacksType.UNIV3_DTL) && (
-                    <>
-                      <FormField
-                        control={form.control}
-                        name="dtlProceedsPercent"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            className="mt-4"
-                            label="Percent of Proceeds to Deposit"
-                            tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
-                          >
-                            <>
-                              <Input
-                                disabled
-                                className="disabled:opacity-100"
-                                value={`${field.value?.[0] ?? [75]}%`}
-                              />
-                              <Slider
-                                {...field}
-                                className="cursor-pointer pt-2"
-                                min={1}
-                                max={100}
-                                defaultValue={[75]}
-                                value={field.value}
-                                onValueChange={(v) => {
-                                  field.onChange(v);
-                                }}
-                              />
-                            </>
-                          </FormItemWrapper>
-                        )}
-                      />
-                      <FormField
-                        name="dtlRecipient"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Liquidity Recipient"
-                            tooltip={
-                              "The address that will receive the liquidity tokens"
-                            }
-                          >
-                            <Input
-                              {...field}
-                              placeholder={trimAddress("0x0000000")}
-                            />
-                          </FormItemWrapper>
-                        )}
-                      />{" "}
-                      <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
-                        <FormField
-                          name="dtlIsVested"
-                          render={({ field }) => (
-                            <FormItemWrapper className="mt-4 w-min">
-                              <div className="flex items-center gap-x-2">
-                                <Switch onCheckedChange={field.onChange} />
-                                <Label>Liquidity Vested</Label>
-                              </div>
-                            </FormItemWrapper>
-                          )}
-                        />
-                        <FormField
-                          name="dtlVestingDuration"
-                          render={({ field }) => (
-                            <FormItemWrapper label="Liquidity Vesting Days">
-                              <Input
-                                type="number"
-                                placeholder="7"
-                                disabled={!dtlIsVested}
-                                required={dtlIsVested}
-                                {...field}
-                              />
-                            </FormItemWrapper>
-                          )}
-                        />
-                      </div>
-                      <FormField
-                        control={form.control}
-                        name="dtlVestingStart"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Liquidity Vesting Start"
-                            tooltip="The start date/time of the liquidity vesting"
-                          >
-                            <DatePicker
-                              time
-                              placeholderDate={addMinutes(new Date(), 5)}
-                              content={formatDate.fullLocal(new Date())}
-                              {...field}
-                              minDate={
-                                deadline
-                                  ? (deadline as Date)
-                                  : addDays(new Date(), 1)
-                              }
-                            />
-                          </FormItemWrapper>
-                        )}
-                      />
-                    </>
-                  )}
-                  {callbacksType === CallbacksType.UNIV3_DTL && (
-                    <FormField
-                      control={form.control}
-                      name="dtlUniV3PoolFee"
-                      render={({ field }) => (
-                        <FormItemWrapper
-                          label="UniV3 Pool Fee"
+                          label="Callback"
                           tooltip={
-                            "The fee to set on the Uniswap V3 pool on creation."
+                            "The type of callback contract to use for the auction."
                           }
                         >
                           <Select
-                            defaultValue={"3000"}
+                            defaultValue={CallbacksType.NONE}
                             options={[
                               {
-                                value: "500",
-                                label: "0.05%",
+                                value: CallbacksType.NONE,
+                                label: "None",
                               },
                               {
-                                value: "3000",
-                                label: "0.3%",
+                                value: CallbacksType.MERKLE_ALLOWLIST,
+                                label: "Offchain Allowlist",
                               },
                               {
-                                value: "10000",
-                                label: "1.0%",
+                                value: CallbacksType.CAPPED_MERKLE_ALLOWLIST,
+                                label: "Offchain Allowlist with Spend Cap",
                               },
+                              {
+                                value: CallbacksType.ALLOCATED_MERKLE_ALLOWLIST,
+                                label: "Offchain Allowlist with Allocations",
+                              },
+                              {
+                                value: CallbacksType.TOKEN_ALLOWLIST,
+                                label: "Token Allowlist",
+                              },
+                              {
+                                value: CallbacksType.UNIV2_DTL,
+                                label: "Deposit to Uniswap V2 Pool",
+                              },
+                              {
+                                value: CallbacksType.UNIV3_DTL,
+                                label: "Deposit to Uniswap V3 Pool",
+                              },
+                              // {
+                              //   value: CallbacksType.CUSTOM,
+                              //   label: "Custom",
+                              // },
                             ]}
                             {...field}
                           />
                         </FormItemWrapper>
                       )}
                     />
-                  )}
-                  {/* {callbacksType === CallbacksType.CUSTOM && (
-                    <>
+                    {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
+                      callbacksType ==
+                        CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
+                      <FormItemWrapper
+                        label="Allowlist"
+                        tooltip={
+                          "File containing list of addresses on the allowlist in CSV format."
+                        }
+                      >
+                        <Input
+                          type="file"
+                          accept=".csv"
+                          onChange={handleAllowlistFileSelect}
+                          className="pt-1"
+                          error={fileLoadMessage ?? ""}
+                        />
+                      </FormItemWrapper>
+                    )}
+                    {callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST && (
                       <FormField
-                        name="callbacks"
+                        control={form.control}
+                        name="cappedAllowlistLimit"
                         render={({ field }) => (
                           <FormItemWrapper
-                            label="Custom Callbacks Address"
+                            label="Per User Spend Limit"
+                            tooltip="The number of quote tokens each allowlisted address can spend."
+                          >
+                            <Input placeholder="10" type="number" {...field} />
+                          </FormItemWrapper>
+                        )}
+                      />
+                    )}
+                    {callbacksType ===
+                      CallbacksType.ALLOCATED_MERKLE_ALLOWLIST && (
+                      <FormItemWrapper
+                        label="Allowlist"
+                        tooltip={
+                          "File containing list of addresses and allocations in CSV format." +
+                          (quoteToken === undefined
+                            ? " Please select a quote token first."
+                            : "")
+                        }
+                      >
+                        <Input
+                          type="file"
+                          accept=".csv"
+                          onChange={handleAllowlistFileSelect}
+                          disabled={quoteToken === undefined}
+                          className="pt-1"
+                          error={fileLoadMessage ?? ""}
+                        />
+                      </FormItemWrapper>
+                    )}
+                    {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
+                      <>
+                        <FormField
+                          name="allowlistToken"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Allowlist Token"
+                              tooltip={
+                                "The address of the token to use for the allowlist."
+                              }
+                            >
+                              <DialogInput
+                                {...field}
+                                title="Select Allowlist Token"
+                                triggerContent={"Select token"}
+                                disabled={allowlistTokenModalInvalid}
+                              >
+                                <TokenPicker name="allowlistToken" />
+                              </DialogInput>
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="allowlistTokenThreshold"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Required Token Balance"
+                              tooltip="The number of tokens the address must hold to qualify for the allowlist."
+                            >
+                              <Input placeholder="1" type="number" {...field} />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
+                    )}
+                    {(callbacksType === CallbacksType.UNIV2_DTL ||
+                      callbacksType === CallbacksType.UNIV3_DTL) && (
+                      <>
+                        <FormField
+                          control={form.control}
+                          name="dtlProceedsPercent"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Percent of Proceeds to Deposit"
+                              tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
+                            >
+                              <>
+                                <Input
+                                  disabled
+                                  className="disabled:opacity-100"
+                                  value={`${field.value?.[0] ?? [75]}%`}
+                                />
+                                <Slider
+                                  {...field}
+                                  className="cursor-pointer pt-2"
+                                  min={1}
+                                  max={100}
+                                  defaultValue={[75]}
+                                  value={field.value}
+                                  onValueChange={(v) => {
+                                    field.onChange(v);
+                                  }}
+                                />
+                              </>
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          name="dtlRecipient"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Liquidity Recipient"
+                              tooltip={
+                                "The address that will receive the liquidity tokens"
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />{" "}
+                        <div className="flex w-full max-w-sm items-center justify-start gap-x-2">
+                          <FormField
+                            name="dtlIsVested"
+                            render={({ field }) => (
+                              <FormItemWrapper className="mt-4 w-min">
+                                <div className="flex items-center gap-x-2">
+                                  <Switch onCheckedChange={field.onChange} />
+                                  <Label>Liquidity Vested</Label>
+                                </div>
+                              </FormItemWrapper>
+                            )}
+                          />
+                          <FormField
+                            name="dtlVestingDuration"
+                            render={({ field }) => (
+                              <FormItemWrapper label="Liquidity Vesting Days">
+                                <Input
+                                  type="number"
+                                  placeholder="7"
+                                  disabled={!dtlIsVested}
+                                  required={dtlIsVested}
+                                  {...field}
+                                />
+                              </FormItemWrapper>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="dtlVestingStart"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Liquidity Vesting Start"
+                              tooltip="The start date/time of the liquidity vesting"
+                            >
+                              <DatePicker
+                                time
+                                placeholderDate={addMinutes(new Date(), 5)}
+                                content={formatDate.fullLocal(new Date())}
+                                {...field}
+                                minDate={
+                                  deadline
+                                    ? (deadline as Date)
+                                    : addDays(new Date(), 1)
+                                }
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
+                    )}
+                    {callbacksType === CallbacksType.UNIV3_DTL && (
+                      <FormField
+                        control={form.control}
+                        name="dtlUniV3PoolFee"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="UniV3 Pool Fee"
                             tooltip={
-                              "The address of the custom callbacks contract."
+                              "The fee to set on the Uniswap V3 pool on creation."
                             }
                           >
-                            <Input
+                            <Select
+                              defaultValue={"3000"}
+                              // TODO consider fetching the fee tiers from the Uniswap V3 factory address stored on the callback contract
+                              options={[
+                                {
+                                  value: "500",
+                                  label: "0.05%",
+                                },
+                                {
+                                  value: "3000",
+                                  label: "0.3%",
+                                },
+                                {
+                                  value: "10000",
+                                  label: "1.0%",
+                                },
+                              ]}
                               {...field}
-                              placeholder={trimAddress("0x0000000")}
                             />
                           </FormItemWrapper>
                         )}
                       />
-                      <FormField
-                        name="customCallbackData"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Calldata for Custom Callback"
-                            tooltip={
-                              "The calldata to pass to the custom callback on auction creation."
-                            }
-                          >
-                            <Input
-                              {...field}
-                              placeholder={trimAddress("0x0000000")}
-                            />
-                          </FormItemWrapper>
-                        )}
-                      />
-                    </>
-                  )} */}
+                    )}
+                    {/* {callbacksType === CallbacksType.CUSTOM && (
+                      <>
+                        <FormField
+                          name="callbacks"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Custom Callbacks Address"
+                              tooltip={
+                                "The address of the custom callbacks contract."
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          name="customCallbackData"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Calldata for Custom Callback"
+                              tooltip={
+                                "The calldata to pass to the custom callback on auction creation."
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
+                    )} */}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1566,7 +1635,7 @@ export default function CreateAuctionPage() {
             open={isDialogOpen}
             onOpenChange={(open) => !open && setIsDialogOpen(false)}
           >
-            <DialogContent className="bg-surface max-w-sm">
+            <DialogContent className="bg-surface-tertiary">
               <DialogHeader>
                 <DialogTitle>
                   {createTxReceipt.isSuccess ? "Success" : "Creating Auction"}
@@ -1575,9 +1644,19 @@ export default function CreateAuctionPage() {
               <div className="px-6">
                 <AuctionCreationStatus
                   lotId={lotId}
+                  auctionType={auctionType as AuctionType}
+                  requiresCallbacksApproval={requiresCallbacksApproval}
+                  isSufficientAuctionHouseAllowance={
+                    isSufficientAuctionHouseAllowance
+                  }
+                  isSufficientCallbacksAllowance={
+                    isSufficientCallbacksAllowance
+                  }
                   chainId={chainId}
-                  approveTx={approveTx}
-                  approveReceipt={approveReceipt}
+                  auctionHouseApproveTx={auctionHouseApproveTx}
+                  auctionHouseApproveReceipt={auctionHouseApproveReceipt}
+                  callbackApproveTx={callbackApproveTx}
+                  callbackApproveReceipt={callbackApproveReceipt}
                   info={auctionInfoMutation}
                   //@ts-expect-error debug
                   keypair={generateKeyPairMutation}
@@ -1602,7 +1681,7 @@ export default function CreateAuctionPage() {
           <DevTool control={form.control} />
         </form>
       </Form>
-    </>
+    </PageContainer>
   );
 }
 

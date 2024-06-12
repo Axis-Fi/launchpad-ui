@@ -54,8 +54,8 @@ const IconnedInput = React.forwardRef<
 >(({ className, icon, ...props }, ref) => {
   return (
     <div className="relative">
-      <div className="absolute left-2 top-1.5">{icon}</div>
       <Input className={cn("pl-10", className)} {...props} ref={ref} />
+      <div className="absolute left-2 top-1.5">{icon}</div>
     </div>
   );
 });

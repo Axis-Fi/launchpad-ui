@@ -115,14 +115,14 @@ const FormMessage = React.forwardRef<
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField();
-  const body = error ? String(error?.message) : children;
+  const body = error && error.message ? String(error?.message) : children;
 
   return (
     <div className="relative">
       <p
         ref={ref}
         id={formMessageId}
-        className={cn("text-destructive text-xs", className)}
+        className={cn("text-feedback-alert text-xs", className)}
         {...props}
       >
         {body}

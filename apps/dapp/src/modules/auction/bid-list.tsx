@@ -7,7 +7,7 @@ import {
 } from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
-import { Button, DataTable, Text, Tooltip } from "@repo/ui";
+import { Button, Card, DataTable, Text, Tooltip } from "@repo/ui";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -21,6 +21,8 @@ import { getAuctionHouse } from "utils/contracts";
 import { useBidIndex } from "./hooks/use-bid-index";
 import { format } from "date-fns";
 import { useStorageBids } from "state/bids/handlers";
+import { CSVDownloader } from "components/csv-downloader";
+import { arrayToCSV } from "utils/csv";
 
 const column = createColumnHelper<BatchAuctionBid & { auction: Auction }>();
 
@@ -168,22 +170,25 @@ export function BidList(props: BidListProps) {
     BigInt(bidToRefund?.bidId ?? -1),
   );
 
-  const mappedBids =
-    encryptedBids.map((bid) => {
-      //Checks if its a user bid and in local storage
-      const storedBid =
-        userBids.find(
-          (storageBid) =>
-            storageBid.bidId === bid.bidId &&
-            bid.bidder.toLowerCase() === address?.toLowerCase(),
-        ) ?? {};
+  const mappedBids = React.useMemo(
+    () =>
+      encryptedBids.map((bid) => {
+        //Checks if its a user bid and in local storage
+        const storedBid =
+          userBids.find(
+            (storageBid) =>
+              storageBid.bidId === bid.bidId &&
+              bid.bidder.toLowerCase() === address?.toLowerCase(),
+          ) ?? {};
 
-      return {
-        ...bid,
-        ...storedBid,
-        auction: props.auction,
-      };
-    }) ?? [];
+        return {
+          ...bid,
+          ...storedBid,
+          auction: props.auction,
+        };
+      }) ?? [],
+    [props.auction, address],
+  );
 
   const isLoading = refund.isPending || refundReceipt.isLoading;
 
@@ -245,8 +250,31 @@ export function BidList(props: BidListProps) {
     }
   }, [refund.isSuccess]);
 
+  //Format bids for CSV download
+  const [headers, body] = React.useMemo(() => {
+    const values = auction.bids.map((b) => ({
+      date: b.date,
+      amountIn: b.amountIn,
+      settledAmountOut: b.settledAmountOut,
+      submittedPrice: b.submittedPrice,
+      bidder: b.bidder,
+    }));
+
+    return arrayToCSV(values ?? []);
+  }, [auction]);
+
   return (
-    <>
+    <Card
+      title={"Bid History"}
+      headerRightElement={
+        <CSVDownloader
+          tooltip="Download this bid history in CSV format."
+          filename={`bids-${auction.auctionType}-${auction.id}`}
+          headers={headers}
+          data={body}
+        />
+      }
+    >
       <DataTable
         emptyText={
           props.auction.status == "created" || props.auction.status == "live"
@@ -272,6 +300,6 @@ export function BidList(props: BidListProps) {
         disabled={isLoading}
         screens={screens}
       />
-    </>
+    </Card>
   );
 }

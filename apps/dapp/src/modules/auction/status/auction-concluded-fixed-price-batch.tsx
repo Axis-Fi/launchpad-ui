@@ -3,23 +3,38 @@ import { Badge, Button, Card, Metric, Text } from "@repo/ui";
 import type { PropsWithAuction } from "@repo/types";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
-import React from "react";
+import React, { useState } from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { SettleAuctionCallbackInput } from "./settle-callback-input";
 
 export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const settle = useSettleAuction(props.auction);
+
+  // Storage of encoded callback data for the callback contract
+  const [callbackData, setCallbackData] = useState<`0x${string}` | undefined>(
+    undefined,
+  );
+  const [callbackDataIsValid, setCallbackDataIsValid] = useState(false);
+
+  const settle = useSettleAuction({
+    auction: props.auction,
+    callbackData: callbackData,
+  });
+
+  const hasCallbacks =
+    props.auction.callbacks &&
+    props.auction.callbacks != "0x0000000000000000000000000000000000000000";
 
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
   return (
     <div>
-      <div className="flex justify-between">
-        <div className="flex w-1/2 flex-col gap-y-4">
+      <div className="flex justify-between gap-x-8">
+        <div className="flex w-full flex-col gap-y-4">
           <Card
             title="Launch Info"
             headerRightElement={
@@ -43,7 +58,7 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
           </Card>
           <ProjectInfoCard auction={props.auction} />
         </div>
-        <div className="w-[40%]">
+        <div>
           <TransactionDialog
             signatureMutation={settle.settleTx}
             error={settle.error}
@@ -76,11 +91,20 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
                   <Text size="xl">Auction has ended</Text>
                 </div>
               </div>
+              {hasCallbacks && (
+                <div>
+                  <SettleAuctionCallbackInput
+                    auction={props.auction}
+                    setCallbackData={setCallbackData}
+                    setCallbackDataIsValid={setCallbackDataIsValid}
+                  />
+                </div>
+              )}
               <RequiresChain chainId={props.auction.chainId} className="mt-4">
                 <div className="mt-4 w-full">
                   <Button
                     className="w-full"
-                    disabled={isWaiting}
+                    disabled={isWaiting || !callbackDataIsValid}
                     onClick={() => setIsDialogOpen(true)}
                   >
                     {isWaiting ? (

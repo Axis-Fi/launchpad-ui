@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { AuctionType, type Auction } from "@repo/types";
 
 const getAuctionMock = (

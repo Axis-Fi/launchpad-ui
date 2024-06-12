@@ -28,8 +28,8 @@ const success = {
 export const Primary: Story = {
   args: {
     chainId: 168587773,
-    approveTx: success,
-    approveReceipt: success,
+    auctionHouseApproveTx: success,
+    auctionHouseApproveReceipt: success,
     info: success,
     keypair: success,
     tx: success,

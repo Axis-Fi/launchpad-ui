@@ -8,11 +8,16 @@ const { discord, twitter, website, contact } = metadata;
 export function AppFooter() {
   return (
     <div className="max-w-limit mx-auto w-full py-6">
-      <div className="bg-hero-banner flex items-center justify-between rounded-full">
+      <div className="bg-hero-banner flex h-12 items-center justify-between rounded-full">
         <AppVersion className="ml-4" />
 
         <div className="text-surface flex items-center gap-x-3 px-4">
-          <SocialRow discord={discord} twitter={twitter} website={website} />
+          <SocialRow
+            discord={discord}
+            twitter={twitter}
+            website={website}
+            iconClassName={"size-8"}
+          />
           <Link href="https://docs.axis.finance/">
             <Button
               size="sm"

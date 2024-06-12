@@ -7,7 +7,6 @@ import {
 } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { PageHeader } from "modules/app/page-header";
-import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { ImageBanner } from "components/image-banner";
 import {
   EncryptedMarginalPriceAuctionConcluded,
@@ -22,6 +21,7 @@ import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-
 import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 import { getCountdown } from "utils/date";
 import { useEffect, useState } from "react";
+import { BidList } from "modules/auction/bid-list";
 
 const statuses: Record<
   AuctionStatus,
@@ -49,10 +49,10 @@ export default function AuctionPage() {
   // Countdown
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
   const isOngoing =
-    auction &&
-    auction.formatted &&
+    auction?.formatted &&
     auction.formatted?.startDate < new Date() &&
     auction.formatted?.endDate > new Date();
+
   // Refresh the countdown every second
   useEffect(() => {
     const interval = setInterval(() => {
@@ -78,7 +78,10 @@ export default function AuctionPage() {
 
   return (
     <>
-      <ImageBanner imgUrl={auction.auctionInfo?.links?.projectLogo}>
+      <ImageBanner
+        isLoading={isAuctionLoading}
+        imgUrl={auction.auctionInfo?.links?.projectLogo}
+      >
         <div className="flex h-full w-full flex-row flex-wrap">
           <div className="flex w-full flex-row justify-end">
             <div className="mr-4 mt-4">
@@ -89,14 +92,6 @@ export default function AuctionPage() {
             <div className="self-center align-bottom">
               <Text size="7xl" mono>
                 {auction.auctionInfo?.name}
-              </Text>
-
-              <Text
-                size="3xl"
-                color="secondary"
-                className="mx-auto w-fit text-nowrap"
-              >
-                send copy plis mi familia
               </Text>
             </div>
             <div className="mb-4 ml-4 self-start">
@@ -118,39 +113,29 @@ export default function AuctionPage() {
       </ImageBanner>
 
       <PageContainer>
-        <PageHeader>
+        <PageHeader
+          backNavigationPath="/#"
+          backNavigationText="Back to Launches"
+        >
           <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
         </PageHeader>
 
         <AuctionElement auction={auction} />
 
-        <AuctionBidsCard auction={auction} isLoading={isAuctionLoading} />
+        <BidList auction={auction} />
       </PageContainer>
     </>
   );
 }
 
 function AuctionPageLoading() {
-  /* TODO skeletons not working since redesign */
   return (
-    <div className="mask">
-      <ImageBanner />
+    <div>
+      <ImageBanner isLoading={true} />
       <PageContainer>
         <PageHeader />
-        <div>
-          <div className="bg-secondary rounded-sm p-4 ">
-            <Skeleton className="h-22 mt-20 w-full" />
-          </div>
-
-          <div className="mt-5">
-            <div className="flex justify-between gap-x-4">
-              <Skeleton className="h-72 w-[40%]" />
-            </div>
-          </div>
-          <Text size="lg" className="mt-5">
-            About
-          </Text>
-          <Skeleton className="h-32 w-[40%]" />
+        <div className="mask h-[500px] w-full">
+          <Skeleton className="size-full" />
         </div>
       </PageContainer>
     </div>
