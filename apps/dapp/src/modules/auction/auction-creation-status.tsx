@@ -126,7 +126,9 @@ export function AuctionCreationStatus({
           tooltip="Approve the AuctionHouse to transfer the auction capacity"
         />
         <StatusSeparator
-          className={cn(auctionHouseApprovalComplete && "border-success")}
+          className={cn(
+            auctionHouseApprovalComplete && "border-feedback-success",
+          )}
         />
         <StatusIcon
           {...auctionHouseApproveReceipt}
@@ -146,7 +148,9 @@ export function AuctionCreationStatus({
               tooltip="Approve the Callback contract to transfer base token liquidity"
             />
             <StatusSeparator
-              className={cn(callbackApprovalComplete && "border-success")}
+              className={cn(
+                callbackApprovalComplete && "border-feedback-success",
+              )}
             />
             <StatusIcon
               {...callbackApproveReceipt}
@@ -164,7 +168,9 @@ export function AuctionCreationStatus({
           isLoading={isStoringInfo}
           tooltip="Storing the auction information on IPFS"
         />
-        <StatusSeparator className={cn(info.isSuccess && "border-success")} />
+        <StatusSeparator
+          className={cn(info.isSuccess && "border-feedback-success")}
+        />
         {auctionType === AuctionType.SEALED_BID && (
           <>
             <StatusIcon
@@ -174,7 +180,7 @@ export function AuctionCreationStatus({
               tooltip="Generating a new keypair for the auction"
             />
             <StatusSeparator
-              className={cn(keypair.isSuccess && "border-success")}
+              className={cn(keypair.isSuccess && "border-feedback-success")}
             />
           </>
         )}
@@ -184,7 +190,9 @@ export function AuctionCreationStatus({
           isLoading={isSigningTx}
           tooltip="Signing the transaction to create the auction"
         />
-        <StatusSeparator className={cn(tx.isSuccess && "border-success")} />
+        <StatusSeparator
+          className={cn(tx.isSuccess && "border-feedback-success")}
+        />
         <StatusIcon
           {...txReceipt}
           Icon={RadioTowerIcon}

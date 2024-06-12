@@ -22,8 +22,8 @@ export function StatusIcon({
         <Icon
           className={cn(
             "transition-all",
-            isSuccess && "text-success",
-            isError && "text-destructive",
+            isSuccess && "text-feedback-success",
+            isError && "text-feedback-alert",
           )}
         />
       </Tooltip>
