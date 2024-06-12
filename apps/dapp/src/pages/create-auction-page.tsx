@@ -18,6 +18,7 @@ import {
   Textarea,
   trimAddress,
 } from "@repo/ui";
+import { abis } from "@repo/abis";
 import { DevTool } from "@hookform/devtools";
 
 import { TokenPicker } from "modules/token/token-picker";
@@ -29,6 +30,7 @@ import {
   UseWaitForTransactionReceiptReturnType,
   useAccount,
   useChainId,
+  useReadContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
@@ -287,6 +289,7 @@ export default function CreateAuctionPage() {
     auctionType,
     callbacksType,
     dtlIsVested,
+    dtlUniV3PoolFee,
     start,
     deadline,
   ] = form.watch([
@@ -298,6 +301,7 @@ export default function CreateAuctionPage() {
     "auctionType",
     "callbacksType",
     "dtlIsVested",
+    "dtlUniV3PoolFee",
     "start",
     "deadline",
   ]);
@@ -833,6 +837,70 @@ export default function CreateAuctionPage() {
   }, [callbacksType]);
 
   // TODO: if DTL is selected, need to add a check to see if a pool is already created for the quote and payout token on the target chain/factory
+
+  // If the auction uses UniV2 DTL, we need to check if a pool exists for the base and quote token pair
+  // We get the factory address from the callbacks contract
+  const { data: uniV2Factory } = useReadContract({
+    abi: abis.uniV2Dtl,
+    address: getCallbacks(chainId, callbacksType as CallbacksType).address,
+    functionName: "uniV2Factory",
+    query: { enabled: callbacksType === CallbacksType.UNIV2_DTL },
+  });
+
+  const { data: uniV2Pool } = useReadContract({
+    abi: abis.uniV2Factory,
+    address: uniV2Factory,
+    functionName: "getPair",
+    args: [getAddress(payoutToken.address), getAddress(quoteToken.address)],
+    query: {
+      enabled:
+        callbacksType === CallbacksType.UNIV2_DTL &&
+        !!uniV2Factory &&
+        !!payoutToken.address &&
+        !!quoteToken.address,
+    },
+  });
+
+  // If the auction uses a UniV3 DTL, we need to check if a pool exists for the base/quote token pair and fee tier
+  const { data: uniV3Factory } = useReadContract({
+    abi: abis.uniV3Dtl,
+    address: getCallbacks(chainId, callbacksType as CallbacksType).address,
+    functionName: "uniV3Factory",
+    query: { enabled: callbacksType === CallbacksType.UNIV3_DTL },
+  });
+
+  const { data: uniV3Pool } = useReadContract({
+    abi: abis.uniV3Factory,
+    address: uniV3Factory,
+    functionName: "getPool",
+    args: [
+      getAddress(payoutToken.address),
+      getAddress(quoteToken.address),
+      dtlUniV3PoolFee ? Number(dtlUniV3PoolFee) : 0,
+    ],
+    query: {
+      enabled:
+        callbacksType === CallbacksType.UNIV3_DTL &&
+        !!uniV3Factory &&
+        !!payoutToken.address &&
+        !!quoteToken.address &&
+        !!dtlUniV3PoolFee,
+    },
+  });
+
+  if (uniV2Pool && uniV2Pool !== zeroAddress) {
+    form.setError("callbacksType", {
+      message:
+        "A UniV2 pool already exists for the selected tokens. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
+    });
+  }
+
+  if (uniV3Pool && uniV3Pool !== zeroAddress) {
+    form.setError("callbacksType", {
+      message:
+        "A UniV3 pool already exists for the selected tokens at the selected fee tier. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
+    });
+  }
 
   return (
     <PageContainer>

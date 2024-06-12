@@ -3533,6 +3533,101 @@ export const uniV2DtlAbi = [
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV2Factory
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV2FactoryAbi = [
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    name: "allPairs",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "allPairsLength",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+    ],
+    name: "createPair",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "feeTo",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "feeToSetter",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+    ],
+    name: "getPair",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "setFeeTo",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "setFeeToSetter",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "token0",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token1",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "pair",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+      { name: "", internalType: "uint256", type: "uint256", indexed: false },
+    ],
+    name: "PairCreated",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // uniV3Dtl
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3735,5 +3830,130 @@ export const uniV3DtlAbi = [
     type: "error",
     inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
     name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV3Factory
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV3FactoryAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+      { name: "fee", internalType: "uint24", type: "uint24" },
+    ],
+    name: "createPool",
+    outputs: [{ name: "pool", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "fee", internalType: "uint24", type: "uint24" },
+      { name: "tickSpacing", internalType: "int24", type: "int24" },
+    ],
+    name: "enableFeeAmount",
+    outputs: [],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "fee", internalType: "uint24", type: "uint24" }],
+    name: "feeAmountTickSpacing",
+    outputs: [{ name: "", internalType: "int24", type: "int24" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+      { name: "fee", internalType: "uint24", type: "uint24" },
+    ],
+    name: "getPool",
+    outputs: [{ name: "pool", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "owner",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_owner", internalType: "address", type: "address" }],
+    name: "setOwner",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "fee", internalType: "uint24", type: "uint24", indexed: true },
+      {
+        name: "tickSpacing",
+        internalType: "int24",
+        type: "int24",
+        indexed: true,
+      },
+    ],
+    name: "FeeAmountEnabled",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "oldOwner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newOwner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+    ],
+    name: "OwnerChanged",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "token0",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token1",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      { name: "fee", internalType: "uint24", type: "uint24", indexed: true },
+      {
+        name: "tickSpacing",
+        internalType: "int24",
+        type: "int24",
+        indexed: false,
+      },
+      {
+        name: "pool",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+    ],
+    name: "PoolCreated",
   },
 ] as const;
