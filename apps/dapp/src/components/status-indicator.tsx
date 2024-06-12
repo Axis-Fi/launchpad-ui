@@ -26,7 +26,7 @@ export function StatusIcon({
       {isLoading && (
         <LoadingIndicator
           rootClassName="absolute mt-14"
-          className="fill-white"
+          className="fill-black"
         />
       )}
     </div>

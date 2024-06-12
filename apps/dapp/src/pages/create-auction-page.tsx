@@ -1592,7 +1592,7 @@ export default function CreateAuctionPage() {
             open={isDialogOpen}
             onOpenChange={(open) => !open && setIsDialogOpen(false)}
           >
-            <DialogContent className="bg-surface ">
+            <DialogContent className="bg-surface-tertiary">
               <DialogHeader>
                 <DialogTitle>
                   {createTxReceipt.isSuccess ? "Success" : "Creating Auction"}
