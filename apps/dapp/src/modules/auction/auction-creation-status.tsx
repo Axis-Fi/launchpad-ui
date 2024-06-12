@@ -16,6 +16,7 @@ import { BlockExplorerLink } from "components/blockexplorer-link";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { Address, BaseError } from "viem";
 import { TransactionErrorDialog } from "modules/transaction/transaction-error-dialog";
+import { AuctionType } from "@repo/types";
 
 type CreateAuctionStatusCardProps = {
   approveTx: UseWriteContractReturnType;
@@ -28,6 +29,7 @@ type CreateAuctionStatusCardProps = {
   onSubmit: () => void;
   onSuccess: (lotId?: number | undefined) => void;
   lotId?: number | null;
+  auctionType: AuctionType;
 };
 
 /** Displays the status, confirmations and errors of the
@@ -40,6 +42,7 @@ export function AuctionCreationStatus({
   tx,
   txReceipt,
   chainId,
+  auctionType,
   onSubmit,
   ...props
 }: CreateAuctionStatusCardProps) {
@@ -83,38 +86,50 @@ export function AuctionCreationStatus({
           {...approveTx}
           Icon={BoxIcon}
           isLoading={isSigningApprove}
+          tooltip="Approve the AuctionHouse to transfer the auction capacity"
         />
         <StatusSeparator
-          className={cn(approveTx.isSuccess && "border-axis-green")}
+          className={cn(approveTx.isSuccess && "border-success")}
         />
         <StatusIcon
           {...approveReceipt}
           Icon={RadioTowerIcon}
           isLoading={isApprovalConfirming}
+          tooltip="Confirming the transaction to approve the AuctionHouse"
         />
         <div className="border-foreground mx-2 h-8 border-l-2" />
         <StatusIcon
           {...info}
           Icon={UploadCloudIcon}
           isLoading={isStoringInfo}
+          tooltip="Storing the auction information on IPFS"
         />
-        <StatusSeparator
-          className={cn(info.isSuccess && "border-axis-green")}
-        />
+        <StatusSeparator className={cn(info.isSuccess && "border-success")} />
+        {auctionType === AuctionType.SEALED_BID && (
+          <StatusIcon
+            {...keypair}
+            Icon={keypair.isSuccess ? LockIcon : UnlockIcon}
+            isLoading={isMakingKeys}
+            tooltip="Generating a new keypair for the auction"
+          />
+        )}
+        {auctionType === AuctionType.SEALED_BID && (
+          <StatusSeparator
+            className={cn(keypair.isSuccess && "border-success")}
+          />
+        )}
         <StatusIcon
-          {...keypair}
-          Icon={keypair.isSuccess ? LockIcon : UnlockIcon}
-          isLoading={isMakingKeys}
+          {...tx}
+          Icon={BoxIcon}
+          isLoading={isSigningTx}
+          tooltip="Signing the transaction to create the auction"
         />
-        <StatusSeparator
-          className={cn(keypair.isSuccess && "border-axis-green")}
-        />
-        <StatusIcon {...tx} Icon={BoxIcon} isLoading={isSigningTx} />
-        <StatusSeparator className={cn(tx.isSuccess && "border-axis-green")} />
+        <StatusSeparator className={cn(tx.isSuccess && "border-success")} />
         <StatusIcon
           {...txReceipt}
           Icon={RadioTowerIcon}
           isLoading={isTxConfirming}
+          tooltip="Confirming the transaction to create the auction"
         />
       </div>
       <div className="mt-8 flex justify-center">

@@ -1601,6 +1601,7 @@ export default function CreateAuctionPage() {
               <div className="px-6">
                 <AuctionCreationStatus
                   lotId={lotId}
+                  auctionType={auctionType as AuctionType}
                   chainId={chainId}
                   approveTx={approveTx}
                   approveReceipt={approveReceipt}
