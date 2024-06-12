@@ -41,6 +41,8 @@ const getMinFilled = (auction: Auction): number | undefined => {
   return undefined;
 };
 
+// TODO add DTL proceeds as a metric. Probably requires loading the callback configuration into the auction type.
+
 const handlers = {
   derivative: {
     label: "Derivative",

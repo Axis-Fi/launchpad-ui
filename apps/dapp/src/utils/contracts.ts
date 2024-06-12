@@ -68,7 +68,6 @@ const callbackMap = {
 
 export function getCallbacks(chainId: number, callbackType: CallbacksType) {
   const contractName = callbackMap[callbackType] as AxisCallbackNames;
-  console.log(axisContracts.addresses);
 
   return {
     abi: axisContracts.abis[contractName],
