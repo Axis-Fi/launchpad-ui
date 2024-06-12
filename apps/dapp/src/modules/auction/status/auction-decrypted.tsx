@@ -12,7 +12,7 @@ import { BlockExplorerLink } from "components/blockexplorer-link";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const settle = useSettleAuction(auction);
+  const settle = useSettleAuction({ auction });
 
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
