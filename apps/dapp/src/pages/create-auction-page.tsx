@@ -630,25 +630,68 @@ export default function CreateAuctionPage() {
     );
   };
 
-  const { isSufficientAllowance, execute, approveReceipt, approveTx } =
-    useAllowance({
-      spenderAddress: getAuctionHouse({
-        chainId,
-        auctionType: auctionType as AuctionType,
-      }).address,
-      ownerAddress: address,
-      tokenAddress: payoutToken?.address as Address,
-      decimals: payoutToken?.decimals,
-      chainId: payoutToken?.chainId,
-      amount: Number(capacity),
-    });
+  /// AuctionHouse allowance
+  const {
+    isSufficientAllowance: isSufficientAuctionHouseAllowance,
+    execute: executeApproveAuctionHouse,
+    approveReceipt: auctionHouseApproveReceipt,
+    approveTx: auctionHouseApproveTx,
+  } = useAllowance({
+    spenderAddress: getAuctionHouse({
+      chainId,
+      auctionType: auctionType as AuctionType,
+    }).address,
+    ownerAddress: address,
+    tokenAddress: payoutToken?.address as Address,
+    decimals: payoutToken?.decimals,
+    chainId: payoutToken?.chainId,
+    amount: Number(capacity),
+  });
   // TODO add note on pre-funding: the capacity will be transferred upon creation
 
   const createAuction = form.handleSubmit(handleCreation);
   const isValid = form.formState.isValid;
 
+  /// Callbacks allowance
+  const dtlProceedsPercentFormValue = form.getValues("dtlProceedsPercent");
+  const dtlProceedsPercent =
+    !dtlProceedsPercentFormValue || dtlProceedsPercentFormValue.length == 0
+      ? 0
+      : dtlProceedsPercentFormValue[0] / 100;
+  const {
+    isSufficientAllowance: isSufficientCallbacksAllowance,
+    execute: executeApproveCallback,
+    approveReceipt: callbackApproveReceipt,
+    approveTx: callbackApproveTx,
+  } = useAllowance({
+    spenderAddress: getCallbacks(chainId, callbacksType as CallbacksType)
+      .address,
+    ownerAddress: address,
+    tokenAddress: payoutToken?.address as Address,
+    decimals: payoutToken?.decimals,
+    chainId: payoutToken?.chainId,
+    amount: Number(capacity) * dtlProceedsPercent,
+  });
+  const requiresCallbacksApproval =
+    callbacksType === CallbacksType.UNIV2_DTL ||
+    callbacksType === CallbacksType.UNIV3_DTL;
+
   const onSubmit = () => {
-    isSufficientAllowance ? createAuction() : execute();
+    // 1. If we need to approve the auction house
+    if (!isSufficientAuctionHouseAllowance) {
+      executeApproveAuctionHouse();
+      return;
+    }
+
+    // 2. If we need to approve the callbacks
+    if (requiresCallbacksApproval && !isSufficientCallbacksAllowance) {
+      executeApproveCallback();
+      return;
+    }
+
+    // 3. Otherwise create
+    createAuction();
+    return;
   };
 
   // Handle form validation on token picker modal
@@ -1602,9 +1645,18 @@ export default function CreateAuctionPage() {
                 <AuctionCreationStatus
                   lotId={lotId}
                   auctionType={auctionType as AuctionType}
+                  requiresCallbacksApproval={requiresCallbacksApproval}
+                  isSufficientAuctionHouseAllowance={
+                    isSufficientAuctionHouseAllowance
+                  }
+                  isSufficientCallbacksAllowance={
+                    isSufficientCallbacksAllowance
+                  }
                   chainId={chainId}
-                  approveTx={approveTx}
-                  approveReceipt={approveReceipt}
+                  auctionHouseApproveTx={auctionHouseApproveTx}
+                  auctionHouseApproveReceipt={auctionHouseApproveReceipt}
+                  callbackApproveTx={callbackApproveTx}
+                  callbackApproveReceipt={callbackApproveReceipt}
                   info={auctionInfoMutation}
                   //@ts-expect-error debug
                   keypair={generateKeyPairMutation}

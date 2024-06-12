@@ -19,8 +19,10 @@ import { TransactionErrorDialog } from "modules/transaction/transaction-error-di
 import { AuctionType } from "@repo/types";
 
 type CreateAuctionStatusCardProps = {
-  approveTx: UseWriteContractReturnType;
-  approveReceipt: UseWaitForTransactionReceiptReturnType;
+  auctionHouseApproveTx: UseWriteContractReturnType;
+  auctionHouseApproveReceipt: UseWaitForTransactionReceiptReturnType;
+  callbackApproveTx: UseWriteContractReturnType;
+  callbackApproveReceipt: UseWaitForTransactionReceiptReturnType;
   info: UseMutationResult<string, Error, CreateAuctionForm>;
   keypair: UseMutationResult<Address, Error, void, unknown>;
   tx: UseWriteContractReturnType;
@@ -30,24 +32,41 @@ type CreateAuctionStatusCardProps = {
   onSuccess: (lotId?: number | undefined) => void;
   lotId?: number | null;
   auctionType: AuctionType;
+  requiresCallbacksApproval: boolean;
+  isSufficientAuctionHouseAllowance: boolean;
+  isSufficientCallbacksAllowance: boolean;
 };
 
 /** Displays the status, confirmations and errors of the
  * several steps that occur when submitting an auction for creation */
 export function AuctionCreationStatus({
-  approveTx,
-  approveReceipt,
+  auctionHouseApproveTx,
+  auctionHouseApproveReceipt,
+  callbackApproveTx,
+  callbackApproveReceipt,
   info,
   keypair,
   tx,
   txReceipt,
   chainId,
   auctionType,
+  requiresCallbacksApproval,
+  isSufficientAuctionHouseAllowance,
+  isSufficientCallbacksAllowance,
   onSubmit,
   ...props
 }: CreateAuctionStatusCardProps) {
-  const isSigningApprove = !approveTx.isIdle && approveTx.isPending;
-  const { isLoading: isApprovalConfirming } = approveReceipt;
+  const isSigningAuctionHouseApprove =
+    !auctionHouseApproveTx.isIdle && auctionHouseApproveTx.isPending;
+  const { isLoading: isAuctionHouseApprovalConfirming } =
+    auctionHouseApproveReceipt;
+
+  const isSigningCallbackApprove =
+    !!callbackApproveTx &&
+    !callbackApproveTx.isIdle &&
+    callbackApproveTx.isPending;
+  const isCallbackApprovalConfirming =
+    callbackApproveReceipt && callbackApproveReceipt.isLoading;
 
   const isStoringInfo = !info.isIdle && info.isPending;
   const isMakingKeys = !keypair.isIdle && keypair.isPending;
@@ -55,8 +74,10 @@ export function AuctionCreationStatus({
   const { isLoading: isTxConfirming, isSuccess } = txReceipt;
 
   const isIdle = [
-    isSigningApprove,
-    isApprovalConfirming,
+    isSigningAuctionHouseApprove,
+    isAuctionHouseApprovalConfirming,
+    isSigningCallbackApprove,
+    isCallbackApprovalConfirming,
     isStoringInfo,
     isMakingKeys,
     isSigningTx,
@@ -64,11 +85,21 @@ export function AuctionCreationStatus({
     isSuccess,
   ].every((is) => !is);
 
-  const queries = [approveTx, approveReceipt, info, keypair, tx, txReceipt];
+  const queries = [
+    auctionHouseApproveTx,
+    auctionHouseApproveReceipt,
+    callbackApproveTx,
+    callbackApproveReceipt,
+    info,
+    keypair,
+    tx,
+    txReceipt,
+  ];
   const error = queries.find((m) => m.isError)?.error;
   const handleSubmit = () => {
     if (error) {
-      approveTx.reset();
+      auctionHouseApproveTx.reset();
+      callbackApproveTx.reset();
       info.reset();
       keypair.reset();
       tx.reset();
@@ -79,25 +110,54 @@ export function AuctionCreationStatus({
 
   const nonContractError = keypair.isError || info.isError;
 
+  const auctionHouseApprovalComplete =
+    isSufficientAuctionHouseAllowance || auctionHouseApproveReceipt.isSuccess;
+  const callbackApprovalComplete =
+    isSufficientCallbacksAllowance || callbackApproveReceipt.isSuccess;
+
   return (
     <div>
       <div className="flex max-w-screen-md items-center justify-between transition-all">
         <StatusIcon
-          {...approveTx}
+          {...auctionHouseApproveTx}
           Icon={BoxIcon}
-          isLoading={isSigningApprove}
+          isLoading={isSigningAuctionHouseApprove}
+          isSuccess={auctionHouseApprovalComplete}
           tooltip="Approve the AuctionHouse to transfer the auction capacity"
         />
         <StatusSeparator
-          className={cn(approveTx.isSuccess && "border-success")}
+          className={cn(auctionHouseApprovalComplete && "border-success")}
         />
         <StatusIcon
-          {...approveReceipt}
+          {...auctionHouseApproveReceipt}
           Icon={RadioTowerIcon}
-          isLoading={isApprovalConfirming}
+          isLoading={isAuctionHouseApprovalConfirming}
+          isSuccess={auctionHouseApprovalComplete}
           tooltip="Confirming the transaction to approve the AuctionHouse"
         />
         <div className="border-foreground mx-2 h-8 border-l-2" />
+        {requiresCallbacksApproval && (
+          <>
+            <StatusIcon
+              {...callbackApproveTx}
+              Icon={BoxIcon}
+              isLoading={isSigningCallbackApprove}
+              isSuccess={callbackApprovalComplete}
+              tooltip="Approve the Callback contract to transfer base token liquidity"
+            />
+            <StatusSeparator
+              className={cn(callbackApprovalComplete && "border-success")}
+            />
+            <StatusIcon
+              {...callbackApproveReceipt}
+              Icon={RadioTowerIcon}
+              isLoading={isCallbackApprovalConfirming}
+              isSuccess={callbackApprovalComplete}
+              tooltip="Confirming the transaction to approve the Callback contract"
+            />
+            <div className="border-foreground mx-2 h-8 border-l-2" />
+          </>
+        )}
         <StatusIcon
           {...info}
           Icon={UploadCloudIcon}
@@ -106,17 +166,17 @@ export function AuctionCreationStatus({
         />
         <StatusSeparator className={cn(info.isSuccess && "border-success")} />
         {auctionType === AuctionType.SEALED_BID && (
-          <StatusIcon
-            {...keypair}
-            Icon={keypair.isSuccess ? LockIcon : UnlockIcon}
-            isLoading={isMakingKeys}
-            tooltip="Generating a new keypair for the auction"
-          />
-        )}
-        {auctionType === AuctionType.SEALED_BID && (
-          <StatusSeparator
-            className={cn(keypair.isSuccess && "border-success")}
-          />
+          <>
+            <StatusIcon
+              {...keypair}
+              Icon={keypair.isSuccess ? LockIcon : UnlockIcon}
+              isLoading={isMakingKeys}
+              tooltip="Generating a new keypair for the auction"
+            />
+            <StatusSeparator
+              className={cn(keypair.isSuccess && "border-success")}
+            />
+          </>
         )}
         <StatusIcon
           {...tx}
@@ -135,18 +195,24 @@ export function AuctionCreationStatus({
       <div className="mt-8 flex justify-center">
         {isIdle && !error && (
           <p className="text-center">
-            {approveReceipt.isSuccess
-              ? "Deploy your Auction"
-              : "Approve the configured capacity"}
+            {!auctionHouseApprovalComplete
+              ? "Approve the capacity for the AuctionHouse"
+              : requiresCallbacksApproval && !callbackApprovalComplete
+                ? "Approve the capacity for the Callbacks contract"
+                : "Deploy your Auction"}
           </p>
         )}
         {!error && (
           <p className="text-center">
             {isStoringInfo && "Storing auction metadata on IPFS"}
             {isMakingKeys && "Generating a new keypair for secure encryption"}
-            {(isSigningTx || isSigningApprove) &&
+            {(isSigningTx ||
+              isSigningAuctionHouseApprove ||
+              isSigningCallbackApprove) &&
               "Sign the transaction to proceed"}
-            {(isTxConfirming || isApprovalConfirming) &&
+            {(isTxConfirming ||
+              isAuctionHouseApprovalConfirming ||
+              isCallbackApprovalConfirming) &&
               "Waiting for the transaction to be included in a block"}
             {txReceipt.isSuccess && "Auction created!"}
           </p>
@@ -188,7 +254,11 @@ export function AuctionCreationStatus({
       <div className="mt-4 flex justify-center">
         {(isIdle || error) && (
           <Button onClick={handleSubmit}>
-            {error ? "RETRY" : approveTx.isIdle ? "APPROVE" : "DEPLOY"}
+            {error
+              ? "RETRY"
+              : !auctionHouseApprovalComplete || !callbackApprovalComplete
+                ? "APPROVE"
+                : "DEPLOY"}
           </Button>
         )}
       </div>
