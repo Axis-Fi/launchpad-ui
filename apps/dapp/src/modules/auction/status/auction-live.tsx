@@ -247,7 +247,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <AuctionMetric id="minPriceFDV" />
               <AuctionMetric id="totalSupply" />
               <AuctionMetric id="auctionedSupply" />
-              <AuctionMetric id="minRaise" />
               <AuctionMetric id="vestingDuration" />
             </AuctionMetricsContainer>
           )}
@@ -256,7 +255,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <AuctionMetric id="fixedPriceFDV" />
               <AuctionMetric id="totalSupply" />
               <AuctionMetric id="auctionedSupply" />
-              <AuctionMetric id="minRaise" />
               <AuctionMetric id="vestingDuration" />
             </AuctionMetricsContainer>
           )}
