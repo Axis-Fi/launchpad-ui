@@ -55,13 +55,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
     const remainingQuoteTokens =
       capacityInQuoteTokens -
-      Number(auctionFormatted.totalBidAmount?.replace(/,/g, ""));
+      Number(auctionFormatted.totalBidAmountFormatted?.replace(/,/g, ""));
 
     setMaxBidAmount(remainingQuoteTokens);
   }, [
     auction.capacityInitial,
     auctionFormatted,
-    auctionFormatted?.totalBidAmount,
+    auctionFormatted?.totalBidAmountFormatted,
     isFixedPriceBatch,
   ]);
 

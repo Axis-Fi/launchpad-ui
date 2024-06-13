@@ -135,7 +135,7 @@ const handlers = {
   totalBidAmount: {
     label: "Total Bid Amount",
     handler: (auction: Auction) =>
-      `${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`,
+      `${auction.formatted?.totalBidAmountFormatted} ${auction.quoteToken.symbol}`,
   },
 
   capacity: {

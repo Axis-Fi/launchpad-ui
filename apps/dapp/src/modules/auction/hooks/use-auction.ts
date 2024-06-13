@@ -11,6 +11,8 @@ import {
   AuctionType,
   BatchSubgraphAuction,
   FixedPriceBatchAuctionData,
+  EMPFormattedInfo,
+  FPBFormattedInfo,
 } from "@repo/types";
 import { useQuery } from "@tanstack/react-query";
 import { getAuctionInfo } from "./use-auction-info";
@@ -192,7 +194,7 @@ const UNCLEARED_MARGINAL_PRICE =
 function addEMPFields(
   auctionData: EMPAuctionData,
   auction: BatchSubgraphAuction,
-) {
+): EMPFormattedInfo {
   const minPrice = formatUnits(
     auctionData?.minimumPrice ?? 0n,
     Number(auction.quoteToken.decimals),
@@ -233,7 +235,8 @@ function addEMPFields(
     minPrice: trimCurrency(minPrice),
     minBidSize: trimCurrency(minBidSize),
     minFilled: trimCurrency(auction.encryptedMarginalPrice!.minFilled!),
-    totalBidAmount: trimCurrency(totalBidAmount),
+    totalBidAmountFormatted: trimCurrency(totalBidAmount),
+    totalBidAmountDecimal: totalBidAmount,
     totalBids: auction.bids.length,
     totalBidsDecrypted,
     totalBidsClaimed,
@@ -241,9 +244,7 @@ function addEMPFields(
   };
 }
 
-function addFPBFields(auction: BatchSubgraphAuction) {
-  if (!auction) return;
-
+function addFPBFields(auction: BatchSubgraphAuction): FPBFormattedInfo {
   const totalBids = auction.bids.length;
   const totalBidsClaimed = auction.bids.filter(
     (b) => b.status === "claimed",
@@ -255,17 +256,19 @@ function addFPBFields(auction: BatchSubgraphAuction) {
   const uniqueBidders = auction.bids
     .map((b) => b.bidder)
     .filter((b, i, a) => a.lastIndexOf(b) === i).length;
-  const cleared = auction.fixedPrice?.settlementSuccessful;
+  const cleared = auction.fixedPrice?.settlementSuccessful || false;
   const minFilled = auction.fixedPrice?.minFilled
     ? trimCurrency(auction.fixedPrice?.minFilled)
-    : undefined;
+    : "";
+  const price = auction.fixedPrice?.price || "";
 
-  // TODO include formatted and non-formatted/number values
+  // TODO return these as numbers and format them in the UI
   return {
-    price: auction.fixedPrice?.price,
+    price: price,
     totalBids,
     totalBidsClaimed,
-    totalBidAmount: trimCurrency(totalBidAmount),
+    totalBidAmountFormatted: trimCurrency(totalBidAmount),
+    totalBidAmountDecimal: totalBidAmount,
     uniqueBidders,
     cleared,
     minFilled,

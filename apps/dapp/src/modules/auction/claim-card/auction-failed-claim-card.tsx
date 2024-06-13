@@ -51,9 +51,9 @@ export function AuctionFailedClaimCard({
     // If the raised amount is below the minimum fill
     if (
       auction.formatted &&
-      auction.formatted.totalBidAmount != undefined &&
+      auction.formatted.totalBidAmountFormatted != undefined &&
       auction.formatted.minFilled != undefined &&
-      Number(auction.formatted?.totalBidAmount?.replace(/,/g, "")) <
+      Number(auction.formatted?.totalBidAmountFormatted?.replace(/,/g, "")) <
         Number(auction.formatted?.minFilled?.replace(/,/g, ""))
     ) {
       return "The auction did not raise the minimum fill amount";
