@@ -11,9 +11,14 @@ import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
 import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
+import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [
+    hasSufficientBalanceForCallbacks,
+    setHasSufficientBalanceForCallbacks,
+  ] = React.useState(true);
 
   // Storage of encoded callback data for the callback contract
   const [callbackData, setCallbackData] = useState<`0x${string}` | undefined>(
@@ -107,11 +112,23 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
               />
             </div>
           )}
+          {
+            <SettleAuctionDtlCallbackBalance
+              auction={auction}
+              setHasSufficientBalanceForCallbacks={
+                setHasSufficientBalanceForCallbacks
+              }
+            />
+          }
           <RequiresChain chainId={auction.chainId} className="mt-4">
             <div className="mt-4 w-full">
               <Button
                 className="w-full"
-                disabled={isWaiting || !callbackDataIsValid}
+                disabled={
+                  isWaiting ||
+                  !callbackDataIsValid ||
+                  !hasSufficientBalanceForCallbacks
+                }
                 onClick={() => setIsDialogOpen(true)}
               >
                 {isWaiting ? (
