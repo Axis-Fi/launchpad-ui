@@ -11,7 +11,7 @@ export default function useERC20Balance({
   tokenAddress?: Address;
   balanceAddress?: Address;
 }) {
-  const response = useReadContract({
+  const balanceResponse = useReadContract({
     query: {
       enabled:
         !!chainId &&
@@ -27,5 +27,20 @@ export default function useERC20Balance({
     args: balanceAddress ? [balanceAddress] : undefined,
   });
 
-  return response;
+  const decimalsResponse = useReadContract({
+    query: {
+      enabled: !!chainId && !!tokenAddress && isAddress(tokenAddress),
+    },
+    abi,
+    address: tokenAddress,
+    chainId,
+    functionName: "decimals",
+  });
+
+  return {
+    balance: balanceResponse.data,
+    decimals: decimalsResponse.data,
+    isLoading: balanceResponse.isLoading || decimalsResponse.isLoading,
+    isError: balanceResponse.isError || decimalsResponse.isError,
+  };
 }
