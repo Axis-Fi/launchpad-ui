@@ -4,6 +4,7 @@ import {
   type PropsWithAuction,
   type AuctionStatus,
   AuctionType,
+  Auction,
 } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { PageHeader } from "modules/app/page-header";
@@ -77,10 +78,41 @@ export default function AuctionPage() {
       : statuses[auction.status];
 
   return (
+    <PageContainer>
+      <PageHeader backNavigationPath="/#" backNavigationText="Back to Launches">
+        <ReloadButton refetching={isRefetching} onClick={() => refetch?.()} />
+      </PageHeader>
+
+      <AuctionPageView
+        auction={auction}
+        isOngoing={isOngoing}
+        isAuctionLoading={isAuctionLoading}
+        timeRemaining={timeRemaining}
+      >
+        <AuctionElement auction={auction} />
+      </AuctionPageView>
+      <BidList auction={auction} />
+    </PageContainer>
+  );
+}
+
+export function AuctionPageView({
+  auction,
+  isAuctionLoading,
+  isOngoing,
+  timeRemaining,
+  ...props
+}: React.PropsWithChildren<{
+  auction: Auction;
+  isAuctionLoading?: boolean;
+  isOngoing?: boolean;
+  timeRemaining?: string | null;
+}>) {
+  return (
     <>
       <ImageBanner
         isLoading={isAuctionLoading}
-        imgUrl={auction.auctionInfo?.links?.projectLogo}
+        imgUrl={auction.auctionInfo?.links?.projectBanner}
       >
         <div className="flex h-full w-full flex-row flex-wrap">
           <div className="flex w-full flex-row justify-end">
@@ -111,19 +143,7 @@ export default function AuctionPage() {
           </div>
         </div>
       </ImageBanner>
-
-      <PageContainer>
-        <PageHeader
-          backNavigationPath="/#"
-          backNavigationText="Back to Launches"
-        >
-          <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
-        </PageHeader>
-
-        <AuctionElement auction={auction} />
-
-        <BidList auction={auction} />
-      </PageContainer>
+      {props.children}
     </>
   );
 }
