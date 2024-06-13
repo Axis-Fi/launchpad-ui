@@ -84,6 +84,7 @@ export type AuctionFormattedInfo = {
   endDistance: string;
   rate?: string;
   purchased: string;
+  purchasedDecimal: number;
   sold: string;
   minPrice?: string;
   minBidSize?: string;
@@ -96,6 +97,7 @@ export type AuctionFormattedInfo = {
 
 export type EMPFormattedInfo = {
   marginalPrice: string;
+  marginalPriceDecimal: number;
   totalBids: number;
   totalBidsDecrypted: number;
   totalBidsClaimed: number;

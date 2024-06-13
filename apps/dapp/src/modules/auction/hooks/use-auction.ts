@@ -175,6 +175,7 @@ export function formatAuction(
     endDistance,
     sold: trimCurrency(auction.sold),
     purchased: trimCurrency(auction.purchased),
+    purchasedDecimal: Number(auction.purchased),
     capacity: trimCurrency(auction.capacity),
     totalSupply: trimCurrency(
       formatUnits(
@@ -231,6 +232,7 @@ function addEMPFields(
   return {
     cleared,
     marginalPrice: trimCurrency(marginalPrice),
+    marginalPriceDecimal: Number(marginalPrice),
     rate: trimCurrency(marginalPrice),
     minPrice: trimCurrency(minPrice),
     minBidSize: trimCurrency(minBidSize),

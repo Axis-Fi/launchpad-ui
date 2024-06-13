@@ -77,6 +77,15 @@ const getMinTokensLaunched = (
   return totalBids / price;
 };
 
+const getClearingPrice = (auction: Auction): number | undefined => {
+  if (auction.auctionType !== AuctionType.SEALED_BID) return getPrice(auction);
+
+  const marginalPrice = auction.formatted?.marginalPriceDecimal;
+  if (marginalPrice === undefined) return undefined;
+
+  return marginalPrice;
+};
+
 const handlers = {
   derivative: {
     label: "Derivative",
@@ -336,6 +345,29 @@ const handlers = {
       if (minTokensLaunched === undefined) return undefined;
 
       return `${shorten(minTokensLaunched)} ${auction.baseToken.symbol}`;
+    },
+  },
+  clearingPrice: {
+    label: "Clearing Price",
+    handler: (auction: Auction) => {
+      const clearingPrice = getClearingPrice(auction);
+      if (clearingPrice === undefined) return undefined;
+
+      return `${trimCurrency(clearingPrice)} ${auction.quoteToken.symbol}`;
+    },
+  },
+  tokensLaunched: {
+    label: "Tokens Launched",
+    handler: (auction: Auction) => {
+      const clearingPrice = getClearingPrice(auction);
+      if (clearingPrice === undefined) return undefined;
+
+      const purchased = auction.formatted?.purchasedDecimal;
+      if (purchased === undefined) return undefined;
+
+      const tokensLaunched = purchased / clearingPrice;
+
+      return `${trimCurrency(tokensLaunched)} ${auction.baseToken.symbol}`;
     },
   },
 };

@@ -30,12 +30,13 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           }
         >
           <AuctionMetrics>
+            <AuctionMetric auction={auction} id="totalRaised" />
+            <AuctionMetric auction={auction} id="clearingPrice" />
+            <AuctionMetric auction={auction} id="tokensLaunched" />
             <AuctionMetric auction={auction} id="protocolFee" />
             <AuctionMetric auction={auction} id="referrerFee" />
-            <AuctionMetric auction={auction} id="minFill" />
-            <AuctionMetric auction={auction} id="derivative" />
-            <AuctionMetric auction={auction} id="minPrice" />
             <AuctionMetric auction={auction} id="duration" />
+            <AuctionMetric auction={auction} id="derivative" />
           </AuctionMetrics>
         </Card>
 
