@@ -86,7 +86,6 @@ export function useBidAuction(
     amount: Number(amountIn),
   });
 
-  console.log({ bidReceipt });
   React.useEffect(() => {
     // Refetch balance, allowance, refetches delayed auction info
     // and stores bid if EMP
