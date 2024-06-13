@@ -67,14 +67,15 @@ const getMinTokensLaunched = (
   if (
     totalBidAmount === undefined ||
     price === undefined ||
+    price === 0 ||
     targetRaise === undefined
   )
     return undefined;
 
   // The total bid amount can exceed the target raise, but the number of tokens launched should be capped at the target raise.
-  const totalBids = Math.min(totalBidAmount, targetRaise);
+  const bidAmount = Math.min(totalBidAmount, targetRaise);
 
-  return totalBids / price;
+  return bidAmount / price;
 };
 
 const getClearingPrice = (auction: Auction): number | undefined => {
