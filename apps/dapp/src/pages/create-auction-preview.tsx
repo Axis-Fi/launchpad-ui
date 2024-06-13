@@ -1,4 +1,12 @@
-import { Button, DialogContent, DialogRoot } from "@repo/ui";
+import {
+  Button,
+  Text,
+  Chip,
+  DialogContent,
+  DialogRoot,
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@repo/ui";
 import { AuctionPageView } from "./auction-page";
 import { CreateAuctionForm } from "./create-auction-page";
 import { Auction, AuctionType, Token } from "@repo/types";
@@ -6,15 +14,20 @@ import { AuctionLivePreview } from "modules/auction/status/auction-preview";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { formatUnits } from "viem";
+import { AuctionCard } from "modules/auction/auction-card";
 
 type CreateAuctionPreviewProps = {
   chainId: number;
   open?: boolean;
   onOpenChange: (open: boolean) => void;
+  initiateCreateTx: () => void;
 };
+
+type PreviewViews = "page" | "list" | "grid";
 
 export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
   const form = useFormContext<CreateAuctionForm>();
+  const [currentView, setCurrentView] = React.useState<PreviewViews>("page");
 
   //TODO: might not be necessary after resolving infinite create page rerender
   const auction = React.useMemo(() => {
@@ -32,21 +45,67 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
       open={props.open}
       onOpenChange={(open) => props.onOpenChange(open)}
     >
-      <DialogContent className="bg-surface-tertiary/50 max-w-screen-2xl">
-        <div className="bg-background p-1">
-          <AuctionPageView auction={auction}>
-            <AuctionLivePreview auction={auction} />
-          </AuctionPageView>
+      <DialogContent className="bg-surface-tertiary/50 max-w-screen-2xl backdrop-blur">
+        <div className="flex justify-around">
+          <Text size="3xl">Auction Preview</Text>
+          <ToggleGroup
+            type="single"
+            onValueChange={(value: PreviewViews) => setCurrentView(value)}
+          >
+            <ToggleGroupItem value="page">
+              <Chip variant={currentView === "page" ? "active" : "filled"}>
+                Auction
+              </Chip>
+            </ToggleGroupItem>
+
+            <ToggleGroupItem value="list">
+              <Chip variant={currentView === "list" ? "active" : "filled"}>
+                List
+              </Chip>{" "}
+            </ToggleGroupItem>
+
+            <ToggleGroupItem value="grid">
+              <Chip variant={currentView === "grid" ? "active" : "filled"}>
+                Card
+              </Chip>{" "}
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+        <div className="bg-background p-4">
+          {currentView === "page" && (
+            <AuctionPageView auction={auction}>
+              <AuctionLivePreview auction={auction} />
+            </AuctionPageView>
+          )}{" "}
+          {currentView === "list" && <AuctionCard auction={auction} />}
+          {currentView === "grid" && (
+            <div className="mx-auto max-w-[470px]">
+              <AuctionCard isGrid={true} auction={auction} />
+            </div>
+          )}
         </div>
         <div className="flex justify-center gap-x-6">
           <Button
             size="lg"
             variant="secondary"
             className="bg-background border-transparent"
+            onClick={(e) => {
+              e.preventDefault();
+              props.onOpenChange(false);
+            }}
           >
             Change Configuration
           </Button>
-          <Button size="lg">Create This Auction</Button>
+          <Button
+            size="lg"
+            onClick={(e) => {
+              e.preventDefault();
+              props.onOpenChange(false);
+              props.initiateCreateTx();
+            }}
+          >
+            Create This Auction
+          </Button>
         </div>
       </DialogContent>
     </DialogRoot>
@@ -63,6 +122,7 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
   );
 
   return {
+    status: "live",
     auctionType: params.auctionType as AuctionType,
     capacity: params.capacity,
     capacityInitial: params.capacity,

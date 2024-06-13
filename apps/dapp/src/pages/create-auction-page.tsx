@@ -286,7 +286,8 @@ export default function CreateAuctionPage() {
     start: dateMath.addMinutes(new Date(), 15),
   };
   const { address } = useAccount();
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+  const [isTxDialogOpen, setIsTxDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
   const { chain } = useAccount();
 
@@ -328,10 +329,7 @@ export default function CreateAuctionPage() {
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
-  const lotId = getCreatedAuctionId(
-    createTxReceipt.data,
-    auctionType as AuctionType,
-  );
+  const lotId = getCreatedAuctionId(createTxReceipt.data);
 
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
@@ -1779,14 +1777,17 @@ export default function CreateAuctionPage() {
                 onClick={(e) => {
                   e.preventDefault();
                   form.trigger();
-                  isValid && setIsDialogOpen(true);
+                  isValid && setIsPreviewOpen(true);
                 }}
               >
                 DEPLOY AUCTION
               </Button>
             </RequiresChain>
           </div>
-          <DialogRoot onOpenChange={(open) => !open && setIsDialogOpen(false)}>
+          <DialogRoot
+            open={isTxDialogOpen}
+            onOpenChange={(open) => !open && setIsTxDialogOpen(false)}
+          >
             <DialogContent className="bg-surface ">
               <DialogHeader>
                 <DialogTitle>
@@ -1833,9 +1834,10 @@ export default function CreateAuctionPage() {
           <DevTool control={form.control} />
         </form>
         <CreateAuctionPreview
-          open={isDialogOpen}
-          onOpenChange={setIsDialogOpen}
+          open={isPreviewOpen}
+          onOpenChange={setIsPreviewOpen}
           chainId={chainId}
+          initiateCreateTx={() => setIsTxDialogOpen(true)}
         />
       </Form>
     </PageContainer>
