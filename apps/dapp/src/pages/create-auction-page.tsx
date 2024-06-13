@@ -847,8 +847,6 @@ export default function CreateAuctionPage() {
     setFileLoadMessage(null);
   }, [callbacksType]);
 
-  // TODO: if DTL is selected, need to add a check to see if a pool is already created for the quote and payout token on the target chain/factory
-
   // If the auction uses UniV2 DTL, we need to check if a pool exists for the base and quote token pair
   // We get the factory address from the callbacks contract
   const { data: uniV2Factory } = useReadContract({
