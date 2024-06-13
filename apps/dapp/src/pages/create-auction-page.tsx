@@ -1184,7 +1184,7 @@ export default function CreateAuctionPage() {
                           <div className="flex items-center">
                             <Input
                               disabled
-                              className="w-14 disabled:opacity-100"
+                              className="w-16 disabled:opacity-100"
                               value={`${
                                 field.value?.[0] ??
                                 auctionDefaultValues.minFillPercent
@@ -1260,7 +1260,6 @@ export default function CreateAuctionPage() {
                       name="minFillPercent"
                       render={({ field }) => (
                         <FormItemWrapper
-                          className="mt-4"
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
@@ -1275,7 +1274,7 @@ export default function CreateAuctionPage() {
                             />
                             <Slider
                               {...field}
-                              className="cursor-pointer pt-2"
+                              className="cursor-pointer"
                               min={1}
                               max={100}
                               defaultValue={auctionDefaultValues.minFillPercent}
