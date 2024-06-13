@@ -59,7 +59,7 @@ const getMinRaise = (
   return minFilled * price;
 };
 
-const getMinTokensLaunched = (
+const getMaxTokensLaunched = (
   totalBidAmount?: number,
   targetRaise?: number,
   price?: number,
@@ -334,21 +334,21 @@ const handlers = {
       return "Failed";
     },
   },
-  minTokensLaunched: {
-    label: "Min Tokens Launched",
+  maxTokensLaunched: {
+    label: "Max Tokens Launched",
     handler: (auction: Auction) => {
       const price = getPrice(auction);
       const targetRaise = getTargetRaise(auction, price);
       const totalBidAmount = auction.formatted?.totalBidAmountDecimal;
 
-      const minTokensLaunched = getMinTokensLaunched(
+      const maxTokensLaunched = getMaxTokensLaunched(
         totalBidAmount,
         targetRaise,
         price,
       );
-      if (minTokensLaunched === undefined) return undefined;
+      if (maxTokensLaunched === undefined) return undefined;
 
-      return `${shorten(minTokensLaunched)} ${auction.baseToken.symbol}`;
+      return `${shorten(maxTokensLaunched)} ${auction.baseToken.symbol}`;
     },
   },
   clearingPrice: {

@@ -49,7 +49,7 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
               <AuctionMetric auction={props.auction} id="totalBids" />
               <AuctionMetric auction={props.auction} id="totalBidAmount" />
               <AuctionMetric auction={props.auction} id="result" />
-              <AuctionMetric auction={props.auction} id="minTokensLaunched" />
+              <AuctionMetric auction={props.auction} id="maxTokensLaunched" />
               <AuctionMetric auction={props.auction} id="started" />
               <AuctionMetric auction={props.auction} id="ended" />
             </AuctionMetricsContainer>
