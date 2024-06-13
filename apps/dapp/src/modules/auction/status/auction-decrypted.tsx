@@ -10,6 +10,7 @@ import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
+import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -23,6 +24,13 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const settle = useSettleAuction({
     auction: auction,
     callbackData: callbackData,
+  });
+
+  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
+    chainId: auction.chainId,
+    lotId: auction.lotId,
+    baseTokenDecimals: auction.baseToken.decimals,
+    callback: auction.callbacks,
   });
 
   const hasCallbacks =
@@ -53,6 +61,16 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
             <AuctionMetric auction={auction} id="totalBidAmount" />
             <AuctionMetric auction={auction} id="started" />
             <AuctionMetric auction={auction} id="ended" />
+            {dtlCallbackConfiguration && (
+              <Metric
+                label="Direct to Liquidity"
+                size="m"
+                tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                className=""
+              >
+                {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+              </Metric>
+            )}
           </AuctionMetrics>
         </Card>
 

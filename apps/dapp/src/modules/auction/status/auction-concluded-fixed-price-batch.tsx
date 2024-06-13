@@ -10,6 +10,7 @@ import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
+import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 
 export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -28,6 +29,13 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
   const hasCallbacks =
     props.auction.callbacks &&
     props.auction.callbacks != "0x0000000000000000000000000000000000000000";
+
+  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
+    chainId: props.auction.chainId,
+    lotId: props.auction.lotId,
+    baseTokenDecimals: props.auction.baseToken.decimals,
+    callback: props.auction.callbacks,
+  });
 
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
@@ -54,6 +62,16 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
               <AuctionMetric auction={props.auction} id="totalBidAmount" />
               <AuctionMetric auction={props.auction} id="started" />
               <AuctionMetric auction={props.auction} id="ended" />
+              {dtlCallbackConfiguration && (
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
             </AuctionMetricsContainer>
           </Card>
           <ProjectInfoCard auction={props.auction} />

@@ -9,12 +9,20 @@ import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 
 export function EncryptedMarginalPriceAuctionConcluded({
   auction,
 }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const decrypt = useDecryptBids(auction as BatchAuction);
+
+  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
+    chainId: auction.chainId,
+    lotId: auction.lotId,
+    baseTokenDecimals: auction.baseToken.decimals,
+    callback: auction.callbacks,
+  });
 
   const isWaiting =
     decrypt.decryptTx.isPending || decrypt.decryptReceipt.isLoading;
@@ -48,6 +56,16 @@ export function EncryptedMarginalPriceAuctionConcluded({
               <AuctionMetric auction={auction} id="totalBidAmount" />
               <AuctionMetric auction={auction} id="started" />
               <AuctionMetric auction={auction} id="ended" />
+              {dtlCallbackConfiguration && (
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
             </AuctionMetrics>
           </Card>
           <ProjectInfoCard auction={auction} />
