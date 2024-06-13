@@ -246,16 +246,18 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             <AuctionMetricsContainer className="mt-4" auction={auction}>
               <AuctionMetric id="minPriceFDV" />
               <AuctionMetric id="totalSupply" />
-              <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
+              <AuctionMetric id="minRaise" />
+              <AuctionMetric id="vestingDuration" />
             </AuctionMetricsContainer>
           )}
           {isFixedPriceBatch && (
             <AuctionMetricsContainer className="mt-4" auction={auction}>
               <AuctionMetric id="fixedPriceFDV" />
               <AuctionMetric id="totalSupply" />
-              <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
+              <AuctionMetric id="minRaise" />
+              <AuctionMetric id="vestingDuration" />
             </AuctionMetricsContainer>
           )}
         </Card>
