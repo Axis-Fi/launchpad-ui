@@ -58,6 +58,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
               <AuctionMetric auction={auction} id="totalBids" />
               <AuctionMetric auction={auction} id="totalBidAmount" />
               <AuctionMetric auction={auction} id="result" />
+              <AuctionMetric auction={auction} id="minTokensLaunched" />
               <AuctionMetric auction={auction} id="started" />
               <AuctionMetric auction={auction} id="ended" />
             </AuctionMetrics>

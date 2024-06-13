@@ -59,6 +59,24 @@ const getMinRaise = (
   return minFilled * price;
 };
 
+const getMinTokensLaunched = (
+  totalBidAmount?: number,
+  targetRaise?: number,
+  price?: number,
+): number | undefined => {
+  if (
+    totalBidAmount === undefined ||
+    price === undefined ||
+    targetRaise === undefined
+  )
+    return undefined;
+
+  // The total bid amount can exceed the target raise, but the number of tokens launched should be capped at the target raise.
+  const totalBids = Math.min(totalBidAmount, targetRaise);
+
+  return totalBids / price;
+};
+
 const handlers = {
   derivative: {
     label: "Derivative",
@@ -301,6 +319,23 @@ const handlers = {
       if (totalBidAmount >= minRaise) return "Min Raise Met";
 
       return "Failed";
+    },
+  },
+  minTokensLaunched: {
+    label: "Min Tokens Launched",
+    handler: (auction: Auction) => {
+      const price = getPrice(auction);
+      const targetRaise = getTargetRaise(auction, price);
+      const totalBidAmount = auction.formatted?.totalBidAmountDecimal;
+
+      const minTokensLaunched = getMinTokensLaunched(
+        totalBidAmount,
+        targetRaise,
+        price,
+      );
+      if (minTokensLaunched === undefined) return undefined;
+
+      return `${shorten(minTokensLaunched)} ${auction.baseToken.symbol}`;
     },
   },
 };
