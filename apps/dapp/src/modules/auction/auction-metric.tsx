@@ -80,6 +80,9 @@ const getMinTokensLaunched = (
 const getClearingPrice = (auction: Auction): number | undefined => {
   if (auction.auctionType !== AuctionType.SEALED_BID) return getPrice(auction);
 
+  // Check that the auction cleared
+  if (!auction.formatted?.cleared) return undefined;
+
   const marginalPrice = auction.formatted?.marginalPriceDecimal;
   if (marginalPrice === undefined) return undefined;
 
