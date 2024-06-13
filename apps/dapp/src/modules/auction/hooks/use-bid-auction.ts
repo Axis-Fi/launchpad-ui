@@ -4,7 +4,6 @@ import { useAuction } from "modules/auction/hooks/use-auction";
 import { Address, fromHex, toHex } from "viem";
 import {
   useAccount,
-  useBalance,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
@@ -64,13 +63,6 @@ export function useBidAuction(
     bidTx.writeContractAsync({ abi, address, functionName, args });
   };
 
-  // We need to know user's balance and allowance
-  const balance = useBalance({
-    address: bidderAddress,
-    token: auction.quoteToken.address as Address,
-    chainId: auction.chainId,
-  });
-
   const {
     isSufficientAllowance,
     approveReceipt,
@@ -87,10 +79,9 @@ export function useBidAuction(
   });
 
   React.useEffect(() => {
-    // Refetch balance, allowance, refetches delayed auction info
+    // Refetch allowance, refetches delayed auction info
     // and stores bid if EMP
     if (bidReceipt.isSuccess) {
-      balance.refetch();
       allowance.refetch();
       // Delay refetching to ensure subgraph has caught up with the changes
       setTimeout(() => auctionQuery.refetch(), 5000); //TODO: ideas on how to improve this
@@ -117,7 +108,6 @@ export function useBidAuction(
   return {
     handleBid,
     approveCapacity,
-    balance,
     isSufficientAllowance,
     approveReceipt,
     bidReceipt,

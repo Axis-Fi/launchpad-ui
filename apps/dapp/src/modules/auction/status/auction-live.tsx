@@ -19,6 +19,7 @@ import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
 import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
+import useERC20Balance from "loaders/use-erc20-balance";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -107,7 +108,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           },
         )
         .refine(
-          (data) => Number(data.quoteTokenAmount) <= Number(formattedBalance),
+          (data) =>
+            Number(data.quoteTokenAmount) <= Number(quoteTokenBalanceDecimal),
           {
             message: `Insufficient balance`,
             path: ["quoteTokenAmount"],
@@ -151,7 +153,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const parsedAmountIn = Number(amountIn);
   const parsedMinAmountOut = Number(minAmountOut);
 
-  const { balance, ...bid } = useBidAuction(
+  const { ...bid } = useBidAuction(
     auction.id,
     auction.auctionType,
     parsedAmountIn,
@@ -159,10 +161,17 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     callbackData,
   );
 
-  const formattedBalance = formatUnits(
-    balance.data?.value ?? 0n,
-    balance.data?.decimals ?? 0,
-  );
+  const { balance: quoteTokenBalance, decimals: quoteTokenDecimals } =
+    useERC20Balance({
+      chainId: auction.chainId,
+      tokenAddress: auction.quoteToken.address,
+      balanceAddress: walletAccount.address,
+    });
+
+  const quoteTokenBalanceDecimal: number =
+    quoteTokenBalance && quoteTokenDecimals
+      ? Number(formatUnits(quoteTokenBalance, quoteTokenDecimals))
+      : 0;
 
   // TODO Permit2 signature
   const handleSubmit = () => {
@@ -188,7 +197,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
   const amountInInvalid =
-    parsedAmountIn > Number(formattedBalance) || // greater than balance
+    parsedAmountIn > quoteTokenBalanceDecimal || // greater than balance
     parsedAmountIn === undefined ||
     parsedAmountIn === 0; // zero or empty
 
@@ -266,14 +275,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               >
                 {isFixedPriceBatch ? (
                   <AuctionBidInputSingle
-                    balance={Number(formattedBalance)}
+                    balance={quoteTokenBalanceDecimal}
                     limit={bidLimit}
                     auction={auction}
                     disabled={isWalletChainIncorrect}
                   />
                 ) : (
                   <AuctionBidInput
-                    balance={Number(formattedBalance)}
+                    balance={quoteTokenBalanceDecimal}
                     limit={bidLimit}
                     auction={auction}
                     disabled={isWalletChainIncorrect}
