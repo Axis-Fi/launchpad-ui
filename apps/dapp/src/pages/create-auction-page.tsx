@@ -86,6 +86,193 @@ const tokenSchema = z.object({
   logoURI: optionalURL,
 });
 
+const schema = z
+  .object({
+    quoteToken: tokenSchema,
+    payoutToken: tokenSchema,
+    payoutTokenBalance: z.string().optional(),
+    capacity: z.string(),
+    auctionType: z.string(),
+    minFillPercent: z.array(z.number()).optional(),
+    minBidSize: z.array(z.number()).optional(),
+    minPrice: z.string().optional(),
+    price: z.string().optional(),
+    start: z.date(),
+    deadline: z.date(),
+    callbacksType: z.string().optional(),
+    callbacks: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    allowlist: z.array(z.array(z.string())).optional(),
+    cappedAllowlistLimit: z.string().optional(),
+    allowlistToken: tokenSchema.optional(),
+    allowlistTokenThreshold: z.string().optional(),
+    dtlProceedsPercent: z.array(z.number()).optional(),
+    dtlIsVested: z.boolean().optional(),
+    dtlVestingStart: z.date().optional(),
+    dtlVestingDuration: z.string().optional(),
+    dtlRecipient: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    dtlUniV3PoolFee: z.string().optional(),
+    customCallbackData: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]$/)
+      .optional(),
+    isVested: z.boolean().optional(),
+    curator: z
+      .string()
+      .regex(/^(0x)?[0-9a-fA-F]{40}$/)
+      .optional(),
+    vestingDuration: z.string().optional(),
+    vestingStart: z.date().optional(),
+    // Metadata
+    name: z.string(),
+    description: z.string(),
+    projectLogo: z.string().url().optional(),
+    twitter: optionalURL,
+    discord: optionalURL,
+    website: optionalURL,
+    farcaster: optionalURL,
+    payoutTokenLogo: optionalURL,
+  })
+  .refine((data) => (!data.isVested ? true : data.vestingDuration), {
+    message: "Vesting duration is required",
+    path: ["vestingDuration"],
+  })
+
+  // TODO do we need to add a max vesting duration check?
+  // .refine(
+  //   (data) => (!data.isVested ? true : data.vestingDuration && Number(data.vestingDuration) <= 270),
+  //   {
+  //     message: "Max vesting duration is 270 days",
+  //     path: ["vestingStart"],
+  //   },
+  // )
+  .refine((data) => (!data.isVested ? true : data.vestingStart), {
+    message: "Vesting start is required",
+    path: ["vestingStart"],
+  })
+  .refine(
+    (data) =>
+      !data.isVested
+        ? true
+        : data.vestingStart &&
+          data.vestingStart.getTime() >= data.deadline.getTime(),
+    {
+      message: "Vesting start needs to be on or after the auction deadline",
+      path: ["vestingStart"],
+    },
+  )
+  .refine((data) => data.start.getTime() > new Date().getTime(), {
+    message: "Start date needs to be in the future",
+    path: ["start"],
+  })
+  .refine(
+    (data) => addDays(data.start, 1).getTime() <= data.deadline.getTime(),
+    {
+      message: "Deadline needs to be at least 1 day after the start",
+      path: ["deadline"],
+    },
+  )
+  .refine(
+    (data) =>
+      // Only required for EMP
+      data.auctionType === AuctionType.SEALED_BID
+        ? !!data.minPrice && isFinite(Number(data.minPrice))
+        : true,
+    {
+      message: "Minimum Price must be set",
+      path: ["minPrice"],
+    },
+  )
+  .refine(
+    (data) =>
+      // Only required for FPB and FPA
+      data.auctionType === AuctionType.FIXED_PRICE_BATCH
+        ? !!data.price && isFinite(Number(data.price))
+        : true,
+    {
+      message: "Price must be set",
+      path: ["price"],
+    },
+  )
+  .refine(
+    (data) =>
+      // Only required for FPB and EMP
+      data.auctionType === AuctionType.FIXED_PRICE_BATCH ||
+      data.auctionType === AuctionType.SEALED_BID
+        ? !!data.minFillPercent && isFinite(Number(data.minFillPercent[0]))
+        : true,
+    {
+      message: "Minimum filled percentage must be set",
+      path: ["minFillPercent"],
+    },
+  )
+  .refine(
+    (data) =>
+      !data.dtlIsVested
+        ? true
+        : data.dtlVestingStart &&
+          data.dtlVestingStart.getTime() >= data.deadline.getTime(),
+    {
+      message:
+        "Liquidity vesting start needs to be on or after the auction deadline",
+      path: ["dtlVestingStart"],
+    },
+  )
+  .refine((data) => (!data.dtlIsVested ? true : data.dtlVestingDuration), {
+    message: "Liquidity vesting duration is required",
+    path: ["dtlVestingDuration"],
+  })
+  .refine(
+    (data) =>
+      !(
+        data.callbacksType === CallbacksType.UNIV2_DTL ||
+        data.callbacksType === CallbacksType.UNIV3_DTL
+      )
+        ? true
+        : data.dtlRecipient,
+    {
+      message: "Liquidity recipient is required",
+      path: ["dtlRecipient"],
+    },
+  )
+  .refine(
+    (data) =>
+      !(
+        data.callbacksType === CallbacksType.UNIV2_DTL ||
+        data.callbacksType === CallbacksType.UNIV3_DTL
+      )
+        ? true
+        : data.dtlProceedsPercent &&
+          data.dtlProceedsPercent.length > 0 &&
+          data.dtlProceedsPercent[0] >= 1 &&
+          data.dtlProceedsPercent[0] <= 100,
+    {
+      message: "Liquidity proceeds percent must be 1-100",
+      path: ["dtlProceedsPercent"],
+    },
+  )
+  .refine(
+    (data) =>
+      !(data.callbacksType === CallbacksType.UNIV3_DTL)
+        ? true
+        : data.dtlUniV3PoolFee,
+    {
+      message: "UniV3 pool fee is required",
+      path: ["dtlUniV3PoolFee"],
+    },
+  )
+  .refine((data) => Number(data.payoutTokenBalance) >= Number(data.capacity), {
+    message: "Insufficient balance",
+    path: ["capacity"],
+  });
+
+export type CreateAuctionForm = z.infer<typeof schema>;
+
 export default function CreateAuctionPage() {
   const navigate = useNavigate();
   const auctionDefaultValues = {
@@ -98,192 +285,6 @@ export default function CreateAuctionPage() {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
   const { chain } = useAccount();
-
-  const schema = z
-    .object({
-      quoteToken: tokenSchema,
-      payoutToken: tokenSchema,
-      capacity: z.string(),
-      auctionType: z.string(),
-      minFillPercent: z.array(z.number()).optional(),
-      minBidSize: z.array(z.number()).optional(),
-      minPrice: z.string().optional(),
-      price: z.string().optional(),
-      start: z.date(),
-      deadline: z.date(),
-      callbacksType: z.string().optional(),
-      callbacks: z
-        .string()
-        .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-        .optional(),
-      allowlist: z.array(z.array(z.string())).optional(),
-      cappedAllowlistLimit: z.string().optional(),
-      allowlistToken: tokenSchema.optional(),
-      allowlistTokenThreshold: z.string().optional(),
-      dtlProceedsPercent: z.array(z.number()).optional(),
-      dtlIsVested: z.boolean().optional(),
-      dtlVestingStart: z.date().optional(),
-      dtlVestingDuration: z.string().optional(),
-      dtlRecipient: z
-        .string()
-        .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-        .optional(),
-      dtlUniV3PoolFee: z.string().optional(),
-      customCallbackData: z
-        .string()
-        .regex(/^(0x)?[0-9a-fA-F]$/)
-        .optional(),
-      isVested: z.boolean().optional(),
-      curator: z
-        .string()
-        .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-        .optional(),
-      vestingDuration: z.string().optional(),
-      vestingStart: z.date().optional(),
-      // Metadata
-      name: z.string(),
-      description: z.string(),
-      projectLogo: z.string().url().optional(),
-      twitter: optionalURL,
-      discord: optionalURL,
-      website: optionalURL,
-      farcaster: optionalURL,
-      payoutTokenLogo: optionalURL,
-    })
-    .refine((data) => (!data.isVested ? true : data.vestingDuration), {
-      message: "Vesting duration is required",
-      path: ["vestingDuration"],
-    })
-
-    // TODO do we need to add a max vesting duration check?
-    // .refine(
-    //   (data) => (!data.isVested ? true : data.vestingDuration && Number(data.vestingDuration) <= 270),
-    //   {
-    //     message: "Max vesting duration is 270 days",
-    //     path: ["vestingStart"],
-    //   },
-    // )
-    .refine((data) => (!data.isVested ? true : data.vestingStart), {
-      message: "Vesting start is required",
-      path: ["vestingStart"],
-    })
-    .refine(
-      (data) =>
-        !data.isVested
-          ? true
-          : data.vestingStart &&
-            data.vestingStart.getTime() >= data.deadline.getTime(),
-      {
-        message: "Vesting start needs to be on or after the auction deadline",
-        path: ["vestingStart"],
-      },
-    )
-    .refine((data) => data.start.getTime() > new Date().getTime(), {
-      message: "Start date needs to be in the future",
-      path: ["start"],
-    })
-    .refine(
-      (data) => addDays(data.start, 1).getTime() <= data.deadline.getTime(),
-      {
-        message: "Deadline needs to be at least 1 day after the start",
-        path: ["deadline"],
-      },
-    )
-    .refine(
-      (data) =>
-        // Only required for EMP
-        data.auctionType === AuctionType.SEALED_BID
-          ? !!data.minPrice && isFinite(Number(data.minPrice))
-          : true,
-      {
-        message: "Minimum Price must be set",
-        path: ["minPrice"],
-      },
-    )
-    .refine(
-      (data) =>
-        // Only required for FPB and FPA
-        data.auctionType === AuctionType.FIXED_PRICE_BATCH
-          ? !!data.price && isFinite(Number(data.price))
-          : true,
-      {
-        message: "Price must be set",
-        path: ["price"],
-      },
-    )
-    .refine(
-      (data) =>
-        // Only required for FPB and EMP
-        data.auctionType === AuctionType.FIXED_PRICE_BATCH ||
-        data.auctionType === AuctionType.SEALED_BID
-          ? !!data.minFillPercent && isFinite(Number(data.minFillPercent[0]))
-          : true,
-      {
-        message: "Minimum filled percentage must be set",
-        path: ["minFillPercent"],
-      },
-    )
-    .refine(
-      (data) =>
-        !data.dtlIsVested
-          ? true
-          : data.dtlVestingStart &&
-            data.dtlVestingStart.getTime() >= data.deadline.getTime(),
-      {
-        message:
-          "Liquidity vesting start needs to be on or after the auction deadline",
-        path: ["dtlVestingStart"],
-      },
-    )
-    .refine((data) => (!data.dtlIsVested ? true : data.dtlVestingDuration), {
-      message: "Liquidity vesting duration is required",
-      path: ["dtlVestingDuration"],
-    })
-    .refine(
-      (data) =>
-        !(
-          data.callbacksType === CallbacksType.UNIV2_DTL ||
-          data.callbacksType === CallbacksType.UNIV3_DTL
-        )
-          ? true
-          : data.dtlRecipient,
-      {
-        message: "Liquidity recipient is required",
-        path: ["dtlRecipient"],
-      },
-    )
-    .refine(
-      (data) =>
-        !(
-          data.callbacksType === CallbacksType.UNIV2_DTL ||
-          data.callbacksType === CallbacksType.UNIV3_DTL
-        )
-          ? true
-          : data.dtlProceedsPercent &&
-            data.dtlProceedsPercent.length > 0 &&
-            data.dtlProceedsPercent[0] >= 1 &&
-            data.dtlProceedsPercent[0] <= 100,
-      {
-        message: "Liquidity proceeds percent must be 1-100",
-        path: ["dtlProceedsPercent"],
-      },
-    )
-    .refine(
-      (data) =>
-        !(data.callbacksType === CallbacksType.UNIV3_DTL)
-          ? true
-          : data.dtlUniV3PoolFee,
-      {
-        message: "UniV3 pool fee is required",
-        path: ["dtlUniV3PoolFee"],
-      },
-    )
-    .refine((data) => payoutTokenBalanceDecimal >= Number(data.capacity), {
-      message: "Insufficient balance",
-      path: ["capacity"],
-    });
-
-  type CreateAuctionForm = z.infer<typeof schema>;
 
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
@@ -923,6 +924,10 @@ export default function CreateAuctionPage() {
       tokenAddress: payoutToken ? (payoutToken.address as Address) : undefined,
       balanceAddress: address,
     });
+  form.setValue(
+    "payoutTokenBalance",
+    formatUnits(payoutTokenBalance ?? BigInt(0), payoutTokenDecimals ?? 0),
+  );
   const payoutTokenBalanceDecimal: number =
     payoutTokenBalance && payoutTokenDecimals
       ? Number(formatUnits(payoutTokenBalance, payoutTokenDecimals))
