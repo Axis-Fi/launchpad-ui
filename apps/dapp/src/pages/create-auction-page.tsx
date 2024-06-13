@@ -75,6 +75,7 @@ import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
 import useERC20Balance from "loaders/use-erc20-balance";
+import { CreateAuctionPreview } from "./create-auction-preview";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -84,6 +85,7 @@ const tokenSchema = z.object({
   decimals: z.coerce.number(),
   symbol: z.string(),
   logoURI: optionalURL,
+  totalSupply: z.bigint().optional(),
 });
 
 const schema = z
@@ -1784,11 +1786,8 @@ export default function CreateAuctionPage() {
               </Button>
             </RequiresChain>
           </div>
-          <DialogRoot
-            open={isDialogOpen}
-            onOpenChange={(open) => !open && setIsDialogOpen(false)}
-          >
-            <DialogContent className="bg-surface-tertiary">
+          <DialogRoot onOpenChange={(open) => !open && setIsDialogOpen(false)}>
+            <DialogContent className="bg-surface ">
               <DialogHeader>
                 <DialogTitle>
                   {createTxReceipt.isSuccess ? "Success" : "Creating Auction"}
@@ -1833,6 +1832,11 @@ export default function CreateAuctionPage() {
           </DialogRoot>
           <DevTool control={form.control} />
         </form>
+        <CreateAuctionPreview
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          chainId={chainId}
+        />
       </Form>
     </PageContainer>
   );
@@ -1840,14 +1844,8 @@ export default function CreateAuctionPage() {
 
 function getCreatedAuctionId(
   value: UseWaitForTransactionReceiptReturnType["data"],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  auctionType: AuctionType,
 ) {
-  //TODO: find a better way to handle this
-  //on EMP auctioniD is on log index 1 pos 1
-  //on FPS on log 1 pos 1
-  const logIndex = 1;
-  const lotIdHex = value?.logs[logIndex].topics[1];
+  const lotIdHex = value?.logs[1].topics[1];
   if (!lotIdHex) return null;
   return fromHex(lotIdHex, "number");
 }
