@@ -374,7 +374,6 @@ export default function CreateAuctionPage() {
   });
 
   const handleCreation = async (values: CreateAuctionForm) => {
-    console.log(values);
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
@@ -798,7 +797,7 @@ export default function CreateAuctionPage() {
       try {
         allocation = parseUnits(entry.allocation, quoteToken.decimals);
       } catch (e) {
-        console.log("Invalid allocation: ", entry.allocation);
+        console.error("Invalid allocation: ", entry.allocation);
         continue;
       }
 
