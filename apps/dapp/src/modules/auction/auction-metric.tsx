@@ -41,6 +41,24 @@ const getMinFilled = (auction: Auction): number | undefined => {
   return undefined;
 };
 
+const getTargetRaise = (
+  auction: Auction,
+  price?: number,
+): number | undefined => {
+  if (price === undefined) return undefined;
+
+  return Number(auction.capacityInitial) * price;
+};
+
+const getMinRaise = (
+  price?: number,
+  minFilled?: number,
+): number | undefined => {
+  if (price === undefined || minFilled === undefined) return undefined;
+
+  return minFilled * price;
+};
+
 const handlers = {
   derivative: {
     label: "Derivative",
@@ -96,9 +114,9 @@ const handlers = {
     label: "Target Raise",
     handler: (auction: Auction) => {
       const price = getPrice(auction);
-      if (!price) return undefined;
 
-      const targetRaise = Number(auction.capacityInitial) * Number(price);
+      const targetRaise = getTargetRaise(auction, price);
+      if (targetRaise === undefined) return undefined;
 
       return `${trimCurrency(targetRaise)} ${auction.quoteToken.symbol}`;
     },
@@ -109,9 +127,8 @@ const handlers = {
       const price = getPrice(auction);
       const minFilled = getMinFilled(auction);
 
-      if (!price || !minFilled) return undefined;
-
-      const minRaise = minFilled * price;
+      const minRaise = getMinRaise(price, minFilled);
+      if (minRaise === undefined) return undefined;
 
       return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
     },
@@ -267,17 +284,17 @@ const handlers = {
     label: "Result",
     handler: (auction: Auction) => {
       const price = getPrice(auction);
-      if (price === undefined) return undefined;
-
       const minFilled = getMinFilled(auction);
-      if (minFilled === undefined) return undefined;
+
+      const targetRaise = getTargetRaise(auction, price);
+      if (targetRaise === undefined) return undefined;
+
+      const minRaise = getMinRaise(price, minFilled);
+      if (minRaise === undefined) return undefined;
 
       // Total bid amount will be undefined if the data hasn't been loaded yet, but 0 if there are no bids.
       const totalBidAmount = auction.formatted?.totalBidAmountDecimal;
       if (totalBidAmount === undefined) return undefined;
-
-      const targetRaise = Number(auction.capacityInitial) * price;
-      const minRaise = minFilled * price;
 
       if (totalBidAmount >= targetRaise) return "Target Met";
 
