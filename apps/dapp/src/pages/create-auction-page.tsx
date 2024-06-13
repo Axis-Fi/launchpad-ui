@@ -851,7 +851,10 @@ export default function CreateAuctionPage() {
     abi: abis.uniV2Factory,
     address: uniV2Factory,
     functionName: "getPair",
-    args: [getAddress(payoutToken.address), getAddress(quoteToken.address)],
+    args:
+      payoutToken && quoteToken
+        ? [getAddress(payoutToken.address), getAddress(quoteToken.address)]
+        : undefined,
     query: {
       enabled:
         callbacksType === CallbacksType.UNIV2_DTL &&
@@ -873,11 +876,14 @@ export default function CreateAuctionPage() {
     abi: abis.uniV3Factory,
     address: uniV3Factory,
     functionName: "getPool",
-    args: [
-      getAddress(payoutToken.address),
-      getAddress(quoteToken.address),
-      dtlUniV3PoolFee ? Number(dtlUniV3PoolFee) : 0,
-    ],
+    args:
+      payoutToken && quoteToken
+        ? [
+            getAddress(payoutToken.address),
+            getAddress(quoteToken.address),
+            dtlUniV3PoolFee ? Number(dtlUniV3PoolFee) : 0,
+          ]
+        : undefined,
     query: {
       enabled:
         callbacksType === CallbacksType.UNIV3_DTL &&
