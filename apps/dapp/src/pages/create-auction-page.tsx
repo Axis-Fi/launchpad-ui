@@ -131,7 +131,9 @@ const schema = z
     // Metadata
     name: z.string(),
     description: z.string(),
+    tagline: z.string(),
     projectLogo: z.string().url().optional(),
+    projectBanner: z.string().url(),
     twitter: optionalURL,
     discord: optionalURL,
     website: optionalURL,
@@ -975,7 +977,22 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-
+                <FormField
+                  control={form.control}
+                  name="tagline"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Tagline"
+                      tooltip="A brief tagline about your project"
+                    >
+                      <Input
+                        type="url"
+                        placeholder={'"We\'re the future of France"'}
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="projectLogo"
@@ -983,9 +1000,27 @@ export default function CreateAuctionPage() {
                     <FormItemWrapper
                       label="Project Logo"
                       tooltip="A URL to the project logo"
+                      className="mt-6"
                     >
                       <Input
                         placeholder="https://your-dao.link/tokenjpeg.svg"
+                        type="url"
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="projectBanner"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Project Banner"
+                      tooltip="A URL to a rectangular banner to be displayed along the auction"
+                      className="mt-6"
+                    >
+                      <Input
+                        placeholder="https://your-dao.link/banner.svg"
                         type="url"
                         {...field}
                       />
@@ -1046,6 +1081,7 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="description"
