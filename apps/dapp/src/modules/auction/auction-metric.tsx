@@ -363,7 +363,7 @@ const handlers = {
     label: "Tokens Launched",
     handler: (auction: Auction) => {
       const clearingPrice = getClearingPrice(auction);
-      if (clearingPrice === undefined) return undefined;
+      if (clearingPrice === undefined || clearingPrice === 0) return undefined;
 
       const purchased = auction.formatted?.purchasedDecimal;
       if (purchased === undefined) return undefined;
