@@ -91,8 +91,17 @@ export function EncryptedMarginalPriceAuctionConcluded({
             className="w-[496px]"
             headerRightElement={<Badge>Auction Closed</Badge>}
           >
-            <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm">
-              The bids must be decrypted before the auction can be settled.
+            <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">
+              <div className="flex flex-col items-center gap-2">
+                <img
+                  className="w-[92.351]px h-[80px]"
+                  src="/images/axis-logo.svg"
+                  alt="Axis Logo"
+                />
+                <Text size="xl" className="text-center">
+                  Decrypt bids before settling the auction
+                </Text>
+              </div>
             </div>
             <div className="bg-secondary text-foreground flex justify-center gap-x-2 rounded-sm p-4">
               <div>
