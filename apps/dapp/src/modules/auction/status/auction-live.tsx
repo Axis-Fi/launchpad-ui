@@ -194,7 +194,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
-  const actionKeyword = isEMP ? "Bid" : "Purchase";
+  const actionKeyword = "Bid";
 
   const amountInInvalid =
     parsedAmountIn > quoteTokenBalanceDecimal || // greater than balance
@@ -364,7 +364,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                             Bid encrypted and stored successfully!
                           </>
                         ) : (
-                          <p>Purchase completed!</p>
+                          <p>Bid stored successfully!</p>
                         )}
                       </div>
                     ),
@@ -410,6 +410,6 @@ function getConfirmCardText(
 ) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const empText = `You're about to place a bid of ${amountIn} ${auction.quoteToken.symbol}`;
-  const fpText = `You're about to purchase ${amountOut} ${auction.baseToken.symbol} for ${amountIn} ${auction.quoteToken.symbol}`;
+  const fpText = `You're about to place a bid of ${amountOut} ${auction.baseToken.symbol} for ${amountIn} ${auction.quoteToken.symbol}`;
   return isEMP ? empText : fpText;
 }
