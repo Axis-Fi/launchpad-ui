@@ -44,7 +44,13 @@ import {
   toHex,
   zeroAddress,
 } from "viem";
-import { getDuration, getTimestamp, formatDate, dateMath } from "src/utils";
+import {
+  getDuration,
+  getTimestamp,
+  formatDate,
+  dateMath,
+  trimCurrency,
+} from "src/utils";
 
 import { AuctionInfo, AuctionType, CallbacksType } from "@repo/types";
 
@@ -66,6 +72,7 @@ import { Chain } from "@rainbow-me/rainbowkit";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
+import useERC20Balance from "loaders/use-erc20-balance";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -603,6 +610,13 @@ export default function CreateAuctionPage() {
     setFileLoadMessage(null);
   }, [callbacksType]);
 
+  // Load the balance for the payout token
+  const { data: payoutTokenBalance } = useERC20Balance({
+    chainId,
+    tokenAddress: payoutToken ? (payoutToken.address as Address) : undefined,
+    balanceAddress: address,
+  });
+
   return (
     <PageContainer>
       <PageHeader className="items-center justify-start">
@@ -775,44 +789,68 @@ export default function CreateAuctionPage() {
                 <Text size="3xl" className="form-div">
                   3 - Style
                 </Text>
+                <div className="flex w-full flex-wrap">
+                  <div className="w-full">
+                    <FormField
+                      control={form.control}
+                      name="auctionType"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          label="Auction Type"
+                          tooltip="The minimum marginal price required for the auction lot to settle"
+                        >
+                          <Select
+                            defaultValue={AuctionType.SEALED_BID}
+                            options={[
+                              {
+                                value: AuctionType.SEALED_BID,
+                                label: "Encrypted Marginal Price",
+                              },
 
-                <FormField
-                  control={form.control}
-                  name="auctionType"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Auction Type"
-                      tooltip="The minimum marginal price required for the auction lot to settle"
-                    >
-                      <Select
-                        defaultValue={AuctionType.SEALED_BID}
-                        options={[
-                          {
-                            value: AuctionType.SEALED_BID,
-                            label: "Encrypted Marginal Price",
-                          },
-
-                          {
-                            value: AuctionType.FIXED_PRICE_BATCH,
-                            label: "Fixed Price",
-                          },
-                        ]}
-                        {...field}
+                              {
+                                value: AuctionType.FIXED_PRICE_BATCH,
+                                label: "Fixed Price",
+                              },
+                            ]}
+                            {...field}
+                          />
+                        </FormItemWrapper>
+                      )}
+                    />
+                  </div>
+                  <div className="flex w-full flex-wrap">
+                    <div className="w-full">
+                      <FormField
+                        name="capacity"
+                        render={({ field }) => (
+                          <FormItemWrapper
+                            label="Capacity"
+                            tooltip="The capacity of the auction lot in terms of the payout token"
+                          >
+                            <Input
+                              {...field}
+                              placeholder="1,000,000"
+                              type="number"
+                            />
+                          </FormItemWrapper>
+                        )}
                       />
-                    </FormItemWrapper>
-                  )}
-                />
-                <FormField
-                  name="capacity"
-                  render={({ field }) => (
-                    <FormItemWrapper
-                      label="Capacity"
-                      tooltip="The capacity of the auction lot in terms of the payout token"
-                    >
-                      <Input {...field} placeholder="1,000,000" type="number" />
-                    </FormItemWrapper>
-                  )}
-                />
+                    </div>
+                    <div className="ml-auto flex items-end">
+                      <Text size="xs" color="secondary" uppercase>
+                        Balance:{" "}
+                        {payoutTokenBalance && payoutToken
+                          ? trimCurrency(
+                              formatUnits(
+                                payoutTokenBalance || BigInt(0),
+                                payoutToken.decimals,
+                              ),
+                            )
+                          : "-"}
+                      </Text>
+                    </div>
+                  </div>
+                </div>
 
                 <Text size="3xl" className="form-div">
                   4 - Auction Guard Rails
