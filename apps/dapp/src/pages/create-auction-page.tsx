@@ -1100,63 +1100,59 @@ export default function CreateAuctionPage() {
                 <Text size="3xl" className="form-div">
                   3 - Style
                 </Text>
-                <div className="flex w-full flex-wrap">
-                  <div className="w-full">
-                    <FormField
-                      control={form.control}
-                      name="auctionType"
-                      render={({ field }) => (
-                        <FormItemWrapper
-                          label="Auction Type"
-                          tooltip="The minimum marginal price required for the auction lot to settle"
-                        >
-                          <Select
-                            defaultValue={AuctionType.SEALED_BID}
-                            options={[
-                              {
-                                value: AuctionType.SEALED_BID,
-                                label: "Encrypted Marginal Price",
-                              },
+                <FormField
+                  control={form.control}
+                  name="auctionType"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Auction Type"
+                      tooltip="The minimum marginal price required for the auction lot to settle"
+                    >
+                      <Select
+                        defaultValue={AuctionType.SEALED_BID}
+                        options={[
+                          {
+                            value: AuctionType.SEALED_BID,
+                            label: "Encrypted Marginal Price",
+                          },
 
-                              {
-                                value: AuctionType.FIXED_PRICE_BATCH,
-                                label: "Fixed Price",
-                              },
-                            ]}
-                            {...field}
-                          />
-                        </FormItemWrapper>
-                      )}
-                    />
-                  </div>
-                  <div className="flex w-full flex-wrap">
-                    {/* TODO restore this to the same line as the auction type */}
-                    <div className="w-full">
-                      <FormField
-                        name="capacity"
-                        render={({ field }) => (
-                          <FormItemWrapper
-                            label="Capacity"
-                            tooltip="The capacity of the auction lot in terms of the payout token"
-                          >
-                            <Input
-                              {...field}
-                              placeholder="1,000,000"
-                              type="number"
-                            />
-                          </FormItemWrapper>
-                        )}
+                          {
+                            value: AuctionType.FIXED_PRICE_BATCH,
+                            label: "Fixed Price",
+                          },
+                        ]}
+                        {...field}
                       />
-                    </div>
-                    <div className="ml-auto mt-1 flex items-end">
-                      <Text size="xs" color="secondary" uppercase>
-                        Balance:{" "}
-                        {payoutTokenBalanceDecimal
-                          ? trimCurrency(payoutTokenBalanceDecimal)
-                          : "-"}
-                      </Text>
-                    </div>
-                  </div>
+                    </FormItemWrapper>
+                  )}
+                />
+                <div className="relative flex w-full flex-wrap">
+                  <FormField
+                    name="capacity"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Capacity"
+                        tooltip="The capacity of the auction lot in terms of the payout token"
+                      >
+                        <Input
+                          {...field}
+                          placeholder="1,000,000"
+                          type="number"
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />
+                  <Text
+                    size="xs"
+                    color="secondary"
+                    uppercase
+                    className="absolute -bottom-5 right-0"
+                  >
+                    Balance:{" "}
+                    {payoutTokenBalanceDecimal
+                      ? trimCurrency(payoutTokenBalanceDecimal)
+                      : "-"}
+                  </Text>
                 </div>
 
                 <Text size="3xl" className="form-div">
