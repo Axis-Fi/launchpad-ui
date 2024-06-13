@@ -263,6 +263,29 @@ const handlers = {
       }
     },
   },
+  result: {
+    label: "Result",
+    handler: (auction: Auction) => {
+      const price = getPrice(auction);
+      if (price === undefined) return undefined;
+
+      const minFilled = getMinFilled(auction);
+      if (minFilled === undefined) return undefined;
+
+      // Total bid amount will be undefined if the data hasn't been loaded yet, but 0 if there are no bids.
+      const totalBidAmount = auction.formatted?.totalBidAmountDecimal;
+      if (totalBidAmount === undefined) return undefined;
+
+      const targetRaise = Number(auction.capacityInitial) * price;
+      const minRaise = minFilled * price;
+
+      if (totalBidAmount >= targetRaise) return "Target Met";
+
+      if (totalBidAmount >= minRaise) return "Min Raise Met";
+
+      return "Failed";
+    },
+  },
 };
 
 type AuctionMetricProps = Partial<PropsWithAuction> & {

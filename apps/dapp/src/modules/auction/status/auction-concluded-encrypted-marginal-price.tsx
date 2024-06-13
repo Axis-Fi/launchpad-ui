@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Button, Card, Metric } from "@repo/ui";
+import { Badge, Button, Card, Metric, Progress, Text } from "@repo/ui";
 import type { BatchAuction, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
@@ -9,12 +9,15 @@ import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { calculateAuctionProgress } from "../utils/get-auction-progress";
 
 export function EncryptedMarginalPriceAuctionConcluded({
   auction,
 }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const decrypt = useDecryptBids(auction as BatchAuction);
+
+  const progress = calculateAuctionProgress(auction);
 
   const isWaiting =
     decrypt.decryptTx.isPending || decrypt.decryptReceipt.isLoading;
@@ -43,9 +46,18 @@ export function EncryptedMarginalPriceAuctionConcluded({
               </div>
             }
           >
+            <div className="mb-4">
+              <Text uppercase size="xs" spaced>
+                Auction Concluded
+              </Text>
+              <Progress value={progress} className="mt-1" />
+            </div>
             <AuctionMetrics>
+              <AuctionMetric auction={auction} id="targetRaise" />
+              <AuctionMetric auction={auction} id="minRaise" />
               <AuctionMetric auction={auction} id="totalBids" />
               <AuctionMetric auction={auction} id="totalBidAmount" />
+              <AuctionMetric auction={auction} id="result" />
               <AuctionMetric auction={auction} id="started" />
               <AuctionMetric auction={auction} id="ended" />
             </AuctionMetrics>
