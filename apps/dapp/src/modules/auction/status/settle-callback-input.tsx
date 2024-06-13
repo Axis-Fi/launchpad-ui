@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormItemWrapper, Input } from "@repo/ui";
 import { encodeAbiParameters } from "viem";
+import { useEffect } from "react";
 
 const uniswapSchema = z
   .object({
@@ -33,11 +34,59 @@ export function SettleAuctionCallbackInput({
 }) {
   // Determine the callback type
   const callbackType = getCallbacksType(auction);
+  const DEFAULT_MAX_SLIPPAGE = "0.5";
 
   const form = useForm<UniswapForm>({
     resolver: zodResolver(uniswapSchema),
     mode: "onBlur",
+    defaultValues: {
+      maxSlippage: DEFAULT_MAX_SLIPPAGE,
+    },
   });
+
+  const updateUniswapDtlCallbackData = (maxSlippage: number) => {
+    // Validate
+    if (maxSlippage < 0.001 || maxSlippage >= 100) {
+      setCallbackDataIsValid(false);
+      return;
+    }
+
+    // Upscale
+    const maxSlippageUpscaled = maxSlippage * 1e3;
+
+    // Encode
+    const encodedCallbackData = encodeAbiParameters(
+      [
+        {
+          name: "OnClaimProceedsParams",
+          type: "tuple",
+          components: [{ name: "maxSlippage", type: "uint24" }],
+        },
+      ],
+      [
+        {
+          maxSlippage: maxSlippageUpscaled,
+        },
+      ],
+    );
+
+    // Pass to parent
+    setCallbackData(encodedCallbackData);
+
+    // Flag as valid
+    setCallbackDataIsValid(true);
+    console.debug("SettleAuctionCallbackInput: Updated callback data");
+  };
+
+  // Update callback data on mount
+  useEffect(() => {
+    if (
+      callbackType === CallbacksType.UNIV2_DTL ||
+      callbackType === CallbacksType.UNIV3_DTL
+    ) {
+      updateUniswapDtlCallbackData(Number(DEFAULT_MAX_SLIPPAGE));
+    }
+  }, [callbackType]);
 
   if (
     callbackType === CallbacksType.UNIV2_DTL ||
@@ -45,51 +94,31 @@ export function SettleAuctionCallbackInput({
   ) {
     // Monitor changes to the form
     form.watch((data) => {
-      if (Number(data.maxSlippage) < 0.001 || Number(data.maxSlippage) >= 100) {
-        setCallbackDataIsValid(false);
-        return;
-      }
-
-      const maxSlippage = (Number(data.maxSlippage) || 0) * 1e3; // Upscale to 1e5
-      const encodedCallbackData = encodeAbiParameters(
-        [
-          {
-            name: "OnClaimProceedsParams",
-            type: "tuple",
-            components: [{ name: "maxSlippage", type: "uint24" }],
-          },
-        ],
-        [
-          {
-            maxSlippage: maxSlippage,
-          },
-        ],
-      );
-
-      // Encode the data in the required struct and pass it to the parent component
-      setCallbackData(encodedCallbackData);
-
-      // Flag the callback data as valid
-      setCallbackDataIsValid(true);
+      updateUniswapDtlCallbackData(Number(data.maxSlippage) || 0);
     });
 
+    // NOTE: This is a temporary solution to hide the form fields
+    const displayFields = false;
+
     return (
-      <Form {...form}>
-        <div className="grid grid-flow-row grid-cols-2">
-          <FormField
-            control={form.control}
-            name="maxSlippage"
-            render={({ field }) => (
-              <FormItemWrapper
-                label="Max Slippage"
-                tooltip="The percentage of slippage tolerated when depositing into the pool."
-              >
-                <Input placeholder="0.5" type="number" {...field} />
-              </FormItemWrapper>
-            )}
-          />
-        </div>
-      </Form>
+      displayFields && (
+        <Form {...form}>
+          <div className="grid grid-flow-row grid-cols-2">
+            <FormField
+              control={form.control}
+              name="maxSlippage"
+              render={({ field }) => (
+                <FormItemWrapper
+                  label="Max Slippage"
+                  tooltip="The percentage of slippage tolerated when depositing into the pool."
+                >
+                  <Input placeholder="0.5" type="number" {...field} />
+                </FormItemWrapper>
+              )}
+            />
+          </div>
+        </Form>
+      )
     );
   }
 
