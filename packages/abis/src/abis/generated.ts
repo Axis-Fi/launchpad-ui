@@ -3331,3 +3331,629 @@ export const tokenAllowlistAbi = [
     name: "CallbacksAddressNotValid",
   },
 ] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV2Dtl
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV2DtlAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      { name: "uniswapV2Factory_", internalType: "address", type: "address" },
+      { name: "uniswapV2Router_", internalType: "address", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "LINEAR_VESTING_KEYCODE",
+    outputs: [{ name: "", internalType: "bytes5", type: "bytes5" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "MAX_PERCENT",
+    outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotConfiguration",
+    outputs: [
+      { name: "recipient", internalType: "address", type: "address" },
+      { name: "lotCapacity", internalType: "uint256", type: "uint256" },
+      { name: "lotCuratorPayout", internalType: "uint256", type: "uint256" },
+      {
+        name: "proceedsUtilisationPercent",
+        internalType: "uint24",
+        type: "uint24",
+      },
+      { name: "vestingStart", internalType: "uint48", type: "uint48" },
+      { name: "vestingExpiry", internalType: "uint48", type: "uint48" },
+      {
+        name: "linearVestingModule",
+        internalType: "contract LinearVesting",
+        type: "address",
+      },
+      { name: "active", internalType: "bool", type: "bool" },
+      { name: "implParams", internalType: "bytes", type: "bytes" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "uniV2Factory",
+    outputs: [
+      { name: "", internalType: "contract IUniswapV2Factory", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "uniV2Router",
+    outputs: [
+      {
+        name: "",
+        internalType: "contract IUniswapV2Router02",
+        type: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    inputs: [
+      { name: "token_", internalType: "address", type: "address" },
+      { name: "account_", internalType: "address", type: "address" },
+      { name: "balance_", internalType: "uint256", type: "uint256" },
+      { name: "required_", internalType: "uint256", type: "uint256" },
+    ],
+    name: "Callback_InsufficientBalance",
+  },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_LinearVestingModuleNotFound" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  { type: "error", inputs: [], name: "Callback_Params_InvalidAddress" },
+  { type: "error", inputs: [], name: "Callback_Params_InvalidVestingParams" },
+  {
+    type: "error",
+    inputs: [
+      { name: "actual_", internalType: "uint24", type: "uint24" },
+      { name: "min_", internalType: "uint24", type: "uint24" },
+      { name: "max_", internalType: "uint24", type: "uint24" },
+    ],
+    name: "Callback_Params_PercentOutOfBounds",
+  },
+  { type: "error", inputs: [], name: "Callback_Params_PoolExists" },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV2Factory
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV2FactoryAbi = [
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    name: "allPairs",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "allPairsLength",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+    ],
+    name: "createPair",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "feeTo",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "feeToSetter",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+    ],
+    name: "getPair",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "setFeeTo",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "setFeeToSetter",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "token0",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token1",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "pair",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+      { name: "", internalType: "uint256", type: "uint256", indexed: false },
+    ],
+    name: "PairCreated",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV3Dtl
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV3DtlAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      { name: "uniV3Factory_", internalType: "address", type: "address" },
+      { name: "gUniFactory_", internalType: "address", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "LINEAR_VESTING_KEYCODE",
+    outputs: [{ name: "", internalType: "bytes5", type: "bytes5" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "MAX_PERCENT",
+    outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "gUniFactory",
+    outputs: [
+      { name: "", internalType: "contract IGUniFactory", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotConfiguration",
+    outputs: [
+      { name: "recipient", internalType: "address", type: "address" },
+      { name: "lotCapacity", internalType: "uint256", type: "uint256" },
+      { name: "lotCuratorPayout", internalType: "uint256", type: "uint256" },
+      {
+        name: "proceedsUtilisationPercent",
+        internalType: "uint24",
+        type: "uint24",
+      },
+      { name: "vestingStart", internalType: "uint48", type: "uint48" },
+      { name: "vestingExpiry", internalType: "uint48", type: "uint48" },
+      {
+        name: "linearVestingModule",
+        internalType: "contract LinearVesting",
+        type: "address",
+      },
+      { name: "active", internalType: "bool", type: "bool" },
+      { name: "implParams", internalType: "bytes", type: "bytes" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "uniV3Factory",
+    outputs: [
+      { name: "", internalType: "contract IUniswapV3Factory", type: "address" },
+    ],
+  },
+  {
+    type: "error",
+    inputs: [
+      { name: "token_", internalType: "address", type: "address" },
+      { name: "account_", internalType: "address", type: "address" },
+      { name: "balance_", internalType: "uint256", type: "uint256" },
+      { name: "required_", internalType: "uint256", type: "uint256" },
+    ],
+    name: "Callback_InsufficientBalance",
+  },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_LinearVestingModuleNotFound" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  { type: "error", inputs: [], name: "Callback_Params_InvalidAddress" },
+  { type: "error", inputs: [], name: "Callback_Params_InvalidVestingParams" },
+  {
+    type: "error",
+    inputs: [
+      { name: "actual_", internalType: "uint24", type: "uint24" },
+      { name: "min_", internalType: "uint24", type: "uint24" },
+      { name: "max_", internalType: "uint24", type: "uint24" },
+    ],
+    name: "Callback_Params_PercentOutOfBounds",
+  },
+  { type: "error", inputs: [], name: "Callback_Params_PoolExists" },
+  { type: "error", inputs: [], name: "Callback_Params_PoolFeeNotEnabled" },
+  {
+    type: "error",
+    inputs: [
+      { name: "token_", internalType: "address", type: "address" },
+      { name: "amountActual_", internalType: "uint256", type: "uint256" },
+      { name: "amountMin_", internalType: "uint256", type: "uint256" },
+    ],
+    name: "Callback_Slippage",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV3Factory
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV3FactoryAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+      { name: "fee", internalType: "uint24", type: "uint24" },
+    ],
+    name: "createPool",
+    outputs: [{ name: "pool", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "fee", internalType: "uint24", type: "uint24" },
+      { name: "tickSpacing", internalType: "int24", type: "int24" },
+    ],
+    name: "enableFeeAmount",
+    outputs: [],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "fee", internalType: "uint24", type: "uint24" }],
+    name: "feeAmountTickSpacing",
+    outputs: [{ name: "", internalType: "int24", type: "int24" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+      { name: "fee", internalType: "uint24", type: "uint24" },
+    ],
+    name: "getPool",
+    outputs: [{ name: "pool", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "owner",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_owner", internalType: "address", type: "address" }],
+    name: "setOwner",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "fee", internalType: "uint24", type: "uint24", indexed: true },
+      {
+        name: "tickSpacing",
+        internalType: "int24",
+        type: "int24",
+        indexed: true,
+      },
+    ],
+    name: "FeeAmountEnabled",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "oldOwner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newOwner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+    ],
+    name: "OwnerChanged",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "token0",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token1",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      { name: "fee", internalType: "uint24", type: "uint24", indexed: true },
+      {
+        name: "tickSpacing",
+        internalType: "int24",
+        type: "int24",
+        indexed: false,
+      },
+      {
+        name: "pool",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+    ],
+    name: "PoolCreated",
+  },
+] as const;

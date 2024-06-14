@@ -10,12 +10,12 @@ import { trimCurrency } from "utils/currency";
 
 export function AuctionBidInputSingle({
   auction,
-  balance = 0,
+  balance = BigInt(0),
   limit,
   disabled,
 }: {
-  balance?: number;
-  limit?: number;
+  balance?: bigint;
+  limit?: bigint;
   disabled?: boolean;
 } & PropsWithAuction) {
   const form = useFormContext<BidForm>();
@@ -24,33 +24,31 @@ export function AuctionBidInputSingle({
 
   // USD amount
   const [bidTimestamp] = useState<number>(Math.floor(Date.now() / 1000)); // Capture the timestamp when the page loads initially, otherwise the value will keep changing on every render, and the USD value will be refreshed on every render
-  const [quoteTokenAmountDecimal, setQuoteTokenAmountDecimal] =
-    useState<number>(0);
+  const [quoteTokenAmount, setQuoteTokenAmount] = useState<bigint>(BigInt(0));
   const { getUsdAmount } = useGetUsdAmount(auction.quoteToken, bidTimestamp);
   const [quoteTokenAmountUsd, setQuoteTokenAmountUsd] = useState<string>("");
 
   // Calculates the USD amount when the amountIn changes
   useEffect(() => {
-    if (!quoteTokenAmountDecimal) {
+    if (!quoteTokenAmount) {
       setQuoteTokenAmountUsd("");
       return;
     }
 
-    const fetchedUsdAmount = getUsdAmount(quoteTokenAmountDecimal);
+    const fetchedUsdAmount = getUsdAmount(quoteTokenAmount);
     if (!fetchedUsdAmount) {
       setQuoteTokenAmountUsd("");
       return;
     }
 
     setQuoteTokenAmountUsd(fetchedUsdAmount);
-  }, [quoteTokenAmountDecimal, getUsdAmount]);
+  }, [quoteTokenAmount, getUsdAmount]);
 
-  function handleAmountOutChange(value: string) {
+  function handleAmountOutChange(amountIn: bigint) {
     if (!auction.auctionData || !("price" in auction.auctionData)) return;
 
     // auction is fixed price
     // Use bigints to calculate value and return as string to avoid rounding errors with floats
-    const amountIn = parseUnits(value, auction.quoteToken.decimals);
     const amountOut =
       (amountIn * parseUnits("1", auction.baseToken.decimals)) /
       auction.auctionData!.price;
@@ -74,8 +72,16 @@ export function AuctionBidInputSingle({
                   {...field}
                   disabled={disabled}
                   label="Spend Amount"
-                  balance={trimCurrency(balance)}
-                  limit={limit ? trimCurrency(limit) : undefined}
+                  balance={trimCurrency(
+                    formatUnits(balance, auction.quoteToken.decimals),
+                  )}
+                  limit={
+                    limit
+                      ? trimCurrency(
+                          formatUnits(limit, auction.quoteToken.decimals),
+                        )
+                      : undefined
+                  }
                   usdPrice={quoteTokenAmountUsd}
                   symbol={auction.quoteToken.symbol}
                   onChange={(e) => {
@@ -83,10 +89,14 @@ export function AuctionBidInputSingle({
 
                     const rawAmountIn = (e.target as HTMLInputElement)
                       .value as string;
-                    setQuoteTokenAmountDecimal(Number(rawAmountIn));
+                    const amountIn = parseUnits(
+                      rawAmountIn,
+                      auction.quoteToken.decimals,
+                    );
+                    setQuoteTokenAmount(amountIn);
 
                     // Update amount out value, if applicable
-                    handleAmountOutChange(rawAmountIn);
+                    handleAmountOutChange(amountIn);
                   }}
                   onClickMaxButton={() => {
                     // Take the minimum of the balance and the limit
@@ -95,14 +105,17 @@ export function AuctionBidInputSingle({
                       maxSpend = balance < limit ? balance : limit;
                     }
 
-                    const maxSpendStr = maxSpend.toString();
+                    const maxSpendStr = formatUnits(
+                      maxSpend,
+                      auction.quoteToken.decimals,
+                    );
 
                     form.setValue("quoteTokenAmount", maxSpendStr);
                     // Force re-validation
                     form.trigger("quoteTokenAmount");
 
                     // Update amount out value, if applicable
-                    handleAmountOutChange(maxSpendStr);
+                    handleAmountOutChange(maxSpend);
                   }}
                 />
               </FormItemWrapperSlim>

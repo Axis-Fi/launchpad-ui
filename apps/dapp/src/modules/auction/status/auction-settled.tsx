@@ -6,9 +6,16 @@ import { SettledAuctionCard } from "modules/auction/settled-auction-card";
 import { ProjectInfoCard } from "../project-info-card";
 import { ClaimCard } from "../claim-card";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
+  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
+    chainId: auction.chainId,
+    lotId: auction.lotId,
+    baseTokenDecimals: auction.baseToken.decimals,
+    callback: auction.callbacks,
+  });
 
   return (
     <div className="flex flex-row gap-x-[32px]">
@@ -37,6 +44,17 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             <AuctionMetric auction={auction} id="referrerFee" />
             <AuctionMetric auction={auction} id="duration" />
             <AuctionMetric auction={auction} id="derivative" />
+            {dtlCallbackConfiguration && (
+              // TODO fix alignment of metric title
+              <Metric
+                label="Direct to Liquidity"
+                size="m"
+                tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                className=""
+              >
+                {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+              </Metric>
+            )}
           </AuctionMetrics>
         </Card>
 

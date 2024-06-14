@@ -16,7 +16,7 @@ import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 export type AllowlistResult = {
   canBid: boolean;
   amountLimited: boolean;
-  limit: string; // number of quote tokens as a formatted string
+  limit: bigint; // number of quote tokens as a formatted string
   criteria: string;
   callbackData: `0x${string}`;
 };
@@ -190,7 +190,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     return {
       canBid,
       amountLimited,
-      limit: formatUnits(limit, auction.quoteToken.decimals),
+      limit,
       criteria,
       callbackData,
     };
@@ -206,9 +206,15 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       Number(decimals),
     )} ${symbol} in their wallet`;
 
-    return { canBid, amountLimited, limit: "0", criteria, callbackData };
+    return { canBid, amountLimited, limit: BigInt(0), criteria, callbackData };
   }
 
   // Auction is public and doesn't have an allowlist
-  return { canBid: true, amountLimited, limit: "0", criteria, callbackData };
+  return {
+    canBid: true,
+    amountLimited,
+    limit: BigInt(0),
+    criteria,
+    callbackData,
+  };
 }

@@ -1,19 +1,50 @@
 import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { Badge, Button, Card, Metric, Progress, Text } from "@repo/ui";
-import type { PropsWithAuction } from "@repo/types";
+import { type PropsWithAuction } from "@repo/types";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
-import React from "react";
+import React, { useState } from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { calculateAuctionProgress } from "../utils/get-auction-progress";
+import { SettleAuctionCallbackInput } from "./settle-callback-input";
+import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
+import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
+
+// TODO needs story tests, given the amount of potential states
 
 export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const settle = useSettleAuction(props.auction);
+  const [
+    hasSufficientBalanceForCallbacks,
+    setHasSufficientBalanceForCallbacks,
+  ] = React.useState(true);
+
+  const hasCallbacks =
+    props.auction.callbacks &&
+    props.auction.callbacks != "0x0000000000000000000000000000000000000000";
+
+  // Storage of encoded callback data for the callback contract
+  const [callbackData, setCallbackData] = useState<`0x${string}` | undefined>(
+    undefined,
+  );
+  const [callbackDataIsValid, setCallbackDataIsValid] = useState(
+    hasCallbacks ? false : true,
+  );
+
+  const settle = useSettleAuction({
+    auction: props.auction,
+    callbackData: callbackData,
+  });
+  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
+    chainId: props.auction.chainId,
+    lotId: props.auction.lotId,
+    baseTokenDecimals: props.auction.baseToken.decimals,
+    callback: props.auction.callbacks,
+  });
 
   const progress = calculateAuctionProgress(props.auction);
 
@@ -52,6 +83,16 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
               <AuctionMetric auction={props.auction} id="maxTokensLaunched" />
               <AuctionMetric auction={props.auction} id="started" />
               <AuctionMetric auction={props.auction} id="ended" />
+              {dtlCallbackConfiguration && (
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
             </AuctionMetricsContainer>
           </Card>
           <ProjectInfoCard auction={props.auction} />
@@ -89,11 +130,32 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
                   <Text size="xl">Auction has ended</Text>
                 </div>
               </div>
+              {hasCallbacks && (
+                <div>
+                  <SettleAuctionCallbackInput
+                    auction={props.auction}
+                    setCallbackData={setCallbackData}
+                    setCallbackDataIsValid={setCallbackDataIsValid}
+                  />
+                </div>
+              )}
+              {
+                <SettleAuctionDtlCallbackBalance
+                  auction={props.auction}
+                  setHasSufficientBalanceForCallbacks={
+                    setHasSufficientBalanceForCallbacks
+                  }
+                />
+              }
               <RequiresChain chainId={props.auction.chainId} className="mt-4">
                 <div className="mt-4 w-full">
                   <Button
                     className="w-full"
-                    disabled={isWaiting}
+                    disabled={
+                      isWaiting ||
+                      !callbackDataIsValid ||
+                      !hasSufficientBalanceForCallbacks
+                    }
                     onClick={() => setIsDialogOpen(true)}
                   >
                     {isWaiting ? (

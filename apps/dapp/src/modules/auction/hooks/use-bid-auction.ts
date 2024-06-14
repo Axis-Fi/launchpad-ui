@@ -1,7 +1,7 @@
 import React from "react";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
-import { Address, fromHex, toHex } from "viem";
+import { Address, formatUnits, fromHex, toHex } from "viem";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -16,8 +16,8 @@ import { useStoreBid } from "state/bids/handlers";
 export function useBidAuction(
   id: string,
   auctionType: AuctionType,
-  amountIn: number,
-  amountOut: number,
+  amountIn: bigint,
+  amountOut: bigint,
   callbackData: `0x${string}`,
 ) {
   const { result: auction, ...auctionQuery } = useAuction(id, auctionType);
@@ -38,11 +38,12 @@ export function useBidAuction(
       throw new Error("Wallet not connected. Please connect your wallet.");
     }
 
+    // TODO: change SDK to use bigints
     return sdk.bid(
       {
         lotId: Number(lotId),
-        amountIn: Number(amountIn),
-        amountOut: Number(amountOut),
+        amountIn: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
+        amountOut: Number(formatUnits(amountOut, auction.baseToken.decimals)),
         chainId: auction.chainId,
         auctionType: auctionType,
         referrerAddress: referrer,
@@ -75,7 +76,7 @@ export function useBidAuction(
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
-    amount: Number(amountIn),
+    amount: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
   });
 
   React.useEffect(() => {
