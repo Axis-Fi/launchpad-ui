@@ -59,7 +59,7 @@ import { AuctionInfo, AuctionType, CallbacksType } from "@repo/types";
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect } from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
 import { toKeycode } from "utils/hex";
@@ -924,10 +924,13 @@ export default function CreateAuctionPage() {
       tokenAddress: payoutToken ? (payoutToken.address as Address) : undefined,
       balanceAddress: address,
     });
-  form.setValue(
-    "payoutTokenBalance",
-    formatUnits(payoutTokenBalance ?? BigInt(0), payoutTokenDecimals ?? 0),
-  );
+  useEffect(() => {
+    form.setValue(
+      "payoutTokenBalance",
+      formatUnits(payoutTokenBalance ?? BigInt(0), payoutTokenDecimals ?? 0),
+    );
+  }, [payoutTokenBalance, payoutTokenDecimals]);
+
   const payoutTokenBalanceDecimal: number =
     payoutTokenBalance && payoutTokenDecimals
       ? Number(formatUnits(payoutTokenBalance, payoutTokenDecimals))
