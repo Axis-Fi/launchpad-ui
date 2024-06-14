@@ -15,6 +15,8 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { formatUnits } from "viem";
 import { AuctionCard } from "modules/auction/auction-card";
+import { getDuration } from "utils/date";
+import { addMilliseconds } from "date-fns";
 
 type CreateAuctionPreviewProps = {
   chainId: number;
@@ -129,6 +131,24 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     quoteToken: params.quoteToken as Token,
     baseToken: { ...params.payoutToken, totalSupply: supply } as Token,
     conclusion: params.deadline.getTime().toString(),
+    //@ts-expect-error TODO: fix type mismatch
+    linearVesting: params.isVested
+      ? {
+          id: "420",
+          startTimestamp:
+            params.vestingStart?.getTime().toString() ??
+            params.deadline.getTime(),
+          expiryTimestamp:
+            params.deadline.getTime() +
+            getDuration(Number(params.vestingDuration)),
+          startDate: params.vestingStart ?? params.start,
+          expiryDate: addMilliseconds(
+            params.deadline,
+            getDuration(Number(params.vestingDuration)),
+          ),
+        }
+      : undefined,
+
     auctionInfo: {
       name: params.name,
       description: params.description,
@@ -144,8 +164,11 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     //@ts-expect-error intentionally imcomplete
     encryptedMarginalPrice: {
       minPrice: params.minPrice!,
+      minFilled: (
+        Number(params.capacity) * Number(params.minFillPercent?.[0] ?? 1 / 100)
+      ).toString(),
     },
-    //@ts-expect-error intentional imcomplete
+    //@ts-expect-error intentionally imcomplete
     fixedPrice: {
       price: params.price!,
     },

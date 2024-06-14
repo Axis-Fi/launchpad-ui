@@ -85,7 +85,7 @@ function AuctionCardDetails(
             {props.auction.auctionInfo?.description}
           </Text>
           <Text color="secondary" className="group-hover:hidden">
-            {props.auction.auctionInfo?.description}
+            {props.auction.auctionInfo?.tagline}
           </Text>
         </div>
       </div>
