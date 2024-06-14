@@ -29,7 +29,7 @@ export function SettleAuctionCallbackInput({
   setCallbackDataIsValid,
 }: {
   auction: Auction;
-  setCallbackData: (data: `0x${string}`) => void;
+  setCallbackData: (data: `0x${string}` | undefined) => void;
   setCallbackDataIsValid: (isValid: boolean) => void;
 }) {
   // Determine the callback type
@@ -85,7 +85,12 @@ export function SettleAuctionCallbackInput({
       callbackType === CallbacksType.UNIV3_DTL
     ) {
       updateUniswapDtlCallbackData(Number(DEFAULT_MAX_SLIPPAGE));
+      return;
     }
+
+    // Otherwise set the callback data to undefined and mark it as valid
+    setCallbackData(undefined);
+    setCallbackDataIsValid(true);
   }, [callbackType]);
 
   if (

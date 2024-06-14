@@ -13,6 +13,8 @@ import { SettleAuctionCallbackInput } from "./settle-callback-input";
 import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
 
+// TODO needs story tests, given the amount of potential states
+
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [
@@ -20,11 +22,17 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     setHasSufficientBalanceForCallbacks,
   ] = React.useState(true);
 
+  const hasCallbacks =
+    auction.callbacks &&
+    auction.callbacks != "0x0000000000000000000000000000000000000000";
+
   // Storage of encoded callback data for the callback contract
   const [callbackData, setCallbackData] = useState<`0x${string}` | undefined>(
     undefined,
   );
-  const [callbackDataIsValid, setCallbackDataIsValid] = useState(false);
+  const [callbackDataIsValid, setCallbackDataIsValid] = useState(
+    hasCallbacks ? false : true,
+  );
 
   const settle = useSettleAuction({
     auction: auction,
@@ -37,10 +45,6 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     baseTokenDecimals: auction.baseToken.decimals,
     callback: auction.callbacks,
   });
-
-  const hasCallbacks =
-    auction.callbacks &&
-    auction.callbacks != "0x0000000000000000000000000000000000000000";
 
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
