@@ -78,7 +78,7 @@ export function FaucetPage() {
       <div className="mx-auto mt-4 text-center">
         {mint.mintReceipt.isLoading && (
           <div className="flex items-center">
-            Waiting confirmation{" "}
+            Waiting for confirmation{" "}
             <div className="size-8">
               <LoadingIndicator className="size-8 fill-white" />
             </div>

@@ -18,6 +18,8 @@ const config: AxisDeploymentConfig = {
     merkleAllowlist: "0x98d1E5d8961BAfBE848337c723DD3dC590923454",
     tokenAllowlist: "0x98062088FAE9D96C83B3efEbdE473A7C5B18C95F",
     allocatedMerkleAllowlist: "0x98381a5D00a0B6c9Cdd94206F4b2B383457C312e",
+    uniV2Dtl: "0xE6093314BD7496437002B06bd0Cc3B245Adc32aE",
+    uniV3Dtl: "0xE64057e0BbDF8DFaA4cEa25E64391B22e4b55607",
   },
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/<VERSION>/gn",

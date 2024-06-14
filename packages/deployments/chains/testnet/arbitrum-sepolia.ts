@@ -19,6 +19,8 @@ const config: AxisDeploymentConfig = {
     merkleAllowlist: "0x98Cd72f2271BC8485474E6277eAadA28c8Da4C59",
     tokenAllowlist: "0x98d7b3E03DEAA5039ff06D977EdE2EF2b6cD3169",
     allocatedMerkleAllowlist: "0x98Dd423FD18cfbf34c78E24B8E923dadE7bcFCC0",
+    uniV2Dtl: "0xE681311Ec0Aff9E6aCD03208f366eF4CD06e8215",
+    uniV3Dtl: "0xE6B7D1ba64c03A9e716358D0AfE34A087E3d26B1",
   },
   subgraphURL:
     "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v<VERSION>/api",

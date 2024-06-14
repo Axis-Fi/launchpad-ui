@@ -1,5 +1,5 @@
 import { Button, Card, Metric, Text } from "@repo/ui";
-import { formatUnits } from "viem";
+import { parseUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -19,6 +19,7 @@ import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
 import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
+import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 import useERC20Balance from "loaders/use-erc20-balance";
 
 const schema = z.object({
@@ -38,7 +39,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const auctionFormatted = auction.formatted || undefined;
 
-  const [maxBidAmount, setMaxBidAmount] = useState<number | undefined>();
+  const [maxBidAmount, setMaxBidAmount] = useState<bigint | undefined>();
 
   // Cache the max bid amount
   useEffect(() => {
@@ -50,12 +51,19 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
     // Calculate the remaining capacity in terms of quote tokens
     const capacityInQuoteTokens =
-      Number(auction.capacityInitial) *
-      Number(auctionFormatted.price?.replace(/,/g, ""));
+      (parseUnits(auction.capacityInitial, auction.baseToken.decimals) *
+        parseUnits(
+          (auctionFormatted.price ?? "0").replace(/,/g, ""),
+          auction.quoteToken.decimals,
+        )) /
+      parseUnits("1", auction.baseToken.decimals);
 
     const remainingQuoteTokens =
       capacityInQuoteTokens -
-      Number(auctionFormatted.totalBidAmount?.replace(/,/g, ""));
+      parseUnits(
+        (auctionFormatted.totalBidAmount ?? "0").replace(/,/g, ""),
+        auction.quoteToken.decimals,
+      );
 
     setMaxBidAmount(remainingQuoteTokens);
   }, [
@@ -63,6 +71,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     auctionFormatted,
     auctionFormatted?.totalBidAmount,
     isFixedPriceBatch,
+    auction.baseToken.decimals,
+    auction.quoteToken.decimals,
   ]);
 
   // Allowlist callback support
@@ -80,19 +90,33 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     mode: "onTouched",
     resolver: zodResolver(
       schema
-        .refine((data) => Number(data.quoteTokenAmount) > 0, {
-          message: "Amount must be greater than 0",
-          path: ["quoteTokenAmount"],
-        })
-        .refine((data) => isFixedPriceBatch || Number(data.bidPrice) > 0, {
-          message: "Bid price must be greater than 0",
-          path: ["bidPrice"],
-        })
+        .refine(
+          (data) =>
+            parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) >
+            BigInt(0),
+          {
+            message: "Amount must be greater than 0",
+            path: ["quoteTokenAmount"],
+          },
+        )
         .refine(
           (data) =>
             isFixedPriceBatch ||
-            Number(data.quoteTokenAmount) >=
-              Number(auction.formatted?.minBidSize),
+            parseUnits(data.bidPrice ?? "0", auction.quoteToken.decimals) >
+              BigInt(0),
+          {
+            message: "Bid price must be greater than 0",
+            path: ["bidPrice"],
+          },
+        )
+        .refine(
+          (data) =>
+            isFixedPriceBatch ||
+            parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) >=
+              parseUnits(
+                auction.formatted?.minBidSize ?? "0",
+                auction.quoteToken.decimals,
+              ),
           {
             message: `Minimum bid is ${auction.formatted?.minBidSize}`,
             path: ["quoteTokenAmount"],
@@ -101,7 +125,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         .refine(
           (data) =>
             isFixedPriceBatch ||
-            Number(data.bidPrice) >= Number(auction.formatted?.minPrice),
+            parseUnits(data.bidPrice ?? "0", auction.quoteToken.decimals) >=
+              parseUnits(
+                auction.formatted?.minPrice ?? "0",
+                auction.quoteToken.decimals,
+              ),
           {
             message: `Min rate is ${auction.formatted?.minPrice} ${auction.quoteToken.symbol}/${auction.baseToken.symbol}`,
             path: ["bidPrice"],
@@ -109,14 +137,17 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         )
         .refine(
           (data) =>
-            Number(data.quoteTokenAmount) <= Number(quoteTokenBalanceDecimal),
+            parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) <=
+            (quoteTokenBalance ?? BigInt(0)),
           {
             message: `Insufficient balance`,
             path: ["quoteTokenAmount"],
           },
         )
         .refine(
-          (data) => Number(data.baseTokenAmount) <= Number(auction.capacity),
+          (data) =>
+            parseUnits(data.baseTokenAmount, auction.baseToken.decimals) <=
+            parseUnits(auction.capacity, auction.baseToken.decimals),
           {
             message: "Amount out exceeds capacity",
             path: ["baseTokenAmount"],
@@ -126,7 +157,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           (data) =>
             !allowlistLimitsAmount ||
             (allowlistLimitsAmount &&
-              Number(data.quoteTokenAmount) <= Number(allowlistLimit)),
+              parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) <=
+                allowlistLimit),
           {
             message: `Exceeds your remaining allocation of ${allowlistLimit} ${auction.quoteToken.symbol}`,
             path: ["quoteTokenAmount"],
@@ -136,7 +168,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           (data) =>
             !isFixedPriceBatch ||
             maxBidAmount === undefined ||
-            Number(data.quoteTokenAmount) <= maxBidAmount,
+            parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) <=
+              maxBidAmount,
           {
             message: `Exceeds remaining capacity of ${maxBidAmount} ${auction.quoteToken.symbol}`,
             path: ["quoteTokenAmount"],
@@ -150,8 +183,15 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     "baseTokenAmount",
   ]);
 
-  const parsedAmountIn = Number(amountIn);
-  const parsedMinAmountOut = Number(minAmountOut);
+  // const parsedAmountIn = Number(amountIn);
+  // const parsedMinAmountOut = Number(minAmountOut);
+
+  const parsedAmountIn = amountIn
+    ? parseUnits(amountIn, auction.quoteToken.decimals)
+    : BigInt(0);
+  const parsedMinAmountOut = minAmountOut
+    ? parseUnits(minAmountOut, auction.baseToken.decimals)
+    : BigInt(0);
 
   const { ...bid } = useBidAuction(
     auction.id,
@@ -161,17 +201,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     callbackData,
   );
 
-  const { balance: quoteTokenBalance, decimals: quoteTokenDecimals } =
-    useERC20Balance({
-      chainId: auction.chainId,
-      tokenAddress: auction.quoteToken.address,
-      balanceAddress: walletAccount.address,
-    });
-
-  const quoteTokenBalanceDecimal: number =
-    quoteTokenBalance && quoteTokenDecimals
-      ? Number(formatUnits(quoteTokenBalance, quoteTokenDecimals))
-      : 0;
+  const { balance: quoteTokenBalance } = useERC20Balance({
+    chainId: auction.chainId,
+    tokenAddress: auction.quoteToken.address,
+    balanceAddress: walletAccount.address,
+  });
 
   // TODO Permit2 signature
   const handleSubmit = () => {
@@ -196,18 +230,30 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const actionKeyword = isEMP ? "Bid" : "Purchase";
 
+  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
+    chainId: auction.chainId,
+    lotId: auction.lotId,
+    baseTokenDecimals: auction.baseToken.decimals,
+    callback: auction.callbacks,
+  });
+
   const amountInInvalid =
-    parsedAmountIn > quoteTokenBalanceDecimal || // greater than balance
+    parsedAmountIn > (quoteTokenBalance ?? BigInt(0)) || // greater than balance
     parsedAmountIn === undefined ||
-    parsedAmountIn === 0; // zero or empty
+    parsedAmountIn === BigInt(0); // zero or empty
 
   const amountOutInvalid =
     minAmountOut === undefined ||
-    parsedMinAmountOut === 0 || // zero or empty
-    parsedMinAmountOut > Number(auction.capacity) || // exceeds capacity
+    parsedMinAmountOut === BigInt(0) || // zero or empty
+    parsedMinAmountOut >
+      parseUnits(auction.capacity, auction.baseToken.decimals) || // exceeds capacity
     (isEMP &&
-      parsedAmountIn / parsedMinAmountOut <
-        Number(auction.formatted?.minPrice)); // less than min price
+      (parsedAmountIn * parseUnits("1", auction.baseToken.decimals)) /
+        parsedMinAmountOut <
+        parseUnits(
+          auction.formatted?.minPrice ?? "0",
+          auction.quoteToken.decimals,
+        )); // less than min price
 
   const isWalletChainIncorrect =
     auction.chainId !== currentChainId || !walletAccount.isConnected;
@@ -226,11 +272,19 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   }, [bidPrice, auction.baseToken.totalSupply, auction.quoteToken.symbol]);
 
   // Calculate the limit for the user as the minimum of the allowlist limit (where applicable) and the max bid amount
+  // Truth table
+  // Allowlist limit | Max bid amount | Bid limit
+  //      true      |     true       | min(allowlistLimit, maxBidAmount)
+  //      true      |     false      | allowlistLimit
+  //      false     |     true       | maxBidAmount
+  //      false     |     false      | none (undefined)
   const bidLimit =
     allowlistLimitsAmount && maxBidAmount !== undefined
-      ? Math.min(Number(allowlistLimit), maxBidAmount)
+      ? allowlistLimit > maxBidAmount
+        ? maxBidAmount
+        : allowlistLimit
       : allowlistLimitsAmount
-        ? Number(allowlistLimit)
+        ? allowlistLimit
         : maxBidAmount;
 
   // TODO calculate coin rank
@@ -248,14 +302,36 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <AuctionMetric id="totalSupply" />
               <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
+              {dtlCallbackConfiguration && (
+                // TODO fix alignment of metric title
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
             </AuctionMetricsContainer>
           )}
           {isFixedPriceBatch && (
             <AuctionMetricsContainer className="mt-4" auction={auction}>
               <AuctionMetric id="fixedPriceFDV" />
               <AuctionMetric id="totalSupply" />
-              <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
+              <AuctionMetric id="vestingDuration" />
+              {dtlCallbackConfiguration && (
+                // TODO fix alignment of metric title
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
             </AuctionMetricsContainer>
           )}
         </Card>
@@ -275,14 +351,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               >
                 {isFixedPriceBatch ? (
                   <AuctionBidInputSingle
-                    balance={quoteTokenBalanceDecimal}
+                    balance={quoteTokenBalance}
                     limit={bidLimit}
                     auction={auction}
                     disabled={isWalletChainIncorrect}
                   />
                 ) : (
                   <AuctionBidInput
-                    balance={quoteTokenBalanceDecimal}
+                    balance={quoteTokenBalance}
                     limit={bidLimit}
                     auction={auction}
                     disabled={isWalletChainIncorrect}

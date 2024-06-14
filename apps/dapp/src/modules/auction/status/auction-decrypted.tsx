@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Card, Metric } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
@@ -9,10 +9,43 @@ import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { SettleAuctionCallbackInput } from "./settle-callback-input";
+import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
+import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
+
+// TODO needs story tests, given the amount of potential states
+// TODO apart from some of the titles, much of the code in this component ias the same as FixedPriceBatchAuctionConcluded. Consider merging the two.
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const settle = useSettleAuction(auction);
+  const [
+    hasSufficientBalanceForCallbacks,
+    setHasSufficientBalanceForCallbacks,
+  ] = React.useState(true);
+
+  const hasCallbacks =
+    auction.callbacks &&
+    auction.callbacks != "0x0000000000000000000000000000000000000000";
+
+  // Storage of encoded callback data for the callback contract
+  const [callbackData, setCallbackData] = useState<`0x${string}` | undefined>(
+    undefined,
+  );
+  const [callbackDataIsValid, setCallbackDataIsValid] = useState(
+    hasCallbacks ? false : true,
+  );
+
+  const settle = useSettleAuction({
+    auction: auction,
+    callbackData: callbackData,
+  });
+
+  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
+    chainId: auction.chainId,
+    lotId: auction.lotId,
+    baseTokenDecimals: auction.baseToken.decimals,
+    callback: auction.callbacks,
+  });
 
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
@@ -38,6 +71,16 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
             <AuctionMetric auction={auction} id="totalBidAmount" />
             <AuctionMetric auction={auction} id="started" />
             <AuctionMetric auction={auction} id="ended" />
+            {dtlCallbackConfiguration && (
+              <Metric
+                label="Direct to Liquidity"
+                size="m"
+                tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                className=""
+              >
+                {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+              </Metric>
+            )}
           </AuctionMetrics>
         </Card>
 
@@ -65,11 +108,32 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
           <div className="bg-secondary text-foreground flex justify-center rounded-sm p-2">
             <p>All bids have been decrypted</p>
           </div>
+          {hasCallbacks && (
+            <div>
+              <SettleAuctionCallbackInput
+                auction={auction}
+                setCallbackData={setCallbackData}
+                setCallbackDataIsValid={setCallbackDataIsValid}
+              />
+            </div>
+          )}
+          {
+            <SettleAuctionDtlCallbackBalance
+              auction={auction}
+              setHasSufficientBalanceForCallbacks={
+                setHasSufficientBalanceForCallbacks
+              }
+            />
+          }
           <RequiresChain chainId={auction.chainId} className="mt-4">
             <div className="mt-4 w-full">
               <Button
                 className="w-full"
-                disabled={isWaiting}
+                disabled={
+                  isWaiting ||
+                  !callbackDataIsValid ||
+                  !hasSufficientBalanceForCallbacks
+                }
                 onClick={() => setIsDialogOpen(true)}
               >
                 {isWaiting ? (
