@@ -103,7 +103,7 @@ export function DeployTokenPage() {
       <div className="flex justify-between">
         <div className="flex w-1/2 max-w-sm flex-col text-wrap">
           <h4>Deploy Status</h4>
-          {deploy.mutation.isPending && "Waiting signature..."}
+          {deploy.mutation.isPending && "Waiting for signature..."}
           {deploy.receipt.isLoading && (
             <div>
               <div>
@@ -113,7 +113,7 @@ export function DeployTokenPage() {
                   chainId={chainId}
                 />
               </div>
-              <p>Waiting confirmation...</p>
+              <p>Waiting for confirmation...</p>
             </div>
           )}
 
@@ -139,8 +139,8 @@ export function DeployTokenPage() {
               />
             </>
           )}
-          {mint.mintTx.isPending && <p>Waiting signature...</p>}
-          {mint.mintReceipt.isLoading && <p>Waiting confirmation...</p>}
+          {mint.mintTx.isPending && <p>Waiting for signature...</p>}
+          {mint.mintReceipt.isLoading && <p>Waiting for confirmation...</p>}
           {mint.mintReceipt.isSuccess && <p>Success</p>}
         </div>
       </div>
