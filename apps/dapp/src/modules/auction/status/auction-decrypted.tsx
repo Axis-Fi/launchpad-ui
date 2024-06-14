@@ -14,6 +14,7 @@ import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
 
 // TODO needs story tests, given the amount of potential states
+// TODO apart from some of the titles, much of the code in this component ias the same as FixedPriceBatchAuctionConcluded. Consider merging the two.
 
 export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
