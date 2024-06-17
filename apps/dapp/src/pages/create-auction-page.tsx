@@ -131,9 +131,9 @@ const schema = z
     vestingDuration: z.string().optional(),
     vestingStart: z.date().optional(),
     // Metadata
-    name: z.string(),
-    description: z.string(),
-    tagline: z.string(),
+    name: z.string().max(32),
+    description: z.string().max(332),
+    tagline: z.string().max(42),
     projectLogo: z.string().url().optional(),
     projectBanner: z.string().url(),
     twitter: optionalURL,
@@ -870,8 +870,8 @@ export default function CreateAuctionPage() {
       enabled:
         callbacksType === CallbacksType.UNIV2_DTL &&
         !!uniV2Factory &&
-        !!payoutToken.address &&
-        !!quoteToken.address,
+        !!payoutToken?.address &&
+        !!quoteToken?.address,
     },
   });
 
@@ -899,8 +899,8 @@ export default function CreateAuctionPage() {
       enabled:
         callbacksType === CallbacksType.UNIV3_DTL &&
         !!uniV3Factory &&
-        !!payoutToken.address &&
-        !!quoteToken.address &&
+        !!payoutToken?.address &&
+        !!quoteToken?.address &&
         !!dtlUniV3PoolFee,
     },
   });
