@@ -82,7 +82,7 @@ export default function AuctionPage() {
         isLoading={isAuctionLoading}
         imgUrl={auction.auctionInfo?.links?.projectLogo}
       >
-        <div className="flex h-full w-full flex-row flex-wrap">
+        <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
           <div className="flex w-full flex-row justify-end">
             <div className="mr-4 mt-4">
               <AuctionStatusBadge status={auction.status} />
