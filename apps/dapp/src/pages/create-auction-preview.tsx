@@ -1,11 +1,12 @@
 import {
   Button,
   Text,
-  Chip,
   DialogContent,
   DialogRoot,
-  ToggleGroup,
-  ToggleGroupItem,
+  Tabs as TabsRoot,
+  TabsTrigger as Trigger,
+  TabsList,
+  TabsContent,
 } from "@repo/ui";
 import { AuctionPageView } from "./auction-page";
 import { CreateAuctionForm } from "./create-auction-page";
@@ -25,13 +26,9 @@ type CreateAuctionPreviewProps = {
   initiateCreateTx: () => void;
 };
 
-type PreviewViews = "page" | "list" | "grid";
-
 export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
   const form = useFormContext<CreateAuctionForm>();
-  const [currentView, setCurrentView] = React.useState<PreviewViews>("page");
 
-  //TODO: might not be necessary after resolving infinite create page rerender
   const auction = React.useMemo(() => {
     if (!form.formState.isValid) return;
     return {
@@ -47,44 +44,37 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
       open={props.open}
       onOpenChange={(open) => props.onOpenChange(open)}
     >
-      <DialogContent className="bg-surface-tertiary/50 max-w-screen-2xl backdrop-blur">
-        <div className="flex justify-around">
-          <Text size="3xl">Auction Preview</Text>
-          <ToggleGroup
-            type="single"
-            onValueChange={(value: PreviewViews) => setCurrentView(value)}
+      <DialogContent className="bg-surface-tertiary/50 max-h-screen max-w-screen-2xl backdrop-blur">
+        <div className="">
+          <Text
+            size="3xl"
+            mono
+            className="text-surface-primary mx-auto mb-2 w-min text-nowrap"
           >
-            <ToggleGroupItem value="page">
-              <Chip variant={currentView === "page" ? "active" : "filled"}>
-                Auction
-              </Chip>
-            </ToggleGroupItem>
-
-            <ToggleGroupItem value="list">
-              <Chip variant={currentView === "list" ? "active" : "filled"}>
-                List
-              </Chip>{" "}
-            </ToggleGroupItem>
-
-            <ToggleGroupItem value="grid">
-              <Chip variant={currentView === "grid" ? "active" : "filled"}>
-                Card
-              </Chip>{" "}
-            </ToggleGroupItem>
-          </ToggleGroup>
-        </div>
-        <div className="bg-background p-4">
-          {currentView === "page" && (
-            <AuctionPageView auction={auction}>
-              <AuctionLivePreview auction={auction} />
-            </AuctionPageView>
-          )}{" "}
-          {currentView === "list" && <AuctionCard auction={auction} />}
-          {currentView === "grid" && (
-            <div className="mx-auto max-w-[470px]">
-              <AuctionCard isGrid={true} auction={auction} />
+            Auction Preview
+          </Text>
+          <TabsRoot defaultValue="page" className="flex flex-col items-center">
+            <TabsList className="gap-x-1 *:z-10 *:px-8">
+              <Trigger value="page">Page</Trigger>
+              <Trigger value="list">List</Trigger>
+              <Trigger value="grid">Grid</Trigger>
+            </TabsList>
+            <div className="-mt-8 flex flex-col items-center justify-center p-4">
+              <TabsContent value="page" className="bg-background p-4">
+                <AuctionPageView auction={auction}>
+                  <AuctionLivePreview auction={auction} />
+                </AuctionPageView>
+              </TabsContent>
+              <TabsContent value="list" className="bg-background p-4">
+                <AuctionCard auction={auction} className="w-[1300px]" />
+              </TabsContent>
+              <TabsContent value="grid" className="bg-background p-4">
+                <div className="max-h-[400px] max-w-[470px]">
+                  <AuctionCard isGrid={true} auction={auction} />
+                </div>
+              </TabsContent>
             </div>
-          )}
+          </TabsRoot>
         </div>
         <div className="flex justify-center gap-x-6">
           <Button
