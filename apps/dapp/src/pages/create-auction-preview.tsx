@@ -157,6 +157,8 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
         projectBanner: params.projectBanner,
         discord: params.discord,
         website: params.website,
+        farcaster: params.farcaster,
+        twitter: params.twitter,
       },
     },
     //@ts-expect-error intentionally imcomplete
