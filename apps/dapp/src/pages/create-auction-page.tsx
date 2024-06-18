@@ -334,7 +334,9 @@ export default function CreateAuctionPage() {
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
-        key: `${values.auctionType}-${values.payoutToken.chainId}_${values.payoutToken.address}`,
+        key: `${values.auctionType}-${values.payoutToken.chainId}_${
+          values.payoutToken.address
+        }_${values.start.getTime()}`,
         name: values.name,
         tagline: values.tagline,
         description: values.description,
