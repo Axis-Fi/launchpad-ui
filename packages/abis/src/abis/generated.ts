@@ -342,6 +342,13 @@ export const batchAuctionHouseAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getAuctionModuleForId",
+    outputs: [{ name: "", internalType: "contract IAuction", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getBatchModuleForId",
     outputs: [
       {
@@ -364,21 +371,21 @@ export const batchAuctionHouseAbi = [
   {
     stateMutability: "view",
     type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getDerivativeModuleForId",
+    outputs: [
+      { name: "", internalType: "contract IDerivative", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
     inputs: [{ name: "auctionType_", internalType: "Keycode", type: "bytes5" }],
     name: "getFees",
     outputs: [
       { name: "protocol", internalType: "uint48", type: "uint48" },
       { name: "referrer", internalType: "uint48", type: "uint48" },
       { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "getModuleForId",
-    outputs: [
-      { name: "", internalType: "contract AuctionModule", type: "address" },
     ],
   },
   {
@@ -458,8 +465,8 @@ export const batchAuctionHouseAbi = [
     name: "lotRouting",
     outputs: [
       { name: "seller", internalType: "address", type: "address" },
-      { name: "baseToken", internalType: "contract ERC20", type: "address" },
-      { name: "quoteToken", internalType: "contract ERC20", type: "address" },
+      { name: "baseToken", internalType: "address", type: "address" },
+      { name: "quoteToken", internalType: "address", type: "address" },
       { name: "auctionReference", internalType: "Veecode", type: "bytes7" },
       { name: "funding", internalType: "uint256", type: "uint256" },
       {
@@ -1031,7 +1038,7 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [
-      { name: "baseToken_", internalType: "contract ERC20", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
       { name: "startId_", internalType: "uint96", type: "uint96" },
       { name: "count_", internalType: "uint96", type: "uint96" },
     ],
@@ -1042,11 +1049,66 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [
-      { name: "quoteToken_", internalType: "contract ERC20", type: "address" },
+      { name: "curator_", internalType: "address", type: "address" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByCurator",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "derivativeReference_", internalType: "Veecode", type: "bytes7" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByDerivative",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "auctionFormat_", internalType: "Keycode", type: "bytes5" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByFormat",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "auctionReference_", internalType: "Veecode", type: "bytes7" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByModule",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "quoteToken_", internalType: "address", type: "address" },
       { name: "startId_", internalType: "uint96", type: "uint96" },
       { name: "count_", internalType: "uint96", type: "uint96" },
     ],
     name: "getAuctionsByQuoteToken",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "curator_", internalType: "address", type: "address" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByRequestedCurator",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
   },
   {
@@ -1064,12 +1126,34 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [
-      { name: "auctionReference_", internalType: "Veecode", type: "bytes7" },
-      { name: "startId_", internalType: "uint96", type: "uint96" },
-      { name: "count_", internalType: "uint96", type: "uint96" },
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId_", internalType: "uint64", type: "uint64" },
     ],
-    name: "getAuctionsByType",
-    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    name: "getBidClaim",
+    outputs: [
+      {
+        name: "",
+        internalType: "struct IBatchAuction.BidClaim",
+        type: "tuple",
+        components: [
+          { name: "bidder", internalType: "address", type: "address" },
+          { name: "referrer", internalType: "address", type: "address" },
+          { name: "paid", internalType: "uint256", type: "uint256" },
+          { name: "payout", internalType: "uint256", type: "uint256" },
+          { name: "refund", internalType: "uint256", type: "uint256" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "index_", internalType: "uint256", type: "uint256" },
+    ],
+    name: "getBidIdAtIndex",
+    outputs: [{ name: "", internalType: "uint64", type: "uint64" }],
   },
   {
     stateMutability: "view",
@@ -1081,6 +1165,26 @@ export const batchCatalogueAbi = [
     ],
     name: "getBidIds",
     outputs: [{ name: "", internalType: "uint64[]", type: "uint64[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getFeeData",
+    outputs: [
+      {
+        name: "",
+        internalType: "struct IAuctionHouse.FeeData",
+        type: "tuple",
+        components: [
+          { name: "curator", internalType: "address", type: "address" },
+          { name: "curated", internalType: "bool", type: "bool" },
+          { name: "curatorFee", internalType: "uint48", type: "uint48" },
+          { name: "protocolFee", internalType: "uint48", type: "uint48" },
+          { name: "referrerFee", internalType: "uint48", type: "uint48" },
+        ],
+      },
+    ],
   },
   {
     stateMutability: "view",
@@ -1114,20 +1218,12 @@ export const batchCatalogueAbi = [
     outputs: [
       {
         name: "",
-        internalType: "struct AuctionHouse.Routing",
+        internalType: "struct IAuctionHouse.Routing",
         type: "tuple",
         components: [
           { name: "seller", internalType: "address", type: "address" },
-          {
-            name: "baseToken",
-            internalType: "contract ERC20",
-            type: "address",
-          },
-          {
-            name: "quoteToken",
-            internalType: "contract ERC20",
-            type: "address",
-          },
+          { name: "baseToken", internalType: "address", type: "address" },
+          { name: "quoteToken", internalType: "address", type: "address" },
           { name: "auctionReference", internalType: "Veecode", type: "bytes7" },
           { name: "funding", internalType: "uint256", type: "uint256" },
           {
@@ -1149,6 +1245,16 @@ export const batchCatalogueAbi = [
   {
     stateMutability: "view",
     type: "function",
+    inputs: [
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getUpcomingAuctions",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "hasEnded",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
@@ -1164,10 +1270,22 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "isUpcoming",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "remainingCapacity",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
   },
   { type: "error", inputs: [], name: "InvalidParams" },
+  {
+    type: "error",
+    inputs: [{ name: "veecode_", internalType: "Veecode", type: "bytes7" }],
+    name: "InvalidVeecode",
+  },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1428,7 +1546,7 @@ export const encryptedMarginalPriceAbi = [
       { name: "nextDecryptIndex", internalType: "uint64", type: "uint64" },
       {
         name: "status",
-        internalType: "enum EncryptedMarginalPrice.LotStatus",
+        internalType: "enum IEncryptedMarginalPrice.LotStatus",
         type: "uint8",
       },
       { name: "marginalBidId", internalType: "uint64", type: "uint64" },
@@ -1485,7 +1603,7 @@ export const encryptedMarginalPriceAbi = [
       { name: "referrer", internalType: "address", type: "address" },
       {
         name: "status",
-        internalType: "enum EncryptedMarginalPrice.BidStatus",
+        internalType: "enum IEncryptedMarginalPrice.BidStatus",
         type: "uint8",
       },
     ],
@@ -1592,14 +1710,14 @@ export const encryptedMarginalPriceAbi = [
     outputs: [
       {
         name: "auctionData_",
-        internalType: "struct EncryptedMarginalPrice.AuctionData",
+        internalType: "struct IEncryptedMarginalPrice.AuctionData",
         type: "tuple",
         components: [
           { name: "nextBidId", internalType: "uint64", type: "uint64" },
           { name: "nextDecryptIndex", internalType: "uint64", type: "uint64" },
           {
             name: "status",
-            internalType: "enum EncryptedMarginalPrice.LotStatus",
+            internalType: "enum IEncryptedMarginalPrice.LotStatus",
             type: "uint8",
           },
           { name: "marginalBidId", internalType: "uint64", type: "uint64" },
@@ -1633,7 +1751,7 @@ export const encryptedMarginalPriceAbi = [
     outputs: [
       {
         name: "bid",
-        internalType: "struct EncryptedMarginalPrice.Bid",
+        internalType: "struct IEncryptedMarginalPrice.Bid",
         type: "tuple",
         components: [
           { name: "bidder", internalType: "address", type: "address" },
@@ -1642,14 +1760,14 @@ export const encryptedMarginalPriceAbi = [
           { name: "referrer", internalType: "address", type: "address" },
           {
             name: "status",
-            internalType: "enum EncryptedMarginalPrice.BidStatus",
+            internalType: "enum IEncryptedMarginalPrice.BidStatus",
             type: "uint8",
           },
         ],
       },
       {
         name: "encryptedBid",
-        internalType: "struct EncryptedMarginalPrice.EncryptedBid",
+        internalType: "struct IEncryptedMarginalPrice.EncryptedBid",
         type: "tuple",
         components: [
           {
@@ -1770,7 +1888,7 @@ export const encryptedMarginalPriceAbi = [
       { name: "hasPartialFill", internalType: "bool", type: "bool" },
       {
         name: "partialFill",
-        internalType: "struct EncryptedMarginalPrice.PartialFill",
+        internalType: "struct IEncryptedMarginalPrice.PartialFill",
         type: "tuple",
         components: [
           { name: "bidId", internalType: "uint64", type: "uint64" },
@@ -1792,6 +1910,13 @@ export const encryptedMarginalPriceAbi = [
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "isLive",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "isUpcoming",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
   },
   {
@@ -1905,6 +2030,14 @@ export const encryptedMarginalPriceAbi = [
       },
     ],
     name: "BidDecrypted",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
+    ],
+    name: "PrivateKeySubmitted",
   },
   { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
   {
@@ -2545,16 +2678,6 @@ export const linearVestingAbi = [
   {
     stateMutability: "view",
     type: "function",
-    inputs: [
-      { name: "", internalType: "bytes", type: "bytes" },
-      { name: "", internalType: "uint256", type: "uint256" },
-    ],
-    name: "convertsTo",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
     inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
     name: "decimals",
     outputs: [{ name: "", internalType: "uint8", type: "uint8" }],
@@ -2587,7 +2710,7 @@ export const linearVestingAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [
-      { name: "", internalType: "bytes", type: "bytes" },
+      { name: "", internalType: "uint256", type: "uint256" },
       { name: "", internalType: "uint256", type: "uint256" },
     ],
     name: "exerciseCost",
@@ -2601,13 +2724,30 @@ export const linearVestingAbi = [
     outputs: [
       {
         name: "",
-        internalType: "struct Derivative.Token",
+        internalType: "struct IDerivative.Token",
         type: "tuple",
         components: [
           { name: "exists", internalType: "bool", type: "bool" },
           { name: "wrapped", internalType: "address", type: "address" },
           { name: "underlyingToken", internalType: "address", type: "address" },
           { name: "data", internalType: "bytes", type: "bytes" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
+    name: "getTokenVestingParams",
+    outputs: [
+      {
+        name: "",
+        internalType: "struct ILinearVesting.VestingParams",
+        type: "tuple",
+        components: [
+          { name: "start", internalType: "uint48", type: "uint48" },
+          { name: "expiry", internalType: "uint48", type: "uint48" },
         ],
       },
     ],
@@ -2787,7 +2927,7 @@ export const linearVestingAbi = [
     outputs: [{ name: "claimed_", internalType: "uint256", type: "uint256" }],
   },
   {
-    stateMutability: "view",
+    stateMutability: "pure",
     type: "function",
     inputs: [
       { name: "underlyingToken_", internalType: "address", type: "address" },
