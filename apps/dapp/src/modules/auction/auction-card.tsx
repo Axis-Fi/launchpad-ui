@@ -14,7 +14,10 @@ type AuctionCardConditionalProps =
   | { loading?: false; auction: AuctionListed };
 
 type AuctionCardProps = React.HTMLAttributes<HTMLDivElement> & {
+  /** Whether the card renders in list or grid view */
   isGrid?: boolean;
+  /** Added to control the button in previews */
+  disabledViewButton?: boolean;
 } & AuctionCardConditionalProps;
 
 export function AuctionCard({ auction, ...props }: AuctionCardProps) {
@@ -42,7 +45,11 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
             chain={getChainById(auction?.chainId)}
             isGrid={props.isGrid}
           />
-          <AuctionCardDetails isGrid={props.isGrid} auction={auction} />
+          <AuctionCardDetails
+            isGrid={props.isGrid}
+            auction={auction}
+            disabledViewButton={props.disabledViewButton}
+          />
         </div>
       )}
     </Card>
@@ -52,6 +59,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
 function AuctionCardDetails(
   props: PropsWithAuction & {
     isGrid?: boolean;
+    disabledViewButton?: boolean;
   },
 ) {
   const isEMP = props.auction.auctionType === AuctionType.SEALED_BID;
@@ -121,6 +129,7 @@ function AuctionCardDetails(
         to={`/auction/${props.auction.auctionType}/${props.auction.id}`}
       >
         <Button
+          disabled={props.disabledViewButton}
           className={cn(
             "self-end uppercase transition-all ",
             props.isGrid &&

@@ -66,11 +66,19 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
                 </AuctionPageView>
               </TabsContent>
               <TabsContent value="list" className="bg-background p-4">
-                <AuctionCard auction={auction} className="w-[1300px]" />
+                <AuctionCard
+                  disabledViewButton
+                  auction={auction}
+                  className="w-[1300px]"
+                />
               </TabsContent>
               <TabsContent value="grid" className="bg-background p-4">
                 <div className="max-h-[400px] max-w-[470px]">
-                  <AuctionCard isGrid={true} auction={auction} />
+                  <AuctionCard
+                    disabledViewButton
+                    isGrid={true}
+                    auction={auction}
+                  />
                 </div>
               </TabsContent>
             </div>
