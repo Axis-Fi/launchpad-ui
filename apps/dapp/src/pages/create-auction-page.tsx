@@ -136,7 +136,7 @@ const schema = z
     discord: optionalURL,
     website: optionalURL,
     farcaster: optionalURL,
-    payoutTokenLogo: optionalURL,
+    payoutTokenLogo: z.string().url(),
   })
   .refine((data) => (!data.isVested ? true : data.vestingDuration), {
     message: "Vesting duration is required",

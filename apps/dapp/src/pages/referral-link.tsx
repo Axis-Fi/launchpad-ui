@@ -1,54 +1,12 @@
 import { Button, Input, LabelWrapper } from "@repo/ui";
 import { PageContainer } from "modules/app/page-container";
+import { useReferralLink } from "modules/auction/hooks/use-referral-link";
 import React from "react";
 import { Address, isAddress } from "viem";
 
-function hexToBinary(hex: string) {
-  const bin = [];
-  let i = 0;
-  let d;
-  let b;
-  while (i < hex.length) {
-    d = parseInt(hex.slice(i, i + 2), 16);
-    b = String.fromCharCode(d);
-    bin.push(b);
-    i += 2;
-  }
-
-  return bin.join("");
-}
-
-function urlSafe(b64Str: string) {
-  return b64Str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "~");
-}
-
-function generateLink(addr: string) {
-  // Remove the hex string prefix and convert to binary
-  const bin = hexToBinary(addr.slice(2));
-
-  // Convert to base64
-  const encoded = btoa(bin);
-
-  // Make encoding URL safe
-  const urlEncoded = urlSafe(encoded);
-
-  // Create link
-  const link = window.location.origin + "/#/?ref=" + urlEncoded;
-
-  return link;
-}
-
 export function ReferralLinkPage() {
   const [address, setAddress] = React.useState<Address>();
-  const [link, setLink] = React.useState("");
-
-  async function handleGenerateAndCopyLink() {
-    if (address) {
-      const l = generateLink(address.toString());
-      setLink(l);
-      await navigator.clipboard.writeText(l);
-    }
-  }
+  const { generateAndCopyLink, link } = useReferralLink(address);
 
   return (
     <PageContainer title="Referrals">
@@ -66,7 +24,7 @@ export function ReferralLinkPage() {
           <Button
             disabled={!address}
             className="inline uppercase"
-            onClick={handleGenerateAndCopyLink}
+            onClick={() => generateAndCopyLink()}
           >
             Generate and Copy Link
           </Button>
