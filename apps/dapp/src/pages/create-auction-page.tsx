@@ -336,11 +336,13 @@ export default function CreateAuctionPage() {
       const auctionInfo: AuctionInfo = {
         key: `${values.auctionType}-${values.payoutToken.chainId}_${values.payoutToken.address}`,
         name: values.name,
+        tagline: values.tagline,
         description: values.description,
         allowlist: values.allowlist,
         links: {
           projectLogo: values.projectLogo,
           payoutTokenLogo: values.payoutToken.logoURI,
+          projectBanner: values.projectBanner,
           website: values.website,
           twitter: values.twitter,
           discord: values.discord,
