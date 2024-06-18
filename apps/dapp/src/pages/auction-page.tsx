@@ -91,7 +91,7 @@ export default function AuctionPage() {
       >
         <AuctionElement auction={auction} />
       </AuctionPageView>
-      <BidList auction={auction} />
+      {auction.status !== "created" && <BidList auction={auction} />}
     </PageContainer>
   );
 }
