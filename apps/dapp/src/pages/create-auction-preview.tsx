@@ -44,8 +44,8 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
       open={props.open}
       onOpenChange={(open) => props.onOpenChange(open)}
     >
-      <DialogContent className="bg-surface-tertiary/50 max-h-screen max-w-screen-2xl backdrop-blur">
-        <div className="">
+      <DialogContent className="bg-surface-tertiary/50 max-h-screen max-w-screen-2xl overflow-y-scroll backdrop-blur">
+        <div>
           <Text
             size="3xl"
             mono
