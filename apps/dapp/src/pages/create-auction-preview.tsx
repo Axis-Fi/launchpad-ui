@@ -172,5 +172,8 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     fixedPrice: {
       price: params.price!,
     },
+    dtl: {
+      proceedsPercent: params.dtlProceedsPercent,
+    },
   };
 }

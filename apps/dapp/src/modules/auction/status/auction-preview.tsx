@@ -1,14 +1,17 @@
 import { AuctionType, PropsWithAuction } from "@repo/types";
 import { AuctionLaunchMetrics } from "../auction-launch-metrics";
-import { Card } from "@repo/ui";
+import { Card, Metric } from "@repo/ui";
 import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
 
+//TODO: create a preview auction type to avoid mismatches
 export function AuctionLivePreview({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
+  //@ts-expect-error this parameter doesnt exist in the og auction type
+  const dtl = auction.dtl.proceedsPercent?.[0] ?? null;
 
   return (
     <div className="mt-4 flex justify-between gap-x-8">
@@ -22,6 +25,15 @@ export function AuctionLivePreview({ auction }: PropsWithAuction) {
               <AuctionMetric id="totalSupply" />
               <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
+              {dtl && (
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                >
+                  {dtl}%
+                </Metric>
+              )}
             </AuctionMetricsContainer>
           ) : (
             <AuctionMetricsContainer className="mt-4" auction={auction}>
@@ -29,6 +41,15 @@ export function AuctionLivePreview({ auction }: PropsWithAuction) {
               <AuctionMetric id="totalSupply" />
               <AuctionMetric id="vestingDuration" />
               <AuctionMetric id="auctionedSupply" />
+              {dtl && (
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                >
+                  {dtl}%
+                </Metric>
+              )}
             </AuctionMetricsContainer>
           )}
         </Card>
