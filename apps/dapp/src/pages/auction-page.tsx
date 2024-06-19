@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Badge, Button, Skeleton, Text } from "@repo/ui";
+import { Badge, Button, Skeleton, Text, cn } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
@@ -23,6 +23,7 @@ import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 import { getCountdown } from "utils/date";
 import { useEffect, useState } from "react";
 import { BidList } from "modules/auction/bid-list";
+import React from "react";
 
 const statuses: Record<
   AuctionStatus,
@@ -108,11 +109,14 @@ export function AuctionPageView({
   isOngoing?: boolean;
   timeRemaining?: string | null;
 }>) {
+  const [textColor, setTextColor] = React.useState<string>();
+
   return (
     <>
       <ImageBanner
         isLoading={isAuctionLoading}
         imgUrl={auction.auctionInfo?.links?.projectBanner}
+        onTextColorChange={setTextColor}
       >
         <div className="flex h-full w-full flex-row flex-wrap">
           <div className="flex w-full flex-row justify-end">
@@ -122,14 +126,21 @@ export function AuctionPageView({
           </div>
           <div className="flex w-full flex-col justify-end">
             <div className="relative top-10 self-center align-bottom">
-              <Text size="7xl" mono>
+              <Text
+                size="7xl"
+                mono
+                className={cn(textColor === "light" && "text-background")}
+              >
                 {auction.auctionInfo?.name}
               </Text>
 
               <Text
                 size="3xl"
                 color="secondary"
-                className="mx-auto w-fit text-nowrap"
+                className={cn(
+                  "mx-auto w-fit text-nowrap",
+                  textColor === "light" && "text-background",
+                )}
               >
                 {auction.auctionInfo?.tagline}
               </Text>
