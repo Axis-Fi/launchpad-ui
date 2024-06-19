@@ -991,7 +991,7 @@ export default function CreateAuctionPage() {
                     >
                       <Input
                         type="url"
-                        placeholder={'"We\'re the future of France"'}
+                        placeholder={"We're the future of France"}
                         {...field}
                       />
                     </FormItemWrapper>
