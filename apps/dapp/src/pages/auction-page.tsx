@@ -121,9 +121,17 @@ export function AuctionPageView({
             </div>
           </div>
           <div className="flex w-full flex-col justify-end">
-            <div className="self-center align-bottom">
+            <div className="relative top-10 self-center align-bottom">
               <Text size="7xl" mono>
                 {auction.auctionInfo?.name}
+              </Text>
+
+              <Text
+                size="3xl"
+                color="secondary"
+                className="mx-auto w-fit text-nowrap"
+              >
+                {auction.auctionInfo?.tagline}
               </Text>
             </div>
             <div className="mb-4 ml-4 self-start">
