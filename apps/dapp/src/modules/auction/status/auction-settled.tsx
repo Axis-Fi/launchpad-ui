@@ -43,6 +43,16 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
               <AuctionMetric auction={auction} id="derivative" />
               <AuctionMetric auction={auction} id="minPrice" />
               <AuctionMetric auction={auction} id="duration" />
+              {dtlCallbackConfiguration && (
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
             </AuctionMetrics>
           </Card>
 

@@ -140,13 +140,13 @@ export default function AuctionListPage() {
             Welcome to Origin
           </Text>
 
-          {/* <Text */}
-          {/*   size="3xl" */}
-          {/*   color="secondary" */}
-          {/*   className="mx-auto w-fit text-nowrap" */}
-          {/* > */}
-          {/*   send copy plis mi familia */}
-          {/* </Text> */}
+          <Text
+            size="3xl"
+            color="secondary"
+            className="mx-auto w-fit text-nowrap"
+          >
+            Experience the New Era of Token Launches
+          </Text>
           <div className="mx-auto mt-6 flex w-min gap-x-2">
             <ScrollLink to="auctions" offset={-10} smooth={true}>
               <Button
