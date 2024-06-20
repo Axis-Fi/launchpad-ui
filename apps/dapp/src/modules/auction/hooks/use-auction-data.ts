@@ -5,9 +5,13 @@ import {
   type EMPAuctionData,
   type FixedPriceBatchAuctionData,
 } from "@repo/types";
-import { parseUnits } from "viem";
+import { parseUnits, type ReadContractErrorType } from "viem";
 import { useReadContract } from "wagmi";
 import { moduleMap } from "utils/contracts";
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+} from "@tanstack/react-query";
 
 type UseAuctionDataParameters = {
   lotId?: string;
@@ -15,12 +19,24 @@ type UseAuctionDataParameters = {
   type?: AuctionType;
 };
 
+export type UseAuctionDataReturn = {
+  data?: EMPAuctionData | FixedPriceBatchAuctionData;
+  refetch: (
+    options?: RefetchOptions,
+  ) => Promise<
+    QueryObserverResult<
+      EMPAuctionData | FixedPriceBatchAuctionData,
+      ReadContractErrorType
+    >
+  >;
+};
+
 /** Reads and parses auctionData for a specific auction on chain */
 export function useAuctionData({
   lotId,
   chainId,
   type = AuctionType.SEALED_BID,
-}: UseAuctionDataParameters) {
+}: UseAuctionDataParameters): UseAuctionDataReturn {
   const auctionModule = moduleMap[type] as AxisModuleContractNames;
   const auctionDataQuery = useReadContract({
     chainId,
@@ -41,6 +57,7 @@ export function useAuctionData({
       ? //@ts-expect-error improve typing
         handle(auctionDataQuery.data)
       : undefined,
+    refetch: auctionDataQuery.refetch as UseAuctionDataReturn["refetch"],
   };
 }
 

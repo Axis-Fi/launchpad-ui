@@ -23,6 +23,10 @@ export function getCallbacksType(auction: Auction): CallbacksType {
       return CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
     case chainAddresses.tokenAllowlist.toLowerCase():
       return CallbacksType.TOKEN_ALLOWLIST;
+    case chainAddresses.uniV2Dtl.toLowerCase():
+      return CallbacksType.UNIV2_DTL;
+    case chainAddresses.uniV3Dtl.toLowerCase():
+      return CallbacksType.UNIV3_DTL;
     default:
       return CallbacksType.CUSTOM;
   }

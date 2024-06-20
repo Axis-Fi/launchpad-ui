@@ -111,7 +111,7 @@ const cols = [
           : "text-red-500";
 
       return (
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col">
           <BlockExplorerLink
             chainId={info.row.original.auction.chainId}
             address={info.getValue()}

@@ -2,6 +2,7 @@ import { useToggle } from "@repo/ui";
 import type { Token } from "@repo/types";
 import { shorten } from "utils/number";
 import { useGetUsdAmount } from "./use-get-usd-amount";
+import { parseUnits } from "viem";
 
 const useGetToggledUsdAmount = (
   token: Token | undefined,
@@ -24,7 +25,9 @@ const useGetToggledUsdAmount = (
       return formattedAmount;
     }
 
-    const usdAmount = getUsdAmount(Number(amount));
+    const usdAmount = getUsdAmount(
+      parseUnits(amount.toString(), token.decimals),
+    );
     return usdAmount || formattedAmount;
   };
 

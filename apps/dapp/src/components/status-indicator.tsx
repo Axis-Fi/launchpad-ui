@@ -1,4 +1,4 @@
-import { cn } from "@repo/ui";
+import { Tooltip, cn } from "@repo/ui";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 
 /** Displays an icon with a color representing the status and a loading spinner in case of loading */
@@ -6,27 +6,31 @@ export function StatusIcon({
   isLoading,
   isSuccess,
   isError,
+  tooltip,
   Icon,
 }: {
   isLoading?: boolean;
   isSuccess?: boolean;
   isIdle?: boolean;
   isError?: boolean;
+  tooltip?: string;
   Icon: React.FC<React.HTMLAttributes<HTMLOrSVGElement>>;
 }) {
   return (
     <div className="flex flex-col items-center justify-center">
-      <Icon
-        className={cn(
-          "transition-all",
-          isSuccess && "text-axis-green",
-          isError && "text-destructive",
-        )}
-      />
+      <Tooltip content={tooltip || null}>
+        <Icon
+          className={cn(
+            "transition-all",
+            isSuccess && "text-feedback-success",
+            isError && "text-feedback-alert",
+          )}
+        />
+      </Tooltip>
       {isLoading && (
         <LoadingIndicator
           rootClassName="absolute mt-14"
-          className="fill-white"
+          className="fill-black"
         />
       )}
     </div>

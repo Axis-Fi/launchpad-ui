@@ -40,7 +40,7 @@ const defaultScreens: TransactionScreens = {
     title: "Confirm Transaction",
   },
   signing: {
-    title: "Waiting signature",
+    title: "Waiting for Signature",
     Component: () => (
       <div className="my-4  text-center">Sign the transaction to proceed</div>
     ),

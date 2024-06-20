@@ -33,7 +33,8 @@ export default function Navbar() {
   //Only show curator link if connected address is a curator for any auction
   const links = React.useMemo(() => {
     const _links = isProd ? [] : testnetLinks;
-    return [...defaultLinks, refer, ..._links, curator];
+    const curatorLink = isCurator ? [curator] : [];
+    return [...defaultLinks, refer, ..._links, ...curatorLink];
   }, [isCurator]);
 
   return (
@@ -73,7 +74,11 @@ export default function Navbar() {
 function CuratorNotification({ count }: { count: number }) {
   return (
     <div className="relative">
-      <Badge size="round" className="absolute -right-2 top-2 h-min">
+      <Badge
+        color="alert"
+        size="round"
+        className="absolute -right-2 top-2 h-min px-1.5 text-xs "
+      >
         {count}
       </Badge>
     </div>

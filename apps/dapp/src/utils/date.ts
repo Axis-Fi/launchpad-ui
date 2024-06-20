@@ -8,6 +8,7 @@ import {
   intervalToDuration,
   interval,
   isAfter,
+  differenceInDays,
 } from "date-fns";
 
 // Date formatting operations
@@ -48,6 +49,10 @@ export const getDurationAsPercentage = (
   return (
     ((Number(current) - Number(start)) / (Number(end) - Number(start))) * 100
   );
+};
+
+export const getDaysBetweenDates = (laterDate: Date, earlierDate: Date) => {
+  return differenceInDays(laterDate, earlierDate);
 };
 
 type ValidDateTypes = Date | number | string;

@@ -79,7 +79,7 @@ export function CuratorFeeManager({
         </Badge>
       </Tooltip>
       {curatorFees.isError && <p>Something went wrong</p>}
-      {curatorFees.feeTx.isPending && <p>Waiting signature..</p>}
+      {curatorFees.feeTx.isPending && <p>Waiting for signature..</p>}
       {curatorFees.feeTx.isSuccess && curatorFees.feeReceipt.isPending && (
         <p>Updating fee..</p>
       )}

@@ -13,6 +13,7 @@ const chipVariants = cva(
           "border-primary bg-transparent text-foreground hover:bg-surface hover:border-transparent hover:shadow-3xl",
         active:
           "border-transparent bg-primary text-neutral-50 hover:text-foreground hover:bg-surface hover:border-transparent hover:shadow-3xl",
+        filled: "bg-background border-transparent",
       },
       size: {
         default: "p-1 px-2",

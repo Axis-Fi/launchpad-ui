@@ -1,10 +1,9 @@
 import React from "react";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
-import { Address, fromHex, toHex } from "viem";
+import { Address, formatUnits, fromHex, toHex } from "viem";
 import {
   useAccount,
-  useBalance,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
@@ -17,8 +16,8 @@ import { useStoreBid } from "state/bids/handlers";
 export function useBidAuction(
   id: string,
   auctionType: AuctionType,
-  amountIn: number,
-  amountOut: number,
+  amountIn: bigint,
+  amountOut: bigint,
   callbackData: `0x${string}`,
 ) {
   const { result: auction, ...auctionQuery } = useAuction(id, auctionType);
@@ -39,11 +38,12 @@ export function useBidAuction(
       throw new Error("Wallet not connected. Please connect your wallet.");
     }
 
+    // TODO: change SDK to use bigints
     return sdk.bid(
       {
         lotId: Number(lotId),
-        amountIn: Number(amountIn),
-        amountOut: Number(amountOut),
+        amountIn: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
+        amountOut: Number(formatUnits(amountOut, auction.baseToken.decimals)),
         chainId: auction.chainId,
         auctionType: auctionType,
         referrerAddress: referrer,
@@ -64,13 +64,6 @@ export function useBidAuction(
     bidTx.writeContractAsync({ abi, address, functionName, args });
   };
 
-  // We need to know user's balance and allowance
-  const balance = useBalance({
-    address: bidderAddress,
-    token: auction.quoteToken.address as Address,
-    chainId: auction.chainId,
-  });
-
   const {
     isSufficientAllowance,
     approveReceipt,
@@ -83,14 +76,13 @@ export function useBidAuction(
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
-    amount: Number(amountIn),
+    amount: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
   });
 
   React.useEffect(() => {
-    // Refetch balance, allowance, refetches delayed auction info
+    // Refetch allowance, refetches delayed auction info
     // and stores bid if EMP
     if (bidReceipt.isSuccess) {
-      balance.refetch();
       allowance.refetch();
       // Delay refetching to ensure subgraph has caught up with the changes
       setTimeout(() => auctionQuery.refetch(), 5000); //TODO: ideas on how to improve this
@@ -117,7 +109,6 @@ export function useBidAuction(
   return {
     handleBid,
     approveCapacity,
-    balance,
     isSufficientAllowance,
     approveReceipt,
     bidReceipt,

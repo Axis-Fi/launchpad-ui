@@ -2,7 +2,11 @@ import {
   GetBatchAuctionLotQuery,
   useGetBatchAuctionLotQuery,
 } from "@repo/subgraph-client/src/generated";
-import type { UseQueryResult } from "@tanstack/react-query";
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import { getAuctionStatus } from "../utils/get-auction-status";
 import {
   Auction,
@@ -18,7 +22,10 @@ import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
 import { trimCurrency } from "utils";
-import { useAuctionData } from "modules/auction/hooks/use-auction-data";
+import {
+  useAuctionData,
+  type UseAuctionDataReturn,
+} from "modules/auction/hooks/use-auction-data";
 import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
@@ -29,9 +36,18 @@ import { isSecureAuction } from "../utils/malicious-auction-filters";
 
 export type AuctionResult = {
   result?: Auction;
+  refetch: (
+    auctionOptions?: RefetchOptions,
+    auctionDataOptions?: RefetchOptions,
+  ) => Promise<
+    [
+      Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>,
+      QueryObserverResult<GetBatchAuctionLotQuery, Error>,
+    ]
+  >;
 } & Pick<
   ReturnType<typeof useGetBatchAuctionLotQuery>,
-  "refetch" | "isLoading" | "isRefetching"
+  "isLoading" | "isRefetching"
 >;
 
 const hookMap = {
@@ -53,7 +69,7 @@ export function useAuction(
 
   const {
     data,
-    refetch,
+    refetch: refetchAuction,
     isLoading,
     isRefetching,
   }: UseQueryResult<GetBatchAuctionLotQuery> = useGetAuction(
@@ -77,7 +93,7 @@ export function useAuction(
     queryFn: () => getAuctionInfo(rawAuction?.created.infoHash || ""),
   });
 
-  const { data: auctionData } = useAuctionData({
+  const { data: auctionData, refetch: refetchAuctionData } = useAuctionData({
     chainId,
     lotId,
     type: auctionType,
@@ -89,6 +105,24 @@ export function useAuction(
   //   auctionType,
   //   chainId,
   // });
+
+  /**
+   * Redefine refetch of an auction to include its dependencies that also update (such as auctionData)
+   */
+  const refetch = async (
+    auctionOptions?: RefetchOptions,
+    auctionDataOptions?: RefetchOptions,
+  ): Promise<
+    [
+      Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>,
+      Awaited<ReturnType<typeof refetchAuction>>,
+    ]
+  > => {
+    return Promise.all([
+      refetchAuctionData(auctionDataOptions),
+      refetchAuction(auctionOptions),
+    ]);
+  };
 
   if (!rawAuction) {
     return {
