@@ -75,6 +75,7 @@ import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
 import useERC20Balance from "loaders/use-erc20-balance";
+import { CreateAuctionPreview } from "./create-auction-preview";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -84,6 +85,7 @@ const tokenSchema = z.object({
   decimals: z.coerce.number(),
   symbol: z.string(),
   logoURI: optionalURL,
+  totalSupply: z.bigint().optional(),
 });
 
 const schema = z
@@ -129,9 +131,11 @@ const schema = z
     vestingDuration: z.string().optional(),
     vestingStart: z.date().optional(),
     // Metadata
-    name: z.string(),
-    description: z.string(),
+    name: z.string().max(32),
+    description: z.string().max(332),
+    tagline: z.string().max(42),
     projectLogo: z.string().url().optional(),
+    projectBanner: z.string().url(),
     twitter: optionalURL,
     discord: optionalURL,
     website: optionalURL,
@@ -282,7 +286,8 @@ export default function CreateAuctionPage() {
     start: dateMath.addMinutes(new Date(), 15),
   };
   const { address } = useAccount();
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+  const [isTxDialogOpen, setIsTxDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
   const { chain } = useAccount();
 
@@ -324,21 +329,22 @@ export default function CreateAuctionPage() {
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
-  const lotId = getCreatedAuctionId(
-    createTxReceipt.data,
-    auctionType as AuctionType,
-  );
+  const lotId = getCreatedAuctionId(createTxReceipt.data);
 
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
       const auctionInfo: AuctionInfo = {
-        key: `${values.auctionType}-${values.payoutToken.chainId}_${values.payoutToken.address}`,
+        key: `${values.auctionType}-${values.payoutToken.chainId}_${
+          values.payoutToken.address
+        }_${values.start.getTime()}`,
         name: values.name,
+        tagline: values.tagline,
         description: values.description,
         allowlist: values.allowlist,
         links: {
           projectLogo: values.projectLogo,
           payoutTokenLogo: values.payoutToken.logoURI,
+          projectBanner: values.projectBanner,
           website: values.website,
           twitter: values.twitter,
           discord: values.discord,
@@ -868,8 +874,8 @@ export default function CreateAuctionPage() {
       enabled:
         callbacksType === CallbacksType.UNIV2_DTL &&
         !!uniV2Factory &&
-        !!payoutToken.address &&
-        !!quoteToken.address,
+        !!payoutToken?.address &&
+        !!quoteToken?.address,
     },
   });
 
@@ -897,8 +903,8 @@ export default function CreateAuctionPage() {
       enabled:
         callbacksType === CallbacksType.UNIV3_DTL &&
         !!uniV3Factory &&
-        !!payoutToken.address &&
-        !!quoteToken.address &&
+        !!payoutToken?.address &&
+        !!quoteToken?.address &&
         !!dtlUniV3PoolFee,
     },
   });
@@ -975,7 +981,22 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
-
+                <FormField
+                  control={form.control}
+                  name="tagline"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Tagline"
+                      tooltip="A brief tagline about your project"
+                    >
+                      <Input
+                        type="url"
+                        placeholder={"We're the future of France"}
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="projectLogo"
@@ -983,9 +1004,27 @@ export default function CreateAuctionPage() {
                     <FormItemWrapper
                       label="Project Logo"
                       tooltip="A URL to the project logo"
+                      className="mt-6"
                     >
                       <Input
                         placeholder="https://your-dao.link/tokenjpeg.svg"
+                        type="url"
+                        {...field}
+                      />
+                    </FormItemWrapper>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="projectBanner"
+                  render={({ field }) => (
+                    <FormItemWrapper
+                      label="Project Banner"
+                      tooltip="A URL to a rectangular banner to be displayed along the auction"
+                      className="mt-6"
+                    >
+                      <Input
+                        placeholder="https://your-dao.link/banner.svg"
                         type="url"
                         {...field}
                       />
@@ -1046,6 +1085,7 @@ export default function CreateAuctionPage() {
                     </FormItemWrapper>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="description"
@@ -1741,7 +1781,7 @@ export default function CreateAuctionPage() {
                 onClick={(e) => {
                   e.preventDefault();
                   form.trigger();
-                  isValid && setIsDialogOpen(true);
+                  isValid && setIsPreviewOpen(true);
                 }}
               >
                 DEPLOY AUCTION
@@ -1749,10 +1789,10 @@ export default function CreateAuctionPage() {
             </RequiresChain>
           </div>
           <DialogRoot
-            open={isDialogOpen}
-            onOpenChange={(open) => !open && setIsDialogOpen(false)}
+            open={isTxDialogOpen}
+            onOpenChange={(open) => !open && setIsTxDialogOpen(false)}
           >
-            <DialogContent className="bg-surface-tertiary">
+            <DialogContent className="bg-surface ">
               <DialogHeader>
                 <DialogTitle>
                   {createTxReceipt.isSuccess ? "Success" : "Creating Auction"}
@@ -1797,6 +1837,12 @@ export default function CreateAuctionPage() {
           </DialogRoot>
           <DevTool control={form.control} />
         </form>
+        <CreateAuctionPreview
+          open={isPreviewOpen}
+          onOpenChange={setIsPreviewOpen}
+          chainId={chainId}
+          initiateCreateTx={() => setIsTxDialogOpen(true)}
+        />
       </Form>
     </PageContainer>
   );
@@ -1804,14 +1850,8 @@ export default function CreateAuctionPage() {
 
 function getCreatedAuctionId(
   value: UseWaitForTransactionReceiptReturnType["data"],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  auctionType: AuctionType,
 ) {
-  //TODO: find a better way to handle this
-  //on EMP auctioniD is on log index 1 pos 1
-  //on FPS on log 1 pos 1
-  const logIndex = 1;
-  const lotIdHex = value?.logs[logIndex].topics[1];
+  const lotIdHex = value?.logs[1].topics[1];
   if (!lotIdHex) return null;
   return fromHex(lotIdHex, "number");
 }

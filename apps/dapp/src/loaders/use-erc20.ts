@@ -18,14 +18,16 @@ export default function useERC20({
       { ...contract, functionName: "decimals" },
       { ...contract, functionName: "symbol" },
       { ...contract, functionName: "name" },
+      { ...contract, functionName: "totalSupply" },
     ],
   });
 
-  const [decimals, symbol, name] = response.data?.map((d) => d.result) ?? [];
+  const [decimals, symbol, name, totalSupply] =
+    response.data?.map((d) => d.result) ?? [];
 
   const token = React.useMemo(
-    () => ({ decimals, symbol, name, address, chainId }),
-    [decimals, symbol, name, address, chainId],
+    () => ({ decimals, symbol, name, address, chainId, totalSupply }),
+    [decimals, symbol, name, address, chainId, totalSupply],
   );
 
   return {

@@ -37,10 +37,11 @@ export type AuctionInfo = {
   key?: string;
   name?: string;
   description?: string;
-  shortDescription?: string;
+  tagline?: string;
   allowlist?: string[][];
   links?: {
     projectLogo?: string;
+    projectBanner?: string;
     website?: string;
     twitter?: string;
     discord?: string;

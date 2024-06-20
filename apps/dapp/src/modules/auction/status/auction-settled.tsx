@@ -18,50 +18,49 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   });
 
   return (
-    <div className="flex flex-row gap-x-[32px]">
-      <div className="flex flex-grow flex-col justify-between gap-y-[16px]">
-        {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
+    <div>
+      <div className="max-w-limit flex gap-x-8">
+        <div className="flex flex-grow flex-col justify-between gap-y-4">
+          {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
+          <Card
+            title="Launch Info"
+            headerRightElement={
+              <div className="flex gap-x-2">
+                <Metric size="s" label="Token Address">
+                  <BlockExplorerLink
+                    trim
+                    chainId={auction.chainId}
+                    address={auction.baseToken.address}
+                  />
+                </Metric>
+              </div>
+            }
+          >
+            <AuctionMetrics>
+              <AuctionMetric auction={auction} id="protocolFee" />
+              <AuctionMetric auction={auction} id="referrerFee" />
+              <AuctionMetric auction={auction} id="minFill" />
+              <AuctionMetric auction={auction} id="derivative" />
+              <AuctionMetric auction={auction} id="minPrice" />
+              <AuctionMetric auction={auction} id="duration" />
+              {dtlCallbackConfiguration && (
+                <Metric
+                  label="Direct to Liquidity"
+                  size="m"
+                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+                  className=""
+                >
+                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+                </Metric>
+              )}
+            </AuctionMetrics>
+          </Card>
 
-        <Card
-          title="Launch Info"
-          headerRightElement={
-            <div className="flex gap-x-2">
-              <Metric size="s" label="Token Address">
-                <BlockExplorerLink
-                  trim
-                  chainId={auction.chainId}
-                  address={auction.baseToken.address}
-                />
-              </Metric>
-            </div>
-          }
-        >
-          <AuctionMetrics>
-            <AuctionMetric auction={auction} id="protocolFee" />
-            <AuctionMetric auction={auction} id="referrerFee" />
-            <AuctionMetric auction={auction} id="minFill" />
-            <AuctionMetric auction={auction} id="derivative" />
-            <AuctionMetric auction={auction} id="minPrice" />
-            <AuctionMetric auction={auction} id="duration" />
-            {dtlCallbackConfiguration && (
-              // TODO fix alignment of metric title
-              <Metric
-                label="Direct to Liquidity"
-                size="m"
-                tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
-                className=""
-              >
-                {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
-              </Metric>
-            )}
-          </AuctionMetrics>
-        </Card>
-
-        <ProjectInfoCard auction={auction} />
-      </div>
-      <div className={"flex w-[496px] items-start"}>
+          <ProjectInfoCard auction={auction} />
+        </div>
         <ClaimCard auction={auction} />
       </div>
+      <div></div>
     </div>
   );
 }
