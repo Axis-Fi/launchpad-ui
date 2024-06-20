@@ -2,6 +2,12 @@ fragment BatchCommonFields on BatchAuctionLot {
   id
   chain
   auctionHouse
+  aborted {
+    date
+  }
+  cancelled {
+    date
+  }
   lotId
   createdBlockNumber
   createdBlockTimestamp
@@ -33,6 +39,12 @@ fragment BatchCommonFields on BatchAuctionLot {
     expiryDate
     startTimestamp
     expiryTimestamp
+    redemptions {
+      id
+      bidder
+      redeemed
+      remaining
+    }
   }
   baseToken {
     totalSupply
@@ -47,7 +59,6 @@ fragment BatchCommonFields on BatchAuctionLot {
     symbol
     name
   }
-  #cancelled
   created {
     infoHash
   }

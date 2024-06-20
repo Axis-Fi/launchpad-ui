@@ -1,5 +1,5 @@
 //The deployed subgraph version
-const version = "0.3.3";
+const version = "0.5.2";
 
 export default {
   //id: 52935,

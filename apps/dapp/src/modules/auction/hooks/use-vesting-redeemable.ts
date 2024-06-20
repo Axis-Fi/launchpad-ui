@@ -1,4 +1,4 @@
-import { linearVestingAbi } from "@repo/abis/src/abis/generated";
+import { abis } from "@repo/abis";
 import { Address, isAddress } from "viem";
 import { useReadContract } from "wagmi";
 
@@ -14,7 +14,7 @@ export function useVestingRedeemable({
   derivativeModuleAddress?: Address;
 }) {
   const response = useReadContract({
-    abi: linearVestingAbi,
+    abi: abis.batchLinearVesting,
     address:
       derivativeModuleAddress && isAddress(derivativeModuleAddress)
         ? derivativeModuleAddress

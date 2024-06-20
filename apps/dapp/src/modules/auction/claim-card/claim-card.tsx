@@ -1,10 +1,16 @@
 import { useAccount } from "wagmi";
-import type { Address, BatchAuction, PropsWithAuction } from "@repo/types";
+import {
+  AuctionDerivativeTypes,
+  type Address,
+  type BatchAuction,
+  type PropsWithAuction,
+} from "@repo/types";
 import { NotConnectedClaimCard } from "./not-connected";
 import { NoUserBidsClaimCard } from "./no-user-bids-claim-card";
 import { UserBidsClaimCard } from "./user-bids-claim-card";
 import { VestingClaimCard } from "./vesting-claim-card";
 import { AuctionFailedClaimCard } from "./auction-failed-claim-card";
+import { hasDerivative } from "../utils/auction-details";
 
 type ClaimStatusProps = {
   auction: BatchAuction;
@@ -29,25 +35,22 @@ const getClaimStatus = ({
   const userHasBids = auction.bids.some(
     (bid) => bid.bidder.toLowerCase() === userAddress?.toLowerCase(),
   );
-  const userHasClaimed = auction.bids.every(
-    (bid) => bid.status === "claimed" || bid.status === "refunded",
+  const auctionIsVesting = hasDerivative(
+    AuctionDerivativeTypes.LINEAR_VESTING,
+    auction,
   );
-  const isAuctionLinearVesting =
-    auction.linearVesting?.id !== undefined && auction.linearVesting?.id !== "";
-
-  // For vesting to be active, the user has to have claimed their bids and linear vesting must be enabled.
-  const isVesting = isAuctionLinearVesting && userHasClaimed;
+  const userHasVesting = auctionIsVesting && userHasBids;
 
   if (!isWalletConnected) {
     return "NOT_CONNECTED";
   }
 
-  if (isVesting) {
-    return "VESTING";
-  }
-
   if (!isAuctionCleared || isAuctionCancelled) {
     return "AUCTION_FAILED";
+  }
+
+  if (userHasVesting) {
+    return "VESTING";
   }
 
   if (userHasBids) {

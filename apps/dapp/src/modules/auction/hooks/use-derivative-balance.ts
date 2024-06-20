@@ -1,4 +1,4 @@
-import { linearVestingAbi } from "@repo/abis/src/abis/generated";
+import { abis } from "@repo/abis";
 import { Address } from "@repo/types";
 import { isAddress } from "viem";
 import { useReadContract } from "wagmi";
@@ -15,7 +15,7 @@ export function useDerivativeBalance({
   derivativeModuleAddress: Address;
 }) {
   const response = useReadContract({
-    abi: linearVestingAbi,
+    abi: abis.batchLinearVesting,
     address: isAddress(derivativeModuleAddress)
       ? derivativeModuleAddress
       : undefined,

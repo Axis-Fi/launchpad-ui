@@ -1,31 +1,46 @@
-import { Address } from "@repo/types";
+import { useEffect } from "react";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { linearVestingAbi } from "@repo/abis/src/abis/generated";
+import type { Address, Auction } from "@repo/types";
+import { abis } from "@repo/abis";
 
 export function useVestingRedeem({
   vestingTokenId,
-  chainId,
   derivativeModuleAddress,
+  auction,
+  onSuccess,
 }: {
   vestingTokenId?: bigint;
-  chainId?: number;
+  auction: Auction;
   derivativeModuleAddress?: Address;
+  onSuccess?: () => void;
 }) {
   const redeemCall = useSimulateContract({
-    abi: linearVestingAbi,
+    abi: abis.batchLinearVesting,
     address: derivativeModuleAddress,
-    chainId: chainId,
+    chainId: auction?.chainId,
     functionName: "redeemMax",
     args: [vestingTokenId || 0n],
-    query: { enabled: !!derivativeModuleAddress && !!vestingTokenId },
+    query: {
+      enabled:
+        !!derivativeModuleAddress &&
+        !!vestingTokenId &&
+        Number.isInteger(auction?.chainId),
+    },
   });
 
   const redeemTx = useWriteContract();
   const redeemReceipt = useWaitForTransactionReceipt({ hash: redeemTx.data });
+
+  useEffect(() => {
+    if (redeemReceipt.isSuccess && onSuccess) {
+      redeemTx.reset();
+      onSuccess();
+    }
+  }, [redeemReceipt.isSuccess, onSuccess]);
 
   const handleRedeem = () => {
     if (redeemCall.data) {
@@ -43,9 +58,9 @@ export function useVestingRedeem({
     }
 
     redeemTx.writeContract({
-      abi: linearVestingAbi,
+      abi: abis.batchLinearVesting,
       address: derivativeModuleAddress,
-      chainId: chainId,
+      chainId: auction.chainId,
       functionName: "redeemMax",
       args: [vestingTokenId],
     });

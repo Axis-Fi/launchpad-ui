@@ -105,6 +105,7 @@ export function TransactionDialog({
           {showFooter && (
             <Button
               disabled={props.disabled}
+              size="md"
               type="submit"
               className="mx-auto w-full max-w-sm"
               onClick={(e) => {

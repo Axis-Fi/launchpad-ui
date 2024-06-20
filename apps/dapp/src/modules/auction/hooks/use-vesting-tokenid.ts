@@ -1,20 +1,22 @@
-import { LinearVestingData, Token } from "@repo/types";
 import { encodeAbiParameters, isAddress } from "viem";
 import { useReadContract } from "wagmi";
-import { linearVestingAbi } from "@repo/abis/src/abis/generated";
+import type { Token } from "@repo/types";
+import { abis } from "@repo/abis";
 
 export function useVestingTokenId({
-  linearVestingData,
+  linearVestingStartTimestamp,
+  linearVestingExpiryTimestamp,
   baseToken,
   derivativeModuleAddress,
 }: {
-  linearVestingData?: LinearVestingData;
+  linearVestingStartTimestamp?: number;
+  linearVestingExpiryTimestamp?: number;
   baseToken: Token;
   derivativeModuleAddress?: string;
 }) {
   // Fetch the tokenId of the vesting token
   const response = useReadContract({
-    abi: linearVestingAbi,
+    abi: abis.batchLinearVesting,
     address:
       derivativeModuleAddress && isAddress(derivativeModuleAddress)
         ? derivativeModuleAddress
@@ -27,10 +29,15 @@ export function useVestingTokenId({
           { name: "start", type: "uint48" }, // vesting start
           { name: "end", type: "uint48" }, // vesting end
         ],
-        [linearVestingData?.start ?? 0, linearVestingData?.expiry ?? 0],
+        [linearVestingStartTimestamp ?? 0, linearVestingExpiryTimestamp ?? 0],
       ),
     ],
-    query: { enabled: !!derivativeModuleAddress && !!linearVestingData },
+    query: {
+      enabled:
+        !!derivativeModuleAddress &&
+        Number.isInteger(linearVestingStartTimestamp) &&
+        Number.isInteger(linearVestingExpiryTimestamp),
+    },
   });
 
   return {
