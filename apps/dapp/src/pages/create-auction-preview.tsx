@@ -128,7 +128,8 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     capacityInitial: params.capacity,
     quoteToken: params.quoteToken as Token,
     baseToken: { ...params.payoutToken, totalSupply: supply } as Token,
-    conclusion: params.deadline.getTime().toString(),
+    start: (params.start.getTime() / 1000).toString(),
+    conclusion: (params.deadline.getTime() / 1000).toString(),
     //@ts-expect-error TODO: fix type mismatch
     linearVesting: params.isVested
       ? {
