@@ -121,6 +121,11 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     params.payoutToken.decimals,
   );
 
+  const vestingStartTimestamp =
+    params.vestingStart?.getTime() ?? params.deadline.getTime();
+  const vestingEndTimestamp =
+    params.deadline.getTime() + getDuration(Number(params.vestingDuration));
+
   return {
     status: "live",
     auctionType: params.auctionType as AuctionType,
@@ -134,12 +139,8 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     linearVesting: params.isVested
       ? {
           id: "420",
-          startTimestamp:
-            params.vestingStart?.getTime().toString() ??
-            params.deadline.getTime(),
-          expiryTimestamp:
-            params.deadline.getTime() +
-            getDuration(Number(params.vestingDuration)),
+          startTimestamp: vestingStartTimestamp / 1000,
+          expiryTimestamp: vestingEndTimestamp / 1000,
           startDate: params.vestingStart ?? params.start,
           expiryDate: addMilliseconds(
             params.deadline,
