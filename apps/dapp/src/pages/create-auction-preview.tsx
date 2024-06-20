@@ -121,6 +121,11 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     params.payoutToken.decimals,
   );
 
+  const vestingStartTimestamp =
+    params.vestingStart?.getTime() ?? params.deadline.getTime();
+  const vestingEndTimestamp =
+    vestingStartTimestamp + getDuration(Number(params.vestingDuration));
+
   return {
     status: "live",
     auctionType: params.auctionType as AuctionType,
@@ -128,17 +133,14 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     capacityInitial: params.capacity,
     quoteToken: params.quoteToken as Token,
     baseToken: { ...params.payoutToken, totalSupply: supply } as Token,
-    conclusion: params.deadline.getTime().toString(),
+    start: (params.start.getTime() / 1000).toString(),
+    conclusion: (params.deadline.getTime() / 1000).toString(),
     //@ts-expect-error TODO: fix type mismatch
     linearVesting: params.isVested
       ? {
           id: "420",
-          startTimestamp:
-            params.vestingStart?.getTime().toString() ??
-            params.deadline.getTime(),
-          expiryTimestamp:
-            params.deadline.getTime() +
-            getDuration(Number(params.vestingDuration)),
+          startTimestamp: vestingStartTimestamp / 1000,
+          expiryTimestamp: vestingEndTimestamp / 1000,
           startDate: params.vestingStart ?? params.start,
           expiryDate: addMilliseconds(
             params.deadline,

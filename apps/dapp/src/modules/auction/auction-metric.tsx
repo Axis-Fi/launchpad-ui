@@ -1,4 +1,3 @@
-import { differenceInDays } from "date-fns";
 import {
   AuctionDerivatives,
   AuctionType,
@@ -11,6 +10,7 @@ import { Metric, MetricProps, trimAddress } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
 import { getCallbacksType } from "./utils/get-callbacks-type";
+import { getDaysBetweenDates } from "utils/date";
 
 const getPrice = (auction: Auction): number | undefined => {
   // Fixed Price Batch
@@ -80,11 +80,13 @@ const handlers = {
   duration: {
     label: "Duration",
     handler: (auction: Auction) => {
-      const days = differenceInDays(
+      const days = getDaysBetweenDates(
         new Date(+auction.conclusion * 1000),
         new Date(+auction.start * 1000),
       );
-      return `${days} days`;
+
+      //The minimum an auction can run for is 24h
+      return `${days || 1} days`;
     },
   },
   totalRaised: {
@@ -190,12 +192,10 @@ const handlers = {
         return "None";
       }
 
-      // TODO: move to formatters
-      const duration = Math.floor(
-        (Number(auction.linearVesting.expiryTimestamp) -
-          Number(auction.linearVesting.startTimestamp)) /
-          86400,
-      );
+      const start = new Date(+auction.linearVesting.startTimestamp * 1000);
+      const end = new Date(+auction.linearVesting.expiryTimestamp * 1000);
+
+      const duration = getDaysBetweenDates(end, start);
 
       return `${duration} days`;
     },
