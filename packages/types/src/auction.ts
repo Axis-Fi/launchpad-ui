@@ -107,16 +107,6 @@ type EMPFormattedInfo = {
   cleared: boolean;
 };
 
-export type LinearVestingData = {
-  start: number;
-  expiry: number;
-  startDate: Date;
-  expiryDate: Date;
-  days: number;
-  daysFromNow: number;
-  isVestingExpired: boolean;
-};
-
 export type PropsWithAuction = {
   auction: Auction;
 };

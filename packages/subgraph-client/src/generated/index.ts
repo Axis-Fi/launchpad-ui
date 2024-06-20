@@ -2875,6 +2875,7 @@ export enum BatchAuctionLot_OrderBy {
   encryptedMarginalPrice__minBidSize = "encryptedMarginalPrice__minBidSize",
   encryptedMarginalPrice__minFilled = "encryptedMarginalPrice__minFilled",
   encryptedMarginalPrice__minPrice = "encryptedMarginalPrice__minPrice",
+  encryptedMarginalPrice__module = "encryptedMarginalPrice__module",
   encryptedMarginalPrice__partialBidId = "encryptedMarginalPrice__partialBidId",
   encryptedMarginalPrice__settlementSuccessful = "encryptedMarginalPrice__settlementSuccessful",
   encryptedMarginalPrice__status = "encryptedMarginalPrice__status",
@@ -2882,6 +2883,7 @@ export enum BatchAuctionLot_OrderBy {
   fixedPrice__hasPartialFill = "fixedPrice__hasPartialFill",
   fixedPrice__id = "fixedPrice__id",
   fixedPrice__minFilled = "fixedPrice__minFilled",
+  fixedPrice__module = "fixedPrice__module",
   fixedPrice__partialBidId = "fixedPrice__partialBidId",
   fixedPrice__price = "fixedPrice__price",
   fixedPrice__settlementSuccessful = "fixedPrice__settlementSuccessful",
@@ -2895,8 +2897,10 @@ export enum BatchAuctionLot_OrderBy {
   linearVesting__expiryDate = "linearVesting__expiryDate",
   linearVesting__expiryTimestamp = "linearVesting__expiryTimestamp",
   linearVesting__id = "linearVesting__id",
+  linearVesting__module = "linearVesting__module",
   linearVesting__startDate = "linearVesting__startDate",
   linearVesting__startTimestamp = "linearVesting__startTimestamp",
+  linearVesting__tokenId = "linearVesting__tokenId",
   lotId = "lotId",
   maxBidId = "maxBidId",
   protocolFee = "protocolFee",
@@ -4030,6 +4034,7 @@ export type BatchEncryptedMarginalPriceLot = {
   minBidSize: Scalars["BigDecimal"]["output"];
   minFilled: Scalars["BigDecimal"]["output"];
   minPrice: Scalars["BigDecimal"]["output"];
+  module: Scalars["Bytes"]["output"];
   partialBidId?: Maybe<Scalars["BigInt"]["output"]>;
   settlementSuccessful: Scalars["Boolean"]["output"];
   status: Scalars["String"]["output"];
@@ -4116,6 +4121,16 @@ export type BatchEncryptedMarginalPriceLot_Filter = {
   minPrice_lte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
   minPrice_not?: InputMaybe<Scalars["BigDecimal"]["input"]>;
   minPrice_not_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  module?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  module_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   or?: InputMaybe<Array<InputMaybe<BatchEncryptedMarginalPriceLot_Filter>>>;
   partialBidId?: InputMaybe<Scalars["BigInt"]["input"]>;
   partialBidId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -4188,6 +4203,7 @@ export enum BatchEncryptedMarginalPriceLot_OrderBy {
   minBidSize = "minBidSize",
   minFilled = "minFilled",
   minPrice = "minPrice",
+  Module = "module",
   partialBidId = "partialBidId",
   settlementSuccessful = "settlementSuccessful",
   Status = "status",
@@ -4198,6 +4214,7 @@ export type BatchFixedPriceLot = {
   id: Scalars["String"]["output"];
   lot: BatchAuctionLot;
   minFilled: Scalars["BigDecimal"]["output"];
+  module: Scalars["Bytes"]["output"];
   partialBidId?: Maybe<Scalars["BigInt"]["output"]>;
   price: Scalars["BigDecimal"]["output"];
   settlementSuccessful: Scalars["Boolean"]["output"];
@@ -4261,6 +4278,16 @@ export type BatchFixedPriceLot_Filter = {
   minFilled_lte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
   minFilled_not?: InputMaybe<Scalars["BigDecimal"]["input"]>;
   minFilled_not_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  module?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  module_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   or?: InputMaybe<Array<InputMaybe<BatchFixedPriceLot_Filter>>>;
   partialBidId?: InputMaybe<Scalars["BigInt"]["input"]>;
   partialBidId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -4338,6 +4365,7 @@ export enum BatchFixedPriceLot_OrderBy {
   Lot__start = "lot__start",
   lot__wrapDerivative = "lot__wrapDerivative",
   minFilled = "minFilled",
+  Module = "module",
   partialBidId = "partialBidId",
   Price = "price",
   settlementSuccessful = "settlementSuccessful",
@@ -4349,8 +4377,19 @@ export type BatchLinearVestingLot = {
   expiryTimestamp: Scalars["BigInt"]["output"];
   id: Scalars["String"]["output"];
   lot: BatchAuctionLot;
+  module: Scalars["Bytes"]["output"];
+  redemptions: Array<BatchLinearVestingRedeemed>;
   startDate: Scalars["String"]["output"];
   startTimestamp: Scalars["BigInt"]["output"];
+  tokenId: Scalars["BigInt"]["output"];
+};
+
+export type BatchLinearVestingLotRedemptionsArgs = {
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<BatchLinearVestingRedeemed_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars["Int"]["input"]>;
+  where?: InputMaybe<BatchLinearVestingRedeemed_Filter>;
 };
 
 export type BatchLinearVestingLot_Filter = {
@@ -4426,7 +4465,18 @@ export type BatchLinearVestingLot_Filter = {
   lot_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   lot_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   lot_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  module?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  module_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   or?: InputMaybe<Array<InputMaybe<BatchLinearVestingLot_Filter>>>;
+  redemptions_?: InputMaybe<BatchLinearVestingRedeemed_Filter>;
   startDate?: InputMaybe<Scalars["String"]["input"]>;
   startDate_contains?: InputMaybe<Scalars["String"]["input"]>;
   startDate_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
@@ -4455,6 +4505,14 @@ export type BatchLinearVestingLot_Filter = {
   startTimestamp_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   startTimestamp_not?: InputMaybe<Scalars["BigInt"]["input"]>;
   startTimestamp_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  tokenId?: InputMaybe<Scalars["BigInt"]["input"]>;
+  tokenId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  tokenId_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  tokenId_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  tokenId_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  tokenId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  tokenId_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  tokenId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
 };
 
 export enum BatchLinearVestingLot_OrderBy {
@@ -4491,8 +4549,162 @@ export enum BatchLinearVestingLot_OrderBy {
   Lot__sold = "lot__sold",
   Lot__start = "lot__start",
   lot__wrapDerivative = "lot__wrapDerivative",
+  Module = "module",
+  Redemptions = "redemptions",
   startDate = "startDate",
   startTimestamp = "startTimestamp",
+  tokenId = "tokenId",
+}
+
+export type BatchLinearVestingRedeemed = {
+  bidder: Scalars["Bytes"]["output"];
+  blockNumber: Scalars["BigInt"]["output"];
+  blockTimestamp: Scalars["BigInt"]["output"];
+  date: Scalars["String"]["output"];
+  id: Scalars["String"]["output"];
+  lot: BatchLinearVestingLot;
+  redeemed: Scalars["BigDecimal"]["output"];
+  remaining: Scalars["BigDecimal"]["output"];
+  transactionHash: Scalars["Bytes"]["output"];
+};
+
+export type BatchLinearVestingRedeemed_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<BatchLinearVestingRedeemed_Filter>>>;
+  bidder?: InputMaybe<Scalars["Bytes"]["input"]>;
+  bidder_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  bidder_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  bidder_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  bidder_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  bidder_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  bidder_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  bidder_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  bidder_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  bidder_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  blockNumber?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockNumber_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockTimestamp?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockTimestamp_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  date?: InputMaybe<Scalars["String"]["input"]>;
+  date_contains?: InputMaybe<Scalars["String"]["input"]>;
+  date_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_gt?: InputMaybe<Scalars["String"]["input"]>;
+  date_gte?: InputMaybe<Scalars["String"]["input"]>;
+  date_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  date_lt?: InputMaybe<Scalars["String"]["input"]>;
+  date_lte?: InputMaybe<Scalars["String"]["input"]>;
+  date_not?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  date_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot?: InputMaybe<Scalars["String"]["input"]>;
+  lot_?: InputMaybe<BatchLinearVestingLot_Filter>;
+  lot_contains?: InputMaybe<Scalars["String"]["input"]>;
+  lot_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  lot_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_gt?: InputMaybe<Scalars["String"]["input"]>;
+  lot_gte?: InputMaybe<Scalars["String"]["input"]>;
+  lot_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  lot_lt?: InputMaybe<Scalars["String"]["input"]>;
+  lot_lte?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  lot_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  lot_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<BatchLinearVestingRedeemed_Filter>>>;
+  redeemed?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  redeemed_gt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  redeemed_gte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  redeemed_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  redeemed_lt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  redeemed_lte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  redeemed_not?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  redeemed_not_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  remaining?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  remaining_gt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  remaining_gte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  remaining_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  remaining_lt?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  remaining_lte?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  remaining_not?: InputMaybe<Scalars["BigDecimal"]["input"]>;
+  remaining_not_in?: InputMaybe<Array<Scalars["BigDecimal"]["input"]>>;
+  transactionHash?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  transactionHash_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+};
+
+export enum BatchLinearVestingRedeemed_OrderBy {
+  Bidder = "bidder",
+  blockNumber = "blockNumber",
+  blockTimestamp = "blockTimestamp",
+  Date = "date",
+  Id = "id",
+  Lot = "lot",
+  lot__expiryDate = "lot__expiryDate",
+  lot__expiryTimestamp = "lot__expiryTimestamp",
+  Lot__id = "lot__id",
+  Lot__module = "lot__module",
+  lot__startDate = "lot__startDate",
+  lot__startTimestamp = "lot__startTimestamp",
+  lot__tokenId = "lot__tokenId",
+  Redeemed = "redeemed",
+  Remaining = "remaining",
+  transactionHash = "transactionHash",
 }
 
 export type BlockChangedFilter = {
@@ -4560,6 +4772,8 @@ export type Query = {
   batchFixedPriceLots: Array<BatchFixedPriceLot>;
   batchLinearVestingLot?: Maybe<BatchLinearVestingLot>;
   batchLinearVestingLots: Array<BatchLinearVestingLot>;
+  batchLinearVestingRedeemed?: Maybe<BatchLinearVestingRedeemed>;
+  batchLinearVestingRedeemeds: Array<BatchLinearVestingRedeemed>;
   token?: Maybe<Token>;
   tokens: Array<Token>;
 };
@@ -4936,6 +5150,22 @@ export type QueryBatchLinearVestingLotsArgs = {
   where?: InputMaybe<BatchLinearVestingLot_Filter>;
 };
 
+export type QueryBatchLinearVestingRedeemedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars["ID"]["input"];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryBatchLinearVestingRedeemedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<BatchLinearVestingRedeemed_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars["Int"]["input"]>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<BatchLinearVestingRedeemed_Filter>;
+};
+
 export type QueryTokenArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars["ID"]["input"];
@@ -5001,6 +5231,8 @@ export type Subscription = {
   batchFixedPriceLots: Array<BatchFixedPriceLot>;
   batchLinearVestingLot?: Maybe<BatchLinearVestingLot>;
   batchLinearVestingLots: Array<BatchLinearVestingLot>;
+  batchLinearVestingRedeemed?: Maybe<BatchLinearVestingRedeemed>;
+  batchLinearVestingRedeemeds: Array<BatchLinearVestingRedeemed>;
   token?: Maybe<Token>;
   tokens: Array<Token>;
 };
@@ -5377,6 +5609,22 @@ export type SubscriptionBatchLinearVestingLotsArgs = {
   where?: InputMaybe<BatchLinearVestingLot_Filter>;
 };
 
+export type SubscriptionBatchLinearVestingRedeemedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars["ID"]["input"];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionBatchLinearVestingRedeemedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<BatchLinearVestingRedeemed_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars["Int"]["input"]>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<BatchLinearVestingRedeemed_Filter>;
+};
+
 export type SubscriptionTokenArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars["ID"]["input"];
@@ -5555,12 +5803,20 @@ export type BatchCommonFieldsFragment = {
   lastUpdatedBlockTimestamp: string;
   lastUpdatedDate: string;
   lastUpdatedTransactionHash: string;
+  aborted?: { date: string } | null;
+  cancelled?: { date: string } | null;
   linearVesting?: {
     id: string;
     startDate: string;
     expiryDate: string;
     startTimestamp: string;
     expiryTimestamp: string;
+    redemptions: Array<{
+      id: string;
+      bidder: string;
+      redeemed: string;
+      remaining: string;
+    }>;
   } | null;
   baseToken: {
     totalSupply: string;
@@ -5658,12 +5914,20 @@ export type GetAuctionLotsQuery = {
     lastUpdatedDate: string;
     lastUpdatedTransactionHash: string;
     maxBidId: string;
+    aborted?: { date: string } | null;
+    cancelled?: { date: string } | null;
     linearVesting?: {
       id: string;
       startDate: string;
       expiryDate: string;
       startTimestamp: string;
       expiryTimestamp: string;
+      redemptions: Array<{
+        id: string;
+        bidder: string;
+        redeemed: string;
+        remaining: string;
+      }>;
     } | null;
     baseToken: {
       totalSupply: string;
@@ -5760,12 +6024,20 @@ export type GetBatchAuctionLotQuery = {
     lastUpdatedDate: string;
     lastUpdatedTransactionHash: string;
     maxBidId: string;
+    aborted?: { date: string } | null;
+    cancelled?: { date: string } | null;
     linearVesting?: {
       id: string;
       startDate: string;
       expiryDate: string;
       startTimestamp: string;
       expiryTimestamp: string;
+      redemptions: Array<{
+        id: string;
+        bidder: string;
+        redeemed: string;
+        remaining: string;
+      }>;
     } | null;
     baseToken: {
       totalSupply: string;
@@ -5842,6 +6114,12 @@ export const BatchCommonFieldsFragmentDoc = `
   id
   chain
   auctionHouse
+  aborted {
+    date
+  }
+  cancelled {
+    date
+  }
   lotId
   createdBlockNumber
   createdBlockTimestamp
@@ -5873,6 +6151,12 @@ export const BatchCommonFieldsFragmentDoc = `
     expiryDate
     startTimestamp
     expiryTimestamp
+    redemptions {
+      id
+      bidder
+      redeemed
+      remaining
+    }
   }
   baseToken {
     totalSupply
