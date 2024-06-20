@@ -124,7 +124,7 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
   const vestingStartTimestamp =
     params.vestingStart?.getTime() ?? params.deadline.getTime();
   const vestingEndTimestamp =
-    params.deadline.getTime() + getDuration(Number(params.vestingDuration));
+    vestingStartTimestamp + getDuration(Number(params.vestingDuration));
 
   return {
     status: "live",
