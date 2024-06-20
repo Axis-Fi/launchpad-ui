@@ -125,7 +125,7 @@ export function AuctionPageView({
             </div>
           </div>
           <div className="flex w-full flex-col justify-end">
-            <div className="relative top-10 self-center align-bottom">
+            <div className="self-center text-center align-bottom">
               <Text
                 size="7xl"
                 mono
