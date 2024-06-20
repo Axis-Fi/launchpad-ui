@@ -1,5 +1,5 @@
 import { Button, Card, Metric, Text } from "@repo/ui";
-import { parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -171,7 +171,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) <=
               maxBidAmount,
           {
-            message: `Exceeds remaining capacity of ${maxBidAmount} ${auction.quoteToken.symbol}`,
+            message: `Exceeds remaining capacity of ${formatUnits(
+              maxBidAmount ?? 0n,
+              auction.quoteToken.decimals,
+            )} ${auction.quoteToken.symbol}`,
             path: ["quoteTokenAmount"],
           },
         ),
