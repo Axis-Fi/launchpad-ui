@@ -108,7 +108,7 @@ const cols = [
       const statusColour = status === "won" ? "green" : "red";
 
       return (
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col">
           <BlockExplorerLink
             chainId={info.row.original.auction.chainId}
             address={info.getValue()}
