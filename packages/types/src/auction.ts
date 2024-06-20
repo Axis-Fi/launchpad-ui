@@ -31,6 +31,7 @@ export type AuctionStatus =
   | "live"
   | "concluded"
   | "decrypted"
+  | "aborted"
   | "settled";
 
 export type AuctionInfo = {

@@ -14,14 +14,12 @@ import { getMinFilled } from "../utils/auction-details";
 
 const getFailReason = (auction: Auction) => {
   // Auction was cancelled by the auction creator
-  // TODO: when subgraph adds cancelled status, replace with: if (auction.status === AuctionStatuses.CANCELLED) {
-  if (auction?.cancelled?.date !== undefined) {
+  if (auction.status === "cancelled") {
     return "The auction was cancelled by the creator";
   }
 
   // Auction was aborted by someone
-  // TODO: when subgraph adds aborted status, replace with: if (auction.status === AuctionStatuses.ABORTED) {
-  if (auction?.aborted?.date !== undefined) {
+  if (auction.status === "aborted") {
     return "The auction was aborted";
   }
 
