@@ -42,7 +42,6 @@ export function useClaimBids(auction: BatchAuction) {
 
   // When someone claims their bids, refetch the auction from the subgraph so the dapp has the latest data
   useEffect(() => {
-    console.log("claimReceipt.isSuccess", claimReceipt.isSuccess);
     if (claimReceipt.isSuccess) {
       setTimeout(() => refetchAuction(), 2500);
     }
