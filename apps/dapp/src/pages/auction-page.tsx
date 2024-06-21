@@ -24,6 +24,7 @@ import { getCountdown } from "utils/date";
 import { useEffect, useState } from "react";
 import { BidList } from "modules/auction/bid-list";
 import React from "react";
+import { PurchaseList } from "modules/auction/purchase-list";
 
 const statuses: Record<
   AuctionStatus,
@@ -72,10 +73,10 @@ export default function AuctionPage() {
   }
 
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
+  const isFPA = auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
   const AuctionElement =
-    auction.status === "concluded" &&
-    auction.auctionType === AuctionType.FIXED_PRICE_BATCH
+    auction.status === "concluded" && isFPA
       ? FixedPriceBatchAuctionConcluded
       : statuses[auction.status];
 
@@ -93,7 +94,11 @@ export default function AuctionPage() {
       >
         <AuctionElement auction={auction} />
       </AuctionPageView>
-      {auction.status !== "created" && <BidList auction={auction} />}
+      {auction.status !== "created" && !isFPA ? (
+        <BidList auction={auction} />
+      ) : (
+        <PurchaseList auction={auction} />
+      )}
     </PageContainer>
   );
 }

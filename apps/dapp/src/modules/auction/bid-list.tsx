@@ -24,108 +24,108 @@ import { useStorageBids } from "state/bids/handlers";
 import { CSVDownloader } from "components/csv-downloader";
 import { arrayToCSV } from "utils/csv";
 
-const column = createColumnHelper<BatchAuctionBid & { auction: Auction }>();
+export const bidListColumnHelper = createColumnHelper<
+  BatchAuctionBid & { auction: Auction }
+>();
 
-const cols = [
-  column.accessor("blockTimestamp", {
-    header: "Date",
-    enableSorting: true,
-    cell: (info) => {
-      // Convert to Date
-      const date = new Date(Number(info.getValue()) * 1000);
+export const timestampCol = bidListColumnHelper.accessor("blockTimestamp", {
+  header: "Date",
+  enableSorting: true,
+  cell: (info) => {
+    // Convert to Date
+    const date = new Date(Number(info.getValue()) * 1000);
 
-      // Format to YYYY.MM.DD
-      const dateString = format(date, "yyyy.MM.dd");
-      const timeString = format(date, "HH:mm z");
+    // Format to YYYY.MM.DD
+    const dateString = format(date, "yyyy.MM.dd");
+    const timeString = format(date, "HH:mm z");
 
-      return (
-        <div className="flex flex-col items-start">
-          <Text size="sm">{dateString}</Text>
-          <Text size="xs" color="secondary">
-            {timeString}
-          </Text>
-        </div>
-      );
-    },
-  }),
-  column.accessor("amountIn", {
-    header: "Amount In",
-    enableSorting: true,
-    cell: (info) =>
-      `${trimCurrency(info.getValue())} ${
-        info.row.original.auction.quoteToken.symbol
-      }`,
-  }),
-  column.accessor("submittedPrice", {
-    header: "Bid Price",
-    enableSorting: true,
+    return (
+      <div className="flex flex-col items-start">
+        <Text size="sm">{dateString}</Text>
+        <Text size="xs" color="secondary">
+          {timeString}
+        </Text>
+      </div>
+    );
+  },
+});
+const priceCol = bidListColumnHelper.accessor("submittedPrice", {
+  header: "Bid Price",
+  enableSorting: true,
 
-    cell: (info) => {
-      let value = Number(info.getValue());
-      const bid = info.row.original;
-      const auction = bid.auction;
-      //@ts-expect-error update type
-      const amountOut = bid.amountOut;
+  cell: (info) => {
+    let value = Number(info.getValue());
+    const bid = info.row.original;
+    const auction = bid.auction;
+    //@ts-expect-error update type
+    const amountOut = bid.amountOut;
 
-      const isUserBid = amountOut && auction.status === "live";
-      if (isUserBid) {
-        value = Number(bid.amountIn) / amountOut;
-      }
+    const isUserBid = amountOut && auction.status === "live";
+    if (isUserBid) {
+      value = Number(bid.amountIn) / amountOut;
+    }
 
-      const display = value
-        ? `${trimCurrency(value)} ${
-            info.row.original.auction.quoteToken.symbol
-          }`
-        : "-";
+    const display = value
+      ? `${trimCurrency(value)} ${info.row.original.auction.quoteToken.symbol}`
+      : "-";
 
-      return (
-        <Tooltip
-          content={
-            isUserBid ? (
-              <>
-                Your estimate payout out at this price is{" "}
-                {trimCurrency(amountOut)} {auction.baseToken.symbol}.<br />
-                (Only you can see your bids&apos; price.)
-              </>
-            ) : null
-          }
-        >
-          {display}
-        </Tooltip>
-      );
-    },
-  }),
-  column.accessor("bidder", {
-    header: "Bidder",
-    enableSorting: true,
-    cell: (info) => {
-      // Define the outcome or status of the bid
-      const bidStatus = info.row.original.status;
-      const bidOutcome = info.row.original.outcome;
-      const amountOut = info.row.original.settledAmountOut;
-      const isRefunded = bidStatus === "claimed" && !amountOut;
-      const status = isRefunded ? "refunded" : bidOutcome;
-      const statusColour =
-        status === "won" || status === "won - partial fill"
-          ? "text-green-500"
-          : "text-red-500";
+    return (
+      <Tooltip
+        content={
+          isUserBid ? (
+            <>
+              Your estimate payout out at this price is{" "}
+              {trimCurrency(amountOut)} {auction.baseToken.symbol}.<br />
+              (Only you can see your bids&apos; price.)
+            </>
+          ) : null
+        }
+      >
+        {display}
+      </Tooltip>
+    );
+  },
+});
+export const amountInCol = bidListColumnHelper.accessor("amountIn", {
+  header: "Amount In",
+  enableSorting: true,
+  cell: (info) =>
+    `${trimCurrency(info.getValue())} ${
+      info.row.original.auction.quoteToken.symbol
+    }`,
+});
+export const bidderCol = bidListColumnHelper.accessor("bidder", {
+  header: "Bidder",
+  enableSorting: true,
+  cell: (info) => {
+    // Define the outcome or status of the bid
+    const bidStatus = info.row.original.status;
+    const bidOutcome = info.row.original.outcome;
+    const amountOut = info.row.original.settledAmountOut;
+    const isRefunded = bidStatus === "claimed" && !amountOut;
+    const status = isRefunded ? "refunded" : bidOutcome;
+    const statusColour =
+      status === "won" || status === "won - partial fill"
+        ? "text-green-500"
+        : "text-red-500";
 
-      return (
-        <div className="flex flex-col">
-          <BlockExplorerLink
-            chainId={info.row.original.auction.chainId}
-            address={info.getValue()}
-            icon={true}
-            trim
-          />
-          <Text size="xs" className={statusColour}>
-            {status}
-          </Text>
-        </div>
-      );
-    },
-  }),
-];
+    return (
+      <div className="flex flex-col">
+        <BlockExplorerLink
+          chainId={info.row.original.auction.chainId}
+          address={info.getValue()}
+          icon={true}
+          trim
+        />
+        <Text size="xs" className={statusColour}>
+          {status}
+        </Text>
+      </div>
+    );
+  },
+});
+
+const cols = [timestampCol, priceCol, amountInCol, bidderCol];
 
 const screens = {
   idle: {
@@ -210,7 +210,7 @@ export function BidList(props: BidListProps) {
   const columns = React.useMemo(
     () => [
       ...cols,
-      column.display({
+      bidListColumnHelper.display({
         id: "actions",
         cell: (info) => {
           const bid = info.row.original;
