@@ -66,7 +66,6 @@ import { toKeycode } from "utils/hex";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
 import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create-params";
 import { RequiresChain } from "components/requires-chain";
-import { PageHeader } from "modules/app/page-header";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
 import { getAuctionHouse, getCallbacks } from "utils/contracts";
@@ -944,9 +943,7 @@ export default function CreateAuctionPage() {
 
   return (
     <PageContainer>
-      <PageHeader className="items-center justify-start">
-        <h1 className="text-5xl">Create Your Auction</h1>
-      </PageHeader>
+      <Text className="text-5xl">Create Your Auction</Text>
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()} className="pb-16">
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
