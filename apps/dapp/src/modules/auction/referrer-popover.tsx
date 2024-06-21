@@ -1,4 +1,4 @@
-import { PropsWithAuction } from "@repo/types";
+import { AuctionType, PropsWithAuction } from "@repo/types";
 import {
   Button,
   Text,
@@ -13,6 +13,7 @@ import { useAccount } from "wagmi";
 import { useReferralLink } from "./hooks/use-referral-link";
 import { isAddress } from "viem";
 import React from "react";
+import { getAuctionPath } from "utils/router";
 
 export function ReferrerPopover({ auction }: PropsWithAuction) {
   const { address: connectedAddress } = useAccount();
@@ -21,7 +22,7 @@ export function ReferrerPopover({ auction }: PropsWithAuction) {
   const [copied, setCopied] = React.useState(false);
 
   const handleGenerateLink = () => {
-    generateLink(`auction/${auction.auctionType}/${auction.id}`);
+    generateLink(getAuctionPath(auction));
   };
 
   const handleCopy = async () => {
@@ -33,6 +34,7 @@ export function ReferrerPopover({ auction }: PropsWithAuction) {
   React.useEffect(() => {
     handleGenerateLink();
   }, [address]);
+  const isEMP = auction.auctionType === AuctionType.SEALED_BID;
 
   return (
     <Popover>
@@ -41,6 +43,9 @@ export function ReferrerPopover({ auction }: PropsWithAuction) {
       </PopoverTrigger>
       <PopoverContent className="bg-surface min-w-[400px]">
         <div>
+          <Text size="lg">
+            Earn fees by referring {isEMP ? "bidders" : "buyers"}
+          </Text>
           <LabelWrapper
             content="Address"
             className="mt-2"

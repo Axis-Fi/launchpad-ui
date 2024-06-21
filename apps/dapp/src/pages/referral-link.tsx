@@ -1,36 +1,81 @@
-import { Button, Input, LabelWrapper } from "@repo/ui";
+import {
+  Text,
+  Button,
+  Card,
+  Input,
+  LabelWrapper,
+  Select,
+  SelectData,
+} from "@repo/ui";
 import { PageContainer } from "modules/app/page-container";
+import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { useReferralLink } from "modules/auction/hooks/use-referral-link";
 import React from "react";
+import { getAuctionPath } from "utils/router";
 import { Address, isAddress } from "viem";
+import { useAccount } from "wagmi";
 
 export function ReferralLinkPage() {
-  const [address, setAddress] = React.useState<Address>();
+  const { address: connectedAddress } = useAccount();
+  const [address, setAddress] = React.useState<Address | undefined>(
+    connectedAddress,
+  );
+  const [path, setPath] = React.useState<string | undefined>();
   const { generateAndCopyLink, link } = useReferralLink(address);
+  const auctions = useAuctions();
+
+  React.useEffect(() => {
+    setAddress(connectedAddress);
+  }, [connectedAddress]);
+
+  const opts: SelectData[] = auctions.data.map((a) => ({
+    value: getAuctionPath(a),
+    label: a.auctionInfo?.name ?? a.baseToken.symbol,
+    imgURL: a.auctionInfo?.links?.projectLogo,
+  }));
 
   return (
-    <PageContainer title="Referrals">
-      <div className="flex">
-        <div className="mx-auto flex max-w-sm flex-col justify-center gap-2">
-          <h4>Earn fees by referring bidders</h4>
-          <LabelWrapper content="Address" className="mt-2">
+    <PageContainer title="Referrals" className="max-w-limit">
+      <Card
+        title="Earn fees by referring users"
+        className="mx-auto w-full max-w-lg"
+      >
+        <div className="flex max-w-lg flex-col items-center justify-center gap-2">
+          <LabelWrapper
+            content="Address"
+            tooltip="The address to collect the referrer fees. An hash of it will be derived and included in the link, not the original address."
+            className="mt-2"
+          >
             <Input
+              defaultValue={address}
               onChange={(e) =>
                 isAddress(e.target.value) && setAddress(e.target.value)
               }
             />
           </LabelWrapper>
-          <div className="mt-4 flex flex-row gap-2"></div>
+          <LabelWrapper
+            content="Auction"
+            tooltip="Create a referral link to a specific auction"
+          >
+            <Select options={opts} onChange={setPath} />
+          </LabelWrapper>
           <Button
             disabled={!address}
-            className="inline uppercase"
-            onClick={() => generateAndCopyLink()}
+            className="mt-4 inline uppercase"
+            onClick={() => generateAndCopyLink(path)}
           >
             Generate and Copy Link
           </Button>
-          <div className="mt-4">{link != "" && <p>Link: {link} </p>}</div>
+          {link && (
+            <div className="mt-4 space-y-2 text-center text-xs">
+              <Text>Your link:</Text>
+              <Text size="xs">{link}</Text>
+            </div>
+          )}
         </div>
-      </div>
+      </Card>
     </PageContainer>
   );
 }
+
+export function ReferralLinkInput() {}

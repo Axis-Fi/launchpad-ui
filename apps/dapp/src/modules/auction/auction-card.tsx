@@ -8,6 +8,7 @@ import { AuctionMetric } from "./auction-metric";
 import { AuctionStatusBadge } from "./auction-status-badge";
 import React from "react";
 import { Link } from "react-router-dom";
+import { getAuctionPath } from "utils/router";
 
 type AuctionCardConditionalProps =
   | { loading: true; auction?: never }
@@ -118,7 +119,7 @@ function AuctionCardDetails(
 
       <Link
         className={cn("self-end", !props.isGrid && "hidden group-hover:block")}
-        to={`/auction/${props.auction.auctionType}/${props.auction.id}`}
+        to={getAuctionPath(props.auction)}
       >
         <Button
           className={cn(
