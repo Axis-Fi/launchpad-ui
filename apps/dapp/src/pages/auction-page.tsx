@@ -1,3 +1,4 @@
+import React from "react";
 import { useParams } from "react-router-dom";
 import { Badge, Button, Skeleton, Text, cn } from "@repo/ui";
 import {
@@ -23,8 +24,8 @@ import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 import { getCountdown } from "utils/date";
 import { useEffect, useState } from "react";
 import { BidList } from "modules/auction/bid-list";
-import React from "react";
 import { PurchaseList } from "modules/auction/purchase-list";
+import { getLinkUrl } from "modules/auction/utils/auction-details";
 
 const statuses: Record<
   AuctionStatus,
@@ -122,7 +123,7 @@ export function AuctionPageView({
     <>
       <ImageBanner
         isLoading={isAuctionLoading}
-        imgUrl={auction.auctionInfo?.links?.projectBanner}
+        imgUrl={getLinkUrl("projectBanner", auction)}
         onTextColorChange={setTextColor}
       >
         <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
@@ -138,7 +139,7 @@ export function AuctionPageView({
                 mono
                 className={cn(textColor === "light" && "text-background")}
               >
-                {auction.auctionInfo?.name}
+                {auction.info?.name}
               </Text>
 
               <Text
@@ -149,7 +150,7 @@ export function AuctionPageView({
                   textColor === "light" && "text-background",
                 )}
               >
-                {auction.auctionInfo?.tagline}
+                {auction.info?.tagline}
               </Text>
             </div>
             <div className="mb-4 ml-4 self-start">

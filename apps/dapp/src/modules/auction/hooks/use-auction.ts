@@ -18,8 +18,6 @@ import {
   EMPFormattedInfo,
   FPBFormattedInfo,
 } from "@repo/types";
-import { useQuery } from "@tanstack/react-query";
-import { getAuctionInfo } from "./use-auction-info";
 import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
@@ -51,11 +49,6 @@ export type AuctionResult = {
   "isLoading" | "isRefetching"
 >;
 
-const hookMap = {
-  [AuctionType.SEALED_BID]: useGetBatchAuctionLotQuery,
-  [AuctionType.FIXED_PRICE_BATCH]: useGetBatchAuctionLotQuery,
-};
-
 export function useAuction(
   id: string,
   auctionType: AuctionType,
@@ -64,16 +57,12 @@ export function useAuction(
 
   const { chainId, lotId } = parseAuctionId(id);
 
-  const useGetAuction = auctionType
-    ? hookMap[auctionType]
-    : useGetBatchAuctionLotQuery;
-
   const {
     data,
     refetch: refetchAuction,
     isLoading,
     isRefetching,
-  }: UseQueryResult<GetBatchAuctionLotQuery> = useGetAuction(
+  }: UseQueryResult<GetBatchAuctionLotQuery> = useGetBatchAuctionLotQuery(
     {
       endpoint: deployments[chainId!].subgraphURL,
       fetchParams,
@@ -85,14 +74,6 @@ export function useAuction(
   const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (
     data as GetBatchAuctionLotQuery
   )?.batchAuctionLot;
-
-  const enabled = !!rawAuction && !!rawAuction?.created.infoHash;
-
-  const { data: auctionInfo } = useQuery({
-    enabled,
-    queryKey: ["auction-info", rawAuction?.id, rawAuction?.created.infoHash],
-    queryFn: () => getAuctionInfo(rawAuction?.created.infoHash || ""),
-  });
 
   const { data: auctionData, refetch: refetchAuctionData } = useAuctionData({
     chainId,
@@ -138,10 +119,9 @@ export function useAuction(
     ...rawAuction,
     chainId,
     status,
-    auctionInfo,
   };
 
-  const tokens = formatAuctionTokens(auction, getToken, auctionInfo);
+  const tokens = formatAuctionTokens(auction, getToken);
 
   if (!auctionType) {
     throw new Error(`Auction type ${auctionType} doesn't exist`);

@@ -1,7 +1,3 @@
-import { Auction, CallbacksType } from "@repo/types";
-import { getCallbacksType } from "../utils/get-callbacks-type";
-import { useAccount, useReadContract, useReadContracts } from "wagmi";
-import { axisContracts } from "@repo/deployments";
 import {
   encodeAbiParameters,
   parseAbiParameters,
@@ -11,7 +7,17 @@ import {
   zeroAddress,
   erc20Abi,
 } from "viem";
+import { UseQueryResult } from "@tanstack/react-query";
+import { useAccount, useReadContract, useReadContracts } from "wagmi";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
+import {
+  GetAuctionAllowlistQuery,
+  useGetAuctionAllowlistQuery,
+} from "@repo/subgraph-client/src/generated";
+import { Auction, CallbacksType } from "@repo/types";
+import { axisContracts, deployments } from "@repo/deployments";
+import { fetchParams } from "utils/fetch";
+import { getCallbacksType } from "../utils/get-callbacks-type";
 
 export type AllowlistResult = {
   canBid: boolean;
@@ -25,6 +31,22 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   // Load the currently connected wallet address
   const account = useAccount();
   const user = account.address ?? zeroAddress;
+
+  // Fetch allow list for this auction from the subgraph
+  const {
+    data: auctionWithAllowlist,
+  }: UseQueryResult<GetAuctionAllowlistQuery> = useGetAuctionAllowlistQuery(
+    {
+      endpoint: deployments[auction.chainId!].subgraphURL,
+      fetchParams,
+    },
+    { id: auction.id! },
+    { enabled: !!auction?.chainId && !!auction?.id },
+  );
+  const allowlist =
+    auctionWithAllowlist?.batchAuctionLot?.info?.allowlist.map(
+      (list) => list.values,
+    ) ?? [];
 
   // Check if the callback type is an allowlist, if not return default values
   const callbacksType = getCallbacksType(auction);
@@ -116,7 +138,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   if (isMerkle) {
     // Check if the account is on the allowlist
     canBid =
-      auction.auctionInfo?.allowlist
+      allowlist
         ?.map(
           (entry: string[]) => entry[0].toLowerCase() === user.toLowerCase(),
         )
@@ -130,10 +152,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       switch (callbacksType) {
         case CallbacksType.MERKLE_ALLOWLIST: {
           // Generate the proof for inclusion in callback data
-          const tree = StandardMerkleTree.of(
-            auction.auctionInfo?.allowlist ?? [],
-            ["address"],
-          );
+          const tree = StandardMerkleTree.of(allowlist ?? [], ["address"]);
           const proof = tree.getProof([user]) as `0x${string}`[];
           callbackData = encodeAbiParameters(parseAbiParameters("bytes32[]"), [
             proof,
@@ -146,10 +165,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
           limit = (cap ?? BigInt(0)) - spent;
 
           // Generate the proof for inclusion in callback data
-          const tree = StandardMerkleTree.of(
-            auction.auctionInfo?.allowlist ?? [],
-            ["address"],
-          );
+          const tree = StandardMerkleTree.of(allowlist ?? [], ["address"]);
           const proof = tree.getProof([user]) as `0x${string}`[];
           callbackData = encodeAbiParameters(parseAbiParameters("bytes32[]"), [
             proof,
@@ -162,17 +178,17 @@ export function useAllowlist(auction: Auction): AllowlistResult {
 
           // Get the allocation and calculate their remaining limit from that
           const allocation =
-            auction.auctionInfo?.allowlist?.find(
+            allowlist?.find(
               (entry: string[]) =>
                 entry[0].toLowerCase() === user?.toLowerCase(),
             )?.[1] ?? "0";
           limit = BigInt(allocation) - spent;
 
           // Generate the proof for inclusion in callback data
-          const tree = StandardMerkleTree.of(
-            auction.auctionInfo?.allowlist ?? [],
-            ["address", "uint256"],
-          );
+          const tree = StandardMerkleTree.of(allowlist ?? [], [
+            "address",
+            "uint256",
+          ]);
           const proof = tree.getProof([user, allocation]) as `0x${string}`[];
           callbackData = encodeAbiParameters(
             parseAbiParameters("bytes32[] proof,uint256 allocation"),

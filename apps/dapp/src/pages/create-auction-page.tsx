@@ -54,7 +54,7 @@ import {
   trimCurrency,
 } from "src/utils";
 
-import { AuctionInfo, AuctionType, CallbacksType } from "@repo/types";
+import { AuctionType, CallbacksType } from "@repo/types";
 
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
@@ -75,6 +75,7 @@ import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
+import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -332,7 +333,7 @@ export default function CreateAuctionPage() {
 
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
-      const auctionInfo: AuctionInfo = {
+      const auctionInfo: AuctionInfoWriteType = {
         key: `${values.auctionType}-${values.payoutToken.chainId}_${
           values.payoutToken.address
         }_${values.start.getTime()}`,
@@ -934,7 +935,7 @@ export default function CreateAuctionPage() {
       "payoutTokenBalance",
       formatUnits(payoutTokenBalance ?? BigInt(0), payoutTokenDecimals ?? 0),
     );
-  }, [payoutTokenBalance, payoutTokenDecimals]);
+  }, [payoutTokenBalance, payoutTokenDecimals, form]);
 
   const payoutTokenBalanceDecimal: number =
     payoutTokenBalance && payoutTokenDecimals

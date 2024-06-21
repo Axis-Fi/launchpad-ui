@@ -6,7 +6,7 @@ import {
   GlobeIcon,
 } from "@repo/ui";
 
-export type SocialURLs = {
+type SocialURLs = {
   discord?: string;
   twitter?: string;
   website?: string;
