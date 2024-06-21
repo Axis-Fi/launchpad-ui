@@ -34,7 +34,8 @@ const statuses: Record<
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
-  cancelled: () => <></>, // not displayed
+  aborted: AuctionSettled,
+  cancelled: AuctionSettled,
 };
 
 /** Displays Auction details and status*/
