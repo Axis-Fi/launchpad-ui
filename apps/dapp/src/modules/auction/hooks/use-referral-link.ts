@@ -6,16 +6,26 @@ import { Address } from "viem";
 export function useReferralLink(address?: Address) {
   const [link, setLink] = React.useState("");
 
-  async function generateAndCopyLink(path?: string) {
+  function generateAndCopyLink(path?: string) {
+    generateLink(path);
+    copyLink();
+  }
+
+  function generateLink(path?: string) {
     if (address) {
       const l = generateReferrerLink(address.toString(), path);
       setLink(l);
-      await navigator.clipboard.writeText(l);
     }
+  }
+
+  function copyLink() {
+    return navigator.clipboard.writeText(link);
   }
 
   return {
     generateAndCopyLink,
+    generateLink,
+    copyLink,
     link,
   };
 }
