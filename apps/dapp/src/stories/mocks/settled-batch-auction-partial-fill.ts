@@ -24,17 +24,23 @@ const getSettledBatchAuctionMock = (
       bidIds: [],
     },
     auctionHouse: "0xba00001bd857efd2df10da01dfe3a97cfa836cc9",
-    auctionInfo: {
+    info: {
       description:
         "First. Just like all those annoying trolls on the internet.",
-      links: {
-        payoutTokenLogo:
-          "https://www.logolynx.com/images/logolynx/68/68feadd5125aba3db46f1e4d77d54cfa.jpeg",
-        projectLogo:
-          "https://img.freepik.com/free-vector/flat-number-one-winner-label-design_1017-32244.jpg?w=740&t=st=1715185386~exp=1715185986~hmac=f9630e845779292d5039214949a642ec96bbabd08f1da2bff8226e2c75124a43",
-        twitter: "",
-        website: "https://numba.one",
-      },
+      links: [
+        {
+          linkId: "payoutTokenLogo",
+          url: "https://www.logolynx.com/images/logolynx/68/68feadd5125aba3db46f1e4d77d54cfa.jpeg",
+        },
+        {
+          linkId: "projectLogo",
+          url: "https://img.freepik.com/free-vector/flat-number-one-winner-label-design_1017-32244.jpg?w=740&t=st=1715185386~exp=1715185986~hmac=f9630e845779292d5039214949a642ec96bbabd08f1da2bff8226e2c75124a43",
+        },
+        {
+          linkId: "website",
+          url: "https://numba.one",
+        },
+      ],
       name: "First Auction",
     },
     auctionType: AuctionType.SEALED_BID,
