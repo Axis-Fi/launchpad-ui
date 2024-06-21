@@ -239,7 +239,7 @@ const handlers = {
 type AuctionMetricProps = Partial<PropsWithAuction> & {
   id: keyof typeof handlers;
   className?: string;
-} & Pick<MetricProps, "size">;
+} & Partial<Pick<MetricProps, "size">>;
 
 export function AuctionMetric(props: AuctionMetricProps) {
   const element = handlers[props.id];
