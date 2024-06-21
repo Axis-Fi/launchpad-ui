@@ -1,8 +1,7 @@
 import { initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
-import { z } from "zod";
-import { getData, storeData } from "./fleek";
-import { auctionInfoType } from "./types";
+import { storeData } from "./fleek";
+import { auctionInfoWriteType } from "./types";
 
 // Create express context
 const createContext = ({
@@ -15,24 +14,8 @@ type Context = Awaited<ReturnType<typeof createContext>>;
 const t = initTRPC.context<Context>().create();
 
 export const appRouter = t.router({
-  getAuctionInfo: t.procedure
-    .input(
-      z.object({
-        hash: z.string().regex(/^(Qm)?[0-9a-zA-Z]{44}$/), //Multihash format
-      }),
-    )
-    .output(auctionInfoType)
-    .query(async (opts) => {
-      const { input } = opts;
-      console.log("Fetching IPFS hash:", input.hash);
-
-      // Retrieve the object from IPFS
-      const response = await getData(input.hash);
-
-      return response;
-    }),
   storeAuctionInfo: t.procedure
-    .input(auctionInfoType)
+    .input(auctionInfoWriteType)
     .mutation(async (opts) => {
       const {
         input: { key, ...data },
