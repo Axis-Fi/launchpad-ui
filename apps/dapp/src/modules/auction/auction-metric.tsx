@@ -1,5 +1,6 @@
 import {
   AuctionDerivativeTypes,
+  AuctionType,
   CallbacksType,
   type Auction,
   type BatchAuction,
