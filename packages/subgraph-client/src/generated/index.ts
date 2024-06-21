@@ -504,9 +504,11 @@ export type AtomicAuctionInfo = {
   description?: Maybe<Scalars["String"]["output"]>;
   hash: Scalars["String"]["output"];
   id: Scalars["ID"]["output"];
+  key?: Maybe<Scalars["String"]["output"]>;
   links: Array<AtomicAuctionInfoLink>;
   lot: AtomicAuctionLot;
   name?: Maybe<Scalars["String"]["output"]>;
+  tagline?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type AtomicAuctionInfoAllowlistArgs = {
@@ -578,7 +580,9 @@ export enum AtomicAuctionInfoAllowlistEntry_OrderBy {
   auctionInfo__description = "auctionInfo__description",
   auctionInfo__hash = "auctionInfo__hash",
   auctionInfo__id = "auctionInfo__id",
+  auctionInfo__key = "auctionInfo__key",
   auctionInfo__name = "auctionInfo__name",
+  auctionInfo__tagline = "auctionInfo__tagline",
   Id = "id",
   Values = "values",
 }
@@ -586,7 +590,7 @@ export enum AtomicAuctionInfoAllowlistEntry_OrderBy {
 export type AtomicAuctionInfoLink = {
   auctionInfo: AtomicAuctionInfo;
   id: Scalars["ID"]["output"];
-  title: Scalars["String"]["output"];
+  linkId: Scalars["String"]["output"];
   url: Scalars["String"]["output"];
 };
 
@@ -623,27 +627,27 @@ export type AtomicAuctionInfoLink_Filter = {
   id_lte?: InputMaybe<Scalars["ID"]["input"]>;
   id_not?: InputMaybe<Scalars["ID"]["input"]>;
   id_not_in?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+  linkId?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_contains?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_gt?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_gte?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  linkId_lt?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_lte?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  linkId_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   or?: InputMaybe<Array<InputMaybe<AtomicAuctionInfoLink_Filter>>>;
-  title?: InputMaybe<Scalars["String"]["input"]>;
-  title_contains?: InputMaybe<Scalars["String"]["input"]>;
-  title_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  title_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_gt?: InputMaybe<Scalars["String"]["input"]>;
-  title_gte?: InputMaybe<Scalars["String"]["input"]>;
-  title_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  title_lt?: InputMaybe<Scalars["String"]["input"]>;
-  title_lte?: InputMaybe<Scalars["String"]["input"]>;
-  title_not?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  title_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  title_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   url?: InputMaybe<Scalars["String"]["input"]>;
   url_contains?: InputMaybe<Scalars["String"]["input"]>;
   url_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
@@ -671,9 +675,11 @@ export enum AtomicAuctionInfoLink_OrderBy {
   auctionInfo__description = "auctionInfo__description",
   auctionInfo__hash = "auctionInfo__hash",
   auctionInfo__id = "auctionInfo__id",
+  auctionInfo__key = "auctionInfo__key",
   auctionInfo__name = "auctionInfo__name",
+  auctionInfo__tagline = "auctionInfo__tagline",
   Id = "id",
-  Title = "title",
+  linkId = "linkId",
   Url = "url",
 }
 
@@ -730,6 +736,26 @@ export type AtomicAuctionInfo_Filter = {
   id_lte?: InputMaybe<Scalars["ID"]["input"]>;
   id_not?: InputMaybe<Scalars["ID"]["input"]>;
   id_not_in?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+  key?: InputMaybe<Scalars["String"]["input"]>;
+  key_contains?: InputMaybe<Scalars["String"]["input"]>;
+  key_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  key_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_gt?: InputMaybe<Scalars["String"]["input"]>;
+  key_gte?: InputMaybe<Scalars["String"]["input"]>;
+  key_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  key_lt?: InputMaybe<Scalars["String"]["input"]>;
+  key_lte?: InputMaybe<Scalars["String"]["input"]>;
+  key_not?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  key_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  key_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   links_?: InputMaybe<AtomicAuctionInfoLink_Filter>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<AtomicAuctionLot_Filter>;
@@ -773,6 +799,26 @@ export type AtomicAuctionInfo_Filter = {
   name_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   name_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   or?: InputMaybe<Array<InputMaybe<AtomicAuctionInfo_Filter>>>;
+  tagline?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_contains?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_gt?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_gte?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tagline_lt?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_lte?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tagline_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export enum AtomicAuctionInfo_OrderBy {
@@ -780,6 +826,7 @@ export enum AtomicAuctionInfo_OrderBy {
   Description = "description",
   Hash = "hash",
   Id = "id",
+  Key = "key",
   Links = "links",
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
@@ -813,6 +860,7 @@ export enum AtomicAuctionInfo_OrderBy {
   Lot__start = "lot__start",
   lot__wrapDerivative = "lot__wrapDerivative",
   Name = "name",
+  Tagline = "tagline",
 }
 
 export type AtomicAuctionLot = {
@@ -1310,7 +1358,9 @@ export enum AtomicAuctionLot_OrderBy {
   Info__description = "info__description",
   Info__hash = "info__hash",
   Info__id = "info__id",
+  Info__key = "info__key",
   Info__name = "info__name",
+  Info__tagline = "info__tagline",
   lastUpdatedBlockNumber = "lastUpdatedBlockNumber",
   lastUpdatedBlockTimestamp = "lastUpdatedBlockTimestamp",
   lastUpdatedDate = "lastUpdatedDate",
@@ -2717,9 +2767,11 @@ export type BatchAuctionInfo = {
   description?: Maybe<Scalars["String"]["output"]>;
   hash: Scalars["String"]["output"];
   id: Scalars["ID"]["output"];
+  key?: Maybe<Scalars["String"]["output"]>;
   links: Array<BatchAuctionInfoLink>;
   lot: BatchAuctionLot;
   name?: Maybe<Scalars["String"]["output"]>;
+  tagline?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type BatchAuctionInfoAllowlistArgs = {
@@ -2791,7 +2843,9 @@ export enum BatchAuctionInfoAllowlistEntry_OrderBy {
   auctionInfo__description = "auctionInfo__description",
   auctionInfo__hash = "auctionInfo__hash",
   auctionInfo__id = "auctionInfo__id",
+  auctionInfo__key = "auctionInfo__key",
   auctionInfo__name = "auctionInfo__name",
+  auctionInfo__tagline = "auctionInfo__tagline",
   Id = "id",
   Values = "values",
 }
@@ -2799,7 +2853,7 @@ export enum BatchAuctionInfoAllowlistEntry_OrderBy {
 export type BatchAuctionInfoLink = {
   auctionInfo: BatchAuctionInfo;
   id: Scalars["ID"]["output"];
-  title: Scalars["String"]["output"];
+  linkId: Scalars["String"]["output"];
   url: Scalars["String"]["output"];
 };
 
@@ -2836,27 +2890,27 @@ export type BatchAuctionInfoLink_Filter = {
   id_lte?: InputMaybe<Scalars["ID"]["input"]>;
   id_not?: InputMaybe<Scalars["ID"]["input"]>;
   id_not_in?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+  linkId?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_contains?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_gt?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_gte?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  linkId_lt?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_lte?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  linkId_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  linkId_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   or?: InputMaybe<Array<InputMaybe<BatchAuctionInfoLink_Filter>>>;
-  title?: InputMaybe<Scalars["String"]["input"]>;
-  title_contains?: InputMaybe<Scalars["String"]["input"]>;
-  title_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  title_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_gt?: InputMaybe<Scalars["String"]["input"]>;
-  title_gte?: InputMaybe<Scalars["String"]["input"]>;
-  title_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  title_lt?: InputMaybe<Scalars["String"]["input"]>;
-  title_lte?: InputMaybe<Scalars["String"]["input"]>;
-  title_not?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  title_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  title_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  title_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  title_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   url?: InputMaybe<Scalars["String"]["input"]>;
   url_contains?: InputMaybe<Scalars["String"]["input"]>;
   url_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
@@ -2884,9 +2938,11 @@ export enum BatchAuctionInfoLink_OrderBy {
   auctionInfo__description = "auctionInfo__description",
   auctionInfo__hash = "auctionInfo__hash",
   auctionInfo__id = "auctionInfo__id",
+  auctionInfo__key = "auctionInfo__key",
   auctionInfo__name = "auctionInfo__name",
+  auctionInfo__tagline = "auctionInfo__tagline",
   Id = "id",
-  Title = "title",
+  linkId = "linkId",
   Url = "url",
 }
 
@@ -2943,6 +2999,26 @@ export type BatchAuctionInfo_Filter = {
   id_lte?: InputMaybe<Scalars["ID"]["input"]>;
   id_not?: InputMaybe<Scalars["ID"]["input"]>;
   id_not_in?: InputMaybe<Array<Scalars["ID"]["input"]>>;
+  key?: InputMaybe<Scalars["String"]["input"]>;
+  key_contains?: InputMaybe<Scalars["String"]["input"]>;
+  key_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  key_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_gt?: InputMaybe<Scalars["String"]["input"]>;
+  key_gte?: InputMaybe<Scalars["String"]["input"]>;
+  key_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  key_lt?: InputMaybe<Scalars["String"]["input"]>;
+  key_lte?: InputMaybe<Scalars["String"]["input"]>;
+  key_not?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  key_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  key_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  key_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  key_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   links_?: InputMaybe<BatchAuctionInfoLink_Filter>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<BatchAuctionLot_Filter>;
@@ -2986,6 +3062,26 @@ export type BatchAuctionInfo_Filter = {
   name_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   name_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   or?: InputMaybe<Array<InputMaybe<BatchAuctionInfo_Filter>>>;
+  tagline?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_contains?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_gt?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_gte?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tagline_lt?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_lte?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  tagline_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  tagline_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export enum BatchAuctionInfo_OrderBy {
@@ -2993,6 +3089,7 @@ export enum BatchAuctionInfo_OrderBy {
   Description = "description",
   Hash = "hash",
   Id = "id",
+  Key = "key",
   Links = "links",
   Lot = "lot",
   lot__auctionHouse = "lot__auctionHouse",
@@ -3026,6 +3123,7 @@ export enum BatchAuctionInfo_OrderBy {
   Lot__start = "lot__start",
   lot__wrapDerivative = "lot__wrapDerivative",
   Name = "name",
+  Tagline = "tagline",
 }
 
 export type BatchAuctionLot = {
@@ -3588,7 +3686,9 @@ export enum BatchAuctionLot_OrderBy {
   Info__description = "info__description",
   Info__hash = "info__hash",
   Info__id = "info__id",
+  Info__key = "info__key",
   Info__name = "info__name",
+  Info__tagline = "info__tagline",
   lastUpdatedBlockNumber = "lastUpdatedBlockNumber",
   lastUpdatedBlockTimestamp = "lastUpdatedBlockTimestamp",
   lastUpdatedDate = "lastUpdatedDate",
@@ -6731,6 +6831,13 @@ export type BatchCommonFieldsFragment = {
   lastUpdatedTransactionHash: string;
   aborted?: { date: string } | null;
   cancelled?: { date: string } | null;
+  info?: {
+    key?: string | null;
+    name?: string | null;
+    description?: string | null;
+    tagline?: string | null;
+    links: Array<{ linkId: string; url: string }>;
+  } | null;
   linearVesting?: {
     id: string;
     startDate: string;
@@ -6842,6 +6949,13 @@ export type GetAuctionLotsQuery = {
     maxBidId: string;
     aborted?: { date: string } | null;
     cancelled?: { date: string } | null;
+    info?: {
+      key?: string | null;
+      name?: string | null;
+      description?: string | null;
+      tagline?: string | null;
+      links: Array<{ linkId: string; url: string }>;
+    } | null;
     linearVesting?: {
       id: string;
       startDate: string;
@@ -6952,6 +7066,13 @@ export type GetBatchAuctionLotQuery = {
     maxBidId: string;
     aborted?: { date: string } | null;
     cancelled?: { date: string } | null;
+    info?: {
+      key?: string | null;
+      name?: string | null;
+      description?: string | null;
+      tagline?: string | null;
+      links: Array<{ linkId: string; url: string }>;
+    } | null;
     linearVesting?: {
       id: string;
       startDate: string;
@@ -7035,6 +7156,16 @@ export type GetInstalledModulesQuery = {
   }>;
 };
 
+export type GetAuctionAllowlistQueryVariables = Exact<{
+  id: Scalars["ID"]["input"];
+}>;
+
+export type GetAuctionAllowlistQuery = {
+  batchAuctionLot?: {
+    info?: { allowlist: Array<{ values: Array<string> }> } | null;
+  } | null;
+};
+
 export const BatchCommonFieldsFragmentDoc = `
     fragment BatchCommonFields on BatchAuctionLot {
   id
@@ -7053,6 +7184,16 @@ export const BatchCommonFieldsFragmentDoc = `
   createdTransactionHash
   capacityInitial
   start
+  info {
+    key
+    name
+    description
+    tagline
+    links {
+      linkId
+      url
+    }
+  }
   conclusion
   auctionType
   seller
@@ -7278,6 +7419,50 @@ export const useGetInstalledModulesQuery = <
       dataSource.endpoint,
       dataSource.fetchParams || {},
       GetInstalledModulesDocument,
+      variables,
+    ),
+    ...options,
+  });
+};
+
+export const GetAuctionAllowlistDocument = `
+    query getAuctionAllowlist($id: ID!) {
+  batchAuctionLot(id: $id) {
+    info {
+      allowlist {
+        values
+      }
+    }
+  }
+}
+    `;
+
+export const useGetAuctionAllowlistQuery = <
+  TData = GetAuctionAllowlistQuery,
+  TError = unknown,
+>(
+  dataSource: { endpoint: string; fetchParams?: RequestInit },
+  variables: GetAuctionAllowlistQueryVariables,
+  options?: Omit<
+    UseQueryOptions<GetAuctionAllowlistQuery, TError, TData>,
+    "queryKey"
+  > & {
+    queryKey?: UseQueryOptions<
+      GetAuctionAllowlistQuery,
+      TError,
+      TData
+    >["queryKey"];
+  },
+) => {
+  return useQuery<GetAuctionAllowlistQuery, TError, TData>({
+    queryKey: ["getAuctionAllowlist", variables],
+    queryFn: fetcher<
+      GetAuctionAllowlistQuery,
+      GetAuctionAllowlistQueryVariables
+    >(
+      dataSource.endpoint,
+      dataSource.fetchParams || {},
+      GetAuctionAllowlistDocument,
       variables,
     ),
     ...options,

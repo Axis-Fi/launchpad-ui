@@ -15,6 +15,17 @@ fragment BatchCommonFields on BatchAuctionLot {
   createdTransactionHash
   capacityInitial
   start
+  info {
+    key
+    name
+    description
+    tagline
+    links {
+      linkId
+      url
+    }
+    # allowlist # don't pull this on the auction list, just on specific auction request, it's too big
+  }
   conclusion
   auctionType
   seller
@@ -142,5 +153,15 @@ query getInstalledModules {
     keycode
     address
     auctionHouse
+  }
+}
+
+query getAuctionAllowlist($id: ID!) {
+  batchAuctionLot(id: $id) {
+    info {
+      allowlist {
+        values
+      }
+    }
   }
 }
