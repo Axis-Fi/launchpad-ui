@@ -59,7 +59,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     const remainingQuoteTokens =
       capacityInQuoteTokens -
       parseUnits(
-        (auctionFormatted.totalBidAmount ?? "0").replace(/,/g, ""),
+        (auctionFormatted.totalBidAmountFormatted ?? "0").replace(/,/g, ""),
         auction.quoteToken.decimals,
       );
 
@@ -67,7 +67,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   }, [
     auction.capacityInitial,
     auctionFormatted,
-    auctionFormatted?.totalBidAmount,
+    auctionFormatted?.totalBidAmountFormatted,
     isFixedPriceBatch,
     auction.baseToken.decimals,
     auction.quoteToken.decimals,
@@ -229,7 +229,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
-  const actionKeyword = isEMP ? "Bid" : "Purchase";
+  const actionKeyword = "Bid";
 
   const amountInInvalid =
     parsedAmountIn > (quoteTokenBalance ?? BigInt(0)) || // greater than balance
@@ -281,14 +281,12 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         ? allowlistLimit
         : maxBidAmount;
 
-  // TODO calculate coin rank
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
 
   return (
     <div className="flex justify-between gap-x-8">
       <div className="w-2/3 space-y-4">
         <AuctionLaunchMetrics auction={auction} />
-
         <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
@@ -395,7 +393,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                             Bid encrypted and stored successfully!
                           </>
                         ) : (
-                          <p>Purchase completed!</p>
+                          <p>Bid stored successfully!</p>
                         )}
                       </div>
                     ),
@@ -441,6 +439,6 @@ function getConfirmCardText(
 ) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const empText = `You're about to place a bid of ${amountIn} ${auction.quoteToken.symbol}`;
-  const fpText = `You're about to purchase ${amountOut} ${auction.baseToken.symbol} for ${amountIn} ${auction.quoteToken.symbol}`;
+  const fpText = `You're about to place a bid of ${amountOut} ${auction.baseToken.symbol} for ${amountIn} ${auction.quoteToken.symbol}`;
   return isEMP ? empText : fpText;
 }

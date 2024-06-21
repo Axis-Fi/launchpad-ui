@@ -122,7 +122,7 @@ const getSettledBatchAuctionMock = (
       startDistance: "7 days",
       startFormatted: "2024.05.08 - 17:35 GMT+1",
       tokenPairSymbols: "USDB/1ST",
-      totalBidAmount: "202,467.80",
+      totalBidAmountFormatted: "202,467.80",
       totalBids: 4,
       totalBidsClaimed: 4,
       totalBidsDecrypted: 0,

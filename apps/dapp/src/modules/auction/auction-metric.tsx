@@ -12,6 +12,55 @@ import { getCallbacksType } from "./utils/get-callbacks-type";
 import { getMinFilled, getPrice, hasDerivative } from "./utils/auction-details";
 import { getDaysBetweenDates } from "utils/date";
 
+const getTargetRaise = (
+  auction: Auction,
+  price?: number,
+): number | undefined => {
+  if (price === undefined) return undefined;
+
+  return Number(auction.capacityInitial) * price;
+};
+
+const getMinRaise = (
+  price?: number,
+  minFilled?: number,
+): number | undefined => {
+  if (price === undefined || minFilled === undefined) return undefined;
+
+  return minFilled * price;
+};
+
+const getMaxTokensLaunched = (
+  totalBidAmount?: number,
+  targetRaise?: number,
+  price?: number,
+): number | undefined => {
+  if (
+    totalBidAmount === undefined ||
+    price === undefined ||
+    price === 0 ||
+    targetRaise === undefined
+  )
+    return undefined;
+
+  // The total bid amount can exceed the target raise, but the number of tokens launched should be capped at the target raise.
+  const bidAmount = Math.min(totalBidAmount, targetRaise);
+
+  return bidAmount / price;
+};
+
+const getClearingPrice = (auction: Auction): number | undefined => {
+  if (auction.auctionType !== AuctionType.SEALED_BID) return getPrice(auction);
+
+  // Check that the auction cleared
+  if (!auction.formatted?.cleared) return undefined;
+
+  const marginalPrice = auction.formatted?.marginalPriceDecimal;
+  if (marginalPrice === undefined) return undefined;
+
+  return marginalPrice;
+};
+
 // TODO add DTL proceeds as a metric. Probably requires loading the callback configuration into the auction type.
 
 const handlers = {
@@ -69,9 +118,9 @@ const handlers = {
     label: "Target Raise",
     handler: (auction: Auction) => {
       const price = getPrice(auction);
-      if (!price) return undefined;
 
-      const targetRaise = Number(auction.capacityInitial) * Number(price);
+      const targetRaise = getTargetRaise(auction, price);
+      if (targetRaise === undefined) return undefined;
 
       return `${trimCurrency(targetRaise)} ${auction.quoteToken.symbol}`;
     },
@@ -82,9 +131,8 @@ const handlers = {
       const price = getPrice(auction);
       const minFilled = getMinFilled(auction);
 
-      if (!price || !minFilled) return undefined;
-
-      const minRaise = minFilled * price;
+      const minRaise = getMinRaise(price, minFilled);
+      if (minRaise === undefined) return undefined;
 
       return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
     },
@@ -108,7 +156,7 @@ const handlers = {
   totalBidAmount: {
     label: "Total Bid Amount",
     handler: (auction: Auction) =>
-      `${auction.formatted?.totalBidAmount} ${auction.quoteToken.symbol}`,
+      `${auction.formatted?.totalBidAmountFormatted} ${auction.quoteToken.symbol}`,
   },
 
   capacity: {
@@ -232,6 +280,69 @@ const handlers = {
         default:
           return "Public";
       }
+    },
+  },
+  result: {
+    label: "Result",
+    handler: (auction: Auction) => {
+      const price = getPrice(auction);
+      const minFilled = getMinFilled(auction);
+
+      const targetRaise = getTargetRaise(auction, price);
+      if (targetRaise === undefined) return undefined;
+
+      const minRaise = getMinRaise(price, minFilled);
+      if (minRaise === undefined) return undefined;
+
+      // Total bid amount will be undefined if the data hasn't been loaded yet, but 0 if there are no bids.
+      const totalBidAmount = auction.formatted?.totalBidAmountDecimal;
+      if (totalBidAmount === undefined) return undefined;
+
+      if (totalBidAmount >= targetRaise) return "Target Met";
+
+      if (totalBidAmount >= minRaise) return "Min Raise Met";
+
+      return "Failed";
+    },
+  },
+  maxTokensLaunched: {
+    label: "Max Tokens Launched",
+    handler: (auction: Auction) => {
+      const price = getPrice(auction);
+      const targetRaise = getTargetRaise(auction, price);
+      const totalBidAmount = auction.formatted?.totalBidAmountDecimal;
+
+      const maxTokensLaunched = getMaxTokensLaunched(
+        totalBidAmount,
+        targetRaise,
+        price,
+      );
+      if (maxTokensLaunched === undefined) return undefined;
+
+      return `${shorten(maxTokensLaunched)} ${auction.baseToken.symbol}`;
+    },
+  },
+  clearingPrice: {
+    label: "Clearing Price",
+    handler: (auction: Auction) => {
+      const clearingPrice = getClearingPrice(auction);
+      if (clearingPrice === undefined) return undefined;
+
+      return `${trimCurrency(clearingPrice)} ${auction.quoteToken.symbol}`;
+    },
+  },
+  tokensLaunched: {
+    label: "Tokens Launched",
+    handler: (auction: Auction) => {
+      const clearingPrice = getClearingPrice(auction);
+      if (clearingPrice === undefined || clearingPrice === 0) return undefined;
+
+      const purchased = auction.formatted?.purchasedDecimal;
+      if (purchased === undefined) return undefined;
+
+      const tokensLaunched = purchased / clearingPrice;
+
+      return `${trimCurrency(tokensLaunched)} ${auction.baseToken.symbol}`;
     },
   },
 };

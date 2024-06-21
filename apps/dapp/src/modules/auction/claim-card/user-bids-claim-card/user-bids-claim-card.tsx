@@ -35,13 +35,15 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
 
   const buttonText =
     userTotalSuccessfulBidAmount > 0 ? "Claim winnings" : "Claim refund";
+  const badgeText = userTotalSuccessfulBidAmount > 0 ? "You Won!" : "You Lost";
+  const badgeColour = userTotalSuccessfulBidAmount > 0 ? "active" : "alert";
 
   return (
     <div className="gap-y-md flex flex-col">
       <Card
         title="Claim"
         className="w-[496px]"
-        headerRightElement={<Badge color="active">You Won!</Badge>}
+        headerRightElement={<Badge color={badgeColour}>{badgeText}</Badge>}
       >
         <RequiresChain chainId={auction.chainId}>
           <div className="gap-y-md flex flex-col">

@@ -86,6 +86,7 @@ export type AuctionFormattedInfo = {
   endDistance: string;
   rate?: string;
   purchased: string;
+  purchasedDecimal: number;
   sold: string;
   minPrice?: string;
   minBidSize?: string;
@@ -96,16 +97,31 @@ export type AuctionFormattedInfo = {
   auctionType?: string;
 } & Partial<EMPFormattedInfo>;
 
-//TODO: add remaining fields
-type EMPFormattedInfo = {
+export type EMPFormattedInfo = {
   marginalPrice: string;
+  marginalPriceDecimal: number;
   totalBids: number;
   totalBidsDecrypted: number;
   totalBidsClaimed: number;
-  totalBidAmount: string;
+  totalBidAmountFormatted: string;
+  totalBidAmountDecimal: number;
   minFilled: string;
   uniqueBidders: number;
   cleared: boolean;
+  rate: string;
+  minPrice: string;
+  minBidSize: string;
+};
+
+export type FPBFormattedInfo = {
+  price: string;
+  totalBids: number;
+  totalBidsClaimed: number;
+  totalBidAmountFormatted: string;
+  totalBidAmountDecimal: number;
+  uniqueBidders: number;
+  cleared: boolean;
+  minFilled: string;
 };
 
 export type PropsWithAuction = {

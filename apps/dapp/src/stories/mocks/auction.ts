@@ -222,7 +222,7 @@ const getAuctionMock = (
       rate: "0",
       minPrice: "0",
       minBidSize: "0",
-      totalBidAmount: "27,200.00",
+      totalBidAmountFormatted: "27,200.00",
       totalBids: 6,
       totalBidsDecrypted: 0,
       totalBidsClaimed: 0,

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card, Metric } from "@repo/ui";
+import { Badge, Button, Card, Metric, Progress, Text } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -9,6 +9,7 @@ import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { calculateAuctionProgress } from "../utils/get-auction-progress";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
 import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
@@ -47,6 +48,8 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     callback: auction.callbacks,
   });
 
+  const progress = calculateAuctionProgress(auction);
+
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
   return (
@@ -66,9 +69,19 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
             </div>
           }
         >
+          <div className="mb-4">
+            <Text uppercase size="xs" spaced>
+              Auction Concluded
+            </Text>
+            <Progress value={progress} className="mt-1" />
+          </div>
           <AuctionMetrics>
+            <AuctionMetric auction={auction} id="targetRaise" />
+            <AuctionMetric auction={auction} id="minRaise" />
             <AuctionMetric auction={auction} id="totalBids" />
             <AuctionMetric auction={auction} id="totalBidAmount" />
+            <AuctionMetric auction={auction} id="result" />
+            <AuctionMetric auction={auction} id="maxTokensLaunched" />
             <AuctionMetric auction={auction} id="started" />
             <AuctionMetric auction={auction} id="ended" />
             {dtlCallbackConfiguration && (
@@ -104,9 +117,20 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
             }
           }}
         />
-        <Card title="Decrypted">
-          <div className="bg-secondary text-foreground flex justify-center rounded-sm p-2">
-            <p>All bids have been decrypted</p>
+        <Card
+          title="Decrypted"
+          className="w-[496px]"
+          headerRightElement={<Badge color="ghost">Auction Closed</Badge>}
+        >
+          <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">
+            <div className="flex flex-col items-center gap-2">
+              <img
+                className="w-[92.351]px h-[80px]"
+                src="/images/axis-logo.svg"
+                alt="Axis Logo"
+              />
+              <Text size="xl">All bids have been decrypted</Text>
+            </div>
           </div>
           {hasCallbacks && (
             <div>
