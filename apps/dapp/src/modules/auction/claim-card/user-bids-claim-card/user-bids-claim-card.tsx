@@ -3,38 +3,29 @@ import { useAccount } from "wagmi";
 import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "lucide-react";
 
-import { Badge, Button, Card, Metric } from "@repo/ui";
+import { Badge, Button, Card } from "@repo/ui";
 import type { BatchAuction, PropsWithAuction } from "@repo/types";
 import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
-import { shorten } from "utils/number";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
 import { BidInfoCard } from "./bid-info-card";
+import { BidOutcome } from "../bid-outcome";
 
 export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
   const auction = _auction as BatchAuction;
   const { address } = useAccount();
   const [isTxnDialogOpen, setTxnDialogOpen] = useState(false);
   const claimBidsTxn = useClaimBids(auction);
+
   const userBids = auction.bids.filter(
     (bid) => bid.bidder.toLowerCase() === address?.toLowerCase(),
   );
-  const userTotalBidAmount = userBids.reduce(
-    (acc, bid) => acc + Number(bid.amountIn ?? 0),
-    0,
-  );
+
   const userTotalSuccessfulBidAmount = userBids.reduce(
     (acc, bid) => acc + Number(bid.settledAmountIn ?? 0),
     0,
   );
-  const userTotalUnsuccessfulBidAmount = userBids.reduce(
-    (acc, bid) => acc + Number(bid.settledAmountInRefunded ?? 0),
-    0,
-  );
-  const userTotalTokensObtained = userBids.reduce(
-    (acc, bid) => acc + Number(bid.settledAmountOut ?? 0),
-    0,
-  );
+
   const userHasClaimed = userBids.every(
     (bid) => bid.status === "claimed" || bid.status === "refunded",
   );
@@ -56,26 +47,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
       >
         <RequiresChain chainId={auction.chainId}>
           <div className="gap-y-md flex flex-col">
-            <div className="bg-surface-tertiary p-sm rounded">
-              <Metric size="l" label="You Bid">
-                {shorten(userTotalBidAmount)} {auction.quoteToken.symbol}
-              </Metric>
-            </div>
-
-            {userTotalUnsuccessfulBidAmount > 0 && (
-              <div className="bg-surface-tertiary p-sm rounded">
-                <Metric size="l" label="Your Refund">
-                  {shorten(userTotalUnsuccessfulBidAmount)}{" "}
-                  {auction.quoteToken.symbol}
-                </Metric>
-              </div>
-            )}
-
-            <div className="bg-surface-tertiary p-sm rounded">
-              <Metric size="l" label="You Get">
-                {shorten(userTotalTokensObtained)} {auction.baseToken.symbol}
-              </Metric>
-            </div>
+            <BidOutcome auction={auction} />
 
             {!userHasClaimed && (
               <Button
@@ -99,7 +71,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
         <TransactionDialog
           open={isTxnDialogOpen}
           signatureMutation={claimBidsTxn.claimTx}
-          error={claimBidsTxn.claimTx.error}
+          error={claimBidsTxn.claimCall.error || claimBidsTxn.claimTx.error} // Catch both simulation and execution errors
           onConfirm={claimBidsTxn.handleClaim}
           mutation={claimBidsTxn.claimReceipt}
           chainId={auction.chainId}

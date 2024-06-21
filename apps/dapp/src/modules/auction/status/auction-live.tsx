@@ -1,5 +1,5 @@
 import { Button, Card, Metric, Text } from "@repo/ui";
-import { parseUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
@@ -12,14 +12,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React, { useEffect, useState } from "react";
-import { AuctionMetricsContainer } from "../auction-metrics-container";
 import { AuctionLaunchMetrics } from "../auction-launch-metrics";
-import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
+import { TokenInfoCard } from "../token-info-card";
 import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
-import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 import useERC20Balance from "loaders/use-erc20-balance";
 
 const schema = z.object({
@@ -171,7 +169,10 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) <=
               maxBidAmount,
           {
-            message: `Exceeds remaining capacity of ${maxBidAmount} ${auction.quoteToken.symbol}`,
+            message: `Exceeds remaining capacity of ${formatUnits(
+              maxBidAmount ?? 0n,
+              auction.quoteToken.decimals,
+            )} ${auction.quoteToken.symbol}`,
             path: ["quoteTokenAmount"],
           },
         ),
@@ -230,13 +231,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const actionKeyword = "Bid";
 
-  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
-    chainId: auction.chainId,
-    lotId: auction.lotId,
-    baseTokenDecimals: auction.baseToken.decimals,
-    callback: auction.callbacks,
-  });
-
   const amountInInvalid =
     parsedAmountIn > (quoteTokenBalance ?? BigInt(0)) || // greater than balance
     parsedAmountIn === undefined ||
@@ -293,47 +287,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     <div className="flex justify-between gap-x-8">
       <div className="w-2/3 space-y-4">
         <AuctionLaunchMetrics auction={auction} />
-
-        <Card title="Token Info">
-          {isEMP && (
-            <AuctionMetricsContainer className="mt-4" auction={auction}>
-              <AuctionMetric id="minPriceFDV" />
-              <AuctionMetric id="totalSupply" />
-              <AuctionMetric id="auctionedSupply" />
-              <AuctionMetric id="vestingDuration" />
-              {dtlCallbackConfiguration && (
-                // TODO fix alignment of metric title
-                <Metric
-                  label="Direct to Liquidity"
-                  size="m"
-                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
-                  className=""
-                >
-                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
-                </Metric>
-              )}
-            </AuctionMetricsContainer>
-          )}
-          {isFixedPriceBatch && (
-            <AuctionMetricsContainer className="mt-4" auction={auction}>
-              <AuctionMetric id="fixedPriceFDV" />
-              <AuctionMetric id="totalSupply" />
-              <AuctionMetric id="auctionedSupply" />
-              <AuctionMetric id="vestingDuration" />
-              {dtlCallbackConfiguration && (
-                // TODO fix alignment of metric title
-                <Metric
-                  label="Direct to Liquidity"
-                  size="m"
-                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
-                  className=""
-                >
-                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
-                </Metric>
-              )}
-            </AuctionMetricsContainer>
-          )}
-        </Card>
+        <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
 

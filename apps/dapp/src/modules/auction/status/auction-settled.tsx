@@ -7,6 +7,7 @@ import { ProjectInfoCard } from "../project-info-card";
 import { ClaimCard } from "../claim-card";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
+import { TokenInfoCard } from "../token-info-card";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
@@ -18,10 +19,9 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   });
 
   return (
-    <div className="flex flex-row gap-x-[32px]">
-      <div className="flex flex-grow flex-col justify-between gap-y-[16px]">
+    <div className="flex justify-between gap-x-8">
+      <div className="w-2/3 space-y-4">
         {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
-
         <Card
           title="Launch Info"
           headerRightElement={
@@ -45,7 +45,6 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
             <AuctionMetric auction={auction} id="duration" />
             <AuctionMetric auction={auction} id="derivative" />
             {dtlCallbackConfiguration && (
-              // TODO fix alignment of metric title
               <Metric
                 label="Direct to Liquidity"
                 size="m"
@@ -58,11 +57,10 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
           </AuctionMetrics>
         </Card>
 
+        <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
-      <div className={"flex w-[496px] items-start"}>
-        <ClaimCard auction={auction} />
-      </div>
+      <ClaimCard auction={auction} />
     </div>
   );
 }

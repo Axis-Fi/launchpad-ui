@@ -105,17 +105,20 @@ const cols = [
       const amountOut = info.row.original.settledAmountOut;
       const isRefunded = bidStatus === "claimed" && !amountOut;
       const status = isRefunded ? "refunded" : bidOutcome;
-      const statusColour = status === "won" ? "green" : "red";
+      const statusColour =
+        status === "won" || status === "won - partial fill"
+          ? "text-green-500"
+          : "text-red-500";
 
       return (
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col">
           <BlockExplorerLink
             chainId={info.row.original.auction.chainId}
             address={info.getValue()}
             icon={true}
             trim
           />
-          <Text size="xs" className={`text-${statusColour}-500`}>
+          <Text size="xs" className={statusColour}>
             {status}
           </Text>
         </div>

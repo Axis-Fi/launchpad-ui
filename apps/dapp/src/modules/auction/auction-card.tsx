@@ -14,7 +14,10 @@ type AuctionCardConditionalProps =
   | { loading?: false; auction: AuctionListed };
 
 type AuctionCardProps = React.HTMLAttributes<HTMLDivElement> & {
+  /** Whether the card renders in list or grid view */
   isGrid?: boolean;
+  /** Added to control the button in previews */
+  disabledViewButton?: boolean;
 } & AuctionCardConditionalProps;
 
 export function AuctionCard({ auction, ...props }: AuctionCardProps) {
@@ -37,12 +40,16 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
         >
           <AuctionCardBanner
             //TODO: replace with a better named property, likely projectBanner
-            image={auction.auctionInfo?.links?.projectLogo}
+            image={auction.auctionInfo?.links?.projectBanner}
             deadline={auction.formatted?.endDate}
             chain={getChainById(auction?.chainId)}
             isGrid={props.isGrid}
           />
-          <AuctionCardDetails isGrid={props.isGrid} auction={auction} />
+          <AuctionCardDetails
+            isGrid={props.isGrid}
+            auction={auction}
+            disabledViewButton={props.disabledViewButton}
+          />
         </div>
       )}
     </Card>
@@ -52,6 +59,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
 function AuctionCardDetails(
   props: PropsWithAuction & {
     isGrid?: boolean;
+    disabledViewButton?: boolean;
   },
 ) {
   const isEMP = props.auction.auctionType === AuctionType.SEALED_BID;
@@ -85,7 +93,7 @@ function AuctionCardDetails(
             {props.auction.auctionInfo?.description}
           </Text>
           <Text color="secondary" className="group-hover:hidden">
-            {props.auction.auctionInfo?.description}
+            {props.auction.auctionInfo?.tagline}
           </Text>
         </div>
       </div>
@@ -121,6 +129,8 @@ function AuctionCardDetails(
         to={`/auction/${props.auction.auctionType}/${props.auction.id}`}
       >
         <Button
+          disabled={props.disabledViewButton}
+          size={props.isGrid ? "sm" : "lg"}
           className={cn(
             "self-end uppercase transition-all ",
             props.isGrid &&

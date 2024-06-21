@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
-import { Badge, Button, Skeleton, Text } from "@repo/ui";
+import { Badge, Button, Skeleton, Text, cn } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
   AuctionType,
+  Auction,
 } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { PageHeader } from "modules/app/page-header";
@@ -22,6 +23,7 @@ import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 import { getCountdown } from "utils/date";
 import { useEffect, useState } from "react";
 import { BidList } from "modules/auction/bid-list";
+import React from "react";
 
 const statuses: Record<
   AuctionStatus,
@@ -32,7 +34,8 @@ const statuses: Record<
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
-  cancelled: () => <></>, // not displayed
+  aborted: AuctionSettled,
+  cancelled: AuctionSettled,
 };
 
 /** Displays Auction details and status*/
@@ -42,8 +45,8 @@ export default function AuctionPage() {
   const {
     result: auction,
     isLoading: isAuctionLoading,
-    refetch,
     isRefetching,
+    refetch,
   } = useAuction(id!, type as AuctionType);
 
   // Countdown
@@ -77,21 +80,70 @@ export default function AuctionPage() {
       : statuses[auction.status];
 
   return (
+    <PageContainer>
+      <PageHeader backNavigationPath="/#" backNavigationText="Back to Launches">
+        <ReloadButton refetching={isRefetching} onClick={() => refetch?.()} />
+      </PageHeader>
+
+      <AuctionPageView
+        auction={auction}
+        isOngoing={isOngoing}
+        isAuctionLoading={isAuctionLoading}
+        timeRemaining={timeRemaining}
+      >
+        <AuctionElement auction={auction} />
+      </AuctionPageView>
+      {auction.status !== "created" && <BidList auction={auction} />}
+    </PageContainer>
+  );
+}
+
+export function AuctionPageView({
+  auction,
+  isAuctionLoading,
+  isOngoing,
+  timeRemaining,
+  ...props
+}: React.PropsWithChildren<{
+  auction: Auction;
+  isAuctionLoading?: boolean;
+  isOngoing?: boolean;
+  timeRemaining?: string | null;
+}>) {
+  const [textColor, setTextColor] = React.useState<string>();
+
+  return (
     <>
       <ImageBanner
         isLoading={isAuctionLoading}
-        imgUrl={auction.auctionInfo?.links?.projectLogo}
+        imgUrl={auction.auctionInfo?.links?.projectBanner}
+        onTextColorChange={setTextColor}
       >
-        <div className="flex h-full w-full flex-row flex-wrap">
+        <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
           <div className="flex w-full flex-row justify-end">
             <div className="mr-4 mt-4">
               <AuctionStatusBadge status={auction.status} />
             </div>
           </div>
           <div className="flex w-full flex-col justify-end">
-            <div className="self-center align-bottom">
-              <Text size="7xl" mono>
+            <div className="self-center text-center align-bottom">
+              <Text
+                size="7xl"
+                mono
+                className={cn(textColor === "light" && "text-background")}
+              >
                 {auction.auctionInfo?.name}
+              </Text>
+
+              <Text
+                size="3xl"
+                color="secondary"
+                className={cn(
+                  "mx-auto w-fit text-nowrap",
+                  textColor === "light" && "text-background",
+                )}
+              >
+                {auction.auctionInfo?.tagline}
               </Text>
             </div>
             <div className="mb-4 ml-4 self-start">
@@ -111,19 +163,7 @@ export default function AuctionPage() {
           </div>
         </div>
       </ImageBanner>
-
-      <PageContainer>
-        <PageHeader
-          backNavigationPath="/#"
-          backNavigationText="Back to Launches"
-        >
-          <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
-        </PageHeader>
-
-        <AuctionElement auction={auction} />
-
-        <BidList auction={auction} />
-      </PageContainer>
+      {props.children}
     </>
   );
 }

@@ -145,14 +145,12 @@ export default function AuctionListPage() {
             color="secondary"
             className="mx-auto w-fit text-nowrap"
           >
-            send copy plis mi familia
+            Experience the New Era of Token Launches
           </Text>
           <div className="mx-auto mt-6 flex w-min gap-x-2">
             <ScrollLink to="auctions" offset={-10} smooth={true}>
               <Button
-                onClick={() => {
-                  handleSorting("created");
-                }}
+                onClick={() => handleSorting("created")}
                 className="uppercase"
                 size="lg"
               >

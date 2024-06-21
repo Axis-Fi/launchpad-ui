@@ -1,7 +1,5 @@
-import { differenceInDays } from "date-fns";
 import {
-  AuctionDerivatives,
-  AuctionType,
+  AuctionDerivativeTypes,
   CallbacksType,
   type Auction,
   type BatchAuction,
@@ -11,35 +9,8 @@ import { Metric, MetricProps, trimAddress } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
 import { getCallbacksType } from "./utils/get-callbacks-type";
-
-const getPrice = (auction: Auction): number | undefined => {
-  // Fixed Price Batch
-  if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
-    return Number((auction as BatchAuction).fixedPrice?.price);
-  }
-
-  // EMP
-  if (auction.auctionType === AuctionType.SEALED_BID) {
-    return Number((auction as BatchAuction).encryptedMarginalPrice?.minPrice);
-  }
-
-  // Unknown
-  return undefined;
-};
-
-const getMinFilled = (auction: Auction): number | undefined => {
-  // Fixed Price Batch
-  if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
-    return Number((auction as BatchAuction).fixedPrice?.minFilled);
-  }
-
-  // EMP
-  if (auction.auctionType === AuctionType.SEALED_BID) {
-    return Number((auction as BatchAuction).encryptedMarginalPrice?.minFilled);
-  }
-
-  return undefined;
-};
+import { getMinFilled, getPrice, hasDerivative } from "./utils/auction-details";
+import { getDaysBetweenDates } from "utils/date";
 
 const getTargetRaise = (
   auction: Auction,
@@ -96,13 +67,11 @@ const handlers = {
   derivative: {
     label: "Derivative",
     handler: (auction: Auction) => {
-      switch (auction.derivativeType) {
-        case AuctionDerivatives.LINEAR_VESTING: {
-          return "Vesting";
-        }
-        default:
-          return "None";
+      if (hasDerivative(AuctionDerivativeTypes.LINEAR_VESTING, auction)) {
+        return "Linear Vesting";
       }
+
+      return "None";
     },
   },
   minFill: {
@@ -129,11 +98,13 @@ const handlers = {
   duration: {
     label: "Duration",
     handler: (auction: Auction) => {
-      const days = differenceInDays(
+      const days = getDaysBetweenDates(
         new Date(+auction.conclusion * 1000),
         new Date(+auction.start * 1000),
       );
-      return `${days} days`;
+
+      //The minimum an auction can run for is 24h
+      return `${days || 1} days`;
     },
   },
   totalRaised: {
@@ -238,12 +209,10 @@ const handlers = {
         return "None";
       }
 
-      // TODO: move to formatters
-      const duration = Math.floor(
-        (Number(auction.linearVesting.expiryTimestamp) -
-          Number(auction.linearVesting.startTimestamp)) /
-          86400,
-      );
+      const start = new Date(+auction.linearVesting.startTimestamp * 1000);
+      const end = new Date(+auction.linearVesting.expiryTimestamp * 1000);
+
+      const duration = getDaysBetweenDates(end, start);
 
       return `${duration} days`;
     },
@@ -381,7 +350,7 @@ const handlers = {
 type AuctionMetricProps = Partial<PropsWithAuction> & {
   id: keyof typeof handlers;
   className?: string;
-} & Pick<MetricProps, "size">;
+} & Partial<Pick<MetricProps, "size">>;
 
 export function AuctionMetric(props: AuctionMetricProps) {
   const element = handlers[props.id];

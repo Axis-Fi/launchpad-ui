@@ -31,16 +31,18 @@ export type AuctionStatus =
   | "live"
   | "concluded"
   | "decrypted"
+  | "aborted"
   | "settled";
 
 export type AuctionInfo = {
   key?: string;
   name?: string;
   description?: string;
-  shortDescription?: string;
+  tagline?: string;
   allowlist?: string[][];
   links?: {
     projectLogo?: string;
+    projectBanner?: string;
     website?: string;
     twitter?: string;
     discord?: string;
@@ -120,16 +122,6 @@ export type FPBFormattedInfo = {
   uniqueBidders: number;
   cleared: boolean;
   minFilled: string;
-};
-
-export type LinearVestingData = {
-  start: number;
-  expiry: number;
-  startDate: Date;
-  expiryDate: Date;
-  days: number;
-  daysFromNow: number;
-  isVestingExpired: boolean;
 };
 
 export type PropsWithAuction = {

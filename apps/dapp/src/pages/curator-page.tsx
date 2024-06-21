@@ -5,16 +5,20 @@ import { InfoIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
 import { CuratableAuctionList } from "modules/auction/curatable-auction-list";
 import { CuratorFeeManager } from "modules/auction/curator-fee-manager";
+import { useCurator } from "modules/auction/hooks/use-curator";
 import { useChainId, useSwitchChain } from "wagmi";
 
 export function CuratorPage() {
   const chainId = useChainId();
+  const { isCurator } = useCurator();
   const { switchChain } = useSwitchChain();
   const options = activeChains.map((c) => ({
     label: c.name,
     imgURL: c.iconUrl as string,
     value: c.id.toString(),
   }));
+
+  if (!isCurator) return null;
 
   return (
     <PageContainer title="Curator">
