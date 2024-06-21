@@ -6,7 +6,7 @@ export function NoUserBidsClaimCard() {
   return (
     <Card
       title="Claim"
-      className="w-[496px]"
+      className="h-[100%] w-[496px]"
       headerRightElement={<Badge color="ghost">No bid</Badge>}
     >
       <div className="flex flex-col gap-y-4">

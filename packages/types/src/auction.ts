@@ -31,6 +31,7 @@ export type AuctionStatus =
   | "live"
   | "concluded"
   | "decrypted"
+  | "aborted"
   | "settled";
 
 export type AuctionInfo = {
@@ -105,16 +106,6 @@ type EMPFormattedInfo = {
   minFilled: string;
   uniqueBidders: number;
   cleared: boolean;
-};
-
-export type LinearVestingData = {
-  start: number;
-  expiry: number;
-  startDate: Date;
-  expiryDate: Date;
-  days: number;
-  daysFromNow: number;
-  isVestingExpired: boolean;
 };
 
 export type PropsWithAuction = {

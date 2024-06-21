@@ -43,7 +43,7 @@ export function useSettleAuction({
     if (settleReceipt.isSuccess) {
       refetch();
     }
-  }, [settleReceipt.isSuccess]);
+  }, [settleReceipt.isSuccess, refetch]);
 
   const error = [settleCallStatus, settleTx, settleReceipt].find(
     (tx) => tx.isError,

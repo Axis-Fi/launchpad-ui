@@ -1,10 +1,16 @@
 import { useAccount } from "wagmi";
-import type { Address, BatchAuction, PropsWithAuction } from "@repo/types";
+import {
+  AuctionDerivativeTypes,
+  type Address,
+  type BatchAuction,
+  type PropsWithAuction,
+} from "@repo/types";
 import { NotConnectedClaimCard } from "./not-connected";
 import { NoUserBidsClaimCard } from "./no-user-bids-claim-card";
 import { UserBidsClaimCard } from "./user-bids-claim-card";
 import { VestingClaimCard } from "./vesting-claim-card";
 import { AuctionFailedClaimCard } from "./auction-failed-claim-card";
+import { hasDerivative } from "../utils/auction-details";
 
 type ClaimStatusProps = {
   auction: BatchAuction;
@@ -29,7 +35,11 @@ const getClaimStatus = ({
   const userHasBids = auction.bids.some(
     (bid) => bid.bidder.toLowerCase() === userAddress?.toLowerCase(),
   );
-  const isVesting = false; // TODO: obtain this value
+  const auctionIsVesting = hasDerivative(
+    AuctionDerivativeTypes.LINEAR_VESTING,
+    auction,
+  );
+  const userHasVesting = auctionIsVesting && userHasBids;
 
   if (!isWalletConnected) {
     return "NOT_CONNECTED";
@@ -39,12 +49,12 @@ const getClaimStatus = ({
     return "AUCTION_FAILED";
   }
 
-  if (userHasBids) {
-    return "USER_HAS_BIDS";
+  if (userHasVesting) {
+    return "VESTING";
   }
 
-  if (isVesting) {
-    return "VESTING";
+  if (userHasBids) {
+    return "USER_HAS_BIDS";
   }
 
   return "USER_HAS_NO_BIDS";
@@ -71,7 +81,7 @@ export function ClaimCard({ auction: _auction }: PropsWithAuction) {
     }
 
     case "VESTING": {
-      return <VestingClaimCard />;
+      return <VestingClaimCard auction={auction} />;
     }
 
     default: {

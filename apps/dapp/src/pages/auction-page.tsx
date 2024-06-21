@@ -34,7 +34,8 @@ const statuses: Record<
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
-  cancelled: () => <></>, // not displayed
+  aborted: AuctionSettled,
+  cancelled: AuctionSettled,
 };
 
 /** Displays Auction details and status*/
@@ -44,8 +45,8 @@ export default function AuctionPage() {
   const {
     result: auction,
     isLoading: isAuctionLoading,
-    refetch,
     isRefetching,
+    refetch,
   } = useAuction(id!, type as AuctionType);
 
   // Countdown

@@ -130,6 +130,7 @@ function AuctionCardDetails(
       >
         <Button
           disabled={props.disabledViewButton}
+          size={props.isGrid ? "sm" : "lg"}
           className={cn(
             "self-end uppercase transition-all ",
             props.isGrid &&

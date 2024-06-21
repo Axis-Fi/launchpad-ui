@@ -30,7 +30,6 @@ import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
-//import { useDerivativeData } from "./use-derivative-data";
 import { parseAuctionId } from "../utils/parse-auction-id";
 import { isSecureAuction } from "../utils/malicious-auction-filters";
 
@@ -99,13 +98,6 @@ export function useAuction(
     type: auctionType,
   });
 
-  //TODO: needs updating
-  // const { data: linearVesting } = useDerivativeData({
-  //   lotId,
-  //   auctionType,
-  //   chainId,
-  // });
-
   /**
    * Redefine refetch of an auction to include its dependencies that also update (such as auctionData)
    */
@@ -138,7 +130,7 @@ export function useAuction(
     throw new Error(`Invalid callback address: ${rawAuction.callbacks}`);
   }
 
-  const status = getAuctionStatus(rawAuction, auctionData);
+  const status = getAuctionStatus(rawAuction);
 
   const auction = {
     ...rawAuction,

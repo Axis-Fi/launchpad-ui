@@ -1,67 +1,59 @@
 import { useState } from "react";
-import { useAccount } from "wagmi";
 import { Link } from "react-router-dom";
+import { useAccount } from "wagmi";
 import { ArrowRightIcon } from "lucide-react";
 
 import { Badge, Button, Card, Metric, Text } from "@repo/ui";
-import type { BatchAuction, PropsWithAuction } from "@repo/types";
+import type { Auction, PropsWithAuction } from "@repo/types";
 import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { shorten } from "utils/number";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
-import { BidInfoCard } from "./user-bids-claim-card/bid-info-card";
+import { getMinFilled } from "../utils/auction-details";
 
-export function AuctionFailedClaimCard({
-  auction: _auction,
-}: PropsWithAuction) {
-  const auction = _auction as BatchAuction;
+const getFailReason = (auction: Auction) => {
+  // Auction was cancelled by the auction creator
+  if (auction.status === "cancelled") {
+    return "The auction was cancelled by the creator";
+  }
+
+  // Auction was aborted by someone
+  if (auction.status === "aborted") {
+    return "The auction was aborted";
+  }
+
+  // The raised amount was below the minimum fill
+  const minFilled = getMinFilled(auction) ?? 0;
+  if (Number(auction.sold) < minFilled) {
+    return "The auction did not raise the minimum amount";
+  }
+
+  // Unknown reason. RFC: should this condition ever trigger? I don't think it should.
+  return "The auction did not settle successfully";
+};
+
+export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
   const { address } = useAccount();
   const [isTxnDialogOpen, setTxnDialogOpen] = useState(false);
   const claimBidsTxn = useClaimBids(auction);
+
   const userBids = auction.bids.filter(
     (bid) => bid.bidder.toLowerCase() === address?.toLowerCase(),
   );
+
   const userTotalBidAmount = userBids.reduce(
     (acc, bid) => acc + Number(bid.amountIn ?? 0),
     0,
   );
-  const userTotalSuccessfulBidAmount = userBids.reduce(
-    (acc, bid) => acc + Number(bid.settledAmountIn ?? 0),
-    0,
-  );
-  const userHasClaimed = userBids.every(
-    (bid) => bid.status === "claimed" || bid.status === "refunded",
+
+  const userHasClaimedFullRefund = userBids.every(
+    (bid) => bid.status === "refunded",
   );
 
   const isWaiting =
     claimBidsTxn.claimTx.isPending || claimBidsTxn.claimReceipt.isLoading;
 
-  const buttonText =
-    userTotalSuccessfulBidAmount > 0 ? "Claim tokens" : "Claim refund";
-
-  const getFailReason = (): string => {
-    if (auction.status !== "settled") {
-      throw new Error("Auction is not settled");
-    }
-
-    if (auction.formatted?.cleared) {
-      throw new Error("Auction settlement cleared");
-    }
-
-    // If the raised amount is below the minimum fill
-    if (
-      auction.formatted &&
-      auction.formatted.totalBidAmount != undefined &&
-      auction.formatted.minFilled != undefined &&
-      Number(auction.formatted?.totalBidAmount?.replace(/,/g, "")) <
-        Number(auction.formatted?.minFilled?.replace(/,/g, ""))
-    ) {
-      return "The auction did not raise the minimum fill amount";
-    }
-
-    return "The auction did not settle successfully";
-  };
-  const failReason = getFailReason();
+  const failReason = getFailReason(auction);
 
   return (
     <div className="gap-y-md flex flex-col">
@@ -87,16 +79,16 @@ export function AuctionFailedClaimCard({
               </Text>
             </div>
 
-            {!userHasClaimed && (
+            {!userHasClaimedFullRefund && (
               <Button
                 size="lg"
                 className="w-full"
                 onClick={() => setTxnDialogOpen(true)}
               >
-                {buttonText}
+                Claim refund
               </Button>
             )}
-            {userHasClaimed && (
+            {userHasClaimedFullRefund && (
               <Link to="/auctions">
                 <Button size="lg" variant="secondary" className="w-full">
                   View live auctions <ArrowRightIcon className="size-6" />
@@ -125,16 +117,16 @@ export function AuctionFailedClaimCard({
             idle: {
               Component: () => (
                 <div className="text-center">
-                  You&apos;re about to claim all of your outstanding refunds and
-                  payouts for this auction.
+                  You&apos;re about to claim all of your outstanding refunds for
+                  this auction.
                 </div>
               ),
-              title: `Confirm Claim Bids`,
+              title: `Confirm refund`,
             },
             success: {
               Component: () => (
                 <div className="flex justify-center text-center">
-                  <p>Bids claimed successfully!</p>
+                  <p>Bids refunded successfully!</p>
                 </div>
               ),
               title: "Transaction Confirmed",
@@ -142,8 +134,6 @@ export function AuctionFailedClaimCard({
           }}
         />
       </Card>
-
-      <BidInfoCard auction={auction} userBids={userBids} />
     </div>
   );
 }
