@@ -9,7 +9,6 @@ import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { shorten } from "utils/number";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
-import { BidInfoCard } from "./user-bids-claim-card/bid-info-card";
 import { getMinFilled } from "../utils/auction-details";
 
 const getFailReason = (auction: Auction) => {
@@ -135,8 +134,6 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
           }}
         />
       </Card>
-
-      <BidInfoCard auction={auction} userBids={userBids} />
     </div>
   );
 }
