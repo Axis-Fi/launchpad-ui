@@ -41,10 +41,9 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
           )}
         >
           <AuctionCardBanner
-            //TODO: replace with a better named property, likely projectBanner
             image={getLinkUrl("projectBanner", auction)}
-            deadline={auction.formatted?.endDate}
             chain={getChainById(auction?.chainId)}
+            deadline={new Date(Number(auction.conclusion) * 1000)}
             isGrid={props.isGrid}
           />
           <AuctionCardDetails
