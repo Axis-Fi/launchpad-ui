@@ -73,6 +73,7 @@ import { Chain } from "@rainbow-me/rainbowkit";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
+import { PageHeader } from "modules/app/page-header";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
 import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
@@ -945,7 +946,13 @@ export default function CreateAuctionPage() {
 
   return (
     <PageContainer>
-      <Text className="text-5xl">Create Your Auction</Text>
+      <PageHeader
+        backNavigationPath="/#"
+        backNavigationText="Back to Launches"
+      />
+      <div className="flex items-center justify-center">
+        <h1 className="text-5xl">Create Your Auction</h1>
+      </div>
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()} className="pb-16">
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
