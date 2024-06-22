@@ -85,11 +85,13 @@ function AuctionCardDetails(
           </IconedLabel>
           <AuctionStatusBadge
             large={!props.isGrid}
-            className={cn(!props.isGrid && "-mr-6 -mt-6")}
+            className={cn(!props.isGrid && "-mr-3 -mt-4")}
             status={props.auction.status}
           />
         </div>
         <SocialRow
+          className="py-6"
+          iconClassName={"size-8"}
           discord={getLinkUrl("discord", props.auction)}
           twitter={getLinkUrl("twitter", props.auction)}
           website={getLinkUrl("website", props.auction)}
