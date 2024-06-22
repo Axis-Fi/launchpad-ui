@@ -1360,6 +1360,7 @@ export default function CreateAuctionPage() {
                         time
                         placeholderDate={addMinutes(new Date(), 5)}
                         content={formatDate.fullLocal(new Date())}
+                        minDate={new Date()}
                         {...field}
                       />
                     </FormItemWrapper>
