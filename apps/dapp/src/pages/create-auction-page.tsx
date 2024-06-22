@@ -89,6 +89,10 @@ const tokenSchema = z.object({
   totalSupply: z.bigint().optional(),
 });
 
+const StringNumberNotNegative = z
+  .string()
+  .regex(/^[^-].*/, "Number must not start with '-'");
+
 const schema = z
   .object({
     quoteToken: tokenSchema,
@@ -100,8 +104,8 @@ const schema = z
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
     minBidSize: z.array(z.number()).optional(),
-    minPrice: z.string().optional(),
-    price: z.string().optional(),
+    minPrice: StringNumberNotNegative.optional(),
+    price: StringNumberNotNegative.optional(),
     start: z.date(),
     deadline: z.date(),
     callbacksType: z.string().optional(),
@@ -116,7 +120,7 @@ const schema = z
     dtlProceedsPercent: z.array(z.number()).optional(),
     dtlIsVested: z.boolean().optional(),
     dtlVestingStart: z.date().optional(),
-    dtlVestingDuration: z.string().optional(),
+    dtlVestingDuration: StringNumberNotNegative.optional(),
     dtlRecipient: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
@@ -131,7 +135,7 @@ const schema = z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
-    vestingDuration: z.string().optional(),
+    vestingDuration: StringNumberNotNegative.optional(),
     vestingStart: z.date().optional(),
     // Metadata
     name: z.string().max(32),
