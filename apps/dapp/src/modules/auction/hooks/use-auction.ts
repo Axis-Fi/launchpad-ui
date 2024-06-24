@@ -128,7 +128,6 @@ export function useAuction(
   }
 
   const formatted = formatAuction(auction, auctionType, auctionData);
-
   const preparedAuction = {
     ...auction,
     ...tokens,

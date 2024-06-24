@@ -5,7 +5,7 @@ import { cn } from "@/utils";
 import { Avatar } from "./avatar";
 
 const badgeVariants = cva(
-  "inline-flex h-min items-center justify-center rounded-full border uppercase transition-colors border-0",
+  "inline-flex h-min items-center justify-center rounded-full border uppercase transition-colors border-0 px-4 py-2",
   {
     variants: {
       color: {
@@ -15,9 +15,9 @@ const badgeVariants = cva(
         blue: "bg-primary-500 text-black-50",
       },
       size: {
-        s: "p-2 h-xl text-sm",
-        m: "p-2 text-md",
-        xl: "p-2 text-lg",
+        s: "text-sm",
+        m: "px-2 text-md",
+        xl: "text-lg",
         round: "rounded-full w-fit px-1 py-0",
       },
     },
@@ -39,7 +39,7 @@ function Badge({ className, color, size, children, ...props }: BadgeProps) {
       className={cn(
         badgeVariants({ color, size }),
         className,
-        props.icon && "pr-2",
+        props.icon && "pl-2",
       )}
       {...props}
     >

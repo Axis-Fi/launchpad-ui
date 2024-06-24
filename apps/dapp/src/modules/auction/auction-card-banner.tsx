@@ -1,5 +1,5 @@
 import { Chain } from "@repo/types";
-import { Badge, cn } from "@repo/ui";
+import { Badge, cn, Metric } from "@repo/ui";
 import { isBefore } from "date-fns";
 import { getCountdown } from "utils/date";
 
@@ -30,7 +30,12 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
       style={{ backgroundImage: `url(${props.image})` }}
     >
       <div className="flex justify-between">
-        <Badge icon={props.chain?.iconUrl as string}>{props.chain.name}</Badge>
+        <Badge
+          size={props.isGrid ? "s" : "m"}
+          icon={props.chain?.iconUrl as string}
+        >
+          {props.chain.name}
+        </Badge>
       </div>
 
       <div
@@ -45,16 +50,18 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
           </Badge>
         )}
 
-        <div>
-          {isOngoing && (
-            <Badge size="xl">
-              <div className="text-center">
-                <p className="uppercase">Remaining</p>
-                <p className="text-2xl">{countdown}</p>
-              </div>
-            </Badge>
-          )}
-        </div>
+        {isOngoing && (
+          <Badge size={props.isGrid ? "s" : "xl"}>
+            <Metric
+              size={props.isGrid ? "s" : "m"}
+              className="text-center"
+              isLabelSpaced
+              label="Remaining"
+            >
+              {countdown}
+            </Metric>
+          </Badge>
+        )}
       </div>
     </div>
   );

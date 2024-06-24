@@ -73,6 +73,7 @@ import { Chain } from "@rainbow-me/rainbowkit";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
+import { PageHeader } from "modules/app/page-header";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
 import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
@@ -88,6 +89,10 @@ const tokenSchema = z.object({
   totalSupply: z.bigint().optional(),
 });
 
+const StringNumberNotNegative = z
+  .string()
+  .regex(/^[^-].*/, "Number must not start with '-'");
+
 const schema = z
   .object({
     quoteToken: tokenSchema,
@@ -99,8 +104,8 @@ const schema = z
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
     minBidSize: z.array(z.number()).optional(),
-    minPrice: z.string().optional(),
-    price: z.string().optional(),
+    minPrice: StringNumberNotNegative.optional(),
+    price: StringNumberNotNegative.optional(),
     start: z.date(),
     deadline: z.date(),
     callbacksType: z.string().optional(),
@@ -115,7 +120,7 @@ const schema = z
     dtlProceedsPercent: z.array(z.number()).optional(),
     dtlIsVested: z.boolean().optional(),
     dtlVestingStart: z.date().optional(),
-    dtlVestingDuration: z.string().optional(),
+    dtlVestingDuration: StringNumberNotNegative.optional(),
     dtlRecipient: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
@@ -130,7 +135,7 @@ const schema = z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
-    vestingDuration: z.string().optional(),
+    vestingDuration: StringNumberNotNegative.optional(),
     vestingStart: z.date().optional(),
     // Metadata
     name: z.string().max(32),
@@ -945,7 +950,13 @@ export default function CreateAuctionPage() {
 
   return (
     <PageContainer>
-      <Text className="text-5xl">Create Your Auction</Text>
+      <PageHeader
+        backNavigationPath="/#"
+        backNavigationText="Back to Launches"
+      />
+      <div className="flex items-center justify-center">
+        <h1 className="text-5xl">Create Your Auction</h1>
+      </div>
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()} className="pb-16">
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
@@ -1353,6 +1364,7 @@ export default function CreateAuctionPage() {
                         time
                         placeholderDate={addMinutes(new Date(), 5)}
                         content={formatDate.fullLocal(new Date())}
+                        minDate={new Date()}
                         {...field}
                       />
                     </FormItemWrapper>

@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Badge, Button, Skeleton, Text, cn } from "@repo/ui";
+import { Badge, Button, Metric, Skeleton, Text, cn } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
@@ -129,7 +129,7 @@ export function AuctionPageView({
         <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
           <div className="flex w-full flex-row justify-end">
             <div className="mr-4 mt-4">
-              <AuctionStatusBadge status={auction.status} />
+              <AuctionStatusBadge status={auction.status} large />
             </div>
           </div>
           <div className="flex w-full flex-col justify-end">
@@ -155,15 +155,14 @@ export function AuctionPageView({
             </div>
             <div className="mb-4 ml-4 self-start">
               {isOngoing && (
-                <Badge>
-                  <div className="ml-2 mr-2 flex flex-col items-center justify-center">
-                    <div className="text-center">
-                      <Text uppercase mono size="xs" color="secondary">
-                        Remaining:
-                      </Text>
-                    </div>
-                    <div className="text-center">{timeRemaining}</div>
-                  </div>
+                <Badge size="xl" className="px-4">
+                  <Metric
+                    className="text-center"
+                    isLabelSpaced
+                    label="Remaining"
+                  >
+                    {timeRemaining}
+                  </Metric>
                 </Badge>
               )}
             </div>
