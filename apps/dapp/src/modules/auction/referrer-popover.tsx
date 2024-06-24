@@ -39,7 +39,9 @@ export function ReferrerPopover({ auction }: PropsWithAuction) {
   return (
     <Popover>
       <PopoverTrigger>
-        <Button variant="secondary">Refer this launch</Button>
+        <Button variant="secondary" size="sm">
+          Refer this launch
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="bg-surface min-w-[400px]">
         <div>
