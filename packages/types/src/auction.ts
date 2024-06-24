@@ -8,13 +8,11 @@ export type BaseAuction = {
   quoteToken: Token;
   callbacks: `0x${string}`;
   status: AuctionStatus;
-  auctionInfo?: AuctionInfo;
   auctionData?: EMPAuctionData | FixedPriceBatchAuctionData;
   auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
   /** Whether the auction passes the malicious auction verification */
   isSecure?: boolean;
-  //linearVesting?: LinearVestingData;
 };
 
 export type Auction = BatchAuction;
@@ -34,23 +32,21 @@ export type AuctionStatus =
   | "aborted"
   | "settled";
 
-export type AuctionInfo = {
-  key?: string;
-  name?: string;
-  description?: string;
-  tagline?: string;
-  allowlist?: string[][];
-  links?: {
-    projectLogo?: string;
-    projectBanner?: string;
-    website?: string;
-    twitter?: string;
-    discord?: string;
-    farcaster?: string;
-    payoutTokenLogo?: string;
-    [key: string]: string | undefined;
-  };
-};
+type AllowList = string[][] | undefined;
+
+export type AuctionInfo = BatchAuction["info"] & { allowlist: AllowList };
+
+export type AuctionLinkId =
+  | "website"
+  | "payoutTokenLogo"
+  | "projectLogo"
+  | "projectBanner"
+  | "discord"
+  | "website"
+  | "farcaster"
+  | "twitter";
+
+export type AuctionLink = NonNullable<Auction["info"]>["links"][number];
 
 export type EMPAuctionData = {
   status: number;

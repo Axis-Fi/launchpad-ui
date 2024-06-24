@@ -192,18 +192,24 @@ const getAuctionMock = (
     settled: null,
     chainId: 168587773,
     status: "live",
-    auctionInfo: {
-      name: "ZYN Protocol",
+    info: {
+      name: "Zyn Protocol",
       description:
-        "The real ZYN coin. Join us ZYNNERs and be apart of the best attempt at bringing nicotine on-chain. And some more stuff.",
-      shortDescription:
-        "The real ZYN coin. Join us ZYNNERs and be apart of the best attempt at bringing nicotine on-chain. ",
-      links: {
-        projectLogo:
-          "https://www.fandfwholesale.com/media/catalog/product/cache/1ecf0a9687bd7fb333e2e3dda40a5d04/z/y/zyn_nicotine_pouches_cool_mint_6mg.jpg",
-        payoutTokenLogo:
-          "https://www.fandfwholesale.com/media/catalog/product/cache/1ecf0a9687bd7fb333e2e3dda40a5d04/z/y/zyn_nicotine_pouches_cool_mint_6mg.jpg",
-      },
+        "The real ZYN coin. Join us ZYNNERs and be a part of the best attempt at bringing nicotine on-chain",
+      links: [
+        {
+          linkId: "payoutTokenLogo",
+          url: "https://www.logolynx.com/images/logolynx/68/68feadd5125aba3db46f1e4d77d54cfa.jpeg",
+        },
+        {
+          linkId: "projectLogo",
+          url: "https://www.fandfwholesale.com/media/catalog/product/cache/1ecf0a9687bd7fb333e2e3dda40a5d04/z/y/zyn_nicotine_pouches_cool_mint_6mg.jpg",
+        },
+        {
+          linkId: "website",
+          url: "https://numba.one",
+        },
+      ],
     },
     formatted: {
       startDate: new Date("2024-05-14T18:00:00.000Z"),

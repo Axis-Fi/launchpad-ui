@@ -9,6 +9,7 @@ import { AuctionStatusBadge } from "./auction-status-badge";
 import React from "react";
 import { Link } from "react-router-dom";
 import { getAuctionPath } from "utils/router";
+import { getLinkUrl } from "./utils/auction-details";
 
 type AuctionCardConditionalProps =
   | { loading: true; auction?: never }
@@ -41,7 +42,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
         >
           <AuctionCardBanner
             //TODO: replace with a better named property, likely projectBanner
-            image={auction.auctionInfo?.links?.projectBanner}
+            image={getLinkUrl("projectBanner", auction)}
             deadline={auction.formatted?.endDate}
             chain={getChainById(auction?.chainId)}
             isGrid={props.isGrid}
@@ -78,9 +79,9 @@ function AuctionCardDetails(
           <IconedLabel
             large
             alt={props.auction.baseToken.symbol}
-            src={props.auction.auctionInfo?.links?.projectLogo}
+            src={getLinkUrl("projectLogo", props.auction)}
           >
-            {props.auction.auctionInfo?.name}
+            {props.auction.info?.name}
           </IconedLabel>
           <AuctionStatusBadge
             large={!props.isGrid}
@@ -88,13 +89,17 @@ function AuctionCardDetails(
             status={props.auction.status}
           />
         </div>
-        <SocialRow {...props.auction.auctionInfo?.links} />
+        <SocialRow
+          discord={getLinkUrl("discord", props.auction)}
+          twitter={getLinkUrl("twitter", props.auction)}
+          website={getLinkUrl("website", props.auction)}
+        />
         <div className="flex h-full flex-col items-end text-wrap">
           <Text color="secondary" className="hidden group-hover:block">
-            {props.auction.auctionInfo?.description}
+            {props.auction.info?.description}
           </Text>
           <Text color="secondary" className="group-hover:hidden">
-            {props.auction.auctionInfo?.tagline}
+            {props.auction.info?.tagline}
           </Text>
         </div>
       </div>

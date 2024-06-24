@@ -1,24 +1,24 @@
 import { Card, Link } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { ReferrerPopover } from "./referrer-popover";
+import { getLinkUrl } from "./utils/auction-details";
 
 export function ProjectInfoCard({
   auction,
   ...props
 }: PropsWithAuction & React.HTMLAttributes<HTMLDivElement>) {
   const description =
-    auction.auctionInfo?.description ??
-    "No description found for this project.";
+    auction.info?.description ?? "No description found for this project.";
 
-  const website = auction.auctionInfo?.links?.website;
-  const twitter = auction.auctionInfo?.links?.twitter;
-  const discord = auction.auctionInfo?.links?.discord;
-  const farcaster = auction.auctionInfo?.links?.farcaster;
+  const website = getLinkUrl("website", auction);
+  const twitter = getLinkUrl("twitter", auction);
+  const discord = getLinkUrl("discord", auction);
+  const farcaster = getLinkUrl("farcaster", auction);
 
   return (
     <Card
       className={props.className}
-      title={`About ${auction.auctionInfo?.name || ""}`}
+      title={`About ${auction.info?.name || ""}`}
       headerRightElement={<ReferrerPopover auction={auction} />}
     >
       <div className="mb-4 flex">{description}</div>

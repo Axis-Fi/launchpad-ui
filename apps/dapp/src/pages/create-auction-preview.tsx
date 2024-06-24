@@ -35,7 +35,7 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
       ...deriveAuctionFromCreationParams(form.getValues()),
       chainId: props.chainId,
     };
-  }, [props.chainId, form.formState]);
+  }, [props.chainId, form]);
 
   if (!auction) return;
 
@@ -149,19 +149,19 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
         }
       : undefined,
 
-    auctionInfo: {
+    info: {
       name: params.name,
       description: params.description,
       tagline: params.tagline,
-      links: {
-        payoutTokenLogo: params.payoutTokenLogo,
-        projectLogo: params.projectLogo,
-        projectBanner: params.projectBanner,
-        discord: params.discord,
-        website: params.website,
-        farcaster: params.farcaster,
-        twitter: params.twitter,
-      },
+      links: [
+        { linkId: "payoutTokenLogo", url: params.payoutTokenLogo || "" },
+        { linkId: "projectLogo", url: params.projectLogo || "" },
+        { linkId: "projectBanner", url: params.projectBanner || "" },
+        { linkId: "discord", url: params.discord || "" },
+        { linkId: "website", url: params.website || "" },
+        { linkId: "farcaster", url: params.farcaster || "" },
+        { linkId: "twitter", url: params.twitter || "" },
+      ],
     },
     //@ts-expect-error intentionally imcomplete
     encryptedMarginalPrice: {
@@ -173,6 +173,9 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     //@ts-expect-error intentionally imcomplete
     fixedPrice: {
       price: params.price!,
+      minFilled: (
+        Number(params.capacity) * Number(params.minFillPercent?.[0] ?? 1 / 100)
+      ).toString(),
     },
     dtl: {
       proceedsPercent: params.dtlProceedsPercent,

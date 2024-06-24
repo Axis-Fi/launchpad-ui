@@ -1,8 +1,8 @@
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "@repo/ipfs-api";
 
-import { AuctionInfo } from "@repo/types";
 import { ipfsServers, environment } from "@repo/env";
+import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
 
 const { url: serverUrl } =
   ipfsServers[environment.current] ?? ipfsServers.staging;
@@ -15,14 +15,8 @@ const trpc = createTRPCProxyClient<AppRouter>({
   ],
 });
 
-export async function storeAuctionInfo(auctionInfo: AuctionInfo) {
+export async function storeAuctionInfo(auctionInfo: AuctionInfoWriteType) {
   const response = await trpc.storeAuctionInfo.mutate(auctionInfo);
 
   return response.hash;
-}
-
-export async function getAuctionInfo(hash: string) {
-  const response = await trpc.getAuctionInfo.query({ hash });
-
-  return response as AuctionInfo;
 }
