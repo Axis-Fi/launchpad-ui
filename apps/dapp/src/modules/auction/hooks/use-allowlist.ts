@@ -139,9 +139,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     // Check if the account is on the allowlist
     canBid =
       allowlist
-        ?.map(
-          (entry: string[]) => entry[0].toLowerCase() === user.toLowerCase(),
-        )
+        .map((entry: string[]) => entry[0].toLowerCase() === user.toLowerCase())
         .reduce((acc: boolean, curr: boolean) => acc || curr, false) ?? false;
 
     criteria = "users that are on the allowlist provided by the seller";
@@ -152,7 +150,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       switch (callbacksType) {
         case CallbacksType.MERKLE_ALLOWLIST: {
           // Generate the proof for inclusion in callback data
-          const tree = StandardMerkleTree.of(allowlist ?? [], ["address"]);
+          const tree = StandardMerkleTree.of(allowlist, ["address"]);
           const proof = tree.getProof([user]) as `0x${string}`[];
           callbackData = encodeAbiParameters(parseAbiParameters("bytes32[]"), [
             proof,
@@ -165,7 +163,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
           limit = (cap ?? BigInt(0)) - spent;
 
           // Generate the proof for inclusion in callback data
-          const tree = StandardMerkleTree.of(allowlist ?? [], ["address"]);
+          const tree = StandardMerkleTree.of(allowlist, ["address"]);
           const proof = tree.getProof([user]) as `0x${string}`[];
           callbackData = encodeAbiParameters(parseAbiParameters("bytes32[]"), [
             proof,
@@ -178,17 +176,14 @@ export function useAllowlist(auction: Auction): AllowlistResult {
 
           // Get the allocation and calculate their remaining limit from that
           const allocation =
-            allowlist?.find(
+            allowlist.find(
               (entry: string[]) =>
                 entry[0].toLowerCase() === user?.toLowerCase(),
             )?.[1] ?? "0";
           limit = BigInt(allocation) - spent;
 
           // Generate the proof for inclusion in callback data
-          const tree = StandardMerkleTree.of(allowlist ?? [], [
-            "address",
-            "uint256",
-          ]);
+          const tree = StandardMerkleTree.of(allowlist, ["address", "uint256"]);
           const proof = tree.getProof([user, allocation]) as `0x${string}`[];
           callbackData = encodeAbiParameters(
             parseAbiParameters("bytes32[] proof,uint256 allocation"),
