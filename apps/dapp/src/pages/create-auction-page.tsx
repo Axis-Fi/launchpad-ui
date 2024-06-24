@@ -91,7 +91,9 @@ const tokenSchema = z.object({
 const schema = z
   .object({
     quoteToken: tokenSchema,
-    payoutToken: tokenSchema,
+    payoutToken: tokenSchema.extend({
+      logoURI: z.string().url(),
+    }),
     payoutTokenBalance: z.string().optional(),
     capacity: z.string(),
     auctionType: z.string(),
@@ -140,7 +142,6 @@ const schema = z
     discord: optionalURL,
     website: optionalURL,
     farcaster: optionalURL,
-    payoutTokenLogo: z.string().url(),
   })
   .refine((data) => (!data.isVested ? true : data.vestingDuration), {
     message: "Vesting duration is required",
