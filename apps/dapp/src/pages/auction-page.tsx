@@ -94,11 +94,12 @@ export default function AuctionPage() {
       >
         <AuctionElement auction={auction} />
       </AuctionPageView>
-      {auction.status !== "created" && !isFPA ? (
-        <BidList auction={auction} />
-      ) : (
-        <PurchaseList auction={auction} />
-      )}
+      {auction.status !== "created" &&
+        (!isFPA ? (
+          <BidList auction={auction} />
+        ) : (
+          <PurchaseList auction={auction} />
+        ))}
     </PageContainer>
   );
 }
