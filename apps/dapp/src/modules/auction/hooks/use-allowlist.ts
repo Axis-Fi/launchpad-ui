@@ -18,7 +18,7 @@ import { Auction, CallbacksType } from "@repo/types";
 import { axisContracts, deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
 import { getCallbacksType } from "../utils/get-callbacks-type";
-import { hasAllowlist } from "../utils/auction-details";
+import { isAllowlistCallback } from "../utils/auction-details";
 
 export type AllowlistResult = {
   canBid: boolean;
@@ -33,7 +33,11 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   const account = useAccount();
   const user = account.address ?? zeroAddress;
 
-  const auctionHasAllowlistCallback = hasAllowlist(auction);
+  // If the auction has a custom callback it could be an allowlist so give it the benefit of the doubt
+  const callbacksType = getCallbacksType(auction);
+  const isCustomCallback = callbacksType === CallbacksType.CUSTOM;
+  const shouldFetchAllowList =
+    isAllowlistCallback(callbacksType) || isCustomCallback;
 
   // Fetch allow list for this auction from the subgraph
   const {
@@ -45,8 +49,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     },
     { id: auction.id! },
     {
-      enabled:
-        !!auction?.chainId && !!auction?.id && auctionHasAllowlistCallback,
+      enabled: !!auction?.chainId && !!auction?.id && shouldFetchAllowList,
     },
   );
   const allowlist =
@@ -55,8 +58,6 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     ) ?? [];
 
   // Check if the callback type is an allowlist, if not return default values
-  const callbacksType = getCallbacksType(auction);
-
   const isMerkle =
     callbacksType === CallbacksType.MERKLE_ALLOWLIST ||
     callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
