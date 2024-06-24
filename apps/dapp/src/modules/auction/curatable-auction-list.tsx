@@ -113,7 +113,9 @@ function CurateButton(
   props: React.HTMLAttributes<HTMLButtonElement> & { approved?: boolean },
 ) {
   return !props.approved ? (
-    <Button {...props}>Curate</Button>
+    <Button size="sm" {...props}>
+      Curate
+    </Button>
   ) : (
     <Tooltip content="You've accepted curating this auction">
       <CheckIcon className="text-axis-green" />

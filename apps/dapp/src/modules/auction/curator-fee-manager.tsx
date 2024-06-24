@@ -44,9 +44,9 @@ export function CuratorFeeManager({
         >
           <InfoLabel
             editable
-            label={"Batch Auctions"}
+            label={"Current Fee"}
             value={fee || curatorFees.fee + "%"}
-            inputClassName="w-24 min-w-0 pl-0"
+            inputClassName="w-16 min-w-0 pl-0"
             onChange={(e) => {
               parsePercent(e);
               setFee(e.target.value);
