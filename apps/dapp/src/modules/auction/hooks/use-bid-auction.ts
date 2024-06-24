@@ -98,7 +98,7 @@ export function useBidAuction(
           auctionId: auction.id,
           address: bidderAddress!,
           bidId,
-          amountOut,
+          amountOut: formatUnits(amountOut, auction.baseToken.decimals),
         });
       }
     }

@@ -1,7 +1,7 @@
 import { atomWithStorage } from "jotai/utils";
 import { Address } from "viem";
 
-export type BidWithAmountOut = { bidId: string; amountOut: bigint };
+export type BidWithAmountOut = { bidId: string; amountOut: string };
 
 export type StorageBid = {
   address: Address;
