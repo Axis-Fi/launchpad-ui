@@ -1,7 +1,8 @@
+import React from "react";
+import { formatUnits } from "viem";
 import { PropsWithAuction } from "@repo/types";
 import { Card, DataTable } from "@repo/ui";
 import { CSVDownloader } from "components/csv-downloader";
-import React from "react";
 import { arrayToCSV } from "utils/csv";
 import {
   amountInCol,
@@ -21,8 +22,17 @@ const amountOutCol = bidListColumnHelper.accessor("settledAmountOut", {
 const columns = [timestampCol, amountInCol, amountOutCol, bidderCol];
 
 export function PurchaseList({ auction }: PropsWithAuction) {
+  const bids = auction.bids.map((b) => ({
+    ...b,
+    settledAmountOut:
+      auction.status === "settled"
+        ? b.settledAmountOut
+        : formatUnits(BigInt(b.rawAmountOut ?? 0), auction.baseToken.decimals),
+    auction,
+  }));
+
   const [headers, body] = React.useMemo(() => {
-    const values = auction.bids.map((b) => ({
+    const values = bids.map((b) => ({
       date: b.date,
       amountIn: b.amountIn,
       settledAmountOut: b.settledAmountOut,
@@ -30,9 +40,7 @@ export function PurchaseList({ auction }: PropsWithAuction) {
     }));
 
     return arrayToCSV(values ?? []);
-  }, [auction]);
-
-  const bids = auction.bids.map((b) => ({ ...b, auction }));
+  }, [bids]);
 
   return (
     <Card
