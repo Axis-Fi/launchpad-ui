@@ -18,6 +18,7 @@ import { Auction, CallbacksType } from "@repo/types";
 import { axisContracts, deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
 import { getCallbacksType } from "../utils/get-callbacks-type";
+import { hasAllowlist } from "../utils/auction-details";
 
 export type AllowlistResult = {
   canBid: boolean;
@@ -32,6 +33,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   const account = useAccount();
   const user = account.address ?? zeroAddress;
 
+  const auctionHasAllowlistCallback = hasAllowlist(auction);
+
   // Fetch allow list for this auction from the subgraph
   const {
     data: auctionWithAllowlist,
@@ -41,7 +44,10 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       fetchParams,
     },
     { id: auction.id! },
-    { enabled: !!auction?.chainId && !!auction?.id },
+    {
+      enabled:
+        !!auction?.chainId && !!auction?.id && auctionHasAllowlistCallback,
+    },
   );
   const allowlist =
     auctionWithAllowlist?.batchAuctionLot?.info?.allowlist.map(
