@@ -1,11 +1,10 @@
-import { zeroAddress } from "viem";
-import { deployments } from "@repo/deployments";
 import {
   type BatchAuction,
   type Auction,
   type AuctionDerivativeTypes,
   type AuctionLinkId,
   AuctionType,
+  CallbacksType,
 } from "@repo/types";
 
 const getPrice = (auction: BatchAuction): number | undefined => {
@@ -50,20 +49,14 @@ const hasDerivative = (
   return auctionDerivativeType.toLowerCase() === derivativeType.toLowerCase();
 };
 
-const hasAllowlist = (auction: Auction) => {
-  if (auction.callbacks === zeroAddress) return false;
-
-  const [callbackName] =
-    Object.entries(deployments[auction.chainId]?.callbacks || {}).find(
-      ([, address]) =>
-        address.toLowerCase() === auction.callbacks.toLowerCase(),
-    ) || [];
-
-  const isAllowlistCallback = callbackName
-    ?.toLowerCase()
-    ?.includes("allowlist");
-
-  return !!isAllowlistCallback;
+const isAllowlistCallback = (callback: CallbacksType) => {
+  return callback.toLowerCase().includes("allowlist");
 };
 
-export { getPrice, getMinFilled, getLinkUrl, hasDerivative, hasAllowlist };
+export {
+  getPrice,
+  getMinFilled,
+  getLinkUrl,
+  hasDerivative,
+  isAllowlistCallback,
+};
