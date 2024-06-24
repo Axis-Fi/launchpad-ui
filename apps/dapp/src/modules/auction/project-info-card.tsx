@@ -1,5 +1,6 @@
 import { Card, Link } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
+import { ReferrerPopover } from "./referrer-popover";
 
 export function ProjectInfoCard({
   auction,
@@ -18,6 +19,7 @@ export function ProjectInfoCard({
     <Card
       className={props.className}
       title={`About ${auction.auctionInfo?.name || ""}`}
+      headerRightElement={<ReferrerPopover auction={auction} />}
     >
       <div className="mb-4 flex">{description}</div>
       <div className="flex-start flex space-x-4">
