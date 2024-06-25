@@ -86,7 +86,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   const form = useForm<BidForm>({
     mode: "onChange",
-    delayError: 1500,
+    delayError: 600,
     resolver: zodResolver(
       schema
         .refine(

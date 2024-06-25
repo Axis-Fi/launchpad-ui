@@ -39,7 +39,7 @@ export function SettleAuctionCallbackInput({
   const form = useForm<UniswapForm>({
     resolver: zodResolver(uniswapSchema),
     mode: "onChange",
-    delayError: 1500,
+    delayError: 600,
     defaultValues: {
       maxSlippage: DEFAULT_MAX_SLIPPAGE,
     },
