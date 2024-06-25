@@ -130,6 +130,7 @@ export function useAuction(
   const formatted = formatAuction(auction, auctionType, auctionData);
   const preparedAuction = {
     ...auction,
+    bids: auction.bids.sort((a, b) => +b.blockTimestamp - +a.blockTimestamp), //Sort by time descending
     ...tokens,
     auctionData,
     auctionType,
