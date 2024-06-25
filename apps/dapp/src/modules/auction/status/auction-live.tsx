@@ -85,7 +85,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   } = useAllowlist(auction);
 
   const form = useForm<BidForm>({
-    mode: "onTouched",
+    mode: "onChange",
+    delayError: 1500,
     resolver: zodResolver(
       schema
         .refine(

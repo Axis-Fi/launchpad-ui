@@ -299,7 +299,8 @@ export default function CreateAuctionPage() {
 
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
-    mode: "onBlur",
+    mode: "onChange",
+    delayError: 1500,
     defaultValues: auctionDefaultValues,
   });
 
