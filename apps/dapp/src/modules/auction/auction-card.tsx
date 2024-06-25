@@ -95,7 +95,7 @@ function AuctionCardDetails(
           twitter={getLinkUrl("twitter", props.auction)}
           website={getLinkUrl("website", props.auction)}
         />
-        <div className="flex h-full flex-col items-end text-wrap">
+        <div className="flex h-full flex-col items-start text-wrap">
           <Text color="secondary" className="hidden group-hover:block">
             {props.auction.info?.description}
           </Text>
