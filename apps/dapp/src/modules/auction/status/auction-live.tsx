@@ -419,11 +419,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     {bidFdv || "-"}
                   </Metric>
                 </div>
-                <div className="p-sm rounded">
-                  <Metric size="s" label="Est. Coin Rank">
-                    {"-"}
-                  </Metric>
-                </div>
               </div>
             </Card>
           </div>
