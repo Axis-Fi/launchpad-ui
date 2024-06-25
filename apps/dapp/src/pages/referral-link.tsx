@@ -10,6 +10,7 @@ import {
 import { PageContainer } from "modules/app/page-container";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { useReferralLink } from "modules/auction/hooks/use-referral-link";
+import { getLinkUrl } from "modules/auction/utils/auction-details";
 import React from "react";
 import { getAuctionPath } from "utils/router";
 import { Address, isAddress } from "viem";
@@ -30,8 +31,8 @@ export function ReferralLinkPage() {
 
   const opts: SelectData[] = auctions.data.map((a) => ({
     value: getAuctionPath(a),
-    label: a.auctionInfo?.name ?? a.baseToken.symbol,
-    imgURL: a.auctionInfo?.links?.projectLogo,
+    label: a.info?.name ?? a.baseToken.symbol,
+    imgURL: getLinkUrl("projectLogo", a),
   }));
 
   return (
