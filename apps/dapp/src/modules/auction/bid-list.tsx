@@ -60,7 +60,9 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
     //@ts-expect-error update type
     const amountOut = bid.amountOut;
 
-    const isUserBid = amountOut && auction.status === "live";
+    const isUserBid = //Only show on live and concluded states
+      amountOut && ["live", "concluded"].includes(auction.status);
+
     if (isUserBid) {
       value = Number(bid.amountIn) / amountOut;
     }
