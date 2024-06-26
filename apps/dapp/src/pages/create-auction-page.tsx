@@ -634,7 +634,7 @@ export default function CreateAuctionPage() {
                 ? toHex("")
                 : getLinearVestingParams({
                     expiry:
-                      getTimestamp(values.deadline) +
+                      getTimestamp(values.vestingStart ?? values.start) +
                       getDuration(Number(values.vestingDuration)),
                     start: getTimestamp(values.vestingStart ?? values.start),
                   }),
