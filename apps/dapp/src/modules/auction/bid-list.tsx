@@ -23,6 +23,7 @@ import { format } from "date-fns";
 import { useStorageBids } from "state/bids/handlers";
 import { CSVDownloader } from "components/csv-downloader";
 import { arrayToCSV } from "utils/csv";
+import { LockClosedIcon, LockOpen1Icon } from "@radix-ui/react-icons";
 
 export const bidListColumnHelper = createColumnHelper<
   BatchAuctionBid & { auction: Auction }
@@ -67,9 +68,16 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
       value = Number(bid.amountIn) / amountOut;
     }
 
-    const display = value
-      ? `${trimCurrency(value)} ${info.row.original.auction.quoteToken.symbol}`
-      : "-";
+    const display = value ? (
+      <>
+        {trimCurrency(value)} {info.row.original.auction.quoteToken.symbol}{" "}
+        <LockOpen1Icon />
+      </>
+    ) : (
+      <>
+        ████████ <LockClosedIcon />
+      </>
+    );
 
     return (
       <Tooltip
@@ -78,12 +86,18 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
             <>
               Your estimate payout out at this price is{" "}
               {trimCurrency(amountOut)} {auction.baseToken.symbol}.<br />
-              (Only you can see your bids&apos; price.)
+              Only you can see your bid price until the auction concludes and
+              settles.
             </>
-          ) : null
+          ) : (
+            <>
+              Other users&apos; bid prices are private until the auction
+              concludes and settles.
+            </>
+          )
         }
       >
-        {display}
+        <div className="flex items-center gap-x-1">{display}</div>
       </Tooltip>
     );
   },
