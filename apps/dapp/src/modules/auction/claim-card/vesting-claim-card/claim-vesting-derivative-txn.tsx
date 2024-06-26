@@ -13,9 +13,6 @@ export function ClaimVestingDervivativeTxn({
   const auction = _auction as BatchAuction;
   const claimBidsTxn = useClaimBids(auction);
 
-  const isWaiting =
-    claimBidsTxn.claimTx.isPending || claimBidsTxn.claimReceipt.isLoading;
-
   return (
     <TransactionDialog
       open={true}
@@ -31,7 +28,7 @@ export function ClaimVestingDervivativeTxn({
         }
       }}
       hash={claimBidsTxn.claimTx.data}
-      disabled={isWaiting}
+      disabled={claimBidsTxn.isWaiting}
       screens={{
         idle: {
           Component: () => (

@@ -38,10 +38,6 @@ export function RedeemVestedTokensTxn({
     onSuccess,
   });
 
-  const isClaimVestedTokensTxnWaiting =
-    redeemVestedTokensTxn.redeemTx.isPending ||
-    redeemVestedTokensTxn.redeemReceipt.isLoading;
-
   return (
     <TransactionDialog
       open={true}
@@ -59,7 +55,7 @@ export function RedeemVestedTokensTxn({
         }
       }}
       hash={redeemVestedTokensTxn.redeemTx.data}
-      disabled={isClaimVestedTokensTxnWaiting}
+      disabled={redeemVestedTokensTxn.isWaiting}
       screens={{
         idle: {
           Component: () => (
