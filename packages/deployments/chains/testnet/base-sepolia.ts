@@ -28,11 +28,14 @@ const config: AxisDeploymentConfig = {
   tokenList: [
     {
       ...usdc,
-      address: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+      address: "0x4c9d75fbdf764d05df654340a48f85bc0216f8ab",
+      decimals: 18,
+      mintable: true,
     },
     {
       ...weth,
-      address: "0x4200000000000000000000000000000000000006",
+      address: "0x5384c9408f65978b4318a95b70af383ca06f1cf0",
+      mintable: true,
     },
   ],
 };
