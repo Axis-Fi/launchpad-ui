@@ -19,7 +19,7 @@ const config: AxisDeploymentConfig = {
     merkleAllowlist: "0x9837cA34C444cEbd07C699036D1D174C6392D9fa",
     tokenAllowlist: "0x988c61b36F7898e464a0Bf477d2dc06aC4E95F95",
     allocatedMerkleAllowlist: "0x98B59b4BF62b0316D9B0f89D28A28d5D75BB8B46",
-    uniV2Dtl: "0xE64E0807E5a0d789dB2fABB3345aB763f879521C",
+    uniV2Dtl: "0xE676907Fa9a09dC1E3b67De11816665A1313524f",
     uniV3Dtl: "0xE6ECF0f655E642834c79F30323e7ae941883ac00",
   },
   subgraphURL:
