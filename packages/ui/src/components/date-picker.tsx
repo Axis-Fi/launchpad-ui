@@ -37,7 +37,7 @@ export function DatePicker({
       setDate(fullDate);
       props.onChange?.(fullDate);
     }
-  }, [matcher, props, props.time, time, date]);
+  }, [props.time, time]);
 
   // TODO fix "Function components cannot be given refs" which seems to be breaking datetime validation
   return (
@@ -60,8 +60,9 @@ export function DatePicker({
           mode="single"
           selected={date}
           onSelect={(date) => {
-            props.onChange?.(date);
-            setDate(date);
+            const _date = matcher.test(time) ? addTimeToDate(date, time) : date;
+            props.onChange?.(_date);
+            setDate(_date);
           }}
           initialFocus
           placeholderDate={!placeholderDate ? new Date() : placeholderDate}
