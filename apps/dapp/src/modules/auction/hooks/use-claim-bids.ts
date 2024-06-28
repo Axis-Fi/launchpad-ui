@@ -63,5 +63,18 @@ export function useClaimBids(auction: BatchAuction) {
     });
   };
 
-  return { handleClaim, handleClaimSelected, claimCall, claimReceipt, claimTx };
+  const isWaiting =
+    claimTx.isPending ||
+    claimReceipt.isLoading ||
+    claimCall.isPending ||
+    claimCall.isLoading;
+
+  return {
+    handleClaim,
+    handleClaimSelected,
+    claimCall,
+    claimReceipt,
+    claimTx,
+    isWaiting,
+  };
 }

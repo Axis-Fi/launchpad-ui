@@ -12,6 +12,7 @@ import { useDerivativeModule } from "modules/auction/hooks/use-derivative-module
 import { ClaimVestingDervivativeTxn } from "./claim-vesting-derivative-txn";
 import { RedeemVestedTokensTxn } from "./redeem-vested-tokens-txn";
 import { BidOutcome } from "../bid-outcome";
+import { useAuction } from "modules/auction/hooks/use-auction";
 
 const calculateVestingProgress = (start?: number, end?: number): number => {
   if (!start || !end) return 0;
@@ -70,6 +71,11 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
       derivativeModuleAddress: vestingModuleAddress,
     });
 
+  const { refetch: refetchAuction } = useAuction(
+    auction.id,
+    auction.auctionType,
+  );
+
   const redeemedAmount =
     auction.linearVesting?.redemptions
       .filter(
@@ -86,15 +92,15 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
     (bid) => bid.status === "claimed" || bid.status === "refunded",
   );
 
-  const userTotalSuccessfulBidAmount = userBids.reduce(
-    (acc, bid) => acc + Number(bid.settledAmountIn ?? 0),
+  const userTotalSuccessfulOutAmount = userBids.reduce(
+    (acc, bid) => acc + Number(bid.settledAmountOut ?? 0),
     0,
   );
 
   const hasVestingPeriodStarted =
     Date.now() / 1000 > Number(auction?.linearVesting?.startTimestamp);
 
-  const userHasUnvestedTokens = redeemedAmount < userTotalSuccessfulBidAmount;
+  const userHasUnvestedTokens = redeemedAmount < userTotalSuccessfulOutAmount;
 
   const vestingProgress = calculateVestingProgress(
     Number(auction?.linearVesting?.startTimestamp),
@@ -119,7 +125,7 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
   // We can calculate it on the frontend proactively for improved UX.
   // i.e. don't show 0 when they have vested tokens > 0.
   const derivedRedeemableAmount =
-    redeemableAmountDecimal ||
+    redeemableAmountDecimal ??
     (hasVestingPeriodStarted
       ? (vestingProgress / 100) * userTotalTokensWon
       : 0);
@@ -133,6 +139,17 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
       : vestingProgress < 0
         ? "Upcoming"
         : "Vesting";
+
+  // Allow user to eagerly claim the vesting derivative, if the vesting period hasn't started yet
+  const shouldShowClaimVesting =
+    !hasVestingPeriodStarted && !userHasClaimedVestingDerivative;
+
+  // Otherwise, if the vesting period has started, just show "redeem" option
+  // which triggers either: one txn to redeem, or, two txns to claim vesting derivative and then redeem
+  const shouldShowRedeem = hasVestingPeriodStarted && userHasUnvestedTokens;
+
+  const shouldShowVestingNotStarted =
+    !hasVestingPeriodStarted && userHasClaimedVestingDerivative;
 
   return (
     <div className="gap-y-md flex flex-col">
@@ -192,43 +209,34 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
           <RequiresChain chainId={auction.chainId}>
             <Button
               className="w-full"
-              disabled={!userHasUnvestedTokens}
+              disabled={!shouldShowClaimVesting && !shouldShowRedeem}
               onClick={() => setIsTxnDialogOpen(true)}
             >
-              {
-                // Allow user to eagerly claim the vesting derivative, if the vesting period hasn't started yet
-                !hasVestingPeriodStarted &&
-                  !userHasClaimedVestingDerivative && (
-                    <>Claim vesting {auction.baseToken.symbol}</>
-                  )
-              }
-              {
-                // Otherwise, if the vesting period has started, just show "redeem" option
-                // which triggers either: one txn to redeem, or, two txns to claim and redeem
-                hasVestingPeriodStarted && userHasUnvestedTokens && (
-                  <>Redeem {auction.baseToken.symbol}</>
-                )
-              }
-              {!hasVestingPeriodStarted && userHasClaimedVestingDerivative && (
+              {shouldShowClaimVesting && (
+                <>Claim vesting {auction.baseToken.symbol}</>
+              )}
+              {shouldShowRedeem && <>Redeem {auction.baseToken.symbol}</>}
+              {shouldShowVestingNotStarted && (
                 <>Vesting hasn&apos;t started yet</>
               )}
-              {!userHasUnvestedTokens && (
-                <>You&apos;ve redeemed all your tokens</>
-              )}
+              {!userHasUnvestedTokens && <>You redeemed all your tokens</>}
             </Button>
           </RequiresChain>
 
-          {!userHasClaimedVestingDerivative && isTxnDialogOpen && (
+          {shouldShowClaimVesting && isTxnDialogOpen && (
             <ClaimVestingDervivativeTxn
               auction={auction}
               onClose={() => setIsTxnDialogOpen(false)}
             />
           )}
-          {userHasClaimedVestingDerivative && isTxnDialogOpen && (
+          {shouldShowRedeem && isTxnDialogOpen && (
             <RedeemVestedTokensTxn
               auction={auction}
               onClose={() => setIsTxnDialogOpen(false)}
-              onSuccess={() => refetchRedeemable()}
+              onSuccess={() => {
+                refetchRedeemable();
+                refetchAuction();
+              }}
             />
           )}
         </div>

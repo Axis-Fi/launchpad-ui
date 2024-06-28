@@ -66,11 +66,18 @@ export function useVestingRedeem({
     });
   };
 
+  const isWaiting =
+    redeemCall.isPending ||
+    redeemCall.isLoading ||
+    redeemTx.isPending ||
+    redeemReceipt.isLoading;
+
   return {
     handleRedeem,
     handleRedeemSelected,
     redeemCall,
     redeemReceipt,
     redeemTx,
+    isWaiting,
   };
 }
