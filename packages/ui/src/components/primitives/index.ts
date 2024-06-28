@@ -1,5 +1,6 @@
 export * from "./button";
 export * from "./form";
+export * from "./text";
 
 export * from "./accordion";
 export * from "./avatar";
@@ -7,6 +8,7 @@ export * from "./badge";
 export * from "./calendar";
 export * from "./card";
 export * from "./checkbox";
+export * from "./chip";
 export * from "./command";
 export * from "./dialog";
 export * from "./dropdown-menu";

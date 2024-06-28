@@ -1,29 +1,61 @@
-import { Link } from "@repo/ui";
-import { ArrowUpRightIcon } from "lucide-react";
+import { Card, Link } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
+import { ReferrerPopover } from "./referrer-popover";
+import { getLinkUrl } from "./utils/auction-details";
 
 export function ProjectInfoCard({
   auction,
   ...props
 }: PropsWithAuction & React.HTMLAttributes<HTMLDivElement>) {
   const description =
-    auction.auctionInfo?.description ??
-    "No description found for this project.";
+    auction.info?.description ?? "No description found for this project.";
 
-  const website = auction.auctionInfo?.links?.website;
+  const website = getLinkUrl("website", auction);
+  const twitter = getLinkUrl("twitter", auction);
+  const discord = getLinkUrl("discord", auction);
+  const farcaster = getLinkUrl("farcaster", auction);
 
   return (
-    <div className={props.className}>
-      <div className="mb-2 flex justify-between">
-        <h3 className="w-1/2">About {auction.auctionInfo?.name}</h3>
+    <Card
+      className={props.className}
+      title={`About ${auction.info?.name || ""}`}
+      headerRightElement={<ReferrerPopover auction={auction} />}
+    >
+      <div className="mb-4 flex">{description}</div>
+      <div className="flex-start flex space-x-4">
+        {twitter && (
+          <Link className="text-primary flex" href={twitter}>
+            <img
+              src="/images/twitter-logo.svg"
+              alt="twitter logo"
+              width="35px"
+            />
+          </Link>
+        )}
+        {discord && (
+          <Link className="text-primary flex" href={discord}>
+            <img
+              src="/images/discord-logo.svg"
+              alt="discord logo"
+              width="35px"
+            />
+          </Link>
+        )}
+        {farcaster && (
+          <Link className="text-primary flex" href={farcaster}>
+            <img
+              src="/images/farcaster-logo.svg"
+              alt="farcaster logo"
+              width="35px"
+            />
+          </Link>
+        )}
         {website && (
-          <Link className="text-primary flex items-end" href={website}>
-            GO TO WEBSITE
-            <ArrowUpRightIcon className="inline" />
+          <Link className="text-primary flex" href={website}>
+            <img src="/images/web-logo.svg" alt="web logo" width="35px" />
           </Link>
         )}
       </div>
-      {description}
-    </div>
+    </Card>
   );
 }

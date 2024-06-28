@@ -7,6 +7,7 @@ import tokenlistMetadata from "../tokenlist-metadata";
 export function createDeployment(config: AxisDeploymentConfig): AxisDeployment {
   return {
     addresses: config.addresses,
+    callbacks: config.callbacks,
     subgraphURL: withVersion(config.subgraphURL, subgraphConfig.version),
     chain: withCustomRPCandIcon(
       config.chain,

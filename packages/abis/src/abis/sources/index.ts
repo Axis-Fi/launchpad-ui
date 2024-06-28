@@ -1,17 +1,21 @@
-import atomicCatalogue from "./AtomicCatalogue.json";
 import batchCatalogue from "./BatchCatalogue.json";
-import _atomicAuctionHouse from "./AtomicAuctionHouse.json";
 import _batchAuctionHouse from "./BatchAuctionHouse.json";
 import encryptedMarginalPrice from "./EncryptedMarginalPrice.json";
-import fixedPriceSale from "./FixedPriceSale.json";
 import fixedPriceBatch from "./FixedPriceBatch.json";
 import linearVesting from "./LinearVesting.json";
 import testnetERC20 from "./TestnetERC20.json";
+import merkleAllowlist from "./MerkleAllowlist.json";
+import cappedMerkleAllowlist from "./CappedMerkleAllowlist.json";
+import tokenAllowlist from "./TokenAllowlist.json";
+import allocatedMerkleAllowlist from "./AllocatedMerkleAllowlist.json";
+import uniV2Dtl from "./UniswapV2DirectToLiquidity.json";
+import uniV3Dtl from "./UniswapV3DirectToLiquidity.json";
+import uniV2Factory from "./IUniswapV2Factory.json";
+import uniV3Factory from "./IUniswapV3Factory.json";
 
 //Fetch errors from modules to include in the AuctionHouse ABI
 const errors = [
   encryptedMarginalPrice.abi,
-  fixedPriceSale.abi,
   fixedPriceBatch.abi,
   linearVesting.abi,
 ].flatMap((e) => e.filter((e) => e.type === "error"));
@@ -21,19 +25,20 @@ const batchAuctionHouse = {
   abi: [..._batchAuctionHouse.abi, ...errors],
 } as const;
 
-const atomicAuctionHouse = {
-  abi: [..._atomicAuctionHouse.abi, ...errors],
-} as const;
-
 export { testnetERC20 };
 
 export default {
-  atomicCatalogue,
-  atomicAuctionHouse,
   batchCatalogue,
   batchAuctionHouse,
   encryptedMarginalPrice,
-  fixedPriceSale,
   fixedPriceBatch,
   linearVesting,
+  merkleAllowlist,
+  cappedMerkleAllowlist,
+  tokenAllowlist,
+  allocatedMerkleAllowlist,
+  uniV2Dtl,
+  uniV3Dtl,
+  uniV2Factory,
+  uniV3Factory,
 } as const;

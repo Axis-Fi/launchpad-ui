@@ -16,3 +16,11 @@ export const Primary: Story = {
     src: logo,
   },
 };
+
+export const Large: Story = {
+  args: {
+    label: "DAI",
+    src: logo,
+    large: true,
+  },
+};

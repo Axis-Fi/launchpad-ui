@@ -1,17 +1,9 @@
 import React from "react";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
-import {
-  Address,
-  encodeAbiParameters,
-  isAddress,
-  parseAbiParameters,
-  parseUnits,
-  toHex,
-} from "viem";
+import { Address, formatUnits, fromHex, toHex } from "viem";
 import {
   useAccount,
-  useBalance,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
@@ -19,14 +11,17 @@ import { useReferrer } from "state/referral";
 import { AuctionType } from "@repo/types";
 import { getAuctionHouse } from "utils/contracts";
 import { useDeferredQuery } from "@repo/sdk/react";
+import { useStoreBid } from "state/bids/handlers";
 
 export function useBidAuction(
   id: string,
   auctionType: AuctionType,
-  amountIn: number,
-  amountOut: number,
+  amountIn: bigint,
+  amountOut: bigint,
+  callbackData: `0x${string}`,
 ) {
   const { result: auction, ...auctionQuery } = useAuction(id, auctionType);
+  const storeBidLocally = useStoreBid();
 
   if (!auction) throw new Error(`Unable to find auction ${id}`);
   const lotId = auction.lotId;
@@ -43,16 +38,20 @@ export function useBidAuction(
       throw new Error("Wallet not connected. Please connect your wallet.");
     }
 
-    return sdk.bid({
-      lotId: Number(lotId),
-      amountIn: Number(amountIn),
-      amountOut: Number(amountOut),
-      chainId: auction.chainId,
-      auctionType: auctionType,
-      referrerAddress: referrer,
-      bidderAddress: bidderAddress,
-      signedPermit2Approval: toHex(""), // TODO implement permit2
-    });
+    // TODO: change SDK to use bigints
+    return sdk.bid(
+      {
+        lotId: Number(lotId),
+        amountIn: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
+        amountOut: Number(formatUnits(amountOut, auction.baseToken.decimals)),
+        chainId: auction.chainId,
+        auctionType: auctionType,
+        referrerAddress: referrer,
+        bidderAddress: bidderAddress,
+        signedPermit2Approval: toHex(""), // TODO implement permit2
+      },
+      callbackData,
+    );
   });
 
   // Main action, calls SDK which encrypts the bid and returns contract configuration data
@@ -62,54 +61,8 @@ export function useBidAuction(
     }
     const { abi, address, functionName, args } = await bidConfig();
 
-    bidTx.writeContract({ abi, address, functionName, args });
+    bidTx.writeContractAsync({ abi, address, functionName, args });
   };
-
-  const handlePurchase = async () => {
-    if (!bidderAddress || !isAddress(bidderAddress)) {
-      throw new Error("Not connected");
-    }
-    const minAmountOut = parseUnits(
-      amountOut.toString(),
-      Number(auction.baseToken.decimals),
-    );
-
-    const auctionData = encodeAbiParameters(
-      parseAbiParameters("uint96 minAmountOut"),
-      [minAmountOut],
-    );
-
-    bidTx.writeContract({
-      abi: auctionHouse.abi,
-      address: auctionHouse.address,
-      functionName: "purchase",
-      args: [
-        {
-          lotId: BigInt(lotId),
-          referrer,
-          recipient: bidderAddress,
-          amount: parseUnits(
-            amountIn.toString(),
-            Number(auction.quoteToken.decimals),
-          ),
-          minAmountOut: parseUnits(
-            amountOut.toString(),
-            Number(auction.baseToken.decimals),
-          ),
-          permit2Data: toHex(""), // TODO support permit2
-          auctionData,
-        },
-        toHex(""), // No callback parameters being passed. TODO update when callback support is added.
-      ],
-    });
-  };
-
-  // We need to know user's balance and allowance
-  const balance = useBalance({
-    address: bidderAddress,
-    token: auction.quoteToken.address as Address,
-    chainId: auction.chainId,
-  });
 
   const {
     isSufficientAllowance,
@@ -123,27 +76,39 @@ export function useBidAuction(
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
-    amount: Number(amountIn),
+    amount: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
   });
 
   React.useEffect(() => {
+    // Refetch allowance, refetches delayed auction info
+    // and stores bid if EMP
     if (bidReceipt.isSuccess) {
-      balance.refetch();
       allowance.refetch();
+      // Delay refetching to ensure subgraph has caught up with the changes
       setTimeout(() => auctionQuery.refetch(), 5000); //TODO: ideas on how to improve this
+
+      // Store user's bid amount locally
+      if (auction.auctionType === AuctionType.SEALED_BID) {
+        const hexBidId = bidReceipt.data.logs[1].topics[2];
+
+        const bidId = fromHex(hexBidId!, "number").toString();
+
+        //Stores bid using
+        storeBidLocally({
+          auctionId: auction.id,
+          address: bidderAddress!,
+          bidId,
+          amountOut: formatUnits(amountOut, auction.baseToken.decimals),
+        });
+      }
     }
   }, [bidReceipt.isSuccess]);
 
   const error = [bidReceipt, bidTx, bidConfig].find((m) => m.isError)?.error;
 
   return {
-    handleBid:
-      auction.auctionType === AuctionType.SEALED_BID ||
-      auction.auctionType === AuctionType.FIXED_PRICE_BATCH
-        ? handleBid
-        : handlePurchase,
+    handleBid,
     approveCapacity,
-    balance,
     isSufficientAllowance,
     approveReceipt,
     bidReceipt,

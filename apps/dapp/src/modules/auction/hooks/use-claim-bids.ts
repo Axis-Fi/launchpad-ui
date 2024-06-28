@@ -1,11 +1,13 @@
-import { BatchAuction } from "@repo/types";
-import { getAuctionHouse } from "utils/contracts";
+import { useEffect } from "react";
 import {
   useAccount,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
+import { BatchAuction } from "@repo/types";
+import { getAuctionHouse } from "utils/contracts";
+import { useAuction } from "./use-auction";
 
 export function useClaimBids(auction: BatchAuction) {
   const { address: userAddress } = useAccount();
@@ -33,6 +35,17 @@ export function useClaimBids(auction: BatchAuction) {
 
   const claimTx = useWriteContract();
   const claimReceipt = useWaitForTransactionReceipt({ hash: claimTx.data });
+  const { refetch: refetchAuction } = useAuction(
+    auction.id,
+    auction.auctionType,
+  );
+
+  // When someone claims their bids, refetch the auction from the subgraph so the dapp has the latest data
+  useEffect(() => {
+    if (claimReceipt.isSuccess) {
+      setTimeout(() => refetchAuction(), 2500);
+    }
+  }, [claimReceipt.isSuccess, refetchAuction]);
 
   const handleClaim = () => {
     if (claimCall.data) {
@@ -50,5 +63,18 @@ export function useClaimBids(auction: BatchAuction) {
     });
   };
 
-  return { handleClaim, handleClaimSelected, claimCall, claimReceipt, claimTx };
+  const isWaiting =
+    claimTx.isPending ||
+    claimReceipt.isLoading ||
+    claimCall.isPending ||
+    claimCall.isLoading;
+
+  return {
+    handleClaim,
+    handleClaimSelected,
+    claimCall,
+    claimReceipt,
+    claimTx,
+    isWaiting,
+  };
 }

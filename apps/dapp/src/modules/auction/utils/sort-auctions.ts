@@ -7,6 +7,7 @@ const status: { [key in AuctionStatus]: number } = {
   decrypted: 3,
   settled: 4,
   cancelled: 5,
+  aborted: 6,
 };
 
 /** Required fields for an auction to be comparable */

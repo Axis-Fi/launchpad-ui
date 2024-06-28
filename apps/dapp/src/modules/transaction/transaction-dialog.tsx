@@ -40,7 +40,7 @@ const defaultScreens: TransactionScreens = {
     title: "Confirm Transaction",
   },
   signing: {
-    title: "Waiting signature",
+    title: "Waiting for Signature",
     Component: () => (
       <div className="my-4  text-center">Sign the transaction to proceed</div>
     ),
@@ -90,14 +90,14 @@ export function TransactionDialog({
   return (
     <DialogRoot open={open} onOpenChange={onOpenChange}>
       {props.triggerContent && (
-        <DialogTrigger className="w-full " disabled={props.disabled}>
+        <DialogTrigger className="w-full max-w-lg" disabled={props.disabled}>
           <Button className="w-full max-w-sm" disabled={props.disabled}>
             {props.triggerContent}
           </Button>
         </DialogTrigger>
       )}
-      <DialogContent className="max-w-lg">
-        <DialogHeader className="text-2xl">{title}</DialogHeader>
+      <DialogContent className="bg-surface">
+        <DialogHeader className="text-lg">{title}</DialogHeader>
 
         <Component error={error} hash={props.hash} chainId={props.chainId} />
 
@@ -105,6 +105,7 @@ export function TransactionDialog({
           {showFooter && (
             <Button
               disabled={props.disabled}
+              size="md"
               type="submit"
               className="mx-auto w-full max-w-sm"
               onClick={(e) => {

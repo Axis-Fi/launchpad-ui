@@ -1,23 +1,22 @@
-import type { Address, AuctionInfo, Token, TokenBase } from "@repo/types";
+import type { Address, Auction, Token, TokenBase } from "@repo/types";
 import { Token as SubgraphToken } from "@repo/subgraph-client/src/generated";
 import { getChainId } from "utils/chain";
 import { formatUnits } from "viem";
+import { getLinkUrl } from "./auction-details";
 
 type InputToken = Omit<SubgraphToken, "id" | "decimals" | "totalSupply"> & {
   decimals: number | string;
   totalSupply?: bigint | string | undefined;
 };
 
-type AuctionTokens = {
+type PartialAuction = Pick<Auction, "info" | "chain"> & {
   quoteToken: InputToken;
   baseToken: InputToken;
-  chain: string;
 };
 
 export function formatAuctionTokens(
-  auction: AuctionTokens,
+  auction: PartialAuction,
   getToken: (token: TokenBase) => Token | undefined,
-  info?: AuctionInfo,
 ) {
   const chainId = getChainId(auction.chain);
 
@@ -27,7 +26,7 @@ export function formatAuctionTokens(
 
   const baseToken = {
     ...auction.baseToken,
-    logoURI: info?.links?.payoutTokenLogo,
+    logoURI: getLinkUrl("payoutTokenLogo", auction),
   };
 
   return {

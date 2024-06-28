@@ -31,8 +31,10 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
 
   const handleChange: DialogInputChangeHandler<T> = useCallback(
     (value, display) => {
-      setSelected(value);
-      setDisplay(display);
+      if (display?.label) {
+        setDisplay(display);
+        setSelected(value);
+      }
 
       onChange?.(value);
     },
@@ -58,7 +60,10 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
         !open && props.onBlur?.();
       }}
       triggerElement={
-        <Button variant="input" className="flex w-full justify-start">
+        <Button
+          variant="input"
+          className="bg-surface-tertiary hover:bg-surface-secondary flex w-full justify-start text-sm normal-case"
+        >
           {triggerContent}
         </Button>
       }

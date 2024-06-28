@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { AuctionType, type BatchAuction } from "@repo/types";
 
 const getBatchAuctionMock = (
@@ -20,20 +21,24 @@ const getBatchAuctionMock = (
       chainId: 168587773,
     },
     status: "settled",
-    auctionInfo: {
+    info: {
       name: "Zyn Protocol",
       description:
         "The real ZYN coin. Join us ZYNNERs and be a part of the best attempt at bringing nicotine on-chain",
-      links: {
-        projectLogo:
-          "https://www.fandfwholesale.com/media/catalog/product/cache/1ecf0a9687bd7fb333e2e3dda40a5d04/z/y/zyn_nicotine_pouches_cool_mint_6mg.jpg",
-        website: "https://example.com/",
-        twitter: "https://example.com/",
-        discord: "https://example.com/",
-        farcaster: "https://example.com/",
-        payoutTokenLogo:
-          "https://www.fandfwholesale.com/media/catalog/product/cache/1ecf0a9687bd7fb333e2e3dda40a5d04/z/y/zyn_nicotine_pouches_cool_mint_6mg.jpg",
-      },
+      links: [
+        {
+          linkId: "payoutTokenLogo",
+          url: "https://www.logolynx.com/images/logolynx/68/68feadd5125aba3db46f1e4d77d54cfa.jpeg",
+        },
+        {
+          linkId: "projectLogo",
+          url: "https://www.fandfwholesale.com/media/catalog/product/cache/1ecf0a9687bd7fb333e2e3dda40a5d04/z/y/zyn_nicotine_pouches_cool_mint_6mg.jpg",
+        },
+        {
+          linkId: "website",
+          url: "https://numba.one",
+        },
+      ],
     },
     // auctionData?: EMPAuctionData | FixedPriceAuctionData,
     // formatted?: AuctionFormattedInfo,

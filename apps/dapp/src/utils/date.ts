@@ -8,6 +8,7 @@ import {
   intervalToDuration,
   interval,
   isAfter,
+  differenceInDays,
 } from "date-fns";
 
 // Date formatting operations
@@ -27,10 +28,34 @@ export const dateMath = {
 };
 
 export const getTimestamp = (date: Date) => Math.floor(date.getTime() / 1000);
+
 export const getDuration = (days: number) => days * 24 * 60 * 60;
 
-type ValidDateTypes = Date | number | string;
+/**Gets and formats the countdown to a given date*/
+export const getCountdown = (end: Date, start = new Date()) => {
+  const { days, hours, minutes, seconds } = intervalToDuration({ start, end });
+  return [days, hours, minutes, seconds]
+    .filter((d) => Boolean(d) || d === 0)
+    .map((s) => String(s).padStart(2, "0")) //Ensures there's always 2 zeros
+    .join(":");
+};
 
+/**Gets the ellapsed time between two dates in percent*/
+export const getDurationAsPercentage = (
+  start: string | number,
+  end: string | number,
+  current: string | number,
+) => {
+  return (
+    ((Number(current) - Number(start)) / (Number(end) - Number(start))) * 100
+  );
+};
+
+export const getDaysBetweenDates = (laterDate: Date, earlierDate: Date) => {
+  return differenceInDays(laterDate, earlierDate);
+};
+
+type ValidDateTypes = Date | number | string;
 // Date utilities
 export const dateHelpers = {
   getTimestamp,

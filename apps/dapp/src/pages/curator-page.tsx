@@ -10,6 +10,7 @@ import { useChainId, useSwitchChain } from "wagmi";
 export function CuratorPage() {
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
+
   const options = activeChains.map((c) => ({
     label: c.name,
     imgURL: c.iconUrl as string,
@@ -18,11 +19,11 @@ export function CuratorPage() {
 
   return (
     <PageContainer title="Curator">
-      <div className="flex ">
+      <div className="flex gap-x-4 px-4">
         <Card
           title={
             <div className="gap-x-4">
-              <Tooltip content="Fees are set per chain and auction house. Click percentage field below to edit your fee and the checkmark to submit the transaction.">
+              <Tooltip content="Click percentage field below to edit your fee and the checkmark to submit the transaction.">
                 <CardTitle className="flex items-center gap-x-2">
                   Fees <InfoIcon className="size-4" />
                 </CardTitle>
@@ -38,12 +39,8 @@ export function CuratorPage() {
         >
           <div className="flex">
             <CuratorFeeManager
-              modules={[AuctionType.FIXED_PRICE]}
-              auctionType={AuctionType.FIXED_PRICE}
-            />
-            <CuratorFeeManager
-              modules={[AuctionType.SEALED_BID]}
-              auctionType={AuctionType.SEALED_BID}
+              modules={[AuctionType.FIXED_PRICE_BATCH]}
+              auctionType={AuctionType.FIXED_PRICE_BATCH}
             />
           </div>
         </Card>

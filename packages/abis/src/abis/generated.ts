@@ -1,949 +1,26 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// atomicAuctionHouse
+// allocatedMerkleAllowlist
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const atomicAuctionHouseAbi = [
-  {
-    stateMutability: "nonpayable",
-    type: "constructor",
-    inputs: [
-      { name: "owner_", internalType: "address", type: "address" },
-      { name: "protocol_", internalType: "address", type: "address" },
-      { name: "permit2_", internalType: "address", type: "address" },
-    ],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      {
-        name: "routing_",
-        internalType: "struct IAuctionHouse.RoutingParams",
-        type: "tuple",
-        components: [
-          { name: "auctionType", internalType: "Keycode", type: "bytes5" },
-          { name: "baseToken", internalType: "address", type: "address" },
-          { name: "quoteToken", internalType: "address", type: "address" },
-          { name: "curator", internalType: "address", type: "address" },
-          {
-            name: "callbacks",
-            internalType: "contract ICallback",
-            type: "address",
-          },
-          { name: "callbackData", internalType: "bytes", type: "bytes" },
-          { name: "derivativeType", internalType: "Keycode", type: "bytes5" },
-          { name: "derivativeParams", internalType: "bytes", type: "bytes" },
-          { name: "wrapDerivative", internalType: "bool", type: "bool" },
-        ],
-      },
-      {
-        name: "params_",
-        internalType: "struct IAuction.AuctionParams",
-        type: "tuple",
-        components: [
-          { name: "start", internalType: "uint48", type: "uint48" },
-          { name: "duration", internalType: "uint48", type: "uint48" },
-          { name: "capacityInQuote", internalType: "bool", type: "bool" },
-          { name: "capacity", internalType: "uint256", type: "uint256" },
-          { name: "implParams", internalType: "bytes", type: "bytes" },
-        ],
-      },
-      { name: "infoHash_", internalType: "string", type: "string" },
-    ],
-    name: "auction",
-    outputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-  },
-  {
-    stateMutability: "pure",
-    type: "function",
-    inputs: [
-      { name: "protocolFee_", internalType: "uint48", type: "uint48" },
-      { name: "referrerFee_", internalType: "uint48", type: "uint48" },
-      { name: "hasReferrer_", internalType: "bool", type: "bool" },
-      { name: "amount_", internalType: "uint256", type: "uint256" },
-    ],
-    name: "calculateQuoteFees",
-    outputs: [
-      { name: "toReferrer", internalType: "uint256", type: "uint256" },
-      { name: "toProtocol", internalType: "uint256", type: "uint256" },
-    ],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "callbackData_", internalType: "bytes", type: "bytes" },
-    ],
-    name: "cancel",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [{ name: "token_", internalType: "address", type: "address" }],
-    name: "claimRewards",
-    outputs: [],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "auctionRef", internalType: "Veecode", type: "bytes7" },
-      { name: "derivativeRef", internalType: "Veecode", type: "bytes7" },
-    ],
-    name: "condensers",
-    outputs: [
-      { name: "condenserRef", internalType: "Veecode", type: "bytes7" },
-    ],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "callbackData_", internalType: "bytes", type: "bytes" },
-    ],
-    name: "curate",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "veecode_", internalType: "Veecode", type: "bytes7" },
-      { name: "callData_", internalType: "bytes", type: "bytes" },
-    ],
-    name: "execOnModule",
-    outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "", internalType: "Keycode", type: "bytes5" }],
-    name: "fees",
-    outputs: [
-      { name: "protocol", internalType: "uint48", type: "uint48" },
-      { name: "referrer", internalType: "uint48", type: "uint48" },
-      { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "auctionType_", internalType: "Keycode", type: "bytes5" },
-      { name: "curator_", internalType: "address", type: "address" },
-    ],
-    name: "getCuratorFee",
-    outputs: [{ name: "curatorFee", internalType: "uint48", type: "uint48" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "auctionType_", internalType: "Keycode", type: "bytes5" }],
-    name: "getFees",
-    outputs: [
-      { name: "protocol", internalType: "uint48", type: "uint48" },
-      { name: "referrer", internalType: "uint48", type: "uint48" },
-      { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "getModuleForId",
-    outputs: [
-      { name: "", internalType: "contract AuctionModule", type: "address" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "", internalType: "Veecode", type: "bytes7" }],
-    name: "getModuleForVeecode",
-    outputs: [{ name: "", internalType: "contract Module", type: "address" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "", internalType: "Keycode", type: "bytes5" }],
-    name: "getModuleStatus",
-    outputs: [
-      { name: "latestVersion", internalType: "uint8", type: "uint8" },
-      { name: "sunset", internalType: "bool", type: "bool" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "getProtocol",
-    outputs: [{ name: "", internalType: "address", type: "address" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "recipient_", internalType: "address", type: "address" },
-      { name: "token_", internalType: "address", type: "address" },
-    ],
-    name: "getRewards",
-    outputs: [{ name: "reward", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "newModule_", internalType: "contract Module", type: "address" },
-    ],
-    name: "installModule",
-    outputs: [],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "isExecOnModule",
-    outputs: [{ name: "", internalType: "bool", type: "bool" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "lotCounter",
-    outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "lotFees",
-    outputs: [
-      { name: "curator", internalType: "address", type: "address" },
-      { name: "curated", internalType: "bool", type: "bool" },
-      { name: "curatorFee", internalType: "uint48", type: "uint48" },
-      { name: "protocolFee", internalType: "uint48", type: "uint48" },
-      { name: "referrerFee", internalType: "uint48", type: "uint48" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "lotRouting",
-    outputs: [
-      { name: "seller", internalType: "address", type: "address" },
-      { name: "baseToken", internalType: "contract ERC20", type: "address" },
-      { name: "quoteToken", internalType: "contract ERC20", type: "address" },
-      { name: "auctionReference", internalType: "Veecode", type: "bytes7" },
-      { name: "funding", internalType: "uint256", type: "uint256" },
-      {
-        name: "callbacks",
-        internalType: "contract ICallback",
-        type: "address",
-      },
-      { name: "derivativeReference", internalType: "Veecode", type: "bytes7" },
-      { name: "wrapDerivative", internalType: "bool", type: "bool" },
-      { name: "derivativeParams", internalType: "bytes", type: "bytes" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-    name: "modules",
-    outputs: [{ name: "", internalType: "Keycode", type: "bytes5" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "modulesCount",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      {
-        name: "params_",
-        internalType: "struct IAtomicAuctionHouse.PurchaseParams[]",
-        type: "tuple[]",
-        components: [
-          { name: "recipient", internalType: "address", type: "address" },
-          { name: "referrer", internalType: "address", type: "address" },
-          { name: "lotId", internalType: "uint96", type: "uint96" },
-          { name: "amount", internalType: "uint256", type: "uint256" },
-          { name: "minAmountOut", internalType: "uint256", type: "uint256" },
-          { name: "auctionData", internalType: "bytes", type: "bytes" },
-          { name: "permit2Data", internalType: "bytes", type: "bytes" },
-        ],
-      },
-      { name: "callbackData_", internalType: "bytes[]", type: "bytes[]" },
-    ],
-    name: "multiPurchase",
-    outputs: [
-      { name: "payoutAmounts", internalType: "uint256[]", type: "uint256[]" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "owner",
-    outputs: [{ name: "", internalType: "address", type: "address" }],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      {
-        name: "params_",
-        internalType: "struct IAtomicAuctionHouse.PurchaseParams",
-        type: "tuple",
-        components: [
-          { name: "recipient", internalType: "address", type: "address" },
-          { name: "referrer", internalType: "address", type: "address" },
-          { name: "lotId", internalType: "uint96", type: "uint96" },
-          { name: "amount", internalType: "uint256", type: "uint256" },
-          { name: "minAmountOut", internalType: "uint256", type: "uint256" },
-          { name: "auctionData", internalType: "bytes", type: "bytes" },
-          { name: "permit2Data", internalType: "bytes", type: "bytes" },
-        ],
-      },
-      { name: "callbackData_", internalType: "bytes", type: "bytes" },
-    ],
-    name: "purchase",
-    outputs: [
-      { name: "payoutAmount", internalType: "uint256", type: "uint256" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "", internalType: "address", type: "address" },
-      { name: "", internalType: "contract ERC20", type: "address" },
-    ],
-    name: "rewards",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "auctionRef_", internalType: "Veecode", type: "bytes7" },
-      { name: "derivativeRef_", internalType: "Veecode", type: "bytes7" },
-      { name: "condenserRef_", internalType: "Veecode", type: "bytes7" },
-    ],
-    name: "setCondenser",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "auctionType_", internalType: "Keycode", type: "bytes5" },
-      { name: "fee_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "setCuratorFee",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "auctionType_", internalType: "Keycode", type: "bytes5" },
-      {
-        name: "type_",
-        internalType: "enum IFeeManager.FeeType",
-        type: "uint8",
-      },
-      { name: "fee_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "setFee",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [{ name: "protocol_", internalType: "address", type: "address" }],
-    name: "setProtocol",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [{ name: "keycode_", internalType: "Keycode", type: "bytes5" }],
-    name: "sunsetModule",
-    outputs: [],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
-    name: "transferOwnership",
-    outputs: [],
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
-      {
-        name: "auctionRef",
-        internalType: "Veecode",
-        type: "bytes7",
-        indexed: true,
-      },
-    ],
-    name: "AuctionCancelled",
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
-      {
-        name: "auctionRef",
-        internalType: "Veecode",
-        type: "bytes7",
-        indexed: true,
-      },
-      {
-        name: "infoHash",
-        internalType: "string",
-        type: "string",
-        indexed: false,
-      },
-    ],
-    name: "AuctionCreated",
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
-      {
-        name: "curator",
-        internalType: "address",
-        type: "address",
-        indexed: true,
-      },
-    ],
-    name: "Curated",
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      {
-        name: "keycode",
-        internalType: "Keycode",
-        type: "bytes5",
-        indexed: true,
-      },
-      { name: "version", internalType: "uint8", type: "uint8", indexed: true },
-      {
-        name: "location",
-        internalType: "address",
-        type: "address",
-        indexed: true,
-      },
-    ],
-    name: "ModuleInstalled",
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      {
-        name: "keycode",
-        internalType: "Keycode",
-        type: "bytes5",
-        indexed: true,
-      },
-    ],
-    name: "ModuleSunset",
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      { name: "user", internalType: "address", type: "address", indexed: true },
-      {
-        name: "newOwner",
-        internalType: "address",
-        type: "address",
-        indexed: true,
-      },
-    ],
-    name: "OwnershipTransferred",
-  },
-  {
-    type: "event",
-    anonymous: false,
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
-      {
-        name: "buyer",
-        internalType: "address",
-        type: "address",
-        indexed: true,
-      },
-      {
-        name: "referrer",
-        internalType: "address",
-        type: "address",
-        indexed: false,
-      },
-      {
-        name: "amount",
-        internalType: "uint256",
-        type: "uint256",
-        indexed: false,
-      },
-      {
-        name: "payout",
-        internalType: "uint256",
-        type: "uint256",
-        indexed: false,
-      },
-    ],
-    name: "Purchase",
-  },
-  { type: "error", inputs: [], name: "AmountLessThanMinimum" },
-  { type: "error", inputs: [], name: "FailedCallback" },
-  { type: "error", inputs: [], name: "InsufficientFunding" },
-  { type: "error", inputs: [], name: "InvalidCallback" },
-  { type: "error", inputs: [], name: "InvalidCallbackResponse" },
-  { type: "error", inputs: [], name: "InvalidFee" },
-  {
-    type: "error",
-    inputs: [{ name: "id_", internalType: "uint96", type: "uint96" }],
-    name: "InvalidLotId",
-  },
-  {
-    type: "error",
-    inputs: [
-      { name: "keycode_", internalType: "Keycode", type: "bytes5" },
-      { name: "version_", internalType: "uint8", type: "uint8" },
-    ],
-    name: "InvalidModuleInstall",
-  },
-  { type: "error", inputs: [], name: "InvalidParams" },
-  { type: "error", inputs: [], name: "InvalidParams" },
-  { type: "error", inputs: [], name: "InvalidState" },
-  {
-    type: "error",
-    inputs: [{ name: "veecode_", internalType: "Veecode", type: "bytes7" }],
-    name: "InvalidVeecode",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "keycode_", internalType: "Keycode", type: "bytes5" }],
-    name: "ModuleAlreadySunset",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "error_", internalType: "bytes", type: "bytes" }],
-    name: "ModuleExecutionReverted",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "keycode_", internalType: "Keycode", type: "bytes5" }],
-    name: "ModuleIsSunset",
-  },
-  {
-    type: "error",
-    inputs: [
-      { name: "keycode_", internalType: "Keycode", type: "bytes5" },
-      { name: "version_", internalType: "uint8", type: "uint8" },
-    ],
-    name: "ModuleNotInstalled",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
-    name: "NotPermitted",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "target_", internalType: "address", type: "address" }],
-    name: "TargetNotAContract",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "token_", internalType: "address", type: "address" }],
-    name: "UnsupportedToken",
-  },
-  { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_DedicatedSettlePeriod",
-  },
-  { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
-  {
-    type: "error",
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96" },
-      { name: "bidId", internalType: "uint96", type: "uint96" },
-    ],
-    name: "Auction_InvalidBidId",
-  },
-  {
-    type: "error",
-    inputs: [
-      { name: "duration_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidDuration",
-  },
-  { type: "error", inputs: [], name: "Auction_InvalidKey" },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_InvalidLotId",
-  },
-  { type: "error", inputs: [], name: "Auction_InvalidParams" },
-  {
-    type: "error",
-    inputs: [
-      { name: "start_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidStart",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotConcluded",
-  },
-  { type: "error", inputs: [], name: "Auction_NotAuthorized" },
-  { type: "error", inputs: [], name: "Auction_NotBidder" },
-  { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_WrongState",
-  },
-  {
-    type: "error",
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96" },
-      { name: "bidId", internalType: "uint64", type: "uint64" },
-    ],
-    name: "Bid_WrongState",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
-    name: "Module_InvalidParent",
-  },
-  { type: "error", inputs: [], name: "Module_OnlyInternal" },
-  {
-    type: "error",
-    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
-    name: "Module_OnlyParent",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "caller", internalType: "address", type: "address" }],
-    name: "NotPermitted",
-  },
-  { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
-  { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
-  { type: "error", inputs: [], name: "Auction_InsufficientPayout" },
-  {
-    type: "error",
-    inputs: [
-      { name: "duration_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidDuration",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_InvalidLotId",
-  },
-  { type: "error", inputs: [], name: "Auction_InvalidParams" },
-  {
-    type: "error",
-    inputs: [
-      { name: "start_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidStart",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotConcluded",
-  },
-  { type: "error", inputs: [], name: "Auction_NotAuthorized" },
-  { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
-  { type: "error", inputs: [], name: "Auction_PayoutGreaterThanMax" },
-  {
-    type: "error",
-    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
-    name: "Module_InvalidParent",
-  },
-  { type: "error", inputs: [], name: "Module_OnlyInternal" },
-  {
-    type: "error",
-    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
-    name: "Module_OnlyParent",
-  },
-  { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_DedicatedSettlePeriod",
-  },
-  { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
-  {
-    type: "error",
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96" },
-      { name: "bidId", internalType: "uint96", type: "uint96" },
-    ],
-    name: "Auction_InvalidBidId",
-  },
-  {
-    type: "error",
-    inputs: [
-      { name: "duration_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidDuration",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_InvalidLotId",
-  },
-  { type: "error", inputs: [], name: "Auction_InvalidParams" },
-  {
-    type: "error",
-    inputs: [
-      { name: "start_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidStart",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotConcluded",
-  },
-  { type: "error", inputs: [], name: "Auction_NotAuthorized" },
-  { type: "error", inputs: [], name: "Auction_NotBidder" },
-  { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_WrongState",
-  },
-  {
-    type: "error",
-    inputs: [
-      { name: "lotId", internalType: "uint96", type: "uint96" },
-      { name: "bidId", internalType: "uint64", type: "uint64" },
-    ],
-    name: "Bid_WrongState",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
-    name: "Module_InvalidParent",
-  },
-  { type: "error", inputs: [], name: "Module_OnlyInternal" },
-  {
-    type: "error",
-    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
-    name: "Module_OnlyParent",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "caller", internalType: "address", type: "address" }],
-    name: "NotPermitted",
-  },
-  { type: "error", inputs: [], name: "BrokenInvariant" },
-  { type: "error", inputs: [], name: "Derivative_NotImplemented" },
-  { type: "error", inputs: [], name: "InsufficientBalance" },
-  { type: "error", inputs: [], name: "InvalidParams" },
-  {
-    type: "error",
-    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
-    name: "Module_InvalidParent",
-  },
-  { type: "error", inputs: [], name: "Module_OnlyInternal" },
-  {
-    type: "error",
-    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
-    name: "Module_OnlyParent",
-  },
-  { type: "error", inputs: [], name: "NotPermitted" },
-  {
-    type: "error",
-    inputs: [{ name: "token_", internalType: "address", type: "address" }],
-    name: "UnsupportedToken",
-  },
-] as const;
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// atomicCatalogue
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const atomicCatalogueAbi = [
+export const allocatedMerkleAllowlistAbi = [
   {
     stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "auctionHouse",
-    outputs: [{ name: "", internalType: "address", type: "address" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "baseToken_", internalType: "contract ERC20", type: "address" },
-      { name: "startId_", internalType: "uint96", type: "uint96" },
-      { name: "count_", internalType: "uint96", type: "uint96" },
-    ],
-    name: "getAuctionsByBaseToken",
-    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "quoteToken_", internalType: "contract ERC20", type: "address" },
-      { name: "startId_", internalType: "uint96", type: "uint96" },
-      { name: "count_", internalType: "uint96", type: "uint96" },
-    ],
-    name: "getAuctionsByQuoteToken",
-    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "seller_", internalType: "address", type: "address" },
-      { name: "startId_", internalType: "uint96", type: "uint96" },
-      { name: "count_", internalType: "uint96", type: "uint96" },
-    ],
-    name: "getAuctionsBySeller",
-    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "auctionReference_", internalType: "Veecode", type: "bytes7" },
-      { name: "startId_", internalType: "uint96", type: "uint96" },
-      { name: "count_", internalType: "uint96", type: "uint96" },
-    ],
-    name: "getAuctionsByType",
-    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "startId_", internalType: "uint96", type: "uint96" },
-      { name: "count_", internalType: "uint96", type: "uint96" },
-    ],
-    name: "getLiveAuctions",
-    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "getMaxLotId",
-    outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "getRouting",
-    outputs: [
       {
-        name: "",
-        internalType: "struct AuctionHouse.Routing",
+        name: "permissions_",
+        internalType: "struct Callbacks.Permissions",
         type: "tuple",
         components: [
-          { name: "seller", internalType: "address", type: "address" },
-          {
-            name: "baseToken",
-            internalType: "contract ERC20",
-            type: "address",
-          },
-          {
-            name: "quoteToken",
-            internalType: "contract ERC20",
-            type: "address",
-          },
-          { name: "auctionReference", internalType: "Veecode", type: "bytes7" },
-          { name: "funding", internalType: "uint256", type: "uint256" },
-          {
-            name: "callbacks",
-            internalType: "contract ICallback",
-            type: "address",
-          },
-          {
-            name: "derivativeReference",
-            internalType: "Veecode",
-            type: "bytes7",
-          },
-          { name: "wrapDerivative", internalType: "bool", type: "bool" },
-          { name: "derivativeParams", internalType: "bytes", type: "bytes" },
+          { name: "onCreate", internalType: "bool", type: "bool" },
+          { name: "onCancel", internalType: "bool", type: "bool" },
+          { name: "onCurate", internalType: "bool", type: "bool" },
+          { name: "onPurchase", internalType: "bool", type: "bool" },
+          { name: "onBid", internalType: "bool", type: "bool" },
+          { name: "onSettle", internalType: "bool", type: "bool" },
+          { name: "receiveQuoteTokens", internalType: "bool", type: "bool" },
+          { name: "sendBaseTokens", internalType: "bool", type: "bool" },
         ],
       },
     ],
@@ -951,63 +28,144 @@ export const atomicCatalogueAbi = [
   {
     stateMutability: "view",
     type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "hasEnded",
-    outputs: [{ name: "", internalType: "bool", type: "bool" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "isLive",
-    outputs: [{ name: "", internalType: "bool", type: "bool" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "maxAmountAccepted",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "maxPayout",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
   },
   {
     stateMutability: "view",
     type: "function",
     inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96" },
+      { name: "buyer", internalType: "address", type: "address" },
+    ],
+    name: "lotBuyerSpent",
+    outputs: [{ name: "spent", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotMerkleRoot",
+    outputs: [{ name: "merkleRoot", internalType: "bytes32", type: "bytes32" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
       { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
     ],
-    name: "payoutFor",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
   },
   {
-    stateMutability: "view",
+    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
     ],
-    name: "priceFor",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
   },
   {
-    stateMutability: "view",
+    stateMutability: "nonpayable",
     type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "remainingCapacity",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
   },
-  { type: "error", inputs: [], name: "InvalidParams" },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "merkleRoot_", internalType: "bytes32", type: "bytes32" },
+    ],
+    name: "setMerkleRoot",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: false },
+      {
+        name: "merkleRoot",
+        internalType: "bytes32",
+        type: "bytes32",
+        indexed: false,
+      },
+    ],
+    name: "MerkleRootSet",
+  },
+  { type: "error", inputs: [], name: "Callback_ExceedsLimit" },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
   {
     type: "error",
-    inputs: [{ name: "veecode_", internalType: "Veecode", type: "bytes7" }],
-    name: "InvalidVeecode",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
   },
 ] as const;
 
@@ -1184,6 +342,13 @@ export const batchAuctionHouseAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getAuctionModuleForId",
+    outputs: [{ name: "", internalType: "contract IAuction", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getBatchModuleForId",
     outputs: [
       {
@@ -1206,21 +371,21 @@ export const batchAuctionHouseAbi = [
   {
     stateMutability: "view",
     type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getDerivativeModuleForId",
+    outputs: [
+      { name: "", internalType: "contract IDerivative", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
     inputs: [{ name: "auctionType_", internalType: "Keycode", type: "bytes5" }],
     name: "getFees",
     outputs: [
       { name: "protocol", internalType: "uint48", type: "uint48" },
       { name: "referrer", internalType: "uint48", type: "uint48" },
       { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "getModuleForId",
-    outputs: [
-      { name: "", internalType: "contract AuctionModule", type: "address" },
     ],
   },
   {
@@ -1300,8 +465,8 @@ export const batchAuctionHouseAbi = [
     name: "lotRouting",
     outputs: [
       { name: "seller", internalType: "address", type: "address" },
-      { name: "baseToken", internalType: "contract ERC20", type: "address" },
-      { name: "quoteToken", internalType: "contract ERC20", type: "address" },
+      { name: "baseToken", internalType: "address", type: "address" },
+      { name: "quoteToken", internalType: "address", type: "address" },
       { name: "auctionReference", internalType: "Veecode", type: "bytes7" },
       { name: "funding", internalType: "uint256", type: "uint256" },
       {
@@ -1743,61 +908,6 @@ export const batchAuctionHouseAbi = [
     name: "NotPermitted",
   },
   { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
-  { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
-  { type: "error", inputs: [], name: "Auction_InsufficientPayout" },
-  {
-    type: "error",
-    inputs: [
-      { name: "duration_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidDuration",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_InvalidLotId",
-  },
-  { type: "error", inputs: [], name: "Auction_InvalidParams" },
-  {
-    type: "error",
-    inputs: [
-      { name: "start_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidStart",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotConcluded",
-  },
-  { type: "error", inputs: [], name: "Auction_NotAuthorized" },
-  { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
-  { type: "error", inputs: [], name: "Auction_PayoutGreaterThanMax" },
-  {
-    type: "error",
-    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
-    name: "Module_InvalidParent",
-  },
-  { type: "error", inputs: [], name: "Module_OnlyInternal" },
-  {
-    type: "error",
-    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
-    name: "Module_OnlyParent",
-  },
-  { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
   {
     type: "error",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
@@ -1928,7 +1038,7 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [
-      { name: "baseToken_", internalType: "contract ERC20", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
       { name: "startId_", internalType: "uint96", type: "uint96" },
       { name: "count_", internalType: "uint96", type: "uint96" },
     ],
@@ -1939,11 +1049,66 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [
-      { name: "quoteToken_", internalType: "contract ERC20", type: "address" },
+      { name: "curator_", internalType: "address", type: "address" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByCurator",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "derivativeReference_", internalType: "Veecode", type: "bytes7" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByDerivative",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "auctionFormat_", internalType: "Keycode", type: "bytes5" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByFormat",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "auctionReference_", internalType: "Veecode", type: "bytes7" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByModule",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "quoteToken_", internalType: "address", type: "address" },
       { name: "startId_", internalType: "uint96", type: "uint96" },
       { name: "count_", internalType: "uint96", type: "uint96" },
     ],
     name: "getAuctionsByQuoteToken",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "curator_", internalType: "address", type: "address" },
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getAuctionsByRequestedCurator",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
   },
   {
@@ -1961,12 +1126,34 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [
-      { name: "auctionReference_", internalType: "Veecode", type: "bytes7" },
-      { name: "startId_", internalType: "uint96", type: "uint96" },
-      { name: "count_", internalType: "uint96", type: "uint96" },
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId_", internalType: "uint64", type: "uint64" },
     ],
-    name: "getAuctionsByType",
-    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    name: "getBidClaim",
+    outputs: [
+      {
+        name: "",
+        internalType: "struct IBatchAuction.BidClaim",
+        type: "tuple",
+        components: [
+          { name: "bidder", internalType: "address", type: "address" },
+          { name: "referrer", internalType: "address", type: "address" },
+          { name: "paid", internalType: "uint256", type: "uint256" },
+          { name: "payout", internalType: "uint256", type: "uint256" },
+          { name: "refund", internalType: "uint256", type: "uint256" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "index_", internalType: "uint256", type: "uint256" },
+    ],
+    name: "getBidIdAtIndex",
+    outputs: [{ name: "", internalType: "uint64", type: "uint64" }],
   },
   {
     stateMutability: "view",
@@ -1978,6 +1165,26 @@ export const batchCatalogueAbi = [
     ],
     name: "getBidIds",
     outputs: [{ name: "", internalType: "uint64[]", type: "uint64[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "getFeeData",
+    outputs: [
+      {
+        name: "",
+        internalType: "struct IAuctionHouse.FeeData",
+        type: "tuple",
+        components: [
+          { name: "curator", internalType: "address", type: "address" },
+          { name: "curated", internalType: "bool", type: "bool" },
+          { name: "curatorFee", internalType: "uint48", type: "uint48" },
+          { name: "protocolFee", internalType: "uint48", type: "uint48" },
+          { name: "referrerFee", internalType: "uint48", type: "uint48" },
+        ],
+      },
+    ],
   },
   {
     stateMutability: "view",
@@ -2011,20 +1218,12 @@ export const batchCatalogueAbi = [
     outputs: [
       {
         name: "",
-        internalType: "struct AuctionHouse.Routing",
+        internalType: "struct IAuctionHouse.Routing",
         type: "tuple",
         components: [
           { name: "seller", internalType: "address", type: "address" },
-          {
-            name: "baseToken",
-            internalType: "contract ERC20",
-            type: "address",
-          },
-          {
-            name: "quoteToken",
-            internalType: "contract ERC20",
-            type: "address",
-          },
+          { name: "baseToken", internalType: "address", type: "address" },
+          { name: "quoteToken", internalType: "address", type: "address" },
           { name: "auctionReference", internalType: "Veecode", type: "bytes7" },
           { name: "funding", internalType: "uint256", type: "uint256" },
           {
@@ -2046,6 +1245,16 @@ export const batchCatalogueAbi = [
   {
     stateMutability: "view",
     type: "function",
+    inputs: [
+      { name: "startId_", internalType: "uint96", type: "uint96" },
+      { name: "count_", internalType: "uint96", type: "uint96" },
+    ],
+    name: "getUpcomingAuctions",
+    outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "hasEnded",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
@@ -2061,10 +1270,200 @@ export const batchCatalogueAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "isUpcoming",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "remainingCapacity",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
   },
   { type: "error", inputs: [], name: "InvalidParams" },
+  {
+    type: "error",
+    inputs: [{ name: "veecode_", internalType: "Veecode", type: "bytes7" }],
+    name: "InvalidVeecode",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// cappedMerkleAllowlist
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const cappedMerkleAllowlistAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      {
+        name: "permissions_",
+        internalType: "struct Callbacks.Permissions",
+        type: "tuple",
+        components: [
+          { name: "onCreate", internalType: "bool", type: "bool" },
+          { name: "onCancel", internalType: "bool", type: "bool" },
+          { name: "onCurate", internalType: "bool", type: "bool" },
+          { name: "onPurchase", internalType: "bool", type: "bool" },
+          { name: "onBid", internalType: "bool", type: "bool" },
+          { name: "onSettle", internalType: "bool", type: "bool" },
+          { name: "receiveQuoteTokens", internalType: "bool", type: "bool" },
+          { name: "sendBaseTokens", internalType: "bool", type: "bool" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotBuyerLimit",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "", internalType: "uint96", type: "uint96" },
+      { name: "", internalType: "address", type: "address" },
+    ],
+    name: "lotBuyerSpent",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotMerkleRoot",
+    outputs: [{ name: "merkleRoot", internalType: "bytes32", type: "bytes32" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "merkleRoot_", internalType: "bytes32", type: "bytes32" },
+    ],
+    name: "setMerkleRoot",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: false },
+      {
+        name: "merkleRoot",
+        internalType: "bytes32",
+        type: "bytes32",
+        indexed: false,
+      },
+    ],
+    name: "MerkleRootSet",
+  },
+  { type: "error", inputs: [], name: "Callback_ExceedsLimit" },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2147,7 +1546,7 @@ export const encryptedMarginalPriceAbi = [
       { name: "nextDecryptIndex", internalType: "uint64", type: "uint64" },
       {
         name: "status",
-        internalType: "enum EncryptedMarginalPrice.LotStatus",
+        internalType: "enum IEncryptedMarginalPrice.LotStatus",
         type: "uint8",
       },
       { name: "marginalBidId", internalType: "uint64", type: "uint64" },
@@ -2204,7 +1603,7 @@ export const encryptedMarginalPriceAbi = [
       { name: "referrer", internalType: "address", type: "address" },
       {
         name: "status",
-        internalType: "enum EncryptedMarginalPrice.BidStatus",
+        internalType: "enum IEncryptedMarginalPrice.BidStatus",
         type: "uint8",
       },
     ],
@@ -2311,14 +1710,14 @@ export const encryptedMarginalPriceAbi = [
     outputs: [
       {
         name: "auctionData_",
-        internalType: "struct EncryptedMarginalPrice.AuctionData",
+        internalType: "struct IEncryptedMarginalPrice.AuctionData",
         type: "tuple",
         components: [
           { name: "nextBidId", internalType: "uint64", type: "uint64" },
           { name: "nextDecryptIndex", internalType: "uint64", type: "uint64" },
           {
             name: "status",
-            internalType: "enum EncryptedMarginalPrice.LotStatus",
+            internalType: "enum IEncryptedMarginalPrice.LotStatus",
             type: "uint8",
           },
           { name: "marginalBidId", internalType: "uint64", type: "uint64" },
@@ -2352,7 +1751,7 @@ export const encryptedMarginalPriceAbi = [
     outputs: [
       {
         name: "bid",
-        internalType: "struct EncryptedMarginalPrice.Bid",
+        internalType: "struct IEncryptedMarginalPrice.Bid",
         type: "tuple",
         components: [
           { name: "bidder", internalType: "address", type: "address" },
@@ -2361,14 +1760,14 @@ export const encryptedMarginalPriceAbi = [
           { name: "referrer", internalType: "address", type: "address" },
           {
             name: "status",
-            internalType: "enum EncryptedMarginalPrice.BidStatus",
+            internalType: "enum IEncryptedMarginalPrice.BidStatus",
             type: "uint8",
           },
         ],
       },
       {
         name: "encryptedBid",
-        internalType: "struct EncryptedMarginalPrice.EncryptedBid",
+        internalType: "struct IEncryptedMarginalPrice.EncryptedBid",
         type: "tuple",
         components: [
           {
@@ -2489,7 +1888,7 @@ export const encryptedMarginalPriceAbi = [
       { name: "hasPartialFill", internalType: "bool", type: "bool" },
       {
         name: "partialFill",
-        internalType: "struct EncryptedMarginalPrice.PartialFill",
+        internalType: "struct IEncryptedMarginalPrice.PartialFill",
         type: "tuple",
         components: [
           { name: "bidId", internalType: "uint64", type: "uint64" },
@@ -2511,6 +1910,13 @@ export const encryptedMarginalPriceAbi = [
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "isLive",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
+    name: "isUpcoming",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
   },
   {
@@ -2624,6 +2030,14 @@ export const encryptedMarginalPriceAbi = [
       },
     ],
     name: "BidDecrypted",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: true },
+    ],
+    name: "PrivateKeySubmitted",
   },
   { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
   {
@@ -3182,281 +2596,6 @@ export const fixedPriceBatchAbi = [
 ] as const;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// fixedPriceSale
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const fixedPriceSaleAbi = [
-  {
-    stateMutability: "nonpayable",
-    type: "constructor",
-    inputs: [
-      { name: "auctionHouse_", internalType: "address", type: "address" },
-    ],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [],
-    name: "INIT",
-    outputs: [],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "PARENT",
-    outputs: [{ name: "", internalType: "address", type: "address" }],
-  },
-  {
-    stateMutability: "pure",
-    type: "function",
-    inputs: [],
-    name: "TYPE",
-    outputs: [{ name: "", internalType: "enum Module.Type", type: "uint8" }],
-  },
-  {
-    stateMutability: "pure",
-    type: "function",
-    inputs: [],
-    name: "VEECODE",
-    outputs: [{ name: "", internalType: "Veecode", type: "bytes7" }],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      {
-        name: "params_",
-        internalType: "struct IAuction.AuctionParams",
-        type: "tuple",
-        components: [
-          { name: "start", internalType: "uint48", type: "uint48" },
-          { name: "duration", internalType: "uint48", type: "uint48" },
-          { name: "capacityInQuote", internalType: "bool", type: "bool" },
-          { name: "capacity", internalType: "uint256", type: "uint256" },
-          { name: "implParams", internalType: "bytes", type: "bytes" },
-        ],
-      },
-      { name: "quoteTokenDecimals_", internalType: "uint8", type: "uint8" },
-      { name: "baseTokenDecimals_", internalType: "uint8", type: "uint8" },
-    ],
-    name: "auction",
-    outputs: [],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "auctionData",
-    outputs: [
-      { name: "price", internalType: "uint256", type: "uint256" },
-      { name: "maxPayout", internalType: "uint256", type: "uint256" },
-    ],
-  },
-  {
-    stateMutability: "pure",
-    type: "function",
-    inputs: [],
-    name: "auctionType",
-    outputs: [
-      { name: "", internalType: "enum IAuction.AuctionType", type: "uint8" },
-    ],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "cancelAuction",
-    outputs: [],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "capacityInQuote",
-    outputs: [{ name: "", internalType: "bool", type: "bool" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "getLot",
-    outputs: [
-      {
-        name: "",
-        internalType: "struct IAuction.Lot",
-        type: "tuple",
-        components: [
-          { name: "start", internalType: "uint48", type: "uint48" },
-          { name: "conclusion", internalType: "uint48", type: "uint48" },
-          { name: "quoteTokenDecimals", internalType: "uint8", type: "uint8" },
-          { name: "baseTokenDecimals", internalType: "uint8", type: "uint8" },
-          { name: "capacityInQuote", internalType: "bool", type: "bool" },
-          { name: "capacity", internalType: "uint256", type: "uint256" },
-          { name: "sold", internalType: "uint256", type: "uint256" },
-          { name: "purchased", internalType: "uint256", type: "uint256" },
-        ],
-      },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "hasEnded",
-    outputs: [{ name: "", internalType: "bool", type: "bool" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "isLive",
-    outputs: [{ name: "", internalType: "bool", type: "bool" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "id", internalType: "uint96", type: "uint96" }],
-    name: "lotData",
-    outputs: [
-      { name: "start", internalType: "uint48", type: "uint48" },
-      { name: "conclusion", internalType: "uint48", type: "uint48" },
-      { name: "quoteTokenDecimals", internalType: "uint8", type: "uint8" },
-      { name: "baseTokenDecimals", internalType: "uint8", type: "uint8" },
-      { name: "capacityInQuote", internalType: "bool", type: "bool" },
-      { name: "capacity", internalType: "uint256", type: "uint256" },
-      { name: "sold", internalType: "uint256", type: "uint256" },
-      { name: "purchased", internalType: "uint256", type: "uint256" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "maxAmountAccepted",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "maxPayout",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "minAuctionDuration",
-    outputs: [{ name: "", internalType: "uint48", type: "uint48" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "amount_", internalType: "uint256", type: "uint256" },
-    ],
-    name: "payoutFor",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "payout_", internalType: "uint256", type: "uint256" },
-    ],
-    name: "priceFor",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "lotId_", internalType: "uint96", type: "uint96" },
-      { name: "amount_", internalType: "uint256", type: "uint256" },
-      { name: "auctionData_", internalType: "bytes", type: "bytes" },
-    ],
-    name: "purchase",
-    outputs: [
-      { name: "payout", internalType: "uint256", type: "uint256" },
-      { name: "auctionOutput", internalType: "bytes", type: "bytes" },
-    ],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
-    name: "remainingCapacity",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [{ name: "duration_", internalType: "uint48", type: "uint48" }],
-    name: "setMinAuctionDuration",
-    outputs: [],
-  },
-  { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
-  { type: "error", inputs: [], name: "Auction_InsufficientCapacity" },
-  { type: "error", inputs: [], name: "Auction_InsufficientPayout" },
-  {
-    type: "error",
-    inputs: [
-      { name: "duration_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidDuration",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_InvalidLotId",
-  },
-  { type: "error", inputs: [], name: "Auction_InvalidParams" },
-  {
-    type: "error",
-    inputs: [
-      { name: "start_", internalType: "uint48", type: "uint48" },
-      { name: "minimum_", internalType: "uint48", type: "uint48" },
-    ],
-    name: "Auction_InvalidStart",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotActive",
-  },
-  {
-    type: "error",
-    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
-    name: "Auction_LotNotConcluded",
-  },
-  { type: "error", inputs: [], name: "Auction_NotAuthorized" },
-  { type: "error", inputs: [], name: "Auction_NotImplemented" },
-  { type: "error", inputs: [], name: "Auction_OnlyLotOwner" },
-  { type: "error", inputs: [], name: "Auction_PayoutGreaterThanMax" },
-  {
-    type: "error",
-    inputs: [{ name: "parent_", internalType: "address", type: "address" }],
-    name: "Module_InvalidParent",
-  },
-  { type: "error", inputs: [], name: "Module_OnlyInternal" },
-  {
-    type: "error",
-    inputs: [{ name: "caller_", internalType: "address", type: "address" }],
-    name: "Module_OnlyParent",
-  },
-] as const;
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // linearVesting
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3539,16 +2678,6 @@ export const linearVestingAbi = [
   {
     stateMutability: "view",
     type: "function",
-    inputs: [
-      { name: "", internalType: "bytes", type: "bytes" },
-      { name: "", internalType: "uint256", type: "uint256" },
-    ],
-    name: "convertsTo",
-    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
     inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
     name: "decimals",
     outputs: [{ name: "", internalType: "uint8", type: "uint8" }],
@@ -3581,7 +2710,7 @@ export const linearVestingAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [
-      { name: "", internalType: "bytes", type: "bytes" },
+      { name: "", internalType: "uint256", type: "uint256" },
       { name: "", internalType: "uint256", type: "uint256" },
     ],
     name: "exerciseCost",
@@ -3595,13 +2724,30 @@ export const linearVestingAbi = [
     outputs: [
       {
         name: "",
-        internalType: "struct Derivative.Token",
+        internalType: "struct IDerivative.Token",
         type: "tuple",
         components: [
           { name: "exists", internalType: "bool", type: "bool" },
           { name: "wrapped", internalType: "address", type: "address" },
           { name: "underlyingToken", internalType: "address", type: "address" },
           { name: "data", internalType: "bytes", type: "bytes" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
+    name: "getTokenVestingParams",
+    outputs: [
+      {
+        name: "",
+        internalType: "struct ILinearVesting.VestingParams",
+        type: "tuple",
+        components: [
+          { name: "start", internalType: "uint48", type: "uint48" },
+          { name: "expiry", internalType: "uint48", type: "uint48" },
         ],
       },
     ],
@@ -3781,7 +2927,7 @@ export const linearVestingAbi = [
     outputs: [{ name: "claimed_", internalType: "uint256", type: "uint256" }],
   },
   {
-    stateMutability: "view",
+    stateMutability: "pure",
     type: "function",
     inputs: [
       { name: "underlyingToken_", internalType: "address", type: "address" },
@@ -4020,5 +3166,934 @@ export const linearVestingAbi = [
     type: "error",
     inputs: [{ name: "token_", internalType: "address", type: "address" }],
     name: "UnsupportedToken",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// merkleAllowlist
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const merkleAllowlistAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      {
+        name: "permissions_",
+        internalType: "struct Callbacks.Permissions",
+        type: "tuple",
+        components: [
+          { name: "onCreate", internalType: "bool", type: "bool" },
+          { name: "onCancel", internalType: "bool", type: "bool" },
+          { name: "onCurate", internalType: "bool", type: "bool" },
+          { name: "onPurchase", internalType: "bool", type: "bool" },
+          { name: "onBid", internalType: "bool", type: "bool" },
+          { name: "onSettle", internalType: "bool", type: "bool" },
+          { name: "receiveQuoteTokens", internalType: "bool", type: "bool" },
+          { name: "sendBaseTokens", internalType: "bool", type: "bool" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotMerkleRoot",
+    outputs: [{ name: "merkleRoot", internalType: "bytes32", type: "bytes32" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "merkleRoot_", internalType: "bytes32", type: "bytes32" },
+    ],
+    name: "setMerkleRoot",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "lotId", internalType: "uint96", type: "uint96", indexed: false },
+      {
+        name: "merkleRoot",
+        internalType: "bytes32",
+        type: "bytes32",
+        indexed: false,
+      },
+    ],
+    name: "MerkleRootSet",
+  },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// tokenAllowlist
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const tokenAllowlistAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      {
+        name: "permissions_",
+        internalType: "struct Callbacks.Permissions",
+        type: "tuple",
+        components: [
+          { name: "onCreate", internalType: "bool", type: "bool" },
+          { name: "onCancel", internalType: "bool", type: "bool" },
+          { name: "onCurate", internalType: "bool", type: "bool" },
+          { name: "onPurchase", internalType: "bool", type: "bool" },
+          { name: "onBid", internalType: "bool", type: "bool" },
+          { name: "onSettle", internalType: "bool", type: "bool" },
+          { name: "receiveQuoteTokens", internalType: "bool", type: "bool" },
+          { name: "sendBaseTokens", internalType: "bool", type: "bool" },
+        ],
+      },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotChecks",
+    outputs: [
+      {
+        name: "token",
+        internalType: "contract ITokenBalance",
+        type: "address",
+      },
+      { name: "threshold", internalType: "uint256", type: "uint256" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV2Dtl
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV2DtlAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      { name: "uniswapV2Factory_", internalType: "address", type: "address" },
+      { name: "uniswapV2Router_", internalType: "address", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "LINEAR_VESTING_KEYCODE",
+    outputs: [{ name: "", internalType: "bytes5", type: "bytes5" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "MAX_PERCENT",
+    outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotConfiguration",
+    outputs: [
+      { name: "recipient", internalType: "address", type: "address" },
+      { name: "lotCapacity", internalType: "uint256", type: "uint256" },
+      { name: "lotCuratorPayout", internalType: "uint256", type: "uint256" },
+      {
+        name: "proceedsUtilisationPercent",
+        internalType: "uint24",
+        type: "uint24",
+      },
+      { name: "vestingStart", internalType: "uint48", type: "uint48" },
+      { name: "vestingExpiry", internalType: "uint48", type: "uint48" },
+      {
+        name: "linearVestingModule",
+        internalType: "contract LinearVesting",
+        type: "address",
+      },
+      { name: "active", internalType: "bool", type: "bool" },
+      { name: "implParams", internalType: "bytes", type: "bytes" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "uniV2Factory",
+    outputs: [
+      { name: "", internalType: "contract IUniswapV2Factory", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "uniV2Router",
+    outputs: [
+      {
+        name: "",
+        internalType: "contract IUniswapV2Router02",
+        type: "address",
+      },
+    ],
+  },
+  {
+    type: "error",
+    inputs: [
+      { name: "token_", internalType: "address", type: "address" },
+      { name: "account_", internalType: "address", type: "address" },
+      { name: "balance_", internalType: "uint256", type: "uint256" },
+      { name: "required_", internalType: "uint256", type: "uint256" },
+    ],
+    name: "Callback_InsufficientBalance",
+  },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_LinearVestingModuleNotFound" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  { type: "error", inputs: [], name: "Callback_Params_InvalidAddress" },
+  { type: "error", inputs: [], name: "Callback_Params_InvalidVestingParams" },
+  {
+    type: "error",
+    inputs: [
+      { name: "actual_", internalType: "uint24", type: "uint24" },
+      { name: "min_", internalType: "uint24", type: "uint24" },
+      { name: "max_", internalType: "uint24", type: "uint24" },
+    ],
+    name: "Callback_Params_PercentOutOfBounds",
+  },
+  { type: "error", inputs: [], name: "Callback_Params_PoolExists" },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV2Factory
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV2FactoryAbi = [
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    name: "allPairs",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "allPairsLength",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+    ],
+    name: "createPair",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "feeTo",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "feeToSetter",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+    ],
+    name: "getPair",
+    outputs: [{ name: "pair", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "setFeeTo",
+    outputs: [],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "setFeeToSetter",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "token0",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token1",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "pair",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+      { name: "", internalType: "uint256", type: "uint256", indexed: false },
+    ],
+    name: "PairCreated",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV3Dtl
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV3DtlAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "constructor",
+    inputs: [
+      { name: "auctionHouse_", internalType: "address", type: "address" },
+      { name: "uniV3Factory_", internalType: "address", type: "address" },
+      { name: "gUniFactory_", internalType: "address", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "AUCTION_HOUSE",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "LINEAR_VESTING_KEYCODE",
+    outputs: [{ name: "", internalType: "bytes5", type: "bytes5" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "MAX_PERCENT",
+    outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "gUniFactory",
+    outputs: [
+      { name: "", internalType: "contract IGUniFactory", type: "address" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    name: "lotConfiguration",
+    outputs: [
+      { name: "recipient", internalType: "address", type: "address" },
+      { name: "lotCapacity", internalType: "uint256", type: "uint256" },
+      { name: "lotCuratorPayout", internalType: "uint256", type: "uint256" },
+      {
+        name: "proceedsUtilisationPercent",
+        internalType: "uint24",
+        type: "uint24",
+      },
+      { name: "vestingStart", internalType: "uint48", type: "uint48" },
+      { name: "vestingExpiry", internalType: "uint48", type: "uint48" },
+      {
+        name: "linearVestingModule",
+        internalType: "contract LinearVesting",
+        type: "address",
+      },
+      { name: "active", internalType: "bool", type: "bool" },
+      { name: "implParams", internalType: "bytes", type: "bytes" },
+    ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    name: "lotIdRegistered",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "bidId", internalType: "uint64", type: "uint64" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onBid",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCancel",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "seller_", internalType: "address", type: "address" },
+      { name: "baseToken_", internalType: "address", type: "address" },
+      { name: "quoteToken_", internalType: "address", type: "address" },
+      { name: "capacity_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCreate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "curatorFee_", internalType: "uint256", type: "uint256" },
+      { name: "prefund_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onCurate",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "buyer_", internalType: "address", type: "address" },
+      { name: "amount_", internalType: "uint256", type: "uint256" },
+      { name: "payout_", internalType: "uint256", type: "uint256" },
+      { name: "prefunded_", internalType: "bool", type: "bool" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onPurchase",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "lotId_", internalType: "uint96", type: "uint96" },
+      { name: "proceeds_", internalType: "uint256", type: "uint256" },
+      { name: "refund_", internalType: "uint256", type: "uint256" },
+      { name: "callbackData_", internalType: "bytes", type: "bytes" },
+    ],
+    name: "onSettle",
+    outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "uniV3Factory",
+    outputs: [
+      { name: "", internalType: "contract IUniswapV3Factory", type: "address" },
+    ],
+  },
+  {
+    type: "error",
+    inputs: [
+      { name: "token_", internalType: "address", type: "address" },
+      { name: "account_", internalType: "address", type: "address" },
+      { name: "balance_", internalType: "uint256", type: "uint256" },
+      { name: "required_", internalType: "uint256", type: "uint256" },
+    ],
+    name: "Callback_InsufficientBalance",
+  },
+  { type: "error", inputs: [], name: "Callback_InvalidParams" },
+  { type: "error", inputs: [], name: "Callback_LinearVestingModuleNotFound" },
+  { type: "error", inputs: [], name: "Callback_NotAuthorized" },
+  { type: "error", inputs: [], name: "Callback_NotImplemented" },
+  { type: "error", inputs: [], name: "Callback_Params_InvalidAddress" },
+  { type: "error", inputs: [], name: "Callback_Params_InvalidVestingParams" },
+  {
+    type: "error",
+    inputs: [
+      { name: "actual_", internalType: "uint24", type: "uint24" },
+      { name: "min_", internalType: "uint24", type: "uint24" },
+      { name: "max_", internalType: "uint24", type: "uint24" },
+    ],
+    name: "Callback_Params_PercentOutOfBounds",
+  },
+  { type: "error", inputs: [], name: "Callback_Params_PoolExists" },
+  { type: "error", inputs: [], name: "Callback_Params_PoolFeeNotEnabled" },
+  {
+    type: "error",
+    inputs: [
+      { name: "token_", internalType: "address", type: "address" },
+      { name: "amountActual_", internalType: "uint256", type: "uint256" },
+      { name: "amountMin_", internalType: "uint256", type: "uint256" },
+    ],
+    name: "Callback_Slippage",
+  },
+  {
+    type: "error",
+    inputs: [{ name: "callbacks", internalType: "address", type: "address" }],
+    name: "CallbacksAddressNotValid",
+  },
+] as const;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// uniV3Factory
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const uniV3FactoryAbi = [
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+      { name: "fee", internalType: "uint24", type: "uint24" },
+    ],
+    name: "createPool",
+    outputs: [{ name: "pool", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [
+      { name: "fee", internalType: "uint24", type: "uint24" },
+      { name: "tickSpacing", internalType: "int24", type: "int24" },
+    ],
+    name: "enableFeeAmount",
+    outputs: [],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "fee", internalType: "uint24", type: "uint24" }],
+    name: "feeAmountTickSpacing",
+    outputs: [{ name: "", internalType: "int24", type: "int24" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [
+      { name: "tokenA", internalType: "address", type: "address" },
+      { name: "tokenB", internalType: "address", type: "address" },
+      { name: "fee", internalType: "uint24", type: "uint24" },
+    ],
+    name: "getPool",
+    outputs: [{ name: "pool", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "owner",
+    outputs: [{ name: "", internalType: "address", type: "address" }],
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_owner", internalType: "address", type: "address" }],
+    name: "setOwner",
+    outputs: [],
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "fee", internalType: "uint24", type: "uint24", indexed: true },
+      {
+        name: "tickSpacing",
+        internalType: "int24",
+        type: "int24",
+        indexed: true,
+      },
+    ],
+    name: "FeeAmountEnabled",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "oldOwner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "newOwner",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+    ],
+    name: "OwnerChanged",
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "token0",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      {
+        name: "token1",
+        internalType: "address",
+        type: "address",
+        indexed: true,
+      },
+      { name: "fee", internalType: "uint24", type: "uint24", indexed: true },
+      {
+        name: "tickSpacing",
+        internalType: "int24",
+        type: "int24",
+        indexed: false,
+      },
+      {
+        name: "pool",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+    ],
+    name: "PoolCreated",
   },
 ] as const;

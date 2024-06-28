@@ -1,20 +1,25 @@
 import { blastSepolia } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
+import { weth } from "../../tokens/common";
 
 const config: AxisDeploymentConfig = {
   name: "blast-testnet",
   chain: blastSepolia,
   chainIconUrl: "/blast-logo.png",
   addresses: {
-    atomicAuctionHouse: "0xAA0000E35F2042621ff29B2f3d0F89665f896502",
-    batchAuctionHouse: "0xBA00001Bd857EFd2dF10Da01DFe3a97CFa836Cc9",
-    atomicCatalogue: "0x5Ec85e475B3BeDE1280907B0ac568b406fBC543A",
-    batchCatalogue: "0x7F6Af3993d64cbC3A97617C98A2BCe03c1f5Ec30",
-    encryptedMarginalPrice: "0x96B52Ab3e5CAc0BbF49Be5039F2f9ef5d53bD322",
-    fixedPriceSale: "0x3661B7704F7032103B3122C7796B5E03fAC715b5",
-    fixedPriceBatch: "0xEDa0cC0bbb45D8cd6354755856053d6Ea646E201",
-    atomicLinearVesting: "0x8270f3e8D874De8b974A0Bf928abDFf92171B1b2",
-    batchLinearVesting: "0xFb1B55504E6f996D192f1F1B8fDfD4E987355552",
+    batchAuctionHouse: "0xBA00007A1868f4AEFdd39041327CbC4Ba5bF1632",
+    batchCatalogue: "0xC6D5E3A1823304D28cdc6dc23b4117b6cA34C98E",
+    encryptedMarginalPrice: "0x8F34bBB3edd28017f826FE7a73eb9297384BF0d8",
+    fixedPriceBatch: "0x87ED152099949F870725bD9517A1697d428ddF74",
+    batchLinearVesting: "0xBD0474b8e7b65f3dF35d2817BA09aC864a199e31",
+  },
+  callbacks: {
+    cappedMerkleAllowlist: "0x981d6a6997B23C06f4E95862f72B7C06c039a647",
+    merkleAllowlist: "0x9859c6FA2594e93149bd76415cE3982f39888CCb",
+    tokenAllowlist: "0x984B6165fC87c682441E81B4aa23A017cdbFba18",
+    allocatedMerkleAllowlist: "0x986455Ab4f64303E8F51e72F6BF1789182563F65",
+    uniV2Dtl: "0xE60007A0721A92f0eb538c360317d4808238700D",
+    uniV3Dtl: "0xE6b1113d108f86Fb7eF662ecF235dB6dB8978Cc3",
   },
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/<VERSION>/gn",
@@ -31,13 +36,10 @@ const config: AxisDeploymentConfig = {
         "https://assets-global.website-files.com/65a6baa1a3f8ed336f415cb4/65c67eafd3569b7e2f834b8d_usdb-icon-yellow.svg",
     },
     {
+      ...weth,
       mintable: true,
       decimals: 18,
-      symbol: "WETH",
-      name: "Wrapped Ether",
       address: "0x1095e2650accccc10daaac305b380f23158f1d94",
-      logoURI:
-        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/WETH.png",
     },
     {
       decimals: 18,

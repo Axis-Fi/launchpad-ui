@@ -1,14 +1,17 @@
 import { axisContracts } from "@repo/deployments";
 import {
   AuctionType,
-  type EMPAuctionData,
   type AxisModuleContractNames,
-  type FixedPriceAuctionData,
+  type EMPAuctionData,
   type FixedPriceBatchAuctionData,
 } from "@repo/types";
-import { parseUnits } from "viem";
+import { parseUnits, type ReadContractErrorType } from "viem";
 import { useReadContract } from "wagmi";
 import { moduleMap } from "utils/contracts";
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+} from "@tanstack/react-query";
 
 type UseAuctionDataParameters = {
   lotId?: string;
@@ -16,12 +19,24 @@ type UseAuctionDataParameters = {
   type?: AuctionType;
 };
 
-/** Reads auctionData for a specific auction on chain and parses it*/
+export type UseAuctionDataReturn = {
+  data?: EMPAuctionData | FixedPriceBatchAuctionData;
+  refetch: (
+    options?: RefetchOptions,
+  ) => Promise<
+    QueryObserverResult<
+      EMPAuctionData | FixedPriceBatchAuctionData,
+      ReadContractErrorType
+    >
+  >;
+};
+
+/** Reads and parses auctionData for a specific auction on chain */
 export function useAuctionData({
   lotId,
   chainId,
   type = AuctionType.SEALED_BID,
-}: UseAuctionDataParameters) {
+}: UseAuctionDataParameters): UseAuctionDataReturn {
   const auctionModule = moduleMap[type] as AxisModuleContractNames;
   const auctionDataQuery = useReadContract({
     chainId,
@@ -42,12 +57,12 @@ export function useAuctionData({
       ? //@ts-expect-error improve typing
         handle(auctionDataQuery.data)
       : undefined,
+    refetch: auctionDataQuery.refetch as UseAuctionDataReturn["refetch"],
   };
 }
 
 const handlers = {
   [AuctionType.SEALED_BID]: mapEMPAuctionData,
-  [AuctionType.FIXED_PRICE]: mapFixedPriceData,
   [AuctionType.FIXED_PRICE_BATCH]: mapFixedPriceBatchData,
 };
 
@@ -82,15 +97,6 @@ function mapEMPAuctionData(
     publicKey: data[8],
     privateKey: data[9],
     bidIds: data[10],
-  };
-}
-
-function mapFixedPriceData(
-  data: readonly [bigint, bigint],
-): FixedPriceAuctionData | undefined {
-  return {
-    price: data[0],
-    maxPayout: data[1],
   };
 }
 

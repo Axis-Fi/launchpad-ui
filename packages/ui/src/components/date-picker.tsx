@@ -37,7 +37,7 @@ export function DatePicker({
       setDate(fullDate);
       props.onChange?.(fullDate);
     }
-  }, [matcher, props, props.time, time, date]);
+  }, [props.time, time]);
 
   // TODO fix "Function components cannot be given refs" which seems to be breaking datetime validation
   return (
@@ -46,7 +46,7 @@ export function DatePicker({
         <Button
           variant="input"
           className={cn(
-            "w-full max-w-sm justify-start text-left font-normal",
+            "bg-surface-tertiary hover:bg-surface-secondary w-full max-w-sm justify-start text-left font-normal",
             !date && "text-foreground/50",
           )}
         >
@@ -54,14 +54,15 @@ export function DatePicker({
           {date ? formatDate.fullLocal(date) : <span>{content}</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="flex w-auto flex-col items-center p-0">
+      <PopoverContent className="bg-surface flex w-auto flex-col items-center p-0">
         <Calendar
           {...props}
           mode="single"
           selected={date}
           onSelect={(date) => {
-            props.onChange?.(date);
-            setDate(date);
+            const _date = matcher.test(time) ? addTimeToDate(date, time) : date;
+            props.onChange?.(_date);
+            setDate(_date);
           }}
           initialFocus
           placeholderDate={!placeholderDate ? new Date() : placeholderDate}

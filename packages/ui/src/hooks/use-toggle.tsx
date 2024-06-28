@@ -16,10 +16,10 @@ const ToggleContext = createContext<ToggleContextType>({
 });
 
 const ToggleProvider: React.FC<{
-  initialIsToggled?: boolean;
+  initialToggle?: boolean;
   children: ReactNode;
-}> = ({ initialIsToggled = false, children }) => {
-  const [isToggled, setIsToggled] = useState(initialIsToggled);
+}> = ({ initialToggle = false, children }) => {
+  const [isToggled, setIsToggled] = useState(initialToggle);
 
   const toggle = () => {
     setIsToggled((prevIsToggled: boolean) => !prevIsToggled);

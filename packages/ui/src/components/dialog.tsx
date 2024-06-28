@@ -60,7 +60,10 @@ export function Dialog(props: DialogProps) {
         props.onOpenChange?.(open);
       }}
     >
-      <DialogTrigger className="hover:bg-primary/80 w-full max-w-sm" asChild>
+      <DialogTrigger
+        className="bg-surface-tertiary hover:bg-surface-secondary w-full max-w-sm"
+        asChild
+      >
         {content}
       </DialogTrigger>
 
@@ -68,7 +71,7 @@ export function Dialog(props: DialogProps) {
         //TODO: simplify or extract this
         children
       ) : (
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="bg-surface sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{props.title}</DialogTitle>
             <DialogDescription>{props.description}</DialogDescription>
@@ -76,7 +79,7 @@ export function Dialog(props: DialogProps) {
           {props.children}
           <DialogFooter className="flex gap-x-1 md:justify-around">
             {props.cancelText && (
-              <Button className="w-1/2" variant="destructive" type="reset">
+              <Button className="w-1/2" variant="secondary" type="reset">
                 {props.cancelText}
               </Button>
             )}

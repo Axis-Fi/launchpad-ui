@@ -21,6 +21,7 @@ export function RequiresChain({
         <>{children}</>
       ) : (
         <Button
+          size="lg"
           className={cn("w-full uppercase", props.className)}
           onClick={() => switchChain({ chainId })}
         >

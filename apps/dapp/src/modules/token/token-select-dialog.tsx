@@ -33,7 +33,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
   return (
     <>
       {isManaging ? (
-        <DialogContent className="max-w-sm">
+        <DialogContent className="bg-surface max-w-sm">
           <DialogHeader className="flex-row items-center gap-x-2">
             <Button
               onClick={() => setIsManaging(false)}
@@ -48,7 +48,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
           <TokenListManager />
         </DialogContent>
       ) : (
-        <DialogContent className="max-w-sm">
+        <DialogContent className="bg-surface max-w-sm">
           <DialogHeader>
             <DialogTitle>Select Token</DialogTitle>
           </DialogHeader>
@@ -57,7 +57,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
               {tokens.map((t, i) => (
                 <Button
                   key={i}
-                  variant="outline"
+                  variant="secondary"
                   size="lg"
                   className="block w-full rounded-none border-x border-b-0 border-t px-2 first:rounded-t-sm last:rounded-b-sm last:border-b"
                   onClick={() => {

@@ -1,6 +1,6 @@
 import { AuctionType } from "@repo/types";
 import { CreateAuctionForm } from "pages/create-auction-page";
-import { getPercentage, toBasisPoints } from "utils/number";
+import { getPercentage } from "utils/number";
 import { encodeAbiParameters, parseUnits } from "viem";
 
 const parameterMap = {
@@ -25,17 +25,6 @@ const parameterMap = {
       ],
     },
   ] as const,
-  [AuctionType.FIXED_PRICE]: [
-    {
-      name: "FixedPriceParams",
-      internalType: "struct FixedPriceParams",
-      type: "tuple",
-      components: [
-        { name: "price", type: "uint96" },
-        { name: "maxPayoutPercent", type: "uint24" },
-      ],
-    },
-  ] as const,
   [AuctionType.FIXED_PRICE_BATCH]: [
     {
       name: "FixedPriceBatchParams",
@@ -51,7 +40,6 @@ const parameterMap = {
 
 const handlers = {
   [AuctionType.SEALED_BID]: handleEMP,
-  [AuctionType.FIXED_PRICE]: handleFP,
   [AuctionType.FIXED_PRICE_BATCH]: handleFPB,
 };
 
@@ -83,19 +71,6 @@ function handleEMP(
       publicKey,
     } as const,
   ] as const;
-}
-
-function handleFP(values: CreateAuctionForm) {
-  if (!values.maxPayoutPercent || !values.price) {
-    throw new Error("handleFP called without the correct values");
-  }
-
-  return [
-    {
-      price: parseUnits(values.price, values.quoteToken.decimals),
-      maxPayoutPercent: toBasisPoints(values.maxPayoutPercent[0]),
-    },
-  ];
 }
 
 function handleFPB(values: CreateAuctionForm) {

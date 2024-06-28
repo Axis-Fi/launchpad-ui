@@ -9,8 +9,16 @@ import {
 import { useAuction } from "./use-auction";
 import { getAuctionHouse } from "utils/contracts";
 
+type SettleAuctionProps = {
+  auction: Auction;
+  callbackData?: `0x${string}`;
+};
+
 /** Used to settle an auction after decryption*/
-export function useSettleAuction(auction: Auction) {
+export function useSettleAuction({
+  auction,
+  callbackData,
+}: SettleAuctionProps) {
   const { address, abi } = getAuctionHouse(auction);
   const { refetch } = useAuction(auction.id, auction.auctionType);
 
@@ -22,7 +30,7 @@ export function useSettleAuction(auction: Auction) {
     args: [
       parseUnits(auction.lotId, 0),
       100n, // number of bids to settle at once, TODO replace with value based on chain & gas limits
-      toHex(""), // TODO support callback data
+      callbackData || toHex(""),
     ],
   });
 
@@ -35,7 +43,7 @@ export function useSettleAuction(auction: Auction) {
     if (settleReceipt.isSuccess) {
       refetch();
     }
-  }, [settleReceipt.isSuccess]);
+  }, [settleReceipt.isSuccess, refetch]);
 
   const error = [settleCallStatus, settleTx, settleReceipt].find(
     (tx) => tx.isError,

@@ -32,7 +32,7 @@ export function BlockExplorerLink({
 
   return (
     <Link
-      className="inline-flex items-center"
+      className="text-md inline-flex items-center leading-none"
       href={blockExplorer.url + path + target}
     >
       {trim
@@ -40,7 +40,7 @@ export function BlockExplorerLink({
         : props.showName
           ? blockExplorer.name
           : address}
-      {icon && <ArrowUpRightIcon className="size-6 " />}
+      {icon && <ArrowUpRightIcon className="size-3" />}
     </Link>
   );
 }

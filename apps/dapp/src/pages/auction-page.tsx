@@ -1,32 +1,31 @@
+import React from "react";
 import { useParams } from "react-router-dom";
-import { useAccount } from "wagmi";
-import type { Address } from "viem";
-import { Avatar, Button, Skeleton, Tooltip } from "@repo/ui";
+import { Badge, Button, Metric, Skeleton, Text, cn } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
   AuctionType,
+  Auction,
 } from "@repo/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
-import { SocialRow } from "components/social-row";
-import { ProjectInfoCard } from "modules/auction/project-info-card";
-import { ContractAddressCard } from "modules/auction/contract-address-card";
 import { PageHeader } from "modules/app/page-header";
-import { AuctionInfoCard } from "modules/auction/auction-info-card";
-import { AuctionBidsCard } from "modules/auction/auction-bids";
 import { ImageBanner } from "components/image-banner";
-import { ReloadButton } from "components/reload-button";
 import {
-  AuctionConcluded,
+  EncryptedMarginalPriceAuctionConcluded,
   AuctionCreated,
   AuctionDecrypted,
   AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
-import { ChainIcon } from "components/chain-icon";
-import { FixedPriceAuctionConcluded } from "modules/auction/status/fixed-price-auction-concluded";
-import { getAuctionMetadata } from "modules/auction/metadata";
-import { getAuctionHouse } from "utils/contracts";
+import { PageContainer } from "modules/app/page-container";
+import { ReloadButton } from "components/reload-button";
+import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
+import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
+import { getCountdown } from "utils/date";
+import { useEffect, useState } from "react";
+import { BidList } from "modules/auction/bid-list";
+import { PurchaseList } from "modules/auction/purchase-list";
+import { getLinkUrl } from "modules/auction/utils/auction-details";
 
 const statuses: Record<
   AuctionStatus,
@@ -34,130 +33,157 @@ const statuses: Record<
 > = {
   created: AuctionCreated,
   live: AuctionLive,
-  concluded: AuctionConcluded,
+  concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
-  cancelled: () => <></>, // not displayed
+  aborted: AuctionSettled,
+  cancelled: AuctionSettled,
 };
 
 /** Displays Auction details and status*/
 export default function AuctionPage() {
   const { id, type } = useParams();
-  const { address } = useAccount();
 
   const {
     result: auction,
     isLoading: isAuctionLoading,
-    refetch,
     isRefetching,
+    refetch,
   } = useAuction(id!, type as AuctionType);
+
+  // Countdown
+  const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
+  const isOngoing =
+    auction?.formatted &&
+    auction.formatted?.startDate < new Date() &&
+    auction.formatted?.endDate > new Date();
+
+  // Refresh the countdown every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isOngoing && auction.formatted?.endDate) {
+        setTimeRemaining(getCountdown(auction.formatted?.endDate));
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isOngoing, auction, auction?.formatted?.endDate]);
 
   if (isAuctionLoading) {
     return <AuctionPageLoading />;
   }
 
-  if (!auction) return <AuctionPageMissing />;
+  if (!auction || !auction.isSecure) return <AuctionPageMissing />;
+  const isFPA = auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
-  const auctionHouse = getAuctionHouse(auction);
   const AuctionElement =
-    auction.status === "concluded" &&
-    auction.auctionType === AuctionType.FIXED_PRICE
-      ? FixedPriceAuctionConcluded
+    auction.status === "concluded" && isFPA
+      ? FixedPriceBatchAuctionConcluded
       : statuses[auction.status];
 
-  const metadata = getAuctionMetadata(auction.auctionType);
   return (
-    <div>
-      <PageHeader>
-        <ReloadButton refetching={isRefetching} onClick={() => refetch()} />
+    <PageContainer>
+      <PageHeader backNavigationPath="/#" backNavigationText="Back to Launches">
+        <ReloadButton refetching={isRefetching} onClick={() => refetch?.()} />
       </PageHeader>
 
-      <ImageBanner imgUrl={auction.auctionInfo?.links?.payoutTokenLogo}>
-        <div className="relative rounded-sm p-4">
-          <div className="flex justify-between">
-            <div>
-              <div className="flex items-center gap-x-1 ">
-                <Avatar
-                  className="size-12 text-lg"
-                  alt={auction.baseToken.symbol}
-                  src={auction.auctionInfo?.links?.payoutTokenLogo}
-                />
-                <h1 className="text-[40px]">{auction.baseToken.name}</h1>
-              </div>
-              <SocialRow
-                className="gap-x-2"
-                {...(auction.auctionInfo?.links ?? {})}
-              />
+      <AuctionPageView
+        auction={auction}
+        isOngoing={isOngoing}
+        isAuctionLoading={isAuctionLoading}
+        timeRemaining={timeRemaining}
+      >
+        <AuctionElement auction={auction} />
+      </AuctionPageView>
+      {auction.status !== "created" &&
+        (!isFPA ? (
+          <BidList auction={auction} />
+        ) : (
+          <PurchaseList auction={auction} />
+        ))}
+    </PageContainer>
+  );
+}
+
+export function AuctionPageView({
+  auction,
+  isAuctionLoading,
+  isOngoing,
+  timeRemaining,
+  ...props
+}: React.PropsWithChildren<{
+  auction: Auction;
+  isAuctionLoading?: boolean;
+  isOngoing?: boolean;
+  timeRemaining?: string | null;
+}>) {
+  const [textColor, setTextColor] = React.useState<string>();
+
+  return (
+    <>
+      <ImageBanner
+        isLoading={isAuctionLoading}
+        imgUrl={getLinkUrl("projectBanner", auction)}
+        onTextColorChange={setTextColor}
+      >
+        <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
+          <div className="flex w-full flex-row justify-end">
+            <div className="mr-4 mt-4">
+              <AuctionStatusBadge status={auction.status} large />
             </div>
-            <div className="flex items-start gap-x-1">
-              <Tooltip content={metadata.tooltip}>
-                <h4>{metadata.label}</h4>
-              </Tooltip>
-              <ChainIcon chainId={auction.chainId} />
+          </div>
+          <div className="flex w-full flex-col justify-end">
+            <div className="self-center text-center align-bottom">
+              <Text
+                size="7xl"
+                mono
+                className={cn(textColor === "light" && "text-background")}
+              >
+                {auction.info?.name}
+              </Text>
+
+              <Text
+                size="3xl"
+                color="secondary"
+                className={cn(
+                  "mx-auto w-fit text-nowrap",
+                  textColor === "light" && "text-background",
+                )}
+              >
+                {auction.info?.tagline}
+              </Text>
+            </div>
+            <div className="mb-4 ml-4 self-start">
+              {isOngoing && (
+                <Badge size="xl" className="px-4">
+                  <Metric
+                    className="text-center"
+                    isLabelSpaced
+                    label="Remaining"
+                  >
+                    {timeRemaining}
+                  </Metric>
+                </Badge>
+              )}
             </div>
           </div>
         </div>
       </ImageBanner>
-      <div className="mt-8">
-        <AuctionElement auction={auction} />
-      </div>
-
-      <div className="mt-8 flex justify-between gap-x-4">
-        {auction.status !== "settled" && (
-          <ProjectInfoCard className="w-[50%]" auction={auction} />
-        )}
-        <ContractAddressCard
-          chainId={auction.chainId}
-          addresses={[
-            [
-              `Payout (${auction.baseToken.symbol})`,
-              auction.baseToken.address as Address,
-            ],
-            [
-              `Quote (${auction.quoteToken.symbol})`,
-              auction.quoteToken.address as Address,
-            ],
-            ["Auction House", auctionHouse.address],
-          ]}
-        />
-      </div>
-
-      <AuctionBidsCard
-        className="mt-12"
-        auction={auction}
-        isLoading={isAuctionLoading}
-        address={address}
-      />
-    </div>
+      {props.children}
+    </>
   );
 }
 
 function AuctionPageLoading() {
   return (
-    <div className="mask">
-      <PageHeader />
-      <div>
-        <div className="bg-secondary rounded-sm p-4 ">
-          <Skeleton className="h-22 mt-20 w-full" />
+    <div>
+      <ImageBanner isLoading={true} />
+      <PageContainer>
+        <PageHeader />
+        <div className="mask h-[500px] w-full">
+          <Skeleton className="size-full" />
         </div>
-
-        <div className="mt-5">
-          <div className="flex justify-between gap-x-4">
-            <AuctionInfoCard className="w-1/2">
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-              <Skeleton className="h-10 w-1/2" />
-            </AuctionInfoCard>
-
-            <Skeleton className="h-72 w-[40%]" />
-          </div>
-        </div>
-        <h3 className="mt-5">About</h3>
-        <Skeleton className="h-20 w-[40%]" />
-        <h3 className="mt-5">Contract Addresses</h3>
-        <Skeleton className="h-32 w-[40%]" />
-      </div>
+      </PageContainer>
     </div>
   );
 }

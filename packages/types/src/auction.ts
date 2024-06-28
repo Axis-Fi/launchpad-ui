@@ -1,29 +1,21 @@
 import { AuctionType } from "./auction-modules";
-import {
-  AtomicSubgraphAuction,
-  BatchSubgraphAuction,
-} from "./subgraph-queries";
+import { BatchSubgraphAuction } from "./subgraph-queries";
 import type { Token } from "./token";
 
 export type BaseAuction = {
   chainId: number;
   baseToken: Token;
   quoteToken: Token;
+  callbacks: `0x${string}`;
   status: AuctionStatus;
-  auctionInfo?: AuctionInfo;
-  auctionData?:
-    | EMPAuctionData
-    | FixedPriceAuctionData
-    | FixedPriceBatchAuctionData;
+  auctionData?: EMPAuctionData | FixedPriceBatchAuctionData;
   auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
-  //linearVesting?: LinearVestingData;
+  /** Whether the auction passes the malicious auction verification */
+  isSecure?: boolean;
 };
 
-export type Auction = AtomicAuction | BatchAuction;
-
-export type AtomicAuction = BaseAuction &
-  Omit<AtomicSubgraphAuction, "baseToken" | "quoteToken">;
+export type Auction = BatchAuction;
 
 export type BatchAuction = BaseAuction &
   Omit<BatchSubgraphAuction, "baseToken" | "quoteToken">;
@@ -37,22 +29,24 @@ export type AuctionStatus =
   | "live"
   | "concluded"
   | "decrypted"
+  | "aborted"
   | "settled";
 
-export type AuctionInfo = {
-  key?: string;
-  name?: string;
-  description?: string;
-  links?: {
-    projectLogo?: string;
-    website?: string;
-    twitter?: string;
-    discord?: string;
-    farcaster?: string;
-    payoutTokenLogo?: string;
-    [key: string]: string | undefined;
-  };
-};
+type AllowList = string[][] | undefined;
+
+export type AuctionInfo = BatchAuction["info"] & { allowlist: AllowList };
+
+export type AuctionLinkId =
+  | "website"
+  | "payoutTokenLogo"
+  | "projectLogo"
+  | "projectBanner"
+  | "discord"
+  | "website"
+  | "farcaster"
+  | "twitter";
+
+export type AuctionLink = NonNullable<Auction["info"]>["links"][number];
 
 export type EMPAuctionData = {
   status: number;
@@ -68,11 +62,6 @@ export type EMPAuctionData = {
   bidIds: bigint[];
 };
 
-export type FixedPriceAuctionData = {
-  price: bigint;
-  maxPayout: bigint;
-};
-
 export type FixedPriceBatchAuctionData = {
   price: bigint;
   status: number;
@@ -81,6 +70,8 @@ export type FixedPriceBatchAuctionData = {
   totalBidAmount: bigint;
   minFilled: bigint;
 };
+
+export type AuctionData = EMPAuctionData | FixedPriceBatchAuctionData;
 
 export type AuctionFormattedInfo = {
   startDate: Date;
@@ -91,6 +82,7 @@ export type AuctionFormattedInfo = {
   endDistance: string;
   rate?: string;
   purchased: string;
+  purchasedDecimal: number;
   sold: string;
   minPrice?: string;
   minBidSize?: string;
@@ -98,30 +90,34 @@ export type AuctionFormattedInfo = {
   capacity: string;
   totalSupply: string;
   price?: string;
-  maxPayout?: string;
-  maxAmount?: string;
   auctionType?: string;
 } & Partial<EMPFormattedInfo>;
 
-//TODO: add remaining fields
-type EMPFormattedInfo = {
+export type EMPFormattedInfo = {
   marginalPrice: string;
+  marginalPriceDecimal: number;
   totalBids: number;
   totalBidsDecrypted: number;
   totalBidsClaimed: number;
-  totalBidAmount: string;
+  totalBidAmountFormatted: string;
+  totalBidAmountDecimal: number;
+  minFilled: string;
   uniqueBidders: number;
   cleared: boolean;
+  rate: string;
+  minPrice: string;
+  minBidSize: string;
 };
 
-export type LinearVestingData = {
-  start: number;
-  expiry: number;
-  startDate: Date;
-  expiryDate: Date;
-  days: number;
-  daysFromNow: number;
-  isVestingExpired: boolean;
+export type FPBFormattedInfo = {
+  price: string;
+  totalBids: number;
+  totalBidsClaimed: number;
+  totalBidAmountFormatted: string;
+  totalBidAmountDecimal: number;
+  uniqueBidders: number;
+  cleared: boolean;
+  minFilled: string;
 };
 
 export type PropsWithAuction = {

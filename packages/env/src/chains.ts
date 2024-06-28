@@ -12,7 +12,9 @@ const mainnetConfig = generateConfig(mainnetDeployments);
 export const testnets: Chain[] = testnetDeployments.map(({ chain }) => chain);
 const testnetConfig = generateConfig(testnetDeployments);
 
-export const activeChains = environment.isTestnet ? testnets : mainnets;
+export const activeChains = (environment.isTestnet ? testnets : mainnets).sort(
+  (a, b) => a.name.localeCompare(b.name),
+);
 
 export const activeConfig = environment.isTestnet
   ? testnetConfig

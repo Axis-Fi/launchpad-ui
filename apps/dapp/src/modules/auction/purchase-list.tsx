@@ -1,69 +1,68 @@
-import { AtomicAuction, AuctionPurchase } from "@repo/types";
-import { DataTable } from "@repo/ui";
-import { createColumnHelper } from "@tanstack/react-table";
-import { BlockExplorerLink } from "components/blockexplorer-link";
-import { Address } from "viem";
-import { formatDate } from "utils/date";
+import React from "react";
+import { formatUnits } from "viem";
+import { PropsWithAuction } from "@repo/types";
+import { Card, DataTable } from "@repo/ui";
+import { CSVDownloader } from "components/csv-downloader";
+import { arrayToCSV } from "utils/csv";
+import {
+  amountInCol,
+  bidListColumnHelper,
+  bidderCol,
+  timestampCol,
+} from "./bid-list";
 import { trimCurrency } from "utils/currency";
 
-type PurchaseListProps = {
-  auction: AtomicAuction;
-};
+const amountOutCol = bidListColumnHelper.accessor("settledAmountOut", {
+  header: "Amount Out",
+  cell: (info) =>
+    `${trimCurrency(info.getValue() ?? "")} ${
+      info.row.original.auction.baseToken.symbol
+    }`,
+});
+const columns = [timestampCol, amountInCol, amountOutCol, bidderCol];
 
-const column = createColumnHelper<
-  AtomicAuction["purchases"] & { auction: AtomicAuction }
->();
-
-const cols = [
-  column.accessor("buyer", {
-    header: "Buyer",
-    cell: (info) => (
-      <BlockExplorerLink
-        chainId={info.row.original.auction.chainId}
-        icon={false}
-        address={info.getValue() as Address}
-        trim
-      />
-    ),
-  }),
-
-  column.accessor("amount", {
-    header: "Amount",
-    cell: (info) =>
-      `${trimCurrency(info.getValue() as string)} ${
-        info.row.original.auction.quoteToken.symbol
-      }`,
-  }),
-  column.accessor("payout", {
-    header: "Payout",
-    cell: (info) =>
-      `${trimCurrency(info.getValue() as string)} ${
-        info.row.original.auction.baseToken.symbol
-      }`,
-  }),
-  column.accessor("date", {
-    header: "Date",
-    cell: (info) => formatDate.full(info.getValue() as Date),
-  }),
-  column.accessor("transactionHash", {
-    header: "Transaction Hash",
-    cell: (info) => (
-      <BlockExplorerLink
-        chainId={info.row.original.auction.chainId}
-        hash={info.getValue() as Address}
-        trim
-      />
-    ),
-  }),
-];
-
-export function PurchaseList(props: PurchaseListProps) {
-  //TODO: figure out why type is missing here
-  const purchases = props.auction.purchases.map((p: AuctionPurchase) => ({
-    ...p,
-    auction: props.auction,
+export function PurchaseList({ auction }: PropsWithAuction) {
+  const bids = auction.bids.map((b) => ({
+    ...b,
+    settledAmountOut:
+      auction.status === "settled"
+        ? b.settledAmountOut
+        : formatUnits(BigInt(b.rawAmountOut ?? 0), auction.baseToken.decimals),
+    auction,
   }));
 
-  //@ts-expect-error something wrong is not right, compiler sez its not array
-  return <DataTable columns={cols} data={purchases} />;
+  const [headers, body] = React.useMemo(() => {
+    const values = bids.map((b) => ({
+      date: b.date,
+      amountIn: b.amountIn,
+      settledAmountOut: b.settledAmountOut,
+      bidder: b.bidder,
+    }));
+
+    return arrayToCSV(values ?? []);
+  }, [bids]);
+
+  return (
+    <Card
+      title={"Purchase History"}
+      headerRightElement={
+        <CSVDownloader
+          tooltip="Download this bid history in CSV format."
+          filename={`purchases-${auction.auctionType}-${auction.id}`}
+          headers={headers}
+          data={body}
+        />
+      }
+    >
+      <DataTable
+        emptyText={
+          auction.status == "created" || auction.status == "live"
+            ? "No purchases yet"
+            : "No purchases received"
+        }
+        columns={columns}
+        data={bids}
+      />
+    </Card>
+  );
 }

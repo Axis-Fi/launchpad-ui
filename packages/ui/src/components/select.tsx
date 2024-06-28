@@ -42,7 +42,7 @@ export function Select(props: SelectProps) {
       <SelectTrigger
         id={props.id}
         className={cn(
-          "bg-muted border-muted w-full max-w-sm rounded-full",
+          "w-full max-w-sm rounded-full border-transparent",
           props.triggerClassName,
         )}
       >
