@@ -1,17 +1,20 @@
 import React from "react";
-import { useAllowance } from "loaders/use-allowance";
-import { useAuction } from "modules/auction/hooks/use-auction";
+import { useQueryClient } from "@tanstack/react-query";
 import { Address, formatUnits, fromHex, toHex } from "viem";
 import {
   useAccount,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { useReferrer } from "state/referral";
+import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client/src/generated";
 import { AuctionType } from "@repo/types";
-import { getAuctionHouse } from "utils/contracts";
 import { useDeferredQuery } from "@repo/sdk/react";
+import { useAllowance } from "loaders/use-allowance";
+import { useAuction } from "modules/auction/hooks/use-auction";
+import { useReferrer } from "state/referral";
+import { getAuctionHouse } from "utils/contracts";
 import { useStoreBid } from "state/bids/handlers";
+import { createOptimisticBid } from "modules/auction/utils/create-optimistic-bid";
 
 export function useBidAuction(
   id: string,
@@ -20,15 +23,53 @@ export function useBidAuction(
   amountOut: bigint,
   callbackData: `0x${string}`,
 ) {
-  const { result: auction, ...auctionQuery } = useAuction(id, auctionType);
+  const { result: auction, queryKey } = useAuction(id, auctionType);
   const storeBidLocally = useStoreBid();
 
   if (!auction) throw new Error(`Unable to find auction ${id}`);
-  const lotId = auction.lotId;
 
+  const lotId = auction.lotId;
+  const queryClient = useQueryClient();
   const { address: bidderAddress } = useAccount();
   const referrer = useReferrer();
-  const bidTx = useWriteContract();
+
+  const bidTx = useWriteContract({
+    mutation: {
+      /** When the bid txn succeeds, the subgraph takes time to index it, so add it optimistically */
+      onSuccess: async () => {
+        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+        await queryClient.cancelQueries({ queryKey });
+
+        queryClient.setQueryData(
+          queryKey,
+          (auctionQueryResult: GetBatchAuctionLotQuery) => {
+            return {
+              batchAuctionLot: {
+                ...auctionQueryResult.batchAuctionLot,
+                bids: auctionQueryResult.batchAuctionLot!.bids.concat(
+                  createOptimisticBid(
+                    auctionQueryResult,
+                    bidderAddress!,
+                    amountIn,
+                    amountOut,
+                  ),
+                ),
+              },
+            };
+          },
+        );
+
+        // Invalidate the query now, so that the next time it's needed, it will be refetched fresh
+        // This gives the subgraph chance to update, and the user can still see their bid due to the optimistic update
+        queryClient.invalidateQueries({
+          queryKey,
+          exact: true,
+          refetchType: "none", // Don't refetch now, just mark it as stale
+        });
+      },
+    },
+  });
+
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
   const auctionHouse = getAuctionHouse(auction);
@@ -84,8 +125,6 @@ export function useBidAuction(
     // and stores bid if EMP
     if (bidReceipt.isSuccess) {
       allowance.refetch();
-      // Delay refetching to ensure subgraph has caught up with the changes
-      setTimeout(() => auctionQuery.refetch(), 5000); //TODO: ideas on how to improve this
 
       // Store user's bid amount locally
       if (auction.auctionType === AuctionType.SEALED_BID) {

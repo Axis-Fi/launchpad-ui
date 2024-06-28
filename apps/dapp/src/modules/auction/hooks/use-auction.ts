@@ -35,6 +35,7 @@ import { isSecureAuction } from "../utils/malicious-auction-filters";
 
 export type AuctionResult = {
   result?: Auction;
+  queryKey: ["getBatchAuctionLot", { id: string }];
   refetch: (
     auctionOptions?: RefetchOptions,
     auctionDataOptions?: RefetchOptions,
@@ -56,6 +57,10 @@ export function useAuction(
   const { getToken } = useTokenLists();
 
   const { chainId, lotId } = parseAuctionId(id);
+  const queryKey = [
+    "getBatchAuctionLot",
+    { id },
+  ] satisfies AuctionResult["queryKey"];
 
   const {
     data,
@@ -105,6 +110,7 @@ export function useAuction(
       isRefetching,
       result: undefined,
       isLoading: isLoading, //|| infoQuery.isLoading, //|| infoQuery.isPending,
+      queryKey,
     };
   }
 
@@ -146,6 +152,7 @@ export function useAuction(
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
+    queryKey,
   };
 }
 
