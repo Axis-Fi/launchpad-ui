@@ -258,10 +258,10 @@ export default function AuctionListPage() {
 
           {!environment.isProduction && (
             <div className="flex flex-col items-center justify-center py-8">
-              <p className="pb-2 font-sans">Want to create an auction?</p>
+              <p className="pb-2 font-sans">Want to launch a token?</p>
               <Link to="/create/auction">
                 <Button variant="ghost">
-                  Create Auction <ArrowRightIcon className="w-6 pl-1" />
+                  Launch token <ArrowRightIcon className="w-6 pl-1" />
                 </Button>
               </Link>
             </div>
