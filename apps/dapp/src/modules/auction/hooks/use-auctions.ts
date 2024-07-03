@@ -2,15 +2,15 @@ import {
   GetAuctionLotsDocument,
   GetAuctionLotsQuery,
 } from "@repo/subgraph-client/src/generated";
-import { Address, Auction } from "@repo/types";
-import { getAuctionStatus } from "../utils/get-auction-status";
-import { getChainId } from "src/utils/chain";
+import type { Address, Auction } from "@repo/types";
+import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
-import { formatAuctionTokens } from "../utils/format-tokens";
+import { formatAuctionTokens } from "modules/auction/utils/format-tokens";
+import { getAuctionType } from "modules/auction/utils/get-auction-type";
+import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
+import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
-import { getAuctionType } from "../utils/get-auction-type";
-import { isSecureAuction } from "../utils/malicious-auction-filters";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -29,11 +29,14 @@ type GetAuctionLots = {
   >;
 };
 
+export const getAuctionsQueryKey = (chainId: number) => ["auctions", chainId];
+
 export function useAuctions(): AuctionsResult {
   const { data, refetch, isLoading, isSuccess, isRefetching } =
     useQueryAll<GetAuctionLots>({
       document: GetAuctionLotsDocument,
       fields: ["batchAuctionLots"],
+      queryKeyFn: (deployment) => getAuctionsQueryKey(deployment.chain.id),
     });
 
   const rawAuctions = [...data.batchAuctionLots].flat() ?? [];

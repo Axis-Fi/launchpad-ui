@@ -2,22 +2,35 @@ import {
   RefetchOptions,
   UseQueryResult,
   useQueries,
+  useQueryClient,
 } from "@tanstack/react-query";
 import { Variables } from "graphql-request";
-import { queryAllEndpoints } from "utils/subgraph/query-all-endpoints";
+import {
+  type QueryKeyFn,
+  queryAllEndpoints,
+} from "utils/subgraph/query-all-endpoints";
 
 /** Queries all configured endpoints */
 export function useQueryAll<TQuery>({
   document,
   variables,
   fields,
+  queryKeyFn,
 }: {
   document: string;
   variables?: Variables;
+  queryKeyFn?: QueryKeyFn;
   fields: Array<QueryResultKey<TQuery>>;
 }) {
+  const queryClient = useQueryClient();
+
   const queries = useQueries({
-    queries: queryAllEndpoints<TQuery>({ document, variables }),
+    queries: queryAllEndpoints<TQuery>({
+      document,
+      variables,
+      queryKeyFn,
+      queryClient,
+    }),
     combine: (responses) => {
       const filteredResponses = responses.filter(
         (response): response is UseQueryResult<TQuery> =>

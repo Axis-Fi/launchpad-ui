@@ -2,10 +2,11 @@ import {
   GetBatchAuctionLotQuery,
   useGetBatchAuctionLotQuery,
 } from "@repo/subgraph-client/src/generated";
-import type {
-  QueryObserverResult,
-  RefetchOptions,
-  UseQueryResult,
+import {
+  useQueryClient,
+  type QueryObserverResult,
+  type RefetchOptions,
+  type UseQueryResult,
 } from "@tanstack/react-query";
 import { getAuctionStatus } from "../utils/get-auction-status";
 import {
@@ -17,6 +18,7 @@ import {
   FixedPriceBatchAuctionData,
   EMPFormattedInfo,
   FPBFormattedInfo,
+  type MaybeFresh,
 } from "@repo/types";
 import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
@@ -30,8 +32,9 @@ import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
-import { parseAuctionId } from "../utils/parse-auction-id";
-import { isSecureAuction } from "../utils/malicious-auction-filters";
+import { parseAuctionId } from "modules/auction/utils/parse-auction-id";
+import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
+import { hasOptimisticStaleTimeExpired } from "modules/auction/utils/has-optimistic-stale-time-expired";
 
 export type AuctionResult = {
   result?: Auction;
@@ -55,12 +58,21 @@ export function useAuction(
   auctionType: AuctionType,
 ): AuctionResult {
   const { getToken } = useTokenLists();
-
   const { chainId, lotId } = parseAuctionId(id);
+
   const queryKey = [
     "getBatchAuctionLot",
     { id },
   ] satisfies AuctionResult["queryKey"];
+
+  // Don't fetch the auction if an optimistic update is still fresh.
+  // This gives the subgraph time to update after the user has performed a bid or created an auction.
+  const queryClient = useQueryClient();
+  const cachedAuctionData = queryClient.getQueryData<
+    GetBatchAuctionLotQuery & MaybeFresh
+  >(queryKey);
+  const optimisticStaleTimeExpired =
+    hasOptimisticStaleTimeExpired(cachedAuctionData);
 
   const {
     data,
@@ -73,7 +85,7 @@ export function useAuction(
       fetchParams,
     },
     { id: id! },
-    { enabled: !!chainId && !!id },
+    { enabled: !!chainId && !!id && optimisticStaleTimeExpired },
   );
 
   const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (

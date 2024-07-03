@@ -35,7 +35,7 @@ export function useBidAuction(
 
   const bidTx = useWriteContract({
     mutation: {
-      /** When the bid txn succeeds, the subgraph takes time to index it, so add it optimistically */
+      /** When the txn succeeds, store the bid locally as the subgraph takes time to update */
       onSuccess: async () => {
         // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
         await queryClient.cancelQueries({ queryKey });
@@ -60,7 +60,6 @@ export function useBidAuction(
         );
 
         // Invalidate the query now, so that the next time it's needed, it will be refetched fresh
-        // This gives the subgraph chance to update, and the user can still see their bid due to the optimistic update
         queryClient.invalidateQueries({
           queryKey,
           exact: true,

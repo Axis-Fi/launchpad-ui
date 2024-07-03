@@ -21,12 +21,12 @@ const createOptimisticBid = (
   amountIn: bigint,
   amountOut: bigint,
 ): BatchAuctionBid => {
-  const _auction = auctionQueryResult.batchAuctionLot!;
+  const auction = auctionQueryResult.batchAuctionLot!;
   const nextBidId = getNextBidId(auctionQueryResult).toString();
-  const quoteTokenDecimals = Number(_auction.quoteToken.decimals);
+  const quoteTokenDecimals = Number(auction.quoteToken.decimals);
   const amountInDecimal = Number(formatUnits(amountIn, quoteTokenDecimals));
   const amountOutDecimal = Number(
-    formatUnits(amountOut, Number(_auction.baseToken.decimals)),
+    formatUnits(amountOut, Number(auction.baseToken.decimals)),
   );
   const submittedPrice = (amountInDecimal / amountOutDecimal).toString();
 

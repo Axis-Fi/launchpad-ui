@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Text,
   Button,
@@ -59,7 +60,7 @@ import { AuctionType, CallbacksType } from "@repo/types";
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
 import { toKeycode } from "utils/hex";
@@ -77,6 +78,10 @@ import { PageHeader } from "modules/app/page-header";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
 import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
+import { getAuctionsQueryKey } from "modules/auction/hooks/use-auctions";
+import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
+import { createOptimisticAuction } from "modules/auction/utils/create-optimistic-auction";
+import { getAuctionId } from "modules/auction/utils/get-auction-id";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -181,7 +186,7 @@ const schema = z
     path: ["start"],
   })
   .refine(
-    (data) => addDays(data.start, 1).getTime() <= data.deadline.getTime(),
+    (data) => addDays(data.start, 1).getTime() < data.deadline.getTime(),
     {
       message: "Deadline needs to be at least 1 day after the start",
       path: ["deadline"],
@@ -332,7 +337,10 @@ export default function CreateAuctionPage() {
 
   const chainId = _chainId ?? connectedChainId;
 
+  const queryClient = useQueryClient();
+
   const createAuctionTx = useWriteContract();
+
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
@@ -937,6 +945,7 @@ export default function CreateAuctionPage() {
       tokenAddress: payoutToken ? (payoutToken.address as Address) : undefined,
       balanceAddress: address,
     });
+
   useEffect(() => {
     form.setValue(
       "payoutTokenBalance",
@@ -948,6 +957,66 @@ export default function CreateAuctionPage() {
     payoutTokenBalance && payoutTokenDecimals
       ? Number(formatUnits(payoutTokenBalance, payoutTokenDecimals))
       : 0;
+
+  const hasCachedOptimisticAuction = useRef<boolean>(false);
+
+  useEffect(() => {
+    if (hasCachedOptimisticAuction.current === true) return;
+    if (lotId === undefined || lotId === null) return;
+
+    hasCachedOptimisticAuction.current = true;
+
+    /**
+     * Auctions are read from the subgraph. There can be a delay between the contract call
+     * succeeding, and the subgraph updating. To avoid users not being able to see their auction,
+     * we cache it locally, optimistically.
+     */
+    const cacheOptimisticAuction = async () => {
+      // We need to add the optimistic auction to two places:
+      // 1. The list of auctions, for viewing the auction list page
+      // 2. The auction detail page, for view the auction detail page
+      const { address: auctionHouseAddress } = getAuctionHouse({
+        auctionType: form.getValues().auctionType as AuctionType,
+        chainId: chain!.id,
+      });
+
+      const auctionId = getAuctionId(chain!, auctionHouseAddress, lotId);
+      const auctionQueryKey = ["getBatchAuctionLot", { id: auctionId }];
+
+      const auctionsQueryKey = getAuctionsQueryKey(chainId);
+
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: auctionsQueryKey });
+      await queryClient.cancelQueries({ queryKey: auctionQueryKey });
+
+      const optimisticAuction = createOptimisticAuction(
+        lotId,
+        chain!,
+        address!,
+        auctionHouseAddress,
+        form.getValues(),
+      );
+
+      // Cache the auction data in the list of auctions
+      queryClient.setQueryData(
+        auctionsQueryKey,
+        (auctionsQueryResult: GetAuctionLotsQuery) => ({
+          batchAuctionLots: auctionsQueryResult.batchAuctionLots.concat(
+            optimisticAuction!,
+          ),
+          _lastOptimisticUpdateTimestamp: Date.now(),
+        }),
+      );
+
+      // Cache the auction data in the auction details
+      queryClient.setQueryData(auctionQueryKey, () => ({
+        batchAuctionLot: optimisticAuction,
+        _lastOptimisticUpdateTimestamp: Date.now(),
+      }));
+    };
+
+    cacheOptimisticAuction();
+  }, [address, chain, chainId, form, lotId, queryClient]);
 
   return (
     <PageContainer>
