@@ -7,26 +7,29 @@ type PageHeaderProps = React.HTMLAttributes<HTMLDivElement> & {
   backNavigationText?: string;
 };
 
-export function PageHeader(props: PageHeaderProps) {
+export function PageHeader({
+  className,
+  backNavigationPath,
+  backNavigationText = "Back to Launches",
+  children,
+}: PageHeaderProps) {
   const navigate = useNavigate();
   return (
-    <div
-      className={cn("max-w-limit mt-5 flex justify-between", props.className)}
-    >
+    <div className={cn("max-w-limit mt-5 flex justify-between", className)}>
       <Button
         className="w-fit"
         size="icon"
         variant="ghost"
         //@ts-expect-error interesting TS quirk below,
         //both string and number are valid but on different signatures
-        onClick={() => navigate(props.backNavigationPath ?? -1)}
+        onClick={() => navigate(backNavigationPath ?? -1)}
       >
         <div className="flex ">
           <ArrowLeft className="" />
-          Back to Launches
+          {backNavigationText}
         </div>
       </Button>
-      {props.children}
+      {children}
     </div>
   );
 }

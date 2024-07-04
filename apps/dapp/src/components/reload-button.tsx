@@ -12,7 +12,7 @@ export function ReloadButton({
   ...rest
 }: ReloadButtonProps) {
   return (
-    <Tooltip content={tooltip}>
+    <Tooltip content={tooltip} asChild>
       <Button {...rest} size="icon" variant="ghost">
         <RefreshCwIcon className={cn(refetching && "loading-indicator-fast")} />
       </Button>
