@@ -321,8 +321,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 <div className="mx-auto mt-4 w-full">
                   {isEMP && (
                     <Text size="sm">
-                      You’re bidding on a blind auction. Auctions can only be
-                      decrypted after conclusion. Save your bid after bidding.
+                      You&apos;re bidding on a blind auction. Bids can be
+                      revealed after the auction closes.
                       <a className="text-primary ml-1 uppercase">Learn More</a>
                     </Text>
                   )}
