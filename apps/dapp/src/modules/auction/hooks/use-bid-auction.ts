@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Address, formatUnits, fromHex, toHex } from "viem";
 import {
@@ -33,41 +33,7 @@ export function useBidAuction(
   const { address: bidderAddress } = useAccount();
   const referrer = useReferrer();
 
-  const bidTx = useWriteContract({
-    mutation: {
-      /** When the txn succeeds, store the bid locally as the subgraph takes time to update */
-      onSuccess: async () => {
-        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-        await queryClient.cancelQueries({ queryKey });
-
-        queryClient.setQueryData(
-          queryKey,
-          (auctionQueryResult: GetBatchAuctionLotQuery) => {
-            return {
-              batchAuctionLot: {
-                ...auctionQueryResult.batchAuctionLot,
-                bids: auctionQueryResult.batchAuctionLot!.bids.concat(
-                  createOptimisticBid(
-                    auctionQueryResult,
-                    bidderAddress!,
-                    amountIn,
-                    amountOut,
-                  ),
-                ),
-              },
-            };
-          },
-        );
-
-        // Invalidate the query now, so that the next time it's needed, it will be refetched fresh
-        queryClient.invalidateQueries({
-          queryKey,
-          exact: true,
-          refetchType: "none", // Don't refetch now, just mark it as stale
-        });
-      },
-    },
-  });
+  const bidTx = useWriteContract();
 
   const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
 
@@ -119,19 +85,23 @@ export function useBidAuction(
     amount: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
   });
 
+  const bidTxnSucceeded = useRef(false);
+
   React.useEffect(() => {
     // Refetch allowance, refetches delayed auction info
     // and stores bid if EMP
-    if (bidReceipt.isSuccess) {
+    if (!bidTxnSucceeded.current && bidReceipt.isSuccess) {
+      bidTxnSucceeded.current = true;
+
       allowance.refetch();
 
-      // Store user's bid amount locally
+      // If this is a blind auction, store the user's unencrypted bid locally
+      // so they can view it later
       if (auction.auctionType === AuctionType.SEALED_BID) {
         const hexBidId = bidReceipt.data.logs[1].topics[2];
 
         const bidId = fromHex(hexBidId!, "number").toString();
 
-        //Stores bid using
         storeBidLocally({
           auctionId: auction.id,
           address: bidderAddress!,
@@ -139,8 +109,46 @@ export function useBidAuction(
           amountOut: formatUnits(amountOut, auction.baseToken.decimals),
         });
       }
+
+      /** Cache the bid locally, to prevent subgraph update delays not returning the user's bid */
+      const cacheOptimisticAuction = async () => {
+        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+        await queryClient.cancelQueries({ queryKey });
+
+        // Insert the bid in the existing cached subgraph response
+        queryClient.setQueryData(
+          queryKey,
+          (auctionQueryResult: GetBatchAuctionLotQuery) => {
+            return {
+              batchAuctionLot: {
+                ...auctionQueryResult.batchAuctionLot,
+                bids: auctionQueryResult.batchAuctionLot!.bids.concat(
+                  createOptimisticBid(
+                    auctionQueryResult,
+                    bidderAddress!,
+                    amountIn,
+                    amountOut,
+                  ),
+                ),
+              },
+            };
+          },
+        );
+      };
+
+      cacheOptimisticAuction();
     }
-  }, [bidReceipt.isSuccess]);
+  }, [
+    allowance,
+    amountIn,
+    amountOut,
+    auction,
+    bidReceipt,
+    bidderAddress,
+    queryClient,
+    queryKey,
+    storeBidLocally,
+  ]);
 
   const error = [bidReceipt, bidTx, bidConfig].find((m) => m.isError)?.error;
 
