@@ -36,7 +36,7 @@ export function useCuratorFees(
     abi: auctionHouse.abi,
     address: auctionHouse.address,
     functionName: "setCuratorFee",
-    args: [keycode, newFee],
+    args: [keycode, toBasisPoints(newFee)],
     query: {
       enabled: !!address && !!chainId && isFinite(newFee),
     },
