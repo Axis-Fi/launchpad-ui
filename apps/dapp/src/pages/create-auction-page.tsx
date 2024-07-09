@@ -13,9 +13,9 @@ import {
   Input,
   Label,
   Select,
-  Slider,
   Switch,
   Textarea,
+  PercentageSlider,
   trimAddress,
 } from "@repo/ui";
 import { abis } from "@repo/abis";
@@ -52,6 +52,7 @@ import {
   formatDate,
   dateMath,
   trimCurrency,
+  toBasisPoints,
 } from "src/utils";
 
 import { AuctionType, CallbacksType } from "@repo/types";
@@ -77,6 +78,7 @@ import { PageHeader } from "modules/app/page-header";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
 import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
+import { useFees } from "modules/auction/hooks/use-fees";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -137,6 +139,7 @@ const schema = z
       .optional(),
     vestingDuration: StringNumberNotNegative.optional(),
     vestingStart: z.date().optional(),
+    referrerFee: z.array(z.number()).optional(),
     // Metadata
     name: z.string().max(32),
     description: z.string().max(332),
@@ -331,6 +334,16 @@ export default function CreateAuctionPage() {
   ]);
 
   const chainId = _chainId ?? connectedChainId;
+  const { address: contractAddress } = getAuctionHouse({
+    auctionType: auctionType as AuctionType,
+    chainId,
+  });
+
+  const { data: fees } = useFees(
+    connectedChainId,
+    contractAddress,
+    auctionType as AuctionType,
+  );
 
   const createAuctionTx = useWriteContract();
   const createTxReceipt = useWaitForTransactionReceipt({
@@ -640,6 +653,7 @@ export default function CreateAuctionPage() {
                   }),
             wrapDerivative: false,
             callbackData: callbackData,
+            referrerFee: toBasisPoints(values.referrerFee?.[0] ?? 0),
           },
           {
             start: getTimestamp(values.start),
@@ -1240,27 +1254,13 @@ export default function CreateAuctionPage() {
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
-                          <div className="flex items-center">
-                            <Input
-                              disabled
-                              className="w-16 disabled:opacity-100"
-                              value={`${
-                                field.value?.[0] ??
-                                auctionDefaultValues.minFillPercent
-                              }%`}
-                            />
-                            <Slider
-                              {...field}
-                              className="cursor-pointer"
-                              min={1}
-                              max={100}
-                              defaultValue={auctionDefaultValues.minFillPercent}
-                              value={field.value}
-                              onValueChange={(v) => {
-                                field.onChange(v);
-                              }}
-                            />
-                          </div>
+                          <PercentageSlider
+                            //@ts-expect-error TODO: fix with proper typing
+                            field={field}
+                            defaultValue={
+                              auctionDefaultValues.minFillPercent[0]
+                            }
+                          />
                         </FormItemWrapper>
                       )}
                     />
@@ -1322,27 +1322,13 @@ export default function CreateAuctionPage() {
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
-                          <div className="flex items-center">
-                            <Input
-                              disabled
-                              className="w-16 disabled:opacity-100"
-                              value={`${
-                                field.value?.[0] ??
-                                auctionDefaultValues.minFillPercent
-                              }%`}
-                            />
-                            <Slider
-                              {...field}
-                              className="cursor-pointer"
-                              min={1}
-                              max={100}
-                              defaultValue={auctionDefaultValues.minFillPercent}
-                              value={field.value}
-                              onValueChange={(v) => {
-                                field.onChange(v);
-                              }}
-                            />
-                          </div>
+                          <PercentageSlider
+                            //@ts-expect-error TODO: fix with proper typing
+                            field={field}
+                            defaultValue={
+                              auctionDefaultValues.minFillPercent[0]
+                            }
+                          />
                         </FormItemWrapper>
                       )}
                     />
@@ -1411,6 +1397,24 @@ export default function CreateAuctionPage() {
                         <Input
                           {...field}
                           placeholder={trimAddress("0x0000000")}
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />{" "}
+                  <FormField
+                    name="referrerFee"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Referrer Fee Percentage"
+                        tooltip={
+                          "The percentual amount of referrer fee you're willing to pay"
+                        }
+                      >
+                        <PercentageSlider
+                          //@ts-expect-error TODO: fix with proper typing
+                          field={field}
+                          defaultValue={0}
+                          max={fees.referrerFee ?? 0}
                         />
                       </FormItemWrapper>
                     )}
@@ -1623,24 +1627,11 @@ export default function CreateAuctionPage() {
                               label="Percent of Proceeds to Deposit"
                               tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
                             >
-                              <>
-                                <Input
-                                  disabled
-                                  className="disabled:opacity-100"
-                                  value={`${field.value?.[0] ?? [75]}%`}
-                                />
-                                <Slider
-                                  {...field}
-                                  className="cursor-pointer pt-2"
-                                  min={1}
-                                  max={100}
-                                  defaultValue={[75]}
-                                  value={field.value}
-                                  onValueChange={(v) => {
-                                    field.onChange(v);
-                                  }}
-                                />
-                              </>
+                              <PercentageSlider
+                                //@ts-expect-error TODO: fix with proper typing
+                                field={field}
+                                defaultValue={75}
+                              />
                             </FormItemWrapper>
                           )}
                         />
