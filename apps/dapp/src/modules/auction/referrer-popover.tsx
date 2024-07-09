@@ -38,7 +38,7 @@ export function ReferrerPopover({ auction }: PropsWithAuction) {
 
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button variant="secondary" size="sm">
           Refer this launch
         </Button>
