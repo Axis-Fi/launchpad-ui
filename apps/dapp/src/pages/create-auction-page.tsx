@@ -1956,13 +1956,5 @@ function generateAuctionURL(
 }
 
 function canUpdateMinBidSize(form: CreateAuctionForm) {
-  if (form.capacity) {
-    switch (form.auctionType) {
-      case AuctionType.SEALED_BID: {
-        return !!form.minPrice;
-      }
-      case AuctionType.FIXED_PRICE_BATCH:
-        return !!form.price;
-    }
-  }
+  return !!form.capacity && !!form.minPrice;
 }
