@@ -12,12 +12,12 @@ import { Address } from "viem";
 const auctionHouseMap = {
   [AuctionType.SEALED_BID]: "batchAuctionHouse",
   [AuctionType.FIXED_PRICE_BATCH]: "batchAuctionHouse",
-};
+} as const;
 
 export const moduleMap = {
   [AuctionType.SEALED_BID]: "encryptedMarginalPrice",
   [AuctionType.FIXED_PRICE_BATCH]: "fixedPriceBatch",
-};
+} as const;
 
 export function getContractsByModuleType(auction: Auction) {
   const auctionModule = moduleMap[
@@ -46,7 +46,7 @@ export function getAuctionHouse(
   }
   const contractName = auctionHouseMap[
     auction.auctionType
-  ] as AxisContractNames;
+  ] satisfies AxisContractNames;
 
   return {
     abi: axisContracts.abis[contractName],

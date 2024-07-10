@@ -2152,7 +2152,7 @@ export type BatchAuctionAborted = {
   blockNumber: Scalars["BigInt"]["output"];
   blockTimestamp: Scalars["BigInt"]["output"];
   date: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
   lot: BatchAuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
 };
@@ -2197,26 +2197,16 @@ export type BatchAuctionAborted_Filter = {
   date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<BatchAuctionLot_Filter>;
   lot_contains?: InputMaybe<Scalars["String"]["input"]>;
@@ -2295,7 +2285,7 @@ export type BatchAuctionCancelled = {
   blockNumber: Scalars["BigInt"]["output"];
   blockTimestamp: Scalars["BigInt"]["output"];
   date: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
   lot: BatchAuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
 };
@@ -2350,26 +2340,16 @@ export type BatchAuctionCancelled_Filter = {
   date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<BatchAuctionLot_Filter>;
   lot_contains?: InputMaybe<Scalars["String"]["input"]>;
@@ -2448,7 +2428,7 @@ export type BatchAuctionCreated = {
   blockNumber: Scalars["BigInt"]["output"];
   blockTimestamp: Scalars["BigInt"]["output"];
   date: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
   infoHash: Scalars["String"]["output"];
   lot: BatchAuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
@@ -2494,26 +2474,16 @@ export type BatchAuctionCreated_Filter = {
   date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   infoHash?: InputMaybe<Scalars["String"]["input"]>;
   infoHash_contains?: InputMaybe<Scalars["String"]["input"]>;
   infoHash_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
@@ -2613,7 +2583,7 @@ export type BatchAuctionCurated = {
   blockTimestamp: Scalars["BigInt"]["output"];
   curator: Scalars["Bytes"]["output"];
   date: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
   lot: BatchAuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
 };
@@ -2668,26 +2638,16 @@ export type BatchAuctionCurated_Filter = {
   date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<BatchAuctionLot_Filter>;
   lot_contains?: InputMaybe<Scalars["String"]["input"]>;
@@ -3729,7 +3689,7 @@ export type BatchAuctionSettled = {
   blockNumber: Scalars["BigInt"]["output"];
   blockTimestamp: Scalars["BigInt"]["output"];
   date: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
   lot: BatchAuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
 };
@@ -3774,26 +3734,16 @@ export type BatchAuctionSettled_Filter = {
   date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<BatchAuctionLot_Filter>;
   lot_contains?: InputMaybe<Scalars["String"]["input"]>;
@@ -3901,7 +3851,7 @@ export type BatchBidClaimed = {
   blockNumber: Scalars["BigInt"]["output"];
   blockTimestamp: Scalars["BigInt"]["output"];
   date: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
   lot: BatchAuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
 };
@@ -3977,26 +3927,16 @@ export type BatchBidClaimed_Filter = {
   date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<BatchAuctionLot_Filter>;
   lot_contains?: InputMaybe<Scalars["String"]["input"]>;
@@ -4093,6 +4033,182 @@ export enum BatchBidClaimed_OrderBy {
   transactionHash = "transactionHash",
 }
 
+export type BatchBidCreated = {
+  bid: BatchBid;
+  blockNumber: Scalars["BigInt"]["output"];
+  blockTimestamp: Scalars["BigInt"]["output"];
+  date: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
+  lot: BatchAuctionLot;
+  transactionHash: Scalars["Bytes"]["output"];
+};
+
+export type BatchBidCreated_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<BatchBidCreated_Filter>>>;
+  bid?: InputMaybe<Scalars["String"]["input"]>;
+  bid_?: InputMaybe<BatchBid_Filter>;
+  bid_contains?: InputMaybe<Scalars["String"]["input"]>;
+  bid_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  bid_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  bid_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  bid_gt?: InputMaybe<Scalars["String"]["input"]>;
+  bid_gte?: InputMaybe<Scalars["String"]["input"]>;
+  bid_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  bid_lt?: InputMaybe<Scalars["String"]["input"]>;
+  bid_lte?: InputMaybe<Scalars["String"]["input"]>;
+  bid_not?: InputMaybe<Scalars["String"]["input"]>;
+  bid_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  bid_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  bid_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  bid_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  bid_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  bid_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  bid_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  bid_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  bid_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  blockNumber?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockNumber_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockTimestamp?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockTimestamp_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  date?: InputMaybe<Scalars["String"]["input"]>;
+  date_contains?: InputMaybe<Scalars["String"]["input"]>;
+  date_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_gt?: InputMaybe<Scalars["String"]["input"]>;
+  date_gte?: InputMaybe<Scalars["String"]["input"]>;
+  date_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  date_lt?: InputMaybe<Scalars["String"]["input"]>;
+  date_lte?: InputMaybe<Scalars["String"]["input"]>;
+  date_not?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  date_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  lot?: InputMaybe<Scalars["String"]["input"]>;
+  lot_?: InputMaybe<BatchAuctionLot_Filter>;
+  lot_contains?: InputMaybe<Scalars["String"]["input"]>;
+  lot_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  lot_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_gt?: InputMaybe<Scalars["String"]["input"]>;
+  lot_gte?: InputMaybe<Scalars["String"]["input"]>;
+  lot_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  lot_lt?: InputMaybe<Scalars["String"]["input"]>;
+  lot_lte?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  lot_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  lot_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  lot_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  lot_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  or?: InputMaybe<Array<InputMaybe<BatchBidCreated_Filter>>>;
+  transactionHash?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  transactionHash_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+};
+
+export enum BatchBidCreated_OrderBy {
+  Bid = "bid",
+  bid__amountIn = "bid__amountIn",
+  bid__amountOut = "bid__amountOut",
+  bid__bidId = "bid__bidId",
+  Bid__bidder = "bid__bidder",
+  bid__blockNumber = "bid__blockNumber",
+  bid__blockTimestamp = "bid__blockTimestamp",
+  Bid__date = "bid__date",
+  Bid__id = "bid__id",
+  Bid__outcome = "bid__outcome",
+  bid__rawAmountIn = "bid__rawAmountIn",
+  bid__rawAmountOut = "bid__rawAmountOut",
+  bid__rawMarginalPrice = "bid__rawMarginalPrice",
+  bid__rawSubmittedPrice = "bid__rawSubmittedPrice",
+  Bid__referrer = "bid__referrer",
+  bid__remainingCapacity = "bid__remainingCapacity",
+  bid__settledAmountIn = "bid__settledAmountIn",
+  bid__settledAmountInRefunded = "bid__settledAmountInRefunded",
+  bid__settledAmountOut = "bid__settledAmountOut",
+  Bid__status = "bid__status",
+  bid__submittedPrice = "bid__submittedPrice",
+  bid__transactionHash = "bid__transactionHash",
+  blockNumber = "blockNumber",
+  blockTimestamp = "blockTimestamp",
+  Date = "date",
+  Id = "id",
+  Lot = "lot",
+  lot__auctionHouse = "lot__auctionHouse",
+  lot__auctionType = "lot__auctionType",
+  Lot__callbacks = "lot__callbacks",
+  Lot__capacity = "lot__capacity",
+  lot__capacityInitial = "lot__capacityInitial",
+  Lot__chain = "lot__chain",
+  Lot__conclusion = "lot__conclusion",
+  lot__createdBlockNumber = "lot__createdBlockNumber",
+  lot__createdBlockTimestamp = "lot__createdBlockTimestamp",
+  lot__createdDate = "lot__createdDate",
+  lot__createdTransactionHash = "lot__createdTransactionHash",
+  Lot__curator = "lot__curator",
+  lot__curatorApproved = "lot__curatorApproved",
+  lot__curatorFee = "lot__curatorFee",
+  lot__derivativeType = "lot__derivativeType",
+  Lot__id = "lot__id",
+  lot__infoHash = "lot__infoHash",
+  lot__lastUpdatedBlockNumber = "lot__lastUpdatedBlockNumber",
+  lot__lastUpdatedBlockTimestamp = "lot__lastUpdatedBlockTimestamp",
+  lot__lastUpdatedDate = "lot__lastUpdatedDate",
+  lot__lastUpdatedTransactionHash = "lot__lastUpdatedTransactionHash",
+  lot__lotId = "lot__lotId",
+  lot__maxBidId = "lot__maxBidId",
+  lot__protocolFee = "lot__protocolFee",
+  Lot__purchased = "lot__purchased",
+  lot__referrerFee = "lot__referrerFee",
+  Lot__seller = "lot__seller",
+  Lot__sold = "lot__sold",
+  Lot__start = "lot__start",
+  lot__wrapDerivative = "lot__wrapDerivative",
+  transactionHash = "transactionHash",
+}
+
 export type BatchBidDecrypted = {
   amountIn: Scalars["BigDecimal"]["output"];
   amountOut?: Maybe<Scalars["BigDecimal"]["output"]>;
@@ -4100,7 +4216,7 @@ export type BatchBidDecrypted = {
   blockNumber: Scalars["BigInt"]["output"];
   blockTimestamp: Scalars["BigInt"]["output"];
   date: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
   lot: BatchAuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
 };
@@ -4182,26 +4298,16 @@ export type BatchBidDecrypted_Filter = {
   date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<BatchAuctionLot_Filter>;
   lot_contains?: InputMaybe<Scalars["String"]["input"]>;
@@ -4305,7 +4411,7 @@ export type BatchBidRefunded = {
   blockNumber: Scalars["BigInt"]["output"];
   blockTimestamp: Scalars["BigInt"]["output"];
   date: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
+  id: Scalars["Bytes"]["output"];
   lot: BatchAuctionLot;
   transactionHash: Scalars["Bytes"]["output"];
 };
@@ -4381,26 +4487,16 @@ export type BatchBidRefunded_Filter = {
   date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
   date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with?: InputMaybe<Scalars["String"]["input"]>;
-  id_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
   lot?: InputMaybe<Scalars["String"]["input"]>;
   lot_?: InputMaybe<BatchAuctionLot_Filter>;
   lot_contains?: InputMaybe<Scalars["String"]["input"]>;
@@ -4841,6 +4937,7 @@ export type BatchEncryptedMarginalPriceLot = {
   minPrice: Scalars["BigDecimal"]["output"];
   module: Scalars["Bytes"]["output"];
   partialBidId?: Maybe<Scalars["BigInt"]["output"]>;
+  privateKeySubmitted?: Maybe<BatchEncryptedMarginalPricePrivateKeySubmitted>;
   settlementSuccessful: Scalars["Boolean"]["output"];
   status: Scalars["String"]["output"];
 };
@@ -4945,6 +5042,7 @@ export type BatchEncryptedMarginalPriceLot_Filter = {
   partialBidId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   partialBidId_not?: InputMaybe<Scalars["BigInt"]["input"]>;
   partialBidId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  privateKeySubmitted_?: InputMaybe<BatchEncryptedMarginalPricePrivateKeySubmitted_Filter>;
   settlementSuccessful?: InputMaybe<Scalars["Boolean"]["input"]>;
   settlementSuccessful_in?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
   settlementSuccessful_not?: InputMaybe<Scalars["Boolean"]["input"]>;
@@ -5011,8 +5109,143 @@ export enum BatchEncryptedMarginalPriceLot_OrderBy {
   minPrice = "minPrice",
   Module = "module",
   partialBidId = "partialBidId",
+  privateKeySubmitted = "privateKeySubmitted",
+  privateKeySubmitted__blockNumber = "privateKeySubmitted__blockNumber",
+  privateKeySubmitted__blockTimestamp = "privateKeySubmitted__blockTimestamp",
+  privateKeySubmitted__date = "privateKeySubmitted__date",
+  privateKeySubmitted__id = "privateKeySubmitted__id",
+  privateKeySubmitted__module = "privateKeySubmitted__module",
+  privateKeySubmitted__transactionHash = "privateKeySubmitted__transactionHash",
   settlementSuccessful = "settlementSuccessful",
   Status = "status",
+}
+
+export type BatchEncryptedMarginalPricePrivateKeySubmitted = {
+  blockNumber: Scalars["BigInt"]["output"];
+  blockTimestamp: Scalars["BigInt"]["output"];
+  date: Scalars["String"]["output"];
+  empLot: BatchEncryptedMarginalPriceLot;
+  id: Scalars["Bytes"]["output"];
+  module: Scalars["Bytes"]["output"];
+  transactionHash: Scalars["Bytes"]["output"];
+};
+
+export type BatchEncryptedMarginalPricePrivateKeySubmitted_Filter = {
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<
+    Array<InputMaybe<BatchEncryptedMarginalPricePrivateKeySubmitted_Filter>>
+  >;
+  blockNumber?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockNumber_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockNumber_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockTimestamp?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  blockTimestamp_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_not?: InputMaybe<Scalars["BigInt"]["input"]>;
+  blockTimestamp_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  date?: InputMaybe<Scalars["String"]["input"]>;
+  date_contains?: InputMaybe<Scalars["String"]["input"]>;
+  date_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_gt?: InputMaybe<Scalars["String"]["input"]>;
+  date_gte?: InputMaybe<Scalars["String"]["input"]>;
+  date_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  date_lt?: InputMaybe<Scalars["String"]["input"]>;
+  date_lte?: InputMaybe<Scalars["String"]["input"]>;
+  date_not?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  date_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  date_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  date_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  empLot?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_?: InputMaybe<BatchEncryptedMarginalPriceLot_Filter>;
+  empLot_contains?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_gt?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_gte?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  empLot_lt?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_lte?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_not?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  empLot_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  empLot_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  id_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  module?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  module_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  module_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  or?: InputMaybe<
+    Array<InputMaybe<BatchEncryptedMarginalPricePrivateKeySubmitted_Filter>>
+  >;
+  transactionHash?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+  transactionHash_lt?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["Bytes"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["Bytes"]["input"]>>;
+};
+
+export enum BatchEncryptedMarginalPricePrivateKeySubmitted_OrderBy {
+  blockNumber = "blockNumber",
+  blockTimestamp = "blockTimestamp",
+  Date = "date",
+  empLot = "empLot",
+  empLot__hasPartialFill = "empLot__hasPartialFill",
+  empLot__id = "empLot__id",
+  empLot__marginalPrice = "empLot__marginalPrice",
+  empLot__minBidSize = "empLot__minBidSize",
+  empLot__minFilled = "empLot__minFilled",
+  empLot__minPrice = "empLot__minPrice",
+  empLot__module = "empLot__module",
+  empLot__partialBidId = "empLot__partialBidId",
+  empLot__settlementSuccessful = "empLot__settlementSuccessful",
+  empLot__status = "empLot__status",
+  Id = "id",
+  Module = "module",
+  transactionHash = "transactionHash",
 }
 
 export type BatchFixedPriceLot = {
@@ -5583,6 +5816,8 @@ export type Query = {
   batchBid?: Maybe<BatchBid>;
   batchBidClaimed?: Maybe<BatchBidClaimed>;
   batchBidClaimeds: Array<BatchBidClaimed>;
+  batchBidCreated?: Maybe<BatchBidCreated>;
+  batchBidCreateds: Array<BatchBidCreated>;
   batchBidDecrypted?: Maybe<BatchBidDecrypted>;
   batchBidDecrypteds: Array<BatchBidDecrypted>;
   batchBidRefunded?: Maybe<BatchBidRefunded>;
@@ -5590,6 +5825,8 @@ export type Query = {
   batchBids: Array<BatchBid>;
   batchEncryptedMarginalPriceLot?: Maybe<BatchEncryptedMarginalPriceLot>;
   batchEncryptedMarginalPriceLots: Array<BatchEncryptedMarginalPriceLot>;
+  batchEncryptedMarginalPricePrivateKeySubmitted?: Maybe<BatchEncryptedMarginalPricePrivateKeySubmitted>;
+  batchEncryptedMarginalPricePrivateKeySubmitteds: Array<BatchEncryptedMarginalPricePrivateKeySubmitted>;
   batchFixedPriceLot?: Maybe<BatchFixedPriceLot>;
   batchFixedPriceLots: Array<BatchFixedPriceLot>;
   batchLinearVestingLot?: Maybe<BatchLinearVestingLot>;
@@ -5978,6 +6215,22 @@ export type QueryBatchBidClaimedsArgs = {
   where?: InputMaybe<BatchBidClaimed_Filter>;
 };
 
+export type QueryBatchBidCreatedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars["ID"]["input"];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryBatchBidCreatedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<BatchBidCreated_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars["Int"]["input"]>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<BatchBidCreated_Filter>;
+};
+
 export type QueryBatchBidDecryptedArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars["ID"]["input"];
@@ -6034,6 +6287,22 @@ export type QueryBatchEncryptedMarginalPriceLotsArgs = {
   skip?: InputMaybe<Scalars["Int"]["input"]>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<BatchEncryptedMarginalPriceLot_Filter>;
+};
+
+export type QueryBatchEncryptedMarginalPricePrivateKeySubmittedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars["ID"]["input"];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type QueryBatchEncryptedMarginalPricePrivateKeySubmittedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<BatchEncryptedMarginalPricePrivateKeySubmitted_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars["Int"]["input"]>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<BatchEncryptedMarginalPricePrivateKeySubmitted_Filter>;
 };
 
 export type QueryBatchFixedPriceLotArgs = {
@@ -6150,6 +6419,8 @@ export type Subscription = {
   batchBid?: Maybe<BatchBid>;
   batchBidClaimed?: Maybe<BatchBidClaimed>;
   batchBidClaimeds: Array<BatchBidClaimed>;
+  batchBidCreated?: Maybe<BatchBidCreated>;
+  batchBidCreateds: Array<BatchBidCreated>;
   batchBidDecrypted?: Maybe<BatchBidDecrypted>;
   batchBidDecrypteds: Array<BatchBidDecrypted>;
   batchBidRefunded?: Maybe<BatchBidRefunded>;
@@ -6157,6 +6428,8 @@ export type Subscription = {
   batchBids: Array<BatchBid>;
   batchEncryptedMarginalPriceLot?: Maybe<BatchEncryptedMarginalPriceLot>;
   batchEncryptedMarginalPriceLots: Array<BatchEncryptedMarginalPriceLot>;
+  batchEncryptedMarginalPricePrivateKeySubmitted?: Maybe<BatchEncryptedMarginalPricePrivateKeySubmitted>;
+  batchEncryptedMarginalPricePrivateKeySubmitteds: Array<BatchEncryptedMarginalPricePrivateKeySubmitted>;
   batchFixedPriceLot?: Maybe<BatchFixedPriceLot>;
   batchFixedPriceLots: Array<BatchFixedPriceLot>;
   batchLinearVestingLot?: Maybe<BatchLinearVestingLot>;
@@ -6545,6 +6818,22 @@ export type SubscriptionBatchBidClaimedsArgs = {
   where?: InputMaybe<BatchBidClaimed_Filter>;
 };
 
+export type SubscriptionBatchBidCreatedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars["ID"]["input"];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionBatchBidCreatedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<BatchBidCreated_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars["Int"]["input"]>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<BatchBidCreated_Filter>;
+};
+
 export type SubscriptionBatchBidDecryptedArgs = {
   block?: InputMaybe<Block_Height>;
   id: Scalars["ID"]["input"];
@@ -6601,6 +6890,22 @@ export type SubscriptionBatchEncryptedMarginalPriceLotsArgs = {
   skip?: InputMaybe<Scalars["Int"]["input"]>;
   subgraphError?: _SubgraphErrorPolicy_;
   where?: InputMaybe<BatchEncryptedMarginalPriceLot_Filter>;
+};
+
+export type SubscriptionBatchEncryptedMarginalPricePrivateKeySubmittedArgs = {
+  block?: InputMaybe<Block_Height>;
+  id: Scalars["ID"]["input"];
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+export type SubscriptionBatchEncryptedMarginalPricePrivateKeySubmittedsArgs = {
+  block?: InputMaybe<Block_Height>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<BatchEncryptedMarginalPricePrivateKeySubmitted_OrderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  skip?: InputMaybe<Scalars["Int"]["input"]>;
+  subgraphError?: _SubgraphErrorPolicy_;
+  where?: InputMaybe<BatchEncryptedMarginalPricePrivateKeySubmitted_Filter>;
 };
 
 export type SubscriptionBatchFixedPriceLotArgs = {

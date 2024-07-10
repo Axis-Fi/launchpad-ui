@@ -4,21 +4,23 @@ import {
 } from "@repo/subgraph-client/src/generated";
 import {
   useQueryClient,
+  type QueryKey,
   type QueryObserverResult,
   type RefetchOptions,
   type UseQueryResult,
 } from "@tanstack/react-query";
 import { getAuctionStatus } from "../utils/get-auction-status";
-import {
+import { AuctionType } from "@repo/types";
+import type {
   Auction,
   EMPAuctionData,
   AuctionFormattedInfo,
-  AuctionType,
   BatchSubgraphAuction,
   FixedPriceBatchAuctionData,
   EMPFormattedInfo,
   FPBFormattedInfo,
-  type MaybeFresh,
+  MaybeOptimistic,
+  AuctionId,
 } from "@repo/types";
 import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
@@ -34,11 +36,14 @@ import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
 import { parseAuctionId } from "modules/auction/utils/parse-auction-id";
 import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
-import { hasOptimisticStaleTimeExpired } from "modules/auction/utils/has-optimistic-stale-time-expired";
+import { isCacheStale } from "modules/auction/utils/is-cache-stale";
+
+type AuctionQueryKey = QueryKey &
+  readonly ["getBatchAuctionLot", { id: AuctionId }];
 
 export type AuctionResult = {
   result?: Auction;
-  queryKey: ["getBatchAuctionLot", { id: string }];
+  queryKey: AuctionQueryKey;
   refetch: (
     auctionOptions?: RefetchOptions,
     auctionDataOptions?: RefetchOptions,
@@ -53,6 +58,9 @@ export type AuctionResult = {
   "isLoading" | "isRefetching"
 >;
 
+export const getAuctionQueryKey = (auctionId: AuctionId) =>
+  ["getBatchAuctionLot", { id: auctionId }] as const;
+
 export function useAuction(
   id: string,
   auctionType: AuctionType,
@@ -62,17 +70,14 @@ export function useAuction(
 
   const queryKey = [
     "getBatchAuctionLot",
-    { id },
-  ] satisfies AuctionResult["queryKey"];
+    { id } as { id: AuctionId },
+  ] satisfies AuctionQueryKey;
 
-  // Don't fetch the auction if an optimistic update is still fresh.
-  // This gives the subgraph time to update after the user has performed a bid or created an auction.
+  // Don't fetch the auction if an optimistic update (e.g. a bid) is still fresh.
+  // This allows the subgraph time to update before refetching.
   const queryClient = useQueryClient();
-  const cachedAuctionData = queryClient.getQueryData<
-    GetBatchAuctionLotQuery & MaybeFresh
-  >(queryKey);
-  const optimisticStaleTimeExpired =
-    hasOptimisticStaleTimeExpired(cachedAuctionData);
+  const cachedAuctionData = queryClient.getQueryData<MaybeOptimistic>(queryKey);
+  const cacheIsStale = isCacheStale(cachedAuctionData);
 
   const {
     data,
@@ -85,7 +90,7 @@ export function useAuction(
       fetchParams,
     },
     { id: id! },
-    { enabled: !!chainId && !!id && optimisticStaleTimeExpired },
+    { enabled: !!chainId && !!id && cacheIsStale },
   );
 
   const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (

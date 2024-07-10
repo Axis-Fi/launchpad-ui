@@ -4,15 +4,10 @@ export type BatchSubgraphAuction = NonNullable<
   GetBatchAuctionLotQuery["batchAuctionLot"]
 >;
 
-export type AuctionsLot = GetBatchAuctionLotQuery["batchAuctionLot"];
-
-export type SubgraphAuction = BatchSubgraphAuction;
+export type NonNullSubgraphAuction = BatchSubgraphAuction;
 
 // Allows subgraph responses to be tagged with an optional timestamp for delaying refetching
-export type MaybeFresh = { _lastOptimisticUpdateTimestamp?: number };
-
-export type AuctionsQuery = GetBatchAuctionLotQuery["batchAuctionLot"] &
-  MaybeFresh;
+export type MaybeOptimistic = { _lastOptimisticUpdateTimestamp?: number };
 
 export type BatchAuctionBid = BatchSubgraphAuction["bids"][0];
 

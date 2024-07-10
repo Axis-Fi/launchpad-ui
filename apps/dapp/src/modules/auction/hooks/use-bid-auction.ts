@@ -14,7 +14,10 @@ import { useAuction } from "modules/auction/hooks/use-auction";
 import { useReferrer } from "state/referral";
 import { getAuctionHouse } from "utils/contracts";
 import { useStoreBid } from "state/bids/handlers";
-import { createOptimisticBid } from "modules/auction/utils/create-optimistic-bid";
+import {
+  auction as auctionCache,
+  optimisticUpdate,
+} from "modules/auction/utils/optimistic";
 
 export function useBidAuction(
   id: string,
@@ -90,54 +93,41 @@ export function useBidAuction(
   React.useEffect(() => {
     // Refetch allowance, refetches delayed auction info
     // and stores bid if EMP
-    if (!bidTxnSucceeded.current && bidReceipt.isSuccess) {
-      bidTxnSucceeded.current = true;
-
-      allowance.refetch();
-
-      // If this is a blind auction, store the user's unencrypted bid locally
-      // so they can view it later
-      if (auction.auctionType === AuctionType.SEALED_BID) {
-        const hexBidId = bidReceipt.data.logs[1].topics[2];
-
-        const bidId = fromHex(hexBidId!, "number").toString();
-
-        storeBidLocally({
-          auctionId: auction.id,
-          address: bidderAddress!,
-          bidId,
-          amountOut: formatUnits(amountOut, auction.baseToken.decimals),
-        });
-      }
-
-      /** Cache the bid locally, to prevent subgraph update delays not returning the user's bid */
-      const cacheOptimisticAuction = async () => {
-        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-        await queryClient.cancelQueries({ queryKey });
-
-        // Insert the bid in the existing cached subgraph response
-        queryClient.setQueryData(
-          queryKey,
-          (auctionQueryResult: GetBatchAuctionLotQuery) => {
-            return {
-              batchAuctionLot: {
-                ...auctionQueryResult.batchAuctionLot,
-                bids: auctionQueryResult.batchAuctionLot!.bids.concat(
-                  createOptimisticBid(
-                    auctionQueryResult,
-                    bidderAddress!,
-                    amountIn,
-                    amountOut,
-                  ),
-                ),
-              },
-            };
-          },
-        );
-      };
-
-      cacheOptimisticAuction();
+    if (bidTxnSucceeded.current || !bidReceipt.isSuccess) {
+      return;
     }
+    bidTxnSucceeded.current = true;
+
+    allowance.refetch();
+
+    // Get bid id from transaction logs
+    const hexBidId = bidReceipt.data.logs[1].topics[2];
+    const bidId = fromHex(hexBidId!, "number").toString();
+
+    // If this is a blind auction, store the user's unencrypted bid locally
+    // so they can view it later
+    if (auction.auctionType === AuctionType.SEALED_BID) {
+      storeBidLocally({
+        auctionId: auction.id,
+        address: bidderAddress!,
+        bidId,
+        amountOut: formatUnits(amountOut, auction.baseToken.decimals),
+      });
+    }
+
+    // Cache the bid locally, to prevent subgraph update delays not returning the user's bid
+    optimisticUpdate(
+      queryClient,
+      queryKey,
+      (cachedAuction: GetBatchAuctionLotQuery) =>
+        auctionCache.insertBid(
+          cachedAuction,
+          bidId,
+          bidderAddress!,
+          amountIn,
+          amountOut,
+        ),
+    );
   }, [
     allowance,
     amountIn,

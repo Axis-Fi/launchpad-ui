@@ -1,21 +1,19 @@
 import { Variables } from "graphql-request";
-import type { QueryClient } from "@tanstack/react-query";
+import type { QueryClient, QueryKey } from "@tanstack/react-query";
 import { environment } from "@repo/env";
 import {
   type AxisDeployment,
   mainnetDeployments,
   testnetDeployments,
 } from "@repo/deployments";
-import type { AuctionsQuery } from "@repo/types";
-import { hasOptimisticStaleTimeExpired } from "modules/auction/utils/has-optimistic-stale-time-expired";
+import { isCacheStale } from "modules/auction/utils/is-cache-stale";
 import { request } from "./request";
+import type { MaybeOptimistic } from "@repo/types";
 
 const isTestnet = environment.isTestnet;
 const endpoints = isTestnet ? testnetDeployments : mainnetDeployments;
 
-type QueryKeyFn = (
-  deployment: AxisDeployment,
-) => (string | number | Variables)[];
+type QueryKeyFn = (deployment: AxisDeployment) => QueryKey;
 
 type QueryAllEndpointsParams = {
   document: string;
@@ -35,8 +33,10 @@ export function queryAllEndpoints<TQuery>({
     const queryKey = queryKeyFn
       ? queryKeyFn(deployment)
       : [url, document, variables];
-    const cachedAuctionData = queryClient.getQueryData<AuctionsQuery>(queryKey);
-    const enabled = hasOptimisticStaleTimeExpired(cachedAuctionData);
+
+    const cachedAuctionData =
+      queryClient.getQueryData<MaybeOptimistic>(queryKey);
+    const enabled = isCacheStale(cachedAuctionData);
 
     return {
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
@@ -50,4 +50,4 @@ export function queryAllEndpoints<TQuery>({
   });
 }
 
-export type { QueryKeyFn };
+export type { QueryKeyFn, QueryKey };

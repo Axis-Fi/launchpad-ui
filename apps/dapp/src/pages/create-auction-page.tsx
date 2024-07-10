@@ -80,8 +80,14 @@ import { CreateAuctionPreview } from "./create-auction-preview";
 import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
 import { getAuctionsQueryKey } from "modules/auction/hooks/use-auctions";
 import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
-import { createOptimisticAuction } from "modules/auction/utils/create-optimistic-auction";
 import { getAuctionId } from "modules/auction/utils/get-auction-id";
+import {
+  auctions as auctionsCache,
+  auction as auctionCache,
+  optimisticUpdate,
+} from "modules/auction/utils/optimistic";
+import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
+import { getChainName } from "modules/auction/utils/get-chain-name";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -315,7 +321,7 @@ export default function CreateAuctionPage() {
     quoteToken,
     _chainId,
     capacity,
-    auctionType,
+    _auctionType,
     callbacksType,
     dtlIsVested,
     dtlUniV3PoolFee,
@@ -336,6 +342,13 @@ export default function CreateAuctionPage() {
   ]);
 
   const chainId = _chainId ?? connectedChainId;
+  const auctionType = _auctionType as AuctionType;
+
+  const { address: auctionHouseAddress, abi: auctionHouseAbi } =
+    getAuctionHouse({
+      auctionType,
+      chainId,
+    });
 
   const queryClient = useQueryClient();
 
@@ -344,6 +357,7 @@ export default function CreateAuctionPage() {
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
+
   const lotId = getCreatedAuctionId(createTxReceipt.data);
 
   const auctionInfoMutation = useMutation({
@@ -403,11 +417,6 @@ export default function CreateAuctionPage() {
     const code = isEMP ? "EMPA" : isFPB ? "FPBA" : "unknown";
 
     const auctionTypeKeycode = toKeycode(code);
-
-    const { address: contractAddress, abi } = getAuctionHouse({
-      auctionType,
-      chainId,
-    });
 
     const publicKey = isEMP
       ? await generateKeyPairMutation.mutateAsync()
@@ -625,8 +634,8 @@ export default function CreateAuctionPage() {
 
     createAuctionTx.writeContract(
       {
-        abi,
-        address: contractAddress,
+        abi: auctionHouseAbi,
+        address: auctionHouseAddress,
         functionName: "auction",
         args: [
           {
@@ -958,65 +967,42 @@ export default function CreateAuctionPage() {
       ? Number(formatUnits(payoutTokenBalance, payoutTokenDecimals))
       : 0;
 
-  const hasCachedOptimisticAuction = useRef<boolean>(false);
+  const createTxnSucceeded = useRef<boolean>(false);
 
+  /**
+   * Auctions are read from the subgraph.
+   * There can be a delay between an auction creation txn succeeding and the subgraph updating.
+   * To avoid users not being able to see their auction, we cache it locally, optimistically.
+   */
   useEffect(() => {
-    if (hasCachedOptimisticAuction.current === true) return;
-    if (lotId === undefined || lotId === null) return;
+    if (createTxnSucceeded.current === true) return;
+    if (lotId === undefined || lotId === null) return; // lotId is populated after the txn succeeds
 
-    hasCachedOptimisticAuction.current = true;
+    createTxnSucceeded.current = true;
 
-    /**
-     * Auctions are read from the subgraph. There can be a delay between the contract call
-     * succeeding, and the subgraph updating. To avoid users not being able to see their auction,
-     * we cache it locally, optimistically.
-     */
-    const cacheOptimisticAuction = async () => {
-      // We need to add the optimistic auction to two places:
-      // 1. The list of auctions, for viewing the auction list page
-      // 2. The auction detail page, for view the auction detail page
-      const { address: auctionHouseAddress } = getAuctionHouse({
-        auctionType: form.getValues().auctionType as AuctionType,
-        chainId: chain!.id,
-      });
+    const auctionId = getAuctionId(chain!, auctionHouseAddress, lotId);
 
-      const auctionId = getAuctionId(chain!, auctionHouseAddress, lotId);
-      const auctionQueryKey = ["getBatchAuctionLot", { id: auctionId }];
+    const optimisticAuction = auctionsCache.createOptimisticAuction(
+      lotId,
+      chain!,
+      address!,
+      auctionHouseAddress,
+      form.getValues(),
+    );
 
-      const auctionsQueryKey = getAuctionsQueryKey(chainId);
+    // Optimistically store the auction data in the list of auctions cache
+    optimisticUpdate(
+      queryClient,
+      getAuctionsQueryKey(chainId),
+      (cachedAuctions: GetAuctionLotsQuery) =>
+        auctionsCache.insertAuction(cachedAuctions, optimisticAuction),
+    );
 
-      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: auctionsQueryKey });
-      await queryClient.cancelQueries({ queryKey: auctionQueryKey });
-
-      const optimisticAuction = createOptimisticAuction(
-        lotId,
-        chain!,
-        address!,
-        auctionHouseAddress,
-        form.getValues(),
-      );
-
-      // Cache the auction data in the list of auctions
-      queryClient.setQueryData(
-        auctionsQueryKey,
-        (auctionsQueryResult: GetAuctionLotsQuery) => ({
-          batchAuctionLots: auctionsQueryResult.batchAuctionLots.concat(
-            optimisticAuction!,
-          ),
-          _lastOptimisticUpdateTimestamp: Date.now(),
-        }),
-      );
-
-      // Cache the auction data in the auction details
-      queryClient.setQueryData(auctionQueryKey, () => ({
-        batchAuctionLot: optimisticAuction,
-        _lastOptimisticUpdateTimestamp: Date.now(),
-      }));
-    };
-
-    cacheOptimisticAuction();
-  }, [address, chain, chainId, form, lotId, queryClient]);
+    // Optimistically store the auction data in the auction details cache
+    optimisticUpdate(queryClient, getAuctionQueryKey(auctionId), () =>
+      auctionCache.create(optimisticAuction),
+    );
+  }, [address, auctionHouseAddress, chain, chainId, form, lotId, queryClient]);
 
   return (
     <PageContainer>
@@ -1906,6 +1892,7 @@ export default function CreateAuctionPage() {
                       navigate(
                         generateAuctionURL(
                           auctionType as AuctionType,
+                          auctionHouseAddress,
                           lotId,
                           chain,
                         ),
@@ -1939,16 +1926,12 @@ function getCreatedAuctionId(
 
 function generateAuctionURL(
   auctionType: AuctionType,
+  auctionHouseAddress: Address,
   lotId: number,
   chain: Chain,
 ) {
   //Transform viem/rainbowkit names into subgraph format
-  const chainName = chain.name.replace(" ", "-").toLowerCase();
+  const chainName = getChainName(chain);
 
-  const { address: auctionHouse } = getAuctionHouse({
-    auctionType,
-    chainId: chain.id,
-  });
-
-  return `/auction/${auctionType}/${chainName}-${auctionHouse.toLowerCase()}-${lotId}`;
+  return `/auction/${auctionType}/${chainName}-${auctionHouseAddress.toLowerCase()}-${lotId}`;
 }

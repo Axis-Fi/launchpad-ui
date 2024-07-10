@@ -1,9 +1,10 @@
 import { zeroAddress, type Chain } from "viem";
-import type { Address, AuctionsLot } from "@repo/types";
 import { AuctionType } from "@repo/types";
+import type { Address, NonNullSubgraphAuction } from "@repo/types";
+import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
 import { CreateAuctionForm } from "pages/create-auction-page";
-import { getChainName } from "./get-chain-name";
-import { getAuctionId } from "./get-auction-id";
+import { getChainName } from "modules/auction/utils/get-chain-name";
+import { getAuctionId } from "modules/auction/utils/get-auction-id";
 
 /**
  * Creates a fake auction object based on the auction details the user entered.
@@ -15,7 +16,7 @@ const createOptimisticAuction = (
   seller: Address,
   auctionHouseAddress: Address,
   createAuctionFormValues: CreateAuctionForm,
-): AuctionsLot => {
+): NonNullSubgraphAuction => {
   const {
     capacity,
     start,
@@ -126,4 +127,12 @@ const createOptimisticAuction = (
   };
 };
 
-export { createOptimisticAuction };
+const insertAuction = (
+  cachedAuctions: GetAuctionLotsQuery,
+  auction: NonNullSubgraphAuction,
+): GetAuctionLotsQuery => ({
+  ...cachedAuctions,
+  batchAuctionLots: cachedAuctions.batchAuctionLots.concat(auction!),
+});
+
+export { insertAuction, createOptimisticAuction };

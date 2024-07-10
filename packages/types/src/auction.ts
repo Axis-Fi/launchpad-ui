@@ -124,3 +124,5 @@ export type FPBFormattedInfo = {
 export type PropsWithAuction = {
   auction: Auction;
 };
+
+export type AuctionId = `${string}-${string}-${number}`;

@@ -29,7 +29,8 @@ type GetAuctionLots = {
   >;
 };
 
-export const getAuctionsQueryKey = (chainId: number) => ["auctions", chainId];
+export const getAuctionsQueryKey = (chainId: number) =>
+  ["auctions", chainId] as const;
 
 export function useAuctions(): AuctionsResult {
   const { data, refetch, isLoading, isSuccess, isRefetching } =
