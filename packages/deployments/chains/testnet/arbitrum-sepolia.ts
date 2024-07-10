@@ -1,6 +1,9 @@
 import { arbitrumSepolia } from "viem/chains";
+import type { Address } from "@repo/types";
 import { AxisDeploymentConfig } from "../../src/types";
 import { usdc, weth } from "../../tokens/common";
+// TODO axis-core will become a versioned dev dependency to this package
+import addresses from "../../axis-core/.arbitrum-sepolia-v0.5.json";
 
 const config: AxisDeploymentConfig = {
   name: "arbitrum-sepolia",
@@ -8,19 +11,23 @@ const config: AxisDeploymentConfig = {
   chainIconUrl:
     "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/ARBITRUM.png",
   addresses: {
-    batchAuctionHouse: "0xBA00002999aBfa63cA25B3A7aD4c8F3a578aBe28",
-    batchCatalogue: "0x664268B82971D0c9A4F000a7329a057e85361E83",
-    encryptedMarginalPrice: "0x2Ca8954B468E2FbfE55240B69db937861c12F0d0",
-    fixedPriceBatch: "0x8b47F82a58d8AFBE5167feBf0D3F3Bb509aaf2bd",
-    batchLinearVesting: "0xFB1113E170CA6d95f3a91121BDD2370a822598E9",
+    batchAuctionHouse: addresses["axis.BatchAuctionHouse"] as Address,
+    batchCatalogue: addresses["axis.BatchCatalogue"] as Address,
+    encryptedMarginalPrice: addresses["axis.EncryptedMarginalPrice"] as Address,
+    fixedPriceBatch: addresses["axis.FixedPriceBatch"] as Address,
+    batchLinearVesting: addresses["axis.BatchLinearVesting"] as Address,
   },
   callbacks: {
-    cappedMerkleAllowlist: "0x9888DbABd5981763697A4433Cb57E3F9DABEcB6a",
-    merkleAllowlist: "0x9837cA34C444cEbd07C699036D1D174C6392D9fa",
-    tokenAllowlist: "0x988c61b36F7898e464a0Bf477d2dc06aC4E95F95",
-    allocatedMerkleAllowlist: "0x98B59b4BF62b0316D9B0f89D28A28d5D75BB8B46",
-    uniV2Dtl: "0xE676907Fa9a09dC1E3b67De11816665A1313524f",
-    uniV3Dtl: "0xE6ECF0f655E642834c79F30323e7ae941883ac00",
+    cappedMerkleAllowlist: addresses[
+      "axis.BatchCappedMerkleAllowlist"
+    ] as Address,
+    merkleAllowlist: addresses["axis.BatchMerkleAllowlist"] as Address,
+    tokenAllowlist: addresses["axis.BatchTokenAllowlist"] as Address,
+    allocatedMerkleAllowlist: addresses[
+      "axis.BatchAllocatedMerkleAllowlist"
+    ] as Address,
+    uniV2Dtl: addresses["axis.BatchUniswapV2DirectToLiquidity"] as Address,
+    uniV3Dtl: addresses["axis.BatchUniswapV3DirectToLiquidity"] as Address,
   },
   subgraphURL:
     "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v<VERSION>/api",
