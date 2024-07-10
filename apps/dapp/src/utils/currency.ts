@@ -1,5 +1,5 @@
 export const currencyFormatter = new Intl.NumberFormat("en-US", {
-  minimumFractionDigits: 2,
+  minimumFractionDigits: 0,
   maximumFractionDigits: 2,
 });
 
@@ -17,7 +17,7 @@ export function trimCurrency(input: string | number): string {
 
   if (value < 1 && value !== 0) {
     const absLog = -Math.floor(Math.log10(Math.abs(value)));
-    const decimalPlaces = Math.min(8, absLog + 2); // Allow at least 2 significant figures
+    const decimalPlaces = Math.min(8, absLog); // Allow at least 2 significant figures
     const adjustedValue = Number(value.toFixed(decimalPlaces));
     return adjustedValue.toString();
   } else {
