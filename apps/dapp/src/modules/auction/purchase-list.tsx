@@ -10,14 +10,17 @@ import {
   bidderCol,
   timestampCol,
 } from "./bid-list";
-import { trimCurrency } from "utils/currency";
+import { Format } from "modules/token/format";
 
 const amountOutCol = bidListColumnHelper.accessor("settledAmountOut", {
   header: "Amount Out",
-  cell: (info) =>
-    `${trimCurrency(info.getValue() ?? "")} ${
-      info.row.original.auction.baseToken.symbol
-    }`,
+  cell: (info) => {
+    return (
+      <>
+        <Format value={info.getValue() ?? 0} /> {info.row.original.auction.baseToken.symbol}
+      </>
+    );
+  },
 });
 const columns = [timestampCol, amountInCol, amountOutCol, bidderCol];
 
