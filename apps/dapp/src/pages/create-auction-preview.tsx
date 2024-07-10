@@ -167,7 +167,8 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     encryptedMarginalPrice: {
       minPrice: params.minPrice!,
       minFilled: (
-        Number(params.capacity) * Number(params.minFillPercent?.[0] ?? 1 / 100)
+        (Number(params.capacity) * Number(params.minFillPercent?.[0] ?? 1)) /
+        100
       ).toString(),
     },
     //@ts-expect-error intentionally imcomplete
