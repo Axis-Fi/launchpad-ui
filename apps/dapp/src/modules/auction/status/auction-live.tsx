@@ -113,7 +113,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             isFixedPriceBatch ||
             parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) >=
               parseUnits(
-                auction.formatted?.minBidSize ?? "0",
+                auction.encryptedMarginalPrice?.minBidSize ?? "0",
                 auction.quoteToken.decimals,
               ),
           {
@@ -126,7 +126,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             isFixedPriceBatch ||
             parseUnits(data.bidPrice ?? "0", auction.quoteToken.decimals) >=
               parseUnits(
-                auction.formatted?.minPrice ?? "0",
+                auction.encryptedMarginalPrice?.minPrice ?? "0",
                 auction.quoteToken.decimals,
               ),
           {
@@ -246,7 +246,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       (parsedAmountIn * parseUnits("1", auction.baseToken.decimals)) /
         parsedMinAmountOut <
         parseUnits(
-          auction.formatted?.minPrice ?? "0",
+          auction.encryptedMarginalPrice?.minPrice ?? "0",
           auction.quoteToken.decimals,
         )); // less than min price
 
