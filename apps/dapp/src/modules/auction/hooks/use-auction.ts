@@ -116,7 +116,7 @@ export function useAuction(
     ]);
   };
 
-  if (!rawAuction) {
+  if (!rawAuction || !auctionData) {
     return {
       refetch,
       isRefetching,
