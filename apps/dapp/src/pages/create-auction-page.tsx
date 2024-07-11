@@ -116,7 +116,7 @@ const schema = z
     capacity: z.string(),
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
-    minBidSize: z.number(),
+    minBidSize: z.string(),
     minPrice: StringNumberNotNegative.optional(),
     price: StringNumberNotNegative.optional(),
     start: z.date(),
@@ -293,17 +293,7 @@ const schema = z
   .refine((data) => Number(data.payoutTokenBalance) >= Number(data.capacity), {
     message: "Insufficient balance",
     path: ["capacity"],
-  })
-  .refine(
-    (data) =>
-      Number(data.minBidSize) >=
-      (Number(data.capacity) * Number(data.minPrice)) / 10_000, //10k here represents a potential max amount of bids
-    {
-      message:
-        "Your min bid size could result in the settlement being expensive due to the number of potential winning bids",
-      path: ["minBidSize"],
-    },
-  );
+  });
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
@@ -339,6 +329,8 @@ export default function CreateAuctionPage() {
     dtlUniV3PoolFee,
     start,
     deadline,
+    minBidSize,
+    minPrice,
   ] = form.watch([
     "isVested",
     "payoutToken",
@@ -351,6 +343,8 @@ export default function CreateAuctionPage() {
     "dtlUniV3PoolFee",
     "start",
     "deadline",
+    "minBidSize",
+    "minPrice",
   ]);
 
   const chainId = _chainId ?? connectedChainId;
@@ -1025,6 +1019,12 @@ export default function CreateAuctionPage() {
   }, [address, auctionHouseAddress, chain, chainId, form, lotId, queryClient]);
   const disableMinBidSize = !canUpdateMinBidSize(form.getValues());
 
+  const isReasonableMinBidSize =
+    !capacity ||
+    !minPrice ||
+    !minBidSize ||
+    Number(minBidSize) >= (Number(capacity) * Number(minPrice)) / 10_000; //10k here represents a potential max amount of bids
+
   return (
     <PageContainer>
       <PageHeader
@@ -1339,12 +1339,24 @@ export default function CreateAuctionPage() {
                               : ""
                           }`}
                         >
-                          <Input
-                            {...field}
-                            disabled={disableMinBidSize}
-                            placeholder="1"
-                            type="number"
-                          />
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              disabled={disableMinBidSize}
+                              placeholder="1"
+                              type="number"
+                            />
+                            {!isReasonableMinBidSize && (
+                              <Text
+                                className="text-feedback-warning absolute"
+                                size="xs"
+                              >
+                                Your min bid size could result in the settlement
+                                being expensive due to the number of potential
+                                winning bids
+                              </Text>
+                            )}
+                          </div>
                         </FormItemWrapper>
                       )}
                     />
