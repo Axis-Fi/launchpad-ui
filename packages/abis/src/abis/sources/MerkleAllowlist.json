@@ -13,18 +13,46 @@
           "type": "tuple",
           "internalType": "struct Callbacks.Permissions",
           "components": [
-            { "name": "onCreate", "type": "bool", "internalType": "bool" },
-            { "name": "onCancel", "type": "bool", "internalType": "bool" },
-            { "name": "onCurate", "type": "bool", "internalType": "bool" },
-            { "name": "onPurchase", "type": "bool", "internalType": "bool" },
-            { "name": "onBid", "type": "bool", "internalType": "bool" },
-            { "name": "onSettle", "type": "bool", "internalType": "bool" },
+            {
+              "name": "onCreate",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "onCancel",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "onCurate",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "onPurchase",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "onBid",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "onSettle",
+              "type": "bool",
+              "internalType": "bool"
+            },
             {
               "name": "receiveQuoteTokens",
               "type": "bool",
               "internalType": "bool"
             },
-            { "name": "sendBaseTokens", "type": "bool", "internalType": "bool" }
+            {
+              "name": "sendBaseTokens",
+              "type": "bool",
+              "internalType": "bool"
+            }
           ]
         }
       ],
@@ -34,24 +62,50 @@
       "type": "function",
       "name": "AUCTION_HOUSE",
       "inputs": [],
-      "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "lotIdRegistered",
-      "inputs": [{ "name": "", "type": "uint96", "internalType": "uint96" }],
-      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint96",
+          "internalType": "uint96"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
       "stateMutability": "view"
     },
     {
       "type": "function",
       "name": "lotMerkleRoot",
       "inputs": [
-        { "name": "lotId", "type": "uint96", "internalType": "uint96" }
+        {
+          "name": "lotId",
+          "type": "uint96",
+          "internalType": "uint96"
+        }
       ],
       "outputs": [
-        { "name": "merkleRoot", "type": "bytes32", "internalType": "bytes32" }
+        {
+          "name": "merkleRoot",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
       ],
       "stateMutability": "view"
     },
@@ -59,86 +113,250 @@
       "type": "function",
       "name": "onBid",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "bidId", "type": "uint64", "internalType": "uint64" },
-        { "name": "buyer_", "type": "address", "internalType": "address" },
-        { "name": "amount_", "type": "uint256", "internalType": "uint256" },
-        { "name": "callbackData_", "type": "bytes", "internalType": "bytes" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "bidId",
+          "type": "uint64",
+          "internalType": "uint64"
+        },
+        {
+          "name": "buyer_",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "amount_",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "callbackData_",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
       ],
-      "outputs": [{ "name": "", "type": "bytes4", "internalType": "bytes4" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
       "stateMutability": "nonpayable"
     },
     {
       "type": "function",
       "name": "onCancel",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "refund_", "type": "uint256", "internalType": "uint256" },
-        { "name": "prefunded_", "type": "bool", "internalType": "bool" },
-        { "name": "callbackData_", "type": "bytes", "internalType": "bytes" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "refund_",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "prefunded_",
+          "type": "bool",
+          "internalType": "bool"
+        },
+        {
+          "name": "callbackData_",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
       ],
-      "outputs": [{ "name": "", "type": "bytes4", "internalType": "bytes4" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
       "stateMutability": "nonpayable"
     },
     {
       "type": "function",
       "name": "onCreate",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "seller_", "type": "address", "internalType": "address" },
-        { "name": "baseToken_", "type": "address", "internalType": "address" },
-        { "name": "quoteToken_", "type": "address", "internalType": "address" },
-        { "name": "capacity_", "type": "uint256", "internalType": "uint256" },
-        { "name": "prefund_", "type": "bool", "internalType": "bool" },
-        { "name": "callbackData_", "type": "bytes", "internalType": "bytes" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "seller_",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "baseToken_",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "quoteToken_",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "capacity_",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "prefund_",
+          "type": "bool",
+          "internalType": "bool"
+        },
+        {
+          "name": "callbackData_",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
       ],
-      "outputs": [{ "name": "", "type": "bytes4", "internalType": "bytes4" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
       "stateMutability": "nonpayable"
     },
     {
       "type": "function",
       "name": "onCurate",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "curatorFee_", "type": "uint256", "internalType": "uint256" },
-        { "name": "prefund_", "type": "bool", "internalType": "bool" },
-        { "name": "callbackData_", "type": "bytes", "internalType": "bytes" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "curatorFee_",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "prefund_",
+          "type": "bool",
+          "internalType": "bool"
+        },
+        {
+          "name": "callbackData_",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
       ],
-      "outputs": [{ "name": "", "type": "bytes4", "internalType": "bytes4" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
       "stateMutability": "nonpayable"
     },
     {
       "type": "function",
       "name": "onPurchase",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "buyer_", "type": "address", "internalType": "address" },
-        { "name": "amount_", "type": "uint256", "internalType": "uint256" },
-        { "name": "payout_", "type": "uint256", "internalType": "uint256" },
-        { "name": "prefunded_", "type": "bool", "internalType": "bool" },
-        { "name": "callbackData_", "type": "bytes", "internalType": "bytes" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "buyer_",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "amount_",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "payout_",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "prefunded_",
+          "type": "bool",
+          "internalType": "bool"
+        },
+        {
+          "name": "callbackData_",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
       ],
-      "outputs": [{ "name": "", "type": "bytes4", "internalType": "bytes4" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
       "stateMutability": "nonpayable"
     },
     {
       "type": "function",
       "name": "onSettle",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "proceeds_", "type": "uint256", "internalType": "uint256" },
-        { "name": "refund_", "type": "uint256", "internalType": "uint256" },
-        { "name": "callbackData_", "type": "bytes", "internalType": "bytes" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "proceeds_",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "refund_",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "callbackData_",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
       ],
-      "outputs": [{ "name": "", "type": "bytes4", "internalType": "bytes4" }],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes4",
+          "internalType": "bytes4"
+        }
+      ],
       "stateMutability": "nonpayable"
     },
     {
       "type": "function",
       "name": "setMerkleRoot",
       "inputs": [
-        { "name": "lotId_", "type": "uint96", "internalType": "uint96" },
-        { "name": "merkleRoot_", "type": "bytes32", "internalType": "bytes32" }
+        {
+          "name": "lotId_",
+          "type": "uint96",
+          "internalType": "uint96"
+        },
+        {
+          "name": "merkleRoot_",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
       ],
       "outputs": [],
       "stateMutability": "nonpayable"
@@ -162,14 +380,30 @@
       ],
       "anonymous": false
     },
-    { "type": "error", "name": "Callback_InvalidParams", "inputs": [] },
-    { "type": "error", "name": "Callback_NotAuthorized", "inputs": [] },
-    { "type": "error", "name": "Callback_NotImplemented", "inputs": [] },
+    {
+      "type": "error",
+      "name": "Callback_InvalidParams",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "Callback_NotAuthorized",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "Callback_NotImplemented",
+      "inputs": []
+    },
     {
       "type": "error",
       "name": "CallbacksAddressNotValid",
       "inputs": [
-        { "name": "callbacks", "type": "address", "internalType": "address" }
+        {
+          "name": "callbacks",
+          "type": "address",
+          "internalType": "address"
+        }
       ]
     }
   ],
@@ -184,14 +418,38 @@
     "linkReferences": {},
     "immutableReferences": {
       "77364": [
-        { "start": 289, "length": 32 },
-        { "start": 501, "length": 32 },
-        { "start": 746, "length": 32 },
-        { "start": 1028, "length": 32 },
-        { "start": 1233, "length": 32 },
-        { "start": 1399, "length": 32 },
-        { "start": 1565, "length": 32 },
-        { "start": 1733, "length": 32 }
+        {
+          "start": 289,
+          "length": 32
+        },
+        {
+          "start": 501,
+          "length": 32
+        },
+        {
+          "start": 746,
+          "length": 32
+        },
+        {
+          "start": 1028,
+          "length": 32
+        },
+        {
+          "start": 1233,
+          "length": 32
+        },
+        {
+          "start": 1399,
+          "length": 32
+        },
+        {
+          "start": 1565,
+          "length": 32
+        },
+        {
+          "start": 1733,
+          "length": 32
+        }
       ]
     }
   },
@@ -209,7 +467,9 @@
   },
   "rawMetadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"auctionHouse_\",\"type\":\"address\"},{\"components\":[{\"internalType\":\"bool\",\"name\":\"onCreate\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"onCancel\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"onCurate\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"onPurchase\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"onBid\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"onSettle\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"receiveQuoteTokens\",\"type\":\"bool\"},{\"internalType\":\"bool\",\"name\":\"sendBaseTokens\",\"type\":\"bool\"}],\"internalType\":\"struct Callbacks.Permissions\",\"name\":\"permissions_\",\"type\":\"tuple\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"Callback_InvalidParams\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"Callback_NotAuthorized\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"Callback_NotImplemented\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"callbacks\",\"type\":\"address\"}],\"name\":\"CallbacksAddressNotValid\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint96\",\"name\":\"lotId\",\"type\":\"uint96\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"merkleRoot\",\"type\":\"bytes32\"}],\"name\":\"MerkleRootSet\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"AUCTION_HOUSE\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"\",\"type\":\"uint96\"}],\"name\":\"lotIdRegistered\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId\",\"type\":\"uint96\"}],\"name\":\"lotMerkleRoot\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"merkleRoot\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"uint64\",\"name\":\"bidId\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"buyer_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount_\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"callbackData_\",\"type\":\"bytes\"}],\"name\":\"onBid\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"uint256\",\"name\":\"refund_\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"prefunded_\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"callbackData_\",\"type\":\"bytes\"}],\"name\":\"onCancel\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"address\",\"name\":\"seller_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"baseToken_\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"quoteToken_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"capacity_\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"prefund_\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"callbackData_\",\"type\":\"bytes\"}],\"name\":\"onCreate\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"uint256\",\"name\":\"curatorFee_\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"prefund_\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"callbackData_\",\"type\":\"bytes\"}],\"name\":\"onCurate\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"address\",\"name\":\"buyer_\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"payout_\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"prefunded_\",\"type\":\"bool\"},{\"internalType\":\"bytes\",\"name\":\"callbackData_\",\"type\":\"bytes\"}],\"name\":\"onPurchase\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"uint256\",\"name\":\"proceeds_\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"refund_\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"callbackData_\",\"type\":\"bytes\"}],\"name\":\"onSettle\",\"outputs\":[{\"internalType\":\"bytes4\",\"name\":\"\",\"type\":\"bytes4\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint96\",\"name\":\"lotId_\",\"type\":\"uint96\"},{\"internalType\":\"bytes32\",\"name\":\"merkleRoot_\",\"type\":\"bytes32\"}],\"name\":\"setMerkleRoot\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"errors\":{\"CallbacksAddressNotValid(address)\":[{\"params\":{\"callbacks\":\"The address of the callbacks contract\"}}]},\"kind\":\"dev\",\"methods\":{\"onBid(uint96,uint64,address,uint256,bytes)\":{\"params\":{\"amount\":\"The amount of quote tokens bid\",\"bidId\":\"The ID of the bid\",\"buyer\":\"The address of the buyer\",\"callbackData\":\"Custom data provided by the buyer\",\"lotId\":\"The ID of the lot\"}},\"onCancel(uint96,uint256,bool,bytes)\":{\"details\":\"If the Callback is configured to receive tokens and the auction was prefunded, then the refund will be sent prior to the call.\",\"params\":{\"callbackData\":\"Custom data provided by the seller\",\"lotId\":\"The ID of the lot\",\"preFunded\":\"If true, the calling contract will have sent base tokens prior to the call\",\"refund\":\"The refund amount\"}},\"onCreate(uint96,address,address,address,uint256,bool,bytes)\":{\"details\":\"The implementing function should:         - Register the lot ID on the Callback contract         - Validate that the seller is allowed to use the Callback contract\",\"params\":{\"baseToken\":\"The address of the base token\",\"callbackData\":\"Custom data provided by the seller\",\"capacity\":\"The capacity of the auction\",\"lotId\":\"The ID of the lot\",\"preFund\":\"If true, the calling contract expects base tokens to be sent to it\",\"quoteToken\":\"The address of the quote token\",\"seller\":\"The address of the seller\"}},\"onCurate(uint96,uint256,bool,bytes)\":{\"params\":{\"callbackData\":\"Custom data provided by the seller\",\"curatorFee\":\"The curator fee payout\",\"lotId\":\"The ID of the lot\",\"preFund\":\"If true, the calling contract expects base tokens to be sent to it\"}},\"onPurchase(uint96,address,uint256,uint256,bool,bytes)\":{\"details\":\"If the Callback is configured to receive quote tokens, then the user purchase amount of quote tokens will be sent prior to this call.         If the Callback is configured to send base tokens, then the AuctionHouse will expect the payout of base tokens to be sent back.\",\"params\":{\"amount\":\"The amount of quote tokens purchased\",\"buyer\":\"The address of the buyer\",\"callbackData\":\"Custom data provided by the buyer\",\"lotId\":\"The ID of the lot\",\"payout\":\"The amount of base tokens to receive\",\"preFunded\":\"If true, the calling contract has already been provided the base tokens. Otherwise, they must be provided.\"}},\"setMerkleRoot(uint96,bytes32)\":{\"details\":\"This function performs the following:         - Performs validation         - Sets the merkle root         - Emits a MerkleRootSet event         This function reverts if:         - The caller is not the lot's seller         - The auction has not been registered\",\"params\":{\"merkleRoot_\":\"The new merkle root\"}}},\"stateVariables\":{\"lotMerkleRoot\":{\"details\":\"The merkle tree should adhere to the format specified in the OpenZeppelin MerkleProof library at https://github.com/OpenZeppelin/merkle-tree         In particular, leaf values (such as `(address)` or `(address,uint256)`) should be double-hashed.\"}},\"title\":\"MerkleAllowlist\",\"version\":1},\"userdoc\":{\"errors\":{\"CallbacksAddressNotValid(address)\":[{\"notice\":\"Thrown if the address will not lead to the specified callbacks being called\"}]},\"events\":{\"MerkleRootSet(uint96,bytes32)\":{\"notice\":\"Emitted when the merkle root is set\"}},\"kind\":\"user\",\"methods\":{\"AUCTION_HOUSE()\":{\"notice\":\"The AuctionHouse that this callback is linked to\"},\"lotIdRegistered(uint96)\":{\"notice\":\"Records lot ids against their registration status\"},\"lotMerkleRoot(uint96)\":{\"notice\":\"The root of the merkle tree that represents the allowlist for a lot\"},\"onBid(uint96,uint64,address,uint256,bytes)\":{\"notice\":\"Called when a buyer bids on a batch auction. Reverts if validation fails.\"},\"onCancel(uint96,uint256,bool,bytes)\":{\"notice\":\"Called when an auction is cancelled.\"},\"onCreate(uint96,address,address,address,uint256,bool,bytes)\":{\"notice\":\"Called when an auction is created. Reverts if validation fails.\"},\"onCurate(uint96,uint256,bool,bytes)\":{\"notice\":\"Called when curate is called for an auction.\"},\"onPurchase(uint96,address,uint256,uint256,bool,bytes)\":{\"notice\":\"Called when a buyer purchases from an atomic auction. Reverts if validation fails.\"},\"setMerkleRoot(uint96,bytes32)\":{\"notice\":\"Sets the merkle root for the allowlist         This function can be called by the lot's seller to update the merkle root after `onCreate()`.\"}},\"notice\":\"This contract implements a merkle tree-based allowlist for buyers to participate in an auction.         In this implementation, buyers do not have a limit on the amount they can purchase/bid.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/callbacks/allowlists/MerkleAllowlist.sol\":\"MerkleAllowlist\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":@prb/test/=lib/prb-math/node_modules/@prb/test/\",\":@uniswap/v3-core/=lib/uniswap-v3-core/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":g-uni-v1-core/=lib/g-uni-v1-core/contracts/\",\":openzeppelin-contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\",\":openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":prb-math/=lib/prb-math/src/\",\":solady/=lib/solady/src/\",\":solmate/=lib/solmate/src/\",\":uniswap-v2-core/=lib/uniswap-v2-core/contracts/\",\":uniswap-v2-periphery/=lib/uniswap-v2-periphery/contracts/\",\":uniswap-v3-core/=lib/uniswap-v3-core/contracts/\",\":uniswap-v3-periphery/=lib/uniswap-v3-periphery/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol\":{\"keccak256\":\"0x3a83e9619d086e3dd342df938cda382c87c90e6e571ec7ebd98dfb45ffeefd06\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://53a87cabd5a0be7905919f62c76f2d915322a30c8ecc485d7b531cd5d00c130b\",\"dweb:/ipfs/QmdS9S7n69H3pKQEhefWL2NPT1xvDyY59rTqZpDLhAtrxX\"]},\"src/callbacks/BaseCallback.sol\":{\"keccak256\":\"0x6f82cffe10322b3318104f4d6853678f7ec9807ff99bcb1068e9c578d5e46569\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://62e23cd3d50c696da8b205303db8ff1f9cb8c264bedff96699f3d77bd6a513db\",\"dweb:/ipfs/QmdkXMBuRKmMjgw8VS8rU949tiFqt3gDS3pRrpKkE5FVN9\"]},\"src/callbacks/allowlists/MerkleAllowlist.sol\":{\"keccak256\":\"0xc656e7345494b9cd0dedc0c3a713be8291864b3ec56fb7f022511b6812489ec8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9952ec4d7b934e2dd7e059504817303b7f238ae1d05480f4ec283bd37fcbcda1\",\"dweb:/ipfs/QmRQQApcNWvyYQzY4187ahLkBySvcnCENfQ26CVqacRD8m\"]},\"src/interfaces/IAuctionHouse.sol\":{\"keccak256\":\"0xda5415ec4c38ad889568bf453a2734f50f1ec6db1bb47c29b5193c6818ed7d3a\",\"license\":\"AGPL-3.0-or-later\",\"urls\":[\"bzz-raw://32a8c1258f722e47d3f98637386ce2d8b8f39964599adf4c1264d350f7546d44\",\"dweb:/ipfs/QmNW9iaukqZsBB9kqnSoUP384QZ8FjP7nJ5hbdpyG4dZpp\"]},\"src/interfaces/ICallback.sol\":{\"keccak256\":\"0xb08760dc184fdf388679cbaf9b854e6d7d800825c71573ae0edbba9d1980fbb8\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://913a2ad19820fe53ab46dccf6a13127d189f7840ba6a522a6e5d5afdebca41da\",\"dweb:/ipfs/QmSVSQxMYCsLX58utsHo1CzkRRy3YkYGpBbqKH6FLrUhas\"]},\"src/interfaces/modules/IAuction.sol\":{\"keccak256\":\"0x7039157d051a619b63ce7988be07a43b77a46043f61c5ab4e531084084bcca01\",\"license\":\"AGPL-3.0-or-later\",\"urls\":[\"bzz-raw://32e0093e843d08deada85cf2649d61aa6b37be858e4fdb32b81bfd2c0cf2c304\",\"dweb:/ipfs/QmPEt15nwpXoBzin32wAQKfSBqcvPdkcgLRxiu3eiN1VFg\"]},\"src/interfaces/modules/IDerivative.sol\":{\"keccak256\":\"0x7d6bf678b637167bbb2aa532be4d6cf2f195cd8953e67a4c8b4f00e56f12b9f1\",\"license\":\"AGPL-3.0-or-later\",\"urls\":[\"bzz-raw://76644794657c193454db35d54d0b7a5c03bebdc0301028bc616cd3b7ce993fb1\",\"dweb:/ipfs/QmeWPhJQbGi8rtgzeY8DjnmsAkSp5QXRzveJKiRbou9tFH\"]},\"src/lib/Callbacks.sol\":{\"keccak256\":\"0xc3e2ce87dca53c20a0e013351f80549ed4821c7267963e87e39b0996ccf93836\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0fd245ee2582d6ff35a24fd40b8c6c5ccd620dc5d813dcdea583fd4c18492feb\",\"dweb:/ipfs/QmaixXjHYed69t9opaSYAkxP3eb3pigUxiJF79xQwb4vMi\"]},\"src/modules/Keycode.sol\":{\"keccak256\":\"0x87bc46fae1fa972055e50731999516b0f6a311a9a6e4edd908624dd90b4eab3e\",\"license\":\"AGPL-3.0-or-later\",\"urls\":[\"bzz-raw://028e26252256a74ff0e65890eb1058682094b88af647948a2d7b22085e8470cd\",\"dweb:/ipfs/QmScfjAA3mHzKdTmRtdsfdVvcKF3xTtXYVZt5rHTDQywfu\"]}},\"version\":1}",
   "metadata": {
-    "compiler": { "version": "0.8.19+commit.7dd6d404" },
+    "compiler": {
+      "version": "0.8.19+commit.7dd6d404"
+    },
     "language": "Solidity",
     "output": {
       "abi": [
@@ -225,16 +485,36 @@
               "name": "permissions_",
               "type": "tuple",
               "components": [
-                { "internalType": "bool", "name": "onCreate", "type": "bool" },
-                { "internalType": "bool", "name": "onCancel", "type": "bool" },
-                { "internalType": "bool", "name": "onCurate", "type": "bool" },
+                {
+                  "internalType": "bool",
+                  "name": "onCreate",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "onCancel",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "onCurate",
+                  "type": "bool"
+                },
                 {
                   "internalType": "bool",
                   "name": "onPurchase",
                   "type": "bool"
                 },
-                { "internalType": "bool", "name": "onBid", "type": "bool" },
-                { "internalType": "bool", "name": "onSettle", "type": "bool" },
+                {
+                  "internalType": "bool",
+                  "name": "onBid",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "onSettle",
+                  "type": "bool"
+                },
                 {
                   "internalType": "bool",
                   "name": "receiveQuoteTokens",
@@ -251,9 +531,21 @@
           "stateMutability": "nonpayable",
           "type": "constructor"
         },
-        { "inputs": [], "type": "error", "name": "Callback_InvalidParams" },
-        { "inputs": [], "type": "error", "name": "Callback_NotAuthorized" },
-        { "inputs": [], "type": "error", "name": "Callback_NotImplemented" },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "Callback_InvalidParams"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "Callback_NotAuthorized"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "Callback_NotImplemented"
+        },
         {
           "inputs": [
             {
@@ -290,21 +582,39 @@
           "type": "function",
           "name": "AUCTION_HOUSE",
           "outputs": [
-            { "internalType": "address", "name": "", "type": "address" }
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "", "type": "uint96" }
+            {
+              "internalType": "uint96",
+              "name": "",
+              "type": "uint96"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
           "name": "lotIdRegistered",
-          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId", "type": "uint96" }
+            {
+              "internalType": "uint96",
+              "name": "lotId",
+              "type": "uint96"
+            }
           ],
           "stateMutability": "view",
           "type": "function",
@@ -319,10 +629,26 @@
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
-            { "internalType": "uint64", "name": "bidId", "type": "uint64" },
-            { "internalType": "address", "name": "buyer_", "type": "address" },
-            { "internalType": "uint256", "name": "amount_", "type": "uint256" },
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
+            {
+              "internalType": "uint64",
+              "name": "bidId",
+              "type": "uint64"
+            },
+            {
+              "internalType": "address",
+              "name": "buyer_",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount_",
+              "type": "uint256"
+            },
             {
               "internalType": "bytes",
               "name": "callbackData_",
@@ -333,14 +659,30 @@
           "type": "function",
           "name": "onBid",
           "outputs": [
-            { "internalType": "bytes4", "name": "", "type": "bytes4" }
+            {
+              "internalType": "bytes4",
+              "name": "",
+              "type": "bytes4"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
-            { "internalType": "uint256", "name": "refund_", "type": "uint256" },
-            { "internalType": "bool", "name": "prefunded_", "type": "bool" },
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
+            {
+              "internalType": "uint256",
+              "name": "refund_",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "prefunded_",
+              "type": "bool"
+            },
             {
               "internalType": "bytes",
               "name": "callbackData_",
@@ -351,13 +693,25 @@
           "type": "function",
           "name": "onCancel",
           "outputs": [
-            { "internalType": "bytes4", "name": "", "type": "bytes4" }
+            {
+              "internalType": "bytes4",
+              "name": "",
+              "type": "bytes4"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
-            { "internalType": "address", "name": "seller_", "type": "address" },
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
+            {
+              "internalType": "address",
+              "name": "seller_",
+              "type": "address"
+            },
             {
               "internalType": "address",
               "name": "baseToken_",
@@ -373,7 +727,11 @@
               "name": "capacity_",
               "type": "uint256"
             },
-            { "internalType": "bool", "name": "prefund_", "type": "bool" },
+            {
+              "internalType": "bool",
+              "name": "prefund_",
+              "type": "bool"
+            },
             {
               "internalType": "bytes",
               "name": "callbackData_",
@@ -384,18 +742,30 @@
           "type": "function",
           "name": "onCreate",
           "outputs": [
-            { "internalType": "bytes4", "name": "", "type": "bytes4" }
+            {
+              "internalType": "bytes4",
+              "name": "",
+              "type": "bytes4"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
             {
               "internalType": "uint256",
               "name": "curatorFee_",
               "type": "uint256"
             },
-            { "internalType": "bool", "name": "prefund_", "type": "bool" },
+            {
+              "internalType": "bool",
+              "name": "prefund_",
+              "type": "bool"
+            },
             {
               "internalType": "bytes",
               "name": "callbackData_",
@@ -406,16 +776,40 @@
           "type": "function",
           "name": "onCurate",
           "outputs": [
-            { "internalType": "bytes4", "name": "", "type": "bytes4" }
+            {
+              "internalType": "bytes4",
+              "name": "",
+              "type": "bytes4"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
-            { "internalType": "address", "name": "buyer_", "type": "address" },
-            { "internalType": "uint256", "name": "amount_", "type": "uint256" },
-            { "internalType": "uint256", "name": "payout_", "type": "uint256" },
-            { "internalType": "bool", "name": "prefunded_", "type": "bool" },
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
+            {
+              "internalType": "address",
+              "name": "buyer_",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount_",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "payout_",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "prefunded_",
+              "type": "bool"
+            },
             {
               "internalType": "bytes",
               "name": "callbackData_",
@@ -426,18 +820,30 @@
           "type": "function",
           "name": "onPurchase",
           "outputs": [
-            { "internalType": "bytes4", "name": "", "type": "bytes4" }
+            {
+              "internalType": "bytes4",
+              "name": "",
+              "type": "bytes4"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
             {
               "internalType": "uint256",
               "name": "proceeds_",
               "type": "uint256"
             },
-            { "internalType": "uint256", "name": "refund_", "type": "uint256" },
+            {
+              "internalType": "uint256",
+              "name": "refund_",
+              "type": "uint256"
+            },
             {
               "internalType": "bytes",
               "name": "callbackData_",
@@ -448,12 +854,20 @@
           "type": "function",
           "name": "onSettle",
           "outputs": [
-            { "internalType": "bytes4", "name": "", "type": "bytes4" }
+            {
+              "internalType": "bytes4",
+              "name": "",
+              "type": "bytes4"
+            }
           ]
         },
         {
           "inputs": [
-            { "internalType": "uint96", "name": "lotId_", "type": "uint96" },
+            {
+              "internalType": "uint96",
+              "name": "lotId_",
+              "type": "uint96"
+            },
             {
               "internalType": "bytes32",
               "name": "merkleRoot_",
@@ -519,7 +933,9 @@
           },
           "setMerkleRoot(uint96,bytes32)": {
             "details": "This function performs the following:         - Performs validation         - Sets the merkle root         - Emits a MerkleRootSet event         This function reverts if:         - The caller is not the lot's seller         - The auction has not been registered",
-            "params": { "merkleRoot_": "The new merkle root" }
+            "params": {
+              "merkleRoot_": "The new merkle root"
+            }
           }
         },
         "version": 1
@@ -579,8 +995,13 @@
         "uniswap-v3-core/=lib/uniswap-v3-core/contracts/",
         "uniswap-v3-periphery/=lib/uniswap-v3-periphery/contracts/"
       ],
-      "optimizer": { "enabled": true, "runs": 200 },
-      "metadata": { "bytecodeHash": "ipfs" },
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
       "compilationTarget": {
         "src/callbacks/allowlists/MerkleAllowlist.sol": "MerkleAllowlist"
       },
@@ -2272,7 +2693,10 @@
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
                         },
-                        { "typeIdentifier": "t_bool", "typeString": "bool" },
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
                         {
                           "typeIdentifier": "t_bytes_calldata_ptr",
                           "typeString": "bytes calldata"
@@ -4249,7 +4673,10 @@
                     ],
                     "expression": {
                       "argumentTypes": [
-                        { "typeIdentifier": "t_uint96", "typeString": "uint96" }
+                        {
+                          "typeIdentifier": "t_uint96",
+                          "typeString": "uint96"
+                        }
                       ],
                       "expression": {
                         "arguments": [

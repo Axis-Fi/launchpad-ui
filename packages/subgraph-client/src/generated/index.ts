@@ -3470,7 +3470,27 @@ export type BatchAuctionLot_Filter = {
   lastUpdatedTransactionHash_not_in?: InputMaybe<
     Array<Scalars["Bytes"]["input"]>
   >;
+  linearVesting?: InputMaybe<Scalars["String"]["input"]>;
   linearVesting_?: InputMaybe<BatchLinearVestingLot_Filter>;
+  linearVesting_contains?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_gt?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_gte?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  linearVesting_lt?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_lte?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_not?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_not_contains_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_not_ends_with?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_not_ends_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  linearVesting_not_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_not_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_starts_with?: InputMaybe<Scalars["String"]["input"]>;
+  linearVesting_starts_with_nocase?: InputMaybe<Scalars["String"]["input"]>;
   lotId?: InputMaybe<Scalars["BigInt"]["input"]>;
   lotId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   lotId_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
