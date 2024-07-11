@@ -13,6 +13,7 @@ export * from "./input-error";
 export * from "./link";
 export * from "./metric";
 export * from "./pagination";
+export * from "./percentage-slider";
 export * from "./select";
 export * from "./scrollable-select";
 export * from "./sort-button";

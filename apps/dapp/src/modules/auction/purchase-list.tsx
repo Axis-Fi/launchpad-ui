@@ -17,7 +17,8 @@ const amountOutCol = bidListColumnHelper.accessor("settledAmountOut", {
   cell: (info) => {
     return (
       <>
-        <Format value={info.getValue() ?? 0} /> {info.row.original.auction.baseToken.symbol}
+        <Format value={info.getValue() ?? 0} />{" "}
+        {info.row.original.auction.baseToken.symbol}
       </>
     );
   },
