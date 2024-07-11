@@ -1,6 +1,6 @@
 import { AuctionType } from "@repo/types";
 import { CreateAuctionForm } from "pages/create-auction-page";
-import { getPercentage } from "utils/number";
+import { toBasisPoints } from "utils/number";
 import { encodeAbiParameters, parseUnits } from "viem";
 
 const parameterMap = {
@@ -65,7 +65,7 @@ function handleEMP(
 
   return [
     {
-      minFillPercent: getPercentage(Number(values.minFillPercent[0])),
+      minFillPercent: toBasisPoints(Number(values.minFillPercent[0])),
       minBidSize: parseUnits("0.01", values.quoteToken.decimals), // magic number intentional until a better way is agreed
       minPrice: parseUnits(values.minPrice, values.quoteToken.decimals),
       publicKey,
@@ -81,7 +81,7 @@ function handleFPB(values: CreateAuctionForm) {
   return [
     {
       price: parseUnits(values.price, values.quoteToken.decimals),
-      minFillPercent: getPercentage(Number(values.minFillPercent[0])),
+      minFillPercent: toBasisPoints(Number(values.minFillPercent[0])),
     },
   ];
 }

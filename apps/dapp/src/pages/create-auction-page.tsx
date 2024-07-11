@@ -523,7 +523,7 @@ export default function CreateAuctionPage() {
       }
       case CallbacksType.UNIV2_DTL: {
         const proceedsPercent = values.dtlProceedsPercent
-          ? (values.dtlProceedsPercent[0] ?? 0) * 1000
+          ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
           : 0;
         const vestingStart = values.dtlVestingStart
           ? getTimestamp(values.dtlVestingStart)
@@ -580,7 +580,7 @@ export default function CreateAuctionPage() {
       }
       case CallbacksType.UNIV3_DTL: {
         const proceedsPercent = values.dtlProceedsPercent
-          ? (values.dtlProceedsPercent[0] ?? 0) * 1000
+          ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
           : 0;
         const vestingStart = values.dtlVestingStart
           ? getTimestamp(values.dtlVestingStart)

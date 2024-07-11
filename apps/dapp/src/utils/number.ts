@@ -1,10 +1,5 @@
 import { currencyFormatter, trimCurrency } from "./currency";
 
-export function getPercentage(percentage: number, base: number = 1e5): number {
-  // 10.12% => 101200
-  return (percentage * base) / 100;
-}
-
 export function parsePercent(e: React.ChangeEvent<HTMLInputElement>) {
   //Separate the percent sign from the number:
   const int = e.target.value.slice(0, e.target.value.length - 1);
@@ -36,23 +31,23 @@ export function parsePercent(e: React.ChangeEvent<HTMLInputElement>) {
 }
 
 /** Converts a number or string into basis points format
- * 1% -> 1000
+ * 1% -> 100
  */
 export function toBasisPoints(percentage: string | number) {
   const _percentage =
     typeof percentage === "string" ? parseFloat(percentage) : percentage;
 
-  return _percentage * 1000;
+  return _percentage * 100;
 }
 
 /** Converts a number or string in basis points format to percentage
- * 1000 -> 1
+ * 100 -> 1
  */
 export function fromBasisPoints(percentage: string | number) {
   const _basisPoints =
     typeof percentage === "string" ? parseFloat(percentage) : percentage;
 
-  return _basisPoints / 1000;
+  return _basisPoints / 100;
 }
 
 export function formatPercentage(percentage: number) {
