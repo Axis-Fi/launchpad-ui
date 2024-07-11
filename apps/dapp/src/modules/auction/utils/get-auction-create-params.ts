@@ -66,7 +66,10 @@ function handleEMP(
   return [
     {
       minFillPercent: toBasisPoints(Number(values.minFillPercent[0])),
-      minBidSize: parseUnits("0.01", values.quoteToken.decimals), // magic number intentional until a better way is agreed
+      minBidSize: parseUnits(
+        values.minBidSize.toString(),
+        values.quoteToken.decimals,
+      ), // magic number intentional until a better way is agreed
       minPrice: parseUnits(values.minPrice, values.quoteToken.decimals),
       publicKey,
     } as const,

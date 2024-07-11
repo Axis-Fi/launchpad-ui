@@ -116,7 +116,7 @@ const schema = z
     capacity: z.string(),
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
-    minBidSize: z.array(z.number()).optional(),
+    minBidSize: z.string(),
     minPrice: StringNumberNotNegative.optional(),
     price: StringNumberNotNegative.optional(),
     start: z.date(),
@@ -301,7 +301,6 @@ export default function CreateAuctionPage() {
   const navigate = useNavigate();
   const auctionDefaultValues = {
     minFillPercent: [50],
-    minBidSize: [1], // TODO allows users to specify this value in the UI
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
   };
@@ -330,6 +329,8 @@ export default function CreateAuctionPage() {
     dtlUniV3PoolFee,
     start,
     deadline,
+    minBidSize,
+    minPrice,
   ] = form.watch([
     "isVested",
     "payoutToken",
@@ -342,6 +343,8 @@ export default function CreateAuctionPage() {
     "dtlUniV3PoolFee",
     "start",
     "deadline",
+    "minBidSize",
+    "minPrice",
   ]);
 
   const chainId = _chainId ?? connectedChainId;
@@ -1014,6 +1017,13 @@ export default function CreateAuctionPage() {
       auctionCache.create(optimisticAuction),
     );
   }, [address, auctionHouseAddress, chain, chainId, form, lotId, queryClient]);
+  const disableMinBidSize = !canUpdateMinBidSize(form.getValues());
+
+  const isReasonableMinBidSize =
+    !capacity ||
+    !minPrice ||
+    !minBidSize ||
+    Number(minBidSize) >= (Number(capacity) * Number(minPrice)) / 10_000; //10k here represents a potential max amount of bids
 
   return (
     <PageContainer>
@@ -1316,6 +1326,40 @@ export default function CreateAuctionPage() {
                         </FormItemWrapper>
                       )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="minBidSize"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          className="mt-4"
+                          label="Minimum Bid Size"
+                          tooltip={`The minimum number of quote tokens to be received in a bid. ${
+                            disableMinBidSize
+                              ? "Capacity and Minimum Bid Price must be set before setting this value."
+                              : ""
+                          }`}
+                        >
+                          <div className="relative">
+                            <Input
+                              {...field}
+                              disabled={disableMinBidSize}
+                              placeholder="1"
+                              type="number"
+                            />
+                            {!isReasonableMinBidSize && (
+                              <Text
+                                className="text-feedback-warning absolute"
+                                size="xs"
+                              >
+                                Your min bid size could result in the settlement
+                                being expensive due to the number of potential
+                                winning bids
+                              </Text>
+                            )}
+                          </div>
+                        </FormItemWrapper>
+                      )}
+                    />
 
                     {/* Disabled for now*/}
                     {/* <FormField
@@ -1463,7 +1507,6 @@ export default function CreateAuctionPage() {
                         }
                       >
                         <PercentageSlider
-                          //@ts-expect-error TODO: fix with proper typing
                           field={field}
                           defaultValue={0}
                           max={fees.maxReferrerFee ?? 0}
@@ -1922,4 +1965,8 @@ function generateAuctionURL(
   const chainName = getChainName(chain);
 
   return `/auction/${auctionType}/${chainName}-${auctionHouseAddress.toLowerCase()}-${lotId}`;
+}
+
+function canUpdateMinBidSize(form: CreateAuctionForm) {
+  return !!form.capacity && !!form.minPrice;
 }
