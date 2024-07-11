@@ -88,21 +88,22 @@ export function useBidAuction(
     amount: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
   });
 
-  const bidTxnSucceeded = useRef(false);
+  // Store confirmed bids to prevent the React effect running multiple times due to tree rerenders.
+  // (bidReceipt.isSuccess will be true until the user dismisses the modal, in that time the react tree can update)
+  const confirmedBids = useRef(new Set<string>([]));
 
   React.useEffect(() => {
-    // Refetch allowance, refetches delayed auction info
-    // and stores bid if EMP
-    if (bidTxnSucceeded.current || !bidReceipt.isSuccess) {
-      return;
-    }
-    bidTxnSucceeded.current = true;
-
-    allowance.refetch();
+    if (!bidReceipt.isSuccess) return;
 
     // Get bid id from transaction logs
     const hexBidId = bidReceipt.data.logs[1].topics[2];
     const bidId = fromHex(hexBidId!, "number").toString();
+    const hasAlreadyHandledBid = confirmedBids.current.has(bidId);
+
+    if (hasAlreadyHandledBid) return;
+    confirmedBids.current.add(bidId);
+
+    allowance.refetch();
 
     // If this is a blind auction, store the user's unencrypted bid locally
     // so they can view it later
@@ -138,6 +139,7 @@ export function useBidAuction(
     queryClient,
     queryKey,
     storeBidLocally,
+    bidTx,
   ]);
 
   const error = [bidReceipt, bidTx, bidConfig].find((m) => m.isError)?.error;
