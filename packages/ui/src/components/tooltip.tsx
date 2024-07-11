@@ -5,12 +5,16 @@ export function Tooltip(
   props: React.PropsWithChildren<{
     content: React.ReactNode;
     triggerClassName?: string;
+    asChild?: boolean;
   }>,
 ) {
   if (!props.content) return <>{props.children}</>;
   return (
     <TooltipRoot>
-      <TooltipTrigger className={cn("cursor-help", props.triggerClassName)}>
+      <TooltipTrigger
+        className={cn("cursor-help", props.triggerClassName)}
+        asChild={!!props.asChild}
+      >
         {props.children}
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">

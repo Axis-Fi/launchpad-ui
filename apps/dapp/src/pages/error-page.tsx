@@ -26,11 +26,9 @@ export default function ErrorPage() {
             <ReachOutMessage />
           </>
         )}
-        <Link to="/">
-          <Button className="mt-4" variant="secondary" size="sm">
-            Head back
-          </Button>
-        </Link>
+        <Button className="mt-4" variant="secondary" size="sm">
+          <Link to="/">Head back</Link>
+        </Button>
       </div>
     </div>
   );

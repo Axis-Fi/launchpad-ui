@@ -61,7 +61,8 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
   });
 
   /**
-   * Gotcha: redeemableAmount will be `undefined` until the user has claimed their derivative ERC6909 token
+   * Gotcha: redeemableAmount will be `undefined` until the user has claimed their derivative ERC6909 token.
+   * Once the user has claimed their derivative, redeemableAmount will be the number of tokens they can redeem right now.
    */
   const { data: redeemableAmount, refetch: refetchRedeemable } =
     useVestingRedeemable({

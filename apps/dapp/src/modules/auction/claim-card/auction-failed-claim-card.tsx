@@ -47,7 +47,12 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
   );
 
   const userHasClaimedFullRefund = userBids.every(
-    (bid) => bid.status === "refunded",
+    (bid) => bid.status === "refunded" || bid.status === "claimed",
+  );
+
+  const userTotalRefundClaimed = userBids.reduce(
+    (acc, bid) => acc + Number(bid.settledAmountInRefunded ?? 0),
+    0,
   );
 
   const isWaiting =
@@ -69,6 +74,14 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
                 {shorten(userTotalBidAmount)} {auction.quoteToken.symbol}
               </Metric>
             </div>
+
+            {userTotalRefundClaimed > 0 && (
+              <div className="bg-surface-tertiary p-sm rounded">
+                <Metric size="l" label="You Refunded">
+                  {shorten(userTotalRefundClaimed)} {auction.quoteToken.symbol}
+                </Metric>
+              </div>
+            )}
 
             <div className="bg-surface-tertiary p-sm rounded">
               <Metric size="l" label="You Get">

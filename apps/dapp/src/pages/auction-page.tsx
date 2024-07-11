@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Badge, Button, Metric, Skeleton, Text, cn } from "@repo/ui";
+import { Button, Skeleton, Text, cn } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
@@ -21,11 +21,10 @@ import { PageContainer } from "modules/app/page-container";
 import { ReloadButton } from "components/reload-button";
 import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
 import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
-import { getCountdown } from "utils/date";
-import { useEffect, useState } from "react";
 import { BidList } from "modules/auction/bid-list";
 import { PurchaseList } from "modules/auction/purchase-list";
 import { getLinkUrl } from "modules/auction/utils/auction-details";
+import { Countdown } from "modules/auction/countdown";
 
 const statuses: Record<
   AuctionStatus,
@@ -51,24 +50,6 @@ export default function AuctionPage() {
     refetch,
   } = useAuction(id!, type as AuctionType);
 
-  // Countdown
-  const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
-  const isOngoing =
-    auction?.formatted &&
-    auction.formatted?.startDate < new Date() &&
-    auction.formatted?.endDate > new Date();
-
-  // Refresh the countdown every second
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (isOngoing && auction.formatted?.endDate) {
-        setTimeRemaining(getCountdown(auction.formatted?.endDate));
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isOngoing, auction, auction?.formatted?.endDate]);
-
   if (isAuctionLoading) {
     return <AuctionPageLoading />;
   }
@@ -87,12 +68,7 @@ export default function AuctionPage() {
         <ReloadButton refetching={isRefetching} onClick={() => refetch?.()} />
       </PageHeader>
 
-      <AuctionPageView
-        auction={auction}
-        isOngoing={isOngoing}
-        isAuctionLoading={isAuctionLoading}
-        timeRemaining={timeRemaining}
-      >
+      <AuctionPageView auction={auction} isAuctionLoading={isAuctionLoading}>
         <AuctionElement auction={auction} />
       </AuctionPageView>
       {auction.status !== "created" &&
@@ -108,14 +84,10 @@ export default function AuctionPage() {
 export function AuctionPageView({
   auction,
   isAuctionLoading,
-  isOngoing,
-  timeRemaining,
   ...props
 }: React.PropsWithChildren<{
   auction: Auction;
   isAuctionLoading?: boolean;
-  isOngoing?: boolean;
-  timeRemaining?: string | null;
 }>) {
   const [textColor, setTextColor] = React.useState<string>();
 
@@ -154,17 +126,7 @@ export function AuctionPageView({
               </Text>
             </div>
             <div className="mb-4 ml-4 self-start">
-              {isOngoing && (
-                <Badge size="xl" className="px-4">
-                  <Metric
-                    className="text-center"
-                    isLabelSpaced
-                    label="Remaining"
-                  >
-                    {timeRemaining}
-                  </Metric>
-                </Badge>
-              )}
+              <Countdown auction={auction} />
             </div>
           </div>
         </div>
