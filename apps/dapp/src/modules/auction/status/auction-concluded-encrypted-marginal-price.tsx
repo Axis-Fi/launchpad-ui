@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge, Button, Card, Metric, Progress, Text } from "@repo/ui";
-import type { BatchAuction, PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { ProjectInfoCard } from "../project-info-card";
@@ -16,7 +16,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
   auction,
 }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
-  const decrypt = useDecryptBids(auction as BatchAuction);
+  const decrypt = useDecryptBids(auction);
 
   const progress = calculateAuctionProgress(auction);
   const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
@@ -25,11 +25,6 @@ export function EncryptedMarginalPriceAuctionConcluded({
     baseTokenDecimals: auction.baseToken.decimals,
     callback: auction.callbacks,
   });
-
-  const isWaiting =
-    decrypt.decryptTx.isPending || decrypt.decryptReceipt.isLoading;
-  // removed totalBids === 0 from this because an auction that has no bids must either be decrypted + settled
-  // or aborted so that the seller gets a refund
 
   const totalBidsRemaining =
     (auction.formatted?.totalBids ?? 0) -
@@ -86,7 +81,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
         <div>
           <TransactionDialog
             signatureMutation={decrypt.decryptTx}
-            disabled={isWaiting}
+            disabled={decrypt.isWaiting}
             chainId={auction.chainId}
             hash={decrypt.decryptTx.data!}
             error={decrypt.error}
@@ -139,10 +134,10 @@ export function EncryptedMarginalPriceAuctionConcluded({
               <div className="mt-4 w-full">
                 <Button
                   className="w-full"
-                  disabled={isWaiting}
+                  disabled={decrypt.isWaiting}
                   onClick={() => setOpen(true)}
                 >
-                  {isWaiting ? (
+                  {decrypt.isWaiting ? (
                     <div className="flex">
                       Waiting for confirmation...
                       <div className="w-1/2"></div>

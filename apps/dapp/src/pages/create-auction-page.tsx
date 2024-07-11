@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Text,
   Button,
@@ -59,7 +60,7 @@ import { AuctionType, CallbacksType } from "@repo/types";
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
 import { toKeycode } from "utils/hex";
@@ -77,6 +78,16 @@ import { PageHeader } from "modules/app/page-header";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
 import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
+import { getAuctionsQueryKey } from "modules/auction/hooks/use-auctions";
+import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
+import { getAuctionId } from "modules/auction/utils/get-auction-id";
+import {
+  auctions as auctionsCache,
+  auction as auctionCache,
+  optimisticUpdate,
+} from "modules/auction/utils/optimistic";
+import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
+import { getChainName } from "modules/auction/utils/get-chain-name";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -181,7 +192,7 @@ const schema = z
     path: ["start"],
   })
   .refine(
-    (data) => addDays(data.start, 1).getTime() <= data.deadline.getTime(),
+    (data) => addDays(data.start, 1).getTime() < data.deadline.getTime(),
     {
       message: "Deadline needs to be at least 1 day after the start",
       path: ["deadline"],
@@ -310,7 +321,7 @@ export default function CreateAuctionPage() {
     quoteToken,
     _chainId,
     capacity,
-    auctionType,
+    _auctionType,
     callbacksType,
     dtlIsVested,
     dtlUniV3PoolFee,
@@ -331,11 +342,22 @@ export default function CreateAuctionPage() {
   ]);
 
   const chainId = _chainId ?? connectedChainId;
+  const auctionType = _auctionType as AuctionType;
+
+  const { address: auctionHouseAddress, abi: auctionHouseAbi } =
+    getAuctionHouse({
+      auctionType,
+      chainId,
+    });
+
+  const queryClient = useQueryClient();
 
   const createAuctionTx = useWriteContract();
+
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
+
   const lotId = getCreatedAuctionId(createTxReceipt.data);
 
   const auctionInfoMutation = useMutation({
@@ -395,11 +417,6 @@ export default function CreateAuctionPage() {
     const code = isEMP ? "EMPA" : isFPB ? "FPBA" : "unknown";
 
     const auctionTypeKeycode = toKeycode(code);
-
-    const { address: contractAddress, abi } = getAuctionHouse({
-      auctionType,
-      chainId,
-    });
 
     const publicKey = isEMP
       ? await generateKeyPairMutation.mutateAsync()
@@ -617,8 +634,8 @@ export default function CreateAuctionPage() {
 
     createAuctionTx.writeContract(
       {
-        abi,
-        address: contractAddress,
+        abi: auctionHouseAbi,
+        address: auctionHouseAddress,
         functionName: "auction",
         args: [
           {
@@ -937,6 +954,7 @@ export default function CreateAuctionPage() {
       tokenAddress: payoutToken ? (payoutToken.address as Address) : undefined,
       balanceAddress: address,
     });
+
   useEffect(() => {
     form.setValue(
       "payoutTokenBalance",
@@ -948,6 +966,43 @@ export default function CreateAuctionPage() {
     payoutTokenBalance && payoutTokenDecimals
       ? Number(formatUnits(payoutTokenBalance, payoutTokenDecimals))
       : 0;
+
+  const createTxnSucceeded = useRef<boolean>(false);
+
+  /**
+   * Auctions are read from the subgraph.
+   * There can be a delay between an auction creation txn succeeding and the subgraph updating.
+   * To avoid users not being able to see their auction, we cache it locally, optimistically.
+   */
+  useEffect(() => {
+    if (createTxnSucceeded.current === true) return;
+    if (lotId === undefined || lotId === null) return; // lotId is populated after the txn succeeds
+
+    createTxnSucceeded.current = true;
+
+    const auctionId = getAuctionId(chain!, auctionHouseAddress, lotId);
+
+    const optimisticAuction = auctionsCache.createOptimisticAuction(
+      lotId,
+      chain!,
+      address!,
+      auctionHouseAddress,
+      form.getValues(),
+    );
+
+    // Optimistically store the auction data in the list of auctions cache
+    optimisticUpdate(
+      queryClient,
+      getAuctionsQueryKey(chainId),
+      (cachedAuctions: GetAuctionLotsQuery) =>
+        auctionsCache.insertAuction(cachedAuctions, optimisticAuction),
+    );
+
+    // Optimistically store the auction data in the auction details cache
+    optimisticUpdate(queryClient, getAuctionQueryKey(auctionId), () =>
+      auctionCache.create(optimisticAuction),
+    );
+  }, [address, auctionHouseAddress, chain, chainId, form, lotId, queryClient]);
 
   return (
     <PageContainer>
@@ -1837,6 +1892,7 @@ export default function CreateAuctionPage() {
                       navigate(
                         generateAuctionURL(
                           auctionType as AuctionType,
+                          auctionHouseAddress,
                           lotId,
                           chain,
                         ),
@@ -1870,16 +1926,12 @@ function getCreatedAuctionId(
 
 function generateAuctionURL(
   auctionType: AuctionType,
+  auctionHouseAddress: Address,
   lotId: number,
   chain: Chain,
 ) {
   //Transform viem/rainbowkit names into subgraph format
-  const chainName = chain.name.replace(" ", "-").toLowerCase();
+  const chainName = getChainName(chain);
 
-  const { address: auctionHouse } = getAuctionHouse({
-    auctionType,
-    chainId: chain.id,
-  });
-
-  return `/auction/${auctionType}/${chainName}-${auctionHouse.toLowerCase()}-${lotId}`;
+  return `/auction/${auctionType}/${chainName}-${auctionHouseAddress.toLowerCase()}-${lotId}`;
 }

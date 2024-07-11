@@ -1,13 +1,13 @@
-import { AuctionStatus, SubgraphAuction } from "@repo/types";
+import { AuctionStatus, NonNullSubgraphAuction } from "@repo/types";
 
 /**
  * Determines the auction status dynamically.
  * The subgraph doesn't receive an event when an auction starts or concludes, so
  * we need to derive this on the frontend.
- * @param auction
- * @returns
  */
-export function getAuctionStatus(auction: SubgraphAuction): AuctionStatus {
+export function getAuctionStatus(
+  auction: NonNullSubgraphAuction,
+): AuctionStatus {
   const { start, conclusion } = auction;
 
   const isConcluded =

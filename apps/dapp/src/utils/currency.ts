@@ -4,7 +4,9 @@ export const currencyFormatter = new Intl.NumberFormat("en-US", {
 });
 
 /* Trims decimal based on the number of decimal places */
-export function trimCurrency(input: string | number) {
+export function trimCurrency(input: string | number): string {
+  if (Number.isNaN(Number(input))) return "?";
+
   const value = Number(input);
 
   if (value === 0) return "0";

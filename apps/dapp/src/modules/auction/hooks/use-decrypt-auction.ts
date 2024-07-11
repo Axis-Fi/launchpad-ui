@@ -1,15 +1,24 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Auction, BatchAuction } from "@repo/types";
-import { useEffect } from "react";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import type { Auction, AuctionId, BatchAuction } from "@repo/types";
+import { useEffect, useRef } from "react";
 import { cloakClient } from "@repo/cloak";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { useAuction } from "modules/auction/hooks/use-auction";
+import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
 import { getAuctionHouse, getContractsByModuleType } from "utils/contracts";
 import { Hex } from "viem";
+import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
+import {
+  auction as auctionCache,
+  optimisticUpdate,
+} from "modules/auction/utils/optimistic";
 
 /** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: BatchAuction) => {
@@ -17,10 +26,7 @@ export const useDecryptBids = (auction: BatchAuction) => {
   //Fixed priced auctions dont require decryption
   const emp = getContractsByModuleType(auction);
 
-  const { refetch: refetchAuction } = useAuction(
-    auction.id,
-    auction.auctionType,
-  );
+  const queryKey = getAuctionQueryKey(auction.id as AuctionId);
 
   const params = deriveParamsFromAuction(auction);
   const privateKeyQuery = useQuery({
@@ -71,12 +77,34 @@ export const useDecryptBids = (auction: BatchAuction) => {
 
   const handleDecryption = () => decrypt.writeContract(decryptCall!.request);
 
+  const queryClient = useQueryClient();
+  const decryptTxnSucceeded = useRef(false);
+
   useEffect(() => {
-    if (decryptReceipt.isSuccess && !hintsQuery.isRefetching) {
-      hintsQuery.refetch();
-      refetchAuction();
+    if (decryptTxnSucceeded.current || !decryptReceipt.isSuccess) {
+      return;
     }
-  }, [decryptReceipt.isSuccess, privateKeyQuery]);
+
+    decryptTxnSucceeded.current = true;
+
+    if (!hintsQuery.isRefetching) {
+      hintsQuery.refetch();
+    }
+
+    /** Optimistically update the auction status to "decrypted" */
+    optimisticUpdate(
+      queryClient,
+      queryKey,
+      (cachedAuction: GetBatchAuctionLotQuery) =>
+        auctionCache.updateStatus(cachedAuction, "decrypted"),
+    );
+  }, [
+    decryptReceipt.isSuccess,
+    hintsQuery,
+    privateKeyQuery,
+    queryClient,
+    queryKey,
+  ]);
 
   const error = [
     privateKeyQuery,
@@ -91,6 +119,7 @@ export const useDecryptBids = (auction: BatchAuction) => {
     decryptReceipt,
     handleDecryption,
     error,
+    isWaiting: decrypt.isPending || decryptReceipt.isLoading,
   };
 };
 
