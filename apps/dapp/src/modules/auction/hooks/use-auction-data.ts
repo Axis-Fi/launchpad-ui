@@ -20,6 +20,7 @@ type UseAuctionDataParameters = {
 };
 
 export type UseAuctionDataReturn = {
+  isLoading: boolean;
   data?: EMPAuctionData | FixedPriceBatchAuctionData;
   refetch: (
     options?: RefetchOptions,

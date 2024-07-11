@@ -2,7 +2,6 @@ import {
   RefetchOptions,
   UseQueryResult,
   useQueries,
-  useQueryClient,
 } from "@tanstack/react-query";
 import { Variables } from "graphql-request";
 import {
@@ -22,14 +21,11 @@ export function useQueryAll<TQuery>({
   queryKeyFn?: QueryKeyFn;
   fields: Array<QueryResultKey<TQuery>>;
 }) {
-  const queryClient = useQueryClient();
-
   const queries = useQueries({
     queries: queryAllEndpoints<TQuery>({
       document,
       variables,
       queryKeyFn,
-      queryClient,
     }),
     combine: (responses) => {
       const filteredResponses = responses.filter(

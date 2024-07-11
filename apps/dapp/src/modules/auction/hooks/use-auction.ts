@@ -3,13 +3,11 @@ import {
   useGetBatchAuctionLotQuery,
 } from "@repo/subgraph-client/src/generated";
 import {
-  useQueryClient,
   type QueryKey,
-  type QueryObserverResult,
   type RefetchOptions,
   type UseQueryResult,
 } from "@tanstack/react-query";
-import { getAuctionStatus } from "../utils/get-auction-status";
+import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { AuctionType } from "@repo/types";
 import type {
   Auction,
@@ -19,7 +17,6 @@ import type {
   FixedPriceBatchAuctionData,
   EMPFormattedInfo,
   FPBFormattedInfo,
-  MaybeOptimistic,
   AuctionId,
 } from "@repo/types";
 import { formatUnits } from "viem";
@@ -36,7 +33,8 @@ import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
 import { parseAuctionId } from "modules/auction/utils/parse-auction-id";
 import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
-import { isCacheStale } from "modules/auction/utils/is-cache-stale";
+import { useIsCacheStale } from "./use-is-cache-stale";
+import { useSafeRefetch } from "./use-safe-refetch";
 
 type AuctionQueryKey = QueryKey &
   readonly ["getBatchAuctionLot", { id: AuctionId }];
@@ -45,13 +43,9 @@ export type AuctionResult = {
   result?: Auction;
   queryKey: AuctionQueryKey;
   refetch: (
-    auctionOptions?: RefetchOptions,
     auctionDataOptions?: RefetchOptions,
   ) => Promise<
-    [
-      Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>,
-      QueryObserverResult<GetBatchAuctionLotQuery, Error>,
-    ]
+    [Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>, Awaited<void>]
   >;
 } & Pick<
   ReturnType<typeof useGetBatchAuctionLotQuery>,
@@ -75,13 +69,11 @@ export function useAuction(
 
   // Don't fetch the auction if an optimistic update (e.g. a bid) is still fresh.
   // This allows the subgraph time to update before refetching.
-  const queryClient = useQueryClient();
-  const cachedAuctionData = queryClient.getQueryData<MaybeOptimistic>(queryKey);
-  const cacheIsStale = isCacheStale(cachedAuctionData);
+  const isCacheStale = useIsCacheStale(queryKey);
+  const isQueryEnabled = !!chainId && !!id && isCacheStale;
 
   const {
     data,
-    refetch: refetchAuction,
     isLoading,
     isRefetching,
   }: UseQueryResult<GetBatchAuctionLotQuery> = useGetBatchAuctionLotQuery(
@@ -90,14 +82,20 @@ export function useAuction(
       fetchParams,
     },
     { id: id! },
-    { enabled: !!chainId && !!id && cacheIsStale },
+    { enabled: isQueryEnabled },
   );
+
+  const refetchAuction = useSafeRefetch(queryKey);
 
   const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (
     data as GetBatchAuctionLotQuery
   )?.batchAuctionLot;
 
-  const { data: auctionData, refetch: refetchAuctionData } = useAuctionData({
+  const {
+    data: auctionData,
+    refetch: refetchAuctionData,
+    isLoading: isAuctionDataLoading,
+  } = useAuctionData({
     chainId,
     lotId,
     type: auctionType,
@@ -107,17 +105,13 @@ export function useAuction(
    * Redefine refetch of an auction to include its dependencies that also update (such as auctionData)
    */
   const refetch = async (
-    auctionOptions?: RefetchOptions,
     auctionDataOptions?: RefetchOptions,
   ): Promise<
-    [
-      Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>,
-      Awaited<ReturnType<typeof refetchAuction>>,
-    ]
+    [Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>, Awaited<void>]
   > => {
     return Promise.all([
       refetchAuctionData(auctionDataOptions),
-      refetchAuction(auctionOptions),
+      refetchAuction(),
     ]);
   };
 
@@ -126,7 +120,7 @@ export function useAuction(
       refetch,
       isRefetching,
       result: undefined,
-      isLoading: isLoading, //|| infoQuery.isLoading, //|| infoQuery.isPending,
+      isLoading: isLoading || isAuctionDataLoading,
       queryKey,
     };
   }
