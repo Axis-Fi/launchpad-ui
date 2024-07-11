@@ -17,7 +17,7 @@ const useIsCacheStale = (queryKey: QueryKey) => {
   return useMemo(() => {
     const cachedAuctionData =
       queryClient.getQueryData<MaybeOptimistic>(queryKey);
-    console.log("useIsCacheStale", { cachedAuctionData });
+
     return isCacheStale(cachedAuctionData);
   }, [queryKey, queryClient]);
 };
