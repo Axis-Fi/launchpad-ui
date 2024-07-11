@@ -1466,7 +1466,7 @@ export default function CreateAuctionPage() {
                           //@ts-expect-error TODO: fix with proper typing
                           field={field}
                           defaultValue={0}
-                          max={fees.referrerFee ?? 0}
+                          max={fees.maxReferrerFee ?? 0}
                         />
                       </FormItemWrapper>
                     )}
