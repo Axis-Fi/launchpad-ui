@@ -12,11 +12,7 @@
     },
     {
       "description": "Testnet",
-      "url": "https://api-testnet-d2e7.up.railway.app"
-    },
-    {
-      "description": "Testnet V2",
-      "url": "https://api-testnet-v2.up.railway.app"
+      "url": "https://api-testnet-v3.up.railway.app"
     }
   ],
   "tags": [
