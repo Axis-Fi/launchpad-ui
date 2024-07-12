@@ -203,8 +203,8 @@ const handlers = {
       `${auction.formatted?.sold} ${auction.baseToken.symbol}`,
   },
 
-  auctionedSupply: {
-    label: "Auctioned Supply",
+  tokensAvailable: {
+    label: "Tokens Available",
     handler: (auction: Auction) => {
       const res =
         (Number(auction.capacityInitial) /

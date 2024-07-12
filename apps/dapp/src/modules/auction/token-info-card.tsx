@@ -23,7 +23,7 @@ export function TokenInfoCard({ auction }: PropsWithAuction) {
           <>
             <AuctionMetric id="minPriceFDV" auction={auction} />
             <AuctionMetric id="totalSupply" auction={auction} />
-            <AuctionMetric id="auctionedSupply" auction={auction} />
+            <AuctionMetric id="tokensAvailable" auction={auction} />
             <AuctionMetric id="vestingDuration" auction={auction} />
           </>
         )}
@@ -31,7 +31,7 @@ export function TokenInfoCard({ auction }: PropsWithAuction) {
           <>
             <AuctionMetric id="fixedPriceFDV" auction={auction} />
             <AuctionMetric id="totalSupply" auction={auction} />
-            <AuctionMetric id="auctionedSupply" auction={auction} />
+            <AuctionMetric id="tokensAvailable" auction={auction} />
             <AuctionMetric id="vestingDuration" auction={auction} />
           </>
         )}
