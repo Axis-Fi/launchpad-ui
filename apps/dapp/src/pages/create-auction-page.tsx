@@ -116,7 +116,7 @@ const schema = z
     capacity: z.string(),
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
-    minBidSize: z.string(),
+    minBidSize: z.string().optional(),
     minPrice: StringNumberNotNegative.optional(),
     price: StringNumberNotNegative.optional(),
     start: z.date(),
@@ -214,13 +214,24 @@ const schema = z
   )
   .refine(
     (data) =>
-      // Only required for FPB and FPA
+      // Only required for FPB
       data.auctionType === AuctionType.FIXED_PRICE_BATCH
         ? !!data.price && isFinite(Number(data.price))
         : true,
     {
       message: "Price must be set",
       path: ["price"],
+    },
+  )
+  .refine(
+    (data) =>
+      // Only required for EMP
+      data.auctionType === AuctionType.SEALED_BID
+        ? !!data.minBidSize && isFinite(Number(data.minBidSize[0]))
+        : true,
+    {
+      message: "Minimum bid size must be set",
+      path: ["minBidSize"],
     },
   )
   .refine(
