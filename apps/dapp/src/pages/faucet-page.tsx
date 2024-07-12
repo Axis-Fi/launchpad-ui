@@ -8,7 +8,12 @@ import { useTokenLists } from "state/tokenlist";
 import { useChainId } from "wagmi";
 import { trimCurrency } from "utils/currency";
 import { chains } from "@repo/env";
-import { arbitrumSepolia, blastSepolia, modeTestnet } from "viem/chains";
+import {
+  arbitrumSepolia,
+  blastSepolia,
+  modeTestnet,
+  mantleSepoliaTestnet,
+} from "viem/chains";
 import { ArrowUpRightIcon } from "lucide-react";
 
 const activeChains = chains.activeChains;
@@ -17,6 +22,7 @@ const ethFaucets: Record<number, string> = {
   [blastSepolia.id]: "https://faucet.quicknode.com/blast/sepolia",
   [modeTestnet.id]: "https://docs.mode.network/tools/testnet-faucets",
   [arbitrumSepolia.id]: "https://www.alchemy.com/faucets/arbitrum-sepolia",
+  [mantleSepoliaTestnet.id]: "https://faucet.testnet.mantle.xyz",
 };
 
 export function FaucetPage() {
