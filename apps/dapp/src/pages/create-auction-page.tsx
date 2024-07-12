@@ -1317,7 +1317,6 @@ export default function CreateAuctionPage() {
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
                           <PercentageSlider
-                            //@ts-expect-error TODO: fix with proper typing
                             field={field}
                             defaultValue={
                               auctionDefaultValues.minFillPercent[0]
@@ -1419,7 +1418,6 @@ export default function CreateAuctionPage() {
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
                           <PercentageSlider
-                            //@ts-expect-error TODO: fix with proper typing
                             field={field}
                             defaultValue={
                               auctionDefaultValues.minFillPercent[0]
@@ -1723,7 +1721,6 @@ export default function CreateAuctionPage() {
                               tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
                             >
                               <PercentageSlider
-                                //@ts-expect-error TODO: fix with proper typing
                                 field={field}
                                 defaultValue={75}
                               />

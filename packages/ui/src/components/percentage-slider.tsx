@@ -1,9 +1,12 @@
-import { ControllerRenderProps } from "react-hook-form";
+import type { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import { cn } from "..";
 import { Input, Slider } from "./primitives";
 
-type PercentageSliderProps = {
-  field: ControllerRenderProps; //TODO: add support for generic type
+type PercentageSliderProps<
+  T extends FieldValues = FieldValues,
+  K extends Path<T> = Path<T>,
+> = {
+  field: ControllerRenderProps<T, K>;
   defaultValue?: number;
   min?: number;
   max?: number;
@@ -12,13 +15,16 @@ type PercentageSliderProps = {
   sliderClassName?: string;
 };
 
-export function PercentageSlider({
+export function PercentageSlider<
+  T extends FieldValues = FieldValues,
+  K extends Path<T> = Path<T>,
+>({
   field,
   defaultValue,
   min = 0,
   max = 100,
   ...props
-}: PercentageSliderProps) {
+}: PercentageSliderProps<T, K>) {
   return (
     <div className={cn("flex items-center", props.className)}>
       <Input
