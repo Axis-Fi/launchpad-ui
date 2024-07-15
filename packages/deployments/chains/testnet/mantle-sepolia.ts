@@ -5,7 +5,7 @@ import type { Address } from "@repo/types";
 import addresses from "../../axis-core/.mantle-sepolia-v0.5.json";
 
 const config: AxisDeploymentConfig = {
-  name: "mantle-sepolia",
+  name: "mantle-sepolia-testnet",
   chain: mantleSepoliaTestnet,
   chainIconUrl: "/mantle-logo.svg",
   addresses: {
@@ -28,7 +28,7 @@ const config: AxisDeploymentConfig = {
     uniV3Dtl: addresses["axis.BatchUniswapV3DirectToLiquidity"] as Address,
   },
   subgraphURL:
-    "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mantle-sepolia/<VERSION>/gn",
+    "https://subgraph-api.mantle.xyz/api/public/d124a5f1-0609-435a-9a3a-dd525001afbe/subgraphs/axis-origin-mantle-sepolia/v<VERSION>/gn",
   rpcURL: "https://rpc.sepolia.mantle.xyz",
   tokenList: [
     {
