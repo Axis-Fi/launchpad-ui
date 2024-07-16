@@ -7,7 +7,7 @@ const { discord, twitter, website, contact } = metadata;
 
 export function AppFooter() {
   return (
-    <div className="max-w-limit mx-auto hidden w-full py-6 xl:block">
+    <div className="max-w-limit mx-auto hidden w-full py-6 lg:block">
       <div className="bg-hero-banner flex h-12 items-center justify-between rounded-full">
         <AppVersion className="ml-4" />
 

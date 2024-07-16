@@ -32,6 +32,7 @@ import { useAtom } from "jotai";
 import React from "react";
 import { useAccount } from "wagmi";
 import { environment } from "@repo/env";
+import { useMediaQueries } from "loaders/use-media-queries";
 
 const options = [
   { value: "created", label: "Created" },
@@ -42,6 +43,7 @@ const options = [
 ];
 
 export default function AuctionListPage() {
+  const { isTabletOrMobile } = useMediaQueries();
   const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
   const [onlyUserAuctions, setOnlyUserAuctions] = useState(
     userSettings.onlyUserAuctions,
@@ -134,40 +136,47 @@ export default function AuctionListPage() {
 
   return (
     <div className="">
-      <div className="bg-hero-banner flex h-[582px] w-full items-end justify-center">
-        <div className="mb-10">
-          <Text size="7xl" mono>
-            Welcome to Origin
-          </Text>
+      <div className="bg-hero-banner flex w-full items-end justify-center lg:h-[582px]">
+        {!isTabletOrMobile && (
+          <div className="mb-10 text-center">
+            <Text size={isTabletOrMobile ? "2xl" : "7xl"} mono>
+              Welcome to Origin
+            </Text>
 
-          <Text
-            size="3xl"
-            color="secondary"
-            className="mx-auto w-fit text-nowrap"
-          >
-            Experience the New Era of Token Launches
-          </Text>
-          <div className="mx-auto mt-6 flex w-min gap-x-2">
-            <ScrollLink to="auctions" offset={-10} smooth={true}>
-              <Button
-                onClick={() => handleSorting("created")}
-                className="uppercase"
-                size="lg"
-              >
-                <div className="flex items-center">
-                  Upcoming Sales
-                  <div className="size-6">
-                    <ArrowDownIcon />
+            <Text
+              size="3xl"
+              color="secondary"
+              className="mx-auto w-fit lg:text-nowrap"
+            >
+              Experience the New Era of Token Launches
+            </Text>
+            <div className="mx-auto mt-6 flex w-min flex-col-reverse  gap-2 lg:flex-row">
+              <ScrollLink to="auctions" offset={-10} smooth={true}>
+                <Button
+                  onClick={() => handleSorting("created")}
+                  className="uppercase"
+                  size="lg"
+                >
+                  <div className="flex items-center">
+                    Upcoming Sales
+                    <div className="size-6">
+                      <ArrowDownIcon />
+                    </div>
                   </div>
-                </div>
-              </Button>
-            </ScrollLink>
+                </Button>
+              </ScrollLink>
 
-            <Button className="uppercase" size="lg" variant="secondary">
-              Apply for Launch
-            </Button>
+              <Button className="uppercase" size="lg" variant="secondary">
+                Apply for Launch
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
+        {isTabletOrMobile && (
+          <Text size="7xl" mono>
+            Origin
+          </Text>
+        )}
       </div>
 
       <ScrollTargetElement name="auctions">
