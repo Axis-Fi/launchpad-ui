@@ -182,54 +182,64 @@ export default function AuctionListPage() {
       <ScrollTargetElement name="auctions">
         <PageContainer>
           <div className="flex items-center justify-between">
-            <Tooltip content={"Origin is a modular Auction suite"}>
-              <Text size="lg">{isLoading ? "Loading " : ""}Token Launches</Text>
-            </Tooltip>
+            {!isTabletOrMobile && (
+              <Tooltip content={"Origin is a modular Auction suite"}>
+                <Text size="lg">
+                  {isLoading ? "Loading " : ""}Token Launches
+                </Text>
+              </Tooltip>
+            )}
             <div className="flex gap-x-2">
-              <IconnedInput
-                icon={<SearchIcon />}
-                className="placeholder:text-foreground"
-                placeholder="Search"
-                onChange={(e) => setSearchText(e.target.value)}
-              />
-              <Select
-                triggerClassName="w-[120px]"
-                placeholder="Sort By"
-                options={options}
-                defaultValue={sortByStatus}
-                onChange={(value) => handleSorting(value)}
-              />
+              <>
+                <IconnedInput
+                  icon={<SearchIcon />}
+                  className="placeholder:text-foreground"
+                  placeholder="Search"
+                  onChange={(e) => setSearchText(e.target.value)}
+                />
+                <Select
+                  triggerClassName="w-[120px]"
+                  placeholder="Sort By"
+                  options={options}
+                  defaultValue={sortByStatus}
+                  onChange={(value) => handleSorting(value)}
+                />
+              </>
 
               <Tooltip
                 triggerClassName="cursor-pointer"
                 content="Only show auctions you've created or participated in."
               >
                 <Chip
+                  className="text-xs"
                   variant={onlyUserAuctions ? "active" : "default"}
                   onClick={() => handleSetUserAuctions()}
                 >
                   My Launches
                 </Chip>
               </Tooltip>
-
-              <ToggleGroup
-                type="single"
-                defaultValue={gridView ? "grid" : "list"}
-                onValueChange={(value) => handleViewChange(value)}
-              >
-                <ToggleGroupItem variant="icon" value="list">
-                  <RowsIcon />
-                </ToggleGroupItem>
-                <ToggleGroupItem variant="icon" value="grid">
-                  <DashboardIcon />
-                </ToggleGroupItem>
-              </ToggleGroup>
-
-              <ReloadButton
-                tooltip="Reload Auctions"
-                refetching={isRefetching}
-                onClick={() => refetch()}
-              />
+              {!isTabletOrMobile && (
+                <>
+                  <ToggleGroup
+                    type="single"
+                    defaultValue={gridView ? "grid" : "list"}
+                    onValueChange={(value) => handleViewChange(value)}
+                  >
+                    <ToggleGroupItem variant="icon" value="list">
+                      <RowsIcon />
+                    </ToggleGroupItem>
+                    <ToggleGroupItem variant="icon" value="grid">
+                      <DashboardIcon />
+                    </ToggleGroupItem>
+                  </ToggleGroup>
+                  )
+                  <ReloadButton
+                    tooltip="Reload Auctions"
+                    refetching={isRefetching}
+                    onClick={() => refetch()}
+                  />
+                </>
+              )}
             </div>
           </div>
           {!isLoading && !filteredAuctions.length && (
@@ -239,8 +249,10 @@ export default function AuctionListPage() {
           )}
           <div
             className={cn(
-              "mt-4 ",
-              gridView ? "mx-auto grid grid-cols-3 gap-4" : "space-y-4",
+              "lg:mt-4 ",
+              gridView
+                ? "mx-auto grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+                : "space-y-4",
               isLoading && "mask",
             )}
           >

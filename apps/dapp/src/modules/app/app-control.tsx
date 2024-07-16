@@ -29,7 +29,7 @@ export function AppMenu() {
     <div className="relative">
       <div
         className={cn(
-          "bg-surface-tertiary/50 absolute -left-40 bottom-12 mx-auto size-fit translate-y-[600px] rounded-md p-2 px-8 pr-8 backdrop-blur transition-all ",
+          "bg-surface-tertiary/50 absolute -left-40 bottom-12 mx-auto size-fit translate-y-[600px] rounded-t-md p-2 px-8 pr-8 backdrop-blur transition-all ",
           open && "translate-y-0",
         )}
       >
