@@ -1043,7 +1043,7 @@ export default function CreateAuctionPage() {
         backNavigationText="Back to Launches"
       />
       <div className="flex items-center justify-center">
-        <h1 className="text-5xl">Create Your Auction</h1>
+        <h1 className="text-5xl">Launch a token</h1>
       </div>
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()} className="pb-16">
