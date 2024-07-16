@@ -11,7 +11,7 @@ function App() {
       <ScrollToTop />
       <ReferrerChecker />
       <div className="flex h-dvh flex-col justify-between overflow-x-hidden">
-        <div className="mx-auto flex w-full flex-col-reverse xl:flex-col">
+        <div className="mx-auto flex w-full flex-col-reverse lg:flex-col">
           <AppControl />
           <div className="mx-auto w-full">
             <Outlet />

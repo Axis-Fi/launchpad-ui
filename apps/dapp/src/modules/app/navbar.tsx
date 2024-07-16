@@ -44,7 +44,7 @@ export default function Navbar(props: {
   return (
     <NavigationMenu>
       <NavigationMenuList
-        className={cn(props.mobile && "flex flex-col items-start text-right")}
+        className={cn(props.mobile && "flex flex-col items-end")}
       >
         {links.map((l) => (
           <NavigationMenuItem key={l.href}>
