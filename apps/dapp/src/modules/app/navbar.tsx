@@ -25,21 +25,27 @@ const defaultLinks = [
   { title: "Docs", href: "https://axis.finance/docs/overview" },
 ];
 
-export default function Navbar() {
+export default function Navbar(props: {
+  mobile?: boolean;
+  onlyDefault?: boolean;
+}) {
   const isRoot = window.location.hash === "#/";
   const { isCurator, pendingCurationsCount } = useCurator();
   const isProd = environment.isProduction;
 
   //Only show curator link if connected address is a curator for any auction
   const links = React.useMemo(() => {
+    if (props.onlyDefault) return defaultLinks;
     const _links = isProd ? [] : testnetLinks;
     const curatorLink = isCurator ? [curator] : [];
     return [...defaultLinks, refer, ..._links, ...curatorLink];
-  }, [isCurator]);
+  }, [isCurator, props.onlyDefault]);
 
   return (
     <NavigationMenu>
-      <NavigationMenuList>
+      <NavigationMenuList
+        className={cn(props.mobile && "flex flex-col items-start text-right")}
+      >
         {links.map((l) => (
           <NavigationMenuItem key={l.href}>
             <NavigationMenuLink asChild>
