@@ -285,14 +285,14 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
 
   return (
-    <div className="auction-action-container">
-      <div className="w-2/3 space-y-4">
+    <div className="auction-action-container ">
+      <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         <AuctionLaunchMetrics auction={auction} />
         <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
 
-      <div className="w-1/3">
+      <div className="lg:w-1/3">
         {canBid ? (
           <FormProvider {...form}>
             <form onSubmit={(e) => e.preventDefault()}>

@@ -64,7 +64,7 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
     <div className="gap-y-md flex flex-col">
       <Card
         title="Claim"
-        className="w-[496px]"
+        className="lg:w-[496px]"
         headerRightElement={<Badge color="alert">Auction Failed</Badge>}
       >
         <RequiresChain chainId={auction.chainId}>

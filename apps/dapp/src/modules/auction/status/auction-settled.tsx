@@ -20,7 +20,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
 
   return (
     <div className="auction-action-container">
-      <div className="w-2/3 space-y-4">
+      <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
         <Card
           title="Launch Info"

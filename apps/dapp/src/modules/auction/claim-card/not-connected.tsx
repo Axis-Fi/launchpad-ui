@@ -8,7 +8,7 @@ export function NotConnectedClaimCard({ auction: _auction }: PropsWithAuction) {
   return (
     <Card
       title="Claim"
-      className="w-[496px]"
+      className="lg:w-[496px]"
       headerRightElement={<Badge>Auction Closed</Badge>}
     >
       <div className="flex flex-col gap-y-4">

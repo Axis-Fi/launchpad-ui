@@ -32,7 +32,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
 
   return (
     <div>
-      <div className="auction-action-container">
+      <div className="auction-action-container mt-4 lg:mt-0 ">
         <div className="flex w-full flex-col gap-y-4">
           <Card
             title="Launch Info"
