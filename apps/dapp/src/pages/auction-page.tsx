@@ -63,7 +63,7 @@ export default function AuctionPage() {
       : statuses[auction.status];
 
   return (
-    <PageContainer>
+    <PageContainer className="mb-20">
       <PageHeader backNavigationPath="/#" backNavigationText="Back to Launches">
         <ReloadButton refetching={isRefetching} onClick={() => refetch?.()} />
       </PageHeader>

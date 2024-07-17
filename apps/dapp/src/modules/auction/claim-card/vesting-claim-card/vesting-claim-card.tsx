@@ -160,7 +160,7 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
             ? "Claim"
             : "Redeem"
         }`}
-        className="w-[496px]"
+        className="lg:w-[496px]"
         headerRightElement={
           <Badge color={vestingBadgeColour}>{vestingBadgeText}</Badge>
         }

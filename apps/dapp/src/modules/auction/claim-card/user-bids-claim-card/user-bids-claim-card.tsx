@@ -42,7 +42,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
     <div className="gap-y-md flex flex-col">
       <Card
         title="Claim"
-        className="w-[496px]"
+        className="lg:w-[496px]"
         headerRightElement={<Badge color={badgeColour}>{badgeText}</Badge>}
       >
         <RequiresChain chainId={auction.chainId}>
