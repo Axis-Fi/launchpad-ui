@@ -1,13 +1,19 @@
-import { Auction } from "@repo/types";
-import React from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import type { Auction, AuctionId } from "@repo/types";
+import React, { useRef } from "react";
 import { parseUnits, toHex } from "viem";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { useAuction } from "./use-auction";
+import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
 import { getAuctionHouse } from "utils/contracts";
+import { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
+import {
+  auction as auctionCache,
+  optimisticUpdate,
+} from "modules/auction/utils/optimistic";
 
 type SettleAuctionProps = {
   auction: Auction;
@@ -20,7 +26,7 @@ export function useSettleAuction({
   callbackData,
 }: SettleAuctionProps) {
   const { address, abi } = getAuctionHouse(auction);
-  const { refetch } = useAuction(auction.id, auction.auctionType);
+  const queryKey = getAuctionQueryKey(auction.id as AuctionId);
 
   const { data: settleCall, ...settleCallStatus } = useSimulateContract({
     abi,
@@ -39,11 +45,24 @@ export function useSettleAuction({
 
   const handleSettle = () => settleTx.writeContract(settleCall!.request);
 
+  const queryClient = useQueryClient();
+  const settleTxnSucceeded = useRef(false);
+
   React.useEffect(() => {
-    if (settleReceipt.isSuccess) {
-      refetch();
+    if (settleTxnSucceeded.current || !settleReceipt.isSuccess) {
+      return;
     }
-  }, [settleReceipt.isSuccess, refetch]);
+
+    settleTxnSucceeded.current = true;
+
+    // Optimistically update the auction status to "settled"
+    optimisticUpdate(
+      queryClient,
+      queryKey,
+      (cachedAuction: GetBatchAuctionLotQuery) =>
+        auctionCache.updateStatus(cachedAuction, "settled"),
+    );
+  }, [settleReceipt.isSuccess, queryClient, queryKey]);
 
   const error = [settleCallStatus, settleTx, settleReceipt].find(
     (tx) => tx.isError,

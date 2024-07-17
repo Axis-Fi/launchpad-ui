@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Text,
   Button,
@@ -13,9 +14,9 @@ import {
   Input,
   Label,
   Select,
-  Slider,
   Switch,
   Textarea,
+  PercentageSlider,
   trimAddress,
 } from "@repo/ui";
 import { abis } from "@repo/abis";
@@ -52,6 +53,7 @@ import {
   formatDate,
   dateMath,
   trimCurrency,
+  toBasisPoints,
 } from "src/utils";
 
 import { AuctionType, CallbacksType } from "@repo/types";
@@ -59,7 +61,7 @@ import { AuctionType, CallbacksType } from "@repo/types";
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { AuctionCreationStatus } from "modules/auction/auction-creation-status";
 import { useAllowance } from "loaders/use-allowance";
 import { toKeycode } from "utils/hex";
@@ -77,6 +79,17 @@ import { PageHeader } from "modules/app/page-header";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
 import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
+import { useFees } from "modules/auction/hooks/use-fees";
+import { getAuctionsQueryKey } from "modules/auction/hooks/use-auctions";
+import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
+import { getAuctionId } from "modules/auction/utils/get-auction-id";
+import {
+  auctions as auctionsCache,
+  auction as auctionCache,
+  optimisticUpdate,
+} from "modules/auction/utils/optimistic";
+import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
+import { getChainName } from "modules/auction/utils/get-chain-name";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -103,7 +116,7 @@ const schema = z
     capacity: z.string(),
     auctionType: z.string(),
     minFillPercent: z.array(z.number()).optional(),
-    minBidSize: z.array(z.number()).optional(),
+    minBidSize: z.string().optional(),
     minPrice: StringNumberNotNegative.optional(),
     price: StringNumberNotNegative.optional(),
     start: z.date(),
@@ -137,6 +150,7 @@ const schema = z
       .optional(),
     vestingDuration: StringNumberNotNegative.optional(),
     vestingStart: z.date().optional(),
+    referrerFee: z.array(z.number()).optional(),
     // Metadata
     name: z.string().max(32),
     description: z.string().max(332),
@@ -181,7 +195,7 @@ const schema = z
     path: ["start"],
   })
   .refine(
-    (data) => addDays(data.start, 1).getTime() <= data.deadline.getTime(),
+    (data) => addDays(data.start, 1).getTime() < data.deadline.getTime(),
     {
       message: "Deadline needs to be at least 1 day after the start",
       path: ["deadline"],
@@ -200,13 +214,24 @@ const schema = z
   )
   .refine(
     (data) =>
-      // Only required for FPB and FPA
+      // Only required for FPB
       data.auctionType === AuctionType.FIXED_PRICE_BATCH
         ? !!data.price && isFinite(Number(data.price))
         : true,
     {
       message: "Price must be set",
       path: ["price"],
+    },
+  )
+  .refine(
+    (data) =>
+      // Only required for EMP
+      data.auctionType === AuctionType.SEALED_BID
+        ? !!data.minBidSize && isFinite(Number(data.minBidSize[0]))
+        : true,
+    {
+      message: "Minimum bid size must be set",
+      path: ["minBidSize"],
     },
   )
   .refine(
@@ -287,7 +312,6 @@ export default function CreateAuctionPage() {
   const navigate = useNavigate();
   const auctionDefaultValues = {
     minFillPercent: [50],
-    minBidSize: [1], // TODO allows users to specify this value in the UI
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
   };
@@ -310,12 +334,14 @@ export default function CreateAuctionPage() {
     quoteToken,
     _chainId,
     capacity,
-    auctionType,
+    _auctionType,
     callbacksType,
     dtlIsVested,
     dtlUniV3PoolFee,
     start,
     deadline,
+    minBidSize,
+    minPrice,
   ] = form.watch([
     "isVested",
     "payoutToken",
@@ -328,14 +354,34 @@ export default function CreateAuctionPage() {
     "dtlUniV3PoolFee",
     "start",
     "deadline",
+    "minBidSize",
+    "minPrice",
   ]);
 
   const chainId = _chainId ?? connectedChainId;
 
+  const auctionType = _auctionType as AuctionType;
+
+  const { address: auctionHouseAddress, abi: auctionHouseAbi } =
+    getAuctionHouse({
+      auctionType,
+      chainId,
+    });
+
+  const { data: fees } = useFees(
+    connectedChainId,
+    auctionHouseAddress,
+    auctionType,
+  );
+
+  const queryClient = useQueryClient();
+
   const createAuctionTx = useWriteContract();
+
   const createTxReceipt = useWaitForTransactionReceipt({
     hash: createAuctionTx.data,
   });
+
   const lotId = getCreatedAuctionId(createTxReceipt.data);
 
   const auctionInfoMutation = useMutation({
@@ -395,11 +441,6 @@ export default function CreateAuctionPage() {
     const code = isEMP ? "EMPA" : isFPB ? "FPBA" : "unknown";
 
     const auctionTypeKeycode = toKeycode(code);
-
-    const { address: contractAddress, abi } = getAuctionHouse({
-      auctionType,
-      chainId,
-    });
 
     const publicKey = isEMP
       ? await generateKeyPairMutation.mutateAsync()
@@ -496,7 +537,7 @@ export default function CreateAuctionPage() {
       }
       case CallbacksType.UNIV2_DTL: {
         const proceedsPercent = values.dtlProceedsPercent
-          ? (values.dtlProceedsPercent[0] ?? 0) * 1000
+          ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
           : 0;
         const vestingStart = values.dtlVestingStart
           ? getTimestamp(values.dtlVestingStart)
@@ -553,7 +594,7 @@ export default function CreateAuctionPage() {
       }
       case CallbacksType.UNIV3_DTL: {
         const proceedsPercent = values.dtlProceedsPercent
-          ? (values.dtlProceedsPercent[0] ?? 0) * 1000
+          ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
           : 0;
         const vestingStart = values.dtlVestingStart
           ? getTimestamp(values.dtlVestingStart)
@@ -617,8 +658,8 @@ export default function CreateAuctionPage() {
 
     createAuctionTx.writeContract(
       {
-        abi,
-        address: contractAddress,
+        abi: auctionHouseAbi,
+        address: auctionHouseAddress,
         functionName: "auction",
         args: [
           {
@@ -640,6 +681,7 @@ export default function CreateAuctionPage() {
                   }),
             wrapDerivative: false,
             callbackData: callbackData,
+            referrerFee: toBasisPoints(values.referrerFee?.[0] ?? 0),
           },
           {
             start: getTimestamp(values.start),
@@ -937,6 +979,7 @@ export default function CreateAuctionPage() {
       tokenAddress: payoutToken ? (payoutToken.address as Address) : undefined,
       balanceAddress: address,
     });
+
   useEffect(() => {
     form.setValue(
       "payoutTokenBalance",
@@ -949,6 +992,50 @@ export default function CreateAuctionPage() {
       ? Number(formatUnits(payoutTokenBalance, payoutTokenDecimals))
       : 0;
 
+  const createTxnSucceeded = useRef<boolean>(false);
+
+  /**
+   * Auctions are read from the subgraph.
+   * There can be a delay between an auction creation txn succeeding and the subgraph updating.
+   * To avoid users not being able to see their auction, we cache it locally, optimistically.
+   */
+  useEffect(() => {
+    if (createTxnSucceeded.current === true) return;
+    if (lotId === undefined || lotId === null) return; // lotId is populated after the txn succeeds
+
+    createTxnSucceeded.current = true;
+
+    const auctionId = getAuctionId(chain!, auctionHouseAddress, lotId);
+
+    const optimisticAuction = auctionsCache.createOptimisticAuction(
+      lotId,
+      chain!,
+      address!,
+      auctionHouseAddress,
+      form.getValues(),
+    );
+
+    // Optimistically store the auction data in the list of auctions cache
+    optimisticUpdate(
+      queryClient,
+      getAuctionsQueryKey(chainId),
+      (cachedAuctions: GetAuctionLotsQuery) =>
+        auctionsCache.insertAuction(cachedAuctions, optimisticAuction),
+    );
+
+    // Optimistically store the auction data in the auction details cache
+    optimisticUpdate(queryClient, getAuctionQueryKey(auctionId), () =>
+      auctionCache.create(optimisticAuction),
+    );
+  }, [address, auctionHouseAddress, chain, chainId, form, lotId, queryClient]);
+  const disableMinBidSize = !canUpdateMinBidSize(form.getValues());
+
+  const isReasonableMinBidSize =
+    !capacity ||
+    !minPrice ||
+    !minBidSize ||
+    Number(minBidSize) >= (Number(capacity) * Number(minPrice)) / 10_000; //10k here represents a potential max amount of bids
+
   return (
     <PageContainer>
       <PageHeader
@@ -956,7 +1043,7 @@ export default function CreateAuctionPage() {
         backNavigationText="Back to Launches"
       />
       <div className="flex items-center justify-center">
-        <h1 className="text-5xl">Create Your Auction</h1>
+        <h1 className="text-5xl">Launch a token</h1>
       </div>
       <Form {...form}>
         <form onSubmit={(e) => e.preventDefault()} className="pb-16">
@@ -1240,26 +1327,45 @@ export default function CreateAuctionPage() {
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
-                          <div className="flex items-center">
+                          <PercentageSlider
+                            field={field}
+                            defaultValue={
+                              auctionDefaultValues.minFillPercent[0]
+                            }
+                          />
+                        </FormItemWrapper>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="minBidSize"
+                      render={({ field }) => (
+                        <FormItemWrapper
+                          className="mt-4"
+                          label="Minimum Bid Size"
+                          tooltip={`The minimum number of quote tokens to be received in a bid. ${
+                            disableMinBidSize
+                              ? "Capacity and Minimum Bid Price must be set before setting this value."
+                              : ""
+                          }`}
+                        >
+                          <div className="relative">
                             <Input
-                              disabled
-                              className="w-16 disabled:opacity-100"
-                              value={`${
-                                field.value?.[0] ??
-                                auctionDefaultValues.minFillPercent
-                              }%`}
-                            />
-                            <Slider
                               {...field}
-                              className="cursor-pointer"
-                              min={1}
-                              max={100}
-                              defaultValue={auctionDefaultValues.minFillPercent}
-                              value={field.value}
-                              onValueChange={(v) => {
-                                field.onChange(v);
-                              }}
+                              disabled={disableMinBidSize}
+                              placeholder="1"
+                              type="number"
                             />
+                            {!isReasonableMinBidSize && (
+                              <Text
+                                className="text-feedback-warning absolute"
+                                size="xs"
+                              >
+                                Your min bid size could result in the settlement
+                                being expensive due to the number of potential
+                                winning bids
+                              </Text>
+                            )}
                           </div>
                         </FormItemWrapper>
                       )}
@@ -1322,27 +1428,12 @@ export default function CreateAuctionPage() {
                           label="Minimum Filled Percentage"
                           tooltip="Minimum percentage of the capacity that needs to be filled in order for the auction lot to settle"
                         >
-                          <div className="flex items-center">
-                            <Input
-                              disabled
-                              className="w-16 disabled:opacity-100"
-                              value={`${
-                                field.value?.[0] ??
-                                auctionDefaultValues.minFillPercent
-                              }%`}
-                            />
-                            <Slider
-                              {...field}
-                              className="cursor-pointer"
-                              min={1}
-                              max={100}
-                              defaultValue={auctionDefaultValues.minFillPercent}
-                              value={field.value}
-                              onValueChange={(v) => {
-                                field.onChange(v);
-                              }}
-                            />
-                          </div>
+                          <PercentageSlider
+                            field={field}
+                            defaultValue={
+                              auctionDefaultValues.minFillPercent[0]
+                            }
+                          />
                         </FormItemWrapper>
                       )}
                     />
@@ -1411,6 +1502,23 @@ export default function CreateAuctionPage() {
                         <Input
                           {...field}
                           placeholder={trimAddress("0x0000000")}
+                        />
+                      </FormItemWrapper>
+                    )}
+                  />{" "}
+                  <FormField
+                    name="referrerFee"
+                    render={({ field }) => (
+                      <FormItemWrapper
+                        label="Referrer Fee Percentage"
+                        tooltip={
+                          "The percentual amount of referrer fee you're willing to pay"
+                        }
+                      >
+                        <PercentageSlider
+                          field={field}
+                          defaultValue={0}
+                          max={fees.maxReferrerFee ?? 0}
                         />
                       </FormItemWrapper>
                     )}
@@ -1623,24 +1731,10 @@ export default function CreateAuctionPage() {
                               label="Percent of Proceeds to Deposit"
                               tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
                             >
-                              <>
-                                <Input
-                                  disabled
-                                  className="disabled:opacity-100"
-                                  value={`${field.value?.[0] ?? [75]}%`}
-                                />
-                                <Slider
-                                  {...field}
-                                  className="cursor-pointer pt-2"
-                                  min={1}
-                                  max={100}
-                                  defaultValue={[75]}
-                                  value={field.value}
-                                  onValueChange={(v) => {
-                                    field.onChange(v);
-                                  }}
-                                />
-                              </>
+                              <PercentageSlider
+                                field={field}
+                                defaultValue={75}
+                              />
                             </FormItemWrapper>
                           )}
                         />
@@ -1837,6 +1931,7 @@ export default function CreateAuctionPage() {
                       navigate(
                         generateAuctionURL(
                           auctionType as AuctionType,
+                          auctionHouseAddress,
                           lotId,
                           chain,
                         ),
@@ -1870,16 +1965,16 @@ function getCreatedAuctionId(
 
 function generateAuctionURL(
   auctionType: AuctionType,
+  auctionHouseAddress: Address,
   lotId: number,
   chain: Chain,
 ) {
   //Transform viem/rainbowkit names into subgraph format
-  const chainName = chain.name.replace(" ", "-").toLowerCase();
+  const chainName = getChainName(chain);
 
-  const { address: auctionHouse } = getAuctionHouse({
-    auctionType,
-    chainId: chain.id,
-  });
+  return `/auction/${auctionType}/${chainName}-${auctionHouseAddress.toLowerCase()}-${lotId}`;
+}
 
-  return `/auction/${auctionType}/${chainName}-${auctionHouse.toLowerCase()}-${lotId}`;
+function canUpdateMinBidSize(form: CreateAuctionForm) {
+  return !!form.capacity && !!form.minPrice;
 }

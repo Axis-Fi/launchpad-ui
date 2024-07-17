@@ -113,7 +113,7 @@ function AuctionCardDetails(
           <AuctionMetric id="targetRaise" />
           <AuctionMetric id="minRaise" />
           <AuctionMetric id="minPrice" size="s" />
-          <AuctionMetric id="auctionedSupply" size="s" />
+          <AuctionMetric id="tokensAvailable" size="s" />
           {hasCurator && <AuctionMetric id="curator" size="s" />}
         </AuctionMetricsContainer>
       )}
@@ -126,7 +126,7 @@ function AuctionCardDetails(
           <AuctionMetric id="totalSupply" />
           <AuctionMetric id="capacity" />
           <AuctionMetric id="fixedPrice" size="s" />
-          <AuctionMetric id="auctionedSupply" size="s" />
+          <AuctionMetric id="tokensAvailable" size="s" />
           {hasCurator && <AuctionMetric id="curator" size="s" />}
         </AuctionMetricsContainer>
       )}

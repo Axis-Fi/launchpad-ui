@@ -1,4 +1,5 @@
 import { AuctionType } from "./auction-modules";
+import { Address } from "./axis-contracts";
 import { BatchSubgraphAuction } from "./subgraph-queries";
 import type { Token } from "./token";
 
@@ -6,7 +7,7 @@ export type BaseAuction = {
   chainId: number;
   baseToken: Token;
   quoteToken: Token;
-  callbacks: `0x${string}`;
+  callbacks: Address;
   status: AuctionStatus;
   auctionData?: EMPAuctionData | FixedPriceBatchAuctionData;
   auctionType: AuctionType;
@@ -123,3 +124,5 @@ export type FPBFormattedInfo = {
 export type PropsWithAuction = {
   auction: Auction;
 };
+
+export type AuctionId = `${string}-${string}-${number}`;

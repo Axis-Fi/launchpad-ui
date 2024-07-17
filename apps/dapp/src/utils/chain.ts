@@ -11,8 +11,19 @@ export const getBlockExplorer = (chain: Chain) => {
   };
 };
 
+/**
+ * Map Rainbowkit chain names to their subgraph chain names.
+ * Only used where there's discrepancies.
+ */
+const CHAIN_NAME_MAP = {
+  "mantle-sepolia": "mantle-sepolia-testnet",
+} as const;
+
 export function getChainId(chainName?: string): number {
-  const name = chainName?.replace("-", " ").toLowerCase();
+  const lowerChainName =
+    chainName?.toLowerCase() as keyof typeof CHAIN_NAME_MAP;
+  const mappedName = CHAIN_NAME_MAP[lowerChainName] || lowerChainName;
+  const name = mappedName?.replace(/-/g, " ");
 
   const chainId = activeChains.find(
     (c) => c.name.toLocaleLowerCase() === name?.toLocaleLowerCase(),

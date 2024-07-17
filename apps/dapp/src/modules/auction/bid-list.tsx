@@ -24,6 +24,7 @@ import { useStorageBids } from "state/bids/handlers";
 import { CSVDownloader } from "components/csv-downloader";
 import { arrayToCSV } from "utils/csv";
 import { LockClosedIcon, LockOpen1Icon } from "@radix-ui/react-icons";
+import { Format } from "modules/token/format";
 
 export const bidListColumnHelper = createColumnHelper<
   BatchAuctionBid & { auction: Auction }
@@ -70,7 +71,7 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
 
     const display = value ? (
       <>
-        {trimCurrency(value)} {info.row.original.auction.quoteToken.symbol}{" "}
+        <Format value={value} /> {info.row.original.auction.quoteToken.symbol}
         <LockOpen1Icon />
       </>
     ) : (
@@ -105,10 +106,12 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
 export const amountInCol = bidListColumnHelper.accessor("amountIn", {
   header: "Amount In",
   enableSorting: true,
-  cell: (info) =>
-    `${trimCurrency(info.getValue())} ${
-      info.row.original.auction.quoteToken.symbol
-    }`,
+  cell: (info) => (
+    <>
+      <Format value={info.getValue()} />{" "}
+      {info.row.original.auction.quoteToken.symbol}
+    </>
+  ),
 });
 export const bidderCol = bidListColumnHelper.accessor("bidder", {
   header: "Bidder",

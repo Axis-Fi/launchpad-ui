@@ -203,6 +203,7 @@ export const batchAuctionHouseAbi = [
           { name: "baseToken", internalType: "address", type: "address" },
           { name: "quoteToken", internalType: "address", type: "address" },
           { name: "curator", internalType: "address", type: "address" },
+          { name: "referrerFee", internalType: "uint48", type: "uint48" },
           {
             name: "callbacks",
             internalType: "contract ICallback",
@@ -334,7 +335,7 @@ export const batchAuctionHouseAbi = [
     name: "fees",
     outputs: [
       { name: "protocol", internalType: "uint48", type: "uint48" },
-      { name: "referrer", internalType: "uint48", type: "uint48" },
+      { name: "maxReferrerFee", internalType: "uint48", type: "uint48" },
       { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
     ],
   },
@@ -384,7 +385,7 @@ export const batchAuctionHouseAbi = [
     name: "getFees",
     outputs: [
       { name: "protocol", internalType: "uint48", type: "uint48" },
-      { name: "referrer", internalType: "uint48", type: "uint48" },
+      { name: "maxReferrerFee", internalType: "uint48", type: "uint48" },
       { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
     ],
   },
@@ -1008,6 +1009,14 @@ export const batchAuctionHouseAbi = [
     name: "Module_OnlyParent",
   },
   { type: "error", inputs: [], name: "NotPermitted" },
+  {
+    type: "error",
+    inputs: [
+      { name: "value", internalType: "uint256", type: "uint256" },
+      { name: "length", internalType: "uint256", type: "uint256" },
+    ],
+    name: "StringsInsufficientHexLength",
+  },
   {
     type: "error",
     inputs: [{ name: "token_", internalType: "address", type: "address" }],
@@ -2730,6 +2739,7 @@ export const linearVestingAbi = [
           { name: "exists", internalType: "bool", type: "bool" },
           { name: "wrapped", internalType: "address", type: "address" },
           { name: "underlyingToken", internalType: "address", type: "address" },
+          { name: "supply", internalType: "uint256", type: "uint256" },
           { name: "data", internalType: "bytes", type: "bytes" },
         ],
       },
@@ -2869,8 +2879,23 @@ export const linearVestingAbi = [
       { name: "exists", internalType: "bool", type: "bool" },
       { name: "wrapped", internalType: "address", type: "address" },
       { name: "underlyingToken", internalType: "address", type: "address" },
+      { name: "supply", internalType: "uint256", type: "uint256" },
       { name: "data", internalType: "bytes", type: "bytes" },
     ],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
+    name: "tokenURI",
+    outputs: [{ name: "", internalType: "string", type: "string" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "tokenId", internalType: "uint256", type: "uint256" }],
+    name: "totalSupply",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
   },
   {
     stateMutability: "nonpayable",
@@ -3162,6 +3187,14 @@ export const linearVestingAbi = [
     name: "Module_OnlyParent",
   },
   { type: "error", inputs: [], name: "NotPermitted" },
+  {
+    type: "error",
+    inputs: [
+      { name: "value", internalType: "uint256", type: "uint256" },
+      { name: "length", internalType: "uint256", type: "uint256" },
+    ],
+    name: "StringsInsufficientHexLength",
+  },
   {
     type: "error",
     inputs: [{ name: "token_", internalType: "address", type: "address" }],
@@ -3504,7 +3537,7 @@ export const uniV2DtlAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [],
-    name: "MAX_PERCENT",
+    name: "ONE_HUNDRED_PERCENT",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
   },
   {
@@ -3799,7 +3832,7 @@ export const uniV3DtlAbi = [
     stateMutability: "view",
     type: "function",
     inputs: [],
-    name: "MAX_PERCENT",
+    name: "ONE_HUNDRED_PERCENT",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
   },
   {

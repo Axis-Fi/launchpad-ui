@@ -1,23 +1,45 @@
-import { request } from "./request";
 import { Variables } from "graphql-request";
+import type { QueryKey } from "@tanstack/react-query";
 import { environment } from "@repo/env";
-import { mainnetDeployments, testnetDeployments } from "@repo/deployments";
+import {
+  type AxisDeployment,
+  mainnetDeployments,
+  testnetDeployments,
+} from "@repo/deployments";
+import { request } from "./request";
+import { useIsCacheStale } from "modules/auction/hooks/use-is-cache-stale";
 
 const isTestnet = environment.isTestnet;
 const endpoints = isTestnet ? testnetDeployments : mainnetDeployments;
 
+type QueryKeyFn = (deployment: AxisDeployment) => QueryKey;
+
+type QueryAllEndpointsParams = {
+  document: string;
+  variables?: Variables;
+  queryKeyFn?: QueryKeyFn;
+};
+
 export function queryAllEndpoints<TQuery>({
   document,
   variables = {},
-}: {
-  document: string;
-  variables?: Variables;
-}) {
-  return endpoints.map(({ subgraphURL: url }) => ({
-    queryKey: [url, document, variables],
-    queryFn: async () => {
-      const response = await request<TQuery>(url, document, variables);
-      return response;
-    },
-  }));
+  queryKeyFn,
+}: QueryAllEndpointsParams) {
+  return endpoints.map((deployment) => {
+    const { subgraphURL: url } = deployment;
+    const queryKey = queryKeyFn
+      ? queryKeyFn(deployment)
+      : [url, document, variables];
+
+    const enabled = useIsCacheStale(queryKey);
+
+    return {
+      // eslint-disable-next-line @tanstack/query/exhaustive-deps
+      queryKey,
+      queryFn: () => request<TQuery>(url, document, variables),
+      enabled,
+    };
+  });
 }
+
+export type { QueryKeyFn, QueryKey };

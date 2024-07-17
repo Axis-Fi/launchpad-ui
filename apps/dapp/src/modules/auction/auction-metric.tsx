@@ -12,6 +12,7 @@ import { shorten, formatPercentage } from "utils/number";
 import { getCallbacksType } from "./utils/get-callbacks-type";
 import { getMinFilled, getPrice, hasDerivative } from "./utils/auction-details";
 import { getDaysBetweenDates } from "utils/date";
+import { Format } from "modules/token/format";
 
 const getTargetRaise = (
   auction: Auction,
@@ -145,7 +146,11 @@ const handlers = {
       const price = getPrice(auction);
       if (!price) return undefined;
 
-      return `${trimCurrency(price)} ${auction.quoteToken.symbol}`;
+      return (
+        <>
+          <Format value={price} /> {auction.quoteToken.symbol}
+        </>
+      );
     },
   },
   totalBids: {
@@ -176,14 +181,20 @@ const handlers = {
 
   price: {
     label: "Price",
-    handler: (auction: Auction) =>
-      `${getPrice(auction)} ${auction.quoteToken?.symbol}`,
+    handler: (auction: Auction) => (
+      <>
+        <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
+      </>
+    ),
   },
 
   fixedPrice: {
     label: "Price",
-    handler: (auction: Auction) =>
-      `${getPrice(auction)} ${auction.quoteToken.symbol}`,
+    handler: (auction: Auction) => (
+      <>
+        <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
+      </>
+    ),
   },
 
   sold: {
@@ -192,8 +203,8 @@ const handlers = {
       `${auction.formatted?.sold} ${auction.baseToken.symbol}`,
   },
 
-  auctionedSupply: {
-    label: "Auctioned Supply",
+  tokensAvailable: {
+    label: "Tokens Available",
     handler: (auction: Auction) => {
       const res =
         (Number(auction.capacityInitial) /

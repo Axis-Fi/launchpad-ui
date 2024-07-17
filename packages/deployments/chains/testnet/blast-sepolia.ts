@@ -1,25 +1,31 @@
 import { blastSepolia } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 import { weth } from "../../tokens/common";
+import addresses from "../../axis-core/.blast-sepolia-v0.5.json";
+import type { Address } from "@repo/types";
 
 const config: AxisDeploymentConfig = {
   name: "blast-testnet",
   chain: blastSepolia,
   chainIconUrl: "/blast-logo.png",
   addresses: {
-    batchAuctionHouse: "0xBA00007A1868f4AEFdd39041327CbC4Ba5bF1632",
-    batchCatalogue: "0xC6D5E3A1823304D28cdc6dc23b4117b6cA34C98E",
-    encryptedMarginalPrice: "0x8F34bBB3edd28017f826FE7a73eb9297384BF0d8",
-    fixedPriceBatch: "0x87ED152099949F870725bD9517A1697d428ddF74",
-    batchLinearVesting: "0xBD0474b8e7b65f3dF35d2817BA09aC864a199e31",
+    batchAuctionHouse: addresses["axis.BatchAuctionHouse"] as Address,
+    batchCatalogue: addresses["axis.BatchCatalogue"] as Address,
+    encryptedMarginalPrice: addresses["axis.EncryptedMarginalPrice"] as Address,
+    fixedPriceBatch: addresses["axis.FixedPriceBatch"] as Address,
+    batchLinearVesting: addresses["axis.BatchLinearVesting"] as Address,
   },
   callbacks: {
-    cappedMerkleAllowlist: "0x981d6a6997B23C06f4E95862f72B7C06c039a647",
-    merkleAllowlist: "0x9859c6FA2594e93149bd76415cE3982f39888CCb",
-    tokenAllowlist: "0x984B6165fC87c682441E81B4aa23A017cdbFba18",
-    allocatedMerkleAllowlist: "0x986455Ab4f64303E8F51e72F6BF1789182563F65",
-    uniV2Dtl: "0xE60007A0721A92f0eb538c360317d4808238700D",
-    uniV3Dtl: "0xE6b1113d108f86Fb7eF662ecF235dB6dB8978Cc3",
+    cappedMerkleAllowlist: addresses[
+      "axis.BatchCappedMerkleAllowlist"
+    ] as Address,
+    merkleAllowlist: addresses["axis.BatchMerkleAllowlist"] as Address,
+    tokenAllowlist: addresses["axis.BatchTokenAllowlist"] as Address,
+    allocatedMerkleAllowlist: addresses[
+      "axis.BatchAllocatedMerkleAllowlist"
+    ] as Address,
+    uniV2Dtl: addresses["axis.BatchUniswapV2DirectToLiquidity"] as Address,
+    uniV3Dtl: addresses["axis.BatchUniswapV3DirectToLiquidity"] as Address,
   },
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/<VERSION>/gn",

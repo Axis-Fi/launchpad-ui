@@ -9,14 +9,12 @@ export function ReachOutMessage({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <div className={cn("flex gap-x-1", className)} {...props}>
-      <p>
-        {children ?? "If the problem persists reach us out in "}
-        <Link className="inline text-[#7289da]" href={metadata.discord}>
-          <div className="inline-flex items-center gap-x-1">
-            <p className="font-bold">Discord</p>
-          </div>
-        </Link>
-      </p>
+      {children ?? "If the problem persists reach us out in "}
+      <Link className="inline text-[#7289da]" href={metadata.discord}>
+        <div className="inline-flex items-center gap-x-1">
+          <span className="font-bold">Discord</span>
+        </div>
+      </Link>
     </div>
   );
 }

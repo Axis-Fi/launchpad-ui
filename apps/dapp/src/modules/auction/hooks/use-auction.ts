@@ -2,21 +2,22 @@ import {
   GetBatchAuctionLotQuery,
   useGetBatchAuctionLotQuery,
 } from "@repo/subgraph-client/src/generated";
-import type {
-  QueryObserverResult,
-  RefetchOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
-import { getAuctionStatus } from "../utils/get-auction-status";
 import {
+  type QueryKey,
+  type RefetchOptions,
+  type UseQueryResult,
+} from "@tanstack/react-query";
+import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
+import { AuctionType } from "@repo/types";
+import type {
   Auction,
   EMPAuctionData,
   AuctionFormattedInfo,
-  AuctionType,
   BatchSubgraphAuction,
   FixedPriceBatchAuctionData,
   EMPFormattedInfo,
   FPBFormattedInfo,
+  AuctionId,
 } from "@repo/types";
 import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
@@ -30,36 +31,49 @@ import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
-import { parseAuctionId } from "../utils/parse-auction-id";
-import { isSecureAuction } from "../utils/malicious-auction-filters";
+import { parseAuctionId } from "modules/auction/utils/parse-auction-id";
+import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
+import { useIsCacheStale } from "./use-is-cache-stale";
+import { useSafeRefetch } from "./use-safe-refetch";
+
+type AuctionQueryKey = QueryKey &
+  readonly ["getBatchAuctionLot", { id: AuctionId }];
 
 export type AuctionResult = {
   result?: Auction;
+  queryKey: AuctionQueryKey;
   refetch: (
-    auctionOptions?: RefetchOptions,
     auctionDataOptions?: RefetchOptions,
   ) => Promise<
-    [
-      Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>,
-      QueryObserverResult<GetBatchAuctionLotQuery, Error>,
-    ]
+    [Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>, Awaited<void>]
   >;
 } & Pick<
   ReturnType<typeof useGetBatchAuctionLotQuery>,
   "isLoading" | "isRefetching"
 >;
 
+export const getAuctionQueryKey = (auctionId: AuctionId) =>
+  ["getBatchAuctionLot", { id: auctionId }] as const;
+
 export function useAuction(
   id: string,
   auctionType: AuctionType,
 ): AuctionResult {
   const { getToken } = useTokenLists();
-
   const { chainId, lotId } = parseAuctionId(id);
+
+  const queryKey = [
+    "getBatchAuctionLot",
+    { id } as { id: AuctionId },
+  ] satisfies AuctionQueryKey;
+
+  // Don't fetch the auction if an optimistic update (e.g. a bid) is still fresh.
+  // This allows the subgraph time to update before refetching.
+  const isCacheStale = useIsCacheStale(queryKey);
+  const isQueryEnabled = !!chainId && !!id && isCacheStale;
 
   const {
     data,
-    refetch: refetchAuction,
     isLoading,
     isRefetching,
   }: UseQueryResult<GetBatchAuctionLotQuery> = useGetBatchAuctionLotQuery(
@@ -68,14 +82,20 @@ export function useAuction(
       fetchParams,
     },
     { id: id! },
-    { enabled: !!chainId && !!id },
+    { enabled: isQueryEnabled },
   );
+
+  const refetchAuction = useSafeRefetch(queryKey);
 
   const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (
     data as GetBatchAuctionLotQuery
   )?.batchAuctionLot;
 
-  const { data: auctionData, refetch: refetchAuctionData } = useAuctionData({
+  const {
+    data: auctionData,
+    refetch: refetchAuctionData,
+    isLoading: isAuctionDataLoading,
+  } = useAuctionData({
     chainId,
     lotId,
     type: auctionType,
@@ -85,26 +105,23 @@ export function useAuction(
    * Redefine refetch of an auction to include its dependencies that also update (such as auctionData)
    */
   const refetch = async (
-    auctionOptions?: RefetchOptions,
     auctionDataOptions?: RefetchOptions,
   ): Promise<
-    [
-      Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>,
-      Awaited<ReturnType<typeof refetchAuction>>,
-    ]
+    [Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>, Awaited<void>]
   > => {
     return Promise.all([
       refetchAuctionData(auctionDataOptions),
-      refetchAuction(auctionOptions),
+      refetchAuction(),
     ]);
   };
 
-  if (!rawAuction) {
+  if (!rawAuction || !auctionData) {
     return {
       refetch,
       isRefetching,
       result: undefined,
-      isLoading: isLoading, //|| infoQuery.isLoading, //|| infoQuery.isPending,
+      isLoading: isLoading || isAuctionDataLoading,
+      queryKey,
     };
   }
 
@@ -146,6 +163,7 @@ export function useAuction(
     },
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
+    queryKey,
   };
 }
 

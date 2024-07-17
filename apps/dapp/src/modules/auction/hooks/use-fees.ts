@@ -30,11 +30,11 @@ export function useFees(
 /** Parses fees from AuctionHouse/FeeManager */
 function parseFees(fees?: readonly [number, number, number]) {
   if (!fees) return {};
-  const [protocol, referrer, maxCuratorFee] = fees.map(fromBasisPoints); //Convert from basis points
+  const [protocol, maxReferrerFee, maxCuratorFee] = fees.map(fromBasisPoints); //Convert from basis points
 
   return {
     protocol,
-    referrer,
+    maxReferrerFee,
     maxCuratorFee,
   };
 }

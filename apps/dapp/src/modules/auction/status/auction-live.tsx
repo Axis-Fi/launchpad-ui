@@ -113,7 +113,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             isFixedPriceBatch ||
             parseUnits(data.quoteTokenAmount, auction.quoteToken.decimals) >=
               parseUnits(
-                auction.formatted?.minBidSize ?? "0",
+                auction.encryptedMarginalPrice?.minBidSize ?? "0",
                 auction.quoteToken.decimals,
               ),
           {
@@ -126,7 +126,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
             isFixedPriceBatch ||
             parseUnits(data.bidPrice ?? "0", auction.quoteToken.decimals) >=
               parseUnits(
-                auction.formatted?.minPrice ?? "0",
+                auction.encryptedMarginalPrice?.minPrice ?? "0",
                 auction.quoteToken.decimals,
               ),
           {
@@ -246,7 +246,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       (parsedAmountIn * parseUnits("1", auction.baseToken.decimals)) /
         parsedMinAmountOut <
         parseUnits(
-          auction.formatted?.minPrice ?? "0",
+          auction.encryptedMarginalPrice?.minPrice ?? "0",
           auction.quoteToken.decimals,
         )); // less than min price
 
@@ -321,8 +321,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 <div className="mx-auto mt-4 w-full">
                   {isEMP && (
                     <Text size="sm">
-                      You’re bidding on a blind auction. Auctions can only be
-                      decrypted after conclusion. Save your bid after bidding.
+                      You&apos;re bidding on a blind auction. Bids can be
+                      revealed after the auction closes.
                       <a className="text-primary ml-1 uppercase">Learn More</a>
                     </Text>
                   )}

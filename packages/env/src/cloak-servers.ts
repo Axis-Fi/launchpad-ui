@@ -1,6 +1,6 @@
 import { Environment } from "./environment";
 
-const v2URL = "https://api-testnet-v2.up.railway.app";
+const v3URL = "https://api-testnet-v3.up.railway.app";
 
 export default {
   development: {
@@ -9,11 +9,11 @@ export default {
   },
   testing: {
     description: "Testnet",
-    url: v2URL,
+    url: v3URL,
   },
   staging: {
     description: "Staging",
-    url: v2URL,
+    url: v3URL,
   },
   production: {
     description: "Mainnet",
