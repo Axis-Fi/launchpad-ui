@@ -40,7 +40,7 @@ export default function ConnectButton({
                 return (
                   <Button
                     size={size}
-                    className={isTabletOrMobile ? "w-min" : "w-full"}
+                    className={"w-full"}
                     onClick={openConnectModal}
                   >
                     CONNECT {isTabletOrMobile ? "" : "WALLET"}
@@ -68,7 +68,7 @@ export default function ConnectButton({
                   <Button
                     size={size}
                     variant="ghost"
-                    className={cn(isTabletOrMobile && "w-min px-2")}
+                    className={cn(isTabletOrMobile && "px-2")}
                     onClick={openAccountModal}
                   >
                     {account.displayName}

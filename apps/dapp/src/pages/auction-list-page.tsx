@@ -232,7 +232,7 @@ export default function AuctionListPage() {
                       <DashboardIcon />
                     </ToggleGroupItem>
                   </ToggleGroup>
-                  )
+
                   <ReloadButton
                     tooltip="Reload Auctions"
                     refetching={isRefetching}
