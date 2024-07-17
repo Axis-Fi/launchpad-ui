@@ -59,16 +59,11 @@ export default function ConnectButton({
                 );
               }
               return (
-                <div
-                  className={cn(
-                    "flex items-center gap-x-1",
-                    isTabletOrMobile && "border-t",
-                  )}
-                >
+                <div className={cn("flex items-center gap-x-1 ")}>
                   <Button
                     size={size}
                     variant="ghost"
-                    className={cn(isTabletOrMobile && "px-2")}
+                    className="px-2 lg:px-0"
                     onClick={openAccountModal}
                   >
                     {account.displayName}
