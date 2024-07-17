@@ -12,8 +12,10 @@ export function AppControl() {
   return (
     <div className="lg:max-w-limit bg-surface-tertiary fixed bottom-0 z-20 mx-auto w-full lg:static lg:bg-transparent ">
       <div className="mx-auto flex max-h-[64px] justify-between py-6 lg:max-h-[88px]">
-        <OriginNavIcon />
-        <Navbar onlyDefault={isTabletOrMobile} />
+        <div className="flex gap-x-3">
+          <OriginNavIcon />
+          <Navbar onlyDefault={isTabletOrMobile} />
+        </div>
         <div className="flex items-center justify-between gap-x-2">
           <ConnectButton className="hidden md:block" size="md" />
           {isTabletOrMobile && <AppMenu />}
