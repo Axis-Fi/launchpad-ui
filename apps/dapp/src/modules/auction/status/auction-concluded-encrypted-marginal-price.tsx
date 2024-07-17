@@ -32,7 +32,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
 
   return (
     <div>
-      <div className="flex justify-between gap-x-8">
+      <div className="auction-action-container">
         <div className="flex w-full flex-col gap-y-4">
           <Card
             title="Launch Info"
@@ -100,7 +100,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
           />
           <Card
             title="Concluded"
-            className="w-[496px]"
+            className="mt-4 lg:mt-0 lg:w-[496px]"
             headerRightElement={<Badge>Auction Closed</Badge>}
           >
             <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">

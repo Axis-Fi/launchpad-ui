@@ -19,7 +19,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   });
 
   return (
-    <div className="flex justify-between gap-x-8">
+    <div className="auction-action-container">
       <div className="w-2/3 space-y-4">
         {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
         <Card

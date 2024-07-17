@@ -15,7 +15,9 @@ export function PageHeader({
 }: PageHeaderProps) {
   const navigate = useNavigate();
   return (
-    <div className={cn("max-w-limit mt-5 flex justify-between", className)}>
+    <div
+      className={cn("max-w-limit mt-2 flex justify-between lg:mt-5", className)}
+    >
       <Button
         className="w-fit"
         size="icon"

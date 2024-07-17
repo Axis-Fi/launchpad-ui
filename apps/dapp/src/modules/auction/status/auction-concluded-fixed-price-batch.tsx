@@ -52,7 +52,7 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
 
   return (
     <div>
-      <div className="flex justify-between gap-x-8">
+      <div className="auction-action-container">
         <div className="flex w-full flex-col gap-y-4">
           <Card
             title="Launch Info"
@@ -116,14 +116,14 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
           />
           <Card
             title="Concluded"
-            className="w-[496px]"
+            className="mt-4 lg:mt-0 lg:w-[496px]"
             headerRightElement={<Badge color="ghost">Auction Closed</Badge>}
           >
             <div className="flex flex-col gap-y-4">
               <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">
                 <div className="flex flex-col items-center gap-2">
                   <img
-                    className="w-[92.351]px h-[80px]"
+                    className="h-[80px]"
                     src="/images/axis-logo.svg"
                     alt="Axis Logo"
                   />

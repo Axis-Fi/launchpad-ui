@@ -53,7 +53,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
   return (
-    <div className="flex justify-between gap-x-8">
+    <div className="auction-action-container">
       <div className="flex w-full flex-col justify-between gap-y-4">
         <Card
           title="Launch Info"

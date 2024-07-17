@@ -48,7 +48,9 @@ export default function AuctionListPage() {
   const [onlyUserAuctions, setOnlyUserAuctions] = useState(
     userSettings.onlyUserAuctions,
   );
-  const [gridView, setGridView] = useState(userSettings.gridView);
+  const [gridView, setGridView] = useState(
+    isTabletOrMobile ?? userSettings.gridView,
+  );
   const [sortByStatus, setSortByStatus] = useState<string | undefined>(
     userSettings.activeSort,
   );
@@ -136,7 +138,7 @@ export default function AuctionListPage() {
 
   return (
     <div className="">
-      <div className="bg-hero-banner flex w-full items-end justify-center lg:h-[582px]">
+      <div className="bg-hero-banner flex w-full items-end justify-center py-3 lg:h-[582px] lg:py-0">
         {!isTabletOrMobile && (
           <div className="mb-10 text-center">
             <Text size={isTabletOrMobile ? "2xl" : "7xl"} mono>
@@ -189,22 +191,20 @@ export default function AuctionListPage() {
                 </Text>
               </Tooltip>
             )}
-            <div className="flex gap-x-2">
-              <>
-                <IconnedInput
-                  icon={<SearchIcon />}
-                  className="placeholder:text-foreground"
-                  placeholder="Search"
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-                <Select
-                  triggerClassName="w-[120px]"
-                  placeholder="Sort By"
-                  options={options}
-                  defaultValue={sortByStatus}
-                  onChange={(value) => handleSorting(value)}
-                />
-              </>
+            <div className="flex gap-x-2 px-2 lg:px-0">
+              <IconnedInput
+                icon={<SearchIcon />}
+                className="placeholder:text-foreground"
+                placeholder="Search"
+                onChange={(e) => setSearchText(e.target.value)}
+              />
+              <Select
+                triggerClassName="w-[120px]"
+                placeholder="Sort By"
+                options={options}
+                defaultValue={sortByStatus}
+                onChange={(value) => handleSorting(value)}
+              />
 
               <Tooltip
                 triggerClassName="cursor-pointer"
