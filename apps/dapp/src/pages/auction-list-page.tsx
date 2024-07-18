@@ -138,7 +138,7 @@ export default function AuctionListPage() {
 
   return (
     <div className="">
-      <div className="bg-hero-banner flex w-full items-end justify-center py-3 lg:h-[582px] lg:py-0">
+      <div className="bg-hero-banner flex w-full items-end justify-center py-3 lg:h-[522px] lg:py-0">
         {!isTabletOrMobile && (
           <div className="mb-10 text-center">
             <Text size={isTabletOrMobile ? "2xl" : "7xl"} mono>
