@@ -1,4 +1,3 @@
-import { environment } from "@repo/env";
 import {
   Badge,
   Button,
@@ -12,47 +11,65 @@ import { useCurator } from "modules/auction/hooks/use-curator";
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-const curator = { title: "Curator", href: "/curator" };
-const refer = { title: "Refer Bidders", href: "/refer" };
-const testnetLinks = [
-  { title: "Get Tokens", href: "/faucet" },
-  { title: "Deploy", href: "/deploy" },
+type LinkConfig = {
+  label: string;
+  href: string;
+  target?: React.HTMLProps<HTMLAnchorElement>["target"];
+};
+
+export const curator = { label: "Curator", href: "/curator" };
+
+export const testnetLinks = [
+  { label: "Faucet", href: "/faucet" },
+  { label: "Deploy", href: "/deploy" },
+  { label: "Launch", href: "/create/auction" },
 ];
 
-const defaultLinks = [
-  { title: "Launches", href: "/#" },
-  { title: "Contact", href: "mailto:launch@axis.finance" },
-  { title: "Docs", href: "https://axis.finance/docs/overview" },
+export const defaultLinks = [
+  { label: "Launches", href: "/#" },
+  { label: "Refer", href: "/refer" },
+  {
+    label: "Docs",
+    href: "https://axis.finance/docs/overview",
+    target: "_blank",
+  },
 ];
 
-export default function Navbar(props: {
+type NavbarProps = {
+  links?: LinkConfig[];
   mobile?: boolean;
   onlyDefault?: boolean;
-}) {
+  className?: string;
+};
+
+export default function Navbar(props: NavbarProps) {
   const isRoot = window.location.hash === "#/";
   const { isCurator, pendingCurationsCount } = useCurator();
-  const isProd = environment.isProduction;
 
-  //Only show curator link if connected address is a curator for any auction
-  const links = React.useMemo(() => {
+  const links: LinkConfig[] = React.useMemo(() => {
+    if (props.links) return props.links;
     if (props.onlyDefault) return defaultLinks;
-    const _links = isProd ? [] : testnetLinks;
+    const _links = defaultLinks;
+    //Only show curator link if connected address is a curator for any auction
     const curatorLink = isCurator ? [curator] : [];
-    return [...defaultLinks, refer, ..._links, ...curatorLink];
-  }, [isCurator, props.onlyDefault]);
+    return [..._links, ...curatorLink];
+  }, [props.links, props.onlyDefault]);
 
   return (
     <NavigationMenu>
       <NavigationMenuList
-        className={cn(props.mobile && "flex flex-col items-end")}
+        className={cn(
+          props.mobile && "flex w-full flex-col items-end",
+          props.className,
+        )}
       >
         {links.map((l) => (
           <NavigationMenuItem key={l.href}>
             <NavigationMenuLink asChild>
-              <NavLink to={l.href}>
+              <NavLink to={l.href} target={l.target ?? "_self"}>
                 {({ isActive }) => (
                   <>
-                    {l.title === "Curator" && !!pendingCurationsCount && (
+                    {l.label === "Curator" && !!pendingCurationsCount && (
                       <CuratorNotification count={pendingCurationsCount} />
                     )}
                     <Button
@@ -63,7 +80,7 @@ export default function Navbar(props: {
                           "text-primary",
                       )}
                     >
-                      {l.title}
+                      {l.label}
                     </Button>
                   </>
                 )}

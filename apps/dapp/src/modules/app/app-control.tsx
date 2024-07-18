@@ -1,10 +1,12 @@
+import { TestTube } from "lucide-react";
 import ConnectButton from "../../components/connect-button";
 import { Link } from "react-router-dom";
 import { CaretUpIcon } from "@radix-ui/react-icons";
-import Navbar from "./navbar";
-import { cn } from "@repo/ui";
+import Navbar, { testnetLinks } from "./navbar";
+import { Tooltip, cn } from "@repo/ui";
 import React from "react";
 import { useMediaQueries } from "loaders/use-media-queries";
+import { environment } from "@repo/env";
 
 export function AppControl() {
   const { isTabletOrMobile } = useMediaQueries();
@@ -17,6 +19,16 @@ export function AppControl() {
           <Navbar onlyDefault={isTabletOrMobile} />
         </div>
         <div className="flex items-center justify-between gap-x-2">
+          {!environment.isProduction && !isTabletOrMobile && (
+            <div className="mr-8 flex items-center border-b">
+              <Tooltip content="These features are only available on testnet">
+                <div className="w-8">
+                  <TestTube width={32} height={32} />
+                </div>
+              </Tooltip>
+              <Navbar links={testnetLinks} />
+            </div>
+          )}
           <ConnectButton className="hidden md:block" size="md" />
           {isTabletOrMobile && <AppMenu />}
         </div>
@@ -36,7 +48,8 @@ export function AppMenu() {
           open && "translate-y-0",
         )}
       >
-        <div className="flex size-full flex-col items-start ">
+        <div className="flex size-full flex-col items-end ">
+          <Navbar mobile links={testnetLinks} className="border-b" />
           <Navbar mobile />
           <ConnectButton className="border-t lg:border-t-0" />
         </div>
