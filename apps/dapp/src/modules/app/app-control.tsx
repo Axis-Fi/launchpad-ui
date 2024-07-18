@@ -1,4 +1,4 @@
-import { TestTube } from "lucide-react";
+import { FlaskConicalIcon } from "lucide-react";
 import ConnectButton from "../../components/connect-button";
 import { Link } from "react-router-dom";
 import { CaretUpIcon } from "@radix-ui/react-icons";
@@ -20,10 +20,10 @@ export function AppControl() {
         </div>
         <div className="flex items-center justify-between gap-x-2">
           {!environment.isProduction && !isTabletOrMobile && (
-            <div className="mr-8 flex items-center border-b">
+            <div className="border-b-tertiary-300 mr-8 flex items-center border-b-2">
               <Tooltip content="These features are only available on testnet">
                 <div className="w-8">
-                  <TestTube width={32} height={32} />
+                  <FlaskConicalIcon width={24} height={24} />
                 </div>
               </Tooltip>
               <Navbar links={testnetLinks} />
@@ -49,7 +49,11 @@ export function AppMenu() {
         )}
       >
         <div className="flex size-full flex-col items-end ">
-          <Navbar mobile links={testnetLinks} className="border-b" />
+          <Navbar
+            mobile
+            links={testnetLinks}
+            className="border-b-tertiary-300 border-b-2"
+          />
           <Navbar mobile />
           <ConnectButton className="border-t lg:border-t-0" />
         </div>
