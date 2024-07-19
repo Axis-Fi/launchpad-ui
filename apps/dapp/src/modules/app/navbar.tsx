@@ -27,7 +27,7 @@ export const testnetLinks = [
 
 export const defaultLinks = [
   { label: "Launches", href: "/#" },
-  { label: "Refer", href: "/refer" },
+  { label: "Referrals", href: "/refer" },
   {
     label: "Docs",
     href: "https://axis.finance/docs/overview",
