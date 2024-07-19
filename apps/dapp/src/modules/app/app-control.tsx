@@ -1,10 +1,12 @@
+import { FlaskConicalIcon } from "lucide-react";
 import ConnectButton from "../../components/connect-button";
 import { Link } from "react-router-dom";
 import { CaretUpIcon } from "@radix-ui/react-icons";
-import Navbar from "./navbar";
-import { cn } from "@repo/ui";
+import Navbar, { testnetLinks } from "./navbar";
+import { Tooltip, cn } from "@repo/ui";
 import React from "react";
 import { useMediaQueries } from "loaders/use-media-queries";
+import { environment } from "@repo/env";
 
 export function AppControl() {
   const { isTabletOrMobile } = useMediaQueries();
@@ -17,6 +19,16 @@ export function AppControl() {
           <Navbar onlyDefault={isTabletOrMobile} />
         </div>
         <div className="flex items-center justify-between gap-x-2">
+          {!environment.isProduction && !isTabletOrMobile && (
+            <div className="border-b-tertiary-300 mr-8 flex items-center border-b-2">
+              <Tooltip content="These features are only available on testnet">
+                <div className="w-8">
+                  <FlaskConicalIcon width={24} height={24} />
+                </div>
+              </Tooltip>
+              <Navbar links={testnetLinks} />
+            </div>
+          )}
           <ConnectButton className="hidden md:block" size="md" />
           {isTabletOrMobile && <AppMenu />}
         </div>
@@ -32,11 +44,16 @@ export function AppMenu() {
     <div className="relative">
       <div
         className={cn(
-          "bg-surface-tertiary/50 absolute -left-40 bottom-12 mx-auto size-fit translate-y-[600px] rounded-t-md p-2 px-8 pr-8 backdrop-blur transition-all ",
+          "bg-surface-tertiary/50 absolute -left-40 bottom-12 mx-auto size-fit translate-y-[120%] rounded-t-md p-2 px-8 pr-8 backdrop-blur transition-all duration-300 ",
           open && "translate-y-0",
         )}
       >
-        <div className="flex size-full flex-col items-start ">
+        <div className="flex size-full flex-col items-end ">
+          <Navbar
+            mobile
+            links={testnetLinks}
+            className="border-b-tertiary-300 border-b-2"
+          />
           <Navbar mobile />
           <ConnectButton className="border-t lg:border-t-0" />
         </div>

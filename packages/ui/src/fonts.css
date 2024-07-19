@@ -5,7 +5,7 @@
     url("/fonts/AeonikFono-Light.woff") format("woff");
   font-weight: 300;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -15,7 +15,7 @@
     url("/fonts/AeonikFono-Regular.woff") format("woff");
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -25,7 +25,7 @@
     url("/fonts/AeonikFono-Bold.woff") format("woff");
   font-weight: bold;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -35,7 +35,7 @@
     url("/fonts/AeonikPro-Light.woff") format("woff");
   font-weight: 300;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -45,7 +45,7 @@
     url("/fonts/AeonikPro-Regular.woff") format("woff");
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -55,5 +55,5 @@
     url("/fonts/AeonikPro-Bold.woff") format("woff");
   font-weight: bold;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }

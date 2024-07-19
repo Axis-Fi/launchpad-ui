@@ -9,6 +9,7 @@ import {
 import {
   injectedWallet,
   rainbowWallet,
+  frameWallet,
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
@@ -18,7 +19,12 @@ export const connectors = connectorsForWallets(
   [
     {
       groupName: "Common",
-      wallets: [injectedWallet, rainbowWallet, walletConnectWallet],
+      wallets: [
+        injectedWallet,
+        rainbowWallet,
+        frameWallet,
+        walletConnectWallet,
+      ],
     },
   ],
   { projectId, appName: "Axis Finance" },
