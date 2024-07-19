@@ -4,8 +4,7 @@ import { PropsWithAuction } from "@repo/types";
 import { BidForm } from "./status";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { trimCurrency } from "utils/currency";
-import { useEffect, useState } from "react";
-import { useGetUsdAmount } from "./hooks/use-get-usd-amount";
+import { useState } from "react";
 import { formatUnits, parseUnits } from "viem";
 
 export function AuctionBidInput({
@@ -22,50 +21,9 @@ export function AuctionBidInput({
 
   const [formAmount] = form.watch(["quoteTokenAmount"]);
 
-  // USD amount
-  const [bidTimestamp] = useState<number>(Math.floor(Date.now() / 1000)); // Capture the timestamp when the page loads initially, otherwise the value will keep changing on every render, and the USD value will be refreshed on every render);
-  const { getUsdAmount } = useGetUsdAmount(auction.quoteToken, bidTimestamp);
-  const [quoteTokenAmountUsd, setQuoteTokenAmountUsd] = useState<string>("");
   const [minAmountOutFormatted, setMinAmountOutFormatted] =
     useState<string>("");
   const [bidPrice, setBidPrice] = useState<string>("");
-  const [bidPriceUsd, setBidPriceUsd] = useState<string>("");
-
-  // Calculates the USD amount when the amountIn changes
-  useEffect(() => {
-    if (!formAmount || isNaN(Number(formAmount))) {
-      setQuoteTokenAmountUsd("");
-      return;
-    }
-
-    const fetchedUsdAmount = getUsdAmount(
-      parseUnits(formAmount, auction.quoteToken.decimals),
-    );
-    if (!fetchedUsdAmount) {
-      setQuoteTokenAmountUsd("");
-      return;
-    }
-
-    setQuoteTokenAmountUsd(fetchedUsdAmount);
-  }, [formAmount, auction.quoteToken.decimals, getUsdAmount]);
-
-  // Calculates the USD amount of the bid price
-  useEffect(() => {
-    if (!bidPrice || isNaN(Number(bidPrice))) {
-      setBidPriceUsd("");
-      return;
-    }
-
-    const fetchedUsdAmount = getUsdAmount(
-      parseUnits(bidPrice, auction.quoteToken.decimals),
-    );
-    if (!fetchedUsdAmount) {
-      setBidPriceUsd("");
-      return;
-    }
-
-    setBidPriceUsd(fetchedUsdAmount);
-  }, [bidPrice, getUsdAmount]);
 
   const showAmountOut =
     form.formState.isValid && isFinite(Number(minAmountOutFormatted));
@@ -107,7 +65,6 @@ export function AuctionBidInput({
                   balance={trimCurrency(
                     formatUnits(balance, auction.quoteToken.decimals),
                   )}
-                  usdPrice={quoteTokenAmountUsd}
                   limit={
                     limit
                       ? trimCurrency(
@@ -115,7 +72,7 @@ export function AuctionBidInput({
                         )
                       : undefined
                   }
-                  symbol={auction.quoteToken.symbol}
+                  token={auction.quoteToken}
                   onChange={(e) => {
                     field.onChange(e);
 
@@ -164,10 +121,10 @@ export function AuctionBidInput({
                 <TokenAmountInput
                   {...field}
                   label="Bid Price"
+                  tokenLabel={`per ${auction.baseToken.symbol}`}
                   disabled={disabled}
                   disableMaxButton={true}
-                  symbol={`per ${auction.baseToken.symbol}`}
-                  usdPrice={bidPriceUsd}
+                  token={auction.baseToken}
                   message={
                     showAmountOut
                       ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`

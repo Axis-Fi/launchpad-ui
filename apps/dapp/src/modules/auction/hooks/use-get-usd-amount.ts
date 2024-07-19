@@ -8,12 +8,16 @@ const useGetUsdAmount = (
   timestamp: number | undefined,
 ) => {
   if (token === undefined) throw new Error("token cannot be undefined");
-
   const price = useTokenPrice(token, timestamp);
   const decimals = token.decimals;
 
-  const getUsdAmount = (amount: bigint) => {
-    if (price === undefined || amount === undefined || decimals === undefined) {
+  const getUsdAmount = (amount: bigint): string | undefined => {
+    if (
+      price === null ||
+      price === undefined ||
+      amount === undefined ||
+      decimals === undefined
+    ) {
       return undefined;
     }
 
