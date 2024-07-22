@@ -90,7 +90,7 @@ export function CuratableAuctionList() {
         id: "view",
         cell: (info) => (
           <Link to={"/" + getAuctionPath(info.row.original)}>
-            <Button size="sm">View Auction</Button>
+            <Button size="sm">View Launch</Button>
           </Link>
         ),
       }),
