@@ -38,9 +38,7 @@ export function useCuratorFees(
   const feeTx = useWriteContract();
   const feeReceipt = useWaitForTransactionReceipt({ hash: feeTx.data });
   const handleSetFee = () => feeTx.writeContract(setFeeCall!.request);
-  const reset = () => {
-    feeTx.reset();
-  };
+  const reset = () => feeTx.reset();
 
   return {
     fee: fromBasisPoints(currentFee ?? 0),
