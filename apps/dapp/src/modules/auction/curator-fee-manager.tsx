@@ -34,13 +34,19 @@ export function CuratorFeeManager({
   const curatorFees = useCuratorFees(chainId, parseFloat(fee), auctionType);
   const parsedAmount = parseFloat(fee);
 
+  //Clears tx state when moving between chains after updating a fee
+  React.useEffect(() => {
+    curatorFees.reset();
+    setFee("");
+  }, [chainId]);
+
   return (
     <div className="gap-x-8">
       <div className="flex items-end justify-start">
         <Tooltip
           content={`Your current fee for the Batch Auction House on ${chain?.name}. It includes the following auction modules:\n${modules.join(
-            " ,",
-          )}`}
+            ", ",
+          )}.`}
         >
           <InfoLabel
             editable
