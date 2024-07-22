@@ -53,7 +53,7 @@ export default function Navbar(props: NavbarProps) {
     //Only show curator link if connected address is a curator for any auction
     const curatorLink = isCurator ? [curator] : [];
     return [..._links, ...curatorLink];
-  }, [props.links, props.onlyDefault]);
+  }, [props.links, props.onlyDefault, isCurator]);
 
   return (
     <NavigationMenu>
