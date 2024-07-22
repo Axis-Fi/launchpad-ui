@@ -1,6 +1,5 @@
 import {
   useAccount,
-  useReadContract,
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
@@ -9,6 +8,7 @@ import { toKeycode } from "utils/hex";
 import { AuctionType } from "@repo/types";
 import { fromBasisPoints, toBasisPoints } from "utils/number";
 import { getAuctionHouse } from "utils/contracts";
+import { useGetCuratorFee } from "./use-get-curator-fee";
 
 /**Reads and sets the curator fee for an auction house*/
 export function useCuratorFees(
@@ -20,14 +20,7 @@ export function useCuratorFees(
   const auctionHouse = getAuctionHouse({ chainId, auctionType });
   const keycode = toKeycode(auctionType);
 
-  const { data: currentFee } = useReadContract({
-    chainId,
-    abi: auctionHouse.abi,
-    address: auctionHouse.address,
-    functionName: "getCuratorFee",
-    args: [toKeycode(auctionType), address!],
-    query: { enabled: isConnected },
-  });
+  const { data: currentFee } = useGetCuratorFee(chainId, auctionType, address!);
 
   const newFee = toBasisPoints(feePercentage!); // Fees are in basis points
 
@@ -38,7 +31,7 @@ export function useCuratorFees(
     functionName: "setCuratorFee",
     args: [keycode, newFee],
     query: {
-      enabled: !!address && !!chainId && isFinite(newFee),
+      enabled: isConnected && !!chainId && isFinite(newFee),
     },
   });
 
