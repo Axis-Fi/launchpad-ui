@@ -9,7 +9,6 @@ export type BaseAuction = {
   quoteToken: Token;
   callbacks: Address;
   status: AuctionStatus;
-  auctionData?: EMPAuctionData | FixedPriceBatchAuctionData;
   auctionType: AuctionType;
   formatted?: AuctionFormattedInfo;
   /** Whether the auction passes the malicious auction verification */
@@ -48,31 +47,6 @@ export type AuctionLinkId =
   | "twitter";
 
 export type AuctionLink = NonNullable<Auction["info"]>["links"][number];
-
-export type EMPAuctionData = {
-  status: number;
-  nextDecryptIndex: bigint;
-  nextBidId: bigint;
-  minimumPrice: bigint;
-  minFilled: bigint;
-  minBidSize: bigint;
-  marginalPrice: bigint;
-  marginalBidId: bigint;
-  publicKey: { x: bigint; y: bigint };
-  privateKey: bigint;
-  bidIds: bigint[];
-};
-
-export type FixedPriceBatchAuctionData = {
-  price: bigint;
-  status: number;
-  nextBidId: bigint;
-  settlementCleared: boolean;
-  totalBidAmount: bigint;
-  minFilled: bigint;
-};
-
-export type AuctionData = EMPAuctionData | FixedPriceBatchAuctionData;
 
 export type AuctionFormattedInfo = {
   startDate: Date;

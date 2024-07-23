@@ -21,10 +21,12 @@ export function AuctionBidInputSingle({
   const [formAmountOut] = form.watch(["baseTokenAmount"]);
 
   function handleAmountOutChange(amountIn: bigint) {
-    if (auction.auctionType !== AuctionType.FIXED_PRICE_BATCH) return;
+    if (!auction.fixedPrice) return;
 
     // Use bigints to calculate value and return as string to avoid rounding errors with floats
-    const amountOut = amountIn / BigInt(auction.fixedPrice!.price);
+    const amountOut =
+      (amountIn * parseUnits("1", auction.baseToken.decimals)) /
+      parseUnits(auction.fixedPrice.price, auction.baseToken.decimals);
 
     const formattedAmountOut = formatUnits(
       amountOut,
