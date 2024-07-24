@@ -19,7 +19,7 @@ export function useCurateAuction(
     address: auctionHouse.address,
     chainId,
     functionName: "curate",
-    args: [BigInt(lotId), toHex("")], //TODO: REVIEW PARAMETERS
+    args: [BigInt(lotId), toHex("0x")], //TODO: Add support for callback
   });
 
   const curateTx = useWriteContract();

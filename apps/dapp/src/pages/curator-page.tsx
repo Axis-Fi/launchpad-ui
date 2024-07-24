@@ -39,7 +39,7 @@ export function CuratorPage() {
         >
           <div className="flex">
             <CuratorFeeManager
-              modules={[AuctionType.FIXED_PRICE_BATCH]}
+              modules={[AuctionType.FIXED_PRICE_BATCH, AuctionType.SEALED_BID]}
               auctionType={AuctionType.FIXED_PRICE_BATCH}
             />
           </div>
