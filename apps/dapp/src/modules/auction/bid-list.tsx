@@ -179,8 +179,8 @@ export function BidList(props: BidListProps) {
   const encryptedBids = auction?.bids ?? [];
 
   const { refetch: refetchAuction } = useAuction(
-    props.auction.id,
-    props.auction.auctionType,
+    props.auction.chainId,
+    props.auction.lotId,
   );
 
   const refund = useWriteContract();

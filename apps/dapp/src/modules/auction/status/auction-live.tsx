@@ -196,8 +196,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     : BigInt(0);
 
   const { ...bid } = useBidAuction(
-    auction.id,
-    auction.auctionType,
+    auction.chainId,
+    auction.lotId,
     parsedAmountIn,
     parsedMinAmountOut,
     callbackData,

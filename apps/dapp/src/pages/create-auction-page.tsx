@@ -90,7 +90,7 @@ import {
   optimisticUpdate,
 } from "modules/auction/utils/optimistic";
 import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
-import { getChainName } from "modules/auction/utils/get-chain-name";
+import { formatChainName } from "modules/auction/utils/format-chain-name";
 import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
@@ -1015,7 +1015,7 @@ export default function CreateAuctionPage() {
 
     createTxnSucceeded.current = true;
 
-    const auctionId = getAuctionId(chain!, auctionHouseAddress, lotId);
+    const auctionId = getAuctionId(chain!.id, lotId);
 
     const optimisticAuction = auctionsCache.createOptimisticAuction(
       lotId,
@@ -1980,7 +1980,7 @@ function generateAuctionURL(
   chain: Chain,
 ) {
   //Transform viem/rainbowkit names into subgraph format
-  const chainName = getChainName(chain);
+  const chainName = formatChainName(chain);
 
   return `/auction/${auctionType}/${chainName}-${auctionHouseAddress.toLowerCase()}-${lotId}`;
 }

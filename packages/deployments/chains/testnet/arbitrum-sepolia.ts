@@ -46,6 +46,13 @@ const config: AxisDeploymentConfig = {
       decimals: 18,
       mintable: true,
     },
+    {
+      name: "TEST",
+      symbol: "TST",
+      address: "0x536f26fbbf0c6aedf9aaa04033d148efd1a24281",
+      decimals: 18,
+      mintable: true,
+    },
   ],
 };
 

@@ -14,7 +14,7 @@ import type {
 } from "@tanstack/react-query";
 
 type UseAuctionDataParameters = {
-  lotId?: string;
+  lotId?: string | number;
   chainId?: number;
   type?: AuctionType;
 };
@@ -47,7 +47,7 @@ export function useAuctionData({
       : axisContracts.addresses[chainId][auctionModule],
     functionName:
       type === AuctionType.FIXED_PRICE_BATCH ? "getAuctionData" : "auctionData",
-    args: [parseUnits(lotId ?? "0", 0)],
+    args: [parseUnits(lotId?.toString() ?? "0", 0)],
     query: { enabled: !!chainId && !!lotId },
   });
   const handle = handlers[type];

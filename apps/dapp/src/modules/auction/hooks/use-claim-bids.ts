@@ -36,8 +36,8 @@ export function useClaimBids(auction: BatchAuction) {
   const claimTx = useWriteContract();
   const claimReceipt = useWaitForTransactionReceipt({ hash: claimTx.data });
   const { refetch: refetchAuction } = useAuction(
-    auction.id,
-    auction.auctionType,
+    auction.chainId,
+    auction.lotId,
   );
 
   // When someone claims their bids, refetch the auction from the subgraph so the dapp has the latest data

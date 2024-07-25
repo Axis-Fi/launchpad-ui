@@ -31,10 +31,11 @@ import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
-import { parseAuctionId } from "modules/auction/utils/parse-auction-id";
 import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
 import { useIsCacheStale } from "./use-is-cache-stale";
 import { useSafeRefetch } from "./use-safe-refetch";
+import { getAuctionId } from "../utils/get-auction-id";
+import { getAuctionType } from "../utils/get-auction-type";
 
 type AuctionQueryKey = QueryKey &
   readonly ["getBatchAuctionLot", { id: AuctionId }];
@@ -56,11 +57,13 @@ export const getAuctionQueryKey = (auctionId: AuctionId) =>
   ["getBatchAuctionLot", { id: auctionId }] as const;
 
 export function useAuction(
-  id: string,
-  auctionType: AuctionType,
+  chainId_: string | number,
+  lotId: string | number,
 ): AuctionResult {
   const { getToken } = useTokenLists();
-  const { chainId, lotId } = parseAuctionId(id);
+
+  const chainId = Number(chainId_);
+  const id = getAuctionId(chainId, lotId);
 
   const queryKey = [
     "getBatchAuctionLot",
@@ -90,6 +93,8 @@ export function useAuction(
   const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (
     data as GetBatchAuctionLotQuery
   )?.batchAuctionLot;
+
+  const auctionType = getAuctionType(rawAuction?.auctionType) as AuctionType;
 
   const {
     data: auctionData,
