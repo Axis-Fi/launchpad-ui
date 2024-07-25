@@ -6,23 +6,6 @@ const getSettledBatchAuctionMock = (
   overrides: Partial<BatchAuction> = {},
 ): BatchAuction =>
   ({
-    auctionData: {
-      marginalBidId: 4n,
-      marginalPrice: 1111111111111111112n,
-      minBidSize: 10000000000000000n,
-      minFilled: 50000000000000000000000n,
-      minimumPrice: 1000000000000000000n,
-      nextBidId: 5n,
-      nextDecryptIndex: 4n,
-      privateKey:
-        4373572581317583652954202470044698846136954525000797472309120249649312275338n,
-      publicKey: {
-        x: 21873748425789273738486845539295832566564229818668850102817297365387648809378n,
-        y: 21011788879307525509857604926834064016725979813341929657997672041409452349245n,
-      },
-      status: 2,
-      bidIds: [],
-    },
     auctionHouse: "0xba00001bd857efd2df10da01dfe3a97cfa836cc9",
     info: {
       description:

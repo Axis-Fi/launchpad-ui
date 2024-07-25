@@ -199,7 +199,7 @@ function addEMPFields(auction: BatchSubgraphAuction): EMPFormattedInfo {
     .map((b) => b.bidder)
     .filter((b, i, a) => a.lastIndexOf(b) === i).length;
 
-  const cleared = auction.encryptedMarginalPrice?.marginalPrice !== null;
+  const cleared = !!auction.encryptedMarginalPrice?.settlementSuccessful;
 
   // TODO return these as numbers and format them in the UI
   return {
