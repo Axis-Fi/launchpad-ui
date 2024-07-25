@@ -73,8 +73,8 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
     });
 
   const { refetch: refetchAuction } = useAuction(
-    auction.id,
-    auction.auctionType,
+    auction.chainId,
+    auction.lotId,
   );
 
   const redeemedAmount =

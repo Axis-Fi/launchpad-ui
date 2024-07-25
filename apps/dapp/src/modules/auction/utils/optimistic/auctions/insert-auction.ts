@@ -3,7 +3,7 @@ import { AuctionType } from "@repo/types";
 import type { Address, NonNullSubgraphAuction } from "@repo/types";
 import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
 import { CreateAuctionForm } from "pages/create-auction-page";
-import { getChainName } from "modules/auction/utils/get-chain-name";
+import { formatChainName } from "modules/auction/utils/format-chain-name";
 import { getAuctionId } from "modules/auction/utils/get-auction-id";
 
 /**
@@ -36,8 +36,8 @@ const createOptimisticAuction = (
   } = createAuctionFormValues;
 
   const auctionType = _auctionType as AuctionType;
-  const chainName = getChainName(chain);
-  const auctionId = getAuctionId(chain, auctionHouseAddress, lotId);
+  const chainName = formatChainName(chain);
+  const auctionId = getAuctionId(chain.id, lotId);
 
   return {
     id: auctionId,

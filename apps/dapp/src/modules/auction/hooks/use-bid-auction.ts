@@ -18,20 +18,22 @@ import {
   auction as auctionCache,
   optimisticUpdate,
 } from "modules/auction/utils/optimistic";
+import { getAuctionId } from "../utils/get-auction-id";
 
 export function useBidAuction(
-  id: string,
-  auctionType: AuctionType,
+  chainId: string | number,
+  lotId: string | number,
   amountIn: bigint,
   amountOut: bigint,
   callbackData: `0x${string}`,
 ) {
-  const { result: auction, queryKey } = useAuction(id, auctionType);
+  const { result: auction, queryKey } = useAuction(chainId, lotId);
+  const id = getAuctionId(chainId, lotId);
+
   const storeBidLocally = useStoreBid();
 
   if (!auction) throw new Error(`Unable to find auction ${id}`);
 
-  const lotId = auction.lotId;
   const queryClient = useQueryClient();
   const { address: bidderAddress } = useAccount();
   const referrer = useReferrer();
@@ -54,7 +56,7 @@ export function useBidAuction(
         amountIn: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
         amountOut: Number(formatUnits(amountOut, auction.baseToken.decimals)),
         chainId: auction.chainId,
-        auctionType: auctionType,
+        auctionType: auction.auctionType,
         referrerAddress: referrer,
         bidderAddress: bidderAddress,
         signedPermit2Approval: toHex(""), // TODO implement permit2

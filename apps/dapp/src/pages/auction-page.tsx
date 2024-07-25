@@ -41,14 +41,14 @@ const statuses: Record<
 
 /** Displays Auction details and status*/
 export default function AuctionPage() {
-  const { id, type } = useParams();
+  const { chainId, lotId } = useParams();
 
   const {
     result: auction,
     isLoading: isAuctionLoading,
     isRefetching,
     refetch,
-  } = useAuction(id!, type as AuctionType);
+  } = useAuction(chainId!, lotId!);
 
   if (isAuctionLoading) {
     return <AuctionPageLoading />;
@@ -151,8 +151,9 @@ function AuctionPageLoading() {
 }
 
 function AuctionPageMissing() {
-  const { id, type } = useParams();
-  const { refetch } = useAuction(id!, type as AuctionType);
+  const { chainId, lotId } = useParams();
+
+  const { refetch } = useAuction(chainId!, lotId!);
 
   return (
     <div className="absolute inset-0 -top-40 flex h-full flex-col items-center justify-center text-center">
