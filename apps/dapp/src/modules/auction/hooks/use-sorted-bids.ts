@@ -1,9 +1,4 @@
-import type {
-  BatchAuction,
-  BatchAuctionBid,
-  EMPAuctionData,
-  Token,
-} from "@repo/types";
+import type { BatchAuction, BatchAuctionBid, Token } from "@repo/types";
 import { formatUnits } from "viem";
 
 const BID_OUTCOME = {
@@ -88,11 +83,8 @@ const sortBids = (bids: BatchAuctionBid[], quoteToken: Token): SortedBid[] => {
   return sortedBids;
 };
 
-const useSortedBids = (
-  auction: BatchAuction | undefined,
-  auctionData: EMPAuctionData | undefined,
-): SortedBid[] => {
-  if (!auctionData || !auction) return [];
+const useSortedBids = (auction: BatchAuction | undefined): SortedBid[] => {
+  if (!auction) return [];
 
   const sortedBids = sortBids(auction.bids, auction.quoteToken);
 

@@ -40,8 +40,6 @@ const getBatchAuctionMock = (
         },
       ],
     },
-    // auctionData?: EMPAuctionData | FixedPriceAuctionData,
-    // formatted?: AuctionFormattedInfo,
     id: "blast-sepolia-0x1234567890123456789012345678901234567890-1",
     chain: "blast-sepolia",
     auctionHouse: "0x1234567890123456789012345678901234567890",

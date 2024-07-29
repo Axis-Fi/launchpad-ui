@@ -2,19 +2,13 @@ import {
   GetBatchAuctionLotQuery,
   useGetBatchAuctionLotQuery,
 } from "@repo/subgraph-client/src/generated";
-import {
-  type QueryKey,
-  type RefetchOptions,
-  type UseQueryResult,
-} from "@tanstack/react-query";
+import type { QueryKey, UseQueryResult } from "@tanstack/react-query";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { AuctionType } from "@repo/types";
 import type {
   Auction,
-  EMPAuctionData,
   AuctionFormattedInfo,
   BatchSubgraphAuction,
-  FixedPriceBatchAuctionData,
   EMPFormattedInfo,
   FPBFormattedInfo,
   AuctionId,
@@ -23,10 +17,6 @@ import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
 import { trimCurrency } from "utils";
-import {
-  useAuctionData,
-  type UseAuctionDataReturn,
-} from "modules/auction/hooks/use-auction-data";
 import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
 import { deployments } from "@repo/deployments";
@@ -43,11 +33,7 @@ type AuctionQueryKey = QueryKey &
 export type AuctionResult = {
   result?: Auction;
   queryKey: AuctionQueryKey;
-  refetch: (
-    auctionDataOptions?: RefetchOptions,
-  ) => Promise<
-    [Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>, Awaited<void>]
-  >;
+  refetch: ReturnType<typeof useSafeRefetch>;
 } & Pick<
   ReturnType<typeof useGetBatchAuctionLotQuery>,
   "isLoading" | "isRefetching"
@@ -88,7 +74,7 @@ export function useAuction(
     { enabled: isQueryEnabled },
   );
 
-  const refetchAuction = useSafeRefetch(queryKey);
+  const refetch = useSafeRefetch(queryKey);
 
   const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (
     data as GetBatchAuctionLotQuery
@@ -96,36 +82,12 @@ export function useAuction(
 
   const auctionType = getAuctionType(rawAuction?.auctionType) as AuctionType;
 
-  const {
-    data: auctionData,
-    refetch: refetchAuctionData,
-    isLoading: isAuctionDataLoading,
-  } = useAuctionData({
-    chainId,
-    lotId,
-    type: auctionType,
-  });
-
-  /**
-   * Redefine refetch of an auction to include its dependencies that also update (such as auctionData)
-   */
-  const refetch = async (
-    auctionDataOptions?: RefetchOptions,
-  ): Promise<
-    [Awaited<ReturnType<UseAuctionDataReturn["refetch"]>>, Awaited<void>]
-  > => {
-    return Promise.all([
-      refetchAuctionData(auctionDataOptions),
-      refetchAuction(),
-    ]);
-  };
-
-  if (!rawAuction || !auctionData) {
+  if (!rawAuction) {
     return {
       refetch,
       isRefetching,
       result: undefined,
-      isLoading: isLoading || isAuctionDataLoading,
+      isLoading: isLoading,
       queryKey,
     };
   }
@@ -149,12 +111,11 @@ export function useAuction(
     throw new Error(`Auction type ${auctionType} doesn't exist`);
   }
 
-  const formatted = formatAuction(auction, auctionType, auctionData);
+  const formatted = formatAuction(auction, auctionType);
   const preparedAuction = {
     ...auction,
     bids: auction.bids.sort((a, b) => +b.blockTimestamp - +a.blockTimestamp), //Sort by time descending
     ...tokens,
-    auctionData,
     auctionType,
     formatted,
     callbacks: auction.callbacks as `0x${string}`, // Has been checked above
@@ -176,7 +137,6 @@ export function useAuction(
 export function formatAuction(
   auction: BatchSubgraphAuction,
   auctionType: AuctionType,
-  auctionData?: EMPAuctionData | FixedPriceBatchAuctionData,
 ): AuctionFormattedInfo {
   if (!auction) throw new Error("No Auction provided to formatAuction");
 
@@ -190,7 +150,7 @@ export function formatAuction(
 
   let moduleFields;
   if (auctionType === AuctionType.SEALED_BID) {
-    moduleFields = addEMPFields(auctionData as EMPAuctionData, auction);
+    moduleFields = addEMPFields(auction);
   } else if (auctionType === AuctionType.FIXED_PRICE_BATCH) {
     moduleFields = addFPBFields(auction);
   }
@@ -217,31 +177,15 @@ export function formatAuction(
   };
 }
 
-/** The value returned as marginal price when auction couldnt be cleared */
-const UNCLEARED_MARGINAL_PRICE =
-  115792089237316195423570985008687907853269984665640564039457584007913129639935n;
+function addEMPFields(auction: BatchSubgraphAuction): EMPFormattedInfo {
+  const minPrice = Number(auction.encryptedMarginalPrice?.minPrice);
+  const minBidSize = Number(auction.encryptedMarginalPrice?.minBidSize);
+  const marginalPrice = Number(auction.encryptedMarginalPrice?.marginalPrice);
 
-function addEMPFields(
-  auctionData: EMPAuctionData,
-  auction: BatchSubgraphAuction,
-): EMPFormattedInfo {
-  const minPrice = formatUnits(
-    auctionData?.minimumPrice ?? 0n,
-    Number(auction.quoteToken.decimals),
-  );
-
-  const minBidSize = formatUnits(
-    auctionData?.minBidSize ?? 0n,
-    Number(auction.quoteToken.decimals),
-  );
-
-  const marginalPrice = formatUnits(
-    auctionData?.marginalPrice ?? "",
-    Number(auction.quoteToken.decimals),
-  );
   const totalBidsDecrypted = auction.bids.filter(
     (b) => b.status === "decrypted",
   ).length;
+
   const totalBidsClaimed = auction.bids.filter(
     (b) => b.status === "claimed",
   ).length;
@@ -255,7 +199,7 @@ function addEMPFields(
     .map((b) => b.bidder)
     .filter((b, i, a) => a.lastIndexOf(b) === i).length;
 
-  const cleared = auctionData?.marginalPrice !== UNCLEARED_MARGINAL_PRICE;
+  const cleared = !!auction.encryptedMarginalPrice?.settlementSuccessful;
 
   // TODO return these as numbers and format them in the UI
   return {
