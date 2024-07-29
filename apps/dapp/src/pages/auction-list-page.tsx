@@ -275,7 +275,7 @@ export default function AuctionListPage() {
                   />
                 ))}
           </div>
-          <Pagination className="mt-6" {...pagination} />
+          {rows.length > 9 && <Pagination className="mt-6" {...pagination} />}
 
           {!environment.isProduction && (
             <div className="flex flex-col items-center justify-center py-8">
