@@ -1,4 +1,4 @@
-import { Button, Card, Metric, Text } from "@repo/ui";
+import { Button, Card, Link, Metric, Text } from "@repo/ui";
 import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
@@ -297,6 +297,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
           <FormProvider {...form}>
             <form onSubmit={(e) => e.preventDefault()}>
               <Card
+                tooltip={
+                  isEMP
+                    ? "Spend Amount is your total bid size and Bid Price is the maximum amount you’re willing to pay per token"
+                    : undefined
+                }
                 title={
                   isFixedPriceBatch
                     ? `Buy ${auction.baseToken.symbol}`
@@ -321,9 +326,15 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                 <div className="mx-auto mt-4 w-full">
                   {isEMP && (
                     <Text size="sm">
-                      You&apos;re bidding on a blind auction. Bids can be
+                      Your bids will remain private and encrypted, and can be
                       revealed after the auction closes.
-                      <a className="text-primary ml-1 uppercase">Learn More</a>
+                      <Link
+                        target="_blank"
+                        href="https://axis.finance/blog/importance-of-bidder-privacy/"
+                        className="text-primary ml-1 uppercase"
+                      >
+                        Learn More
+                      </Link>
                     </Text>
                   )}
                 </div>
