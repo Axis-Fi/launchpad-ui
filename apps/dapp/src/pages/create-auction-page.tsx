@@ -72,7 +72,6 @@ import { RequiresChain } from "components/requires-chain";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
 import { getAuctionHouse, getCallbacks } from "utils/contracts";
-import { Chain } from "@rainbow-me/rainbowkit";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
@@ -90,8 +89,8 @@ import {
   optimisticUpdate,
 } from "modules/auction/utils/optimistic";
 import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
-import { formatChainName } from "modules/auction/utils/format-chain-name";
 import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
+import { getAuctionPath } from "utils/router";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -1939,12 +1938,10 @@ export default function CreateAuctionPage() {
                   onSuccess={() => {
                     if (lotId && chain) {
                       navigate(
-                        generateAuctionURL(
-                          auctionType as AuctionType,
-                          auctionHouseAddress,
-                          lotId,
-                          chain,
-                        ),
+                        getAuctionPath({
+                          chainId: chain.id,
+                          lotId: lotId.toString(),
+                        }),
                       );
                     }
                   }}
@@ -1971,18 +1968,6 @@ function getCreatedAuctionId(
   const lotIdHex = value?.logs[1].topics[1];
   if (!lotIdHex) return null;
   return fromHex(lotIdHex, "number");
-}
-
-function generateAuctionURL(
-  auctionType: AuctionType,
-  auctionHouseAddress: Address,
-  lotId: number,
-  chain: Chain,
-) {
-  //Transform viem/rainbowkit names into subgraph format
-  const chainName = formatChainName(chain);
-
-  return `/auction/${auctionType}/${chainName}-${auctionHouseAddress.toLowerCase()}-${lotId}`;
 }
 
 function canUpdateMinBidSize(form: CreateAuctionForm) {
