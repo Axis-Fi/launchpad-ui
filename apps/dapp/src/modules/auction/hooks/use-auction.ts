@@ -179,7 +179,7 @@ export function formatAuction(
 
 function addEMPFields(auction: BatchSubgraphAuction): EMPFormattedInfo {
   const minPrice = Number(auction.encryptedMarginalPrice?.minPrice);
-  const minBidSize = Number(auction.encryptedMarginalPrice?.minPrice);
+  const minBidSize = Number(auction.encryptedMarginalPrice?.minBidSize);
   const marginalPrice = Number(auction.encryptedMarginalPrice?.marginalPrice);
 
   const totalBidsDecrypted = auction.bids.filter(
