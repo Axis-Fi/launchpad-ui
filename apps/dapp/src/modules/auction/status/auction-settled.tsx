@@ -19,8 +19,8 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
   });
 
   return (
-    <div className="flex justify-between gap-x-8">
-      <div className="w-2/3 space-y-4">
+    <div className="auction-action-container">
+      <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         {isEMP && <SettledAuctionCard auction={auction as BatchAuction} />}
         <Card
           title="Launch Info"

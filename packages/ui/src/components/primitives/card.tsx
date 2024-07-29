@@ -2,6 +2,8 @@ import * as React from "react";
 
 import { cn } from "@/utils";
 import { textVariants } from "./text";
+import { Tooltip } from "../tooltip";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 const CardRoot = React.forwardRef<
   HTMLDivElement,
@@ -82,6 +84,7 @@ type CardProps = {
   title?: React.ReactNode;
   footer?: React.ReactNode;
   headerRightElement?: React.ReactNode;
+  tooltip?: string;
 };
 
 const Card = React.forwardRef<
@@ -92,7 +95,12 @@ const Card = React.forwardRef<
     <CardRoot ref={ref} className={cn("transition-all", props.className)}>
       {(props.title || props.headerRightElement) && (
         <CardHeader>
-          <CardTitle>{props.title}</CardTitle>
+          <Tooltip content={props.tooltip}>
+            <div className="flex items-center">
+              <CardTitle className="inline-block">{props.title}</CardTitle>
+              {props.tooltip && <InfoCircledIcon className="ml-1" />}
+            </div>
+          </Tooltip>
           {props.headerRightElement}
         </CardHeader>
       )}

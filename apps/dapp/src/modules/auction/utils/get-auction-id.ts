@@ -1,14 +1,24 @@
 import type { Chain } from "viem";
 import type { Address, AuctionId } from "@repo/types";
-import { getChainName } from "./get-chain-name";
+import { getDeploymentByChainId } from "utils/chain";
+import { formatChainName } from "./format-chain-name";
 
-const getAuctionId = (
+const formatAuctionId = (
   chain: Chain,
   auctionHouseAddress: Address,
   lotId: number,
 ): AuctionId => {
-  const chainName = getChainName(chain);
+  const chainName = formatChainName(chain);
   return `${chainName}-${auctionHouseAddress.toLowerCase()}-${lotId}`;
 };
 
-export { getAuctionId };
+const getAuctionId = (chainId: string | number, lotId: string | number) => {
+  const deployment = getDeploymentByChainId(Number(chainId));
+  return formatAuctionId(
+    deployment.chain,
+    deployment.addresses.batchAuctionHouse,
+    Number(lotId),
+  );
+};
+
+export { formatAuctionId, getAuctionId };

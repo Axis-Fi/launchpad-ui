@@ -13,7 +13,7 @@ import {
   Line,
 } from "recharts";
 import { format } from "date-fns";
-import type { Auction, BatchAuction, EMPAuctionData } from "@repo/types";
+import type { Auction, BatchAuction } from "@repo/types";
 import { shorten } from "utils/number";
 import { formatDate, getTimestamp } from "utils/date";
 import { useGetToggledUsdAmount } from "./hooks/use-get-toggled-usd-amount";
@@ -103,7 +103,6 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
   const neutral400 = `hsl(var(--neutral-400))`;
 
   const batchAuction = auction as BatchAuction;
-  const auctionData = auction.auctionData;
   const auctionEndTimestamp = auction?.formatted
     ? getTimestamp(auction.formatted.endDate)
     : undefined;
@@ -113,7 +112,7 @@ export const SettledAuctionChart = ({ auction }: { auction: BatchAuction }) => {
     auctionEndTimestamp,
   );
 
-  const bids = useSortedBids(auction, auctionData as EMPAuctionData);
+  const bids = useSortedBids(auction);
   const clearingPrice = Number(
     batchAuction.encryptedMarginalPrice?.marginalPrice ?? 0,
   );

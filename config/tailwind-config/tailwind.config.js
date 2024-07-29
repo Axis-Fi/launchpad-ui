@@ -14,7 +14,7 @@ module.exports = {
     },
     extend: {
       maxWidth: {
-        limit: "1440px",
+        limit: "1340px",
       },
       spacing: {
         "2xs": "var(--spacing-100)",

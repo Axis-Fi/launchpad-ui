@@ -32,6 +32,7 @@ import { useAtom } from "jotai";
 import React from "react";
 import { useAccount } from "wagmi";
 import { environment } from "@repo/env";
+import { useMediaQueries } from "loaders/use-media-queries";
 
 const options = [
   { value: "created", label: "Created" },
@@ -42,11 +43,14 @@ const options = [
 ];
 
 export default function AuctionListPage() {
+  const { isTabletOrMobile } = useMediaQueries();
   const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
   const [onlyUserAuctions, setOnlyUserAuctions] = useState(
     userSettings.onlyUserAuctions,
   );
-  const [gridView, setGridView] = useState(userSettings.gridView);
+  const [gridView, setGridView] = useState(
+    isTabletOrMobile ?? userSettings.gridView,
+  );
   const [sortByStatus, setSortByStatus] = useState<string | undefined>(
     userSettings.activeSort,
   );
@@ -134,49 +138,60 @@ export default function AuctionListPage() {
 
   return (
     <div className="">
-      <div className="bg-hero-banner flex h-[582px] w-full items-end justify-center">
-        <div className="mb-10">
-          <Text size="7xl" mono>
-            Welcome to Origin
-          </Text>
+      <div className="bg-hero-banner flex w-full items-end justify-center py-3 lg:h-[522px] lg:py-0">
+        {!isTabletOrMobile && (
+          <div className="mb-10 text-center">
+            <Text size={isTabletOrMobile ? "2xl" : "7xl"} mono>
+              Welcome to Origin
+            </Text>
 
-          <Text
-            size="3xl"
-            color="secondary"
-            className="mx-auto w-fit text-nowrap"
-          >
-            Experience the New Era of Token Launches
-          </Text>
-          <div className="mx-auto mt-6 flex w-min gap-x-2">
-            <ScrollLink to="auctions" offset={-10} smooth={true}>
-              <Button
-                onClick={() => handleSorting("created")}
-                className="uppercase"
-                size="lg"
-              >
-                <div className="flex items-center">
-                  Upcoming Sales
-                  <div className="size-6">
-                    <ArrowDownIcon />
+            <Text
+              size="3xl"
+              color="secondary"
+              className="mx-auto w-fit lg:text-nowrap"
+            >
+              Experience the New Era of Token Launches
+            </Text>
+            <div className="mx-auto mt-6 flex w-min flex-col-reverse  gap-2 lg:flex-row">
+              <ScrollLink to="auctions" offset={-10} smooth={true}>
+                <Button
+                  onClick={() => handleSorting("created")}
+                  className="uppercase"
+                  size="lg"
+                >
+                  <div className="flex items-center">
+                    Upcoming Sales
+                    <div className="size-6">
+                      <ArrowDownIcon />
+                    </div>
                   </div>
-                </div>
-              </Button>
-            </ScrollLink>
+                </Button>
+              </ScrollLink>
 
-            <Button className="uppercase" size="lg" variant="secondary">
-              Apply for Launch
-            </Button>
+              <Button className="uppercase" size="lg" variant="secondary">
+                Apply for Launch
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
+        {isTabletOrMobile && (
+          <Text size="7xl" mono>
+            Origin
+          </Text>
+        )}
       </div>
 
       <ScrollTargetElement name="auctions">
         <PageContainer>
           <div className="flex items-center justify-between">
-            <Tooltip content={"Origin is a modular Auction suite"}>
-              <Text size="lg">{isLoading ? "Loading " : ""}Token Launches</Text>
-            </Tooltip>
-            <div className="flex gap-x-2">
+            {!isTabletOrMobile && (
+              <Tooltip content={"Origin is a modular Auction suite"}>
+                <Text size="lg">
+                  {isLoading ? "Loading " : ""}Token Launches
+                </Text>
+              </Tooltip>
+            )}
+            <div className="flex gap-x-2 px-2 lg:px-0">
               <IconnedInput
                 icon={<SearchIcon />}
                 className="placeholder:text-foreground"
@@ -196,31 +211,35 @@ export default function AuctionListPage() {
                 content="Only show auctions you've created or participated in."
               >
                 <Chip
+                  className="text-xs"
                   variant={onlyUserAuctions ? "active" : "default"}
                   onClick={() => handleSetUserAuctions()}
                 >
                   My Launches
                 </Chip>
               </Tooltip>
+              {!isTabletOrMobile && (
+                <>
+                  <ToggleGroup
+                    type="single"
+                    defaultValue={gridView ? "grid" : "list"}
+                    onValueChange={(value) => handleViewChange(value)}
+                  >
+                    <ToggleGroupItem variant="icon" value="list">
+                      <RowsIcon />
+                    </ToggleGroupItem>
+                    <ToggleGroupItem variant="icon" value="grid">
+                      <DashboardIcon />
+                    </ToggleGroupItem>
+                  </ToggleGroup>
 
-              <ToggleGroup
-                type="single"
-                defaultValue={gridView ? "grid" : "list"}
-                onValueChange={(value) => handleViewChange(value)}
-              >
-                <ToggleGroupItem variant="icon" value="list">
-                  <RowsIcon />
-                </ToggleGroupItem>
-                <ToggleGroupItem variant="icon" value="grid">
-                  <DashboardIcon />
-                </ToggleGroupItem>
-              </ToggleGroup>
-
-              <ReloadButton
-                tooltip="Reload Auctions"
-                refetching={isRefetching}
-                onClick={() => refetch()}
-              />
+                  <ReloadButton
+                    tooltip="Reload Auctions"
+                    refetching={isRefetching}
+                    onClick={() => refetch()}
+                  />
+                </>
+              )}
             </div>
           </div>
           {!isLoading && !filteredAuctions.length && (
@@ -230,8 +249,10 @@ export default function AuctionListPage() {
           )}
           <div
             className={cn(
-              "mt-4 ",
-              gridView ? "mx-auto grid grid-cols-3 gap-4" : "space-y-4",
+              "lg:mt-4 ",
+              gridView
+                ? "mx-auto grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+                : "space-y-4",
               isLoading && "mask",
             )}
           >

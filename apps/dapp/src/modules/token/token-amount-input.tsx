@@ -1,13 +1,18 @@
-import { Input, Text, Button, cn } from "@repo/ui";
 import React from "react";
+import { parseUnits } from "viem";
+import type { Token } from "@repo/types";
+import { Input, Text, Button, cn } from "@repo/ui";
+import { UsdAmount } from "modules/auction/usd-amount";
 
 type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
   /** the input's label */
   label: string;
-  /** the token's symbol */
-  symbol: string;
-  /** the USD price of the token*/
-  usdPrice?: string;
+  /** the input's token label, defaults to the token's symbol */
+  tokenLabel?: string;
+  /** the input's token type */
+  token: Token;
+  /** whether to show the USD price of the token */
+  showUsdPrice?: boolean;
   /** the user's balance */
   balance?: string;
   /** limit on how much the user can spend */
@@ -33,8 +38,9 @@ export const TokenAmountInput = React.forwardRef<
   (
     {
       label,
-      symbol,
-      usdPrice,
+      token,
+      showUsdPrice = true,
+      tokenLabel = token.symbol,
       balance,
       limit,
       error,
@@ -75,7 +81,7 @@ export const TokenAmountInput = React.forwardRef<
             )}
           />
           <Text className="text-nowrap" color="secondary" size="lg">
-            {symbol}{" "}
+            {tokenLabel}{" "}
           </Text>
           {!disableMaxButton && (
             <Button
@@ -93,10 +99,13 @@ export const TokenAmountInput = React.forwardRef<
           )}
         </div>
         <div className="flex justify-between">
-          {usdPrice && (
+          {showUsdPrice && (
             <div className="flex items-start">
               <Text size="xs" color="secondary">
-                ≈{usdPrice}
+                <UsdAmount
+                  token={token}
+                  amount={parseUnits(value ?? "0", token.decimals)}
+                />
               </Text>
             </div>
           )}

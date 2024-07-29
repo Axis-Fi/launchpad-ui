@@ -27,7 +27,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
     <Card
       className={cn(
         "border-surface-tertiary hover:bg-surface-tertiary group size-full overflow-hidden hover:border-neutral-400",
-        props.isGrid ? "relative h-[368px] min-w-[470px] gap-y-3" : "p-8",
+        props.isGrid ? "relative h-[368px] gap-y-3 lg:min-w-[400px]" : "p-8",
         props.className,
       )}
     >

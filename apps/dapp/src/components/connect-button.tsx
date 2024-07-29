@@ -1,5 +1,6 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
 import { Avatar, Button, cn, type ButtonProps } from "@repo/ui";
+import { useMediaQueries } from "loaders/use-media-queries";
 
 export default function ConnectButton({
   className,
@@ -8,6 +9,7 @@ export default function ConnectButton({
   className?: string;
   size?: ButtonProps["size"];
 }) {
+  const { isTabletOrMobile } = useMediaQueries();
   return (
     <RKConnectButton.Custom>
       {({
@@ -38,10 +40,10 @@ export default function ConnectButton({
                 return (
                   <Button
                     size={size}
-                    className="w-full"
+                    className={"w-full"}
                     onClick={openConnectModal}
                   >
-                    CONNECT WALLET
+                    CONNECT {isTabletOrMobile ? "" : "WALLET"}
                   </Button>
                 );
               }
@@ -57,10 +59,11 @@ export default function ConnectButton({
                 );
               }
               return (
-                <div className="flex items-center gap-x-1">
+                <div className={cn("flex items-center gap-x-1 ")}>
                   <Button
                     size={size}
                     variant="ghost"
+                    className="px-2 lg:px-0"
                     onClick={openAccountModal}
                   >
                     {account.displayName}

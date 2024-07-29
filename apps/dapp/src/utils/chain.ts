@@ -1,3 +1,4 @@
+import { deployments } from "@repo/deployments";
 import { chains } from "@repo/env";
 import { Chain } from "@repo/types";
 
@@ -38,6 +39,17 @@ export function getChainId(chainName?: string): number {
 
 export function getChainById(chainId: number): Chain {
   const chain = activeChains.find((c) => c.id === chainId);
+
   if (!chain) throw new Error(`Unable to find chain ${chainId}`);
+
   return chain;
+}
+
+export function getDeploymentByChainId(chainId: number) {
+  const deployment = deployments[chainId];
+
+  if (!deployment)
+    throw new Error(`Unable to find deployment for chainId ${chainId}`);
+
+  return deployment;
 }

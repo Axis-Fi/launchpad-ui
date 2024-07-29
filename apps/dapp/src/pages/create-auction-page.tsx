@@ -54,6 +54,7 @@ import {
   dateMath,
   trimCurrency,
   toBasisPoints,
+  fromBasisPoints,
 } from "src/utils";
 
 import { AuctionType, CallbacksType } from "@repo/types";
@@ -71,7 +72,6 @@ import { RequiresChain } from "components/requires-chain";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
 import { getAuctionHouse, getCallbacks } from "utils/contracts";
-import { Chain } from "@rainbow-me/rainbowkit";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
@@ -89,7 +89,8 @@ import {
   optimisticUpdate,
 } from "modules/auction/utils/optimistic";
 import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
-import { getChainName } from "modules/auction/utils/get-chain-name";
+import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
+import { getAuctionPath } from "utils/router";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -342,6 +343,7 @@ export default function CreateAuctionPage() {
     deadline,
     minBidSize,
     minPrice,
+    curator,
   ] = form.watch([
     "isVested",
     "payoutToken",
@@ -356,6 +358,7 @@ export default function CreateAuctionPage() {
     "deadline",
     "minBidSize",
     "minPrice",
+    "curator",
   ]);
 
   const chainId = _chainId ?? connectedChainId;
@@ -372,6 +375,12 @@ export default function CreateAuctionPage() {
     connectedChainId,
     auctionHouseAddress,
     auctionType,
+  );
+
+  const { data: curatorFee } = useGetCuratorFee(
+    chainId,
+    auctionType,
+    curator as Address,
   );
 
   const queryClient = useQueryClient();
@@ -715,7 +724,7 @@ export default function CreateAuctionPage() {
     tokenAddress: payoutToken?.address as Address,
     decimals: payoutToken?.decimals,
     chainId: payoutToken?.chainId,
-    amount: Number(capacity),
+    amount: withCuratorShare(Number(capacity), curatorFee),
   });
   // TODO add note on pre-funding: the capacity will be transferred upon creation
 
@@ -1005,7 +1014,7 @@ export default function CreateAuctionPage() {
 
     createTxnSucceeded.current = true;
 
-    const auctionId = getAuctionId(chain!, auctionHouseAddress, lotId);
+    const auctionId = getAuctionId(chain!.id, lotId);
 
     const optimisticAuction = auctionsCache.createOptimisticAuction(
       lotId,
@@ -1929,12 +1938,10 @@ export default function CreateAuctionPage() {
                   onSuccess={() => {
                     if (lotId && chain) {
                       navigate(
-                        generateAuctionURL(
-                          auctionType as AuctionType,
-                          auctionHouseAddress,
-                          lotId,
-                          chain,
-                        ),
+                        getAuctionPath({
+                          chainId: chain.id,
+                          lotId: lotId.toString(),
+                        }),
                       );
                     }
                   }}
@@ -1963,18 +1970,14 @@ function getCreatedAuctionId(
   return fromHex(lotIdHex, "number");
 }
 
-function generateAuctionURL(
-  auctionType: AuctionType,
-  auctionHouseAddress: Address,
-  lotId: number,
-  chain: Chain,
-) {
-  //Transform viem/rainbowkit names into subgraph format
-  const chainName = getChainName(chain);
-
-  return `/auction/${auctionType}/${chainName}-${auctionHouseAddress.toLowerCase()}-${lotId}`;
-}
-
 function canUpdateMinBidSize(form: CreateAuctionForm) {
   return !!form.capacity && !!form.minPrice;
+}
+
+function withCuratorShare(amount?: number, curatorFee?: number) {
+  if (!amount) return 0;
+  if (!curatorFee) return amount;
+  const fee = fromBasisPoints(curatorFee);
+  const adjusted = fee < 10 ? `0${fee}` : fee;
+  return amount * parseFloat(`1.${adjusted}`);
 }

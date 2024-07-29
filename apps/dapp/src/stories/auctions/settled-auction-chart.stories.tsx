@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { SettledAuctionChart } from "modules/auction/settled-auction-chart";
 import { getSettledBatchAuctionMock } from "../mocks/settled-batch-auction-partial-fill";
+import { ToggleProvider } from "@repo/ui";
 
 /*
   TODO: Storybook has a bug where it serializes your args using JSON.stringify - which doesn't support BigInt values.
@@ -21,8 +22,10 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <div className="w-[800px] bg-black p-4">
-        <Story />
+      <div className="w-[800px] bg-white p-4">
+        <ToggleProvider initialToggle={true}>
+          <Story />
+        </ToggleProvider>
       </div>
     ),
   ],
@@ -32,4 +35,28 @@ export default meta;
 
 type Story = StoryObj<typeof SettledAuctionChart>;
 
-export const Primary: Story = {};
+export const USDQuoteToken: Story = {};
+
+export const KnownNonUSDQuoteToken: Story = {
+  args: {
+    auction: getSettledBatchAuctionMock({
+      quoteToken: {
+        ...getSettledBatchAuctionMock().quoteToken,
+        name: "WETH",
+        symbol: "WETH",
+      },
+    }),
+  },
+};
+
+export const UnknownNonUSDQuoteToken: Story = {
+  args: {
+    auction: getSettledBatchAuctionMock({
+      quoteToken: {
+        ...getSettledBatchAuctionMock().quoteToken,
+        name: "ZFDIJDFJK",
+        symbol: "ZFDIJDFJK",
+      },
+    }),
+  },
+};

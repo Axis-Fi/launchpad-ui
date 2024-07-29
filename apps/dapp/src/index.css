@@ -44,6 +44,10 @@
     clip-path: xywh(0 3px 100% 75% round 0% 0);
   }
 
+  .auction-action-container {
+    @apply flex flex-col-reverse justify-between gap-x-8 lg:flex-row;
+  }
+
   .mask {
     mask-image: linear-gradient(hsla(0, 0%, 0%, 1), transparent);
   }

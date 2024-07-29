@@ -5,7 +5,7 @@ import { testnetDeployments, mainnetDeployments } from "@repo/deployments";
 import { AxisDeployment } from "@repo/deployments/src/types";
 
 //Mainnet Config
-export const mainnets: Chain[] = testnetDeployments.map(({ chain }) => chain);
+export const mainnets: Chain[] = mainnetDeployments.map(({ chain }) => chain);
 const mainnetConfig = generateConfig(mainnetDeployments);
 
 //Testnet Config
