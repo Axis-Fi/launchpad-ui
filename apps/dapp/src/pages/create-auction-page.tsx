@@ -141,6 +141,7 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
     dtlUniV3PoolFee: z.string().optional(),
+    dtlCleoV1StablePool: z.boolean().optional(),
     customCallbackData: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]$/)
@@ -1606,7 +1607,7 @@ export default function CreateAuctionPage() {
                         >
                           <Select
                             defaultValue={CallbacksType.NONE}
-                            options={callbackOptions ?? []}
+                            options={callbackOptions}
                             {...field}
                           />
                         </FormItemWrapper>
@@ -1702,7 +1703,9 @@ export default function CreateAuctionPage() {
                       </>
                     )}
                     {(callbacksType === CallbacksType.UNIV2_DTL ||
-                      callbacksType === CallbacksType.UNIV3_DTL) && (
+                      callbacksType === CallbacksType.UNIV3_DTL ||
+                      callbacksType === CallbacksType.CLEOV1_DTL ||
+                      callbacksType === CallbacksType.CLEOV2_DTL) && (
                       <>
                         <FormField
                           control={form.control}
@@ -1820,6 +1823,24 @@ export default function CreateAuctionPage() {
                           </FormItemWrapper>
                         )}
                       />
+                    )}
+                    {callbacksType === CallbacksType.CLEOV1_DTL && (
+                      <>
+                        <FormField
+                          name="dtlCleoV1StablePool"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Stable Pool"
+                              tooltip="Whether the pool will be stable or volatile"
+                            >
+                              <Switch
+                                {...field}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
                     )}
                     {/* {callbacksType === CallbacksType.CUSTOM && (
                       <>
