@@ -91,6 +91,7 @@ import {
 import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
 import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
 import { getAuctionPath } from "utils/router";
+import getExistingCallbacks from "modules/create-auction/get-existing-callbacks";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -1045,6 +1046,11 @@ export default function CreateAuctionPage() {
     !minBidSize ||
     Number(minBidSize) >= (Number(capacity) * Number(minPrice)) / 10_000; //10k here represents a potential max amount of bids
 
+  const callbackOptions = React.useMemo(() => {
+    form.resetField("callbacksType");
+    return getExistingCallbacks(chainId);
+  }, [chainId]);
+
   return (
     <PageContainer>
       <PageHeader
@@ -1600,40 +1606,8 @@ export default function CreateAuctionPage() {
                         >
                           <Select
                             defaultValue={CallbacksType.NONE}
-                            options={[
-                              {
-                                value: CallbacksType.NONE,
-                                label: "None",
-                              },
-                              {
-                                value: CallbacksType.MERKLE_ALLOWLIST,
-                                label: "Offchain Allowlist",
-                              },
-                              {
-                                value: CallbacksType.CAPPED_MERKLE_ALLOWLIST,
-                                label: "Offchain Allowlist with Spend Cap",
-                              },
-                              {
-                                value: CallbacksType.ALLOCATED_MERKLE_ALLOWLIST,
-                                label: "Offchain Allowlist with Allocations",
-                              },
-                              {
-                                value: CallbacksType.TOKEN_ALLOWLIST,
-                                label: "Token Allowlist",
-                              },
-                              {
-                                value: CallbacksType.UNIV2_DTL,
-                                label: "Deposit to Uniswap V2 Pool",
-                              },
-                              {
-                                value: CallbacksType.UNIV3_DTL,
-                                label: "Deposit to Uniswap V3 Pool",
-                              },
-                              // {
-                              //   value: CallbacksType.CUSTOM,
-                              //   label: "Custom",
-                              // },
-                            ]}
+                            options={callbackOptions ?? []}
+                            disabled={callbackOptions.length === 1}
                             {...field}
                           />
                         </FormItemWrapper>
