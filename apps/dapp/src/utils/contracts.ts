@@ -55,7 +55,7 @@ export function getAuctionHouse(
 }
 
 // TODO add DTL contracts once they exist
-const callbackMap = {
+export const callbackMap: Record<CallbacksType, string> = {
   [CallbacksType.NONE]: "",
   [CallbacksType.CUSTOM]: "",
   [CallbacksType.MERKLE_ALLOWLIST]: "merkleAllowlist",
@@ -64,12 +64,28 @@ const callbackMap = {
   [CallbacksType.ALLOCATED_MERKLE_ALLOWLIST]: "allocatedMerkleAllowlist",
   [CallbacksType.UNIV2_DTL]: "uniV2Dtl",
   [CallbacksType.UNIV3_DTL]: "uniV3Dtl",
+  [CallbacksType.CLEO_DTL]: "cleoDTL",
+};
+
+/** Labels for callback contract options */
+export const callbackLabels: Record<CallbacksType, string> = {
+  [CallbacksType.NONE]: "None",
+  [CallbacksType.CUSTOM]: "Custom",
+  [CallbacksType.MERKLE_ALLOWLIST]: "Offchain Allowlist",
+  [CallbacksType.CAPPED_MERKLE_ALLOWLIST]: "Offchain Allowlist with Spend Cap",
+  [CallbacksType.ALLOCATED_MERKLE_ALLOWLIST]:
+    "Offchain Allowlist with Allocations",
+  [CallbacksType.TOKEN_ALLOWLIST]: "Token Allowlist",
+  [CallbacksType.UNIV2_DTL]: "Deposit to Uniswap V2 Pool",
+  [CallbacksType.UNIV3_DTL]: "Deposit to Uniswap V3 Pool",
+  [CallbacksType.CLEO_DTL]: "Deposit to Cleopatra Pool",
 };
 
 export function getCallbacks(chainId: number, callbackType: CallbacksType) {
   const contractName = callbackMap[callbackType] as AxisCallbackNames;
 
   return {
+    //@ts-expect-error TODO: added CleoDTL abi
     abi: axisContracts.abis[contractName],
     address: axisContracts.addresses[chainId][contractName] as Address,
   };

@@ -20,6 +20,7 @@ export type SelectProps = {
   options: SelectData[];
   id?: string;
   label?: string;
+  value?: string;
   placeholder?: string;
   onChange?: (value: string) => void;
   defaultValue?: string;
@@ -28,12 +29,19 @@ export type SelectProps = {
 
 /** Dropdown selector */
 export function Select(props: SelectProps) {
-  const [selected, setSelected] = React.useState<unknown>();
+  const [selected, setSelected] = React.useState<string>();
   const selectedImage = props.options.find((o) => o.value === selected)?.imgURL;
+
+  React.useEffect(() => {
+    if (props.value && props.value !== selected) {
+      setSelected(props.value);
+    }
+  }, [props.value]);
 
   return (
     <SelectRoot
       defaultValue={props.defaultValue}
+      value={selected}
       onValueChange={(value) => {
         setSelected(value);
         props.onChange?.(value);

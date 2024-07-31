@@ -7,4 +7,5 @@ export enum CallbacksType {
   TOKEN_ALLOWLIST = "TokenAllowlist",
   UNIV2_DTL = "UniswapV2DirectToLiquidity",
   UNIV3_DTL = "UniswapV3DirectToLiquidity",
+  CLEO_DTL = "CleopatraDirectToLiquidity",
 }
