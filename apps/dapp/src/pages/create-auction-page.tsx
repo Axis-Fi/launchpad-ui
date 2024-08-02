@@ -92,6 +92,9 @@ import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
 import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
 import { getAuctionPath } from "utils/router";
 import getExistingCallbacks from "modules/create-auction/get-existing-callbacks";
+import dtlParameters, {
+  prepareBaseDTL,
+} from "modules/create-auction/dtl-parameters";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -140,6 +143,7 @@ const schema = z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
+    dtlMaxSlippage: z.number().optional(),
     dtlUniV3PoolFee: z.string().optional(),
     dtlCleoV1StablePool: z.boolean().optional(),
     customCallbackData: z
@@ -269,7 +273,9 @@ const schema = z
     (data) =>
       !(
         data.callbacksType === CallbacksType.UNIV2_DTL ||
-        data.callbacksType === CallbacksType.UNIV3_DTL
+        data.callbacksType === CallbacksType.UNIV3_DTL ||
+        data.callbacksType === CallbacksType.CLEOV1_DTL ||
+        data.callbacksType === CallbacksType.CLEOV2_DTL
       )
         ? true
         : data.dtlRecipient,
@@ -282,7 +288,9 @@ const schema = z
     (data) =>
       !(
         data.callbacksType === CallbacksType.UNIV2_DTL ||
-        data.callbacksType === CallbacksType.UNIV3_DTL
+        data.callbacksType === CallbacksType.UNIV3_DTL ||
+        data.callbacksType === CallbacksType.CLEOV1_DTL ||
+        data.callbacksType === CallbacksType.CLEOV2_DTL
       )
         ? true
         : data.dtlProceedsPercent &&
@@ -294,6 +302,22 @@ const schema = z
       path: ["dtlProceedsPercent"],
     },
   )
+  .refine(
+    (data) =>
+      !(
+        data.callbacksType === CallbacksType.UNIV2_DTL ||
+        data.callbacksType === CallbacksType.UNIV3_DTL ||
+        data.callbacksType === CallbacksType.CLEOV1_DTL ||
+        data.callbacksType === CallbacksType.CLEOV2_DTL
+      )
+        ? true
+        : data.dtlMaxSlippage,
+    {
+      message: "Required",
+      path: ["dtlMaxSlippage"],
+    },
+  )
+
   .refine(
     (data) =>
       !(data.callbacksType === CallbacksType.UNIV3_DTL)
@@ -547,123 +571,59 @@ export default function CreateAuctionPage() {
         break;
       }
       case CallbacksType.UNIV2_DTL: {
-        const proceedsPercent = values.dtlProceedsPercent
-          ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
-          : 0;
-        const vestingStart = values.dtlVestingStart
-          ? getTimestamp(values.dtlVestingStart)
-          : 0;
-        const vestingExpiry =
-          vestingStart === 0
-            ? 0
-            : vestingStart +
-              getDuration(Number(values.dtlVestingDuration ?? 0));
-        const recipient = !values.dtlRecipient
-          ? zeroAddress
-          : getAddress(values.dtlRecipient);
-        const implParams = toHex("");
+        const maxSlippage = values.dtlMaxSlippage!;
+
+        const implParams = encodeAbiParameters(
+          parseAbiParameters(["uint24 maxSlippage"]),
+          [maxSlippage],
+        );
+
+        const baseParams = prepareBaseDTL(values);
+
         callbackData = encodeAbiParameters(
-          [
-            {
-              components: [
-                {
-                  type: "uint24",
-                  name: "proceedsUtilisationPercent",
-                },
-                {
-                  type: "uint48",
-                  name: "vestingStart",
-                },
-                {
-                  type: "uint48",
-                  name: "vestingExpiry",
-                },
-                {
-                  type: "address",
-                  name: "recipient",
-                },
-                {
-                  type: "bytes",
-                  name: "implParams",
-                },
-              ],
-              type: "tuple",
-              name: "OnCreateParams",
-            },
-          ],
-          [
-            {
-              proceedsUtilisationPercent: proceedsPercent,
-              vestingStart: vestingStart,
-              vestingExpiry: vestingExpiry,
-              recipient: recipient,
-              implParams: implParams,
-            },
-          ],
+          [dtlParameters],
+          [{ ...baseParams, implParams }],
         );
         break;
       }
-      case CallbacksType.UNIV3_DTL: {
-        const proceedsPercent = values.dtlProceedsPercent
-          ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
-          : 0;
-        const vestingStart = values.dtlVestingStart
-          ? getTimestamp(values.dtlVestingStart)
-          : 0;
-        const vestingExpiry =
-          vestingStart === 0
-            ? 0
-            : vestingStart +
-              getDuration(Number(values.dtlVestingDuration ?? 0));
-        const recipient = (values.dtlRecipient ?? zeroAddress) as `0x${string}`;
+
+      case CallbacksType.UNIV3_DTL:
+      case CallbacksType.CLEOV2_DTL: {
         const poolFee = values.dtlUniV3PoolFee
           ? Number(values.dtlUniV3PoolFee)
           : 0;
+
+        const maxSlippage = values.dtlMaxSlippage!;
+
         const implParams = encodeAbiParameters(
-          parseAbiParameters("uint24 poolFee"),
-          [poolFee],
+          parseAbiParameters(["uint24 maxSlippage", "uint24 poolFee"]),
+          [poolFee, maxSlippage],
         );
 
+        const baseParams = prepareBaseDTL(values);
+
         callbackData = encodeAbiParameters(
-          [
-            {
-              components: [
-                {
-                  type: "uint24",
-                  name: "proceedsUtilisationPercent",
-                },
-                {
-                  type: "uint48",
-                  name: "vestingStart",
-                },
-                {
-                  type: "uint48",
-                  name: "vestingExpiry",
-                },
-                {
-                  type: "address",
-                  name: "recipient",
-                },
-                {
-                  type: "bytes",
-                  name: "implParams",
-                },
-              ],
-              type: "tuple",
-              name: "OnCreateParams",
-            },
-          ],
-          [
-            {
-              proceedsUtilisationPercent: proceedsPercent,
-              vestingStart: vestingStart,
-              vestingExpiry: vestingExpiry,
-              recipient: recipient,
-              implParams: implParams,
-            },
-          ],
+          [dtlParameters],
+          [{ ...baseParams, implParams }],
         );
         break;
+      }
+
+      case CallbacksType.CLEOV1_DTL: {
+        const maxSlippage = values.dtlMaxSlippage!;
+        const isStablePool = values.dtlCleoV1StablePool!;
+
+        const implParams = encodeAbiParameters(
+          parseAbiParameters(["bool stable", "uint24 maxSlippage"]),
+          [isStablePool, maxSlippage],
+        );
+
+        const baseParams = prepareBaseDTL(values);
+
+        callbackData = encodeAbiParameters(
+          [dtlParameters],
+          [{ ...baseParams, implParams }],
+        );
       }
     }
 
@@ -968,6 +928,8 @@ export default function CreateAuctionPage() {
         !!dtlUniV3PoolFee,
     },
   });
+
+  //TODO: add checks for cleov1 and v2 DTL
 
   if (uniV2Pool && uniV2Pool !== zeroAddress) {
     form.setError("callbacksType", {

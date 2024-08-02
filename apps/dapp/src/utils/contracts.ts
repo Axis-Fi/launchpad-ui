@@ -64,7 +64,8 @@ export const callbackMap: Record<CallbacksType, string> = {
   [CallbacksType.ALLOCATED_MERKLE_ALLOWLIST]: "allocatedMerkleAllowlist",
   [CallbacksType.UNIV2_DTL]: "uniV2Dtl",
   [CallbacksType.UNIV3_DTL]: "uniV3Dtl",
-  [CallbacksType.CLEO_DTL]: "cleoDTL",
+  [CallbacksType.CLEOV1_DTL]: "cleoV1DTL",
+  [CallbacksType.CLEOV2_DTL]: "cleoV2DTL",
 };
 
 /** Labels for callback contract options */
@@ -78,7 +79,8 @@ export const callbackLabels: Record<CallbacksType, string> = {
   [CallbacksType.TOKEN_ALLOWLIST]: "Token Allowlist",
   [CallbacksType.UNIV2_DTL]: "Deposit to Uniswap V2 Pool",
   [CallbacksType.UNIV3_DTL]: "Deposit to Uniswap V3 Pool",
-  [CallbacksType.CLEO_DTL]: "Deposit to Cleopatra Pool",
+  [CallbacksType.CLEOV1_DTL]: "Deposit to Cleopatra V1 Pool",
+  [CallbacksType.CLEOV2_DTL]: "Deposit to Cleopatra V2 Pool",
 };
 
 export function getCallbacks(chainId: number, callbackType: CallbacksType) {
