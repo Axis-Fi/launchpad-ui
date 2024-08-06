@@ -27,6 +27,7 @@ export const testnetLinks = [
 
 export const defaultLinks = [
   { label: "Launches", href: "/#" },
+  { label: "Curators", href: "/curators" },
   { label: "Referrals", href: "/refer" },
   {
     label: "Docs",
