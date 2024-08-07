@@ -1,7 +1,8 @@
-import { Text } from "@repo/ui";
+import { Text, cn } from "@repo/ui";
 
 type PageContainerProps = {
   title?: React.ReactNode;
+  containerClassName?: string;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export function PageContainer(props: PageContainerProps) {
@@ -12,7 +13,14 @@ export function PageContainer(props: PageContainerProps) {
           {props.title}{" "}
         </Text>
       )}
-      <div className="mx-auto flex flex-col gap-y-4">{props.children}</div>
+      <div
+        className={cn(
+          "mx-auto flex flex-col gap-y-4",
+          props.containerClassName,
+        )}
+      >
+        {props.children}
+      </div>
     </div>
   );
 }

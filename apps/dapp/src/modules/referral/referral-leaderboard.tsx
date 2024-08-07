@@ -28,8 +28,7 @@ const cols = [
 export function ReferralLeaderboard() {
   return (
     <div className="mask blur-sm">
-      {/*@ts-expect-error - leaderboard not yet implemented */}
-      <DataTable data={[{}, {}, {}]} columns={cols} />
+      <DataTable data={Array.from(Array(8))} columns={cols} />
     </div>
   );
 }
