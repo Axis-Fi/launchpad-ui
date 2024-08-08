@@ -5,6 +5,7 @@ export function Tooltip(
   props: React.PropsWithChildren<{
     content: React.ReactNode;
     triggerClassName?: string;
+    contentClassName?: string;
     asChild?: boolean;
   }>,
 ) {
@@ -17,7 +18,7 @@ export function Tooltip(
       >
         {props.children}
       </TooltipTrigger>
-      <TooltipContent className="max-w-xs">
+      <TooltipContent className={cn("max-w-xs", props.contentClassName)}>
         <p>{props.content}</p>
       </TooltipContent>
     </TooltipRoot>

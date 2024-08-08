@@ -131,22 +131,29 @@ function AuctionCardDetails(
         </AuctionMetricsContainer>
       )}
 
-      <Link
-        className={cn("self-end", !props.isGrid && "hidden group-hover:block")}
-        to={getAuctionPath(props.auction)}
+      <div
+        className={cn(
+          "items-end justify-between",
+          !props.isGrid && "hidden group-hover:flex",
+        )}
       >
-        <Button
-          disabled={props.disabledViewButton}
-          size={props.isGrid ? "sm" : "lg"}
-          className={cn(
-            "self-end uppercase transition-all ",
-            props.isGrid &&
-              "absolute bottom-0 right-0 mb-3 mr-3 opacity-0 group-hover:opacity-100",
-          )}
-        >
-          View Auction
-        </Button>
-      </Link>
+        {props.auction.curatorApproved && !props.isGrid && (
+          <AuctionMetric size="s" id="curator" auction={props.auction} />
+        )}
+        <Link className={cn("self-end")} to={getAuctionPath(props.auction)}>
+          <Button
+            disabled={props.disabledViewButton}
+            size={props.isGrid ? "sm" : "lg"}
+            className={cn(
+              "self-end uppercase transition-all ",
+              props.isGrid &&
+                "absolute bottom-0 right-0 mb-3 mr-3 opacity-0 group-hover:opacity-100",
+            )}
+          >
+            View Auction
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }

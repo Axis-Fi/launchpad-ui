@@ -48,15 +48,7 @@ export function AuctionLaunchMetrics(
         {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
         <AuctionMetric id="capacity" />
         <AuctionMetric id="saleType" />
-        {hasCurator && (
-          <Metric label="Curator">
-            <BlockExplorerLink
-              trim
-              chainId={auction.chainId}
-              address={auction.curator!}
-            />
-          </Metric>
-        )}
+        {hasCurator && <AuctionMetric id="curator" />}
       </AuctionMetricsContainer>
     </Card>
   );
