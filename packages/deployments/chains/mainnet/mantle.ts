@@ -24,6 +24,14 @@ const config: AxisDeploymentConfig = {
       ...weth,
       address: "0xdeaddeaddeaddeaddeaddeaddeaddeaddead1111",
     },
+    {
+      symbol: "MNT",
+      name: "Mantle",
+      address: "0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000",
+      decimals: 18,
+      logoURI:
+        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/mantle.svg",
+    },
   ],
   ...extractAddresses(addresses),
   //...extractCallbacks(addresses)
