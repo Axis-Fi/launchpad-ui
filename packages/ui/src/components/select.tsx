@@ -20,20 +20,29 @@ export type SelectProps = {
   options: SelectData[];
   id?: string;
   label?: string;
+  value?: string;
   placeholder?: string;
   onChange?: (value: string) => void;
   defaultValue?: string;
   triggerClassName?: string;
+  disabled?: boolean;
 };
 
 /** Dropdown selector */
 export function Select(props: SelectProps) {
-  const [selected, setSelected] = React.useState<unknown>();
+  const [selected, setSelected] = React.useState<string>();
   const selectedImage = props.options.find((o) => o.value === selected)?.imgURL;
+
+  React.useEffect(() => {
+    if (props.value && props.value !== selected) {
+      setSelected(props.value);
+    }
+  }, [props.value]);
 
   return (
     <SelectRoot
       defaultValue={props.defaultValue}
+      value={selected}
       onValueChange={(value) => {
         setSelected(value);
         props.onChange?.(value);
@@ -41,6 +50,7 @@ export function Select(props: SelectProps) {
     >
       <SelectTrigger
         id={props.id}
+        disabled={props.disabled}
         className={cn(
           "w-full max-w-sm rounded-full border-transparent",
           props.triggerClassName,

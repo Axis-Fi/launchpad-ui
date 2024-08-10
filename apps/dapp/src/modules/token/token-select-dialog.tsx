@@ -54,24 +54,26 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
           </DialogHeader>
           <div>
             <ScrollArea className="max-h-[300px]">
-              {tokens.map((t, i) => (
-                <Button
-                  key={i}
-                  variant="secondary"
-                  size="lg"
-                  className="block w-full rounded-none border-x border-b-0 border-t px-2 first:rounded-t-sm last:rounded-b-sm last:border-b"
-                  onClick={() => {
-                    props.onChange?.(t, {
-                      imgURL: t.logoURI,
-                      label: t.symbol,
-                      value: t.address,
-                    });
-                    props.setDialogOpen?.(false);
-                  }}
-                >
-                  <TokenSelectRow token={t} />
-                </Button>
-              ))}
+              {tokens
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((t, i) => (
+                  <Button
+                    key={i}
+                    variant="secondary"
+                    size="lg"
+                    className="block w-full rounded-none border-x border-b-0 border-t px-2 first:rounded-t-sm last:rounded-b-sm last:border-b"
+                    onClick={() => {
+                      props.onChange?.(t, {
+                        imgURL: t.logoURI,
+                        label: t.symbol,
+                        value: t.address,
+                      });
+                      props.setDialogOpen?.(false);
+                    }}
+                  >
+                    <TokenSelectRow token={t} />
+                  </Button>
+                ))}
             </ScrollArea>
           </div>
           <DialogFooter>
