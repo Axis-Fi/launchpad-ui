@@ -5,7 +5,7 @@ import { ReferralLeaderboard } from "modules/referral/referral-leaderboard";
 
 export function ReferralPage() {
   return (
-    <PageContainer title="Referral Links" containerClassName="items-center">
+    <PageContainer containerClassName="items-center mt-12">
       <div className="max-w-[1100px] space-y-4 lg:w-[1100px]">
         <ReferralLinkCard />
         <Card className="relative w-full" title="Leaderboard">

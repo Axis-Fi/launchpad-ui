@@ -6,10 +6,7 @@ import { Curator } from "@repo/types";
 
 export default function CuratorListPage() {
   return (
-    <PageContainer
-      title="Token Launch Curators"
-      containerClassName="items-center"
-    >
+    <PageContainer containerClassName="items-center mt-12">
       <div className="mx-2 my-auto max-w-[1200px] space-y-6 lg:mx-0">
         {allowedCurators.map((c) => (
           <CuratorCard key={c.address} curator={c} />
