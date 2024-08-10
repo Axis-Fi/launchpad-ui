@@ -10,7 +10,7 @@ const config: AxisDeploymentConfig = {
   chainIconUrl: "/mantle-logo.svg",
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mantle/v<VERSION>/gn",
-  rpcURL: "https://rpc.sepolia.mantle.xyz",
+  rpcURL: "https://rpc.mantle.xyz",
   tokenList: [
     {
       ...usdc,
@@ -25,9 +25,9 @@ const config: AxisDeploymentConfig = {
       address: "0xdeaddeaddeaddeaddeaddeaddeaddeaddead1111",
     },
     {
-      symbol: "MNT",
+      symbol: "WMNT",
       name: "Mantle",
-      address: "0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000",
+      address: "0x78c1b0C915c4FAA5FffA6CAbf0219DA63d7f4cb8",
       decimals: 18,
       logoURI:
         "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/mantle.svg",
