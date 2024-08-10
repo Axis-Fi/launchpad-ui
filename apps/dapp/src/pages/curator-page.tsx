@@ -18,14 +18,15 @@ export function CuratorPage() {
   }));
 
   return (
-    <PageContainer title="Curator">
+    <PageContainer containerClassName="mt-12">
       <div className="flex gap-x-4 px-4">
         <Card
+          className="w-1/4"
           title={
             <div className="gap-x-4">
               <Tooltip content="Click percentage field below to edit your fee and the checkmark to submit the transaction.">
                 <CardTitle className="flex items-center gap-x-2">
-                  Fees <InfoIcon className="size-4" />
+                  Curator Fees <InfoIcon className="size-4" />
                 </CardTitle>
               </Tooltip>
               <Select
@@ -44,7 +45,7 @@ export function CuratorPage() {
             />
           </div>
         </Card>
-        <Card title="Auctions" className="grow">
+        <Card title="Launches" className="w-3/4 grow">
           <CuratableAuctionList />
         </Card>
       </div>

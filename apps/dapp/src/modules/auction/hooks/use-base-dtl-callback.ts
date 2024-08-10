@@ -58,8 +58,8 @@ export function useBaseDTLCallback({
   const uniV2Dtl = getCallbacks(chainId || 0, CallbacksType.UNIV2_DTL);
   const uniV3Dtl = getCallbacks(chainId || 0, CallbacksType.UNIV3_DTL);
   const isBaseDTLCallback =
-    (callback || "").toLowerCase() === uniV2Dtl.address.toLowerCase() ||
-    (callback || "").toLowerCase() === uniV3Dtl.address.toLowerCase();
+    (callback || "").toLowerCase() === uniV2Dtl?.address?.toLowerCase() ||
+    (callback || "").toLowerCase() === uniV3Dtl?.address?.toLowerCase();
 
   const response = useReadContract({
     abi: axisContracts.abis.uniV2Dtl, // We can use this for all DTL callbacks, since the Uniswap V2 DTL does not have additional parameters

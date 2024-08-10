@@ -10,7 +10,9 @@ export function isAllowedCurator(auction: Auction) {
   return (
     curator &&
     isAddress(curator) &&
-    allowedCurators.map((a) => a.toLowerCase()).includes(curator.toLowerCase())
+    allowedCurators
+      .map((c) => c.address.toLowerCase())
+      .includes(curator.toLowerCase())
   );
 }
 

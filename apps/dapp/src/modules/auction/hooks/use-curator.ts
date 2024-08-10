@@ -1,3 +1,4 @@
+import { allowedCurators } from "@repo/env";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { useAccount } from "wagmi";
 
@@ -16,8 +17,13 @@ export function useCurator() {
       ["live", "created"].includes(a.status.toLocaleLowerCase()),
   );
 
+  const isKnownCurator = allowedCurators
+    .map((c) => c.address.toLowerCase())
+    .includes(address?.toLowerCase() || "");
+
   return {
-    isCurator: isConnected && !!auctionsCuratedByUser.length,
+    isCurator:
+      isConnected && (!!auctionsCuratedByUser.length || isKnownCurator),
     hasPendingCurations: !!pendingCurations.length,
     pendingCurationsCount: pendingCurations.length,
   };
