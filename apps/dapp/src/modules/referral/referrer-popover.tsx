@@ -10,7 +10,7 @@ import {
   cn,
 } from "@repo/ui";
 import { useAccount } from "wagmi";
-import { useReferralLink } from "./hooks/use-referral-link";
+import { useReferralLink } from "./use-referral-link";
 import { isAddress } from "viem";
 import React from "react";
 import { getAuctionPath } from "utils/router";

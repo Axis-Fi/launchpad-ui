@@ -6,13 +6,16 @@ import {
   type BatchAuction,
   type PropsWithAuction,
 } from "@repo/types";
-import { Metric, MetricProps, trimAddress } from "@repo/ui";
+import { Metric, MetricProps, Tooltip } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
 import { getCallbacksType } from "./utils/get-callbacks-type";
 import { getMinFilled, getPrice, hasDerivative } from "./utils/auction-details";
 import { getDaysBetweenDates } from "utils/date";
 import { Format } from "modules/token/format";
+import { allowedCurators } from "@repo/env";
+import { CuratorCard } from "pages/curator-list-page";
+import { InfoIcon } from "lucide-react";
 
 const getTargetRaise = (
   auction: Auction,
@@ -272,7 +275,22 @@ const handlers = {
     handler: (auction: Auction) => {
       if (!auction.curator) return undefined;
 
-      return trimAddress(auction.curator, 6);
+      const curator = allowedCurators.find(
+        (c) => c.address.toLowerCase() === auction.curator?.toLowerCase(),
+      );
+
+      if (!curator) return undefined;
+
+      return (
+        <Tooltip
+          content={<CuratorCard hideButton curator={curator} />}
+          contentClassName="max-w-lg"
+        >
+          <div className="flex items-center gap-x-2">
+            {curator.name} <InfoIcon size="20" />
+          </div>
+        </Tooltip>
+      );
     },
   },
   saleType: {

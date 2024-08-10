@@ -1,6 +1,6 @@
 import { Card, Link } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
-import { ReferrerPopover } from "./referrer-popover";
+import { ReferrerPopover } from "modules/referral/referrer-popover";
 import { getLinkUrl } from "./utils/auction-details";
 
 export function ProjectInfoCard({

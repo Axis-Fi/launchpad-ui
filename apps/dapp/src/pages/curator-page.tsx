@@ -44,7 +44,7 @@ export function CuratorPage() {
             />
           </div>
         </Card>
-        <Card title="Auctions" className="grow">
+        <Card title="Launches" className="grow">
           <CuratableAuctionList />
         </Card>
       </div>
