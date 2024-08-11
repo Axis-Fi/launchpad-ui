@@ -17,6 +17,6 @@ export default {
   },
   production: {
     description: "Mainnet",
-    url: "https://cloak-api-mainnet.up.railway.app",
+    url: "https://api-production-8b39.up.railway.app/",
   },
 } as Record<Environment, { description: string; url: string }>;
