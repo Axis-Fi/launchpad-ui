@@ -49,11 +49,14 @@ export function AppMenu() {
         )}
       >
         <div className="flex size-full flex-col items-end ">
-          <Navbar
-            mobile
-            links={testnetLinks}
-            className="border-b-tertiary-300 border-b-2"
-          />
+          {!environment.isProduction && (
+            <Navbar
+              mobile
+              showAll
+              links={testnetLinks}
+              className="border-b-tertiary-300 border-b-2"
+            />
+          )}
           <Navbar mobile />
           <ConnectButton className="border-t lg:border-t-0" />
         </div>
