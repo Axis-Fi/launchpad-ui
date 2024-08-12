@@ -36,6 +36,14 @@ const MAINNET_WETH = {
   address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" as Address,
 };
 
+const MAINNET_MANTLE = {
+  chainId: 1,
+  decimals: 18,
+  symbol: "MNT",
+  name: "Mantle",
+  address: "0x3c3a81e81dc49a522a592e7622a7e711c06bf354" as Address,
+};
+
 /**
  * If the token is a testnet token, stablecoin, or WETH: use the mainnet equivalent token instead.
  * This solves the problem where DeFiLlama doesn't support historical prices for certain chains (e.g. Blast)
@@ -48,6 +56,10 @@ const adjustUnsupportedTokens = (tokens: Token[]): Token[] => {
 
     if (token.symbol === "WETH") {
       return MAINNET_WETH;
+    }
+
+    if (token.symbol === "WMNT") {
+      return MAINNET_MANTLE;
     }
 
     if (isTestnet(token.chainId)) {
