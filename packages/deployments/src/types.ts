@@ -13,6 +13,7 @@ export type AxisDeployment = {
   subgraphURL: string;
   addresses: AxisContractAddresses;
   callbacks?: AxisCallbackAddresses;
+  dexURL?: string;
 };
 
 /** Raw deployment data used to generate the final config*/
@@ -21,6 +22,7 @@ export type AxisDeploymentConfig = Omit<AxisDeployment, "tokenList"> & {
   rpcURL: string;
   tokenList: Omit<Token, "chainId">[];
   chainIconUrl?: string;
+  dexURL?: string;
 };
 
 export type AxisDeployments = Record<number, AxisDeployment>;

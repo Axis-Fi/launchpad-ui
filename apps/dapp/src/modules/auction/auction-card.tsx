@@ -41,6 +41,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
           )}
         >
           <AuctionCardBanner
+            auction={auction}
             image={getLinkUrl("projectBanner", auction)}
             chain={getChainById(auction?.chainId)}
             deadline={new Date(Number(auction.conclusion) * 1000)}

@@ -1,9 +1,9 @@
-import { Chain } from "@repo/types";
-import { Badge, cn, Metric } from "@repo/ui";
-import { isBefore } from "date-fns";
-import { getCountdown } from "utils/date";
+import { Auction, Chain } from "@repo/types";
+import { Badge, cn } from "@repo/ui";
+import { Countdown } from "./countdown";
 
 type AuctionCardBannerProps = {
+  auction: Auction;
   chain: Chain;
   deadline?: Date;
   image?: string;
@@ -16,9 +16,6 @@ type AuctionCardBannerProps = {
 };
 
 export function AuctionCardBanner(props: AuctionCardBannerProps) {
-  const isOngoing = props.deadline && isBefore(Date.now(), props.deadline);
-  const countdown = props.deadline && isOngoing && getCountdown(props.deadline);
-
   return (
     <div
       className={cn(
@@ -50,18 +47,7 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
           </Badge>
         )}
 
-        {isOngoing && (
-          <Badge size={props.isGrid ? "s" : "xl"}>
-            <Metric
-              size={props.isGrid ? "s" : "m"}
-              className="text-center"
-              isLabelSpaced
-              label="Remaining"
-            >
-              {countdown}
-            </Metric>
-          </Badge>
-        )}
+        <Countdown auction={props.auction} />
       </div>
     </div>
   );

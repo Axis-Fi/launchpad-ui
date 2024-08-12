@@ -28,6 +28,9 @@ export const testnetLinks = [
 export const defaultLinks = [
   { label: "Launches", href: "/#" },
   { label: "Curators", href: "/curators" },
+];
+
+export const mobileSideLinks = [
   { label: "Referrals", href: "/refer" },
   {
     label: "Docs",
@@ -36,9 +39,12 @@ export const defaultLinks = [
   },
 ];
 
+export const desktopLinks = [...defaultLinks, ...mobileSideLinks];
+
 type NavbarProps = {
   links?: LinkConfig[];
   mobile?: boolean;
+  showAll?: boolean;
   onlyDefault?: boolean;
   className?: string;
 };
@@ -50,7 +56,8 @@ export default function Navbar(props: NavbarProps) {
   const links: LinkConfig[] = React.useMemo(() => {
     if (props.links) return props.links;
     if (props.onlyDefault) return defaultLinks;
-    const _links = defaultLinks;
+
+    const _links = props.mobile && !props.showAll ? defaultLinks : desktopLinks;
     //Only show curator link if connected address is a curator for any auction
     const curatorLink = isCurator ? [curator] : [];
     return [..._links, ...curatorLink];
