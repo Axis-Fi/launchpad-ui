@@ -64,7 +64,7 @@ export default function Navbar(props: NavbarProps) {
   }, [props.links, props.onlyDefault, isCurator]);
 
   return (
-    <NavigationMenu>
+    <NavigationMenu className="bg-surface-tertiary">
       <NavigationMenuList
         className={cn(
           props.mobile && "flex w-full flex-col items-end",

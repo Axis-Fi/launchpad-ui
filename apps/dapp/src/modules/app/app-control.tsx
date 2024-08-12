@@ -53,7 +53,7 @@ export function AppMenu() {
             <Navbar
               mobile
               links={testnetLinks}
-              className="border-b-tertiary-300 border-b-2"
+              className="border-b-tertiary-300 bg-surface-tertiary border-b-2"
             />
           )}
           <Navbar mobile showAll />
