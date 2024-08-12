@@ -42,6 +42,15 @@ const config: AxisDeploymentConfig = {
       address: "0xc83696ec858e370fb9e109ce141c4c86cb705a73",
       mintable: true,
     },
+    {
+      symbol: "WMNT",
+      name: "Wrapped Mantle",
+      address: "0x4a7d9a72c29c6f1e74ce6a972c5cad1b1b00dff9",
+      decimals: 18,
+      logoURI:
+        "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/mantle.svg",
+      mintable: true,
+    },
   ],
 };
 
