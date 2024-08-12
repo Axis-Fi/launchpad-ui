@@ -1,4 +1,5 @@
 import { Button, Card, Link, Metric, Text } from "@repo/ui";
+import ExternalLink from "components/external-link";
 import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
@@ -19,6 +20,7 @@ import { TokenInfoCard } from "../token-info-card";
 import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
 import useERC20Balance from "loaders/use-erc20-balance";
+import { getDeployment } from "@repo/deployments";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -38,6 +40,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const auctionFormatted = auction.formatted || undefined;
 
   const [maxBidAmount, setMaxBidAmount] = useState<bigint | undefined>();
+  const deployment = getDeployment(auction.chainId);
 
   // Cache the max bid amount
   useEffect(() => {
@@ -323,7 +326,20 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     disabled={isWalletChainIncorrect}
                   />
                 )}
-                <div className="mx-auto mt-4 w-full">
+                <div className="mx-auto mt-4 w-full space-y-4">
+                  {deployment?.dexURL && (
+                    <Text size="xs" className="flex items-center gap-x-1">
+                      Need {auction.quoteToken.symbol}?
+                      <ExternalLink
+                        href={deployment.dexURL}
+                        target="_blank"
+                        iconClassName="size-3 mt-[1.5px]"
+                      >
+                        Get some here
+                      </ExternalLink>
+                    </Text>
+                  )}
+
                   {isEMP && (
                     <Text size="sm">
                       Your bids will remain private and encrypted, and can be

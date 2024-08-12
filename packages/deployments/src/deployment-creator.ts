@@ -15,6 +15,7 @@ export function createDeployment(config: AxisDeploymentConfig): AxisDeployment {
       config.chainIconUrl,
     ),
     tokenList: withMetadata(config.tokenList, config.chain.id),
+    dexURL: config.dexURL,
   };
 }
 
