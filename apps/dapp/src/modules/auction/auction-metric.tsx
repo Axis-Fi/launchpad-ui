@@ -6,7 +6,7 @@ import {
   type BatchAuction,
   type PropsWithAuction,
 } from "@repo/types";
-import { Metric, MetricProps, Tooltip } from "@repo/ui";
+import { Metric, MetricProps, Tooltip, useToggle } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
 import { getCallbacksType } from "./utils/get-callbacks-type";
@@ -16,6 +16,8 @@ import { Format } from "modules/token/format";
 import { allowedCurators } from "@repo/env";
 import { CuratorCard } from "pages/curator-list-page";
 import { InfoIcon } from "lucide-react";
+import { UsdAmount } from "./usd-amount";
+import { parseUnits } from "viem";
 
 const getTargetRaise = (
   auction: Auction,
@@ -122,22 +124,51 @@ const handlers = {
   targetRaise: {
     label: "Target Raise",
     handler: (auction: Auction) => {
-      const price = getPrice(auction);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { isToggled: isUsdToggled } = useToggle();
 
+      const price = getPrice(auction);
       const targetRaise = getTargetRaise(auction, price);
+
       if (targetRaise === undefined) return undefined;
 
+      if (isUsdToggled) {
+        return (
+          <UsdAmount
+            token={auction.quoteToken}
+            amount={parseUnits(
+              targetRaise.toString() ?? "0",
+              auction.quoteToken.decimals,
+            )}
+          />
+        );
+      }
       return `${trimCurrency(targetRaise)} ${auction.quoteToken.symbol}`;
     },
   },
   minRaise: {
     label: "Min Raise",
     handler: (auction: Auction) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { isToggled: isUsdToggled } = useToggle();
+
       const price = getPrice(auction);
       const minFilled = getMinFilled(auction);
 
       const minRaise = getMinRaise(price, minFilled);
       if (minRaise === undefined) return undefined;
+
+      if (isUsdToggled) {
+        return (
+          <UsdAmount
+            token={auction.quoteToken}
+            amount={parseUnits(
+              minRaise.toString() ?? "0",
+              auction.quoteToken.decimals,
+            )}
+          />
+        );
+      }
 
       return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
     },
@@ -146,8 +177,23 @@ const handlers = {
   minPrice: {
     label: "Min Price",
     handler: (auction: Auction) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { isToggled: isUsdToggled } = useToggle();
+
       const price = getPrice(auction);
       if (!price) return undefined;
+
+      if (isUsdToggled) {
+        return (
+          <UsdAmount
+            token={auction.quoteToken}
+            amount={parseUnits(
+              price.toString() ?? "0",
+              auction.quoteToken.decimals,
+            )}
+          />
+        );
+      }
 
       return (
         <>
