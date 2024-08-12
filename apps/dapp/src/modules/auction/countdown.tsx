@@ -5,16 +5,22 @@ import { getCountdown } from "utils";
 
 export function Countdown({ auction }: PropsWithAuction) {
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
+  const startDate = new Date(Number(auction.start) * 1000);
+  const endDate = new Date(Number(auction.conclusion) * 1000);
+  const now = new Date();
 
-  const isOngoing =
-    auction.formatted &&
-    auction.formatted.startDate < new Date() &&
-    auction.formatted.endDate > new Date();
+  const isOngoing = startDate < now && endDate > now;
+
+  const hasntStarted = startDate > now;
+
+  const inProgress = hasntStarted || isOngoing;
+
+  const targetDate = hasntStarted ? startDate : endDate;
 
   // Immediately set the countdown if the auction is ongoing
   useEffect(() => {
-    if (isOngoing && auction.formatted?.endDate) {
-      setTimeRemaining(getCountdown(auction.formatted?.endDate));
+    if (inProgress) {
+      setTimeRemaining(getCountdown(targetDate));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -22,19 +28,23 @@ export function Countdown({ auction }: PropsWithAuction) {
   // Refresh the countdown every second
   useEffect(() => {
     const interval = setInterval(() => {
-      if (isOngoing && auction?.formatted?.endDate) {
-        setTimeRemaining(getCountdown(auction?.formatted?.endDate));
+      if (inProgress) {
+        setTimeRemaining(getCountdown(targetDate));
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [auction?.formatted?.endDate, isOngoing]);
+  }, [startDate, endDate, isOngoing]);
 
-  if (!isOngoing) return null;
+  if (!inProgress) return null;
 
   return (
     <Badge size="xl" className="px-4">
-      <Metric className="text-center" isLabelSpaced label="Remaining">
+      <Metric
+        className="text-center"
+        isLabelSpaced
+        label={hasntStarted ? "Upcoming in" : "Remaining"}
+      >
         {timeRemaining}
       </Metric>
     </Badge>

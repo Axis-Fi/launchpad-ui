@@ -14,7 +14,6 @@ export function AuctionLaunchMetrics(
   const isSealedBid = auction.auctionType === AuctionType.SEALED_BID;
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
-  const hasCurator = !!auction.curator && auction.curatorApproved;
 
   return (
     <Card
@@ -47,8 +46,6 @@ export function AuctionLaunchMetrics(
         {isSealedBid && <AuctionMetric id="minPrice" />}
         {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
         <AuctionMetric id="capacity" />
-        <AuctionMetric id="saleType" />
-        {hasCurator && <AuctionMetric id="curator" />}
       </AuctionMetricsContainer>
     </Card>
   );
