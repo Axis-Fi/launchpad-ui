@@ -7,4 +7,5 @@ export type Curator = {
   description?: string;
   twitter?: string;
   website?: string;
+  reportURL?: string;
 };

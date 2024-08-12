@@ -1,5 +1,5 @@
 import { Auction } from "@repo/types";
-import { isAddress } from "viem";
+import { isAddress, zeroAddress } from "viem";
 import { axisContracts } from "@repo/deployments";
 import { allowedCurators, environment } from "@repo/env";
 
@@ -19,7 +19,8 @@ export function isAllowedCurator(auction: Auction) {
 /** Checks if a callback address is a valid Axis Contract */
 export function isAxisCallback(auction: Auction) {
   return (
-    isAddress(auction.callbacks) &&
+    !auction.callbacks ||
+    auction.callbacks === zeroAddress ||
     Object.values(axisContracts.addresses[auction.chainId]).includes(
       auction.callbacks,
     )
