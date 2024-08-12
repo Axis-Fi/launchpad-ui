@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import type { PropsWithAuction } from "@repo/types";
 import { Badge, Metric } from "@repo/ui";
 import { getCountdown } from "utils";
+import { useMediaQueries } from "loaders/use-media-queries";
 
 export function Countdown({ auction }: PropsWithAuction) {
+  const { isTabletOrMobile } = useMediaQueries();
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
@@ -39,8 +41,9 @@ export function Countdown({ auction }: PropsWithAuction) {
   if (!inProgress) return null;
 
   return (
-    <Badge size="xl" className="px-4">
+    <Badge size={isTabletOrMobile ? "s" : "xl"} className="px-4">
       <Metric
+        size={isTabletOrMobile ? "s" : "m"}
         className="text-center"
         isLabelSpaced
         label={hasntStarted ? "Upcoming in" : "Remaining"}
