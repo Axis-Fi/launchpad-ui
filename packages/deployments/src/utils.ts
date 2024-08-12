@@ -6,7 +6,7 @@ import {
   type AxisContractNames,
   type AxisModuleContractNames,
 } from "@repo/types";
-import { testnetDeployments, axisContracts } from ".";
+import { testnetDeployments, mainnetDeployments, axisContracts } from ".";
 import mainnetTokenList from "./mainnet-tokenlist.json";
 
 const auctionHouseMap = {
@@ -74,8 +74,6 @@ function getCatalogue(auction: Pick<Auction, "chainId" | "auctionType">) {
   };
 }
 
-export { getContractsByModuleType, getAuctionHouse, getCatalogue };
-
 const isTestnet = (chainId: number): boolean =>
   testnetDeployments.find((testnet) => testnet.chain.id === chainId) !==
   undefined;
@@ -88,4 +86,18 @@ const getMainnetTokenFromSymbol = (tokenSymbol: string): Token | undefined => {
     | undefined;
 };
 
-export { isTestnet, getMainnetTokenFromSymbol };
+/** Gets a deployment configuration by chain id*/
+function getDeploymentConfiguration(chainId: number) {
+  return [mainnetDeployments, testnetDeployments]
+    .flat()
+    .find((d) => d.chain.id === chainId);
+}
+
+export {
+  getContractsByModuleType,
+  getAuctionHouse,
+  getCatalogue,
+  isTestnet,
+  getMainnetTokenFromSymbol,
+  getDeploymentConfiguration as getDeployment,
+};
