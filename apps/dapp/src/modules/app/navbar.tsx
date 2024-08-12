@@ -72,8 +72,8 @@ export default function Navbar(props: NavbarProps) {
         )}
       >
         {links.map((l) => (
-          <NavigationMenuItem key={l.href}>
-            <NavigationMenuLink asChild>
+          <NavigationMenuItem key={l.href} className="bg-surface-tertiary">
+            <NavigationMenuLink asChild className="bg-surface-tertiary">
               <NavLink to={l.href} target={l.target ?? "_self"}>
                 {({ isActive }) => (
                   <>
