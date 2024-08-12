@@ -19,7 +19,7 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
   return (
     <div
       className={cn(
-        "flex flex-col justify-between rounded-sm bg-cover p-4 transition-all",
+        "flex justify-between rounded-sm bg-cover p-4 transition-all lg:flex-col",
         props.isGrid
           ? "mb-2 h-[192px] w-full p-2 group-hover:h-[64px]"
           : "h-[330px] w-[580px]",
