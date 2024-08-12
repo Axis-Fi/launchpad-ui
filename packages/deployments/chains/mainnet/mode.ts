@@ -9,7 +9,7 @@ const config: AxisDeploymentConfig = {
   chain: mode,
   chainIconUrl: "/mode-logo.svg",
   subgraphURL:
-    "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mode/<VERSION>/gn",
+    "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mode-mainnet/<VERSION>/gn",
   rpcURL: "https://mainnet.mode.network",
   tokenList: [
     {

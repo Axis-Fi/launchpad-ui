@@ -1,7 +1,10 @@
-import { Card, Link } from "@repo/ui";
+import { Card, Link, Metric } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { ReferrerPopover } from "modules/referral/referrer-popover";
 import { getLinkUrl } from "./utils/auction-details";
+import { AuctionMetric } from "./auction-metric";
+import { allowedCurators } from "@repo/env";
+import ExternalLink from "components/external-link";
 
 export function ProjectInfoCard({
   auction,
@@ -14,6 +17,9 @@ export function ProjectInfoCard({
   const twitter = getLinkUrl("twitter", auction);
   const discord = getLinkUrl("discord", auction);
   const farcaster = getLinkUrl("farcaster", auction);
+  const curator = allowedCurators.find(
+    (c) => c.address.toLowerCase() === auction.curator?.toLowerCase(),
+  );
 
   return (
     <Card
@@ -56,6 +62,23 @@ export function ProjectInfoCard({
           </Link>
         )}
       </div>
+      {auction.curatorApproved && (
+        <div className="mt-8 flex gap-x-[68px]">
+          <AuctionMetric
+            className="mt-8"
+            size="s"
+            id="curator"
+            auction={auction}
+          />
+          {curator?.reportURL && (
+            <Metric size="s" label={"Notes"}>
+              <ExternalLink href={curator.reportURL}>
+                Read more here
+              </ExternalLink>
+            </Metric>
+          )}
+        </div>
+      )}
     </Card>
   );
 }

@@ -9,7 +9,7 @@ const config: AxisDeploymentConfig = {
   chain: base,
   chainIconUrl: "/base-logo.png",
   subgraphURL:
-    "https://subgraph.satsuma-prod.com/9d551092282a/spaces-team/axis-origin-base/version/<VERSION>/api",
+    "https://subgraph.satsuma-prod.com/9d551092282a/spaces-team/axis-origin-base/version/v<VERSION>/api",
   rpcURL:
     "https://base-mainnet.g.alchemy.com/v2/h6OEviwRZGmTSXHYPRmMquo5u-YoWLeY",
   tokenList: [

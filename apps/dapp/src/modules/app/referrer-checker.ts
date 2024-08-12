@@ -1,30 +1,32 @@
 import React from "react";
-import { useSearchParams } from "react-router-dom";
-import { useSetReferrer } from "state/referral";
-import { Address, isAddress } from "viem";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useInitializeLoadingState, useReferrerAtom } from "state/referral";
+import { Address, isAddress, zeroAddress } from "viem";
 
 function undoUrlSafe(safeB64Str: string) {
   return safeB64Str.replace(/-/g, "+").replace(/_/g, "/").replace(/~/g, "=");
 }
 
 function binaryToHex(bin: string) {
-  const hex = [];
-  let d;
-  let h;
+  let hex = "";
   for (let i = 0; i < bin.length; i++) {
-    d = bin.charCodeAt(i);
-    h = d.toString(16);
-    hex.push(h);
+    // Get the UTF-16 code unit of the character
+    const code = bin.charCodeAt(i);
+    // Convert the code to hex and pad with zeros if needed
+    hex += code.toString(16).padStart(2, "0");
   }
-
-  return hex.join("");
+  return hex;
 }
 
 /** Checks if exists and returns a URL param named referrer*/
 export function ReferrerChecker() {
   // Get search params from the URL
   const [searchParams] = useSearchParams();
-  const setReferrer = useSetReferrer();
+  //const setReferrer = useSetReferrer();
+  const [{ referrer: currentReferrer, isLoading }, setReferrer] =
+    useReferrerAtom();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Get the referrer from the search params, if it exists
   const encodedReferrer: string = searchParams.get("ref") ?? "";
@@ -44,9 +46,23 @@ export function ReferrerChecker() {
   // TODO support address lookup from ENS name in referral?
   const referrerAddress: Address | null = isAddress(referrer) ? referrer : null;
 
+  useInitializeLoadingState();
+
   React.useEffect(() => {
-    if (referrerAddress) setReferrer(referrerAddress);
-  }, [referrerAddress, setReferrer]);
+    if (
+      !isLoading &&
+      currentReferrer === zeroAddress &&
+      referrerAddress !== null
+    ) {
+      setReferrer(referrerAddress);
+      //Remove the referrer code from the URL
+      navigate(location.pathname, { replace: true });
+    }
+
+    if (!isLoading && currentReferrer !== zeroAddress) {
+      navigate(location.pathname, { replace: true });
+    }
+  }, [isLoading, currentReferrer, setReferrer]);
 
   return null;
 }
