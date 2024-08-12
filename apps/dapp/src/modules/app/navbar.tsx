@@ -64,7 +64,7 @@ export default function Navbar(props: NavbarProps) {
   }, [props.links, props.onlyDefault, isCurator]);
 
   return (
-    <NavigationMenu className="bg-surface-tertiary">
+    <NavigationMenu>
       <NavigationMenuList
         className={cn(
           props.mobile && "flex w-full flex-col items-end",
@@ -72,8 +72,8 @@ export default function Navbar(props: NavbarProps) {
         )}
       >
         {links.map((l) => (
-          <NavigationMenuItem key={l.href} className="bg-surface-tertiary">
-            <NavigationMenuLink asChild className="bg-surface-tertiary">
+          <NavigationMenuItem key={l.href}>
+            <NavigationMenuLink asChild>
               <NavLink to={l.href} target={l.target ?? "_self"}>
                 {({ isActive }) => (
                   <>
