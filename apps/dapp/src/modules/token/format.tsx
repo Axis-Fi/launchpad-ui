@@ -26,8 +26,16 @@ export function Format(props: { value: string | number }) {
         return (
           <Tooltip content={valueString}>
             <span>
-              {integerPart}.0<sub>{trailingZeros}</sub>
-              {trimmedDecimal}
+              {trailingZeros > 2 ? (
+                <>
+                  {integerPart}.0<sub>{trailingZeros}</sub>
+                  {trimmedDecimal}{" "}
+                </>
+              ) : (
+                <>
+                  {integerPart}.{decimalPart.substring(0, trailingZeros + 3)}
+                </>
+              )}
             </span>
           </Tooltip>
         );
