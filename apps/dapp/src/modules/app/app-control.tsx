@@ -48,7 +48,7 @@ export function AppMenu() {
           open && "translate-x-0",
         )}
       >
-        <div className="flex size-full flex-col items-end ">
+        <div className="bg-surface-tertiary flex size-full flex-col items-end">
           {!environment.isProduction && (
             <Navbar
               mobile
