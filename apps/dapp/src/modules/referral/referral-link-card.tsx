@@ -28,11 +28,15 @@ export function ReferralLinkCard() {
     setAddress(connectedAddress);
   }, [connectedAddress]);
 
-  const opts: SelectData[] = auctions.data.map((a) => ({
-    value: getAuctionPath(a),
-    label: a.info?.name ?? a.baseToken.symbol,
-    imgURL: getLinkUrl("projectLogo", a),
-  }));
+  const opts: SelectData[] = auctions.data
+    .filter(
+      (a) => a.isSecure && (a.status === "created" || a.status === "live"),
+    )
+    .map((a) => ({
+      value: getAuctionPath(a),
+      label: a.info?.name ?? a.baseToken.symbol,
+      imgURL: getLinkUrl("projectLogo", a),
+    }));
 
   return (
     <Card
