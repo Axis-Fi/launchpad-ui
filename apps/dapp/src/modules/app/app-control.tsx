@@ -44,28 +44,24 @@ export function AppMenu() {
     <div className="relative">
       <div
         className={cn(
-          "bg-surface-tertiary/50 absolute -left-40 bottom-12 mx-auto size-fit translate-y-[120%] rounded-t-md p-2 px-8 pr-8 backdrop-blur transition-all duration-300 ",
-          open && "translate-y-0",
+          "bg-surface-tertiary absolute -left-40 bottom-[500px] mx-auto size-fit translate-x-[105%] rounded-t-md p-2 px-8 pr-8 transition-all duration-300 ",
+          open && "translate-x-0",
         )}
       >
-        <div className="flex size-full flex-col items-end ">
+        <div className="bg-surface-tertiary flex size-full flex-col items-end">
           {!environment.isProduction && (
             <Navbar
               mobile
-              showAll
               links={testnetLinks}
-              className="border-b-tertiary-300 border-b-2"
+              className="border-b-tertiary-300 bg-surface-tertiary border-b-2"
             />
           )}
-          <Navbar mobile />
+          <Navbar mobile showAll />
           <ConnectButton className="border-t lg:border-t-0" />
         </div>
       </div>
       <CaretUpIcon
-        className={cn(
-          "mr-3 size-8 -rotate-180 transition-all ",
-          open && "rotate-0",
-        )}
+        className={cn("mr-3 size-8 transition-all ", open && "-rotate-90")}
         onClick={() => setOpen((prev) => !prev)}
       />
     </div>

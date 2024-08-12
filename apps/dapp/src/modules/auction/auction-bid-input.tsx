@@ -125,6 +125,7 @@ export function AuctionBidInput({
                   disabled={disabled}
                   disableMaxButton={true}
                   token={auction.baseToken}
+                  showUsdPrice={false}
                   message={
                     showAmountOut
                       ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`
