@@ -9,7 +9,7 @@ type UsdAmountProps = {
 
 function UsdAmount({ token, amount, timestamp }: UsdAmountProps) {
   const usdPrice = useUsdAmount({ token, amount, timestamp });
-  return usdPrice ? `≈ ${usdPrice}` : undefined;
+  return usdPrice ? usdPrice : undefined;
 }
 
 export { UsdAmount };
