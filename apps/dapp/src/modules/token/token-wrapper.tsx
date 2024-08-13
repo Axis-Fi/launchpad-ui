@@ -3,7 +3,7 @@ import { Button, Text } from "@repo/ui";
 import { TokenAmountInput } from "./token-amount-input";
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { getDeployment } from "@repo/deployments";
-import { Chain } from "@repo/types";
+import { Chain, Token } from "@repo/types";
 import { ArrowDownUpIcon } from "lucide-react";
 import useWrapperContract from "./use-wrap-token";
 import { formatUnits, parseUnits } from "viem";
@@ -46,12 +46,10 @@ export function TokenWrapper() {
 
   if (!chain || !chain.nativeCurrency.wrapperContract) {
     return (
-      <div className="flex">
-        <Text size="xl">
-          {" "}
-          Wrapping is not currently available on this chain
-        </Text>
-      </div>
+      <Text className="text-center">
+        {" "}
+        Wrapping is not currently available on this chain
+      </Text>
     );
   }
 
@@ -87,7 +85,7 @@ export function TokenWrapper() {
         value={amount}
         //@ts-expect-error
         onChange={(e) => setAmount(e.target.value!)}
-        token={inputToken}
+        token={inputToken as Token}
         disableMaxButton
       />
       <ArrowDownUpIcon
@@ -101,7 +99,7 @@ export function TokenWrapper() {
         onChange={() => {}}
         disableMaxButton
         label={outputLabel}
-        token={outputToken}
+        token={outputToken as Token}
         value={amount}
       />
       <Button

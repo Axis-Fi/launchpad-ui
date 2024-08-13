@@ -10,7 +10,7 @@ type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
   /** the input's token label, defaults to the token's symbol */
   tokenLabel?: string;
   /** the input's token type */
-  token: Omit<Token, "address" | "chainId">;
+  token: Token;
   /** whether to show the USD price of the token */
   showUsdPrice?: boolean;
   /** the user's balance */
