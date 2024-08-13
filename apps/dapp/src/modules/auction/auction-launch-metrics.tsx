@@ -1,15 +1,14 @@
 import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
-import { Card, Text, Metric, Progress, UsdToggle } from "@repo/ui";
+import { Card, Text, Metric, UsdToggle } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
-import { calculateAuctionProgress } from "./utils/get-auction-progress";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
+import AuctionProgressBar from "./auction-progress-bar";
 
 export function AuctionLaunchMetrics(
   props: PropsWithAuction & { className?: string },
 ) {
   const auction = props.auction as BatchAuction;
-  const progress = calculateAuctionProgress(auction);
   const showProgress = auction.status === "live";
   const isSealedBid = auction.auctionType === AuctionType.SEALED_BID;
   const isFixedPriceBatch =
@@ -37,7 +36,7 @@ export function AuctionLaunchMetrics(
           <Text uppercase size="xs" spaced>
             Auction Progress
           </Text>
-          <Progress value={progress} className="mt-1" />
+          <AuctionProgressBar auction={auction} />
         </div>
       )}
 
