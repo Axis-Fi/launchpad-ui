@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Text } from "@repo/ui";
+import { Button, Text } from "@repo/ui";
 import { TokenAmountInput } from "./token-amount-input";
 import { useAccount, useBalance, useChainId } from "wagmi";
 import { getDeployment } from "@repo/deployments";
@@ -80,45 +80,43 @@ export function TokenWrapper() {
     amountInWei >= inputTokenBalance;
 
   return (
-    <Card className="mx-auto max-w-sm">
-      <div className="flex flex-col items-center justify-center gap-y-3">
-        <TokenAmountInput
-          balance={formatBalance(inputTokenBalance ?? 0n, decimals)}
-          label={inputLabel}
-          value={amount}
-          //@ts-expect-error
-          onChange={(e) => setAmount(e.target.value!)}
-          token={inputToken}
-          disableMaxButton
-        />
-        <ArrowDownUpIcon
-          size="24"
-          className="text-primary cursor-pointer"
-          onClick={() => setWrapping((prev) => !prev)}
-        />
+    <div className="flex flex-col items-center justify-center gap-y-3">
+      <TokenAmountInput
+        balance={formatBalance(inputTokenBalance ?? 0n, decimals)}
+        label={inputLabel}
+        value={amount}
+        //@ts-expect-error
+        onChange={(e) => setAmount(e.target.value!)}
+        token={inputToken}
+        disableMaxButton
+      />
+      <ArrowDownUpIcon
+        size="24"
+        className="text-primary cursor-pointer"
+        onClick={() => setWrapping((prev) => !prev)}
+      />
 
-        <TokenAmountInput
-          balance={formatBalance(outputTokenBalance ?? 0n, decimals)}
-          onChange={() => {}}
-          disableMaxButton
-          label={outputLabel}
-          token={outputToken}
-          value={amount}
-        />
-        <Button
-          className="mx-4 w-[80%]"
-          onClick={method}
-          disabled={disableButton}
-        >
-          {isWrapping ? "Wrap" : "Unwrap"}
-        </Button>
-        <Text>
-          {wrapper.currentTx.isPending && "Confirm transaction in your wallet."}
-          {wrapper.currentReceipt.isLoading && "Waiting for confirmation"}
-          {wrapper.currentReceipt.isSuccess && "Transaction succesful!"}
-        </Text>
-      </div>
-    </Card>
+      <TokenAmountInput
+        balance={formatBalance(outputTokenBalance ?? 0n, decimals)}
+        onChange={() => {}}
+        disableMaxButton
+        label={outputLabel}
+        token={outputToken}
+        value={amount}
+      />
+      <Button
+        className="mx-4 w-[80%]"
+        onClick={method}
+        disabled={disableButton}
+      >
+        {isWrapping ? "Wrap" : "Unwrap"}
+      </Button>
+      <Text>
+        {wrapper.currentTx.isPending && "Confirm transaction in your wallet."}
+        {wrapper.currentReceipt.isLoading && "Waiting for confirmation"}
+        {wrapper.currentReceipt.isSuccess && "Transaction successful!"}
+      </Text>
+    </div>
   );
 }
 
