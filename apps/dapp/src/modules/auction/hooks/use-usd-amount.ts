@@ -8,7 +8,7 @@ const useUsdAmount = ({
   token,
   timestamp,
 }: {
-  amount: bigint;
+  amount: number;
   token: Token | undefined;
   timestamp: number | undefined;
 }) => {
@@ -24,11 +24,12 @@ const useUsdAmount = ({
   )
     return;
 
-  // Multiply the price by the token decimals to get a bigint
+  // Multiply the price and amount by the token decimals to get a bigint, so we get a precise number at the end
   const priceBigInt = parseUnits(price.toString(), decimals);
+  const amountBigInt = parseUnits(amount.toString(), decimals);
 
   // Convert USD amount in USD decimals as a string
-  const usdAmount = (amount * priceBigInt) / parseUnits("1", decimals);
+  const usdAmount = (amountBigInt * priceBigInt) / parseUnits("1", decimals);
   const formatted = formatUsdValue(Number(formatUnits(usdAmount, decimals)));
 
   return formatted;

@@ -121,11 +121,10 @@ export function AuctionBidInput({
                 <TokenAmountInput
                   {...field}
                   label="Bid Price"
-                  tokenLabel={`per ${auction.baseToken.symbol}`}
+                  tokenLabel={`${auction.quoteToken.symbol} per ${auction.baseToken.symbol}`}
                   disabled={disabled}
                   disableMaxButton={true}
-                  token={auction.baseToken}
-                  showUsdPrice={false}
+                  token={auction.quoteToken}
                   message={
                     showAmountOut
                       ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`
@@ -133,7 +132,6 @@ export function AuctionBidInput({
                   }
                   onChange={(e) => {
                     field.onChange(e);
-
                     // Update amount out value
                     const rawPrice = (e.target as HTMLInputElement)
                       .value as string;
@@ -143,8 +141,14 @@ export function AuctionBidInput({
                       auction.quoteToken.decimals,
                     );
 
+                    let spendAmount = formAmount;
+
+                    if (formAmount === undefined || formAmount === "") {
+                      spendAmount = "0";
+                    }
+
                     const minAmountOut = getMinAmountOut(
-                      parseUnits(formAmount, auction.quoteToken.decimals),
+                      parseUnits(spendAmount, auction.quoteToken.decimals),
                       price,
                     );
                     const minAmountOutDecimal = formatUnits(
