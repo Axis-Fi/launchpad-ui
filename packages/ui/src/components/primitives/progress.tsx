@@ -29,20 +29,20 @@ const Progress = React.forwardRef<
         style={{ width: `${currentPercentage}%` }}
       >
         {!isLowPercentage && (
-          <span className="pr-2 text-black">{props.children}</span>
+          <span className="text-foreground pr-2">{props.children}</span>
         )}
       </ProgressPrimitive.Indicator>
 
       {isLowPercentage && (
         <span
-          className="absolute left-4 mt-0.5 pr-2 text-black"
+          className="text-foreground absolute left-4 mt-0.5 pr-2"
           style={{ left: `${currentPercentage}%` }}
         >
           {props.children}
         </span>
       )}
       <div
-        className="absolute h-full w-1 border-l-4 border-dashed"
+        className="absolute h-full w-1 border-l-[2px] border-dashed"
         style={{ left: `${props.minTarget}%` }}
       />
     </ProgressPrimitive.Root>

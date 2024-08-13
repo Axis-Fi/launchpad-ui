@@ -12,7 +12,10 @@ export function calculateAuctionProgress(auction: Auction) {
   const targetAmount = getTargetRaise(auction, getPrice(auction)) ?? 0;
 
   const minTarget = Math.round((minRaise / targetAmount) * 100);
-  const current = Math.round((currentAmount / targetAmount) * 100);
+  const current = Math.min(
+    Math.round((currentAmount / targetAmount) * 100),
+    100,
+  );
 
   return {
     /** The current percentual progress of an auction's raise*/
