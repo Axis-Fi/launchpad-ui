@@ -1,30 +1,18 @@
 import React from "react";
-import { Badge, Button, Card, Metric, Progress, Text } from "@repo/ui";
+import { Badge, Button, Card, Text } from "@repo/ui";
 import type { PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { ProjectInfoCard } from "../project-info-card";
-import { AuctionMetric } from "../auction-metric";
-import { AuctionMetrics } from "../auction-metrics";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
-import { BlockExplorerLink } from "components/blockexplorer-link";
-import { calculateAuctionProgress } from "../utils/get-auction-progress";
-import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
+import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 
 export function EncryptedMarginalPriceAuctionConcluded({
   auction,
 }: PropsWithAuction) {
   const [open, setOpen] = React.useState(false);
   const decrypt = useDecryptBids(auction);
-
-  const progress = calculateAuctionProgress(auction);
-  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
-    chainId: auction.chainId,
-    lotId: auction.lotId,
-    baseTokenDecimals: auction.baseToken.decimals,
-    callback: auction.callbacks,
-  });
 
   const totalBidsRemaining =
     (auction.formatted?.totalBids ?? 0) -
@@ -34,47 +22,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
     <div>
       <div className="auction-action-container mt-4 lg:mt-0 ">
         <div className="flex w-full flex-col gap-y-4">
-          <Card
-            title="Launch Info"
-            headerRightElement={
-              <div className="flex gap-x-2">
-                <Metric size="s" label="Token Address">
-                  <BlockExplorerLink
-                    trim
-                    chainId={auction.chainId}
-                    address={auction.baseToken.address}
-                  />
-                </Metric>
-              </div>
-            }
-          >
-            <div className="mb-4">
-              <Text uppercase size="xs" spaced>
-                Auction Concluded
-              </Text>
-              <Progress value={progress} className="mt-1" />
-            </div>
-            <AuctionMetrics>
-              <AuctionMetric auction={auction} id="targetRaise" />
-              <AuctionMetric auction={auction} id="minRaise" />
-              <AuctionMetric auction={auction} id="totalBids" />
-              <AuctionMetric auction={auction} id="totalBidAmount" />
-              <AuctionMetric auction={auction} id="result" />
-              <AuctionMetric auction={auction} id="maxTokensLaunched" />
-              <AuctionMetric auction={auction} id="started" />
-              <AuctionMetric auction={auction} id="ended" />
-              {dtlCallbackConfiguration && (
-                <Metric
-                  label="Direct to Liquidity"
-                  size="m"
-                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
-                  className=""
-                >
-                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
-                </Metric>
-              )}
-            </AuctionMetrics>
-          </Card>
+          <AuctionLaunchMetrics auction={auction} />
           <ProjectInfoCard auction={auction} />
         </div>
 

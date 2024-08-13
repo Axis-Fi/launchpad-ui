@@ -18,7 +18,7 @@ import { CuratorCard } from "pages/curator-list-page";
 import { InfoIcon } from "lucide-react";
 import { UsdAmount } from "./usd-amount";
 
-const getTargetRaise = (
+export const getTargetRaise = (
   auction: Auction,
   price?: number,
 ): number | undefined => {
@@ -27,7 +27,7 @@ const getTargetRaise = (
   return Number(auction.capacityInitial) * price;
 };
 
-const getMinRaise = (
+export const getMinRaise = (
   price?: number,
   minFilled?: number,
 ): number | undefined => {
@@ -36,7 +36,7 @@ const getMinRaise = (
   return minFilled * price;
 };
 
-const getMaxTokensLaunched = (
+export const getMaxTokensLaunched = (
   totalBidAmount?: number,
   targetRaise?: number,
   price?: number,
@@ -65,6 +65,13 @@ const getClearingPrice = (auction: Auction): number | undefined => {
   if (marginalPrice === undefined) return undefined;
 
   return marginalPrice;
+};
+
+export const getMinRaiseForAuction = (auction: Auction) => {
+  const price = getPrice(auction);
+  const minFilled = getMinFilled(auction);
+
+  return getMinRaise(price, minFilled);
 };
 
 // TODO add DTL proceeds as a metric. Probably requires loading the callback configuration into the auction type.
@@ -143,10 +150,8 @@ const handlers = {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { isToggled: isUsdToggled } = useToggle();
 
-      const price = getPrice(auction);
-      const minFilled = getMinFilled(auction);
+      const minRaise = getMinRaiseForAuction(auction);
 
-      const minRaise = getMinRaise(price, minFilled);
       if (minRaise === undefined) return undefined;
 
       if (isUsdToggled) {
