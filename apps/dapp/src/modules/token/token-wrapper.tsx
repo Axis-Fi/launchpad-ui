@@ -9,6 +9,7 @@ import useWrapperContract from "./use-wrap-token";
 import { formatUnits, parseUnits } from "viem";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { trimCurrency } from "utils/currency";
+import { Format } from "./format";
 
 export function TokenWrapper() {
   const { address: userAddress } = useAccount();
@@ -72,10 +73,20 @@ export function TokenWrapper() {
 
   const amountInWei = parseUnits(amount ?? "0", decimals);
 
+  const gasCost = wrapper.gasEstimate ?? 0n;
+
+  const insufficientGas =
+    isWrapping &&
+    amountInWei <= inputTokenBalance &&
+    amountInWei > inputTokenBalance - gasCost;
+
   const disableButton =
     !isFinite(Number(amount)) ||
     inputTokenBalance <= 0n ||
-    amountInWei >= inputTokenBalance;
+    amountInWei > inputTokenBalance ||
+    insufficientGas;
+
+  const cost = formatUnits(wrapper.gasEstimate, decimals);
 
   return (
     <div className="flex flex-col items-center justify-center gap-y-3">
@@ -83,7 +94,7 @@ export function TokenWrapper() {
         balance={formatBalance(inputTokenBalance ?? 0n, decimals)}
         label={inputLabel}
         value={amount}
-        //@ts-expect-error
+        //@ts-expect-error TODO: verify why this throws
         onChange={(e) => setAmount(e.target.value!)}
         token={inputToken as Token}
         showUsdPrice={false}
@@ -112,7 +123,13 @@ export function TokenWrapper() {
       >
         {isWrapping ? "Wrap" : "Unwrap"}
       </Button>
-      <Text>
+      <Text className="text-center">
+        {insufficientGas && (
+          <>
+            You&apos;ll need at least <Format value={cost} />{" "}
+            {nativeToken.symbol} to execute the transaction.
+          </>
+        )}
         {wrapper.currentTx.isPending && "Confirm transaction in your wallet."}
         {wrapper.currentReceipt.isLoading && "Waiting for confirmation"}
         {wrapper.currentReceipt.isSuccess && "Transaction successful!"}

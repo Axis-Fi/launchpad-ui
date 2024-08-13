@@ -3,6 +3,7 @@ import {
   useSimulateContract,
   useWaitForTransactionReceipt,
   useWriteContract,
+  useEstimateGas,
 } from "wagmi";
 import { abi as wrapperAbi } from "./wrapper-abi";
 import { Address } from "viem";
@@ -28,6 +29,8 @@ export default function useWrapperContract({
     abi: wrapperAbi,
     query: { enabled: !!contractAddress && isWrapping },
   });
+  const { data: gasEstimate } = useEstimateGas(wrapData?.request);
+
   const { data: wrapHash, ...wrapTx } = useWriteContract();
   const wrapReceipt = useWaitForTransactionReceipt({ hash: wrapHash });
   const wrap = () =>
@@ -52,6 +55,9 @@ export default function useWrapperContract({
     ? [wrapCall, wrapTx, wrapReceipt]
     : [unwrapCall, unwrapTx, unwrapReceipt];
 
+  const currentSimulation = isWrapping ? wrapData : unwrapData;
+
+  console.log({ currentSimulation });
   return {
     wrap,
     wrapCall,
@@ -62,6 +68,7 @@ export default function useWrapperContract({
     unwrapCall,
     unwrapTx,
     unwrapReceipt,
+    gasEstimate: gasEstimate ?? 0n,
     currentCall: isWrapping ? wrapTx : unwrapTx,
     currentTx: isWrapping ? wrapTx : unwrapTx,
     currentReceipt: isWrapping ? wrapReceipt : unwrapReceipt,
