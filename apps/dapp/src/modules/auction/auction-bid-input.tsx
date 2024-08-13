@@ -121,11 +121,10 @@ export function AuctionBidInput({
                 <TokenAmountInput
                   {...field}
                   label="Bid Price"
-                  tokenLabel={`per ${auction.baseToken.symbol}`}
+                  tokenLabel={`${auction.quoteToken.symbol} per ${auction.baseToken.symbol}`}
                   disabled={disabled}
                   disableMaxButton={true}
-                  token={auction.baseToken}
-                  showUsdPrice={false}
+                  token={auction.quoteToken}
                   message={
                     showAmountOut
                       ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`

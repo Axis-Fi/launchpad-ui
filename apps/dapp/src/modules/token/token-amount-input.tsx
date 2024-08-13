@@ -102,7 +102,7 @@ export const TokenAmountInput = React.forwardRef<
           {showUsdPrice && (
             <div className="flex items-start">
               <Text size="xs" color="secondary">
-                {!value && "$0"}
+                {!value && "≈ $0"}
                 {value && "≈ "}
                 {value && (
                   <UsdAmount
