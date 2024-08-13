@@ -132,7 +132,6 @@ export function AuctionBidInput({
                   }
                   onChange={(e) => {
                     field.onChange(e);
-
                     // Update amount out value
                     const rawPrice = (e.target as HTMLInputElement)
                       .value as string;
@@ -142,8 +141,14 @@ export function AuctionBidInput({
                       auction.quoteToken.decimals,
                     );
 
+                    let spendAmount = formAmount;
+
+                    if (formAmount === undefined || formAmount === "") {
+                      spendAmount = "0";
+                    }
+
                     const minAmountOut = getMinAmountOut(
-                      parseUnits(formAmount, auction.quoteToken.decimals),
+                      parseUnits(spendAmount, auction.quoteToken.decimals),
                       price,
                     );
                     const minAmountOutDecimal = formatUnits(
