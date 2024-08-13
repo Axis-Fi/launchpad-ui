@@ -9,7 +9,6 @@ import type { AuctionModule } from "../../auction";
 import { getConfigFromPrimedParams } from "./get-config-from-primed-params";
 import { AuctionType } from "@repo/types";
 import { encodeEncryptedBid } from "../utils";
-import { formatUnits } from "viem";
 
 const getConfig = async (
   params: BidParams,
@@ -30,7 +29,6 @@ const getConfig = async (
   const {
     lotId,
     amountIn,
-    amountOut,
     bidderAddress,
     referrerAddress,
     chainId,
@@ -56,8 +54,6 @@ const getConfig = async (
 
   const paramsToEncrypt = {
     ...params,
-    amountIn: Number(formatUnits(amountIn, quoteTokenDecimals)),
-    amountOut: Number(formatUnits(amountOut, baseTokenDecimals)),
     quoteTokenDecimals,
     baseTokenDecimals,
     auctionHouseAddress,

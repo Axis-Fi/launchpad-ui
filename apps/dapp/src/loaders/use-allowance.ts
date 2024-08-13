@@ -36,7 +36,7 @@ export const useAllowance = (args: UseAllowanceProps) => {
     },
   });
 
-  const amountToApprove = args.amount ? args.amount : 0n;
+  const amountToApprove = args.amount ?? 0n;
 
   const { data: approveCall } = useSimulateContract({
     abi: erc20Abi,
@@ -51,7 +51,7 @@ export const useAllowance = (args: UseAllowanceProps) => {
     if (approveReceipt.isSuccess) {
       allowance.refetch();
     }
-  }, [allowance.refetch, approveReceipt.isSuccess]);
+  }, [allowance, approveReceipt.isSuccess]);
 
   const currentAllowance = allowance.data ?? 0n;
 

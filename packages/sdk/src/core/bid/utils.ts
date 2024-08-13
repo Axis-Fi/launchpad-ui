@@ -1,10 +1,4 @@
-import {
-  type Hex,
-  fromHex,
-  toHex,
-  parseUnits,
-  encodeAbiParameters,
-} from "viem";
+import { type Hex, fromHex, toHex, encodeAbiParameters } from "viem";
 import type { EncryptLotIdPost200Response, CloakClient } from "@repo/cloak";
 import { abi, type EncryptBidParams } from ".";
 import { SdkError } from "../../types";
@@ -19,20 +13,8 @@ const encryptBid = async (
     amountOut,
     chainId,
     bidderAddress,
-    quoteTokenDecimals,
-    baseTokenDecimals,
     auctionHouseAddress,
   } = params;
-
-  const quoteTokenAmountIn = parseUnits(
-    amountIn.toString(),
-    quoteTokenDecimals,
-  );
-
-  const baseTokenAmountOut = parseUnits(
-    amountOut.toString(),
-    baseTokenDecimals,
-  );
 
   let result;
 
@@ -42,8 +24,8 @@ const encryptBid = async (
       xAuctionHouse: auctionHouseAddress,
       lotId: lotId,
       encryptRequest: {
-        amount: toHex(quoteTokenAmountIn),
-        amountOut: toHex(baseTokenAmountOut),
+        amount: toHex(amountIn),
+        amountOut: toHex(amountOut),
         bidder: bidderAddress,
       },
     });
