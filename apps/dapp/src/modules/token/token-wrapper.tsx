@@ -39,8 +39,8 @@ export function TokenWrapper() {
 
   React.useEffect(() => {
     if (wrapper.currentReceipt.isSuccess) {
-      refetchWrapperBalance();
       refetchNativeBalance();
+      refetchWrapperBalance();
     }
   }, [wrapper.currentReceipt.isSuccess]);
 
@@ -73,8 +73,8 @@ export function TokenWrapper() {
   const amountInWei = parseUnits(amount ?? "0", decimals);
 
   const disableButton =
-    inputTokenBalance <= 0n ||
     !isFinite(Number(amount)) ||
+    inputTokenBalance <= 0n ||
     amountInWei >= inputTokenBalance;
 
   return (
@@ -86,6 +86,7 @@ export function TokenWrapper() {
         //@ts-expect-error
         onChange={(e) => setAmount(e.target.value!)}
         token={inputToken as Token}
+        showUsdPrice={false}
         disableMaxButton
       />
       <ArrowDownUpIcon
@@ -96,11 +97,13 @@ export function TokenWrapper() {
 
       <TokenAmountInput
         balance={formatBalance(outputTokenBalance ?? 0n, decimals)}
-        onChange={() => {}}
-        disableMaxButton
         label={outputLabel}
-        token={outputToken as Token}
         value={amount}
+        onChange={() => {}}
+        token={outputToken as Token}
+        showUsdPrice={false}
+        type="text"
+        disableMaxButton
       />
       <Button
         className="mx-4 w-[80%]"
