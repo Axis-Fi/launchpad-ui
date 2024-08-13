@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Address, erc20Abi, formatUnits, parseUnits } from "viem";
+import { Address, erc20Abi, formatUnits } from "viem";
 import {
   useReadContract,
   useWriteContract,
@@ -13,7 +13,7 @@ export type UseAllowanceProps = {
   decimals?: number;
   ownerAddress?: Address;
   spenderAddress?: Address;
-  amount?: number;
+  amount?: bigint;
 };
 
 /** Used to manage an address' allowance for a given token */
@@ -36,10 +36,7 @@ export const useAllowance = (args: UseAllowanceProps) => {
     },
   });
 
-  const amountToApprove =
-    args.amount && args.decimals
-      ? parseUnits(args.amount.toString(), args.decimals)
-      : 0n;
+  const amountToApprove = args.amount ? args.amount : 0n;
 
   const { data: approveCall } = useSimulateContract({
     abi: erc20Abi,

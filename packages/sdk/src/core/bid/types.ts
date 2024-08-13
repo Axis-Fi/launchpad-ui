@@ -7,9 +7,6 @@ import type { ContractConfig } from "../../types";
 
 type BidParams = v.Input<typeof bid.schema.BidParamsSchema>;
 type BidConfig = ContractConfig<typeof abis.batchAuctionHouse, "bid">;
-// TODO: there could be other auction houses that can bid
-// determine whether it would make sense to have a single bid interface
-// or multiple bid interfaces per auction house
 
 type PrimedBidParams = Pick<
   BidParams,
@@ -22,8 +19,10 @@ type PrimedBidParams = Pick<
 
 type EncryptBidParams = Pick<
   BidParams,
-  "lotId" | "amountIn" | "amountOut" | "chainId" | "bidderAddress"
+  "lotId" | "chainId" | "bidderAddress"
 > & {
+  amountIn: number;
+  amountOut: number;
   quoteTokenDecimals: number;
   baseTokenDecimals: number;
   auctionHouseAddress: Address;

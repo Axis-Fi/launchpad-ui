@@ -725,7 +725,10 @@ export default function CreateAuctionPage() {
     tokenAddress: payoutToken?.address as Address,
     decimals: payoutToken?.decimals,
     chainId: payoutToken?.chainId,
-    amount: withCuratorShare(Number(capacity), curatorFee),
+    amount: parseUnits(
+      withCuratorShare(Number(capacity), curatorFee).toString(),
+      payoutToken?.decimals,
+    ),
   });
   // TODO add note on pre-funding: the capacity will be transferred upon creation
 
@@ -750,7 +753,10 @@ export default function CreateAuctionPage() {
     tokenAddress: payoutToken?.address as Address,
     decimals: payoutToken?.decimals,
     chainId: payoutToken?.chainId,
-    amount: Number(capacity) * dtlProceedsPercent,
+    amount: parseUnits(
+      (Number(capacity) * dtlProceedsPercent).toString(),
+      payoutToken?.decimals,
+    ),
   });
   const requiresCallbacksApproval =
     callbacksType === CallbacksType.UNIV2_DTL ||

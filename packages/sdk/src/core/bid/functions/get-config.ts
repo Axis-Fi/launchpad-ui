@@ -9,6 +9,7 @@ import type { AuctionModule } from "../../auction";
 import { getConfigFromPrimedParams } from "./get-config-from-primed-params";
 import { AuctionType } from "@repo/types";
 import { encodeEncryptedBid } from "../utils";
+import { formatUnits } from "viem";
 
 const getConfig = async (
   params: BidParams,
@@ -29,17 +30,12 @@ const getConfig = async (
   const {
     lotId,
     amountIn,
+    amountOut,
     bidderAddress,
     referrerAddress,
     chainId,
     auctionType,
   } = params;
-
-  const { quoteTokenDecimals, baseTokenDecimals } =
-    await auction.functions.getAuctionTokenDecimals(
-      { lotId, chainId, auctionType },
-      deployments,
-    );
 
   const auctionHouseAddress = getAuctionHouse({ chainId, auctionType })
     ?.address;
@@ -50,17 +46,25 @@ const getConfig = async (
     );
   }
 
-  const encryptBidParams = {
+  const { quoteTokenDecimals, baseTokenDecimals } =
+    await auction.functions.getAuctionTokenDecimals(
+      { lotId, chainId, auctionType },
+      deployments,
+    );
+
+  const shouldEncryptBid = auctionType === AuctionType.SEALED_BID;
+
+  const paramsToEncrypt = {
     ...params,
+    amountIn: Number(formatUnits(amountIn, quoteTokenDecimals)),
+    amountOut: Number(formatUnits(amountOut, baseTokenDecimals)),
     quoteTokenDecimals,
     baseTokenDecimals,
     auctionHouseAddress,
   };
 
-  const shouldEncryptBid = auctionType === AuctionType.SEALED_BID;
-
   const encryptedBid = shouldEncryptBid
-    ? encodeEncryptedBid(await encryptBid(encryptBidParams, cloakClient))
+    ? encodeEncryptedBid(await encryptBid(paramsToEncrypt, cloakClient))
     : undefined;
 
   return getConfigFromPrimedParams(
