@@ -21,6 +21,7 @@ import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { getDeployment } from "@repo/deployments";
+import { ToggledUsdAmount } from "../toggled-usd-amount";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -257,16 +258,17 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     auction.chainId !== currentChainId || !walletAccount.isConnected;
 
   const [bidPrice] = form.watch(["bidPrice"]);
+
   // Calculate FDV based on the bid
-  const [bidFdv, setBidFdv] = useState<string>("");
+  const [bidFdv, setBidFdv] = useState<number>();
+
   useEffect(() => {
-    if (!bidPrice || !auction.baseToken.totalSupply) {
-      setBidFdv("");
+    if (bidPrice === undefined || !auction.baseToken.totalSupply) {
       return;
     }
 
     const fdv = Number(auction.baseToken.totalSupply) * Number(bidPrice);
-    setBidFdv(`${shorten(fdv)} ${auction.quoteToken.symbol}`);
+    setBidFdv(fdv);
   }, [bidPrice, auction.baseToken.totalSupply, auction.quoteToken.symbol]);
 
   // Calculate the limit for the user as the minimum of the allowlist limit (where applicable) and the max bid amount
@@ -443,7 +445,17 @@ export function AuctionLive({ auction }: PropsWithAuction) {
               <div className="gap-y-md flex">
                 <div className="p-sm rounded">
                   <Metric size="s" label="Your Estimated FDV">
-                    {bidFdv || "-"}
+                    {bidFdv === undefined || bidFdv === 0 ? (
+                      "-"
+                    ) : (
+                      <ToggledUsdAmount
+                        token={auction.quoteToken}
+                        amount={bidFdv}
+                        untoggledFormat={(bidFdv: number) =>
+                          `${shorten(bidFdv)} ${auction.quoteToken.symbol}`
+                        }
+                      />
+                    )}
                   </Metric>
                 </div>
               </div>

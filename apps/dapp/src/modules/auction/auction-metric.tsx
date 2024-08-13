@@ -17,7 +17,6 @@ import { allowedCurators } from "@repo/env";
 import { CuratorCard } from "pages/curator-list-page";
 import { InfoIcon } from "lucide-react";
 import { UsdAmount } from "./usd-amount";
-import { parseUnits } from "viem";
 
 const getTargetRaise = (
   auction: Auction,
@@ -133,15 +132,7 @@ const handlers = {
       if (targetRaise === undefined) return undefined;
 
       if (isUsdToggled) {
-        return (
-          <UsdAmount
-            token={auction.quoteToken}
-            amount={parseUnits(
-              targetRaise.toString() ?? "0",
-              auction.quoteToken.decimals,
-            )}
-          />
-        );
+        return <UsdAmount token={auction.quoteToken} amount={targetRaise} />;
       }
       return `${trimCurrency(targetRaise)} ${auction.quoteToken.symbol}`;
     },
@@ -159,15 +150,7 @@ const handlers = {
       if (minRaise === undefined) return undefined;
 
       if (isUsdToggled) {
-        return (
-          <UsdAmount
-            token={auction.quoteToken}
-            amount={parseUnits(
-              minRaise.toString() ?? "0",
-              auction.quoteToken.decimals,
-            )}
-          />
-        );
+        return <UsdAmount token={auction.quoteToken} amount={minRaise} />;
       }
 
       return `${trimCurrency(minRaise)} ${auction.quoteToken.symbol}`;
@@ -184,15 +167,7 @@ const handlers = {
       if (!price) return undefined;
 
       if (isUsdToggled) {
-        return (
-          <UsdAmount
-            token={auction.quoteToken}
-            amount={parseUnits(
-              price.toString() ?? "0",
-              auction.quoteToken.decimals,
-            )}
-          />
-        );
+        return <UsdAmount token={auction.quoteToken} amount={price} />;
       }
 
       return (
