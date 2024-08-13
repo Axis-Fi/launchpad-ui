@@ -10,6 +10,7 @@ import {
   usePagination,
   Select,
   Chip,
+  UsdToggle,
 } from "@repo/ui";
 import { ReloadButton } from "components/reload-button";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
@@ -192,6 +193,10 @@ export default function AuctionListPage() {
               </Tooltip>
             )}
             <div className="flex gap-x-2 px-2 lg:px-0">
+              <div className="ml-6 flex flex-grow items-center justify-start">
+                <UsdToggle currencySymbol="Quote" />
+              </div>
+
               <IconnedInput
                 icon={<SearchIcon />}
                 className="placeholder:text-foreground"
