@@ -1,12 +1,4 @@
-import {
-  Button,
-  Card,
-  IconedLabel,
-  Skeleton,
-  Text,
-  UsdToggle,
-  cn,
-} from "@repo/ui";
+import { Button, Card, IconedLabel, Skeleton, Text, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { AuctionListed, AuctionType, PropsWithAuction } from "@repo/types";
 import { AuctionCardBanner } from "./auction-card-banner";
@@ -91,12 +83,6 @@ function AuctionCardDetails(
           >
             {props.auction.info?.name}
           </IconedLabel>
-
-          {!props.isGrid && (
-            <div className="ml-6 flex flex-grow items-center justify-start">
-              <UsdToggle currencySymbol={props.auction.quoteToken.symbol} />
-            </div>
-          )}
 
           <AuctionStatusBadge
             large={!props.isGrid}
