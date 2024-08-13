@@ -12,6 +12,7 @@ const config: AxisDeploymentConfig = {
     "https://subgraph.satsuma-prod.com/9d551092282a/spaces-team/axis-origin-base/version/v<VERSION>/api",
   rpcURL:
     "https://base-mainnet.g.alchemy.com/v2/h6OEviwRZGmTSXHYPRmMquo5u-YoWLeY",
+  wrapperContract: "0x4200000000000000000000000000000000000006",
   tokenList: [
     {
       ...usdc,

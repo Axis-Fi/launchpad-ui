@@ -11,6 +11,7 @@ const config: AxisDeploymentConfig = {
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mode-mainnet/<VERSION>/gn",
   rpcURL: "https://mainnet.mode.network",
+  wrapperContract: "0x4200000000000000000000000000000000000006",
   tokenList: [
     {
       ...usdc,

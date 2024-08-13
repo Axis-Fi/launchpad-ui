@@ -10,6 +10,7 @@ const config: AxisDeploymentConfig = {
   chain: arbitrumSepolia,
   chainIconUrl:
     "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/ARBITRUM.png",
+
   addresses: {
     batchAuctionHouse: addresses["axis.BatchAuctionHouse"] as Address,
     batchCatalogue: addresses["axis.BatchCatalogue"] as Address,
@@ -33,6 +34,7 @@ const config: AxisDeploymentConfig = {
     "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v<VERSION>/api",
   rpcURL:
     "https://arb-sepolia.g.alchemy.com/v2/ijPbOvV9qNWHPGz-x-7JRvPwzUdBn1TJ",
+  wrapperContract: "0x2836ae2eA2c013acD38028fD0C77B92cccFa2EE4", //WETH9
   tokenList: [
     {
       ...usdc,
