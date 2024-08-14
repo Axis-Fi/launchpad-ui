@@ -9,11 +9,15 @@ import { abi as wrapperAbi } from "./wrapper-abi";
 import { Address } from "viem";
 
 type UseWrapperContractArgs = {
+  /** The wrapper address */
   contractAddress?: Address;
+  /** The amount to operate on */
   amount: bigint;
+  /** Whether is wrapping or unwrapping */
   isWrapping: boolean;
 };
 
+/** Exposes methods for wrapping and unwrapping a chain's native token */
 export default function useWrapperContract({
   contractAddress,
   amount,
@@ -29,6 +33,7 @@ export default function useWrapperContract({
     abi: wrapperAbi,
     query: { enabled: !!contractAddress && isWrapping },
   });
+
   const { data: gasEstimate } = useEstimateGas(wrapData?.request);
 
   const { data: wrapHash, ...wrapTx } = useWriteContract();
@@ -55,9 +60,6 @@ export default function useWrapperContract({
     ? [wrapCall, wrapTx, wrapReceipt]
     : [unwrapCall, unwrapTx, unwrapReceipt];
 
-  const currentSimulation = isWrapping ? wrapData : unwrapData;
-
-  console.log({ currentSimulation });
   return {
     wrap,
     wrapCall,

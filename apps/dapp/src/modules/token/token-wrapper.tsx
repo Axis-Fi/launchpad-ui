@@ -11,6 +11,7 @@ import useERC20Balance from "loaders/use-erc20-balance";
 import { trimCurrency } from "utils/currency";
 import { Format } from "./format";
 
+/** Swap-style native currency wrapping and unwrapping on the connected chain */
 export function TokenWrapper() {
   const { address: userAddress } = useAccount();
   const chainId = useChainId();
