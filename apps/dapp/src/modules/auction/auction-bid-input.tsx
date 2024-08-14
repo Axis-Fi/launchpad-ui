@@ -62,9 +62,7 @@ export function AuctionBidInput({
                   {...field}
                   disabled={disabled}
                   label="Spend Amount"
-                  balance={trimCurrency(
-                    formatUnits(balance, auction.quoteToken.decimals),
-                  )}
+                  balance={formatUnits(balance, auction.quoteToken.decimals)}
                   limit={
                     limit
                       ? trimCurrency(
