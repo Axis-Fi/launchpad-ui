@@ -1,5 +1,4 @@
 import React from "react";
-import { parseUnits } from "viem";
 import type { Token } from "@repo/types";
 import { Input, Text, Button, cn } from "@repo/ui";
 import { UsdAmount } from "modules/auction/usd-amount";
@@ -102,14 +101,9 @@ export const TokenAmountInput = React.forwardRef<
           {showUsdPrice && (
             <div className="flex items-start">
               <Text size="xs" color="secondary">
-                {!value && "$0"}
+                {!value && "≈ $0"}
                 {value && "≈ "}
-                {value && (
-                  <UsdAmount
-                    token={token}
-                    amount={parseUnits(value ?? "0", token.decimals)}
-                  />
-                )}
+                {value && <UsdAmount token={token} amount={Number(value)} />}
               </Text>
             </div>
           )}

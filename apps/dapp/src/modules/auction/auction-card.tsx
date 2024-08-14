@@ -83,6 +83,7 @@ function AuctionCardDetails(
           >
             {props.auction.info?.name}
           </IconedLabel>
+
           <AuctionStatusBadge
             large={!props.isGrid}
             className={cn(!props.isGrid && "-mr-3 -mt-4")}
@@ -141,6 +142,7 @@ function AuctionCardDetails(
         {props.auction.curatorApproved && !props.isGrid && (
           <AuctionMetric size="s" id="curator" auction={props.auction} />
         )}
+
         <Link className={cn("self-end")} to={getAuctionPath(props.auction)}>
           <Button
             disabled={props.disabledViewButton}

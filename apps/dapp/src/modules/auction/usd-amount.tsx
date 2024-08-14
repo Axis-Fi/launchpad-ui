@@ -3,7 +3,7 @@ import { useUsdAmount } from "./hooks/use-usd-amount";
 
 type UsdAmountProps = {
   token: Token;
-  amount: bigint;
+  amount: number;
   timestamp?: number;
 };
 
@@ -13,3 +13,4 @@ function UsdAmount({ token, amount, timestamp }: UsdAmountProps) {
 }
 
 export { UsdAmount };
+export type { UsdAmountProps };

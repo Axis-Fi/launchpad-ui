@@ -207,7 +207,7 @@ function addEMPFields(auction: BatchSubgraphAuction): EMPFormattedInfo {
     marginalPrice: trimCurrency(marginalPrice),
     marginalPriceDecimal: Number(marginalPrice),
     rate: trimCurrency(marginalPrice),
-    minPrice: trimCurrency(minPrice),
+    minPrice: minPrice.toString(),
     minBidSize: trimCurrency(minBidSize),
     minFilled: trimCurrency(auction.encryptedMarginalPrice!.minFilled!),
     totalBidAmountFormatted: trimCurrency(totalBidAmount),

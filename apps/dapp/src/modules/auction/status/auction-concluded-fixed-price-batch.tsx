@@ -1,18 +1,14 @@
-import { AuctionMetricsContainer } from "../auction-metrics-container";
-import { Badge, Button, Card, Metric, Progress, Text } from "@repo/ui";
+import { Badge, Button, Card, Text } from "@repo/ui";
 import { type PropsWithAuction } from "@repo/types";
-import { AuctionMetric } from "../auction-metric";
 import { ProjectInfoCard } from "../project-info-card";
 import React, { useState } from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
-import { BlockExplorerLink } from "components/blockexplorer-link";
-import { calculateAuctionProgress } from "../utils/get-auction-progress";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
-import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
+import { AuctionLaunchMetrics } from "../auction-launch-metrics";
 
 // TODO needs story tests, given the amount of potential states
 
@@ -39,14 +35,6 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
     auction: props.auction,
     callbackData: callbackData,
   });
-  const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
-    chainId: props.auction.chainId,
-    lotId: props.auction.lotId,
-    baseTokenDecimals: props.auction.baseToken.decimals,
-    callback: props.auction.callbacks,
-  });
-
-  const progress = calculateAuctionProgress(props.auction);
 
   const isWaiting = settle.settleTx.isPending || settle.settleReceipt.isLoading;
 
@@ -54,47 +42,7 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
     <div>
       <div className="auction-action-container ">
         <div className="mt-4 flex w-full flex-col gap-y-4 lg:mt-0">
-          <Card
-            title="Launch Info"
-            headerRightElement={
-              <div className="flex gap-x-2">
-                <Metric size="s" label="Token Address">
-                  <BlockExplorerLink
-                    trim
-                    chainId={props.auction.chainId}
-                    address={props.auction.baseToken.address}
-                  />
-                </Metric>
-              </div>
-            }
-          >
-            <div className="mb-4">
-              <Text uppercase size="xs" spaced>
-                Auction Concluded
-              </Text>
-              <Progress value={progress} className="mt-1" />
-            </div>
-            <AuctionMetricsContainer auction={props.auction}>
-              <AuctionMetric auction={props.auction} id="targetRaise" />
-              <AuctionMetric auction={props.auction} id="minRaise" />
-              <AuctionMetric auction={props.auction} id="totalBids" />
-              <AuctionMetric auction={props.auction} id="totalBidAmount" />
-              <AuctionMetric auction={props.auction} id="result" />
-              <AuctionMetric auction={props.auction} id="maxTokensLaunched" />
-              <AuctionMetric auction={props.auction} id="started" />
-              <AuctionMetric auction={props.auction} id="ended" />
-              {dtlCallbackConfiguration && (
-                <Metric
-                  label="Direct to Liquidity"
-                  size="m"
-                  tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
-                  className=""
-                >
-                  {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
-                </Metric>
-              )}
-            </AuctionMetricsContainer>
-          </Card>
+          <AuctionLaunchMetrics auction={props.auction} />
           <ProjectInfoCard auction={props.auction} />
         </div>
         <div>
