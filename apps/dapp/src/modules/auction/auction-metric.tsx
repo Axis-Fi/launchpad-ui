@@ -198,9 +198,7 @@ const handlers = {
   capacity: {
     label: "Tokens Available",
     handler: (auction: Auction) =>
-      `${auction.formatted?.capacity || shorten(Number(auction.capacity))} ${
-        auction.baseToken.symbol
-      }`,
+      `${shorten(Number(auction.capacity))} ${auction.baseToken.symbol}`,
   },
 
   totalSupply: {

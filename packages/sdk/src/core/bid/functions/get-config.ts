@@ -35,12 +35,6 @@ const getConfig = async (
     auctionType,
   } = params;
 
-  const { quoteTokenDecimals, baseTokenDecimals } =
-    await auction.functions.getAuctionTokenDecimals(
-      { lotId, chainId, auctionType },
-      deployments,
-    );
-
   const auctionHouseAddress = getAuctionHouse({ chainId, auctionType })
     ?.address;
 
@@ -50,17 +44,23 @@ const getConfig = async (
     );
   }
 
-  const encryptBidParams = {
+  const { quoteTokenDecimals, baseTokenDecimals } =
+    await auction.functions.getAuctionTokenDecimals(
+      { lotId, chainId, auctionType },
+      deployments,
+    );
+
+  const shouldEncryptBid = auctionType === AuctionType.SEALED_BID;
+
+  const paramsToEncrypt = {
     ...params,
     quoteTokenDecimals,
     baseTokenDecimals,
     auctionHouseAddress,
   };
 
-  const shouldEncryptBid = auctionType === AuctionType.SEALED_BID;
-
   const encryptedBid = shouldEncryptBid
-    ? encodeEncryptedBid(await encryptBid(encryptBidParams, cloakClient))
+    ? encodeEncryptedBid(await encryptBid(paramsToEncrypt, cloakClient))
     : undefined;
 
   return getConfigFromPrimedParams(

@@ -9,8 +9,8 @@ const AddressSchema = v.special<Address>(
 
 const BidParamsSchema = v.object({
   lotId: v.number(),
-  amountIn: v.number(),
-  amountOut: v.number(),
+  amountIn: v.bigint(),
+  amountOut: v.bigint(),
   chainId: v.number(),
   auctionType: v.enum_(AuctionType),
   bidderAddress: AddressSchema,
