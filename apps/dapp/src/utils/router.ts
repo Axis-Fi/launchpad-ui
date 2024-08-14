@@ -5,5 +5,5 @@ export type AuctionPathParams = {
 
 /** Contructs the URL path to an auction*/
 export function getAuctionPath(auctionParams: AuctionPathParams) {
-  return `${auctionParams.chainId}/${auctionParams.lotId}`;
+  return `/${auctionParams.chainId}/${auctionParams.lotId}`;
 }

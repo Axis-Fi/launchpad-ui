@@ -17,6 +17,7 @@ import { allowedCurators } from "@repo/env";
 import { CuratorCard } from "pages/curator-list-page";
 import { InfoIcon } from "lucide-react";
 import { UsdAmount } from "./usd-amount";
+import { ToggledUsdAmount } from "./toggled-usd-amount";
 
 export const getTargetRaise = (
   auction: Auction,
@@ -265,7 +266,16 @@ const handlers = {
       if (!price) return undefined;
 
       const fdv = Number(auction.baseToken.totalSupply) * price;
-      return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
+
+      return (
+        <ToggledUsdAmount
+          token={auction.quoteToken}
+          amount={fdv}
+          untoggledFormat={(amount) =>
+            `${shorten(amount)} ${auction.quoteToken.symbol}`
+          }
+        />
+      );
     },
   },
   fixedPriceFDV: {

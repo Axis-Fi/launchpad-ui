@@ -2,8 +2,9 @@ import React from "react";
 import type { Token } from "@repo/types";
 import { Input, Text, Button, cn } from "@repo/ui";
 import { UsdAmount } from "modules/auction/usd-amount";
+import { Format } from "./format";
 
-type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
+type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** the input's label */
   label: string;
   /** the input's token label, defaults to the token's symbol */
@@ -13,7 +14,7 @@ type TokenAmountInputProps = React.HTMLAttributes<HTMLInputElement> & {
   /** whether to show the USD price of the token */
   showUsdPrice?: boolean;
   /** the user's balance */
-  balance?: string;
+  balance?: string | number;
   /** limit on how much the user can spend */
   limit?: string;
   /** an optional error message */
@@ -67,9 +68,7 @@ export const TokenAmountInput = React.forwardRef<
         </div>
         <div className="mt-0.5 flex items-center">
           <Input
-            {...props}
             value={value}
-            ref={ref}
             type="number"
             variant="lg"
             disabled={disabled}
@@ -78,6 +77,8 @@ export const TokenAmountInput = React.forwardRef<
               "hover:bg-surface-secondary ml-0 pl-0",
               error && "text-feedback-alert",
             )}
+            {...props}
+            ref={ref}
           />
           <Text className="text-nowrap" color="secondary" size="lg">
             {tokenLabel}{" "}
@@ -110,7 +111,8 @@ export const TokenAmountInput = React.forwardRef<
           {balance && (
             <div className="ml-auto flex items-end">
               <Text size="xs" color="secondary" uppercase>
-                Balance: {balance} {limit ? `Limit: ${limit}` : ""}
+                Balance: <Format value={balance} />{" "}
+                {limit ? `Limit: ${limit}` : ""}
               </Text>
             </div>
           )}

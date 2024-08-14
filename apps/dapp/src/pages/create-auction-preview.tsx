@@ -128,6 +128,7 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
 
   return {
     status: "live",
+    bids: [],
     auctionType: params.auctionType as AuctionType,
     capacity: params.capacity,
     capacityInitial: params.capacity,

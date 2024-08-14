@@ -1,6 +1,6 @@
 import { FormField, FormItemWrapperSlim } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
-import { AuctionType, PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@repo/types";
 import { BidForm } from "./status";
 import { formatUnits, parseUnits } from "viem";
 import { TokenAmountInput } from "modules/token/token-amount-input";
@@ -49,9 +49,7 @@ export function AuctionBidInputSingle({
                   {...field}
                   disabled={disabled}
                   label="Spend Amount"
-                  balance={trimCurrency(
-                    formatUnits(balance, auction.quoteToken.decimals),
-                  )}
+                  balance={formatUnits(balance, auction.quoteToken.decimals)}
                   limit={
                     limit
                       ? trimCurrency(
