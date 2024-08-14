@@ -42,5 +42,6 @@ export default function useERC20Balance({
     decimals: decimalsResponse.data,
     isLoading: balanceResponse.isLoading || decimalsResponse.isLoading,
     isError: balanceResponse.isError || decimalsResponse.isError,
+    refetch: balanceResponse.refetch,
   };
 }

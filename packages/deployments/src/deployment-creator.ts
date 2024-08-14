@@ -9,11 +9,7 @@ export function createDeployment(config: AxisDeploymentConfig): AxisDeployment {
     addresses: config.addresses,
     callbacks: config.callbacks,
     subgraphURL: withVersion(config.subgraphURL, subgraphConfig.version),
-    chain: withCustomRPCandIcon(
-      config.chain,
-      config.rpcURL,
-      config.chainIconUrl,
-    ),
+    chain: withCustomConfiguration(config),
     tokenList: withMetadata(config.tokenList, config.chain.id),
     dexURL: config.dexURL,
   };
@@ -36,20 +32,23 @@ function withVersion(url: string, version: number | string) {
   return url.replace("<VERSION>", version.toString());
 }
 
-/** Adds an Axis RPC URL to an existing viem Chain*/
-function withCustomRPCandIcon(
-  chain: Chain,
-  url?: string,
-  iconUrl?: string,
-): Chain {
-  if (!url) return chain;
+/** Adds an Axis RPC URL, chain logo and wrapper contract to an existing viem Chain*/
+function withCustomConfiguration({
+  chain,
+  ...config
+}: AxisDeploymentConfig): Chain {
+  if (!config.rpcURL) return chain;
 
   return {
     ...chain,
-    iconUrl,
+    iconUrl: config.chainIconUrl,
     rpcUrls: {
       ...chain.rpcUrls,
-      axis: { http: [url] },
+      axis: { http: [config.rpcURL] },
+    },
+    nativeCurrency: {
+      ...chain.nativeCurrency,
+      wrapperContract: config.wrapperContract,
     },
   };
 }

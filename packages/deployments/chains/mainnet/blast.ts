@@ -12,6 +12,7 @@ const config: AxisDeploymentConfig = {
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast/<VERSION>/gn",
   rpcURL:
     "https://blast-mainnet.g.alchemy.com/v2/h6OEviwRZGmTSXHYPRmMquo5u-YoWLeY",
+  wrapperContract: "0x4300000000000000000000000000000000000004",
   tokenList: [
     {
       address: "0x4300000000000000000000000000000000000003",

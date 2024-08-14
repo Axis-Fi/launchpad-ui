@@ -3,10 +3,18 @@ import ConnectButton from "../../components/connect-button";
 import { Link } from "react-router-dom";
 import { CaretUpIcon } from "@radix-ui/react-icons";
 import Navbar, { testnetLinks } from "./navbar";
-import { Tooltip, cn } from "@repo/ui";
+import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Tooltip,
+  cn,
+} from "@repo/ui";
 import React from "react";
 import { useMediaQueries } from "loaders/use-media-queries";
 import { environment } from "@repo/env";
+import { TokenWrapper } from "modules/token/token-wrapper";
 
 export function AppControl() {
   const { isTabletOrMobile } = useMediaQueries();
@@ -29,6 +37,18 @@ export function AppControl() {
               <Navbar links={testnetLinks} />
             </div>
           )}
+          <div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="secondary" size="sm">
+                  Wrap
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[340px]">
+                <TokenWrapper />
+              </PopoverContent>
+            </Popover>
+          </div>
           <ConnectButton className="hidden md:block" size="md" />
           {isTabletOrMobile && <AppMenu />}
         </div>

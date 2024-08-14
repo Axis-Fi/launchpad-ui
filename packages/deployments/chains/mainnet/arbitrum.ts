@@ -13,6 +13,7 @@ const config: AxisDeploymentConfig = {
     "https://subgraph.satsuma-prod.com/9d551092282a/spaces-team/axis-origin-arbitrum-one/version/v<VERSION>/api",
   rpcURL:
     "https://arb-mainnet.g.alchemy.com/v2/h6OEviwRZGmTSXHYPRmMquo5u-YoWLeY",
+  wrapperContract: "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
   tokenList: [
     {
       ...dai,

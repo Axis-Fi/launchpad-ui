@@ -4,6 +4,7 @@ import type {
   AxisContractAddresses,
   Chain,
   AxisCallbackAddresses,
+  Address,
 } from "@repo/types";
 
 /** Describes an Axis Deployment per chain */
@@ -23,6 +24,7 @@ export type AxisDeploymentConfig = Omit<AxisDeployment, "tokenList"> & {
   tokenList: Omit<Token, "chainId">[];
   chainIconUrl?: string;
   dexURL?: string;
+  wrapperContract?: Address;
 };
 
 export type AxisDeployments = Record<number, AxisDeployment>;
