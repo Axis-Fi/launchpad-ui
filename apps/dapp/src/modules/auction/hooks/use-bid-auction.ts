@@ -26,6 +26,7 @@ export function useBidAuction(
   amountIn: bigint,
   amountOut: bigint,
   callbackData: `0x${string}`,
+  onSuccess?: () => void,
 ) {
   const { result: auction, queryKey } = useAuction(chainId, lotId);
   const id = getAuctionId(chainId, lotId);
@@ -130,6 +131,9 @@ export function useBidAuction(
           amountOut,
         ),
     );
+
+    // Consumer can pass optional callback to be executed after the bid is successful
+    onSuccess?.();
   }, [
     allowance,
     amountIn,
@@ -141,6 +145,7 @@ export function useBidAuction(
     queryKey,
     storeBidLocally,
     bidTx,
+    onSuccess,
   ]);
 
   const error = [bidReceipt, bidTx, bidConfig].find((m) => m.isError)?.error;
