@@ -1,8 +1,10 @@
-import { Avatar, Button, Card, Text, Tooltip } from "@repo/ui";
+import { Avatar, Button, Card, Link, Text, Tooltip } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { PageContainer } from "modules/app/page-container";
 import { allowedCurators } from "@repo/env";
 import { Curator } from "@repo/types";
+import { contact } from "@repo/env/src/metadata";
+import { ArrowRightIcon } from "lucide-react";
 
 export default function CuratorListPage() {
   return (
@@ -11,6 +13,14 @@ export default function CuratorListPage() {
         {allowedCurators.map((c) => (
           <CuratorCard key={c.address} curator={c} />
         ))}
+      </div>
+
+      <div className="flex flex-col items-center justify-center py-8">
+        <Button variant="ghost" asChild>
+          <Link href={contact} target="_blank">
+            Become a curator <ArrowRightIcon className="w-6 pl-1" />
+          </Link>
+        </Button>
       </div>
     </PageContainer>
   );
