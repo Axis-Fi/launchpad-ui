@@ -3,6 +3,7 @@ import { parseUnits } from "viem";
 import type { Token } from "@repo/types";
 import { Input, Text, Button, cn } from "@repo/ui";
 import { UsdAmount } from "modules/auction/usd-amount";
+import { Format } from "./format";
 
 type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** the input's label */
@@ -14,7 +15,7 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** whether to show the USD price of the token */
   showUsdPrice?: boolean;
   /** the user's balance */
-  balance?: string;
+  balance?: string | number;
   /** limit on how much the user can spend */
   limit?: string;
   /** an optional error message */
@@ -116,7 +117,8 @@ export const TokenAmountInput = React.forwardRef<
           {balance && (
             <div className="ml-auto flex items-end">
               <Text size="xs" color="secondary" uppercase>
-                Balance: {balance} {limit ? `Limit: ${limit}` : ""}
+                Balance: <Format value={balance} />{" "}
+                {limit ? `Limit: ${limit}` : ""}
               </Text>
             </div>
           )}

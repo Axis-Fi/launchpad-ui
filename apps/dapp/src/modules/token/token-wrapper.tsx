@@ -8,7 +8,6 @@ import { ArrowDownUpIcon } from "lucide-react";
 import useWrapperContract from "./use-wrap-token";
 import { formatUnits, parseUnits } from "viem";
 import useERC20Balance from "loaders/use-erc20-balance";
-import { trimCurrency } from "utils/currency";
 import { Format } from "./format";
 
 /** Swap-style native currency wrapping and unwrapping on the connected chain */
@@ -92,11 +91,12 @@ export function TokenWrapper() {
   return (
     <div className="flex flex-col items-center justify-center gap-y-3">
       <TokenAmountInput
-        balance={formatBalance(inputTokenBalance ?? 0n, decimals)}
+        balance={formatUnits(inputTokenBalance ?? 0n, decimals)}
         label={inputLabel}
         value={amount}
-        //@ts-expect-error TODO: verify why this throws
-        onChange={(e) => setAmount(e.target.value!)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setAmount(e.target.value!)
+        }
         token={inputToken as Token}
         showUsdPrice={false}
         disableMaxButton
@@ -108,7 +108,7 @@ export function TokenWrapper() {
       />
 
       <TokenAmountInput
-        balance={formatBalance(outputTokenBalance ?? 0n, decimals)}
+        balance={formatUnits(outputTokenBalance ?? 0n, decimals)}
         label={outputLabel}
         value={amount}
         onChange={() => {}}
@@ -147,8 +147,4 @@ function getWrappedTokenDetails(chain: Chain) {
     name: `Wrapped ${chain.nativeCurrency.name}`,
     chainId: chain.id,
   };
-}
-
-function formatBalance(balance: bigint, decimals: number) {
-  return trimCurrency(formatUnits(balance, decimals));
 }
