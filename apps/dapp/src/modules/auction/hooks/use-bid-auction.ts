@@ -49,12 +49,11 @@ export function useBidAuction(
       throw new Error("Wallet not connected. Please connect your wallet.");
     }
 
-    // TODO: change SDK to use bigints
     return sdk.bid(
       {
         lotId: Number(lotId),
-        amountIn: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
-        amountOut: Number(formatUnits(amountOut, auction.baseToken.decimals)),
+        amountIn,
+        amountOut,
         chainId: auction.chainId,
         auctionType: auction.auctionType,
         referrerAddress: referrer,
@@ -87,7 +86,7 @@ export function useBidAuction(
     tokenAddress: auction.quoteToken.address as Address,
     decimals: Number(auction.quoteToken.decimals),
     chainId: auction.chainId,
-    amount: Number(formatUnits(amountIn, auction.quoteToken.decimals)),
+    amount: amountIn,
   });
 
   // Store confirmed bids to prevent the React effect running multiple times due to tree rerenders.
