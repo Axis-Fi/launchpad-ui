@@ -47,6 +47,7 @@ type NavbarProps = {
   showAll?: boolean;
   onlyDefault?: boolean;
   className?: string;
+  onNavClick?: () => void;
 };
 
 export default function Navbar(props: NavbarProps) {
@@ -82,6 +83,7 @@ export default function Navbar(props: NavbarProps) {
                     )}
                     <Button
                       variant="link"
+                      onClick={() => props.onNavClick?.()}
                       className={cn(
                         "text-foreground px-2 uppercase",
                         (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
