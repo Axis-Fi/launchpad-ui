@@ -60,23 +60,25 @@ export function AppControl() {
 export function AppMenu() {
   const [open, setOpen] = React.useState<boolean>();
 
+  const handleCloseMenu = () => setOpen(false);
+
   return (
     <div className="relative">
       <div
         className={cn(
-          "bg-surface-tertiary absolute -left-40 bottom-[100px] mx-auto flex size-fit min-h-[300px] min-w-[200px] translate-x-[105%] flex-col items-end rounded-md p-2 px-8 pr-8 transition-all duration-300",
+          "bg-surface-tertiary absolute -left-40 bottom-[90px] mx-auto flex size-fit min-h-[300px] min-w-[200px] translate-x-[105%] flex-col items-end rounded-md p-2 px-8 pr-8 transition-all duration-300",
           open && "translate-x-0",
         )}
       >
-        {/* {!environment.isProduction && ( */}
-        {/*   <Navbar */}
-        {/*     mobile */}
-        {/*     links={testnetLinks} */}
-        {/*     className="border-b-tertiary-300 bg-surface-tertiary border-b-2" */}
-        {/*     bgClassName="bg-surface-tertiary" */}
-        {/*   /> */}
-        {/* )} */}
-        <Navbar mobile showAll bgClassName="w-full" />
+        {!environment.isProduction && (
+          <Navbar
+            mobile
+            links={testnetLinks}
+            className="border-b-tertiary-300 border-b-2"
+            onNavClick={handleCloseMenu}
+          />
+        )}
+        <Navbar mobile showAll onNavClick={handleCloseMenu} />
         <ConnectButton className="border-t lg:border-t-0" />
       </div>
       <CaretUpIcon
