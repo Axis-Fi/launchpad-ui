@@ -69,15 +69,15 @@ export function AppMenu() {
         )}
       >
         <div className="bg-surface-tertiary flex size-full flex-col items-end">
-          {!environment.isProduction && (
-            <Navbar
-              mobile
-              links={testnetLinks}
-              className="border-b-tertiary-300 bg-surface-tertiary border-b-2"
-              bgClassName="bg-surface-tertiary"
-            />
-          )}
-          <Navbar mobile showAll />
+          {/* {!environment.isProduction && ( */}
+          {/*   <Navbar */}
+          {/*     mobile */}
+          {/*     links={testnetLinks} */}
+          {/*     className="border-b-tertiary-300 bg-surface-tertiary border-b-2" */}
+          {/*     bgClassName="bg-surface-tertiary" */}
+          {/*   /> */}
+          {/* )} */}
+          <Navbar mobile showAll bgClassName="bg-surface-tertiary" />
           <ConnectButton className="border-t lg:border-t-0" />
         </div>
       </div>
