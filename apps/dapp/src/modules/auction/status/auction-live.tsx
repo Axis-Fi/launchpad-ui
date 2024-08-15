@@ -199,19 +199,21 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     ? parseUnits(minAmountOut, auction.baseToken.decimals)
     : BigInt(0);
 
+  const { balance: quoteTokenBalance, refetch: refetchQuoteTokenBalance } =
+    useERC20Balance({
+      chainId: auction.chainId,
+      tokenAddress: auction.quoteToken.address,
+      balanceAddress: walletAccount.address,
+    });
+
   const { ...bid } = useBidAuction(
     auction.chainId,
     auction.lotId,
     parsedAmountIn,
     parsedMinAmountOut,
     callbackData,
+    refetchQuoteTokenBalance,
   );
-
-  const { balance: quoteTokenBalance } = useERC20Balance({
-    chainId: auction.chainId,
-    tokenAddress: auction.quoteToken.address,
-    balanceAddress: walletAccount.address,
-  });
 
   // TODO Permit2 signature
   const handleSubmit = () => {
