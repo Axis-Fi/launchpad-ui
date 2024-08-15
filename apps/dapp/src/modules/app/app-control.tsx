@@ -64,7 +64,7 @@ export function AppMenu() {
     <div className="relative">
       <div
         className={cn(
-          "bg-surface-tertiary absolute -left-40 bottom-[250px] mx-auto size-fit translate-x-[105%] rounded-t-md p-2 px-8 pr-8 transition-all duration-300 ",
+          "bg-surface-tertiary absolute -left-40 bottom-[350px] mx-auto size-fit translate-x-[105%] rounded-t-md p-2 px-8 pr-8 transition-all duration-300 ",
           open && "translate-x-0",
         )}
       >
@@ -77,7 +77,11 @@ export function AppMenu() {
           {/*     bgClassName="bg-surface-tertiary" */}
           {/*   /> */}
           {/* )} */}
-          <Navbar mobile showAll bgClassName="bg-surface-tertiary" />
+          <Navbar
+            mobile
+            showAll
+            bgClassName="bg-surface-tertiary border border-red-500 w-full"
+          />
           <ConnectButton className="border-t lg:border-t-0" />
         </div>
       </div>
