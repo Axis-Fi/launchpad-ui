@@ -64,22 +64,20 @@ export function AppMenu() {
     <div className="relative">
       <div
         className={cn(
-          "bg-surface-tertiary absolute -left-40 bottom-[360px] mx-auto size-fit translate-x-[105%] rounded-md p-2 px-8 pr-8 transition-all duration-300 ",
+          "bg-surface-tertiary absolute -left-40 bottom-[360px] mx-auto flex size-fit min-h-[300px] min-w-[200px] translate-x-[105%] flex-col items-end rounded-md p-2 px-8 pr-8 transition-all duration-300",
           open && "translate-x-0",
         )}
       >
-        <div className="flex size-full flex-col items-end">
-          {/* {!environment.isProduction && ( */}
-          {/*   <Navbar */}
-          {/*     mobile */}
-          {/*     links={testnetLinks} */}
-          {/*     className="border-b-tertiary-300 bg-surface-tertiary border-b-2" */}
-          {/*     bgClassName="bg-surface-tertiary" */}
-          {/*   /> */}
-          {/* )} */}
-          <Navbar mobile showAll bgClassName="w-full" />
-          <ConnectButton className="border-t lg:border-t-0" />
-        </div>
+        {/* {!environment.isProduction && ( */}
+        {/*   <Navbar */}
+        {/*     mobile */}
+        {/*     links={testnetLinks} */}
+        {/*     className="border-b-tertiary-300 bg-surface-tertiary border-b-2" */}
+        {/*     bgClassName="bg-surface-tertiary" */}
+        {/*   /> */}
+        {/* )} */}
+        <Navbar mobile showAll bgClassName="w-full" />
+        <ConnectButton className="border-t lg:border-t-0" />
       </div>
       <CaretUpIcon
         className={cn("mr-3 size-8 transition-all ", open && "-rotate-90")}
