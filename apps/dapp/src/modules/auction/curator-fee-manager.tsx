@@ -1,9 +1,8 @@
-import { Button, InfoLabel, Badge, Tooltip } from "@repo/ui";
+import { Button, InfoLabel, Badge, Tooltip, cn } from "@repo/ui";
 import { useCuratorFees } from "./hooks/use-curator-fees";
 import { useChainId } from "wagmi";
 import React from "react";
 import { useFees } from "./hooks/use-fees";
-import { CheckIcon } from "lucide-react";
 import { parsePercent } from "utils/number";
 import { AuctionType } from "@repo/types";
 import { getAuctionHouse } from "utils/contracts";
@@ -14,6 +13,7 @@ type CuratorFeeManagerProps = {
   chainId?: number;
   auctionType: AuctionType;
   modules: AuctionType[];
+  className?: string;
 };
 export function CuratorFeeManager({
   auctionType,
@@ -41,8 +41,8 @@ export function CuratorFeeManager({
   }, [chainId, auctionType]);
 
   return (
-    <div className="gap-x-8">
-      <div className="flex items-end justify-start">
+    <div className={cn("gap-x-8", props.className)}>
+      <div className="flex items-end justify-start gap-x-4">
         <Tooltip
           content={`Your current fee for the Batch Auction House on ${chain?.name}. It includes the following auction modules:\n${modules.join(
             ", ",
@@ -52,7 +52,8 @@ export function CuratorFeeManager({
             editable
             label={"Current Fee"}
             value={fee || curatorFees.fee + "%"}
-            inputClassName="w-16 min-w-0 pl-0"
+            className="text-left"
+            inputClassName="w-28 min-w-0 px-0 border border-surface-secondary"
             onChange={(e) => {
               parsePercent(e);
               setFee(e.target.value);
@@ -66,22 +67,21 @@ export function CuratorFeeManager({
           />
         </Tooltip>
 
-        <Button size="icon" variant="ghost">
-          {isFinite(parsedAmount) && parsedAmount !== curatorFees.fee && (
-            <div>
-              <Button size="icon" variant="ghost">
-                <CheckIcon onClick={() => curatorFees.handleSetFee()} />
-              </Button>
-            </div>
-          )}
+        <Button
+          size="sm"
+          disabled={!isFinite(parsedAmount) || parsedAmount === curatorFees.fee}
+          onClick={() => curatorFees.handleSetFee()}
+        >
+          Update Fee
         </Button>
       </div>
       <Tooltip content="The contract's maximum allowed curator's fee">
         <Badge
+          size="s"
           onClick={() => setFee(maxCuratorFee + "%")}
-          className="mt-4 h-min"
+          className="mt-8 h-min normal-case"
         >
-          Max: {maxCuratorFee}%
+          Max Allowed Fee: {maxCuratorFee}%
         </Badge>
       </Tooltip>
       {curatorFees.isError && <p>Something went wrong</p>}
