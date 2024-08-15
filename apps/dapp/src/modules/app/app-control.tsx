@@ -64,7 +64,7 @@ export function AppMenu() {
     <div className="relative">
       <div
         className={cn(
-          "bg-surface-tertiary absolute -left-40 bottom-[360px] mx-auto flex size-fit min-h-[300px] min-w-[200px] translate-x-[105%] flex-col items-end rounded-md p-2 px-8 pr-8 transition-all duration-300",
+          "bg-surface-tertiary absolute -left-40 bottom-[100px] mx-auto flex size-fit min-h-[300px] min-w-[200px] translate-x-[105%] flex-col items-end rounded-md p-2 px-8 pr-8 transition-all duration-300",
           open && "translate-x-0",
         )}
       >
