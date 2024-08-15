@@ -38,7 +38,7 @@ export function CuratorFeeManager({
   React.useEffect(() => {
     curatorFees.reset();
     setFee("");
-  }, [chainId]);
+  }, [chainId, auctionType]);
 
   return (
     <div className="gap-x-8">

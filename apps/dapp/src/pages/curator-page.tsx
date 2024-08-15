@@ -5,11 +5,19 @@ import { InfoIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
 import { CuratableAuctionList } from "modules/auction/curatable-auction-list";
 import { CuratorFeeManager } from "modules/auction/curator-fee-manager";
+import { auctionMetadata } from "modules/auction/metadata";
+import React from "react";
 import { useChainId, useSwitchChain } from "wagmi";
+
+const auctionModuleOptions = Object.values(auctionMetadata);
+const auctionModules = Object.keys(auctionMetadata) as AuctionType[];
 
 export function CuratorPage() {
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
+  const [type, setType] = React.useState<AuctionType>(
+    auctionModuleOptions[0].value,
+  );
 
   const options = activeChains.map((c) => ({
     label: c.name,
@@ -35,14 +43,17 @@ export function CuratorPage() {
                 onChange={(v) => switchChain({ chainId: Number(v) })}
                 options={options}
               />
+              <Select
+                triggerClassName="mt-4"
+                defaultValue={auctionModuleOptions[0].value}
+                onChange={(value: string) => setType(value as AuctionType)}
+                options={auctionModuleOptions}
+              />
             </div>
           }
         >
           <div className="flex">
-            <CuratorFeeManager
-              modules={[AuctionType.FIXED_PRICE_BATCH, AuctionType.SEALED_BID]}
-              auctionType={AuctionType.FIXED_PRICE_BATCH}
-            />
+            <CuratorFeeManager modules={auctionModules} auctionType={type} />
           </div>
         </Card>
         <Card title="Launches" className="w-3/4 grow">
