@@ -47,7 +47,6 @@ type NavbarProps = {
   showAll?: boolean;
   onlyDefault?: boolean;
   className?: string;
-  bgClassName?: string;
   onNavClick?: () => void;
 };
 
@@ -66,22 +65,17 @@ export default function Navbar(props: NavbarProps) {
   }, [props.links, props.onlyDefault, isCurator]);
 
   return (
-    <NavigationMenu className={props.bgClassName}>
+    <NavigationMenu>
       <NavigationMenuList
         className={cn(
           props.mobile && "flex w-full flex-col items-end",
           props.className,
-          props.bgClassName,
         )}
       >
         {links.map((l) => (
-          <NavigationMenuItem key={l.href} className={props.bgClassName}>
-            <NavigationMenuLink asChild className={props.bgClassName}>
-              <NavLink
-                to={l.href}
-                target={l.target ?? "_self"}
-                className={props.bgClassName}
-              >
+          <NavigationMenuItem key={l.href}>
+            <NavigationMenuLink asChild>
+              <NavLink to={l.href} target={l.target ?? "_self"}>
                 {({ isActive }) => (
                   <>
                     {l.label === "Curator" && !!pendingCurationsCount && (
@@ -94,7 +88,6 @@ export default function Navbar(props: NavbarProps) {
                         "text-foreground px-2 uppercase",
                         (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
                           "text-primary",
-                        props.bgClassName,
                       )}
                     >
                       {l.label}
