@@ -754,7 +754,7 @@ export default function CreateAuctionPage() {
     decimals: payoutToken?.decimals,
     chainId: payoutToken?.chainId,
     amount: parseUnits(
-      (Number(capacity) * dtlProceedsPercent).toString(),
+      (Number(capacity ?? 0) * dtlProceedsPercent).toString(),
       payoutToken?.decimals,
     ),
   });
