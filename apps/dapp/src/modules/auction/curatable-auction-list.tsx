@@ -31,7 +31,7 @@ const cols = [
   col.accessor("status", {
     header: "Status",
     cell: (info) => (
-      <AuctionStatusBadge className="w-1/2" status={info.getValue()} />
+      <AuctionStatusBadge className="w-[80%]" status={info.getValue()} />
     ),
   }),
 ];
@@ -67,7 +67,7 @@ export function CuratableAuctionList() {
             info.row.original.status,
           );
 
-          if (!approved && !isApprovable) {
+          if (!approved || !isApprovable) {
             return <XIcon className="text-axis-red" />;
           }
 
@@ -90,7 +90,7 @@ export function CuratableAuctionList() {
         id: "view",
         cell: (info) => (
           <Link to={"/" + getAuctionPath(info.row.original)}>
-            <Button size="sm">View Launch</Button>
+            <Button size="sm">View</Button>
           </Link>
         ),
       }),
