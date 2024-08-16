@@ -17,8 +17,6 @@ type LinkConfig = {
   target?: React.HTMLProps<HTMLAnchorElement>["target"];
 };
 
-export const curator = { label: "Curator", href: "/curator" };
-
 export const testnetLinks = [
   { label: "Faucet", href: "/faucet" },
   { label: "Deploy", href: "/deploy" },
@@ -58,10 +56,7 @@ export default function Navbar(props: NavbarProps) {
     if (props.links) return props.links;
     if (props.onlyDefault) return defaultLinks;
 
-    const _links = props.mobile && !props.showAll ? defaultLinks : desktopLinks;
-    //Only show curator link if connected address is a curator for any auction
-    const curatorLink = isCurator ? [curator] : [];
-    return [..._links, ...curatorLink];
+    return props.mobile && !props.showAll ? defaultLinks : desktopLinks;
   }, [props.links, props.onlyDefault, isCurator]);
 
   return (

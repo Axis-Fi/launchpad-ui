@@ -1,6 +1,6 @@
-import { FlaskConicalIcon } from "lucide-react";
+import { FlaskConicalIcon, SearchCheckIcon } from "lucide-react";
 import ConnectButton from "../../components/connect-button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CaretUpIcon } from "@radix-ui/react-icons";
 import Navbar, { testnetLinks } from "./navbar";
 import {
@@ -18,6 +18,7 @@ import { TokenWrapper } from "modules/token/token-wrapper";
 
 export function AppControl() {
   const { isTabletOrMobile } = useMediaQueries();
+  const navigate = useNavigate();
 
   return (
     <div className="lg:max-w-limit bg-surface-tertiary fixed bottom-0 z-20 mx-auto w-full lg:static lg:bg-transparent ">
@@ -37,18 +38,25 @@ export function AppControl() {
               <Navbar links={testnetLinks} />
             </div>
           )}
-          <div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="secondary" size="sm">
-                  Wrap
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[340px]">
-                <TokenWrapper />
-              </PopoverContent>
-            </Popover>
-          </div>
+
+          <Button
+            size="icon"
+            variant="ghost"
+            className="size-[64px]"
+            onClick={() => navigate("/curator")}
+          >
+            <SearchCheckIcon />
+          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="secondary" size="sm">
+                Wrap
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[340px]">
+              <TokenWrapper />
+            </PopoverContent>
+          </Popover>
           <ConnectButton className="hidden md:block" size="md" />
           {isTabletOrMobile && <AppMenu />}
         </div>
