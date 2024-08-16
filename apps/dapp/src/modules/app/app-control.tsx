@@ -1,4 +1,4 @@
-import { FlaskConicalIcon, SearchCheckIcon } from "lucide-react";
+import { FlaskConicalIcon } from "lucide-react";
 import ConnectButton from "../../components/connect-button";
 import { Link, useNavigate } from "react-router-dom";
 import { CaretUpIcon } from "@radix-ui/react-icons";
@@ -15,9 +15,12 @@ import React from "react";
 import { useMediaQueries } from "loaders/use-media-queries";
 import { environment } from "@repo/env";
 import { TokenWrapper } from "modules/token/token-wrapper";
+import { useCurator } from "modules/auction/hooks/use-curator";
+import { NotificationBadge } from "components/notification-badge";
 
 export function AppControl() {
   const { isTabletOrMobile } = useMediaQueries();
+  const curator = useCurator();
   const navigate = useNavigate();
 
   return (
@@ -39,14 +42,21 @@ export function AppControl() {
             </div>
           )}
 
-          <Button
-            size="icon"
-            variant="ghost"
-            className="size-[64px]"
-            onClick={() => navigate("/curator")}
-          >
-            <SearchCheckIcon />
-          </Button>
+          {curator.isCurator && (
+            <div>
+              {curator.hasPendingCurations && (
+                <NotificationBadge count={curator.pendingCurationsCount} />
+              )}
+              <Button
+                size="icon"
+                variant="link"
+                className="mr-4 size-[64px]"
+                onClick={() => navigate("/curator")}
+              >
+                Curator
+              </Button>
+            </div>
+          )}
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="secondary" size="sm">
