@@ -76,8 +76,6 @@ export const getMinRaiseForAuction = (auction: Auction) => {
   return getMinRaise(price, minFilled);
 };
 
-// TODO add DTL proceeds as a metric. Probably requires loading the callback configuration into the auction type.
-
 type MetricHandlers = Record<
   string,
   {

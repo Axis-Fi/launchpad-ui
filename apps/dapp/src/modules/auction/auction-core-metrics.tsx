@@ -62,7 +62,6 @@ export function AuctionCoreMetrics(
           </>
         )}
         {isDTL && <AuctionMetric id="dtlProceeds" />}
-        <AuctionMetric id="referrerFee" />
       </AuctionMetricsContainer>
     </Card>
   );
