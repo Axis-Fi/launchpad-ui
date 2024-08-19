@@ -3,7 +3,7 @@ import type { QueryClient, QueryKey } from "@tanstack/react-query";
 /**
  * Takes an object and returns a new one with a timestamp property added.
  * This timestamp is used to determine when the optimistic update should be considered stale.
- * When its considered stale, the subgraph will refetch the data, instead of using the optimistic data.
+ * When its considered stale, the query client will refetch the data, instead of using the optimistic data.
  */
 const attachTimestamp = (optimisticData: object) => {
   return { ...optimisticData, _lastOptimisticUpdateTimestamp: Date.now() };

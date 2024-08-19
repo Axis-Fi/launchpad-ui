@@ -5,7 +5,7 @@ import addresses from "../../axis-core/.blast-sepolia-v0.5.json";
 import type { Address } from "@repo/types";
 
 const config: AxisDeploymentConfig = {
-  name: "blast-testnet",
+  name: "blast-sepolia",
   chain: blastSepolia,
   chainIconUrl: "/blast-logo.png",
   addresses: {

@@ -5,6 +5,7 @@
     "../../packages/ui/src/components/sort-button.tsx",
     "../../packages/types/types"
   ],
+  "exclude": ["cypress"],
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {

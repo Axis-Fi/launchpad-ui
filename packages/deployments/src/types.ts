@@ -9,6 +9,7 @@ import type {
 
 /** Describes an Axis Deployment per chain */
 export type AxisDeployment = {
+  name: string; // deployment name is the AxisDeploymentConfig name
   chain: Chain;
   tokenList: TokenList;
   subgraphURL: string;
