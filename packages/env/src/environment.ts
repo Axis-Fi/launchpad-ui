@@ -13,6 +13,6 @@ export const environment = Object.freeze({
   isStaging: env === Environment.STAGING,
   isTesting: env === Environment.TESTING,
   isDevelopment: env === Environment.DEVELOPMENT,
-  isTestnet: testnet,
+  isTestnet: testnet === "true",
   current: env as Environment,
 });
