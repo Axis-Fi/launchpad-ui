@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AuctionLaunchMetrics } from "modules/auction/auction-launch-metrics";
+import { AuctionCoreMetrics } from "modules/auction/auction-core-metrics";
 import { getBatchAuctionMock } from "../mocks/batch-auction";
 
 const meta = {
-  title: "Auctions/AuctioLaunchMetrics",
-  component: AuctionLaunchMetrics,
+  title: "Auctions/AuctionCoreMetrics",
+  component: AuctionCoreMetrics,
   args: {
     auction: getBatchAuctionMock(),
   },
@@ -15,7 +15,7 @@ const meta = {
       </div>
     ),
   ],
-} satisfies Meta<typeof AuctionLaunchMetrics>;
+} satisfies Meta<typeof AuctionCoreMetrics>;
 
 export default meta;
 

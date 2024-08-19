@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React, { useEffect, useState } from "react";
-import { AuctionLaunchMetrics } from "../auction-launch-metrics";
+import { AuctionCoreMetrics } from "../auction-core-metrics";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
 import { TokenInfoCard } from "../token-info-card";
@@ -294,7 +294,7 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   return (
     <div className="auction-action-container ">
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
-        <AuctionLaunchMetrics auction={auction} />
+        <AuctionCoreMetrics auction={auction} />
         <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
