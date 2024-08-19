@@ -11,7 +11,6 @@ const config: AxisDeploymentConfig = {
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mantle/<VERSION>/gn",
   rpcURL: "https://rpc.mantle.xyz",
-  dexURL: "https://merchantmoe.com/trade",
   wrapperContract: "0x78c1b0C915c4FAA5FffA6CAbf0219DA63d7f4cb8",
   tokenList: [
     {

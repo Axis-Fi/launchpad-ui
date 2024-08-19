@@ -3,18 +3,10 @@ import ConnectButton from "../../components/connect-button";
 import { Link, useNavigate } from "react-router-dom";
 import { CaretUpIcon } from "@radix-ui/react-icons";
 import Navbar, { testnetLinks } from "./navbar";
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  Tooltip,
-  cn,
-} from "@repo/ui";
+import { Button, Tooltip, cn } from "@repo/ui";
 import React from "react";
 import { useMediaQueries } from "loaders/use-media-queries";
 import { environment } from "@repo/env";
-import { TokenWrapper } from "modules/token/token-wrapper";
 import { useCurator } from "modules/auction/hooks/use-curator";
 import { NotificationBadge } from "components/notification-badge";
 
@@ -57,16 +49,6 @@ export function AppControl() {
               </Button>
             </div>
           )}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="secondary" size="sm">
-                Wrap
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[340px]">
-              <TokenWrapper />
-            </PopoverContent>
-          </Popover>
           <ConnectButton className="hidden md:block" size="md" />
           {isTabletOrMobile && <AppMenu />}
         </div>

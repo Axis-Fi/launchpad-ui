@@ -11,7 +11,6 @@ export function createDeployment(config: AxisDeploymentConfig): AxisDeployment {
     subgraphURL: withVersion(config.subgraphURL, subgraphConfig.version),
     chain: withCustomConfiguration(config),
     tokenList: withMetadata(config.tokenList, config.chain.id),
-    dexURL: config.dexURL,
   };
 }
 
