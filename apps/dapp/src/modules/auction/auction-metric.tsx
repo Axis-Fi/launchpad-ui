@@ -8,7 +8,7 @@ import {
 } from "@repo/types";
 import { Metric, MetricProps, Tooltip, useToggle } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
-import { shorten, formatPercentage } from "utils/number";
+import { shorten, formatPercentage, fromBasisPoints } from "utils/number";
 import { getCallbacksType } from "./utils/get-callbacks-type";
 import { getMinFilled, getPrice, hasDerivative } from "./utils/auction-details";
 import { getDaysBetweenDates } from "utils/date";
@@ -116,7 +116,7 @@ const handlers: MetricHandlers = {
   referrerFee: {
     label: "Referrer Fee",
     handler: (auction) => {
-      return `${+auction.referrerFee}%`;
+      return `${fromBasisPoints(auction.referrerFee)}%`;
     },
   },
   duration: {
