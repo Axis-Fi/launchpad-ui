@@ -1,5 +1,4 @@
-import { Button, Card, Link, Metric, Text } from "@repo/ui";
-import ExternalLink from "components/external-link";
+import { Button, Card, Link, Metric, Text, Tooltip } from "@repo/ui";
 import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
@@ -22,6 +21,10 @@ import { useAllowlist } from "../hooks/use-allowlist";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { getDeployment } from "@repo/deployments";
 import { ToggledUsdAmount } from "../toggled-usd-amount";
+import {
+  PopupTokenWrapper,
+  isQuoteAWrappedGasToken,
+} from "modules/token/popup-token-wrapper";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -314,6 +317,15 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     ? `Buy ${auction.baseToken.symbol}`
                     : `Place your bid`
                 }
+                headerRightElement={
+                  isQuoteAWrappedGasToken(auction) && (
+                    <Tooltip
+                      content={`Wrap ${deployment?.chain.nativeCurrency.symbol} into ${auction.quoteToken.symbol}`}
+                    >
+                      <PopupTokenWrapper auction={auction} />
+                    </Tooltip>
+                  )
+                }
               >
                 {isFixedPriceBatch ? (
                   <AuctionBidInputSingle
@@ -331,19 +343,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                   />
                 )}
                 <div className="mx-auto mt-4 w-full space-y-4">
-                  {deployment?.dexURL && (
-                    <Text size="xs" className="flex items-center gap-x-1">
-                      Need {auction.quoteToken.symbol}?
-                      <ExternalLink
-                        href={deployment.dexURL}
-                        target="_blank"
-                        iconClassName="size-3 mt-[1.5px]"
-                      >
-                        Get some here
-                      </ExternalLink>
-                    </Text>
-                  )}
-
                   {isEMP && (
                     <Text size="sm">
                       Your bids will remain private and encrypted, and can be

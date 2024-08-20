@@ -6,6 +6,7 @@ export type InfoLabelProps = {
   valueSize?: "sm" | "md" | "lg";
   reverse?: boolean;
   editable?: boolean;
+  className?: string;
   inputClassName?: string;
 } & React.ComponentProps<"input">;
 
@@ -17,7 +18,9 @@ const valueSizeMap = {
 
 export function InfoLabel(props: InfoLabelProps) {
   return (
-    <div className={cn(props.reverse && "flex flex-col-reverse")}>
+    <div
+      className={cn(props.className, props.reverse && "flex flex-col-reverse")}
+    >
       {props.editable ? (
         <Input
           variant="ghost"
