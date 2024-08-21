@@ -19,6 +19,7 @@ type TokenPickerProps<T> = {
   >["props"]["onChange"];
   onChainChange?: (chainId: number) => void;
   name: Path<T>;
+  value?: Partial<Token>;
 };
 
 export function TokenPicker<

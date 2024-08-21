@@ -1,6 +1,13 @@
 import React, { useCallback } from "react";
 import { Button, Dialog, DialogProps, SelectData } from "./";
 import { IconedLabel } from "./iconed-label";
+import isDeepEqual from "@/helpers/is-deep-equal";
+
+type InputValueDisplay = {
+  imgURL?: string;
+  label: string;
+  value: string;
+};
 
 export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
   onSubmit?: (value?: T) => void;
@@ -10,12 +17,10 @@ export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
   children?: React.ReactElement<{
     onChange?: DialogInputChangeHandler<T>;
   }>;
-  display?: {
-    imgURL?: string;
-    label: string;
-    value: string;
-  };
+  display?: InputValueDisplay;
   disabled?: boolean;
+  value?: T;
+  displayFormatter?: (value: T) => InputValueDisplay;
 };
 
 export type DialogInputChangeHandler<T> = (
@@ -40,6 +45,16 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
     },
     [onChange],
   );
+
+  React.useEffect(() => {
+    if (props.value && !isDeepEqual(props.value, selected)) {
+      setSelected(props.value);
+      if (props.displayFormatter) {
+        const valeu = props.displayFormatter(props.value);
+        setDisplay(valeu);
+      }
+    }
+  }, [props.value]);
 
   const children = React.isValidElement(props.children)
     ? React.cloneElement(props.children, {

@@ -95,6 +95,7 @@ import { getAuctionPath } from "utils/router";
 import getExistingCallbacks from "modules/create-auction/get-existing-callbacks";
 import { useStoredAuctionConfig } from "state/auction-config";
 import { DownloadIcon, RefreshCwIcon } from "lucide-react";
+import type { Token } from "@repo/types";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -1285,6 +1286,7 @@ export default function CreateAuctionPage() {
                         title="Select Payout Token"
                         triggerContent={"Select token"}
                         disabled={payoutModalInvalid}
+                        displayFormatter={tokenDisplayFormatter}
                       >
                         <TokenPicker name="payoutToken" />
                       </DialogInput>
@@ -2006,4 +2008,12 @@ function withCuratorShare(amount?: number, curatorFee?: number) {
   const fee = fromBasisPoints(curatorFee);
   const adjusted = fee < 10 ? `0${fee}` : fee;
   return amount * parseFloat(`1.${adjusted}`);
+}
+
+function tokenDisplayFormatter(token: Token) {
+  return {
+    label: token.symbol,
+    imgURL: token.logoURI,
+    value: token,
+  };
 }
