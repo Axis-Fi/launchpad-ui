@@ -18,6 +18,7 @@ import {
   Textarea,
   PercentageSlider,
   trimAddress,
+  Tooltip,
 } from "@repo/ui";
 import { abis } from "@repo/abis";
 import { DevTool } from "@hookform/devtools";
@@ -92,6 +93,8 @@ import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
 import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
 import { getAuctionPath } from "utils/router";
 import getExistingCallbacks from "modules/create-auction/get-existing-callbacks";
+import { useStoredAuctionConfig } from "state/auction-config";
+import { DownloadIcon, RefreshCwIcon } from "lucide-react";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -311,6 +314,10 @@ const schema = z
 export type CreateAuctionForm = z.infer<typeof schema>;
 
 export default function CreateAuctionPage() {
+  // Due to components being uncontrolled the form inputs wont clear
+  // after calling form.reset() so we have to force it
+  const [resetKey, setResetKey] = React.useState(0);
+
   const navigate = useNavigate();
   const auctionDefaultValues = {
     minFillPercent: [50],
@@ -323,12 +330,22 @@ export default function CreateAuctionPage() {
   const connectedChainId = useChainId();
   const { chain } = useAccount();
 
+  const [storedConfig, setStoredConfig] = useStoredAuctionConfig();
+
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onChange",
     delayError: 600,
-    defaultValues: auctionDefaultValues,
+    defaultValues: storedConfig ?? auctionDefaultValues,
   });
+
+  React.useEffect(() => {
+    if (storedConfig) {
+      Object.entries(storedConfig).forEach(([key, value]) =>
+        form.setValue(key as keyof CreateAuctionForm, value),
+      );
+    }
+  }, [storedConfig]);
 
   const [
     isVested,
@@ -443,7 +460,7 @@ export default function CreateAuctionPage() {
     onError: (error) => console.error("Error during submission:", error),
   });
 
-  const handleCreation = async (values: CreateAuctionForm) => {
+  const creationHandler = async (values: CreateAuctionForm) => {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
@@ -732,7 +749,7 @@ export default function CreateAuctionPage() {
   });
   // TODO add note on pre-funding: the capacity will be transferred upon creation
 
-  const createAuction = form.handleSubmit(handleCreation);
+  const handleCreate = form.handleSubmit(creationHandler);
   const isValid = form.formState.isValid;
 
   /// Callbacks allowance
@@ -776,7 +793,7 @@ export default function CreateAuctionPage() {
     }
 
     // 3. Otherwise create
-    createAuction();
+    handleCreate();
     return;
   };
 
@@ -1057,8 +1074,22 @@ export default function CreateAuctionPage() {
     return getExistingCallbacks(chainId);
   }, [chainId]);
 
+  const handlePreview = () => {
+    form.trigger();
+    setStoredConfig(form.getValues());
+    isValid && setIsPreviewOpen(true);
+  };
+
+  const handleReset = () => {
+    form.reset(auctionDefaultValues);
+    setResetKey(resetKey + 1);
+    setStoredConfig(null);
+  };
+
+  const handleSaveForm = () => setStoredConfig(form.getValues());
+
   return (
-    <PageContainer>
+    <PageContainer key={resetKey.toString()}>
       <PageHeader
         backNavigationPath="/#"
         backNavigationText="Back to Launches"
@@ -1084,9 +1115,25 @@ export default function CreateAuctionPage() {
               {/* </div> */}
 
               <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
-                <Text size="3xl" className="form-div">
-                  1 - Your Project
-                </Text>
+                <div className="form-div flex max-w-full justify-between">
+                  <Text size="3xl">1 - Your Project</Text>
+                  <div>
+                    <Tooltip content="Save the current configuration locally">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={handleSaveForm}
+                      >
+                        <DownloadIcon />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Clear the current configuration">
+                      <Button size="icon" variant="ghost" onClick={handleReset}>
+                        <RefreshCwIcon />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </div>
 
                 <FormField
                   control={form.control}
@@ -1875,8 +1922,7 @@ export default function CreateAuctionPage() {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  form.trigger();
-                  isValid && setIsPreviewOpen(true);
+                  handlePreview();
                 }}
               >
                 DEPLOY AUCTION
