@@ -1,16 +1,24 @@
-import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
+import type {
+  BatchAuctionLot,
+  GetBatchAuctionLotQuery,
+} from "@repo/subgraph-client";
+import { allowedCurators } from "@repo/env";
+
+const allowedCurator = allowedCurators[0].address;
 
 export const stubGetBatchAuctionLotQuery = (
-  overrides: Partial<GetBatchAuctionLotQuery["batchAuctionLot"]> = {},
+  overrides: Pick<BatchAuctionLot, "id" | "lotId" | "chain">,
 ): GetBatchAuctionLotQuery => {
+  const { id, lotId, chain } = overrides;
+
   return {
     batchAuctionLot: {
-      id: "blast-sepolia-0xba0000ac450437406583980336fe93ab2752999f-8",
-      chain: "blast-sepolia",
+      id,
+      chain,
       auctionHouse: "0xba0000ac450437406583980336fe93ab2752999f",
       aborted: null,
       cancelled: null,
-      lotId: "8",
+      lotId,
       createdBlockNumber: "9567262",
       createdBlockTimestamp: "1723821212",
       createdDate: "2024-08-16T15:13:32.000Z",
@@ -60,7 +68,7 @@ export const stubGetBatchAuctionLotQuery = (
       derivativeType: null,
       wrapDerivative: false,
       callbacks: "0x0000000000000000000000000000000000000000",
-      curator: null,
+      curator: allowedCurator,
       curatorApproved: false,
       curatorFee: "0",
       protocolFee: "0",
@@ -97,9 +105,7 @@ export const stubGetBatchAuctionLotQuery = (
       bidsClaimed: [],
       bidsRefunded: [],
       encryptedMarginalPrice: {
-        id:
-          overrides?.id ??
-          "blast-sepolia-0xba0000ac450437406583980336fe93ab2752999f-8",
+        id,
         status: "created",
         settlementSuccessful: false,
         minPrice: "1",
@@ -110,7 +116,6 @@ export const stubGetBatchAuctionLotQuery = (
       },
       fixedPrice: null,
       settled: null,
-      ...overrides,
     },
   };
 };

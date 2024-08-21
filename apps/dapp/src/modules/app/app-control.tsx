@@ -27,7 +27,7 @@ export function AppControl() {
           <Navbar onlyDefault={isTabletOrMobile} />
         </div>
         <div className="flex items-center justify-between gap-x-2">
-          {!environment.isProduction && !isTabletOrMobile && (
+          {environment.isTestnet && !isTabletOrMobile && (
             <div className="border-b-tertiary-300 mr-8 flex items-center border-b-2">
               <Tooltip content="These features are only available on testnet">
                 <div className="w-8">
@@ -70,7 +70,7 @@ export function AppMenu() {
           open && "translate-x-0",
         )}
       >
-        {!environment.isProduction && (
+        {environment.isTestnet && (
           <Navbar
             mobile
             links={testnetLinks}

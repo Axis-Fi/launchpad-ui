@@ -1,4 +1,13 @@
-const BASE_URL = "http://localhost:5173" as const;
+const BASE_URL = Cypress.env("VITE_APP_URL");
+
+// Mainnet chain ID for mainnet build testing
+const blastSepoliaChainId = "168587773";
+
+// Testnet chain ID for testnet build testing
+const baseChainId = "8453";
+
+const LAUNCH_ID =
+  Cypress.env("VITE_TESTNET") === "true" ? blastSepoliaChainId : baseChainId;
 
 const URLS = {
   HOME: `${BASE_URL}/#/`,
@@ -6,7 +15,7 @@ const URLS = {
   CURATOR: `${BASE_URL}/#/curator`,
   CURATORS: `${BASE_URL}/#/curators`,
   REFER: `${BASE_URL}/#/refer`,
-  LAUNCH: `${BASE_URL}/#/168587773/0`,
+  LAUNCH: `${BASE_URL}/#/${LAUNCH_ID}/0`,
 
   /** TESTNET ONLY PAGES */
   FAUCET: `${BASE_URL}/#/faucet`,

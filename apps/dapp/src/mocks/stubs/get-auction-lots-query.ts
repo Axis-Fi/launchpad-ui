@@ -1,13 +1,21 @@
-import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
+import type {
+  BatchAuctionLot,
+  GetAuctionLotsQuery,
+} from "@repo/subgraph-client";
+import { allowedCurators } from "@repo/env";
+
+const allowedCurator = allowedCurators[0].address;
 
 export const stubGetAuctionLotsQuery = (
-  overrides: Partial<GetAuctionLotsQuery> = {},
+  overrides: Pick<BatchAuctionLot, "chain">,
 ): GetAuctionLotsQuery => {
+  const { chain } = overrides;
+
   return {
     batchAuctionLots: [
       {
-        id: "blast-sepolia-0xba00000d23a0793d5601d1e8e7b32ae88642cbef-0",
-        chain: "blast-sepolia",
+        id: `${chain}-0xba00000d23a0793d5601d1e8e7b32ae88642cbef-0`,
+        chain: chain,
         auctionHouse: "0xba00000d23a0793d5601d1e8e7b32ae88642cbef",
         aborted: null,
         cancelled: null,
@@ -21,9 +29,9 @@ export const stubGetAuctionLotsQuery = (
         start: "1720790700",
         info: {
           key: null,
-          name: "Acidic DAO",
-          description: "We accept liquid assets with a pH <= 7",
-          tagline: "pH <= 7",
+          name: `${chain} dao 1`,
+          description: "We are the 1st dao",
+          tagline: "First the best, second the worst.",
           links: [
             {
               linkId: "discord",
@@ -61,7 +69,7 @@ export const stubGetAuctionLotsQuery = (
         derivativeType: "01LIV",
         wrapDerivative: false,
         callbacks: "0x0000000000000000000000000000000000000000",
-        curator: null,
+        curator: allowedCurator,
         curatorApproved: false,
         curatorFee: "0",
         protocolFee: "0",
@@ -75,7 +83,7 @@ export const stubGetAuctionLotsQuery = (
         lastUpdatedTransactionHash:
           "0x2ebbd4610b702225fe47949345cbd43d4e0a432cba1365008908d1a2ab50b919",
         linearVesting: {
-          id: "mantle-sepolia-0x16d5aab9d35f8b3ac7bd086eedcce5343682d5f0-84601328808694331776221266022476873063549915229000078117390856895594016393249",
+          id: `${chain}-0x16d5aab9d35f8b3ac7bd086eedcce5343682d5f0-84601328808694331776221266022476873063549915229000078117390856895594016393249`,
           startDate: "2024-07-13T13:30:00.000Z",
           expiryDate: "2024-07-14T13:30:00.000Z",
           startTimestamp: "1720877400",
@@ -105,7 +113,7 @@ export const stubGetAuctionLotsQuery = (
         bidsClaimed: [],
         bidsRefunded: [],
         encryptedMarginalPrice: {
-          id: "mantle-sepolia-0xba00000d23a0793d5601d1e8e7b32ae88642cbef-0",
+          id: `${chain}-0xba00000d23a0793d5601d1e8e7b32ae88642cbef-0`,
           status: "created",
           settlementSuccessful: false,
           minPrice: "1",
@@ -118,8 +126,8 @@ export const stubGetAuctionLotsQuery = (
         settled: null,
       },
       {
-        id: "mantle-sepolia-0xba00000d23a0793d5601d1e8e7b32ae88642cbef-1",
-        chain: "mantle-sepolia",
+        id: `${chain}-0xba00000d23a0793d5601d1e8e7b32ae88642cbef-1`,
+        chain: chain,
         auctionHouse: "0xba00000d23a0793d5601d1e8e7b32ae88642cbef",
         aborted: null,
         cancelled: null,
@@ -133,9 +141,9 @@ export const stubGetAuctionLotsQuery = (
         start: "1720805024",
         info: {
           key: null,
-          name: "Alkaline DAO",
-          description: "We accept liquid assets with a pH > 7",
-          tagline: "ph > 7",
+          name: `${chain} dao 2`,
+          description: "We are the 2nd dao",
+          tagline: "First the worst, second the best.",
           links: [
             {
               linkId: "discord",
@@ -173,7 +181,7 @@ export const stubGetAuctionLotsQuery = (
         derivativeType: "01LIV",
         wrapDerivative: false,
         callbacks: "0x0000000000000000000000000000000000000000",
-        curator: null,
+        curator: allowedCurator,
         curatorApproved: false,
         curatorFee: "0",
         protocolFee: "0",
@@ -187,7 +195,7 @@ export const stubGetAuctionLotsQuery = (
         lastUpdatedTransactionHash:
           "0x4117463a5bdb4401244c0fb41a01eacffa9811ed2f9f6c8217026acf76db44d1",
         linearVesting: {
-          id: "mantle-sepolia-0x16d5aab9d35f8b3ac7bd086eedcce5343682d5f0-84417514182300441706473291024949819949834023725031054102740652292628703704288",
+          id: `${chain}-0x16d5aab9d35f8b3ac7bd086eedcce5343682d5f0-84417514182300441706473291024949819949834023725031054102740652292628703704288`,
           startDate: "2024-07-13T19:00:00.000Z",
           expiryDate: "2024-07-14T19:00:00.000Z",
           startTimestamp: "1720897200",
@@ -218,7 +226,7 @@ export const stubGetAuctionLotsQuery = (
         bidsRefunded: [],
         encryptedMarginalPrice: null,
         fixedPrice: {
-          id: "mantle-sepolia-0xba00000d23a0793d5601d1e8e7b32ae88642cbef-1",
+          id: `${chain}-0xba00000d23a0793d5601d1e8e7b32ae88642cbef-1`,
           status: "created",
           settlementSuccessful: false,
           price: "1",
@@ -229,6 +237,5 @@ export const stubGetAuctionLotsQuery = (
         settled: null,
       },
     ],
-    ...overrides,
   };
 };

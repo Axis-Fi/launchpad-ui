@@ -2,7 +2,7 @@ import { http } from "wagmi";
 import { environment } from "./environment";
 import { Chain } from "@repo/types";
 import { testnetDeployments, mainnetDeployments } from "@repo/deployments";
-import { AxisDeployment } from "@repo/deployments/src/types";
+import type { AxisDeployment } from "@repo/deployments/src/types";
 
 //Mainnet Config
 export const mainnets: Chain[] = mainnetDeployments.map(({ chain }) => chain);

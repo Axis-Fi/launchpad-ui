@@ -8,7 +8,7 @@ import { ThemeProvider } from "@repo/ui";
 import { environment } from "@repo/env";
 
 async function enableBackendMocking() {
-  if (!environment.isTesting) {
+  if (!environment.isMockBackend) {
     return;
   }
 

@@ -1,5 +1,6 @@
 const env = import.meta.env.VITE_ENVIRONMENT;
 const testnet = import.meta.env.VITE_TESTNET;
+const mockBackend = import.meta.env.VITE_MOCK_BACKEND;
 
 export enum Environment {
   PRODUCTION = "production",
@@ -14,5 +15,6 @@ export const environment = Object.freeze({
   isTesting: env === Environment.TESTING,
   isDevelopment: env === Environment.DEVELOPMENT,
   isTestnet: testnet === "true",
+  isMockBackend: mockBackend === "true",
   current: env as Environment,
 });

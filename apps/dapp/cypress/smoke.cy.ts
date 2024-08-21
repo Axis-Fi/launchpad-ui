@@ -34,13 +34,15 @@ describe("smoke tests", () => {
     cy.shouldNotRenderErrorPage();
   });
 
-  it("renders faucet page", () => {
-    cy.visit(URLS.FAUCET);
-    cy.shouldNotRenderErrorPage();
-  });
+  if (Cypress.env("VITE_TESTNET") === "true") {
+    it("renders faucet page", () => {
+      cy.visit(URLS.FAUCET);
+      cy.shouldNotRenderErrorPage();
+    });
 
-  it("renders deploy page", () => {
-    cy.visit(URLS.DEPLOY);
-    cy.shouldNotRenderErrorPage();
-  });
+    it("renders deploy page", () => {
+      cy.visit(URLS.DEPLOY);
+      cy.shouldNotRenderErrorPage();
+    });
+  }
 });

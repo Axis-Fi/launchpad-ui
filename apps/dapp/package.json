@@ -4,7 +4,7 @@
   "version": "1.0.11",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port ${VITE_APP_PORT-5173}",
     "build": "tsc -p tsconfig.build.json && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -13,10 +13,13 @@
     "build-storybook": "storybook build",
     "storybook:visual-tests": "source .env && chromatic --project-token=$STORYBOOK_CHROMATIC_PROJECT_TOKEN",
     "generate:openapi": "pnpm --filter=@repo/cloak run generate:openapi",
+    "env:testnet-mock": "dotenvx run -f .env.testnet-mock",
+    "env:mainnet-mock": "dotenvx run -f .env.mainnet-mock",
     "cy:open": "cypress open",
-    "cy:run:smoke": "cypress run --browser chrome --spec 'cypress/smoke.cy.ts'",
-    "smoke": "start-server-and-test dev http://localhost:5173 cy:run:smoke",
-    "test": "dotenvx run -f .env.testing -- pnpm smoke"
+    "cy:smoke": "start-server-and-test dev ${VITE_APP_URL} \"cypress run --browser chrome --spec 'cypress/smoke.cy.ts'\"",
+    "cy:smoke:mainnet": "pnpm env:mainnet-mock -- pnpm cy:smoke",
+    "cy:smoke:testnet": "pnpm env:testnet-mock -- pnpm cy:smoke",
+    "test": "pnpm /^cy:smoke:/"
   },
   "dependencies": {
     "@fleekhq/fleek-storage-js": "^1.0.24",

@@ -36,7 +36,11 @@ export function queryAllEndpoints<TQuery>({
     return {
       // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey,
-      queryFn: () => request<TQuery>(url, document, variables),
+      queryFn: () =>
+        request<TQuery>(url, document, {
+          ...variables,
+          deploymentName: deployment.name,
+        }),
       enabled,
     };
   });
