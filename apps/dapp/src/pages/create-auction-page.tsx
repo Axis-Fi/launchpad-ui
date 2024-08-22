@@ -106,7 +106,7 @@ const tokenSchema = z.object({
   decimals: z.coerce.number(),
   symbol: z.string(),
   logoURI: optionalURL,
-  totalSupply: z.bigint().optional(),
+  totalSupply: z.string().optional(),
 });
 
 const StringNumberNotNegative = z
@@ -362,7 +362,8 @@ export default function CreateAuctionPage() {
   }, [location.search]);
 
   function updateForm(data: Partial<CreateAuctionForm>) {
-    Object.entries(clearNullishFields(data)).forEach(([key, value]) =>
+    const formatted = formatDates(clearNullishFields(data));
+    Object.entries(formatted).forEach(([key, value]) =>
       form.setValue(key as keyof CreateAuctionForm, value),
     );
   }
@@ -2051,5 +2052,18 @@ function clearNullishFields(fields: Partial<CreateAuctionForm>) {
     Object.entries(fields).filter(
       ([, value]) => value !== undefined && value !== null && value !== "",
     ),
+  );
+}
+
+function formatDates(fields: Partial<CreateAuctionForm>) {
+  const dateFields = ["start", "deadline", "vestingStart"];
+
+  return Object.fromEntries(
+    Object.entries(fields).map(([key, value]) => {
+      return [
+        key,
+        dateFields.includes(key) ? new Date(value as string) : value,
+      ];
+    }),
   );
 }

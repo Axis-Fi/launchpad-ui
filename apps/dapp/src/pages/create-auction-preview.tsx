@@ -115,7 +115,7 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
  * Gets a partial Auction from auction creation params
  * */
 function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
-  const totalSupply = params.payoutToken.totalSupply;
+  const totalSupply = params.payoutToken?.totalSupply;
 
   const vestingStartTimestamp =
     params.vestingStart?.getTime() ?? params.deadline.getTime();
