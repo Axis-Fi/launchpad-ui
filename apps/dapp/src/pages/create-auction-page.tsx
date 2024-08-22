@@ -18,6 +18,7 @@ import {
   Textarea,
   PercentageSlider,
   trimAddress,
+  Tooltip,
 } from "@repo/ui";
 import { abis } from "@repo/abis";
 import { DevTool } from "@hookform/devtools";
@@ -92,6 +93,10 @@ import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
 import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
 import { getAuctionPath } from "utils/router";
 import getExistingCallbacks from "modules/create-auction/get-existing-callbacks";
+import { useStoredAuctionConfig } from "state/auction-config";
+import type { Token } from "@repo/types";
+import { DownloadIcon, ShareIcon, TrashIcon } from "lucide-react";
+import { TriggerMessage } from "components/trigger-message";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -101,7 +106,7 @@ const tokenSchema = z.object({
   decimals: z.coerce.number(),
   symbol: z.string(),
   logoURI: optionalURL,
-  totalSupply: z.bigint().optional(),
+  totalSupply: z.string().optional(),
 });
 
 const StringNumberNotNegative = z
@@ -311,24 +316,57 @@ const schema = z
 export type CreateAuctionForm = z.infer<typeof schema>;
 
 export default function CreateAuctionPage() {
+  // Due to components being uncontrolled the form inputs wont clear
+  // after calling form.reset() so we have to force it
+  const [resetKey, setResetKey] = React.useState(0);
+
   const navigate = useNavigate();
   const auctionDefaultValues = {
     minFillPercent: [50],
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
   };
+
   const { address } = useAccount();
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [isTxDialogOpen, setIsTxDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
   const { chain } = useAccount();
 
+  const [storedConfig, setStoredConfig] = useStoredAuctionConfig();
+
   const form = useForm<CreateAuctionForm>({
     resolver: zodResolver(schema),
     mode: "onChange",
     delayError: 600,
-    defaultValues: auctionDefaultValues,
+    defaultValues: storedConfig ?? auctionDefaultValues,
   });
+
+  React.useEffect(() => {
+    if (storedConfig) {
+      updateForm(storedConfig);
+    }
+  }, [storedConfig]);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.hash.split("?")[1]);
+    const data = params.get("data");
+    if (data) {
+      try {
+        const parsedData = JSON.parse(data);
+        updateForm(parsedData);
+      } catch (error) {
+        console.error("Invalid JSON in query params:", error);
+      }
+    }
+  }, [location.search]);
+
+  function updateForm(data: Partial<CreateAuctionForm>) {
+    const formatted = formatDates(clearNullishFields(data));
+    Object.entries(formatted).forEach(([key, value]) =>
+      form.setValue(key as keyof CreateAuctionForm, value),
+    );
+  }
 
   const [
     isVested,
@@ -443,7 +481,7 @@ export default function CreateAuctionPage() {
     onError: (error) => console.error("Error during submission:", error),
   });
 
-  const handleCreation = async (values: CreateAuctionForm) => {
+  const creationHandler = async (values: CreateAuctionForm) => {
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
@@ -732,7 +770,7 @@ export default function CreateAuctionPage() {
   });
   // TODO add note on pre-funding: the capacity will be transferred upon creation
 
-  const createAuction = form.handleSubmit(handleCreation);
+  const handleCreate = form.handleSubmit(creationHandler);
   const isValid = form.formState.isValid;
 
   /// Callbacks allowance
@@ -776,7 +814,7 @@ export default function CreateAuctionPage() {
     }
 
     // 3. Otherwise create
-    createAuction();
+    handleCreate();
     return;
   };
 
@@ -1057,8 +1095,31 @@ export default function CreateAuctionPage() {
     return getExistingCallbacks(chainId);
   }, [chainId]);
 
+  const handlePreview = () => {
+    form.trigger();
+    setStoredConfig(form.getValues());
+    isValid && setIsPreviewOpen(true);
+  };
+
+  const handleReset = () => {
+    form.reset(auctionDefaultValues);
+    setResetKey(resetKey + 1);
+    setStoredConfig(null);
+  };
+
+  const handleSaveForm = () => setStoredConfig(form.getValues());
+
+  const handleGenerateLink = () => {
+    const values = JSON.stringify(form.getValues());
+    //Strips existing query params from the current URL
+    const url = window.location.href.replace(/(\?.*?)(#|$)/, "$2");
+    const urlWithData = url + `?data=${values}`;
+
+    navigator.clipboard.writeText(urlWithData);
+  };
+
   return (
-    <PageContainer>
+    <PageContainer key={resetKey.toString()}>
       <PageHeader
         backNavigationPath="/#"
         backNavigationText="Back to Launches"
@@ -1070,23 +1131,38 @@ export default function CreateAuctionPage() {
         <form onSubmit={(e) => e.preventDefault()} className="pb-16">
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
-              {/* <div> */}
-              {/*   Creating an auction will involve the following: */}
-              {/*   <ol> */}
-              {/*     <li> */}
-              {/*       If necessary, authorising the spending of the payout token */}
-              {/*     </li> */}
-              {/*     <li> */}
-              {/*       Pre-funding the auction with the payout token and capacity */}
-              {/*       selected */}
-              {/*     </li> */}
-              {/*   </ol> */}
-              {/* </div> */}
-
               <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
-                <Text size="3xl" className="form-div">
-                  1 - Your Project
-                </Text>
+                <div className="form-div flex max-w-full justify-between">
+                  <Text size="3xl">1 - Your Project</Text>
+                  <div>
+                    <TriggerMessage message="Link copied!">
+                      <Tooltip content="Generate a link to the current configuration">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={handleGenerateLink}
+                        >
+                          <ShareIcon />
+                        </Button>
+                      </Tooltip>
+                    </TriggerMessage>
+
+                    <Tooltip content="Save the current configuration locally">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={handleSaveForm}
+                      >
+                        <DownloadIcon />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Clear the current configuration">
+                      <Button size="icon" variant="ghost" onClick={handleReset}>
+                        <TrashIcon />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </div>
 
                 <FormField
                   control={form.control}
@@ -1109,7 +1185,6 @@ export default function CreateAuctionPage() {
                       tooltip="A brief tagline about your project"
                     >
                       <Input
-                        type="url"
                         placeholder={"We're the future of France"}
                         {...field}
                       />
@@ -1238,6 +1313,7 @@ export default function CreateAuctionPage() {
                         title="Select Payout Token"
                         triggerContent={"Select token"}
                         disabled={payoutModalInvalid}
+                        displayFormatter={tokenDisplayFormatter}
                       >
                         <TokenPicker name="payoutToken" />
                       </DialogInput>
@@ -1257,6 +1333,7 @@ export default function CreateAuctionPage() {
                         externalDialog
                         title="Select Quote Token"
                         triggerContent={"Select token"}
+                        displayFormatter={tokenDisplayFormatter}
                       >
                         <TokenSelectDialog chainId={chainId} />
                       </DialogInput>
@@ -1550,7 +1627,10 @@ export default function CreateAuctionPage() {
                       render={({ field }) => (
                         <FormItemWrapper className="mt-4 w-min">
                           <div className="flex items-center gap-x-2">
-                            <Switch onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                             <Label>Vested</Label>
                           </div>
                         </FormItemWrapper>
@@ -1875,8 +1955,7 @@ export default function CreateAuctionPage() {
               <Button
                 onClick={(e) => {
                   e.preventDefault();
-                  form.trigger();
-                  isValid && setIsPreviewOpen(true);
+                  handlePreview();
                 }}
               >
                 DEPLOY AUCTION
@@ -1960,4 +2039,35 @@ function withCuratorShare(amount?: number, curatorFee?: number) {
   const fee = fromBasisPoints(curatorFee);
   const adjusted = fee < 10 ? `0${fee}` : fee;
   return amount * parseFloat(`1.${adjusted}`);
+}
+
+function tokenDisplayFormatter(token: Token) {
+  return {
+    label: token.symbol,
+    imgURL: token.logoURI,
+    value: token.symbol,
+  };
+}
+
+function clearNullishFields(fields: Partial<CreateAuctionForm>) {
+  return Object.fromEntries(
+    Object.entries(fields).filter(
+      ([, value]) => value !== undefined && value !== null && value !== "",
+    ),
+  );
+}
+
+function formatDates(fields: Partial<CreateAuctionForm>) {
+  const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+
+  return Object.fromEntries(
+    Object.entries(fields).map(([key, value]) => {
+      return [
+        key,
+        typeof value === "string" && iso8601Regex.test(value)
+          ? new Date(value)
+          : value,
+      ];
+    }),
+  );
 }
