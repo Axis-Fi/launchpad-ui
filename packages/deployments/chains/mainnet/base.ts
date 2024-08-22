@@ -1,6 +1,7 @@
 import { base } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
-import addresses from "../../axis-core/.base-v1.0.0.json";
+import core from "../../axis-core/.base.json";
+import periphery from "../../axis-periphery/.base.json";
 import { extractCallbacks, extractAddresses } from "../helpers";
 import { usdc, weth } from "../../tokens/common";
 
@@ -23,8 +24,8 @@ const config: AxisDeploymentConfig = {
       address: "0x4200000000000000000000000000000000000006",
     },
   ],
-  ...extractAddresses(addresses),
-  ...extractCallbacks(addresses),
+  ...extractAddresses(core),
+  ...extractCallbacks(periphery),
 };
 
 export default config;

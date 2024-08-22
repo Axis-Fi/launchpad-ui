@@ -1,11 +1,11 @@
 import { Address } from "@repo/types";
-import sample from "../axis-core/.arbitrum-one-v1.0.0.json";
+import coreSample from "../axis-core/.arbitrum-one.json";
+import peripherySample from "../axis-periphery/.arbitrum-one.json";
 
-type AxisDeploymentAddressRecord = typeof sample;
+type AxisCoreAddresses = Record<keyof typeof coreSample, string>;
+type AxisPeripheryAddresses = Record<keyof typeof peripherySample, string>;
 
-export function extractAddresses(
-  addresses: Partial<AxisDeploymentAddressRecord>,
-) {
+export function extractAddresses(addresses: Partial<AxisCoreAddresses>) {
   return {
     addresses: {
       batchAuctionHouse: addresses["deployments.BatchAuctionHouse"] as Address,
@@ -23,7 +23,7 @@ export function extractAddresses(
   };
 }
 
-export function extractCallbacks(addresses: AxisDeploymentAddressRecord) {
+export function extractCallbacks(addresses: Partial<AxisPeripheryAddresses>) {
   return {
     callbacks: {
       cappedMerkleAllowlist: addresses[

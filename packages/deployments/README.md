@@ -11,3 +11,9 @@ For chains we extend [viem's chain definition](https://viem.sh/docs/chains/intro
 - Add your file to its directory index.ts
 - ???
 - Done
+
+## Syncing contract addresses
+
+Ensure axis-core and axis-periphery are sibling directories to this monorepo and have the latest verion.
+Run `pnpm sync` on this directory.
+This script will take the latest version of the deployment jsons and update them here.
