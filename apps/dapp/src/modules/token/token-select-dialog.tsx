@@ -16,19 +16,37 @@ import React from "react";
 import { TokenListManager } from "./token-list-manager";
 import { ArrowLeftIcon } from "lucide-react";
 import { useTokenLists } from "state/tokenlist";
+import isDeepEqual from "node_modules/@repo/ui/src/helpers/is-deep-equal";
 
 type TokenSelectDialogProps = {
   chainId: number;
   onChange?: DialogInputChangeHandler<Token>;
   setDialogOpen?: DialogStatusChangeHandler;
+  value?: Token;
 };
 
 /** Shows a list of tokens per chain and a way to manage tokenlists*/
 export function TokenSelectDialog(props: TokenSelectDialogProps) {
   const { getTokensByChainId } = useTokenLists();
+  const [token, setToken] = React.useState<Token>();
   const [isManaging, setIsManaging] = React.useState(false);
 
   const tokens = getTokensByChainId(props.chainId);
+
+  const handleSelect = (value: Token) => {
+    setToken(value);
+    props.onChange?.(value, {
+      imgURL: value.logoURI,
+      label: value.symbol,
+      value: value.symbol,
+    });
+  };
+
+  React.useEffect(() => {
+    if (props.value && !isDeepEqual(props.value, token)) {
+      handleSelect(props.value);
+    }
+  }, [props.value]);
 
   return (
     <>
@@ -63,11 +81,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
                     size="lg"
                     className="block w-full rounded-none border-x border-b-0 border-t px-2 first:rounded-t-sm last:rounded-b-sm last:border-b"
                     onClick={() => {
-                      props.onChange?.(t, {
-                        imgURL: t.logoURI,
-                        label: t.symbol,
-                        value: t.address,
-                      });
+                      handleSelect(t);
                       props.setDialogOpen?.(false);
                     }}
                   >

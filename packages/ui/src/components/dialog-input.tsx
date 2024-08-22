@@ -28,7 +28,11 @@ export type DialogInputChangeHandler<T> = (
   display?: SelectData,
 ) => void;
 
-export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
+export function DialogInput<T>({
+  onChange,
+  displayFormatter,
+  ...props
+}: DialogInputProps<T>) {
   const [selected, setSelected] = React.useState<T>();
   const [display, setDisplay] = React.useState<SelectData | undefined>(
     props.display,
@@ -46,12 +50,12 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
     [onChange],
   );
 
+  //Allows for overriding the current value and display
   React.useEffect(() => {
     if (props.value && !isDeepEqual(props.value, selected)) {
       setSelected(props.value);
-      if (props.displayFormatter) {
-        const valeu = props.displayFormatter(props.value);
-        setDisplay(valeu);
+      if (displayFormatter) {
+        setDisplay(displayFormatter(props.value));
       }
     }
   }, [props.value]);
