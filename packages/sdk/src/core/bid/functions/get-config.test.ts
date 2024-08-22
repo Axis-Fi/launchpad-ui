@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { zeroAddress } from "viem";
+import { parseUnits, zeroAddress } from "viem";
 import { abis } from "@repo/abis";
 import { AuctionType } from "@repo/types";
 import * as deployments from "@repo/deployments";
@@ -7,16 +7,18 @@ import type { CloakClient } from "@repo/cloak";
 import type { AxisDeployments } from "@repo/deployments";
 import { getConfig } from "./get-config";
 import type { AuctionModule } from "../../auction";
-import { encryptBid } from "../utils";
+import { getEncryptedBid, encodeEncryptedBid } from "../utils";
 import * as deps from "./get-config-from-primed-params";
+import type { BidParams } from "../types";
 
 const mockAddress = zeroAddress;
 const mockTokenDecimals = 18;
 const mockEncryptedBid = { ciphertext: "1", x: "1", y: "1" };
-const mockEncodedEncryptedBid = "0x";
+const mockEncodedEncryptedBid = "0x1";
+const mockCallbackData = "0x2";
 
 vi.mock("../utils", () => ({
-  encryptBid: vi.fn(() => mockEncryptedBid),
+  getEncryptedBid: vi.fn(() => mockEncryptedBid),
   encodeEncryptedBid: vi.fn(() => mockEncodedEncryptedBid),
 }));
 
@@ -52,21 +54,22 @@ const mockDeployments = {
   },
 } as unknown as AxisDeployments;
 
-describe("getConfig()", () => {
-  const mockParams = {
-    lotId: 1,
-    amountIn: 100,
-    amountOut: 50,
-    referrerAddress: mockAddress,
-    auctionType: AuctionType.SEALED_BID,
-    chainId: 1,
-    bidderAddress: mockAddress,
-    signedPermit2Approval: "0x",
-  };
+const mockParams = {
+  lotId: 1,
+  amountIn: parseUnits("100", mockTokenDecimals),
+  amountOut: parseUnits("50", mockTokenDecimals),
+  referrerAddress: mockAddress,
+  auctionType: AuctionType.SEALED_BID,
+  chainId: 1,
+  bidderAddress: mockAddress,
+  signedPermit2Approval: "0x",
+} satisfies BidParams;
 
+describe("getConfig()", () => {
   it("returns contract configuration", async () => {
     const result = await getConfig(
       mockParams,
+      mockCallbackData,
       mockCloak,
       mockAuction,
       mockDeployments,
@@ -85,13 +88,19 @@ describe("getConfig()", () => {
           auctionData: mockEncodedEncryptedBid,
           permit2Data: "0x",
         },
-        "0x",
+        mockCallbackData,
       ],
     });
   });
 
   it("calls getAuctionTokenDecimals with correct params", async () => {
-    await getConfig(mockParams, mockCloak, mockAuction, mockDeployments);
+    await getConfig(
+      mockParams,
+      mockCallbackData,
+      mockCloak,
+      mockAuction,
+      mockDeployments,
+    );
 
     expect(mockAuction.functions.getAuctionTokenDecimals).toHaveBeenCalledWith(
       {
@@ -103,11 +112,16 @@ describe("getConfig()", () => {
     );
   });
 
-  it("calls encryptBid with correct params", async () => {
-    vi.spyOn;
-    await getConfig(mockParams, mockCloak, mockAuction, mockDeployments);
+  it("calls getEncryptedBid() with correct params", async () => {
+    await getConfig(
+      mockParams,
+      mockCallbackData,
+      mockCloak,
+      mockAuction,
+      mockDeployments,
+    );
 
-    expect(encryptBid).toHaveBeenCalledWith(
+    expect(getEncryptedBid).toHaveBeenCalledWith(
       {
         ...mockParams,
         quoteTokenDecimals: mockTokenDecimals,
@@ -118,6 +132,18 @@ describe("getConfig()", () => {
     );
   });
 
+  it("calls encodeEncryptedBid() with correct params", async () => {
+    await getConfig(
+      mockParams,
+      mockCallbackData,
+      mockCloak,
+      mockAuction,
+      mockDeployments,
+    );
+
+    expect(encodeEncryptedBid).toHaveBeenCalledWith(mockEncryptedBid);
+  });
+
   // TODO: you can't spy or mock a dep that is included in the same file as the function under test
   it("calls getConfigFromPrimedParams with correct params", async () => {
     const getConfigFromPrimedParamsSpy = vi.spyOn(
@@ -125,17 +151,26 @@ describe("getConfig()", () => {
       "getConfigFromPrimedParams",
     );
 
-    await getConfig(mockParams, mockCloak, mockAuction, mockDeployments);
+    await getConfig(
+      mockParams,
+      mockCallbackData,
+      mockCloak,
+      mockAuction,
+      mockDeployments,
+    );
 
-    expect(getConfigFromPrimedParamsSpy).toHaveBeenCalledWith({
-      lotId: mockParams.lotId,
-      amountIn: mockParams.amountIn,
-      referrerAddress: mockParams.referrerAddress,
-      bidderAddress: mockParams.bidderAddress,
-      auctionHouseAddress: mockAddress,
-      quoteTokenDecimals: mockTokenDecimals,
-      encryptedBid: mockEncryptedBid,
-    });
+    expect(getConfigFromPrimedParamsSpy).toHaveBeenCalledWith(
+      {
+        lotId: mockParams.lotId,
+        amountIn: mockParams.amountIn,
+        referrerAddress: mockParams.referrerAddress,
+        bidderAddress: mockParams.bidderAddress,
+        auctionHouseAddress: mockAddress,
+        quoteTokenDecimals: mockTokenDecimals,
+        auctionData: mockEncodedEncryptedBid,
+      },
+      mockCallbackData,
+    );
   });
 
   it("throws an error if invalid params are supplied", async () => {
@@ -144,6 +179,7 @@ describe("getConfig()", () => {
     const result = getConfig(
       // @ts-expect-error - deliberately testing invalid params
       invalidParams,
+      mockCallbackData,
       mockCloak,
       mockAuction,
       mockDeployments,
@@ -165,13 +201,14 @@ describe("getConfig()", () => {
 
     const result = getConfig(
       paramsWithChainIdWithNoCorrespondingDeployment,
+      mockCallbackData,
       mockCloak,
       mockAuction,
       mockDeployments,
     );
 
     expect(result).rejects.toThrowErrorMatchingInlineSnapshot(
-      `[OriginSdkError: Auction house contract address not found for chainId 0 and auctionType encryptedMarginalPrice]`,
+      `[OriginSdkError: Auction house contract address not found for chainId 0 and auctionType EMPA]`,
     );
   });
 });

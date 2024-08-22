@@ -24,7 +24,7 @@ const mockBid = {
 
 describe("encryptBid()", () => {
   it("returns the given amountOut encrypted", async () => {
-    const result = await utils.encryptBid(mockBid, mockCloakClient);
+    const result = await utils.getEncryptedBid(mockBid, mockCloakClient);
 
     expect(result).toStrictEqual(mockEncryptedBid);
   });
@@ -34,7 +34,7 @@ describe("encryptBid()", () => {
       undefined,
     );
 
-    const encryptBidPromise = utils.encryptBid(mockBid, mockCloakClient);
+    const encryptBidPromise = utils.getEncryptedBid(mockBid, mockCloakClient);
 
     expect(encryptBidPromise).rejects.toThrowErrorMatchingInlineSnapshot(
       `[OriginSdkError: Failed to encrypt bid via cloak service]`,
@@ -48,7 +48,7 @@ describe("encryptBid()", () => {
       invalidResponse,
     );
 
-    const encryptBidPromise = utils.encryptBid(mockBid, mockCloakClient);
+    const encryptBidPromise = utils.getEncryptedBid(mockBid, mockCloakClient);
 
     expect(encryptBidPromise).rejects.toThrowErrorMatchingInlineSnapshot(
       `[OriginSdkError: Failed to encrypt bid via cloak service]`,
