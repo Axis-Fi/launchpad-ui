@@ -11,5 +11,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "sync": "node ./get-deployments.cjs"
   }
 }
