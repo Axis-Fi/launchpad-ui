@@ -17,6 +17,8 @@ export const getBlockExplorer = (chain: Chain) => {
  * Only used where there's discrepancies.
  */
 const CHAIN_NAME_MAP = {
+  arbitrum: "arbitrum-one",
+  mode: "mode-mainnet",
   "mantle-sepolia": "mantle-sepolia-testnet",
 } as const;
 
