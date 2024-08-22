@@ -1,32 +1,14 @@
 import { blastSepolia } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 import { weth } from "../../tokens/common";
-import addresses from "../../axis-core/.blast-sepolia-v0.5.json";
-import type { Address } from "@repo/types";
+import core from "../../axis-core/.blast-sepolia.json";
+import periphery from "../../axis-periphery/.blast-sepolia.json";
+import { extractAddresses, extractCallbacks } from "../helpers";
 
 const config: AxisDeploymentConfig = {
-  name: "blast-testnet",
+  name: "blast-sepolia",
   chain: blastSepolia,
   chainIconUrl: "/blast-logo.png",
-  addresses: {
-    batchAuctionHouse: addresses["axis.BatchAuctionHouse"] as Address,
-    batchCatalogue: addresses["axis.BatchCatalogue"] as Address,
-    encryptedMarginalPrice: addresses["axis.EncryptedMarginalPrice"] as Address,
-    fixedPriceBatch: addresses["axis.FixedPriceBatch"] as Address,
-    batchLinearVesting: addresses["axis.BatchLinearVesting"] as Address,
-  },
-  callbacks: {
-    cappedMerkleAllowlist: addresses[
-      "axis.BatchCappedMerkleAllowlist"
-    ] as Address,
-    merkleAllowlist: addresses["axis.BatchMerkleAllowlist"] as Address,
-    tokenAllowlist: addresses["axis.BatchTokenAllowlist"] as Address,
-    allocatedMerkleAllowlist: addresses[
-      "axis.BatchAllocatedMerkleAllowlist"
-    ] as Address,
-    uniV2Dtl: addresses["axis.BatchUniswapV2DirectToLiquidity"] as Address,
-    uniV3Dtl: addresses["axis.BatchUniswapV3DirectToLiquidity"] as Address,
-  },
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-blast-sepolia/<VERSION>/gn",
   rpcURL:
@@ -55,6 +37,8 @@ const config: AxisDeploymentConfig = {
       address: "0xB24D0b6ae015DC6fd279E330db101bB890d8060c",
     },
   ],
+  ...extractAddresses(core),
+  ...extractCallbacks(periphery),
 };
 
 export default config;

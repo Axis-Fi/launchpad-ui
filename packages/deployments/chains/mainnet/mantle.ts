@@ -1,7 +1,8 @@
 import { mantle } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
-import addresses from "../../axis-core/.mantle-v1.0.0.json";
-import { extractAddresses } from "../helpers";
+import core from "../../axis-core/.mantle.json";
+import periphery from "../../axis-periphery/.mantle.json";
+import { extractAddresses, extractCallbacks } from "../helpers";
 import { usdc, usdt, weth } from "../../tokens/common";
 
 const config: AxisDeploymentConfig = {
@@ -11,7 +12,6 @@ const config: AxisDeploymentConfig = {
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mantle/<VERSION>/gn",
   rpcURL: "https://rpc.mantle.xyz",
-  dexURL: "https://merchantmoe.com/trade",
   wrapperContract: "0x78c1b0C915c4FAA5FffA6CAbf0219DA63d7f4cb8",
   tokenList: [
     {
@@ -35,8 +35,8 @@ const config: AxisDeploymentConfig = {
         "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/mantle.svg",
     },
   ],
-  ...extractAddresses(addresses),
-  //...extractCallbacks(addresses)
+  ...extractAddresses(core),
+  ...extractCallbacks(periphery),
 };
 
 export default config;

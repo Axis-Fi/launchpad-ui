@@ -1,6 +1,13 @@
 import React, { useCallback } from "react";
 import { Button, Dialog, DialogProps, SelectData } from "./";
 import { IconedLabel } from "./iconed-label";
+import isDeepEqual from "../helpers/is-deep-equal";
+
+type InputValueDisplay = {
+  imgURL?: string;
+  label: string;
+  value: string;
+};
 
 export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
   onSubmit?: (value?: T) => void;
@@ -10,12 +17,10 @@ export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
   children?: React.ReactElement<{
     onChange?: DialogInputChangeHandler<T>;
   }>;
-  display?: {
-    imgURL?: string;
-    label: string;
-    value: string;
-  };
+  display?: InputValueDisplay;
   disabled?: boolean;
+  value?: T;
+  displayFormatter?: (value: T) => InputValueDisplay;
 };
 
 export type DialogInputChangeHandler<T> = (
@@ -23,7 +28,11 @@ export type DialogInputChangeHandler<T> = (
   display?: SelectData,
 ) => void;
 
-export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
+export function DialogInput<T>({
+  onChange,
+  displayFormatter,
+  ...props
+}: DialogInputProps<T>) {
   const [selected, setSelected] = React.useState<T>();
   const [display, setDisplay] = React.useState<SelectData | undefined>(
     props.display,
@@ -40,6 +49,16 @@ export function DialogInput<T>({ onChange, ...props }: DialogInputProps<T>) {
     },
     [onChange],
   );
+
+  //Allows for overriding the current value and display
+  React.useEffect(() => {
+    if (props.value && !isDeepEqual(props.value, selected)) {
+      setSelected(props.value);
+      if (displayFormatter) {
+        setDisplay(displayFormatter(props.value));
+      }
+    }
+  }, [props.value]);
 
   const children = React.isValidElement(props.children)
     ? React.cloneElement(props.children, {

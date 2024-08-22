@@ -39,6 +39,15 @@ export function DatePicker({
     }
   }, [props.time, time]);
 
+  React.useEffect(() => {
+    if (
+      (props.value && !date) ||
+      props.value?.getTime?.() !== date?.getTime?.()
+    ) {
+      setDate(props.value);
+    }
+  }, [props.value]);
+
   // TODO fix "Function components cannot be given refs" which seems to be breaking datetime validation
   return (
     <Popover onOpenChange={(open) => !open && props.onBlur?.()}>

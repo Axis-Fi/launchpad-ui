@@ -9,7 +9,7 @@ import {
 import useERC20 from "loaders/use-erc20";
 import React from "react";
 import { Token } from "@repo/types";
-import { Address } from "viem";
+import { Address, formatUnits } from "viem";
 import { useChainId } from "wagmi";
 import { useFormContext, Path } from "react-hook-form";
 
@@ -19,6 +19,7 @@ type TokenPickerProps<T> = {
   >["props"]["onChange"];
   onChainChange?: (chainId: number) => void;
   name: Path<T>;
+  value?: Partial<Token>;
 };
 
 export function TokenPicker<
@@ -41,7 +42,14 @@ export function TokenPicker<
 
   React.useEffect(() => {
     onChange(
-      { ...token, logoURI: logo },
+      {
+        ...token,
+        logoURI: logo,
+        totalSupply: formatUnits(
+          BigInt(token.totalSupply ?? 0n),
+          Number(token.decimals),
+        ),
+      },
       { label: token.symbol, imgURL: logo },
     );
     if (token.address) {

@@ -1,9 +1,10 @@
 import { arbitrumSepolia } from "viem/chains";
-import type { Address } from "@repo/types";
 import { AxisDeploymentConfig } from "../../src/types";
 import { usdc, weth } from "../../tokens/common";
 // TODO axis-core will become a versioned dev dependency to this package
-import addresses from "../../axis-core/.arbitrum-sepolia-v0.5.json";
+import core from "../../axis-core/.arbitrum-sepolia.json";
+import periphery from "../../axis-periphery/.arbitrum-sepolia.json";
+import { extractAddresses, extractCallbacks } from "../helpers";
 
 const config: AxisDeploymentConfig = {
   name: "arbitrum-sepolia",
@@ -11,25 +12,6 @@ const config: AxisDeploymentConfig = {
   chainIconUrl:
     "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/ARBITRUM.png",
 
-  addresses: {
-    batchAuctionHouse: addresses["axis.BatchAuctionHouse"] as Address,
-    batchCatalogue: addresses["axis.BatchCatalogue"] as Address,
-    encryptedMarginalPrice: addresses["axis.EncryptedMarginalPrice"] as Address,
-    fixedPriceBatch: addresses["axis.FixedPriceBatch"] as Address,
-    batchLinearVesting: addresses["axis.BatchLinearVesting"] as Address,
-  },
-  callbacks: {
-    cappedMerkleAllowlist: addresses[
-      "axis.BatchCappedMerkleAllowlist"
-    ] as Address,
-    merkleAllowlist: addresses["axis.BatchMerkleAllowlist"] as Address,
-    tokenAllowlist: addresses["axis.BatchTokenAllowlist"] as Address,
-    allocatedMerkleAllowlist: addresses[
-      "axis.BatchAllocatedMerkleAllowlist"
-    ] as Address,
-    uniV2Dtl: addresses["axis.BatchUniswapV2DirectToLiquidity"] as Address,
-    uniV3Dtl: addresses["axis.BatchUniswapV3DirectToLiquidity"] as Address,
-  },
   subgraphURL:
     "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-arbitrum-sepolia/version/v<VERSION>/api",
   rpcURL:
@@ -56,6 +38,9 @@ const config: AxisDeploymentConfig = {
       mintable: true,
     },
   ],
+
+  ...extractAddresses(core),
+  ...extractCallbacks(periphery),
 };
 
 export default config;

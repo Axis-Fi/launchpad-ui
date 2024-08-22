@@ -1,8 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
+import { parseUnits } from "viem";
 import { CloakClient } from "@repo/cloak";
+import * as cloakDep from "@repo/cloak";
+import { AuctionType } from "@repo/types";
 import { OriginSdk } from "./sdk";
 import type { Core } from "../core";
-import * as cloakDep from "@repo/cloak";
+import type { BidParams } from "../core/bid";
 
 const mockConfig = {
   cloak: {
@@ -15,7 +18,21 @@ const mockCore = {
   auction: { functions: { getAuction: vi.fn() } },
 } as unknown as Core;
 
-const mockParams = { foo: "bar" };
+const mockAddress = "0x1";
+const mockTokenDecimals = 18;
+
+const mockParams = {
+  lotId: 1,
+  amountIn: parseUnits("100", mockTokenDecimals),
+  amountOut: parseUnits("50", mockTokenDecimals),
+  referrerAddress: mockAddress,
+  auctionType: AuctionType.SEALED_BID,
+  chainId: 1,
+  bidderAddress: mockAddress,
+  signedPermit2Approval: "0x",
+} satisfies BidParams;
+
+const mockCallbackData = "0x2";
 
 describe("OriginSdk", () => {
   it("returns an OriginSdk instance with supplied params", () => {
@@ -68,11 +85,11 @@ describe("OriginSdk", () => {
 describe("OriginSdk: bid()", () => {
   it("calls bid module's getConfig() with the correct params", async () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
-    // @ts-expect-error - params shape is irrelevant for this test
-    await sdk.bid(mockParams);
+    await sdk.bid(mockParams, mockCallbackData);
 
     expect(mockCore.bid.functions.getConfig).toHaveBeenCalledWith(
       mockParams,
+      mockCallbackData,
       sdk.cloakClient,
       mockCore.auction,
       sdk.deployments,
@@ -83,7 +100,6 @@ describe("OriginSdk: bid()", () => {
 describe("OriginSdk: getAuction()", () => {
   it("calls auction module's getAuction() with correct params", async () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
-    // @ts-expect-error - params shape is irrelevant for this test
     await sdk.getAuction(mockParams);
 
     expect(mockCore.auction.functions.getAuction).toHaveBeenCalledWith(

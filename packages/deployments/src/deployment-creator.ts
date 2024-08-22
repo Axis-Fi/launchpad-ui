@@ -6,12 +6,12 @@ import tokenlistMetadata from "../tokenlist-metadata";
 /** Creates a deployment configuration */
 export function createDeployment(config: AxisDeploymentConfig): AxisDeployment {
   return {
+    name: config.name,
     addresses: config.addresses,
     callbacks: config.callbacks,
     subgraphURL: withVersion(config.subgraphURL, subgraphConfig.version),
     chain: withCustomConfiguration(config),
     tokenList: withMetadata(config.tokenList, config.chain.id),
-    dexURL: config.dexURL,
   };
 }
 

@@ -6,7 +6,7 @@ import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { ProjectInfoCard } from "../project-info-card";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
-import { AuctionLaunchMetrics } from "../auction-launch-metrics";
+import { AuctionCoreMetrics } from "../auction-core-metrics";
 
 export function EncryptedMarginalPriceAuctionConcluded({
   auction,
@@ -22,7 +22,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
     <div>
       <div className="auction-action-container mt-4 lg:mt-0 ">
         <div className="flex w-full flex-col gap-y-4">
-          <AuctionLaunchMetrics auction={auction} />
+          <AuctionCoreMetrics auction={auction} />
           <ProjectInfoCard auction={auction} />
         </div>
 

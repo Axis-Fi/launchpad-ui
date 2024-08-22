@@ -30,8 +30,9 @@ export type SelectProps = {
 
 /** Dropdown selector */
 export function Select(props: SelectProps) {
-  const [selected, setSelected] = React.useState<string>();
-  const selectedImage = props.options.find((o) => o.value === selected)?.imgURL;
+  const [selected, setSelected] = React.useState<string>(
+    props.options.find((o) => o.value === props.defaultValue)?.value ?? "",
+  );
 
   React.useEffect(() => {
     if (props.value && props.value !== selected) {
@@ -56,13 +57,10 @@ export function Select(props: SelectProps) {
           props.triggerClassName,
         )}
       >
-        <div className="flex items-center justify-start gap-x-1">
-          {selectedImage && <Avatar src={selectedImage} />}
-          <SelectValue placeholder={props.placeholder} />
-        </div>
+        <SelectValue placeholder={props.placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {props.options?.map(({ label, value }) => (
+        {props.options?.map(({ label, value, imgURL }) => (
           <SelectItem
             key={label}
             value={value}
@@ -71,7 +69,10 @@ export function Select(props: SelectProps) {
               props.onChange?.(value);
             }}
           >
-            {label}
+            <div className="flex items-center gap-x-2">
+              {imgURL && <Avatar src={imgURL} />}
+              {label}
+            </div>
           </SelectItem>
         ))}
       </SelectContent>

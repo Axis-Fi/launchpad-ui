@@ -18,6 +18,7 @@ import { CuratorCard } from "pages/curator-list-page";
 import { InfoIcon } from "lucide-react";
 import { UsdAmount } from "./usd-amount";
 import { ToggledUsdAmount } from "./toggled-usd-amount";
+import { DtlProceedsDisplay } from "./dtl-proceeds-display";
 
 export const getTargetRaise = (
   auction: Auction,
@@ -75,12 +76,19 @@ export const getMinRaiseForAuction = (auction: Auction) => {
   return getMinRaise(price, minFilled);
 };
 
-// TODO add DTL proceeds as a metric. Probably requires loading the callback configuration into the auction type.
+type MetricHandlers = Record<
+  string,
+  {
+    label: string;
+    handler: (auction: Auction) => React.ReactNode;
+    tooltip?: string;
+  }
+>;
 
-const handlers = {
+const handlers: MetricHandlers = {
   derivative: {
     label: "Derivative",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       if (hasDerivative(AuctionDerivativeTypes.LINEAR_VESTING, auction)) {
         return "Linear Vesting";
       }
@@ -90,7 +98,7 @@ const handlers = {
   },
   minFill: {
     label: "Min Fill",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const minFilled = getMinFilled(auction);
       if (!minFilled) return undefined;
 
@@ -99,19 +107,19 @@ const handlers = {
   },
   protocolFee: {
     label: "Protocol Fee",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       return `${+auction.protocolFee}%`;
     },
   },
   referrerFee: {
     label: "Referrer Fee",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       return `${+auction.referrerFee}%`;
     },
   },
   duration: {
     label: "Duration",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const days = getDaysBetweenDates(
         new Date(+auction.conclusion * 1000),
         new Date(+auction.start * 1000),
@@ -123,14 +131,14 @@ const handlers = {
   },
   totalRaised: {
     label: "Total Raised",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const _auction = auction as BatchAuction;
       return `${_auction.formatted?.purchased} ${_auction.quoteToken.symbol}`;
     },
   },
   targetRaise: {
     label: "Target Raise",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { isToggled: isUsdToggled } = useToggle();
 
@@ -147,7 +155,7 @@ const handlers = {
   },
   minRaise: {
     label: "Min Raise",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { isToggled: isUsdToggled } = useToggle();
 
@@ -165,7 +173,7 @@ const handlers = {
 
   minPrice: {
     label: "Min Price",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { isToggled: isUsdToggled } = useToggle();
 
@@ -185,31 +193,30 @@ const handlers = {
   },
   totalBids: {
     label: "Total Bids",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       return `${auction.formatted?.totalBids}`;
     },
   },
   totalBidAmount: {
     label: "Total Bid Amount",
-    handler: (auction: Auction) =>
+    handler: (auction) =>
       `${auction.formatted?.totalBidAmountFormatted} ${auction.quoteToken.symbol}`,
   },
 
   capacity: {
     label: "Tokens Available",
-    handler: (auction: Auction) =>
+    handler: (auction) =>
       `${shorten(Number(auction.capacity))} ${auction.baseToken.symbol}`,
   },
 
   totalSupply: {
     label: "Total Supply",
-    handler: (auction: Auction) =>
-      shorten(Number(auction.baseToken.totalSupply)),
+    handler: (auction) => shorten(Number(auction.baseToken.totalSupply)),
   },
 
   price: {
     label: "Price",
-    handler: (auction: Auction) => (
+    handler: (auction) => (
       <>
         <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
       </>
@@ -218,7 +225,7 @@ const handlers = {
 
   fixedPrice: {
     label: "Price",
-    handler: (auction: Auction) => (
+    handler: (auction) => (
       <>
         <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
       </>
@@ -227,13 +234,13 @@ const handlers = {
 
   sold: {
     label: "Sold",
-    handler: (auction: Auction) =>
+    handler: (auction) =>
       `${auction.formatted?.sold} ${auction.baseToken.symbol}`,
   },
 
   tokensAvailable: {
     label: "Tokens Available",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const res =
         (Number(auction.capacityInitial) /
           Number(auction.baseToken.totalSupply)) *
@@ -244,7 +251,7 @@ const handlers = {
   },
   vestingDuration: {
     label: "Vesting",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       if (!auction.linearVesting) {
         return "None";
       }
@@ -259,7 +266,7 @@ const handlers = {
   },
   minPriceFDV: {
     label: "Min Price FDV",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const price = getPrice(auction);
       if (!price) return undefined;
 
@@ -278,7 +285,7 @@ const handlers = {
   },
   fixedPriceFDV: {
     label: "Fixed Price FDV",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const price = getPrice(auction);
       if (!price) return undefined;
 
@@ -288,25 +295,25 @@ const handlers = {
   },
   rate: {
     label: "Rate",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       return `${auction.formatted?.rate} ${auction.formatted?.tokenPairSymbols}`;
     },
   },
   started: {
     label: "Started",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       return `${auction.formatted?.startDistance} ago`;
     },
   },
   ended: {
     label: "Ended",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       return `${auction.formatted?.endDistance} ago`;
     },
   },
   curator: {
     label: "Curator",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       if (!auction.curator) return undefined;
 
       const curator = allowedCurators.find(
@@ -329,7 +336,7 @@ const handlers = {
   },
   saleType: {
     label: "Sale Type",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const callbacksType = getCallbacksType(auction);
 
       switch (callbacksType) {
@@ -348,7 +355,7 @@ const handlers = {
   },
   result: {
     label: "Result",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const price = getPrice(auction);
       const minFilled = getMinFilled(auction);
 
@@ -371,7 +378,7 @@ const handlers = {
   },
   maxTokensLaunched: {
     label: "Max Tokens Launched",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const price = getPrice(auction);
       const targetRaise = getTargetRaise(auction, price);
       const totalBidAmount = auction.formatted?.totalBidAmountDecimal;
@@ -388,7 +395,7 @@ const handlers = {
   },
   clearingPrice: {
     label: "Clearing Price",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const clearingPrice = getClearingPrice(auction);
       if (clearingPrice === undefined) return undefined;
 
@@ -397,7 +404,7 @@ const handlers = {
   },
   tokensLaunched: {
     label: "Tokens Launched",
-    handler: (auction: Auction) => {
+    handler: (auction) => {
       const clearingPrice = getClearingPrice(auction);
       if (clearingPrice === undefined || clearingPrice === 0) return undefined;
 
@@ -408,6 +415,12 @@ const handlers = {
 
       return `${trimCurrency(tokensLaunched)} ${auction.baseToken.symbol}`;
     },
+  },
+  dtlProceeds: {
+    label: "Direct to Liquidity",
+    tooltip:
+      "The percentage of proceeds that will be automatically deposited into the liquidity pool",
+    handler: (auction) => <DtlProceedsDisplay auction={auction} />,
   },
 };
 
@@ -425,7 +438,7 @@ export function AuctionMetric(props: AuctionMetricProps) {
   const value = element.handler(props.auction);
 
   return (
-    <Metric size={props.size} label={element.label}>
+    <Metric size={props.size} label={element.label} tooltip={element.tooltip}>
       {value || "-"}
     </Metric>
   );

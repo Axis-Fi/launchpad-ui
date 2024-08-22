@@ -1,32 +1,14 @@
 import { mantleSepoliaTestnet } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 import { weth, usdc } from "../../tokens/common";
-import type { Address } from "@repo/types";
-import addresses from "../../axis-core/.mantle-sepolia-v0.5.json";
+import core from "../../axis-core/.mantle-sepolia.json";
+import periphery from "../../axis-periphery/.mantle-sepolia.json";
+import { extractCallbacks, extractAddresses } from "../helpers";
 
 const config: AxisDeploymentConfig = {
   name: "mantle-sepolia-testnet",
   chain: mantleSepoliaTestnet,
   chainIconUrl: "/mantle-logo.svg",
-  addresses: {
-    batchAuctionHouse: addresses["axis.BatchAuctionHouse"] as Address,
-    batchCatalogue: addresses["axis.BatchCatalogue"] as Address,
-    encryptedMarginalPrice: addresses["axis.EncryptedMarginalPrice"] as Address,
-    fixedPriceBatch: addresses["axis.FixedPriceBatch"] as Address,
-    batchLinearVesting: addresses["axis.BatchLinearVesting"] as Address,
-  },
-  callbacks: {
-    cappedMerkleAllowlist: addresses[
-      "axis.BatchCappedMerkleAllowlist"
-    ] as Address,
-    merkleAllowlist: addresses["axis.BatchMerkleAllowlist"] as Address,
-    tokenAllowlist: addresses["axis.BatchTokenAllowlist"] as Address,
-    allocatedMerkleAllowlist: addresses[
-      "axis.BatchAllocatedMerkleAllowlist"
-    ] as Address,
-    uniV2Dtl: addresses["axis.BatchUniswapV2DirectToLiquidity"] as Address,
-    uniV3Dtl: addresses["axis.BatchUniswapV3DirectToLiquidity"] as Address,
-  },
   subgraphURL:
     "https://subgraph-api.mantle.xyz/api/public/d124a5f1-0609-435a-9a3a-dd525001afbe/subgraphs/axis-origin-mantle-sepolia/v<VERSION>/gn",
   rpcURL: "https://rpc.sepolia.mantle.xyz",
@@ -52,6 +34,8 @@ const config: AxisDeploymentConfig = {
       mintable: true,
     },
   ],
+  ...extractAddresses(core),
+  ...extractCallbacks(periphery),
 };
 
 export default config;
