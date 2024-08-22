@@ -1,6 +1,6 @@
 import { mantle } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
-import addresses from "../../axis-core/.mantle-v1.0.0.json";
+import core from "../../axis-core/.mantle.json";
 import { extractAddresses } from "../helpers";
 import { usdc, usdt, weth } from "../../tokens/common";
 
@@ -34,7 +34,7 @@ const config: AxisDeploymentConfig = {
         "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/chains/mantle.svg",
     },
   ],
-  ...extractAddresses(addresses),
+  ...extractAddresses(core),
   //...extractCallbacks(addresses)
 };
 

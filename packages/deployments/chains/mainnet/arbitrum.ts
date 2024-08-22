@@ -1,6 +1,7 @@
 import { arbitrum } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
-import addresses from "../../axis-core/.arbitrum-one-v1.0.0.json";
+import core from "../../axis-core/.arbitrum-one.json";
+import periphery from "../../axis-periphery/.arbitrum-one.json";
 import { extractAddresses, extractCallbacks } from "../helpers";
 import { dai, usdc, usdt, weth } from "../../tokens/common";
 
@@ -32,8 +33,8 @@ const config: AxisDeploymentConfig = {
       address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
     },
   ],
-  ...extractAddresses(addresses),
-  ...extractCallbacks(addresses),
+  ...extractAddresses(core),
+  ...extractCallbacks(periphery),
 };
 
 export default config;

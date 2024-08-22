@@ -1,9 +1,4 @@
 {
-  "deployments.BatchAuctionHouse": "0xBA00000008b2B9CC31b98ed27628F714D12D9c7F",
-  "deployments.BatchCatalogue": "0x30c356DFBAc808BC62c860A9B285f024b40dF1fc",
-  "deployments.auctionModules.EncryptedMarginalPrice": "0x053219a03D5Bb08B8EeC2BB9743F723b312A1cE3",
-  "deployments.auctionModules.FixedPriceBatch": "0xe6c04Ce6ca70eeE60bEc40E2e6e62958D91E02CC",
-  "deployments.derivativeModules.BatchLinearVesting": "0xE292cF4e316191CbFEbD74909356DF3cd9455e96",
   "deployments.callbacks.BatchCappedMerkleAllowlist": "0x986B25Cd77B5A9175eD40f26D3acE0bf6C7547Fe",
   "deployments.callbacks.BatchMerkleAllowlist": "0x982FdCD97dcFb433977820814aa8D86Ef0dC320d",
   "deployments.callbacks.BatchTokenAllowlist": "0x983155c5e8E08700D4aeda7b0A3417EA33a47918",
