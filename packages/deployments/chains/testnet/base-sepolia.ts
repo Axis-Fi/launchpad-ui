@@ -1,32 +1,14 @@
 import { baseSepolia } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 import { weth, usdc } from "../../tokens/common";
-import type { Address } from "@repo/types";
-import addresses from "../../axis-core/.base-sepolia-v0.5.json";
+import core from "../../axis-core/.base-sepolia.json";
+import periphery from "../../axis-periphery/.base-sepolia.json";
+import { extractAddresses, extractCallbacks } from "../helpers";
 
 const config: AxisDeploymentConfig = {
   name: "base-sepolia",
   chain: baseSepolia,
   chainIconUrl: "/base-logo.png",
-  addresses: {
-    batchAuctionHouse: addresses["axis.BatchAuctionHouse"] as Address,
-    batchCatalogue: addresses["axis.BatchCatalogue"] as Address,
-    encryptedMarginalPrice: addresses["axis.EncryptedMarginalPrice"] as Address,
-    fixedPriceBatch: addresses["axis.FixedPriceBatch"] as Address,
-    batchLinearVesting: addresses["axis.BatchLinearVesting"] as Address,
-  },
-  callbacks: {
-    cappedMerkleAllowlist: addresses[
-      "axis.BatchCappedMerkleAllowlist"
-    ] as Address,
-    merkleAllowlist: addresses["axis.BatchMerkleAllowlist"] as Address,
-    tokenAllowlist: addresses["axis.BatchTokenAllowlist"] as Address,
-    allocatedMerkleAllowlist: addresses[
-      "axis.BatchAllocatedMerkleAllowlist"
-    ] as Address,
-    uniV2Dtl: addresses["axis.BatchUniswapV2DirectToLiquidity"] as Address,
-    uniV3Dtl: addresses["axis.BatchUniswapV3DirectToLiquidity"] as Address,
-  },
   subgraphURL:
     "https://subgraph.satsuma-prod.com/44c4cc082f74/spaces-team/axis-origin-base-sepolia/version/v<VERSION>/api",
   rpcURL:
@@ -45,6 +27,8 @@ const config: AxisDeploymentConfig = {
       mintable: true,
     },
   ],
+  ...extractAddresses(core),
+  ...extractCallbacks(periphery),
 };
 
 export default config;
