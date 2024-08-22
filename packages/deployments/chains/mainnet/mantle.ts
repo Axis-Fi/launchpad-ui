@@ -1,7 +1,8 @@
 import { mantle } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 import core from "../../axis-core/.mantle.json";
-import { extractAddresses } from "../helpers";
+import periphery from "../../axis-periphery/.mantle.json";
+import { extractAddresses, extractCallbacks } from "../helpers";
 import { usdc, usdt, weth } from "../../tokens/common";
 
 const config: AxisDeploymentConfig = {
@@ -35,7 +36,7 @@ const config: AxisDeploymentConfig = {
     },
   ],
   ...extractAddresses(core),
-  //...extractCallbacks(addresses)
+  ...extractCallbacks(periphery),
 };
 
 export default config;

@@ -1,8 +1,9 @@
 import { mode } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 import { usdc, usdt, weth } from "../../tokens/common";
-import { extractAddresses } from "../helpers";
+import { extractAddresses, extractCallbacks } from "../helpers";
 import core from "../../axis-core/.mode.json";
+import periphery from "../../axis-periphery/.mode.json";
 
 const config: AxisDeploymentConfig = {
   name: "mode",
@@ -27,6 +28,7 @@ const config: AxisDeploymentConfig = {
     },
   ],
   ...extractAddresses(core),
+  ...extractCallbacks(periphery),
 };
 
 export default config;
