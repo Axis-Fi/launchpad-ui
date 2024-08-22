@@ -1,14 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 
-// Define paths for the core and periphery directories
-const coreDir = path.resolve(__dirname, "../../../moonraker/deployments"); // Adjust 'core-directory' with the actual name
+const coreDir = path.resolve(__dirname, "../../../moonraker/deployments");
 const peripheryDir = path.resolve(
   __dirname,
   "../../../axis-periphery/deployments",
 );
 
-// Function to get the source directory based on the provided argument
+// Get the source directory based on the provided argument
 function getSourceDir(type) {
   if (type === "core") {
     return coreDir;
@@ -19,7 +18,7 @@ function getSourceDir(type) {
   }
 }
 
-// Function to get the latest version or the specific version files
+// Get the latest version or the specific version files
 function getVersionedFiles(files, specifiedVersion = null) {
   const versionedFiles = files
     .map((file) => {
@@ -94,7 +93,6 @@ function copyFiles(type, version = null) {
   });
 }
 
-// Get arguments from command line
 const [type, versionArgument] = process.argv.slice(2);
 
 if (!type) {
