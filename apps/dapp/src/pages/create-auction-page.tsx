@@ -1628,7 +1628,10 @@ export default function CreateAuctionPage() {
                       render={({ field }) => (
                         <FormItemWrapper className="mt-4 w-min">
                           <div className="flex items-center gap-x-2">
-                            <Switch onCheckedChange={field.onChange} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                             <Label>Vested</Label>
                           </div>
                         </FormItemWrapper>
@@ -2056,13 +2059,15 @@ function clearNullishFields(fields: Partial<CreateAuctionForm>) {
 }
 
 function formatDates(fields: Partial<CreateAuctionForm>) {
-  const dateFields = ["start", "deadline", "vestingStart"];
+  const iso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
 
   return Object.fromEntries(
     Object.entries(fields).map(([key, value]) => {
       return [
         key,
-        dateFields.includes(key) ? new Date(value as string) : value,
+        typeof value === "string" && iso8601Regex.test(value)
+          ? new Date(value)
+          : value,
       ];
     }),
   );

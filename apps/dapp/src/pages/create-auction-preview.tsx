@@ -118,7 +118,7 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
   const totalSupply = params.payoutToken?.totalSupply;
 
   const vestingStartTimestamp =
-    params.vestingStart?.getTime() ?? params.deadline.getTime();
+    params.vestingStart?.getTime?.() ?? params.deadline.getTime?.();
   const vestingEndTimestamp =
     vestingStartTimestamp + getDuration(Number(params.vestingDuration));
 
