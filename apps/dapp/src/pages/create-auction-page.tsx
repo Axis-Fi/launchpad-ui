@@ -94,8 +94,9 @@ import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
 import { getAuctionPath } from "utils/router";
 import getExistingCallbacks from "modules/create-auction/get-existing-callbacks";
 import { useStoredAuctionConfig } from "state/auction-config";
-import { DownloadIcon, RefreshCwIcon } from "lucide-react";
 import type { Token } from "@repo/types";
+import { DownloadIcon, ShareIcon, TrashIcon } from "lucide-react";
+import { TriggerMessage } from "components/trigger-message";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -325,6 +326,7 @@ export default function CreateAuctionPage() {
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
   };
+
   const { address } = useAccount();
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [isTxDialogOpen, setIsTxDialogOpen] = React.useState(false);
@@ -342,11 +344,28 @@ export default function CreateAuctionPage() {
 
   React.useEffect(() => {
     if (storedConfig) {
-      Object.entries(storedConfig).forEach(([key, value]) =>
-        form.setValue(key as keyof CreateAuctionForm, value),
-      );
+      updateForm(storedConfig);
     }
   }, [storedConfig]);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.hash.split("?")[1]);
+    const data = params.get("data");
+    if (data) {
+      try {
+        const parsedData = JSON.parse(data);
+        updateForm(parsedData);
+      } catch (error) {
+        console.error("Invalid JSON in query params:", error);
+      }
+    }
+  }, [location.search]);
+
+  function updateForm(data: Partial<CreateAuctionForm>) {
+    Object.entries(clearNullishFields(data)).forEach(([key, value]) =>
+      form.setValue(key as keyof CreateAuctionForm, value),
+    );
+  }
 
   const [
     isVested,
@@ -1089,6 +1108,15 @@ export default function CreateAuctionPage() {
 
   const handleSaveForm = () => setStoredConfig(form.getValues());
 
+  const handleGenerateLink = () => {
+    const values = JSON.stringify(form.getValues());
+    //Strips existing query params from the current URL
+    const url = window.location.href.replace(/(\?.*?)(#|$)/, "$2");
+    const urlWithData = url + `?data=${values}`;
+
+    navigator.clipboard.writeText(urlWithData);
+  };
+
   return (
     <PageContainer key={resetKey.toString()}>
       <PageHeader
@@ -1102,23 +1130,22 @@ export default function CreateAuctionPage() {
         <form onSubmit={(e) => e.preventDefault()} className="pb-16">
           <div className="mx-auto flex max-w-3xl justify-around rounded-md p-4">
             <div className="w-full space-y-4">
-              {/* <div> */}
-              {/*   Creating an auction will involve the following: */}
-              {/*   <ol> */}
-              {/*     <li> */}
-              {/*       If necessary, authorising the spending of the payout token */}
-              {/*     </li> */}
-              {/*     <li> */}
-              {/*       Pre-funding the auction with the payout token and capacity */}
-              {/*       selected */}
-              {/*     </li> */}
-              {/*   </ol> */}
-              {/* </div> */}
-
               <div className="mx-auto grid grid-flow-row grid-cols-2 place-items-center gap-x-4">
                 <div className="form-div flex max-w-full justify-between">
                   <Text size="3xl">1 - Your Project</Text>
                   <div>
+                    <TriggerMessage message="Link copied!">
+                      <Tooltip content="Generate a link to the current configuration">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={handleGenerateLink}
+                        >
+                          <ShareIcon />
+                        </Button>
+                      </Tooltip>
+                    </TriggerMessage>
+
                     <Tooltip content="Save the current configuration locally">
                       <Button
                         size="icon"
@@ -1130,7 +1157,7 @@ export default function CreateAuctionPage() {
                     </Tooltip>
                     <Tooltip content="Clear the current configuration">
                       <Button size="icon" variant="ghost" onClick={handleReset}>
-                        <RefreshCwIcon />
+                        <TrashIcon />
                       </Button>
                     </Tooltip>
                   </div>
@@ -1306,6 +1333,7 @@ export default function CreateAuctionPage() {
                         externalDialog
                         title="Select Quote Token"
                         triggerContent={"Select token"}
+                        displayFormatter={tokenDisplayFormatter}
                       >
                         <TokenSelectDialog chainId={chainId} />
                       </DialogInput>
@@ -2014,6 +2042,14 @@ function tokenDisplayFormatter(token: Token) {
   return {
     label: token.symbol,
     imgURL: token.logoURI,
-    value: token,
+    value: token.symbol,
   };
+}
+
+function clearNullishFields(fields: Partial<CreateAuctionForm>) {
+  return Object.fromEntries(
+    Object.entries(fields).filter(
+      ([, value]) => value !== undefined && value !== null && value !== "",
+    ),
+  );
 }
