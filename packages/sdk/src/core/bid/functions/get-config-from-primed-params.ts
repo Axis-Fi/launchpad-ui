@@ -15,8 +15,6 @@ const getConfigFromPrimedParams = (
     auctionData,
   } = params;
 
-  // const callbackData = toHex(""); //TODO: callbackData - decide best way to handle this
-
   return {
     abi: abis.batchAuctionHouse,
     address: auctionHouseAddress,

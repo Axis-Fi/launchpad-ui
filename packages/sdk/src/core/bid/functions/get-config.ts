@@ -4,7 +4,7 @@ import { getAuctionHouse, type AxisDeployments } from "@repo/deployments";
 import { SdkError } from "../../../types";
 import { BidParamsSchema } from "../schema";
 import type { BidConfig, BidParams } from "../types";
-import { encryptBid } from "../utils";
+import { getEncryptedBid } from "../utils";
 import type { AuctionModule } from "../../auction";
 import { getConfigFromPrimedParams } from "./get-config-from-primed-params";
 import { AuctionType } from "@repo/types";
@@ -60,7 +60,7 @@ const getConfig = async (
   };
 
   const encryptedBid = shouldEncryptBid
-    ? encodeEncryptedBid(await encryptBid(paramsToEncrypt, cloakClient))
+    ? encodeEncryptedBid(await getEncryptedBid(paramsToEncrypt, cloakClient))
     : undefined;
 
   return getConfigFromPrimedParams(

@@ -3,7 +3,7 @@ import type { EncryptLotIdPost200Response, CloakClient } from "@repo/cloak";
 import { abi, type EncryptBidParams } from ".";
 import { SdkError } from "../../types";
 
-const encryptBid = async (
+const getEncryptedBid = async (
   params: EncryptBidParams,
   cloakClient: CloakClient,
 ): Promise<EncryptLotIdPost200Response> => {
@@ -50,4 +50,4 @@ const encodeEncryptedBid = (encryptedBid: EncryptLotIdPost200Response): Hex => {
   ]);
 };
 
-export { encryptBid, encodeEncryptedBid };
+export { getEncryptedBid, encodeEncryptedBid };

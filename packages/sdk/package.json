@@ -8,7 +8,8 @@
     "./react": "./src/react/index.ts"
   },
   "scripts": {
-    "test": "#vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
