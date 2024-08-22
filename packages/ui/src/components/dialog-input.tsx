@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { Button, Dialog, DialogProps, SelectData } from "./";
 import { IconedLabel } from "./iconed-label";
-import isDeepEqual from "@/helpers/is-deep-equal";
+import isDeepEqual from "../helpers/is-deep-equal";
 
 type InputValueDisplay = {
   imgURL?: string;
