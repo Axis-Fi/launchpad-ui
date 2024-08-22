@@ -14,7 +14,6 @@ import { Auction, AuctionType, Token } from "@repo/types";
 import { AuctionLivePreview } from "modules/auction/status/auction-preview";
 import React from "react";
 import { useFormContext } from "react-hook-form";
-import { formatUnits } from "viem";
 import { AuctionCard } from "modules/auction/auction-card";
 import { getDuration } from "utils/date";
 import { addMilliseconds } from "date-fns";
@@ -116,10 +115,7 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
  * Gets a partial Auction from auction creation params
  * */
 function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
-  const supply = formatUnits(
-    params.payoutToken.totalSupply ?? 0n,
-    params.payoutToken.decimals,
-  );
+  const totalSupply = params.payoutToken.totalSupply;
 
   const vestingStartTimestamp =
     params.vestingStart?.getTime() ?? params.deadline.getTime();
@@ -133,7 +129,7 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
     capacity: params.capacity,
     capacityInitial: params.capacity,
     quoteToken: params.quoteToken as Token,
-    baseToken: { ...params.payoutToken, totalSupply: supply } as Token,
+    baseToken: { ...params.payoutToken, totalSupply } as Token,
     start: (params.start.getTime() / 1000).toString(),
     conclusion: (params.deadline.getTime() / 1000).toString(),
     //@ts-expect-error TODO: fix type mismatch
