@@ -1185,7 +1185,6 @@ export default function CreateAuctionPage() {
                       tooltip="A brief tagline about your project"
                     >
                       <Input
-                        type="url"
                         placeholder={"We're the future of France"}
                         {...field}
                       />
