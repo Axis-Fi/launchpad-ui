@@ -55,9 +55,6 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
     0,
   );
 
-  const isWaiting =
-    claimBidsTxn.claimTx.isPending || claimBidsTxn.claimReceipt.isLoading;
-
   const failReason = getFailReason(auction);
 
   return (
@@ -114,7 +111,7 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
         <TransactionDialog
           open={isTxnDialogOpen}
           signatureMutation={claimBidsTxn.claimTx}
-          error={claimBidsTxn.claimTx.error}
+          error={claimBidsTxn.error}
           onConfirm={claimBidsTxn.handleClaim}
           mutation={claimBidsTxn.claimReceipt}
           chainId={auction.chainId}
@@ -125,7 +122,7 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
             setTxnDialogOpen(open);
           }}
           hash={claimBidsTxn.claimTx.data}
-          disabled={isWaiting}
+          disabled={claimBidsTxn.isWaiting}
           screens={{
             idle: {
               Component: () => (

@@ -54,10 +54,10 @@ const useSdkQuery = <TResult>(
  * @returns The result of the SDK callback as a TanStack MutationResult.
  *
  * @example
- * const bidMutation = useDeferredQuery(sdk => sdk.bid({
+ * const bidConfig = useDeferredQuery(sdk => sdk.bid({
  *   lotId: 1,
- *   amountIn: 100,
- *   amountOut: 10,
+ *   amountIn: 10000000000000000000n,
+ *   amountOut: 10000000000000000000n,
  *   chainId: 1,
  *   auctionType: "encryptedMarginalPrice",
  *   referrerAddress: "0x000...",

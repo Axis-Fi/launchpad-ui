@@ -30,9 +30,6 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
     (bid) => bid.status === "claimed" || bid.status === "refunded",
   );
 
-  const isWaiting =
-    claimBidsTxn.claimTx.isPending || claimBidsTxn.claimReceipt.isLoading;
-
   const buttonText =
     userTotalSuccessfulBidAmount > 0 ? "Claim winnings" : "Claim refund";
   const badgeText = userTotalSuccessfulBidAmount > 0 ? "You Won!" : "You Lost";
@@ -71,7 +68,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
         <TransactionDialog
           open={isTxnDialogOpen}
           signatureMutation={claimBidsTxn.claimTx}
-          error={claimBidsTxn.claimCall.error || claimBidsTxn.claimTx.error} // Catch both simulation and execution errors
+          error={claimBidsTxn.error}
           onConfirm={claimBidsTxn.handleClaim}
           mutation={claimBidsTxn.claimReceipt}
           chainId={auction.chainId}
@@ -82,7 +79,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
             setTxnDialogOpen(open);
           }}
           hash={claimBidsTxn.claimTx.data}
-          disabled={isWaiting}
+          disabled={claimBidsTxn.isWaiting}
           screens={{
             idle: {
               Component: () => (

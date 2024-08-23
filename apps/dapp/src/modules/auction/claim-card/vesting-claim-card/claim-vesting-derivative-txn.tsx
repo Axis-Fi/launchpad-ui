@@ -17,7 +17,7 @@ export function ClaimVestingDervivativeTxn({
     <TransactionDialog
       open={true}
       signatureMutation={claimBidsTxn.claimTx}
-      error={claimBidsTxn.claimCall.error || claimBidsTxn.claimTx.error}
+      error={claimBidsTxn.error}
       onConfirm={claimBidsTxn.handleClaim}
       mutation={claimBidsTxn.claimReceipt}
       chainId={auction.chainId}
