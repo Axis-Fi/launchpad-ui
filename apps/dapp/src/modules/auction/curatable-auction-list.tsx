@@ -89,7 +89,7 @@ export function CuratableAuctionList() {
       col.display({
         id: "view",
         cell: (info) => (
-          <Link to={"/" + getAuctionPath(info.row.original)}>
+          <Link to={getAuctionPath(info.row.original)}>
             <Button size="sm">View</Button>
           </Link>
         ),
