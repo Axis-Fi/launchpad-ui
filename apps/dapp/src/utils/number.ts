@@ -66,3 +66,9 @@ export const shorten = (num: number, ignoreLessThan: number = 0): string => {
   if (mag < 1) return trimCurrency(num);
   return `${shortNum}${symbols[mag]}`;
 };
+
+export const isNullOrUndefined = (
+  value: unknown,
+): value is null | undefined => {
+  return value === null || value === undefined;
+};
