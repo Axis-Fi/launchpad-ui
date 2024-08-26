@@ -294,6 +294,13 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
 
+  // Clears the input fields after a successful transaction
+  useEffect(() => {
+    if (bid.bidTx.isSuccess) {
+      form.reset();
+    }
+  }, [bid.bidTx.isSuccess]);
+
   return (
     <div className="auction-action-container ">
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
