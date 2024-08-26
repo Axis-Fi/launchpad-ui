@@ -17,6 +17,7 @@ import { CreateAuctionForm } from "pages/create-auction-page";
 import { Address, BaseError } from "viem";
 import { TransactionErrorDialog } from "modules/transaction/transaction-error-dialog";
 import { AuctionType } from "@repo/types";
+import { isNullOrUndefined } from "utils";
 
 type CreateAuctionStatusCardProps = {
   auctionHouseApproveTx: UseWriteContractReturnType;
@@ -242,13 +243,17 @@ export function AuctionCreationStatus({
       </div>
       {txReceipt.isSuccess && (
         <div className="flex justify-center">
-          <Tooltip content={!props.lotId ? "Waiting to get Auction Id..." : ""}>
+          <Tooltip
+            content={
+              isNullOrUndefined(props.lotId) ? "Waiting for Auction Id..." : ""
+            }
+          >
             <Button
-              disabled={!props.lotId}
+              disabled={isNullOrUndefined(props.lotId)}
               onClick={() => props.onSuccess()}
               className="mt-3"
             >
-              View your Auction
+              View your Launch
             </Button>
           </Tooltip>
         </div>
