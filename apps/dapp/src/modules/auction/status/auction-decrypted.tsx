@@ -9,6 +9,7 @@ import { LoadingIndicator } from "modules/app/loading-indicator";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
 import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
+import { TokenInfoCard } from "../token-info-card";
 
 // TODO needs story tests, given the amount of potential states
 // TODO apart from some of the titles, much of the code in this component ias the same as FixedPriceBatchAuctionConcluded. Consider merging the two.
@@ -43,6 +44,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     <div className="auction-action-container ">
       <div className="mt-4 flex w-full flex-col justify-between gap-y-4 lg:mt-0">
         <AuctionCoreMetrics auction={auction} />
+        <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
 

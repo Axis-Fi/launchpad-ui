@@ -10,7 +10,7 @@ export function AuctionCreated({ auction }: PropsWithAuction) {
       <div className="space-y-4 lg:w-2/3">
         <AuctionCoreMetrics auction={auction} />
         <TokenInfoCard auction={auction} />
-        <ProjectInfoCard className="mt-4" auction={auction} />
+        <ProjectInfoCard auction={auction} />
       </div>
       <div className="items-strech h-full lg:w-1/3">
         <Card>
