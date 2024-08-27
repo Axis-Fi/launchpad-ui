@@ -209,13 +209,18 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       balanceAddress: walletAccount.address,
     });
 
+  const handleSuccessfulBid = () => {
+    form.reset();
+    refetchQuoteTokenBalance();
+  };
+
   const { ...bid } = useBidAuction(
     auction.chainId,
     auction.lotId,
     parsedAmountIn,
     parsedMinAmountOut,
     callbackData,
-    refetchQuoteTokenBalance,
+    handleSuccessfulBid,
   );
 
   // TODO Permit2 signature

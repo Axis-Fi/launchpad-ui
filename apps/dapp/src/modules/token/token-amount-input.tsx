@@ -68,7 +68,7 @@ export const TokenAmountInput = React.forwardRef<
         </div>
         <div className="mt-0.5 flex items-center">
           <Input
-            value={value}
+            value={value === undefined ? "" : value}
             type="number"
             variant="lg"
             disabled={disabled}
