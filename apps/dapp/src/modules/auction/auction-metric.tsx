@@ -241,12 +241,14 @@ const handlers: MetricHandlers = {
   tokensAvailable: {
     label: "Tokens Available",
     handler: (auction) => {
-      const res =
+      const supplyPercentage =
         (Number(auction.capacityInitial) /
           Number(auction.baseToken.totalSupply)) *
         100;
 
-      return `${formatPercentage(res)}%`;
+      const availableTokens = shorten(+auction.capacityInitial);
+
+      return `${availableTokens} (${formatPercentage(supplyPercentage)}%)`;
     },
   },
   vestingDuration: {

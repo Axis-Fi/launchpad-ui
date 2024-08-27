@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Address, formatUnits, fromHex, toHex } from "viem";
+import { Address, formatUnits, fromHex, toHex, zeroAddress } from "viem";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -57,7 +57,8 @@ export function useBidAuction(
         amountOut,
         chainId: auction.chainId,
         auctionType: auction.auctionType,
-        referrerAddress: referrer,
+        referrerAddress:
+          referrer === zeroAddress ? (auction.seller as Address) : referrer,
         bidderAddress: bidderAddress,
         signedPermit2Approval: toHex(""), // TODO implement permit2
       },

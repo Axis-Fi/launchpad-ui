@@ -67,9 +67,8 @@ export function CuratableAuctionList() {
             info.row.original.status,
           );
 
-          if (!approved || !isApprovable) {
-            return <XIcon className="text-axis-red" />;
-          }
+          if (approved) return <CheckIcon className="text-feedback-success" />;
+          if (!isApprovable) return <XIcon className="text-feedback-alert" />;
 
           return (
             <CurateButton
@@ -89,7 +88,7 @@ export function CuratableAuctionList() {
       col.display({
         id: "view",
         cell: (info) => (
-          <Link to={"/" + getAuctionPath(info.row.original)}>
+          <Link to={getAuctionPath(info.row.original)}>
             <Button size="sm">View</Button>
           </Link>
         ),
