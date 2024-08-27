@@ -16,25 +16,18 @@ export function TokenInfoCard({ auction }: PropsWithAuction) {
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
+  const isVested = !!auction.linearVesting;
+
   return (
     <Card title="Token Info">
       <AuctionMetrics className="mt-4">
-        {isEMP && (
-          <>
-            <AuctionMetric id="minPriceFDV" auction={auction} />
-            <AuctionMetric id="totalSupply" auction={auction} />
-            <AuctionMetric id="tokensAvailable" auction={auction} />
-            <AuctionMetric id="vestingDuration" auction={auction} />
-          </>
-        )}
+        {isEMP && <AuctionMetric id="minPriceFDV" auction={auction} />}
         {isFixedPriceBatch && (
-          <>
-            <AuctionMetric id="fixedPriceFDV" auction={auction} />
-            <AuctionMetric id="totalSupply" auction={auction} />
-            <AuctionMetric id="tokensAvailable" auction={auction} />
-            <AuctionMetric id="vestingDuration" auction={auction} />
-          </>
+          <AuctionMetric id="fixedPriceFDV" auction={auction} />
         )}
+        <AuctionMetric id="totalSupply" auction={auction} />
+        <AuctionMetric id="tokensAvailable" auction={auction} />
+        {isVested && <AuctionMetric id="vestingDuration" auction={auction} />}
         {dtlCallbackConfiguration && (
           // TODO fix alignment of metric title
           <Metric
