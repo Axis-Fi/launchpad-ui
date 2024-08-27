@@ -209,13 +209,18 @@ export function AuctionLive({ auction }: PropsWithAuction) {
       balanceAddress: walletAccount.address,
     });
 
+  const handleSuccessfulBid = () => {
+    form.reset();
+    refetchQuoteTokenBalance();
+  };
+
   const { ...bid } = useBidAuction(
     auction.chainId,
     auction.lotId,
     parsedAmountIn,
     parsedMinAmountOut,
     callbackData,
-    refetchQuoteTokenBalance,
+    handleSuccessfulBid,
   );
 
   // TODO Permit2 signature
@@ -293,13 +298,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         : maxBidAmount;
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
-
-  // Clears the input fields after a successful transaction
-  useEffect(() => {
-    if (bid.bidTx.isSuccess) {
-      form.reset();
-    }
-  }, [bid.bidTx.isSuccess]);
 
   return (
     <div className="auction-action-container ">
