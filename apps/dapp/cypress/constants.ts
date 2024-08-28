@@ -14,7 +14,7 @@ const URLS = {
   CREATE_LAUNCH: `${BASE_URL}/#/create/auction`,
   CURATOR: `${BASE_URL}/#/curator`,
   CURATORS: `${BASE_URL}/#/curators`,
-  REFER: `${BASE_URL}/#/refer`,
+  REFERRALS: `${BASE_URL}/#/refer`,
   LAUNCH: `${BASE_URL}/#/${LAUNCH_ID}/0`,
 
   /** TESTNET ONLY PAGES */

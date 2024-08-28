@@ -5,7 +5,10 @@ import { ReferralLeaderboard } from "modules/referral/referral-leaderboard";
 
 export function ReferralPage() {
   return (
-    <PageContainer containerClassName="items-center mt-12">
+    <PageContainer
+      id="__AXIS_ORIGIN_REFERRALS_PAGE__"
+      containerClassName="items-center mt-12"
+    >
       <div className="max-w-[1100px] space-y-4 lg:w-[1100px]">
         <ReferralLinkCard />
         <Card className="relative w-full" title="Leaderboard">

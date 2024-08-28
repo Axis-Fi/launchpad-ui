@@ -16,10 +16,12 @@
     "env:testnet-mock": "dotenvx run -f .env.testnet-mock",
     "env:mainnet-mock": "dotenvx run -f .env.mainnet-mock",
     "cy:open": "cypress open",
-    "cy:smoke": "start-server-and-test dev ${VITE_APP_URL} \"cypress run --browser chrome --spec 'cypress/smoke.cy.ts'\"",
-    "cy:smoke:mainnet": "pnpm env:mainnet-mock -- pnpm cy:smoke",
-    "cy:smoke:testnet": "pnpm env:testnet-mock -- pnpm cy:smoke",
-    "test": "pnpm /^cy:smoke:/"
+    "cy:run": "cypress run --browser chrome --spec 'cypress/smoke.cy.ts'",
+    "cy:smoke": "start-server-and-test dev ${VITE_APP_URL} \"pnpm cy:run\"",
+    "test:smoke:mainnet": "pnpm env:mainnet-mock -- pnpm cy:smoke",
+    "test:smoke:testnet": "pnpm env:testnet-mock -- pnpm cy:smoke",
+    "test:unit": "vitest run",
+    "test": "pnpm run test:unit && pnpm /^test:smoke:/"
   },
   "dependencies": {
     "@fleekhq/fleek-storage-js": "^1.0.24",
@@ -91,6 +93,7 @@
     "storybook-addon-remix-react-router": "^3.0.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vitest": "^1.5.0"
   }
 }
