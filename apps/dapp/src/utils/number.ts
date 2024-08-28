@@ -5,6 +5,7 @@ export function parsePercent(e: React.ChangeEvent<HTMLInputElement>) {
   const int = e.target.value.slice(0, e.target.value.length - 1);
   /* If there is no number (just the percent sign), rewrite
        it so it persists and move the cursor just before it.*/
+
   if (int.includes("%")) {
     e.target.value = "%";
     e.target.setSelectionRange(0, 0);
