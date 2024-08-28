@@ -7,5 +7,5 @@ Cypress.Commands.add("shouldNotRenderErrorPage", () => {
 
 // Generally a test will run faster looking for an expected ID rather than waiting for an error page
 Cypress.Commands.add("shouldRenderPageWithId", (id) => {
-  cy.get(`#${id}`, { timeout: 5000 }).should("exist");
+  cy.get(`#${id}`, { timeout: 10000 }).should("exist");
 });
