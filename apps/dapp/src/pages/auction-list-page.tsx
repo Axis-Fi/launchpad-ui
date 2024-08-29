@@ -138,7 +138,7 @@ export default function AuctionListPage() {
   }, [pagination.selectedPage]);
 
   return (
-    <div className="">
+    <div id="__AXIS_ORIGIN_HOME_PAGE__">
       <div className="bg-hero-banner flex w-full items-end justify-center py-3 lg:h-[522px] lg:py-0">
         {!isTabletOrMobile && (
           <div className="mb-10 text-center">

@@ -1,3 +1,4 @@
+import { parseUnits } from "viem";
 import { currencyFormatter, trimCurrency } from "./currency";
 
 export function parsePercent(e: React.ChangeEvent<HTMLInputElement>) {
@@ -71,4 +72,22 @@ export const isNullOrUndefined = (
   value: unknown,
 ): value is null | undefined => {
   return value === null || value === undefined;
+};
+
+export const getScaledCapacityWithCuratorFee = (
+  capacity?: string,
+  fee?: number,
+  decimals?: number,
+): bigint => {
+  if (!capacity || !decimals) return 0n;
+
+  // Parse the capacity string to a BigInt, scaling it up based on decimals
+  const capacityBigInt = parseUnits(capacity, decimals);
+
+  if (!fee) return capacityBigInt;
+
+  // Calculate the fee amount scaled up to the decimals of the capacity
+  const feeAmount = (capacityBigInt * BigInt(fee)) / BigInt(10000); // 10000 is the basis points for 100%
+
+  return capacityBigInt + feeAmount;
 };
