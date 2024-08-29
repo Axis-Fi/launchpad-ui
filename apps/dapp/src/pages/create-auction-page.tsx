@@ -55,7 +55,7 @@ import {
   dateMath,
   trimCurrency,
   toBasisPoints,
-  fromBasisPoints,
+  getScaledCapacityWithCuratorFee,
 } from "src/utils";
 
 import { AuctionType, CallbacksType } from "@repo/types";
@@ -763,8 +763,9 @@ export default function CreateAuctionPage() {
     tokenAddress: payoutToken?.address as Address,
     decimals: payoutToken?.decimals,
     chainId: payoutToken?.chainId,
-    amount: parseUnits(
-      withCuratorShare(Number(capacity), curatorFee).toString(),
+    amount: getScaledCapacityWithCuratorFee(
+      capacity,
+      curatorFee,
       payoutToken?.decimals,
     ),
   });
@@ -1119,7 +1120,10 @@ export default function CreateAuctionPage() {
   };
 
   return (
-    <PageContainer key={resetKey.toString()}>
+    <PageContainer
+      id="__AXIS_ORIGIN_CREATE_LAUNCH_PAGE__"
+      key={resetKey.toString()}
+    >
       <PageHeader
         backNavigationPath="/#"
         backNavigationText="Back to Launches"
@@ -2031,14 +2035,6 @@ function getCreatedAuctionId(
 
 function canUpdateMinBidSize(form: CreateAuctionForm) {
   return !!form.capacity && !!form.minPrice;
-}
-
-function withCuratorShare(amount?: number, curatorFee?: number) {
-  if (!amount) return 0;
-  if (!curatorFee) return amount;
-  const fee = fromBasisPoints(curatorFee);
-  const adjusted = fee < 10 ? `0${fee}` : fee;
-  return amount * parseFloat(`1.${adjusted}`);
 }
 
 function tokenDisplayFormatter(token: Token) {

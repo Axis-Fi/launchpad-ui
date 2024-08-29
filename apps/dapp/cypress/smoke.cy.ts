@@ -6,43 +6,43 @@ import { URLS } from "./constants";
 describe("smoke tests", () => {
   it("renders home page", () => {
     cy.visit(URLS.HOME);
-    cy.shouldNotRenderErrorPage();
+    cy.shouldRenderPageWithId("__AXIS_ORIGIN_HOME_PAGE__");
   });
 
   it("renders create launch page", () => {
     cy.visit(URLS.CREATE_LAUNCH);
-    cy.shouldNotRenderErrorPage();
+    cy.shouldRenderPageWithId("__AXIS_ORIGIN_CREATE_LAUNCH_PAGE__");
   });
 
   it("renders curator page", () => {
     cy.visit(URLS.CURATOR);
-    cy.shouldNotRenderErrorPage();
+    cy.shouldRenderPageWithId("__AXIS_ORIGIN_CURATOR_PAGE__");
   });
 
   it("renders curators page", () => {
     cy.visit(URLS.CURATORS);
-    cy.shouldNotRenderErrorPage();
+    cy.shouldRenderPageWithId("__AXIS_ORIGIN_CURATORS_PAGE__");
   });
 
   it("renders referral page", () => {
-    cy.visit(URLS.REFER);
-    cy.shouldNotRenderErrorPage();
+    cy.visit(URLS.REFERRALS);
+    cy.shouldRenderPageWithId("__AXIS_ORIGIN_REFERRALS_PAGE__");
   });
 
   it("renders launch page", () => {
     cy.visit(URLS.LAUNCH);
-    cy.shouldNotRenderErrorPage();
+    cy.shouldRenderPageWithId("__AXIS_ORIGIN_LAUNCH_PAGE__");
   });
 
   if (Cypress.env("VITE_TESTNET") === "true") {
     it("renders faucet page", () => {
       cy.visit(URLS.FAUCET);
-      cy.shouldNotRenderErrorPage();
+      cy.shouldRenderPageWithId("__AXIS_ORIGIN_FAUCET_PAGE__");
     });
 
     it("renders deploy page", () => {
       cy.visit(URLS.DEPLOY);
-      cy.shouldNotRenderErrorPage();
+      cy.shouldRenderPageWithId("__AXIS_ORIGIN_DEPLOY_PAGE__");
     });
   }
 });
