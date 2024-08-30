@@ -215,7 +215,8 @@ export function BidList(props: BidListProps) {
   const isLoading = refund.isPending || refundReceipt.isLoading;
 
   const handleRefund = (bidId?: string) => {
-    if (!bidId || !bidIndex) throw new Error("Unable to get bidId for refund");
+    if (bidId === undefined || bidIndex === undefined)
+      throw new Error("Unable to get bidId for refund");
 
     refund.writeContract({
       abi: auctionHouse.abi,
@@ -235,7 +236,7 @@ export function BidList(props: BidListProps) {
           const bid = info.row.original;
           const isLive = props.auction.status === "live";
           if (!address || !isLive) return;
-          if (bid.bidder.toLowerCase() !== address) return;
+          if (bid.bidder.toLowerCase() !== address.toLowerCase()) return;
           if (bid.status === "claimed" && !bid.settledAmountOut) return;
           // Can refund if the auction is live, other "refunds" are handled by claim bids after the auction ends
 
@@ -244,6 +245,8 @@ export function BidList(props: BidListProps) {
           if (isLive) {
             return (
               <Button
+                size="sm"
+                variant="secondary"
                 onClick={() => {
                   setBidToRefund(bid);
                   setDialogOpen(true);
