@@ -8,6 +8,7 @@ import {
 } from "@repo/ui";
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { featureToggles } from "@repo/env";
 
 type LinkConfig = {
   label: string;
@@ -24,16 +25,21 @@ export const testnetLinks = [
 export const defaultLinks = [
   { label: "Launches", href: "/#" },
   { label: "Curators", href: "/curators" },
-];
+  featureToggles.POINTS_PHASE_1 && { label: "Points", href: "/points" },
+].filter(Boolean);
 
 export const mobileSideLinks = [
-  { label: "Referrals", href: "/refer" },
+  !featureToggles.POINTS_PHASE_1 && { label: "Referrals", href: "/refer" },
+  featureToggles.POINTS_PHASE_1 && {
+    label: "Leaderboard",
+    href: "/leaderboard",
+  },
   {
     label: "Docs",
     href: "https://axis.finance/docs/overview",
     target: "_blank",
   },
-];
+].filter(Boolean);
 
 export const desktopLinks = [...defaultLinks, ...mobileSideLinks];
 
