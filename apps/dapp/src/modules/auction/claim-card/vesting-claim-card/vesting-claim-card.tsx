@@ -155,11 +155,7 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
   return (
     <div className="gap-y-md flex flex-col">
       <Card
-        title={`${
-          !hasVestingPeriodStarted && !userHasClaimedVestingDerivative
-            ? "Claim"
-            : "Redeem"
-        }`}
+        title={`${!userHasClaimedVestingDerivative ? "Claim" : "Redeem"}`}
         className="lg:w-[496px]"
         headerRightElement={
           <Badge color={vestingBadgeColour}>{vestingBadgeText}</Badge>
@@ -224,22 +220,25 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
             </Button>
           </RequiresChain>
 
-          {shouldShowClaimVesting && isTxnDialogOpen && (
-            <ClaimVestingDervivativeTxn
-              auction={auction}
-              onClose={() => setIsTxnDialogOpen(false)}
-            />
-          )}
-          {shouldShowRedeem && isTxnDialogOpen && (
-            <RedeemVestedTokensTxn
-              auction={auction}
-              onClose={() => setIsTxnDialogOpen(false)}
-              onSuccess={() => {
-                refetchRedeemable();
-                refetchAuction();
-              }}
-            />
-          )}
+          {(shouldShowClaimVesting || !userHasClaimedVestingDerivative) &&
+            isTxnDialogOpen && (
+              <ClaimVestingDervivativeTxn
+                auction={auction}
+                onClose={() => setIsTxnDialogOpen(false)}
+              />
+            )}
+          {shouldShowRedeem &&
+            userHasClaimedVestingDerivative &&
+            isTxnDialogOpen && (
+              <RedeemVestedTokensTxn
+                auction={auction}
+                onClose={() => setIsTxnDialogOpen(false)}
+                onSuccess={() => {
+                  refetchRedeemable();
+                  refetchAuction();
+                }}
+              />
+            )}
         </div>
       </Card>
     </div>
