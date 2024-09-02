@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import { formatUnits } from "viem";
-import { BatchAuction, PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@repo/types";
 import { Badge, Button, Card, formatDate, Metric, Progress } from "@repo/ui";
 import { RequiresChain } from "components/requires-chain";
 import { trimCurrency } from "utils/currency";
 import { useVestingTokenId } from "modules/auction/hooks/use-vesting-tokenid";
 import { useVestingRedeemable } from "modules/auction/hooks/use-vesting-redeemable";
 import { useDerivativeModule } from "modules/auction/hooks/use-derivative-module";
-
+import { useAuction } from "modules/auction/hooks/use-auction";
 import { ClaimVestingDervivativeTxn } from "./claim-vesting-derivative-txn";
 import { RedeemVestedTokensTxn } from "./redeem-vested-tokens-txn";
-import { BidOutcome } from "../bid-outcome";
-import { useAuction } from "modules/auction/hooks/use-auction";
+import { BidOutcome } from "./bid-outcome";
 
 const calculateVestingProgress = (start?: number, end?: number): number => {
-  if (!start || !end) return 0;
+  if (start == null || end == null) return 0;
 
   // Return the percentage of time elapsed between the start and end, expressed as 0-100
   const now = Date.now() / 1000;
@@ -26,7 +25,7 @@ const calculateVestingProgress = (start?: number, end?: number): number => {
 };
 
 const calculateVestingTerm = (start?: number, end?: number): string => {
-  if (!start || !end) return "0";
+  if (start == null || end == null) return "0";
 
   const termDays = (end - start) / 60 / 60 / 24;
 
@@ -40,8 +39,7 @@ const calculateVestingTerm = (start?: number, end?: number): string => {
   return `${Math.floor(termDays / 30)}M`;
 };
 
-export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
-  const auction = _auction as BatchAuction;
+export function VestingCard({ auction }: PropsWithAuction) {
   const { address } = useAccount();
   const [isTxnDialogOpen, setIsTxnDialogOpen] = useState(false);
 
@@ -114,7 +112,7 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
   );
 
   const redeemableAmountDecimal = Number(
-    formatUnits(redeemableAmount || BigInt(0), auction.baseToken.decimals),
+    formatUnits(redeemableAmount ?? BigInt(0), auction.baseToken.decimals),
   );
 
   const userTotalTokensWon = auction.bids
@@ -136,111 +134,103 @@ export function VestingClaimCard({ auction: _auction }: PropsWithAuction) {
 
   const vestingBadgeText =
     vestingProgress >= 100
-      ? "Fully Vested"
+      ? "Vesting Complete"
       : vestingProgress < 0
         ? "Upcoming"
         : "Vesting";
 
   // Allow user to eagerly claim the vesting derivative, if the vesting period hasn't started yet
-  const shouldShowClaimVesting =
-    !hasVestingPeriodStarted && !userHasClaimedVestingDerivative;
+  const shouldShowClaimVesting = !userHasClaimedVestingDerivative;
 
   // Otherwise, if the vesting period has started, just show "redeem" option
   // which triggers either: one txn to redeem, or, two txns to claim vesting derivative and then redeem
-  const shouldShowRedeem = hasVestingPeriodStarted && userHasUnvestedTokens;
+  const shouldShowRedeem =
+    hasVestingPeriodStarted &&
+    userHasUnvestedTokens &&
+    userHasClaimedVestingDerivative;
 
   const shouldShowVestingNotStarted =
     !hasVestingPeriodStarted && userHasClaimedVestingDerivative;
 
   return (
-    <div className="gap-y-md flex flex-col">
-      <Card
-        title={`${!userHasClaimedVestingDerivative ? "Claim" : "Redeem"}`}
-        className="lg:w-[496px]"
-        headerRightElement={
-          <Badge color={vestingBadgeColour}>{vestingBadgeText}</Badge>
-        }
-      >
-        <div className="gap-y-md flex flex-col">
-          <div className="grid grid-cols-2 gap-4">
-            <Metric size="s" label="Vesting Begins">
-              {auction.linearVesting?.startDate &&
-                formatDate.fullLocal(new Date(auction.linearVesting.startDate))}
-            </Metric>
-            <Metric size="s" label="Vesting Ends">
-              {auction.linearVesting?.startDate &&
-                formatDate.fullLocal(
-                  new Date(auction.linearVesting.expiryDate),
-                )}
-            </Metric>
-          </div>
-
-          <BidOutcome auction={auction} />
-
-          <div>
-            <Metric size="s" label="Vesting Progress">
-              <Progress value={vestingProgress} className="mt-1">
-                {/* TODO left-align this */}
-                <Metric size="s" label="Term">
-                  {vestingTerm}
-                </Metric>
-              </Progress>
-            </Metric>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="">
-              <Metric label="Redeemable">
-                {trimCurrency(derivedRedeemableAmount)}{" "}
-                {auction.baseToken.symbol}
-              </Metric>
-            </div>
-            <div>
-              <Metric label="Redeemed">
-                {trimCurrency(Number(redeemedAmount))}{" "}
-                {auction.baseToken.symbol}
-              </Metric>
-            </div>
-          </div>
-
-          <RequiresChain chainId={auction.chainId}>
-            <Button
-              className="w-full"
-              disabled={!shouldShowClaimVesting && !shouldShowRedeem}
-              onClick={() => setIsTxnDialogOpen(true)}
-            >
-              {shouldShowClaimVesting && (
-                <>Claim vesting {auction.baseToken.symbol}</>
-              )}
-              {shouldShowRedeem && <>Redeem {auction.baseToken.symbol}</>}
-              {shouldShowVestingNotStarted && (
-                <>Vesting hasn&apos;t started yet</>
-              )}
-              {!userHasUnvestedTokens && <>You redeemed all your tokens</>}
-            </Button>
-          </RequiresChain>
-
-          {(shouldShowClaimVesting || !userHasClaimedVestingDerivative) &&
-            isTxnDialogOpen && (
-              <ClaimVestingDervivativeTxn
-                auction={auction}
-                onClose={() => setIsTxnDialogOpen(false)}
-              />
-            )}
-          {shouldShowRedeem &&
-            userHasClaimedVestingDerivative &&
-            isTxnDialogOpen && (
-              <RedeemVestedTokensTxn
-                auction={auction}
-                onClose={() => setIsTxnDialogOpen(false)}
-                onSuccess={() => {
-                  refetchRedeemable();
-                  refetchAuction();
-                }}
-              />
-            )}
+    <Card
+      title={`${shouldShowClaimVesting ? "Claim" : "Redeem"}`}
+      headerRightElement={
+        <Badge color={vestingBadgeColour}>{vestingBadgeText}</Badge>
+      }
+    >
+      <div className="gap-y-md flex flex-col">
+        <div className="grid grid-cols-2 gap-4">
+          <Metric size="s" label="Vesting Begins">
+            {auction.linearVesting?.startDate != null &&
+              formatDate.fullLocal(new Date(auction.linearVesting.startDate))}
+          </Metric>
+          <Metric size="s" label="Vesting Ends">
+            {auction.linearVesting?.startDate != null &&
+              formatDate.fullLocal(new Date(auction.linearVesting.expiryDate))}
+          </Metric>
         </div>
-      </Card>
-    </div>
+
+        <BidOutcome auction={auction} />
+
+        <div>
+          <Metric size="s" label="Vesting Progress">
+            <Progress value={vestingProgress} className="mt-1">
+              {/* TODO left-align this */}
+              <Metric size="s" label="Term">
+                {vestingTerm}
+              </Metric>
+            </Progress>
+          </Metric>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="">
+            <Metric label="Redeemable">
+              {trimCurrency(derivedRedeemableAmount)} {auction.baseToken.symbol}
+            </Metric>
+          </div>
+          <div>
+            <Metric label="Redeemed">
+              {trimCurrency(Number(redeemedAmount))} {auction.baseToken.symbol}
+            </Metric>
+          </div>
+        </div>
+
+        <RequiresChain chainId={auction.chainId}>
+          <Button
+            className="w-full"
+            disabled={!shouldShowClaimVesting && !shouldShowRedeem}
+            onClick={() => setIsTxnDialogOpen(true)}
+          >
+            {shouldShowClaimVesting && (
+              <>Claim vesting {auction.baseToken.symbol}</>
+            )}
+            {shouldShowRedeem && <>Redeem {auction.baseToken.symbol}</>}
+            {shouldShowVestingNotStarted && (
+              <>Vesting hasn&apos;t started yet</>
+            )}
+            {!userHasUnvestedTokens && <>You redeemed all your tokens</>}
+          </Button>
+        </RequiresChain>
+
+        {shouldShowClaimVesting && isTxnDialogOpen && (
+          <ClaimVestingDervivativeTxn
+            auction={auction}
+            onClose={() => setIsTxnDialogOpen(false)}
+          />
+        )}
+        {shouldShowRedeem && isTxnDialogOpen && (
+          <RedeemVestedTokensTxn
+            auction={auction}
+            onClose={() => setIsTxnDialogOpen(false)}
+            onSuccess={() => {
+              refetchRedeemable();
+              refetchAuction();
+            }}
+          />
+        )}
+      </div>
+    </Card>
   );
 }

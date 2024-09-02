@@ -6,31 +6,31 @@ import {
   type PropsWithAuction,
 } from "@repo/types";
 import { NotConnectedClaimCard } from "./not-connected";
-import { NoUserBidsClaimCard } from "./no-user-bids-claim-card";
-import { UserBidsClaimCard } from "./user-bids-claim-card";
-import { VestingClaimCard } from "./vesting-claim-card";
-import { AuctionFailedClaimCard } from "./auction-failed-claim-card";
+import { VestingCard } from "./vesting-card";
+import { AuctionFailedCard } from "../auction-failed-card";
 import { hasDerivative } from "../utils/auction-details";
+import { NoUserBidsCard } from "./no-user-bids-card";
+import { UserBidsCard } from "./user-bids-card";
 
-type ClaimStatusProps = {
+type VestingStateParams = {
   auction: BatchAuction;
   isWalletConnected: boolean;
   userAddress?: Address;
 };
 
-type ClaimStatus =
+type VestingCardState =
   | "NOT_CONNECTED"
   | "AUCTION_FAILED"
-  | "USER_HAS_BIDS"
   | "USER_HAS_NO_BIDS"
-  | "VESTING";
+  | "USER_HAS_BIDS"
+  | "ERROR";
 
-const getClaimStatus = ({
+const getVestingCardStatus = ({
   auction,
   isWalletConnected,
   userAddress,
-}: ClaimStatusProps): ClaimStatus => {
-  const isAuctionCleared = auction.formatted?.cleared;
+}: VestingStateParams): VestingCardState => {
+  const isAuctionCleared = auction.formatted?.cleared ?? true;
   const isAuctionCancelled = false; // TODO: obtain this value
   const userHasBids = auction.bids.some(
     (bid) => bid.bidder.toLowerCase() === userAddress?.toLowerCase(),
@@ -50,22 +50,26 @@ const getClaimStatus = ({
   }
 
   if (userHasVesting) {
-    return "VESTING";
-  }
-
-  if (userHasBids) {
     return "USER_HAS_BIDS";
   }
 
-  return "USER_HAS_NO_BIDS";
+  if (!userHasBids) {
+    return "USER_HAS_NO_BIDS";
+  }
+
+  return "ERROR";
 };
 
-export function ClaimCard({ auction: _auction }: PropsWithAuction) {
+export function VestingCardContainer({ auction: _auction }: PropsWithAuction) {
   const auction = _auction as BatchAuction; /* TODO: sort out auction types */
 
   const { address: userAddress, isConnected: isWalletConnected } = useAccount();
 
-  const status = getClaimStatus({ auction, userAddress, isWalletConnected });
+  const status = getVestingCardStatus({
+    auction,
+    userAddress,
+    isWalletConnected,
+  });
 
   switch (status) {
     case "NOT_CONNECTED": {
@@ -73,19 +77,28 @@ export function ClaimCard({ auction: _auction }: PropsWithAuction) {
     }
 
     case "AUCTION_FAILED": {
-      return <AuctionFailedClaimCard auction={auction} />;
+      return <AuctionFailedCard auction={auction} />;
     }
 
     case "USER_HAS_BIDS": {
-      return <UserBidsClaimCard auction={auction} />;
+      return (
+        <>
+          <VestingCard auction={auction} />
+          <UserBidsCard auction={auction} />
+        </>
+      );
     }
 
-    case "VESTING": {
-      return <VestingClaimCard auction={auction} />;
+    case "USER_HAS_NO_BIDS": {
+      return <NoUserBidsCard />;
+    }
+
+    case "ERROR": {
+      return null;
     }
 
     default: {
-      return <NoUserBidsClaimCard />;
+      return null;
     }
   }
 }

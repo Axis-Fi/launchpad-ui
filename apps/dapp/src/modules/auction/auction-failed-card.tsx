@@ -9,7 +9,7 @@ import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { shorten } from "utils/number";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
-import { getMinFilled } from "../utils/auction-details";
+import { getMinFilled } from "./utils/auction-details";
 
 const getFailReason = (auction: Auction) => {
   // Auction was cancelled by the auction creator
@@ -32,7 +32,7 @@ const getFailReason = (auction: Auction) => {
   return "The auction did not settle successfully";
 };
 
-export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
+export function AuctionFailedCard({ auction }: PropsWithAuction) {
   const { address } = useAccount();
   const [isTxnDialogOpen, setTxnDialogOpen] = useState(false);
   const claimBidsTxn = useClaimBids(auction);
