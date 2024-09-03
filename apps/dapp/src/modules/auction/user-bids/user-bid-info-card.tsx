@@ -25,7 +25,7 @@ const TableHeader = ({ children }: { children: React.ReactNode }) => {
 
 const column = createColumnHelper<BatchAuctionBid>();
 
-export function UserBidsCard({ auction }: PropsWithAuction) {
+export function UserBidInfoCard({ auction }: PropsWithAuction) {
   const { address } = useAccount();
 
   const userBids = auction.bids.filter(

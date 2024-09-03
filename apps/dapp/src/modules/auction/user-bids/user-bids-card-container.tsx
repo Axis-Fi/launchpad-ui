@@ -10,26 +10,28 @@ import { VestingCard } from "./vesting-card";
 import { AuctionFailedCard } from "../auction-failed-card";
 import { hasDerivative } from "../utils/auction-details";
 import { NoUserBidsCard } from "./no-user-bids-card";
+import { UserBidInfoCard } from "./user-bid-info-card";
 import { UserBidsCard } from "./user-bids-card";
 
-type VestingStateParams = {
+type CardStatusParams = {
   auction: BatchAuction;
   isWalletConnected: boolean;
   userAddress?: Address;
 };
 
-type VestingCardState =
+type CardStatus =
   | "NOT_CONNECTED"
   | "AUCTION_FAILED"
   | "USER_HAS_NO_BIDS"
   | "USER_HAS_BIDS"
+  | "AUCTION_VESTING"
   | "ERROR";
 
-const getVestingCardStatus = ({
+const getCardStatus = ({
   auction,
   isWalletConnected,
   userAddress,
-}: VestingStateParams): VestingCardState => {
+}: CardStatusParams): CardStatus => {
   const isAuctionCleared = auction.formatted?.cleared ?? true;
   const isAuctionCancelled = false; // TODO: obtain this value
   const userHasBids = auction.bids.some(
@@ -39,7 +41,6 @@ const getVestingCardStatus = ({
     AuctionDerivativeTypes.LINEAR_VESTING,
     auction,
   );
-  const userHasVesting = auctionIsVesting && userHasBids;
 
   if (!isWalletConnected) {
     return "NOT_CONNECTED";
@@ -49,7 +50,11 @@ const getVestingCardStatus = ({
     return "AUCTION_FAILED";
   }
 
-  if (userHasVesting) {
+  if (auctionIsVesting) {
+    return "AUCTION_VESTING";
+  }
+
+  if (userHasBids) {
     return "USER_HAS_BIDS";
   }
 
@@ -60,12 +65,10 @@ const getVestingCardStatus = ({
   return "ERROR";
 };
 
-export function VestingCardContainer({ auction: _auction }: PropsWithAuction) {
-  const auction = _auction as BatchAuction; /* TODO: sort out auction types */
-
+export function UserBidsCardContainer({ auction }: PropsWithAuction) {
   const { address: userAddress, isConnected: isWalletConnected } = useAccount();
 
-  const status = getVestingCardStatus({
+  const status = getCardStatus({
     auction,
     userAddress,
     isWalletConnected,
@@ -80,13 +83,17 @@ export function VestingCardContainer({ auction: _auction }: PropsWithAuction) {
       return <AuctionFailedCard auction={auction} />;
     }
 
-    case "USER_HAS_BIDS": {
+    case "AUCTION_VESTING": {
       return (
         <>
           <VestingCard auction={auction} />
-          <UserBidsCard auction={auction} />
+          <UserBidInfoCard auction={auction} />
         </>
       );
+    }
+
+    case "USER_HAS_BIDS": {
+      return <UserBidsCard auction={auction} />;
     }
 
     case "USER_HAS_NO_BIDS": {
