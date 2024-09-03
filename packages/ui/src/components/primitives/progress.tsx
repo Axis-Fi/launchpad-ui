@@ -41,10 +41,13 @@ const Progress = React.forwardRef<
           {props.children}
         </span>
       )}
-      <div
-        className="absolute h-full w-1 border-l-[2px] border-dashed"
-        style={{ left: `${props.minTarget}%` }}
-      />
+
+      {props.minTarget != null && (
+        <div
+          className="absolute h-full w-1 border-l-[2px] border-dashed"
+          style={{ left: `${props.minTarget}%` }}
+        />
+      )}
     </ProgressPrimitive.Root>
   );
 });

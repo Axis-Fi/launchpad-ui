@@ -4,15 +4,14 @@ import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "lucide-react";
 
 import { Badge, Button, Card } from "@repo/ui";
-import type { BatchAuction, PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@repo/types";
 import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
-import { BidInfoCard } from "./bid-info-card";
-import { BidOutcome } from "../bid-outcome";
+import { UserBidInfoCard } from "./user-bid-info-card";
+import { BidOutcome } from "./bid-outcome";
 
-export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
-  const auction = _auction as BatchAuction;
+export function UserBidsCard({ auction }: PropsWithAuction) {
   const { address } = useAccount();
   const [isTxnDialogOpen, setTxnDialogOpen] = useState(false);
   const claimBidsTxn = useClaimBids(auction);
@@ -39,7 +38,6 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
     <div className="gap-y-md flex flex-col">
       <Card
         title="Claim"
-        className="lg:w-[496px]"
         headerRightElement={<Badge color={badgeColour}>{badgeText}</Badge>}
       >
         <RequiresChain chainId={auction.chainId}>
@@ -56,11 +54,14 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
               </Button>
             )}
             {userHasClaimed && (
-              <Link to="/auctions">
-                <Button size="lg" variant="secondary" className="w-full">
-                  View live auctions <ArrowRightIcon className="size-6" />
-                </Button>
-              </Link>
+              <>
+                <p>You&apos;ve claimed all your winnings.</p>
+                <Link to="/auctions">
+                  <Button size="lg" variant="secondary" className="w-full">
+                    View live auctions <ArrowRightIcon className="size-6" />
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
         </RequiresChain>
@@ -68,7 +69,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
         <TransactionDialog
           open={isTxnDialogOpen}
           signatureMutation={claimBidsTxn.claimTx}
-          error={claimBidsTxn.error}
+          error={claimBidsTxn.claimCall.error || claimBidsTxn.claimTx.error} // Catch both simulation and execution errors
           onConfirm={claimBidsTxn.handleClaim}
           mutation={claimBidsTxn.claimReceipt}
           chainId={auction.chainId}
@@ -102,7 +103,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
         />
       </Card>
 
-      <BidInfoCard auction={auction} userBids={userBids} />
+      <UserBidInfoCard auction={auction} />
     </div>
   );
 }
