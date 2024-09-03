@@ -15,24 +15,12 @@ const mockConfig = {
 
 const mockCore = {
   bid: { functions: { getConfig: vi.fn() } },
+  claimBids: { functions: { getConfig: vi.fn() } },
   auction: { functions: { getAuction: vi.fn() } },
 } as unknown as Core;
 
 const mockAddress = "0x1";
 const mockTokenDecimals = 18;
-
-const mockParams = {
-  lotId: 1,
-  amountIn: parseUnits("100", mockTokenDecimals),
-  amountOut: parseUnits("50", mockTokenDecimals),
-  referrerAddress: mockAddress,
-  auctionType: AuctionType.SEALED_BID,
-  chainId: 1,
-  bidderAddress: mockAddress,
-  signedPermit2Approval: "0x",
-} satisfies BidParams;
-
-const mockCallbackData = "0x2";
 
 describe("OriginSdk", () => {
   it("returns an OriginSdk instance with supplied params", () => {
@@ -84,6 +72,19 @@ describe("OriginSdk", () => {
 
 describe("OriginSdk: bid()", () => {
   it("calls bid module's getConfig() with the correct params", async () => {
+    const mockParams = {
+      lotId: 1,
+      amountIn: parseUnits("100", mockTokenDecimals),
+      amountOut: parseUnits("50", mockTokenDecimals),
+      referrerAddress: mockAddress,
+      auctionType: AuctionType.SEALED_BID,
+      chainId: 1,
+      bidderAddress: mockAddress,
+      signedPermit2Approval: "0x",
+    } satisfies BidParams;
+
+    const mockCallbackData = "0x2";
+
     const sdk = new OriginSdk(mockConfig, mockCore);
     await sdk.bid(mockParams, mockCallbackData);
 
@@ -97,8 +98,32 @@ describe("OriginSdk: bid()", () => {
   });
 });
 
+describe("OriginSdk: claimBids()", () => {
+  it("calls claimBids module's getConfig() with the correct params", async () => {
+    const mockParams = {
+      lotId: 1,
+      bids: [1, 2, 3],
+      chainId: 1,
+      auctionType: AuctionType.SEALED_BID,
+    };
+
+    const sdk = new OriginSdk(mockConfig, mockCore);
+    sdk.claimBids(mockParams);
+
+    expect(mockCore.claimBids.functions.getConfig).toHaveBeenCalledWith(
+      mockParams,
+    );
+  });
+});
+
 describe("OriginSdk: getAuction()", () => {
   it("calls auction module's getAuction() with correct params", async () => {
+    const mockParams = {
+      lotId: 1,
+      chainId: 1,
+      auctionType: AuctionType.SEALED_BID,
+    };
+
     const sdk = new OriginSdk(mockConfig, mockCore);
     await sdk.getAuction(mockParams);
 
