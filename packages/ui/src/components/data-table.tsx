@@ -20,8 +20,12 @@ import {
 } from "./";
 import { useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@radix-ui/react-icons";
+import { TableTitle } from "./table-title";
 
 interface DataTableProps<TData, TValue> {
+  title?: React.ReactNode;
+  subtitle?: React.ReactNode;
+  titleRightElement?: React.ReactNode;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onClickRow?: (row: Row<TData>) => void;
@@ -29,6 +33,9 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
+  title,
+  subtitle,
+  titleRightElement,
   columns,
   data,
   emptyText,
@@ -50,8 +57,15 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="font-mono">
-        <Table>
+      <div>
+        {typeof title === "string" && (
+          <TableTitle
+            title={title}
+            subtitle={subtitle}
+            titleRightElement={titleRightElement}
+          />
+        )}
+        <Table className="font-mono">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

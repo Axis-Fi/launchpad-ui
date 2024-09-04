@@ -13,6 +13,8 @@ import { FaucetPage } from "pages/faucet-page";
 import { DeployTokenPage } from "pages/deploy-token-page";
 import { ReferralPage } from "pages/referral";
 import CuratorListPage from "pages/curator-list-page";
+import { PointsPage } from "pages/points-page";
+import { LeaderboardPage } from "pages/leaderboard-page";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
@@ -21,6 +23,8 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "/", element: <AuctionListPage /> },
+      { path: "/points", element: <PointsPage /> },
+      { path: "/leaderboard", element: <LeaderboardPage /> },
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/auctions", element: <AuctionListPage /> },
       { path: "/create/auction", element: <CreateAuctionPage /> },

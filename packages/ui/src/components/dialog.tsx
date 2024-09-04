@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./primitives/dialog";
+import { cn } from "@/utils";
 
 export type DialogProps = React.PropsWithChildren & {
   /** The text to be rendered on the trigger button */
@@ -61,7 +62,10 @@ export function Dialog(props: DialogProps) {
       }}
     >
       <DialogTrigger
-        className="bg-surface-tertiary hover:bg-surface-secondary w-full max-w-sm"
+        className={cn(
+          !props.triggerElement &&
+            "bg-surface-tertiary hover:bg-surface-secondary w-full max-w-sm",
+        )}
         asChild
       >
         {content}
