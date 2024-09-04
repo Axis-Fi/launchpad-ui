@@ -1,5 +1,11 @@
 import { pointsServers } from "@repo/env";
-import { AuthenticationApi, Configuration, PointsApi } from ".";
+import {
+  AuthenticationApi,
+  Configuration,
+  PointsApi,
+  ErrorContext,
+  Middleware,
+} from ".";
 import { environment } from "@repo/env";
 import { Config, signMessage } from "@wagmi/core";
 
@@ -58,8 +64,16 @@ export class PointsClient {
   wagmiConfig: Config;
 
   constructor(config: Configuration = defaultConfig, wagmiConfig: Config) {
-    this.authApi = new AuthenticationApi(config);
-    this.pointsApi = new PointsApi(config);
+    const authMiddleware: Middleware = {
+      onError: this.refreshTokenInterceptor.bind(this),
+    };
+    const fullConfig = new Configuration({
+      ...config,
+      middleware: [authMiddleware],
+    });
+
+    this.authApi = new AuthenticationApi(fullConfig);
+    this.pointsApi = new PointsApi(fullConfig);
     this.wagmiConfig = wagmiConfig;
   }
 
@@ -73,7 +87,7 @@ export class PointsClient {
   // Authentication
   private async sign(
     chainId: number,
-    address: `0x{string}`,
+    address: `0x${string}`,
     statement: string,
   ) {
     const nonce = await this.authApi.nonceGet();
@@ -94,7 +108,17 @@ export class PointsClient {
     return { message, signature };
   }
 
-  async signIn(chainId: number, address: `0x{string}`) {
+  async isRegistered(address: `0x${string}`) {
+    try {
+      return this.authApi.isRegisteredWalletAddressGet({
+        walletAddress: address,
+      });
+    } catch (e) {
+      console.error(`Failed to check registration status`, e);
+    }
+  }
+
+  async signIn(chainId: number, address: `0x${string}`) {
     try {
       const statement = "Sign in to view your Axis points.";
       const { message, signature } = await this.sign(
@@ -109,7 +133,7 @@ export class PointsClient {
     }
   }
 
-  async register(chainId: number, address: `0x{string}`) {
+  async register(chainId: number, address: `0x${string}`) {
     try {
       const statement = "Register to claim your Axis points.";
       const { message, signature } = await this.sign(
@@ -127,7 +151,7 @@ export class PointsClient {
     }
   }
 
-  async linkWallet(chainId: number, address: `0x{string}`) {
+  async linkWallet(chainId: number, address: `0x${string}`) {
     try {
       const statement = "Link wallet to your Axis points account.";
       const { message, signature } = await this.sign(
@@ -150,9 +174,47 @@ export class PointsClient {
     TokenStorage.setAccessToken("");
     TokenStorage.setRefreshToken("");
   }
+
+  //Error interceptor that attempts to refresh a JWT token
+  async refreshTokenInterceptor(errorContext: ErrorContext) {
+    const url = errorContext.url;
+    const init = errorContext.init;
+
+    if (
+      url !== "/sign_in" &&
+      url !== "/refresh" &&
+      errorContext.response?.status === 401
+    ) {
+      const refreshToken = TokenStorage.getRefreshToken();
+
+      if (refreshToken) {
+        try {
+          const response = await this.authApi.refreshPost({
+            body: refreshToken,
+          });
+          TokenStorage.setAccessToken(response.accessToken!);
+          TokenStorage.setRefreshToken(response.refreshToken!);
+
+          const newInit = {
+            ...init,
+            headers: {
+              ...init.headers,
+              Authorization: `Bearer ${response.accessToken}`,
+            },
+          };
+
+          return errorContext.fetch(url, newInit);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      }
+    } else {
+      throw errorContext.error;
+    }
+  }
 }
 
-export const createPointsClient = (config?: Configuration) =>
-  new PointsClient(config);
-
-export const pointsClient = new PointsClient();
+export const createPointsClient = (
+  wagmiConfig: Config,
+  config?: Configuration,
+) => new PointsClient(config, wagmiConfig);
