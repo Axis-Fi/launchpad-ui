@@ -18,13 +18,13 @@ const cols = [
     header: "Rank",
   }),
   columnHelper.display({
-    header: "User",
+    header: "Username",
     cell: ({ row }) => (
       <div className="flex flex-row items-center gap-x-2">
         <img
-          className="max-h-[24px] max-w-[24px] rounded-full"
+          className="max-h-[32px] max-w-[32px]"
           src="/placeholder-img.jpg"
-          alt="user profile"
+          alt="User profile image"
         />
         {row.original.user}
       </div>
@@ -40,7 +40,7 @@ const cols = [
     header: "Ecosystem points",
   }),
   columnHelper.accessor("total_points", {
-    header: "Total points",
+    header: "Total",
     cell: ({ getValue: totalPoints }) => (
       <span className="font-bold">{totalPoints()}</span>
     ),
@@ -123,5 +123,13 @@ const mockLeaderboard: LeaderboardEntry[] = [
 ];
 
 export function Leaderboard() {
-  return <DataTable data={mockLeaderboard} columns={cols} />;
+  return (
+    <DataTable
+      title="Leaderboard"
+      subtitle="Bid on launches, refer your friends and climb the leaderboard"
+      titleRightElement={<div>search icon here</div>}
+      data={mockLeaderboard}
+      columns={cols}
+    />
+  );
 }

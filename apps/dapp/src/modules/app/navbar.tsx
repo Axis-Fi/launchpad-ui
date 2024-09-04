@@ -8,12 +8,22 @@ import {
 } from "@repo/ui";
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { featureToggles } from "@repo/env";
+import { featureToggles, type FeatureToggle } from "@repo/env";
 
 type LinkConfig = {
   label: string;
   href: string;
   target?: React.HTMLProps<HTMLAnchorElement>["target"];
+};
+
+const toggledLink = (
+  link: LinkConfig,
+  toggle: FeatureToggle,
+  notEnabled: boolean = false,
+): [LinkConfig] | [] => {
+  return (notEnabled ? !featureToggles[toggle] : featureToggles[toggle])
+    ? [link]
+    : [];
 };
 
 export const testnetLinks = [
@@ -24,22 +34,26 @@ export const testnetLinks = [
 
 export const defaultLinks = [
   { label: "Launches", href: "/#" },
+  ...toggledLink({ label: "Points", href: "/points" }, "POINTS_PHASE_1"),
   { label: "Curators", href: "/curators" },
-  featureToggles.POINTS_PHASE_1 && { label: "Points", href: "/points" },
-].filter(Boolean);
+] satisfies LinkConfig[];
 
 export const mobileSideLinks = [
-  !featureToggles.POINTS_PHASE_1 && { label: "Referrals", href: "/refer" },
-  featureToggles.POINTS_PHASE_1 && {
-    label: "Leaderboard",
-    href: "/leaderboard",
-  },
+  ...toggledLink(
+    { label: "Referrals", href: "/refer" },
+    "POINTS_PHASE_1",
+    true,
+  ),
+  ...toggledLink(
+    { label: "Leaderboard", href: "/leaderboard" },
+    "POINTS_PHASE_1",
+  ),
   {
     label: "Docs",
     href: "https://axis.finance/docs/overview",
     target: "_blank",
   },
-].filter(Boolean);
+] satisfies LinkConfig[];
 
 export const desktopLinks = [...defaultLinks, ...mobileSideLinks];
 
