@@ -4,7 +4,7 @@ import { Tooltip } from "./tooltip";
 
 export type MetricProps = Omit<React.HTMLProps<HTMLDivElement>, "size"> & {
   label: string;
-  size?: "s" | "m" | "l";
+  size?: "s" | "m" | "l" | "xl";
   metricWeight?: TextWeight;
   className?: string;
   tooltip?: string;
@@ -20,7 +20,8 @@ export function Metric({
   tooltip,
   isLabelSpaced = false,
 }: MetricProps) {
-  const metricSize = size === "l" ? "xl" : size === "m" ? "lg" : "md";
+  const metricSize =
+    size === "xl" ? "2xl" : size === "l" ? "xl" : size === "m" ? "lg" : "md";
 
   return (
     <div className={className}>

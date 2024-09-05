@@ -1,5 +1,4 @@
-import { PageContainer } from "modules/app/page-container";
-import { Points } from "modules/points/points";
+import { Profile } from "modules/points/profile";
 
 export function PointsPage() {
   const isWalletConnected = true;
@@ -8,9 +7,5 @@ export function PointsPage() {
     return <div>Connect your wallet to continue</div>;
   }
 
-  return (
-    <PageContainer title="Origin Points">
-      <Points />
-    </PageContainer>
-  );
+  return <Profile />;
 }
