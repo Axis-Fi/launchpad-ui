@@ -5,7 +5,7 @@ import { cn } from "@/utils";
 import { Avatar } from "./avatar";
 
 const badgeVariants = cva(
-  "inline-flex h-min items-center justify-center rounded-full border uppercase transition-colors border-0 px-4 py-2",
+  "inline-flex h-min items-center justify-center rounded-full border uppercase transition-colors border-0 py-1 px-2 ",
   {
     variants: {
       color: {
@@ -16,8 +16,8 @@ const badgeVariants = cva(
       },
       size: {
         s: "text-sm",
-        m: "px-2 text-md",
-        xl: "text-lg",
+        m: "text-md",
+        xl: "px-4 py-2 text-lg",
         round: "rounded-full w-fit px-1 py-0",
       },
     },

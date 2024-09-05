@@ -1,16 +1,46 @@
 import { useAccount } from "wagmi";
-import {
-  Avatar,
-  Badge,
-  Button,
-  Card,
-  DataTable,
-  Metric,
-  Text,
-} from "@/components";
+import { Avatar, Badge, Button, Metric, Text } from "@/components";
 import { PageContainer } from "modules/app/page-container";
 import { Format } from "modules/token/format";
 import { BlockExplorerLink } from "components/blockexplorer-link";
+import { PhaseTables } from "./phase-tables";
+import { LinkedWalletsTable } from "./linked-wallets-table";
+import { Link, useLocation } from "react-router-dom";
+
+export type Activity = {
+  platform: string;
+  type: "bid" | "refer";
+  target: string | null;
+  contribution: number;
+  multiplier: number;
+  points: number;
+};
+
+type Phase = {
+  referral: number;
+  bidding: number;
+  total: number;
+  activity: Activity[];
+};
+
+type LinkedWallet = {
+  address: string;
+  referrals: number;
+  bidding: number;
+  total: number;
+};
+
+export type UserProfile = {
+  rank: number;
+  username: string;
+  avatar: string;
+  points: {
+    total: number;
+    phase_1: Phase;
+    phase_2: Phase;
+  };
+  linked_wallets: LinkedWallet[];
+};
 
 const mockProfile = {
   rank: 420,
@@ -22,68 +52,78 @@ const mockProfile = {
       referral: 18000,
       bidding: 9000,
       total: 27000,
+      activity: [
+        {
+          platform: "Coinlist",
+          type: "bid",
+          contribution: 100,
+          multiplier: 1,
+          target: "PIZZA",
+          points: 100,
+        },
+        {
+          platform: "Fjord",
+          type: "bid",
+          contribution: 100,
+          multiplier: 1,
+          target: "RAGE",
+          points: 50,
+        },
+        {
+          platform: "Origin",
+          type: "refer",
+          contribution: 100,
+          multiplier: 0.1,
+          target: "Jem",
+          points: 50,
+        },
+      ],
     },
     phase_2: {
       referral: 1000,
       bidding: 500,
       total: 1500,
+      activity: [
+        {
+          platform: "Origin",
+          type: "bid",
+          target: "AU",
+          contribution: 100,
+          multiplier: 1,
+          points: 2000,
+        },
+        {
+          platform: "Origin",
+          type: "refer",
+          target: "0xdef",
+          contribution: 100,
+          multiplier: 0.1,
+          points: 500,
+        },
+      ],
     },
   },
-  activity: {
-    phase_1: [
-      {
-        platform: "Coinlist",
-        type: "bid",
-        token: "PIZZA",
-        points: 100,
-      },
-      {
-        platform: "Fjord",
-        type: "bid",
-        token: "RAGE",
-        points: 50,
-      },
-      {
-        platform: "Origin",
-        type: "refer",
-        token: null,
-        points: 50,
-      },
-    ],
-    phase_2: [
-      {
-        platform: "Origin",
-        type: "bid",
-        token: "AU",
-        action: "bid",
-        points: 2000,
-      },
-      {
-        platform: "Origin",
-        type: "refer",
-        token: null,
-        points: 500,
-      },
-    ],
-  },
-  linked_wallets: ["0x123", "0x456"],
-  linked_wallets_points: {
-    "0x123": {
+  linked_wallets: [
+    {
+      address: "0x123",
       referrals: 100,
       bidding: 500,
       total: 600,
     },
-    "0x456": {
+    {
+      address: "0x456",
       referrals: 0,
       bidding: 10,
       total: 10,
     },
-  },
-};
+  ],
+} satisfies UserProfile;
 
 export function Profile() {
+  const location = useLocation();
   const { address, chainId } = useAccount();
   const profile = mockProfile;
+
   return (
     <>
       <div className="axis-rainbow-reverse p-xl flex h-[224px] w-full items-center">
@@ -112,49 +152,17 @@ export function Profile() {
             </div>
           </div>
           <div className="gap-md flex flex-row">
-            <Button variant="secondary">Edit profile</Button>
+            <Button variant="secondary" asChild>
+              <Link to={`${location.pathname}/edit`}>Edit profile</Link>
+            </Button>
             <Button variant="primary">Share ref link</Button>
           </div>
         </div>
       </div>
 
       <PageContainer>
-        <Card>
-          <DataTable
-            title="Linked Wallets (private)"
-            subtitle="Link more wallets and get more points"
-            data={profile.linked_wallets}
-            columns={[
-              {
-                header: "Wallet Address",
-              },
-              {
-                header: "Bidding points",
-              },
-              {
-                header: "Referral points",
-              },
-              {
-                header: "Total",
-              },
-            ]}
-          />
-        </Card>
-        <Card>
-          <DataTable
-            title="Phase 1 points"
-            subtitle="Refer friends to earn more points"
-            data={profile.linked_wallets}
-            columns={[
-              {
-                header: "Activity",
-              },
-              {
-                header: "Points",
-              },
-            ]}
-          />
-        </Card>
+        <PhaseTables profile={profile} />
+        <LinkedWalletsTable profile={profile} />
       </PageContainer>
     </>
   );

@@ -1,6 +1,6 @@
 import { Profile } from "modules/points/profile";
 
-export function PointsPage() {
+export function ProfilePage() {
   const isWalletConnected = true;
 
   if (!isWalletConnected) {

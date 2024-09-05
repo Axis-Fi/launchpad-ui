@@ -43,11 +43,13 @@ export function Dialog(props: DialogProps) {
     setOpen(false);
   };
 
-  const children = React.isValidElement(props.children)
-    ? React.cloneElement(props.children, {
-        setDialogOpen: setOpen,
-      })
-    : props.children;
+  // only pass setDialogOpen to Components, not HTML elements
+  const children =
+    typeof props.children?.type === "function"
+      ? React.cloneElement(props.children, {
+          setDialogOpen: setOpen,
+        })
+      : props.children;
 
   const content = props.triggerElement ?? (
     <Button variant="secondary">{props.triggerContent}</Button>
