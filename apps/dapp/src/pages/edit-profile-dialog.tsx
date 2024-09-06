@@ -64,7 +64,7 @@ export function EditProfileDialog() {
         <DialogHeader className="items-start">
           <Text
             mono
-            size="md"
+            size="sm"
             uppercase
             className="leading-none tracking-[0.1em]"
           >
