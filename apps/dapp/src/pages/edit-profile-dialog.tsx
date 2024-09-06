@@ -112,9 +112,9 @@ export function EditProfileDialog() {
             <FormField
               name="username"
               render={({ field }) => (
-                <FormItem className="gap-y-xs flex flex-col">
+                <FormItem className="flex flex-col gap-y-1">
                   <FormLabel>
-                    <Text color="secondary" mono uppercase size="md" spaced>
+                    <Text color="secondary" mono uppercase size="sm" spaced>
                       Username
                     </Text>
                   </FormLabel>
