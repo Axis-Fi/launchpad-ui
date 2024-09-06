@@ -73,7 +73,7 @@ export function EditProfileDialog() {
         </DialogHeader>
         <Form {...form}>
           <form
-            className="gap-md grid py-4"
+            className="gap-lg grid py-4"
             onSubmit={form.handleSubmit(handleSubmit)}
           >
             <div className="gap-x-md flex items-end">
