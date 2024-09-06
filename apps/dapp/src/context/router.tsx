@@ -13,27 +13,28 @@ import { FaucetPage } from "pages/faucet-page";
 import { DeployTokenPage } from "pages/deploy-token-page";
 import { ReferralPage } from "pages/referral";
 import CuratorListPage from "pages/curator-list-page";
-import { PointsPage } from "pages/points-page";
+import { ProfilePage } from "pages/profile-page";
 import { LeaderboardPage } from "pages/leaderboard-page";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
-    path: "/",
+    path: "/*",
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      { path: "/", element: <AuctionListPage /> },
-      { path: "/points", element: <PointsPage /> },
-      { path: "/leaderboard", element: <LeaderboardPage /> },
-      { path: "/dashboard", element: <Dashboard /> },
-      { path: "/auctions", element: <AuctionListPage /> },
-      { path: "/create/auction", element: <CreateAuctionPage /> },
-      { path: "/curator", element: <CuratorPage /> },
-      { path: "/curators", element: <CuratorListPage /> },
-      { path: "/faucet", element: <FaucetPage /> },
-      { path: "/deploy", element: <DeployTokenPage /> },
-      { path: "/refer", element: <ReferralPage /> },
-      { path: "/:chainId/:lotId", element: <AuctionPage /> },
+      { path: "", element: <AuctionListPage /> },
+      { path: "points/*", element: <ProfilePage /> },
+      { path: "profile/*", element: <ProfilePage /> },
+      { path: "leaderboard", element: <LeaderboardPage /> },
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "auctions", element: <AuctionListPage /> },
+      { path: "create/auction", element: <CreateAuctionPage /> },
+      { path: "curator", element: <CuratorPage /> },
+      { path: "curators", element: <CuratorListPage /> },
+      { path: "faucet", element: <FaucetPage /> },
+      { path: "deploy", element: <DeployTokenPage /> },
+      { path: "refer", element: <ReferralPage /> },
+      { path: ":chainId/:lotId", element: <AuctionPage /> },
     ],
   },
 ]);

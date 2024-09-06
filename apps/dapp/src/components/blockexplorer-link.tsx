@@ -25,7 +25,7 @@ export function BlockExplorerLink({
 }) {
   const chain = activeChains.find((c) => c.id === chainId);
 
-  if (!chain) throw new Error("Unable to find chain for BlockExplorer");
+  if (!chain) return null;
   const blockExplorer = getBlockExplorer(chain);
   const target = hash ?? address ?? "";
   const path = hash ? "tx/" : "address/";

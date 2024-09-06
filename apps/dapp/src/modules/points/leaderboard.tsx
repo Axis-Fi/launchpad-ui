@@ -127,7 +127,7 @@ export function Leaderboard() {
     <DataTable
       title="Leaderboard"
       subtitle="Bid on launches, refer your friends and climb the leaderboard"
-      titleRightElement={<div>search icon here</div>}
+      titleRightElement={<div>{/*search icon here*/}</div>}
       data={mockLeaderboard}
       columns={cols}
     />
