@@ -64,7 +64,7 @@ export function EditProfileDialog() {
         <DialogHeader className="items-start">
           <Text
             mono
-            size="md"
+            size="sm"
             uppercase
             className="leading-none tracking-[0.1em]"
           >
@@ -73,7 +73,7 @@ export function EditProfileDialog() {
         </DialogHeader>
         <Form {...form}>
           <form
-            className="gap-md grid py-4"
+            className="gap-lg grid py-4"
             onSubmit={form.handleSubmit(handleSubmit)}
           >
             <div className="gap-x-md flex items-end">
@@ -112,9 +112,9 @@ export function EditProfileDialog() {
             <FormField
               name="username"
               render={({ field }) => (
-                <FormItem className="gap-y-xs flex flex-col">
+                <FormItem className="flex flex-col gap-y-1">
                   <FormLabel>
-                    <Text color="secondary" mono uppercase size="md" spaced>
+                    <Text color="secondary" mono uppercase size="sm" spaced>
                       Username
                     </Text>
                   </FormLabel>
