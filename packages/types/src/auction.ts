@@ -44,7 +44,8 @@ export type AuctionLinkId =
   | "discord"
   | "website"
   | "farcaster"
-  | "twitter";
+  | "twitter"
+  | "externalSite";
 
 export type AuctionLink = NonNullable<Auction["info"]>["links"][number];
 

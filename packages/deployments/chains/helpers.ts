@@ -1,6 +1,6 @@
 import { Address } from "@repo/types";
 import coreSample from "../axis-core/.arbitrum-one.json";
-import peripherySample from "../axis-periphery/.arbitrum-one.json";
+import peripherySample from "../axis-periphery/.blast.json";
 
 type AxisCoreAddresses = Record<keyof typeof coreSample, string>;
 type AxisPeripheryAddresses = Record<keyof typeof peripherySample, string>;
@@ -43,6 +43,9 @@ export function extractCallbacks(addresses: Partial<AxisPeripheryAddresses>) {
       ] as Address,
       uniV3Dtl: addresses[
         "deployments.callbacks.BatchUniswapV3DirectToLiquidity"
+      ] as Address,
+      baselineMachiLaunch: addresses[
+        "deployments.callbacks.BaselineMachiLaunch"
       ] as Address,
     },
   };

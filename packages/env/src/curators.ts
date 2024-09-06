@@ -4,7 +4,7 @@ export const allowedCurators: Curator[] = [
   {
     name: "Baseline Markets",
     type: "platform",
-    address: "0x0000000000000000000000000000000000000000",
+    address: "0x32f33a14e36Cb75b3F58E1822418599e3f075Ffb",
     twitter: "baselinemarkets",
     website: "https://www.baseline.markets/",
     avatar: "/images/baseline-markets.png",
