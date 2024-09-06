@@ -12,6 +12,7 @@ import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
 import { useSafeRefetch } from "./use-safe-refetch";
+import { externalAuctionInfo } from "@repo/env/src/external-auction-info";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -47,10 +48,30 @@ export function useAuctions(): AuctionsResult {
 
   const rawAuctions = [...data.batchAuctionLots].flat() ?? [];
 
+  console.log("raw", rawAuctions);
+
+  // Add external data to auctions before processing
+  const augmentedAuctions = rawAuctions.map((auction) => {
+    let info = auction.info;
+
+    // If no info provided on IPFS, check if we have it locally
+    if (!info) {
+      // See if we have the auction info locally
+      info = externalAuctionInfo[auction.id];
+    }
+
+    return {
+      ...auction,
+      info,
+    };
+  });
+
   // Filter out cancelled batch auctions before querying additional data
-  const filteredAuctions = rawAuctions.filter(
+  const filteredAuctions = augmentedAuctions.filter(
     (auction) => getAuctionStatus(auction) !== "cancelled",
   );
+
+  console.log("no cancelled", filteredAuctions.length);
 
   const { getToken } = useTokenLists();
 
@@ -77,6 +98,8 @@ export function useAuctions(): AuctionsResult {
       };
     })
     .sort(sortAuction);
+
+  console.log("final", auctions.length);
 
   return {
     data: auctions,

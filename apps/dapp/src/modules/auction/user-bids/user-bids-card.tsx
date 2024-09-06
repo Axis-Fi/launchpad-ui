@@ -4,15 +4,14 @@ import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "lucide-react";
 
 import { Badge, Button, Card } from "@repo/ui";
-import type { BatchAuction, PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@repo/types";
 import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
-import { BidInfoCard } from "./bid-info-card";
-import { BidOutcome } from "../bid-outcome";
+import { UserBidInfoCard } from "./user-bid-info-card";
+import { BidOutcome } from "./bid-outcome";
 
-export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
-  const auction = _auction as BatchAuction;
+export function UserBidsCard({ auction }: PropsWithAuction) {
   const { address } = useAccount();
   const [isTxnDialogOpen, setTxnDialogOpen] = useState(false);
   const claimBidsTxn = useClaimBids(auction);
@@ -30,9 +29,6 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
     (bid) => bid.status === "claimed" || bid.status === "refunded",
   );
 
-  const isWaiting =
-    claimBidsTxn.claimTx.isPending || claimBidsTxn.claimReceipt.isLoading;
-
   const buttonText =
     userTotalSuccessfulBidAmount > 0 ? "Claim winnings" : "Claim refund";
   const badgeText = userTotalSuccessfulBidAmount > 0 ? "You Won!" : "You Lost";
@@ -42,7 +38,6 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
     <div className="gap-y-md flex flex-col">
       <Card
         title="Claim"
-        className="lg:w-[496px]"
         headerRightElement={<Badge color={badgeColour}>{badgeText}</Badge>}
       >
         <RequiresChain chainId={auction.chainId}>
@@ -59,11 +54,14 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
               </Button>
             )}
             {userHasClaimed && (
-              <Link to="/auctions">
-                <Button size="lg" variant="secondary" className="w-full">
-                  View live auctions <ArrowRightIcon className="size-6" />
-                </Button>
-              </Link>
+              <>
+                <p>You&apos;ve claimed all your winnings.</p>
+                <Link to="/auctions">
+                  <Button size="lg" variant="secondary" className="w-full">
+                    View live auctions <ArrowRightIcon className="size-6" />
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
         </RequiresChain>
@@ -82,7 +80,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
             setTxnDialogOpen(open);
           }}
           hash={claimBidsTxn.claimTx.data}
-          disabled={isWaiting}
+          disabled={claimBidsTxn.isWaiting}
           screens={{
             idle: {
               Component: () => (
@@ -105,7 +103,7 @@ export function UserBidsClaimCard({ auction: _auction }: PropsWithAuction) {
         />
       </Card>
 
-      <BidInfoCard auction={auction} userBids={userBids} />
+      <UserBidInfoCard auction={auction} />
     </div>
   );
 }

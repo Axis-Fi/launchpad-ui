@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, Link, Text, Tooltip } from "@repo/ui";
+import { Avatar, Badge, Button, Card, Link, Text, Tooltip } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { PageContainer } from "modules/app/page-container";
 import { allowedCurators } from "@repo/env";
@@ -7,16 +7,23 @@ import { contact } from "@repo/env/src/metadata";
 import { ArrowRightIcon } from "lucide-react";
 
 export default function CuratorListPage() {
+  const [newestCurator, ...curators] = allowedCurators;
+
   return (
     <PageContainer
       id="__AXIS_ORIGIN_CURATORS_PAGE__"
-      containerClassName="items-center mt-12"
+      containerClassName="mt-12 lg:mx-0 items-center"
     >
-      <div className="mx-2 my-auto max-w-[1200px] space-y-6 lg:mx-0">
-        {allowedCurators.map((c) => (
+      <>
+        <CuratorCard
+          key={newestCurator.address}
+          curator={newestCurator}
+          className="gradient-border gradient-border-shift"
+        />
+        {curators.map((c) => (
           <CuratorCard key={c.address} curator={c} />
         ))}
-      </div>
+      </>
 
       <div className="flex flex-col items-center justify-center py-8">
         <Button variant="ghost" asChild>
@@ -32,41 +39,57 @@ export default function CuratorListPage() {
 export function CuratorCard({
   curator,
   hideButton,
+  className,
 }: {
   curator: Curator;
   hideButton?: boolean;
+  className?: string;
 }) {
   return (
-    <Card>
-      <div className="flex flex-col justify-between lg:flex-row">
-        <div className="flex">
-          <Avatar
-            className="border-primary size-[100px] border-4 p-2 lg:size-[120px]"
-            src={curator.avatar}
-          />
-          <div className="ml-6 flex flex-col items-start justify-between">
-            <div className="flex items-center">
-              <Text mono size="xl">
-                {curator.name}
-              </Text>
-              <SocialRow
-                className="ml-4"
-                iconClassName="size-6"
-                twitter={`https://x.com/${curator.twitter}`}
-                website={curator.website}
-              />
-            </div>
-            <Text className="mt-2">{curator.description}</Text>
+    <Card className={className}>
+      <div className="flex justify-between space-x-6">
+        <Avatar
+          className="border-primary m-auto size-[100px] lg:size-[120px]"
+          src={curator.avatar}
+        />
+        <div className="flex w-full flex-col items-start justify-between">
+          <div className="flex flex-row">
+            <Text mono size="xl">
+              {curator.name}
+            </Text>
+            <SocialRow
+              className="m-auto ml-2"
+              iconClassName="size-6"
+              twitter={`https://x.com/${curator.twitter}`}
+              website={curator.website}
+            />
           </div>
+
+          <Text className="mt-2 max-w-[60ch]">{curator.description}</Text>
         </div>
 
-        {!hideButton && (
-          <div className="mt-2 flex flex-row justify-end gap-2 lg:mt-0 lg:flex-col ">
-            <Tooltip content="Coming Soon">
-              <Button disabled>View Launches</Button>
-            </Tooltip>
+        <div className="flex flex-col justify-between">
+          <div className="flex justify-end">
+            <Badge className="w-min justify-end" size="m">
+              {curator.type === "curator" && "Curator"}
+              {curator.type === "platform" && "Platform"}
+            </Badge>
           </div>
-        )}
+          {!(hideButton ?? false) && (
+            <div className="m-1 flex flex-row justify-end gap-2 lg:mt-0">
+              <Tooltip content="Coming Soon">
+                <Button variant="secondary" size="md" disabled>
+                  View Profile
+                </Button>
+              </Tooltip>
+              <Tooltip content="Coming Soon">
+                <Button variant="primary" size="md" disabled>
+                  View Launches
+                </Button>
+              </Tooltip>
+            </div>
+          )}
+        </div>
       </div>
     </Card>
   );

@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./primitives/dialog";
+import { cn } from "@/utils";
 
 export type DialogProps = React.PropsWithChildren & {
   /** The text to be rendered on the trigger button */
@@ -42,11 +43,13 @@ export function Dialog(props: DialogProps) {
     setOpen(false);
   };
 
-  const children = React.isValidElement(props.children)
-    ? React.cloneElement(props.children, {
-        setDialogOpen: setOpen,
-      })
-    : props.children;
+  // only pass setDialogOpen to Components, not HTML elements
+  const children =
+    typeof props.children?.type === "function"
+      ? React.cloneElement(props.children, {
+          setDialogOpen: setOpen,
+        })
+      : props.children;
 
   const content = props.triggerElement ?? (
     <Button variant="secondary">{props.triggerContent}</Button>
@@ -61,7 +64,10 @@ export function Dialog(props: DialogProps) {
       }}
     >
       <DialogTrigger
-        className="bg-surface-tertiary hover:bg-surface-secondary w-full max-w-sm"
+        className={cn(
+          !props.triggerElement &&
+            "bg-surface-tertiary hover:bg-surface-secondary w-full max-w-sm",
+        )}
         asChild
       >
         {content}

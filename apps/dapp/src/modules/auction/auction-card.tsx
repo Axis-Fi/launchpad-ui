@@ -68,6 +68,8 @@ function AuctionCardDetails(
   const isFPB = props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const hasCurator = !!props.auction.curator && props.auction.curatorApproved;
 
+  const externalSite = getLinkUrl("externalSite", props.auction);
+
   return (
     <div
       className={cn("flex flex-col justify-between", props.isGrid && "h-1/2")}
@@ -143,7 +145,10 @@ function AuctionCardDetails(
           <AuctionMetric size="s" id="curator" auction={props.auction} />
         )}
 
-        <Link className={cn("self-end")} to={getAuctionPath(props.auction)}>
+        <Link
+          className={cn("self-end")}
+          to={externalSite ?? getAuctionPath(props.auction)}
+        >
           <Button
             disabled={props.disabledViewButton}
             size={props.isGrid ? "sm" : "lg"}

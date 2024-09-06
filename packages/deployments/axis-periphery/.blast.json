@@ -4,5 +4,6 @@
   "deployments.callbacks.BatchTokenAllowlist": "0x989Dc1DAa66139ed26361cc3A24CdA372370a7dA",
   "deployments.callbacks.BatchAllocatedMerkleAllowlist": "0x986827E5FC7ECE5704449aAA3B4A4b16b417b8e7",
   "deployments.callbacks.BatchUniswapV2DirectToLiquidity": "0xE6512c5F23403585916C936a194D63880DAd7EDF",
-  "deployments.callbacks.BatchUniswapV3DirectToLiquidity": "0xE6B27B702DB07a3a7b6d5572f9fA5dc7F201a439"
+  "deployments.callbacks.BatchUniswapV3DirectToLiquidity": "0xE6B27B702DB07a3a7b6d5572f9fA5dc7F201a439",
+  "deployments.callbacks.BaselineMachiLaunch": "0xEF818C84cced3e263573b28733A2A0278CE0d985"
 }

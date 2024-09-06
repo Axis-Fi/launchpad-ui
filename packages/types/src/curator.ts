@@ -8,4 +8,5 @@ export type Curator = {
   twitter?: string;
   website?: string;
   reportURL?: string;
+  type: "curator" | "platform";
 };

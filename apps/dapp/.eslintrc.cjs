@@ -18,5 +18,6 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/ban-ts-comment": 1,
+    // "@typescript-eslint/strict-boolean-expressions": "error",
   },
 };

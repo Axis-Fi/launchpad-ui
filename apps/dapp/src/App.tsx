@@ -5,9 +5,12 @@ import { AppControl } from "modules/app/app-control";
 import ScrollToTop from "modules/app/scroll-to-top";
 import { ReferrerChecker } from "modules/app/referrer-checker";
 
+const disableDevTools =
+  import.meta.env.VITE_DISABLE_REACT_QUERY_DEV_TOOLS === "true";
+
 function App() {
   return (
-    <Providers>
+    <Providers disableDevTools={disableDevTools}>
       <ScrollToTop />
       <ReferrerChecker />
       <div className="flex h-dvh flex-col justify-between overflow-x-hidden">

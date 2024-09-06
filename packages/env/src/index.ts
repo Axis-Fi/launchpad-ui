@@ -5,3 +5,4 @@ export { default as cloakServers } from "./cloak-servers";
 export { default as ipfsServers } from "./ipfs-servers";
 export { default as metadata } from "./metadata";
 export * from "./curators";
+export * from "./feature-toggles";

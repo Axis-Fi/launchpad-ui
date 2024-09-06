@@ -20,7 +20,7 @@ export function NotConnectedClaimCard({ auction: _auction }: PropsWithAuction) {
               alt="Axis Logo"
             />
             <Text size="xl">Auction has ended</Text>
-            <Text>Claim your tokens</Text>
+            <Text>Connect your wallet to claim your tokens</Text>
           </div>
         </div>
         <RequiresChain className="w-full max-w-lg" chainId={auction.chainId} />

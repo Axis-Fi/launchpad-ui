@@ -12,6 +12,18 @@
       rgba(246, 172, 84, 1) 79%,
       rgba(242, 103, 64, 1) 100%
     );
+    --axis-rainbow-reverse: linear-gradient(
+      30deg,
+      rgba(255, 102, 68, 1) 0%,
+      rgba(254, 176, 85, 1) 12.5%,
+      rgba(255, 216, 139, 1) 24.99%,
+      rgba(253, 238, 162, 1) 37.49%,
+      rgba(244, 245, 193, 1) 49.99%,
+      rgba(242, 254, 165, 1) 62.48%,
+      rgba(205, 246, 117, 1) 74.98%,
+      rgba(117, 200, 246, 1) 87.48%,
+      rgba(117, 161, 246, 1) 100%
+    );
   }
 
   body {
@@ -60,6 +72,10 @@
     background: var(--axis-rainbow);
   }
 
+  .axis-rainbow-reverse {
+    background: var(--axis-rainbow-reverse);
+  }
+
   .nav-separator {
     @apply axis-rainbow absolute left-0 h-1 w-screen;
   }
@@ -72,6 +88,43 @@
 
   .loading-indicator-fast {
     animation: rotateAnimation 1s linear infinite;
+  }
+
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: var(--axis-rainbow);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .gradient-border-shift::before {
+    background-size: 200% 200%;
+    animation: shift-gradient 2.8s ease infinite;
+  }
+
+  @keyframes shift-gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   @keyframes rotateAnimation {

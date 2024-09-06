@@ -1,11 +1,8 @@
-import { formatUnits } from "viem";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Text, Card, DataTable } from "@repo/ui";
-import type {
-  PropsWithAuction,
-  BatchAuction,
-  BatchAuctionBid,
-} from "@repo/types";
+import { formatUnits } from "viem";
+import { useAccount } from "wagmi";
+import type { BatchAuctionBid, PropsWithAuction } from "@repo/types";
+import { Card, DataTable, Text } from "@/components";
 import { trimCurrency } from "utils/currency";
 import { shorten } from "utils/number";
 
@@ -28,10 +25,14 @@ const TableHeader = ({ children }: { children: React.ReactNode }) => {
 
 const column = createColumnHelper<BatchAuctionBid>();
 
-type UserBidsCard = PropsWithAuction & { userBids: BatchAuctionBid[] };
+export function UserBidInfoCard({ auction }: PropsWithAuction) {
+  const { address } = useAccount();
 
-export function BidInfoCard({ auction: _auction, userBids }: UserBidsCard) {
-  const auction = _auction as BatchAuction;
+  const userBids = auction.bids.filter(
+    (bid) => bid.bidder.toLowerCase() === address?.toLowerCase(),
+  );
+
+  // if (userBids.length === 0) return null;
 
   const columns = [
     column.accessor("amountIn", {

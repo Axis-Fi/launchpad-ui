@@ -1,4 +1,4 @@
-import { BatchAuction, PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@repo/types";
 import { useVestingTokenId } from "modules/auction/hooks/use-vesting-tokenid";
 import { useDerivativeModule } from "modules/auction/hooks/use-derivative-module";
 import { useVestingRedeem } from "modules/auction/hooks/use-vesting-redeem";
@@ -10,12 +10,10 @@ type RedeemVestedTokensTxnProps = {
 } & PropsWithAuction;
 
 export function RedeemVestedTokensTxn({
-  auction: _auction,
+  auction,
   onClose,
   onSuccess,
 }: RedeemVestedTokensTxnProps) {
-  const auction = _auction as BatchAuction;
-
   const { data: vestingModuleAddress } = useDerivativeModule({
     lotId: auction.lotId,
     chainId: auction.chainId,
