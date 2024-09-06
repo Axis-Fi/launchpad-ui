@@ -53,7 +53,7 @@ export function FaucetPage() {
   const disabled = !mint.mintCall.isSuccess;
 
   return (
-    <PageContainer title="Faucet">
+    <PageContainer id="__AXIS_ORIGIN_FAUCET_PAGE__" title="Faucet">
       <div className="mx-auto flex max-w-sm flex-col justify-center gap-2">
         <LabelWrapper content="Token">
           {options.length ? (

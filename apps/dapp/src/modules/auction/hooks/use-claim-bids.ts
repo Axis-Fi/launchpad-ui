@@ -6,12 +6,12 @@ import {
   useWriteContract,
 } from "wagmi";
 import { BatchAuction } from "@repo/types";
-import { getAuctionHouse } from "utils/contracts";
 import { useAuction } from "./use-auction";
+import { useSdk } from "@repo/sdk/react";
 
 export function useClaimBids(auction: BatchAuction) {
   const { address: userAddress } = useAccount();
-  const { abi, address } = getAuctionHouse(auction);
+  const sdk = useSdk();
 
   const bids = auction.bids
     .filter(
@@ -20,17 +20,21 @@ export function useClaimBids(auction: BatchAuction) {
         b.status !== "claimed" &&
         b.status !== "refunded",
     )
-    .map((b) => BigInt(b.bidId));
+    .map((b) => Number(b.bidId));
 
-  // TODO get total number of refunds, refund amount, payouts, and payout amount that the user is claimed
-  // Display this back to them on the settle page in the confirm dialog box.
+  const { abi, address, functionName, args } = sdk.claimBids({
+    lotId: Number(auction.lotId),
+    bids,
+    auctionType: auction.auctionType,
+    chainId: auction.chainId,
+  });
 
   const claimCall = useSimulateContract({
     abi,
     address,
+    functionName,
+    args,
     chainId: auction.chainId,
-    functionName: "claimBids",
-    args: [BigInt(auction.lotId), bids],
   });
 
   const claimTx = useWriteContract();
@@ -41,6 +45,7 @@ export function useClaimBids(auction: BatchAuction) {
   );
 
   // When someone claims their bids, refetch the auction from the subgraph so the dapp has the latest data
+  // TODO: we should optimistically update the auction bids here instead
   useEffect(() => {
     if (claimReceipt.isSuccess) {
       setTimeout(() => refetchAuction(), 2500);
@@ -53,28 +58,21 @@ export function useClaimBids(auction: BatchAuction) {
     }
   };
 
-  const handleClaimSelected = (bids: bigint[]) => {
-    claimTx.writeContract({
-      abi,
-      address,
-      chainId: auction.chainId,
-      functionName: "claimBids",
-      args: [BigInt(auction.lotId), bids],
-    });
-  };
-
   const isWaiting =
     claimTx.isPending ||
     claimReceipt.isLoading ||
     claimCall.isPending ||
     claimCall.isLoading;
 
+  const error = [claimReceipt, claimTx, claimCall].find((m) => m.isError)
+    ?.error;
+
   return {
     handleClaim,
-    handleClaimSelected,
     claimCall,
     claimReceipt,
     claimTx,
     isWaiting,
+    error,
   };
 }

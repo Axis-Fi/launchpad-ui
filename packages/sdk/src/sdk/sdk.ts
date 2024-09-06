@@ -10,6 +10,7 @@ import type { BidParams, BidConfig } from "../core/bid";
 import type { GetAuctionParams, GetAuctionResult } from "../core/auction";
 import type { Core } from "../core";
 import type { GetTokenPriceParams } from "../core/tokens";
+import type { ClaimBidsParams, ClaimBidsConfig } from "../core/claim-bids";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -87,10 +88,10 @@ class OriginSdk {
    * - Encrypts the bid via the cloak service
    *
    * @todo
-   * - Add cloak service link in side effect text above
+   * - Add cloak service repo link in side effect text above
    *
    * @param params - Unprimed bid parameters
-   * @returns Primed contract config for the bid transaction
+   * @returns Contract config for the bid transaction
    *
    * @example
    * import { sdk } from "./sdk"
@@ -121,6 +122,30 @@ class OriginSdk {
       this.core.auction,
       this.deployments,
     );
+  }
+
+  /**
+   * Gets the contract config required to execute a claimBids transaction on the auction house smart contract.
+   *
+   * @param params claimBids parameters
+   * @returns Contract config for the claimBids transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.claimBids({
+   *     lotId: 1,
+   *     bids: [1, 2, 3],
+   *     chainId: 1,
+   *     auctionType: AuctionType.SEALED_BID,
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  claimBids(params: ClaimBidsParams): ClaimBidsConfig {
+    return this.core.claimBids.functions.getConfig(params);
   }
 }
 

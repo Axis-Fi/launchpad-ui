@@ -1,4 +1,4 @@
-import { BatchAuction, PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
 
@@ -7,17 +7,16 @@ type ClaimVestingDervivativeTxnProps = {
 } & PropsWithAuction;
 
 export function ClaimVestingDervivativeTxn({
-  auction: _auction,
+  auction,
   onClose,
 }: ClaimVestingDervivativeTxnProps) {
-  const auction = _auction as BatchAuction;
   const claimBidsTxn = useClaimBids(auction);
 
   return (
     <TransactionDialog
       open={true}
       signatureMutation={claimBidsTxn.claimTx}
-      error={claimBidsTxn.claimCall.error || claimBidsTxn.claimTx.error}
+      error={claimBidsTxn.error}
       onConfirm={claimBidsTxn.handleClaim}
       mutation={claimBidsTxn.claimReceipt}
       chainId={auction.chainId}
@@ -39,7 +38,7 @@ export function ClaimVestingDervivativeTxn({
               </div>
               <div className="text-center">
                 After this transaction confirms, you&apos;ll be able to redeem
-                your vested tokens.
+                your vested tokens if the vesting period has started.
               </div>
             </>
           ),

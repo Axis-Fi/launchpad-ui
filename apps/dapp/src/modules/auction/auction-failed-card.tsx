@@ -9,7 +9,7 @@ import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { shorten } from "utils/number";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
-import { getMinFilled } from "../utils/auction-details";
+import { getMinFilled } from "./utils/auction-details";
 
 const getFailReason = (auction: Auction) => {
   // Auction was cancelled by the auction creator
@@ -32,7 +32,7 @@ const getFailReason = (auction: Auction) => {
   return "The auction did not settle successfully";
 };
 
-export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
+export function AuctionFailedCard({ auction }: PropsWithAuction) {
   const { address } = useAccount();
   const [isTxnDialogOpen, setTxnDialogOpen] = useState(false);
   const claimBidsTxn = useClaimBids(auction);
@@ -54,9 +54,6 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
     (acc, bid) => acc + Number(bid.settledAmountInRefunded ?? 0),
     0,
   );
-
-  const isWaiting =
-    claimBidsTxn.claimTx.isPending || claimBidsTxn.claimReceipt.isLoading;
 
   const failReason = getFailReason(auction);
 
@@ -114,7 +111,7 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
         <TransactionDialog
           open={isTxnDialogOpen}
           signatureMutation={claimBidsTxn.claimTx}
-          error={claimBidsTxn.claimTx.error}
+          error={claimBidsTxn.error}
           onConfirm={claimBidsTxn.handleClaim}
           mutation={claimBidsTxn.claimReceipt}
           chainId={auction.chainId}
@@ -125,7 +122,7 @@ export function AuctionFailedClaimCard({ auction }: PropsWithAuction) {
             setTxnDialogOpen(open);
           }}
           hash={claimBidsTxn.claimTx.data}
-          disabled={isWaiting}
+          disabled={claimBidsTxn.isWaiting}
           screens={{
             idle: {
               Component: () => (

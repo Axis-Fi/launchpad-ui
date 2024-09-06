@@ -32,7 +32,7 @@ export function CuratorPage() {
   }));
 
   return (
-    <PageContainer containerClassName="mt-8">
+    <PageContainer id="__AXIS_ORIGIN_CURATOR_PAGE__" containerClassName="mt-8">
       {curator && (
         <div className="px-4">
           <CuratorCard curator={curator} />

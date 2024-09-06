@@ -7,7 +7,10 @@ type PageContainerProps = {
 
 export function PageContainer(props: PageContainerProps) {
   return (
-    <div className="max-w-limit mx-auto pb-20 pt-2 lg:pb-0 lg:pt-6">
+    <div
+      id={props.id}
+      className="max-w-limit mx-auto pb-20 pt-2 lg:pb-0 lg:pt-6"
+    >
       {props.title && (
         <Text size="lg" className="mb-8 ml-2 lg:ml-0">
           {props.title}{" "}

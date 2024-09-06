@@ -2,11 +2,10 @@ import { Link } from "react-router-dom";
 import { ArrowRightIcon } from "lucide-react";
 import { Badge, Button, Card, Text } from "@repo/ui";
 
-export function NoUserBidsClaimCard() {
+export function NoUserBidsCard() {
   return (
     <Card
-      title="Claim"
-      className="h-[100%] w-[496px]"
+      title="Auction settled"
       headerRightElement={<Badge color="ghost">No bid</Badge>}
     >
       <div className="flex flex-col gap-y-4">

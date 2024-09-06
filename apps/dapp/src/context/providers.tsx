@@ -4,6 +4,7 @@ import { AuthProvider } from "./auth-provider";
 import { OriginSdkProvider } from "@repo/sdk/react";
 import { OriginSdk } from "@repo/sdk";
 import { getCloakServer } from "@repo/env";
+import { DialogProvider } from "./dialog-provider";
 
 const cloakServer = getCloakServer();
 
@@ -24,7 +25,7 @@ export function Providers(props: ProviderProps) {
         <AuthProvider>
           <OriginSdkProvider sdk={sdk}>
             <TooltipProvider delayDuration={350}>
-              {props.children}
+              <DialogProvider>{props.children}</DialogProvider>
             </TooltipProvider>
           </OriginSdkProvider>
         </AuthProvider>
