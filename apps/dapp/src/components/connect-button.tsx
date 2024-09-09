@@ -1,6 +1,7 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
-import { Avatar, Button, cn, type ButtonProps } from "@repo/ui";
+import { Avatar, Button, Text, cn, type ButtonProps } from "@repo/ui";
 import { useMediaQueries } from "loaders/use-media-queries";
+import { useProfile } from "modules/points/use-profile";
 
 export default function ConnectButton({
   className,
@@ -10,6 +11,8 @@ export default function ConnectButton({
   size?: ButtonProps["size"];
 }) {
   const { isTabletOrMobile } = useMediaQueries();
+  const { showProfile, profile } = useProfile();
+
   return (
     <RKConnectButton.Custom>
       {({
@@ -23,6 +26,7 @@ export default function ConnectButton({
         // Removed authentication stuff https://www.rainbowkit.com/docs/authentication
         const ready = mounted;
         const connected = ready && account && chain;
+
         return (
           <div
             className={cn("w-full max-w-md", className)}
@@ -58,17 +62,36 @@ export default function ConnectButton({
                   </Button>
                 );
               }
+
               return (
-                <div className={cn("flex items-center gap-x-1 ")}>
-                  <Button
-                    size={size}
-                    variant="ghost"
-                    className="px-2 lg:px-0"
+                <div
+                  className={cn(
+                    "flex items-center gap-x-1 ",
+                    showProfile && "gap-x-2",
+                  )}
+                >
+                  <button
                     onClick={openAccountModal}
+                    className="flex items-center gap-x-1"
                   >
-                    {account.displayName}
+                    {showProfile && (
+                      <img className="size-[48px]" src={profile.avatar} />
+                    )}
+                    <div className="space-y-1">
+                      {showProfile && (
+                        <Text
+                          className="text-foreground-highlight text-left leading-none"
+                          size="lg"
+                        >
+                          {profile.username}
+                        </Text>
+                      )}
+                      <Text uppercase className="leading-none">
+                        {account.displayName}
+                      </Text>
+                    </div>
                     {/*account.displayBalance ? ` (${account.displayBalance})` : ""*/}
-                  </Button>
+                  </button>
 
                   <Button variant="ghost" size="icon" onClick={openChainModal}>
                     <div
