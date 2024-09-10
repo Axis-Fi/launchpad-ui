@@ -45,7 +45,7 @@ export type UserProfile = {
 const mockProfile = {
   rank: 420,
   username: "Tex",
-  avatar: "/placeholder-img.jpg",
+  avatar: "placeholder-img.jpg", // "/images/default-user-avatar.png",
   points: {
     total: 28500,
     phase_1: {
@@ -131,7 +131,7 @@ export function Profile() {
           <div className="gap-md flex">
             <Avatar
               className="h-[160px] w-[160px] rounded-none"
-              src="/placeholder-img.jpg"
+              src={profile.avatar}
             />
             <div className="flex flex-col justify-between">
               <div className="flex flex-col">

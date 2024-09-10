@@ -33,6 +33,7 @@
     "@repo/env": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/ipfs-api": "workspace:*",
+    "@repo/points": "workspace:*",
     "@repo/sdk": "workspace:*",
     "@repo/subgraph-client": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
