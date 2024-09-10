@@ -54,13 +54,25 @@ export interface Activity {
    * @type {number}
    * @memberof Activity
    */
-  refPoints?: number;
+  activityType?: number;
   /**
    *
    * @type {number}
    * @memberof Activity
    */
-  bidPoints?: number;
+  contribution?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof Activity
+   */
+  multiplier?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof Activity
+   */
+  points?: number;
 }
 
 /**
@@ -89,8 +101,14 @@ export function ActivityFromJSONTyped(
     platform: !exists(json, "platform") ? undefined : json["platform"],
     description: !exists(json, "description") ? undefined : json["description"],
     phase: !exists(json, "phase") ? undefined : json["phase"],
-    refPoints: !exists(json, "ref_points") ? undefined : json["ref_points"],
-    bidPoints: !exists(json, "bid_points") ? undefined : json["bid_points"],
+    activityType: !exists(json, "activity_type")
+      ? undefined
+      : json["activity_type"],
+    contribution: !exists(json, "contribution")
+      ? undefined
+      : json["contribution"],
+    multiplier: !exists(json, "multiplier") ? undefined : json["multiplier"],
+    points: !exists(json, "points") ? undefined : json["points"],
   };
 }
 
@@ -107,7 +125,9 @@ export function ActivityToJSON(value?: Activity | null): any {
     platform: value.platform,
     description: value.description,
     phase: value.phase,
-    ref_points: value.refPoints,
-    bid_points: value.bidPoints,
+    activity_type: value.activityType,
+    contribution: value.contribution,
+    multiplier: value.multiplier,
+    points: value.points,
   };
 }

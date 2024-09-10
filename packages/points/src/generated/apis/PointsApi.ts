@@ -14,21 +14,18 @@
 
 import * as runtime from "../runtime";
 import type {
-  ProfileData,
-  UserPhaseProfile,
+  FullUserProfile,
+  ProfileFormData,
   UserProfile,
-  UserProfileWithWallets,
   WalletPoints,
 } from "../models/index";
 import {
-  ProfileDataFromJSON,
-  ProfileDataToJSON,
-  UserPhaseProfileFromJSON,
-  UserPhaseProfileToJSON,
+  FullUserProfileFromJSON,
+  FullUserProfileToJSON,
+  ProfileFormDataFromJSON,
+  ProfileFormDataToJSON,
   UserProfileFromJSON,
   UserProfileToJSON,
-  UserProfileWithWalletsFromJSON,
-  UserProfileWithWalletsToJSON,
   WalletPointsFromJSON,
   WalletPointsToJSON,
 } from "../models/index";
@@ -42,7 +39,8 @@ export interface PointsWalletAddressGetRequest {
 }
 
 export interface ProfilePostRequest {
-  profileData: ProfileData;
+  data?: ProfileFormData;
+  profileImage?: Blob;
 }
 
 /**
@@ -90,7 +88,7 @@ export class PointsApi extends runtime.BaseAPI {
   async leaderboardPhaseGetRaw(
     requestParameters: LeaderboardPhaseGetRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<Array<UserPhaseProfile>>> {
+  ): Promise<runtime.ApiResponse<Array<UserProfile>>> {
     if (
       requestParameters.phase === null ||
       requestParameters.phase === undefined
@@ -119,7 +117,7 @@ export class PointsApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(UserPhaseProfileFromJSON),
+      jsonValue.map(UserProfileFromJSON),
     );
   }
 
@@ -129,7 +127,7 @@ export class PointsApi extends runtime.BaseAPI {
   async leaderboardPhaseGet(
     requestParameters: LeaderboardPhaseGetRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<Array<UserPhaseProfile>> {
+  ): Promise<Array<UserProfile>> {
     const response = await this.leaderboardPhaseGetRaw(
       requestParameters,
       initOverrides,
@@ -195,7 +193,7 @@ export class PointsApi extends runtime.BaseAPI {
    */
   async profileGetRaw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<UserProfileWithWallets>> {
+  ): Promise<runtime.ApiResponse<FullUserProfile>> {
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -219,7 +217,7 @@ export class PointsApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      UserProfileWithWalletsFromJSON(jsonValue),
+      FullUserProfileFromJSON(jsonValue),
     );
   }
 
@@ -228,7 +226,7 @@ export class PointsApi extends runtime.BaseAPI {
    */
   async profileGet(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<UserProfileWithWallets> {
+  ): Promise<FullUserProfile> {
     const response = await this.profileGetRaw(initOverrides);
     return await response.value();
   }
@@ -240,21 +238,9 @@ export class PointsApi extends runtime.BaseAPI {
     requestParameters: ProfilePostRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
-    if (
-      requestParameters.profileData === null ||
-      requestParameters.profileData === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "profileData",
-        "Required parameter requestParameters.profileData was null or undefined when calling profilePost.",
-      );
-    }
-
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
-
-    headerParameters["Content-Type"] = "application/json";
 
     if (this.configuration && this.configuration.accessToken) {
       const token = this.configuration.accessToken;
@@ -264,13 +250,41 @@ export class PointsApi extends runtime.BaseAPI {
         headerParameters["Authorization"] = `Bearer ${tokenString}`;
       }
     }
+    const consumes: runtime.Consume[] = [{ contentType: "multipart/form" }];
+    // @ts-ignore: canConsumeForm may be unused
+    const canConsumeForm = runtime.canConsumeForm(consumes);
+
+    let formParams: { append(param: string, value: any): any };
+    let useForm = false;
+    // use FormData to transmit files using content-type "multipart/form-data"
+    useForm = canConsumeForm;
+    if (useForm) {
+      formParams = new FormData();
+    } else {
+      formParams = new URLSearchParams();
+    }
+
+    if (requestParameters.data !== undefined) {
+      formParams.append(
+        "data",
+        new Blob(
+          [JSON.stringify(ProfileFormDataToJSON(requestParameters.data))],
+          { type: "application/json" },
+        ),
+      );
+    }
+
+    if (requestParameters.profileImage !== undefined) {
+      formParams.append("profile_image", requestParameters.profileImage as any);
+    }
+
     const response = await this.request(
       {
         path: `/profile`,
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: ProfileDataToJSON(requestParameters.profileData),
+        body: formParams,
       },
       initOverrides,
     );
@@ -282,7 +296,7 @@ export class PointsApi extends runtime.BaseAPI {
    * Updates the user\'s profile information.
    */
   async profilePost(
-    requestParameters: ProfilePostRequest,
+    requestParameters: ProfilePostRequest = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.profilePostRaw(requestParameters, initOverrides);

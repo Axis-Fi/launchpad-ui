@@ -7,7 +7,7 @@
   "servers": [
     {
       "description": "Local",
-      "url": "https://points-api-testnet.up.railway.app"
+      "url": "http://localhost:8081"
     },
     {
       "description": "Testnet",
@@ -50,9 +50,15 @@
       "post": {
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
+              "encoding": {
+                "profile_image": {
+                  "contentType": "image/png, image/jpeg",
+                  "style": "form"
+                }
+              },
               "schema": {
-                "$ref": "#/components/schemas/RegistrationData"
+                "$ref": "#/components/schemas/RegistrationForm"
               }
             }
           },
@@ -259,7 +265,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserProfileWithWallets"
+                  "$ref": "#/components/schemas/FullUserProfile"
                 }
               }
             },
@@ -280,9 +286,15 @@
       "post": {
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form": {
+              "encoding": {
+                "profile_image": {
+                  "contentType": "image/png, image/jpeg",
+                  "style": "form"
+                }
+              },
               "schema": {
-                "$ref": "#/components/schemas/ProfileData"
+                "$ref": "#/components/schemas/ProfileForm"
               }
             }
           },
@@ -388,7 +400,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/UserPhaseProfile"
+                    "$ref": "#/components/schemas/UserProfile"
                   },
                   "type": "array"
                 }
@@ -431,34 +443,27 @@
         },
         "type": "object"
       },
-      "RegistrationData": {
-        "description": "A JSON object containing five string fields, a Sign in With Ethereum message, signature, username, profile image url, and a referrer address. The nonce found in the decoded signature should match the nonce in the message.",
+      "RegistrationForm": {
+        "description": "A multipart form object that contains an image file and a json of the fields required for registration, a Sign in With Ethereum message, signature, username, and a referrer address. The nonce found in the decoded signature should match the nonce in the message.",
         "properties": {
-          "message": {
-            "type": "string"
+          "data": {
+            "$ref": "#/components/schemas/RegistrationForm_data"
           },
-          "signature": {
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          },
-          "profile_image_url": {
-            "type": "string"
-          },
-          "referrer": {
+          "profile_image": {
+            "format": "binary",
             "type": "string"
           }
         },
         "type": "object"
       },
-      "ProfileData": {
-        "description": "A JSON object containing the user's username and profile image url.",
+      "ProfileForm": {
+        "description": "A multipart form object containing the user's username and profile image.",
         "properties": {
-          "username": {
-            "type": "string"
+          "data": {
+            "$ref": "#/components/schemas/ProfileForm_data"
           },
-          "profile_image_url": {
+          "profile_image": {
+            "format": "binary",
             "type": "string"
           }
         },
@@ -488,34 +493,7 @@
         },
         "type": "object"
       },
-      "UserPhaseProfile": {
-        "description": "A JSON object containing the user's profile information, including points by category and total for a specific phase.",
-        "properties": {
-          "username": {
-            "type": "string"
-          },
-          "profile_image_url": {
-            "type": "string"
-          },
-          "referrer": {
-            "type": "string"
-          },
-          "phase": {
-            "type": "integer"
-          },
-          "ref_points": {
-            "type": "integer"
-          },
-          "bid_points": {
-            "type": "integer"
-          },
-          "total_points": {
-            "type": "integer"
-          }
-        },
-        "type": "object"
-      },
-      "UserProfileWithWallets": {
+      "FullUserProfile": {
         "description": "A JSON object containing the user's profile information, including points by category and total, and detailed wallet information.",
         "properties": {
           "username": {
@@ -527,6 +505,24 @@
           "referrer": {
             "type": "string"
           },
+          "points": {
+            "$ref": "#/components/schemas/FullUserProfile_points"
+          },
+          "wallets": {
+            "items": {
+              "$ref": "#/components/schemas/WalletPoints"
+            },
+            "type": "array"
+          },
+          "activities": {
+            "$ref": "#/components/schemas/FullUserProfile_activities"
+          }
+        },
+        "type": "object"
+      },
+      "Points": {
+        "description": "A JSON object containing points information.",
+        "properties": {
           "ref_points": {
             "type": "integer"
           },
@@ -535,12 +531,6 @@
           },
           "total_points": {
             "type": "integer"
-          },
-          "wallets": {
-            "items": {
-              "$ref": "#/components/schemas/WalletPoints"
-            },
-            "type": "array"
           }
         },
         "type": "object"
@@ -559,27 +549,12 @@
           },
           "total_points": {
             "type": "integer"
-          }
-        },
-        "type": "object"
-      },
-      "WalletPhasePoints": {
-        "description": "A JSON object containing points information for a wallet address for a specific phase.",
-        "properties": {
-          "address": {
-            "type": "string"
           },
-          "phase": {
-            "type": "integer"
-          },
-          "ref_points": {
-            "type": "integer"
-          },
-          "bid_points": {
-            "type": "integer"
-          },
-          "total_points": {
-            "type": "integer"
+          "activities": {
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            },
+            "type": "array"
           }
         },
         "type": "object"
@@ -602,11 +577,79 @@
           "phase": {
             "type": "integer"
           },
-          "ref_points": {
+          "activity_type": {
             "type": "integer"
           },
-          "bid_points": {
+          "contribution": {
             "type": "integer"
+          },
+          "multiplier": {
+            "type": "float"
+          },
+          "points": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "RegistrationForm_data": {
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "signature": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "referrer": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ProfileForm_data": {
+        "properties": {
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "FullUserProfile_points": {
+        "properties": {
+          "0": {
+            "$ref": "#/components/schemas/Points"
+          },
+          "1": {
+            "$ref": "#/components/schemas/Points"
+          },
+          "2": {
+            "$ref": "#/components/schemas/Points"
+          }
+        },
+        "type": "object"
+      },
+      "FullUserProfile_activities": {
+        "properties": {
+          "0": {
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            },
+            "type": "array"
+          },
+          "1": {
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            },
+            "type": "array"
+          },
+          "2": {
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            },
+            "type": "array"
           }
         },
         "type": "object"

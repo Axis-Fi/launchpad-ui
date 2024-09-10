@@ -1,3 +1,4 @@
+import { zeroAddress } from "viem";
 import { pointsServers } from "@repo/env";
 import {
   AuthenticationApi,
@@ -44,8 +45,8 @@ function createSIWEMessage(message: {
 }
 
 const basicMessage = {
-  domain: window.location.host,
-  uri: window.location.origin,
+  domain: "axis-testnet.eth.limo", // window.location.host, // TODO: dont use this
+  uri: "https://axis-testnet.eth.limo", // window.location.origin, // TODO: dont use this
   version: "1",
 };
 
@@ -57,7 +58,7 @@ const defaultConfig = new Configuration({
   basePath: serverUrl,
 });
 
-const defaultHeaders = { "Content-Type": "application/json" };
+const defaultHeaders = {};
 
 // API Client
 export class PointsClient {
@@ -154,7 +155,8 @@ export class PointsClient {
     chainId: number,
     address: `0x${string}`,
     username: string,
-    profileImageUrl?: string,
+    referrer?: string,
+    avatar?: Blob,
   ) {
     try {
       const statement = "Register to claim your Axis points.";
@@ -165,7 +167,15 @@ export class PointsClient {
       );
 
       return this.authApi.registerPost(
-        { registrationData: { message, signature, username, profileImageUrl } },
+        {
+          data: {
+            message,
+            signature,
+            username,
+            referrer: referrer ?? zeroAddress,
+          },
+          profileImage: avatar ? avatar : undefined,
+        },
         { headers: this.headers() },
       );
     } catch (e) {

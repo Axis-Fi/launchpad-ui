@@ -13,12 +13,16 @@
  */
 
 import * as runtime from "../runtime";
-import type { JWTPair, RegistrationData, SigninData } from "../models/index";
+import type {
+  JWTPair,
+  RegistrationFormData,
+  SigninData,
+} from "../models/index";
 import {
   JWTPairFromJSON,
   JWTPairToJSON,
-  RegistrationDataFromJSON,
-  RegistrationDataToJSON,
+  RegistrationFormDataFromJSON,
+  RegistrationFormDataToJSON,
   SigninDataFromJSON,
   SigninDataToJSON,
 } from "../models/index";
@@ -40,7 +44,8 @@ export interface RefreshPostRequest {
 }
 
 export interface RegisterPostRequest {
-  registrationData: RegistrationData;
+  data?: RegistrationFormData;
+  profileImage?: Blob;
 }
 
 export interface SignInPostRequest {
@@ -313,21 +318,39 @@ export class AuthenticationApi extends runtime.BaseAPI {
     requestParameters: RegisterPostRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<JWTPair>> {
-    if (
-      requestParameters.registrationData === null ||
-      requestParameters.registrationData === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "registrationData",
-        "Required parameter requestParameters.registrationData was null or undefined when calling registerPost.",
-      );
-    }
-
     const queryParameters: any = {};
 
     const headerParameters: runtime.HTTPHeaders = {};
 
-    headerParameters["Content-Type"] = "application/json";
+    const consumes: runtime.Consume[] = [
+      { contentType: "multipart/form-data" },
+    ];
+    // @ts-ignore: canConsumeForm may be unused
+    const canConsumeForm = runtime.canConsumeForm(consumes);
+
+    let formParams: { append(param: string, value: any): any };
+    let useForm = false;
+    // use FormData to transmit files using content-type "multipart/form-data"
+    useForm = canConsumeForm;
+    if (useForm) {
+      formParams = new FormData();
+    } else {
+      formParams = new URLSearchParams();
+    }
+
+    if (requestParameters.data !== undefined) {
+      formParams.append(
+        "data",
+        new Blob(
+          [JSON.stringify(RegistrationFormDataToJSON(requestParameters.data))],
+          { type: "application/json" },
+        ),
+      );
+    }
+
+    if (requestParameters.profileImage !== undefined) {
+      formParams.append("profile_image", requestParameters.profileImage as any);
+    }
 
     const response = await this.request(
       {
@@ -335,7 +358,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: RegistrationDataToJSON(requestParameters.registrationData),
+        body: formParams,
       },
       initOverrides,
     );
@@ -349,7 +372,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
    * Registers a new user. The wallet address being registered must not be registered already.
    */
   async registerPost(
-    requestParameters: RegisterPostRequest,
+    requestParameters: RegisterPostRequest = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<JWTPair> {
     const response = await this.registerPostRaw(

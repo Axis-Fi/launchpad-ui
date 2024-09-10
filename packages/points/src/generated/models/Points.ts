@@ -13,85 +13,62 @@
  */
 
 import { exists, mapValues } from "../runtime";
-import type { Activity } from "./Activity";
-import {
-  ActivityFromJSON,
-  ActivityFromJSONTyped,
-  ActivityToJSON,
-} from "./Activity";
-
 /**
- * A JSON object containing points information for a wallet address.
+ * A JSON object containing points information.
  * @export
- * @interface WalletPoints
+ * @interface Points
  */
-export interface WalletPoints {
-  /**
-   *
-   * @type {string}
-   * @memberof WalletPoints
-   */
-  address?: string;
+export interface Points {
   /**
    *
    * @type {number}
-   * @memberof WalletPoints
+   * @memberof Points
    */
   refPoints?: number;
   /**
    *
    * @type {number}
-   * @memberof WalletPoints
+   * @memberof Points
    */
   bidPoints?: number;
   /**
    *
    * @type {number}
-   * @memberof WalletPoints
+   * @memberof Points
    */
   totalPoints?: number;
-  /**
-   *
-   * @type {Array<Activity>}
-   * @memberof WalletPoints
-   */
-  activities?: Array<Activity>;
 }
 
 /**
- * Check if a given object implements the WalletPoints interface.
+ * Check if a given object implements the Points interface.
  */
-export function instanceOfWalletPoints(value: object): boolean {
+export function instanceOfPoints(value: object): boolean {
   let isInstance = true;
 
   return isInstance;
 }
 
-export function WalletPointsFromJSON(json: any): WalletPoints {
-  return WalletPointsFromJSONTyped(json, false);
+export function PointsFromJSON(json: any): Points {
+  return PointsFromJSONTyped(json, false);
 }
 
-export function WalletPointsFromJSONTyped(
+export function PointsFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): WalletPoints {
+): Points {
   if (json === undefined || json === null) {
     return json;
   }
   return {
-    address: !exists(json, "address") ? undefined : json["address"],
     refPoints: !exists(json, "ref_points") ? undefined : json["ref_points"],
     bidPoints: !exists(json, "bid_points") ? undefined : json["bid_points"],
     totalPoints: !exists(json, "total_points")
       ? undefined
       : json["total_points"],
-    activities: !exists(json, "activities")
-      ? undefined
-      : (json["activities"] as Array<any>).map(ActivityFromJSON),
   };
 }
 
-export function WalletPointsToJSON(value?: WalletPoints | null): any {
+export function PointsToJSON(value?: Points | null): any {
   if (value === undefined) {
     return undefined;
   }
@@ -99,13 +76,8 @@ export function WalletPointsToJSON(value?: WalletPoints | null): any {
     return null;
   }
   return {
-    address: value.address,
     ref_points: value.refPoints,
     bid_points: value.bidPoints,
     total_points: value.totalPoints,
-    activities:
-      value.activities === undefined
-        ? undefined
-        : (value.activities as Array<any>).map(ActivityToJSON),
   };
 }

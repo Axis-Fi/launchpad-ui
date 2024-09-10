@@ -4,6 +4,7 @@ import { useAuth } from "context/auth-provider";
 
 export const schema = z.object({
   username: z.string().min(3),
+  referrer: z.string().optional(),
   avatar: z.instanceof(File).optional(),
 });
 
@@ -11,11 +12,12 @@ export type ProfileForm = z.infer<typeof schema>;
 
 export function useProfile() {
   const auth = useAuth();
+  const referrer = undefined; // TODO: referre for points progam != referer of a launch
 
   const mutation = useMutation({
     // TODO: avatar param needs to be the S3 URL of the avatar
     mutationFn: async (profile: ProfileForm) =>
-      auth.register(profile.username, "/placeholder-img.jpg"),
+      auth.register(profile.username, referrer, profile.avatar),
   });
 
   const register = (profile: ProfileForm) => {

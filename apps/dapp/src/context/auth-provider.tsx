@@ -9,7 +9,8 @@ type AuthContextState = {
   isAuthenticated: boolean;
   register: (
     username: string,
-    profileImageUrl?: string,
+    referrer?: string,
+    avatar?: Blob,
   ) => Promise<JWTPair | undefined>;
   isUsernameAvailable: (username: string) => Promise<boolean | undefined>;
   signIn: () => void;
@@ -58,7 +59,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const register = async (username: string, profileImageUrl?: string) => {
+  const register = async (
+    username: string,
+    referrer?: string,
+    avatar?: Blob,
+  ) => {
     const chainId = chain?.id;
     if (!address || !chainId) return;
 
@@ -69,7 +74,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         chainId,
         address,
         username,
-        profileImageUrl,
+        referrer,
+        avatar,
       );
 
       TokenStorage.setAccessToken(response?.accessToken ?? "");

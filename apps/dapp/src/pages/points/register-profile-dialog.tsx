@@ -44,7 +44,9 @@ export function RegisterProfileDialog() {
     avatarRef.current?.click();
   };
 
-  const handleAvatarUploaded = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUploaded = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       form.setValue("avatar", file);
