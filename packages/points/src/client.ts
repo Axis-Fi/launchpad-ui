@@ -244,6 +244,14 @@ export class PointsClient {
       throw errorContext.error;
     }
   }
+
+  async getLeaderboard() {
+    try {
+      return this.pointsApi.leaderboardGet();
+    } catch (e) {
+      console.error(`Failed to get leaderboard`, e);
+    }
+  }
 }
 
 export const createPointsClient = (
