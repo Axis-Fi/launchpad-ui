@@ -12,7 +12,10 @@
  * Do not edit the class manually.
  */
 
-export const BASE_PATH = "http://localhost:8081".replace(/\/+$/, "");
+export const BASE_PATH = "https://points-api-testnet.up.railway.app".replace(
+  /\/+$/,
+  "",
+);
 
 export interface ConfigurationParameters {
   basePath?: string; // override base path

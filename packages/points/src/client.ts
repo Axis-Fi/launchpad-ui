@@ -57,6 +57,8 @@ const defaultConfig = new Configuration({
   basePath: serverUrl,
 });
 
+const defaultHeaders = { "Content-Type": "application/json" };
+
 // API Client
 export class PointsClient {
   authApi: AuthenticationApi;
@@ -80,8 +82,13 @@ export class PointsClient {
   private headers() {
     const accessToken = TokenStorage.getAccessToken();
     if (accessToken) {
-      return { Authorization: `Bearer ${accessToken}` };
+      return {
+        ...defaultHeaders,
+        Authorization: `Bearer ${accessToken}`,
+      };
     }
+
+    return defaultHeaders;
   }
 
   // Authentication
@@ -116,6 +123,16 @@ export class PointsClient {
     } catch (e) {
       console.error(`Failed to check registration status`, e);
     }
+    return false;
+  }
+
+  async isUsernameAvailable(username: string) {
+    try {
+      return this.authApi.availableUsernameGet({ username });
+    } catch (e) {
+      console.error(`Failed to check username availability`, e);
+    }
+    return false;
   }
 
   async signIn(chainId: number, address: `0x${string}`) {
@@ -133,7 +150,12 @@ export class PointsClient {
     }
   }
 
-  async register(chainId: number, address: `0x${string}`) {
+  async register(
+    chainId: number,
+    address: `0x${string}`,
+    username: string,
+    profileImageUrl?: string,
+  ) {
     try {
       const statement = "Register to claim your Axis points.";
       const { message, signature } = await this.sign(
@@ -143,7 +165,7 @@ export class PointsClient {
       );
 
       return this.authApi.registerPost(
-        { registrationData: { message, signature } },
+        { registrationData: { message, signature, username, profileImageUrl } },
         { headers: this.headers() },
       );
     } catch (e) {
