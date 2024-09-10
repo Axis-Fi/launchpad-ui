@@ -364,7 +364,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      JWTPairFromJSON(jsonValue),
+      JWTPairFromJSON(JSON.parse(jsonValue)),
     );
   }
 
@@ -407,7 +407,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/sign_in`,
+        path: `/sign-in`,
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
@@ -417,7 +417,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      JWTPairFromJSON(jsonValue),
+      JWTPairFromJSON(JSON.parse(jsonValue)),
     );
   }
 
