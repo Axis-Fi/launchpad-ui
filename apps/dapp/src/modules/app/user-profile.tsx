@@ -13,10 +13,10 @@ export function UserProfile() {
 
   return (
     // TODO: make this component link to the user's profile page
-    <div className="flex items-center justify-center gap-x-2">
+    <div className="flex items-center justify-center ">
       {showProfile && (
         <Text
-          className="text-foreground-highlight text-nowrap py-0 pl-0.5 leading-none "
+          className="text-foreground-highlight py-0 text-center leading-none"
           size="sm"
         >
           {trimCurrency(profile.points.total)} points
