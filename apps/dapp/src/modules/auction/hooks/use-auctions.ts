@@ -48,8 +48,6 @@ export function useAuctions(): AuctionsResult {
 
   const rawAuctions = [...data.batchAuctionLots].flat() ?? [];
 
-  console.log("raw", rawAuctions);
-
   // Add external data to auctions before processing
   const augmentedAuctions = rawAuctions.map((auction) => {
     let info = auction.info;
@@ -70,8 +68,6 @@ export function useAuctions(): AuctionsResult {
   const filteredAuctions = augmentedAuctions.filter(
     (auction) => getAuctionStatus(auction) !== "cancelled",
   );
-
-  console.log("no cancelled", filteredAuctions.length);
 
   const { getToken } = useTokenLists();
 
@@ -98,8 +94,6 @@ export function useAuctions(): AuctionsResult {
       };
     })
     .sort(sortAuction);
-
-  console.log("final", auctions.length);
 
   return {
     data: auctions,
