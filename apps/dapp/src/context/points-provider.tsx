@@ -1,36 +1,46 @@
 import { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
 import { useAccount, useConfig } from "wagmi";
-import { createPointsClient, JWTPair, TokenStorage } from "@repo/points";
+import {
+  createPointsClient,
+  FullUserProfile,
+  TokenStorage,
+  UserProfile,
+  WalletPoints,
+} from "@repo/points";
 
-type AuthContextState = {
+type PointsContextState = {
   isRegistered: boolean;
   isLoading: boolean;
   isAuthenticated: boolean;
-  register: (
-    username: string,
-    referrer?: string,
-    avatar?: Blob,
-  ) => Promise<JWTPair | undefined>;
+  register: (username: string, referrer?: string, avatar?: Blob) => void;
   isUsernameAvailable: (username: string) => Promise<boolean | undefined>;
   signIn: () => void;
   linkWallet: () => void;
+  getWalletPoints: (
+    address: `0x${string}`,
+  ) => Promise<WalletPoints | undefined>;
+  getLeaderboard: () => Promise<Array<UserProfile> | undefined>;
+  getUserProfile: () => Promise<FullUserProfile | undefined>;
+  setUserProfile: (username?: string, avatar?: Blob) => void;
   getAccessToken: () => string | null;
 };
 
-const initialState = {} as AuthContextState;
-export const AuthContext = createContext<AuthContextState>(initialState);
+const initialState = {} as PointsContextState;
+export const PointsContext = createContext<PointsContextState>(initialState);
 
-export const useAuth = () => {
-  return useContext(AuthContext);
+export const usePoints = () => {
+  return useContext(PointsContext);
 };
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
   const config = useConfig();
   const pointsClient = createPointsClient(config);
   const { address, chain } = useAccount();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
+
+  // Authentication
 
   useEffect(() => {
     async function getIsRegistered() {
@@ -100,16 +110,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       TokenStorage.setAccessToken(response?.accessToken ?? "");
       TokenStorage.setRefreshToken(response?.refreshToken ?? "");
-
-      return response;
     } catch (e) {
       console.error(e);
     } finally {
       setIsLoading(false);
     }
   };
-
-  // TODO refresh token
 
   const linkWallet = async () => {
     const chainId = chain?.id;
@@ -126,8 +132,43 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Points
+
+  const getWalletPoints = async (address: `0x${string}`) => {
+    try {
+      return pointsClient.getWalletPoints(address);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const getLeaderboard = async () => {
+    try {
+      return pointsClient.getLeaderboard();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Requires user to be signed in
+  const getUserProfile = async () => {
+    try {
+      return pointsClient.getUserProfile();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const setUserProfile = async (username?: string, avatar?: Blob) => {
+    try {
+      return pointsClient.setUserProfile(username, avatar);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
-    <AuthContext.Provider
+    <PointsContext.Provider
       value={{
         isRegistered,
         isLoading,
@@ -135,11 +176,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         register,
         signIn,
         linkWallet,
+        getWalletPoints,
+        getLeaderboard,
+        getUserProfile,
+        setUserProfile,
         getAccessToken: TokenStorage.getAccessToken,
         isAuthenticated: !!TokenStorage.getAccessToken(),
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </PointsContext.Provider>
   );
 };

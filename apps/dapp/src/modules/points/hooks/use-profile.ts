@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "context/auth-provider";
+import { usePoints } from "context/points-provider";
 
 export const schema = z.object({
   username: z.string().min(3),
@@ -11,7 +11,7 @@ export const schema = z.object({
 export type ProfileForm = z.infer<typeof schema>;
 
 export function useProfile() {
-  const auth = useAuth();
+  const auth = usePoints();
   const referrer = undefined; // TODO: referre for points progam != referer of a launch
 
   const mutation = useMutation({
