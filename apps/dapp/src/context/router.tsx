@@ -11,7 +11,6 @@ import AuctionListPage from "pages/auction-list-page";
 import { CuratorPage } from "pages/curator-page";
 import { FaucetPage } from "pages/faucet-page";
 import { DeployTokenPage } from "pages/deploy-token-page";
-import { ReferralPage } from "pages/referral";
 import CuratorListPage from "pages/curator-list-page";
 import { ProfilePage } from "pages/points/profile-page";
 import { LeaderboardPage } from "pages/points/leaderboard-page";
@@ -37,7 +36,6 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "curators", element: <CuratorListPage /> },
       { path: "faucet", element: <FaucetPage /> },
       { path: "deploy", element: <DeployTokenPage /> },
-      { path: "refer", element: <ReferralPage /> },
       { path: ":chainId/:lotId", element: <AuctionPage /> },
     ],
   },
