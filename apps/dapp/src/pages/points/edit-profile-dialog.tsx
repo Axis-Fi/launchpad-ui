@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -19,19 +18,13 @@ import {
 } from "@/components";
 import { useForm } from "react-hook-form";
 import { ShareIcon } from "lucide-react";
-
-const schema = z.object({
-  username: z.string().min(3),
-  avatar: z.instanceof(File).optional(),
-});
-
-type EditProfileForm = z.infer<typeof schema>;
+import { type ProfileForm, schema } from "modules/points/hooks/use-profile";
 
 export function EditProfileDialog() {
   const navigate = useNavigate();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
-  const form = useForm<EditProfileForm>({
+  const form = useForm<ProfileForm>({
     resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
@@ -54,7 +47,7 @@ export function EditProfileDialog() {
     }
   };
 
-  const handleSubmit = (data: EditProfileForm) => {
+  const handleSubmit = (data: ProfileForm) => {
     console.log("Form submitted:", data);
   };
 

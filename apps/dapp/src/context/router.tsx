@@ -13,8 +13,8 @@ import { FaucetPage } from "pages/faucet-page";
 import { DeployTokenPage } from "pages/deploy-token-page";
 import { ReferralPage } from "pages/referral";
 import CuratorListPage from "pages/curator-list-page";
-import { ProfilePage } from "pages/profile-page";
-import { LeaderboardPage } from "pages/leaderboard-page";
+import { ProfilePage } from "pages/points/profile-page";
+import { LeaderboardPage } from "pages/points/leaderboard-page";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {

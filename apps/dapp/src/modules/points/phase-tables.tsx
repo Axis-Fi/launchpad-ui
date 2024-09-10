@@ -19,7 +19,7 @@ type ActivityTableProps = {
 };
 
 type PhaseTablesProps = {
-  profile: UserProfile;
+  profile?: UserProfile;
 };
 
 const ActivityTable = ({ activities, title }: ActivityTableProps) => {
@@ -28,6 +28,7 @@ const ActivityTable = ({ activities, title }: ActivityTableProps) => {
       title={title}
       subtitle="Refer friends to earn more points"
       data={activities}
+      emptyText="You haven't earned any points yet. You can earn points by bidding on launches and referring friends."
       columns={[
         {
           header: "Event",
@@ -106,8 +107,19 @@ const ActivityTable = ({ activities, title }: ActivityTableProps) => {
     />
   );
 };
-/*
-in this case it should be 20% of the width of the div on desktop, 33% on tablet  and 100% on mobile.*/
+
+const PhaseCTAs = ({ profile }: PhaseTablesProps) => {
+  return (
+    <div className="flex w-full justify-center">
+      {profile && (
+        <Button variant="secondary" className="w-full md:w-[33%] lg:w-[20%]">
+          Share referral link
+        </Button>
+      )}
+    </div>
+  );
+};
+
 export function PhaseTables({ profile }: PhaseTablesProps) {
   return (
     <Tabs defaultValue="phase1">
@@ -118,33 +130,19 @@ export function PhaseTables({ profile }: PhaseTablesProps) {
       <TabsContent value="phase1">
         <Card>
           <ActivityTable
-            title="Phase 1 Points"
-            activities={profile.points.phase_1.activity}
+            title="Phase 1 activity"
+            activities={profile ? profile.points.phase_1.activity : []}
           />
-          <div className="flex w-full justify-center">
-            <Button
-              variant="secondary"
-              className="w-full md:w-[33%] lg:w-[20%]"
-            >
-              Share referral link
-            </Button>
-          </div>
+          <PhaseCTAs profile={profile} />
         </Card>
       </TabsContent>
       <TabsContent value="phase2">
         <Card>
           <ActivityTable
-            title="Phase 2 Points"
-            activities={profile.points.phase_2.activity}
+            title="Phase 2 activity"
+            activities={profile ? profile.points.phase_2.activity : []}
           />
-          <div className="flex w-full justify-center">
-            <Button
-              variant="secondary"
-              className="w-full md:w-[33%] lg:w-[20%]"
-            >
-              Share referral link
-            </Button>
-          </div>
+          <PhaseCTAs profile={profile} />
         </Card>
       </TabsContent>
     </Tabs>

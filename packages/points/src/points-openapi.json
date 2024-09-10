@@ -7,7 +7,7 @@
   "servers": [
     {
       "description": "Local",
-      "url": "http://localhost:8081"
+      "url": "https://points-api-testnet.up.railway.app"
     },
     {
       "description": "Testnet",

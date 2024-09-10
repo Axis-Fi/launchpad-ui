@@ -1,11 +1,11 @@
 import { Environment } from "./environment";
 
-const testnetURL = "https://points-api-testnet.railway.app";
+const testnetURL = "https://points-api-testnet.up.railway.app";
 
 export default {
   development: {
     description: "Local",
-    url: "http://localhost:8081",
+    url: testnetURL,
   },
   testing: {
     description: "Testnet",

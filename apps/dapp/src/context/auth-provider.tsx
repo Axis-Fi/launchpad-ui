@@ -1,13 +1,17 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
 import { useAccount, useConfig } from "wagmi";
-import { createPointsClient, TokenStorage } from "@repo/points";
+import { createPointsClient, JWTPair, TokenStorage } from "@repo/points";
 
 type AuthContextState = {
   isRegistered: boolean;
   isLoading: boolean;
   isAuthenticated: boolean;
-  register: () => void;
+  register: (
+    username: string,
+    profileImageUrl?: string,
+  ) => Promise<JWTPair | undefined>;
+  isUsernameAvailable: (username: string) => Promise<boolean | undefined>;
   signIn: () => void;
   linkWallet: () => void;
   getAccessToken: () => string | null;
@@ -24,40 +28,58 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const config = useConfig();
   const pointsClient = createPointsClient(config);
   const { address, chain } = useAccount();
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [isRegistered] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isRegistered, setIsRegistered] = useState<boolean>(false);
 
-  //   useEffect(() => {
-  //     // Set address registration status of connected wallet
-  //     if (!address) {
-  //       setRegistered(false);
-  //       return;
-  //     }
+  useEffect(() => {
+    async function getIsRegistered() {
+      if (address == null) {
+        setIsRegistered(false);
+        return;
+      }
 
-  //     // TODO: cannot use async here
-  //     try {
-  //       const registered = pointsClient.isRegistered(address);
-  //       setRegistered(registered);
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }, [address]);
+      try {
+        setIsLoading(true);
+        const registered = await pointsClient.isRegistered(address);
 
-  const register = async () => {
+        setIsRegistered(registered);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    getIsRegistered();
+  }, [address, pointsClient]);
+
+  const isUsernameAvailable = async (username: string) => {
+    try {
+      return pointsClient.isUsernameAvailable(username);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const register = async (username: string, profileImageUrl?: string) => {
     const chainId = chain?.id;
     if (!address || !chainId) return;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
-      const response = await pointsClient.register(chainId, address);
+      const response = await pointsClient.register(
+        chainId,
+        address,
+        username,
+        profileImageUrl,
+      );
 
       TokenStorage.setAccessToken(response?.accessToken ?? "");
       TokenStorage.setRefreshToken(response?.refreshToken ?? "");
+
+      return response;
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -65,17 +87,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const chainId = chain?.id;
     if (!address || !chainId) return;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await pointsClient.signIn(chainId, address);
 
       TokenStorage.setAccessToken(response?.accessToken ?? "");
       TokenStorage.setRefreshToken(response?.refreshToken ?? "");
+
+      return response;
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -85,14 +109,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const chainId = chain?.id;
     if (!address || !chainId) return;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
-      await pointsClient.linkWallet(chainId, address);
+      return pointsClient.linkWallet(chainId, address);
     } catch (e) {
       console.error(e);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -101,6 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         isRegistered,
         isLoading,
+        isUsernameAvailable,
         register,
         signIn,
         linkWallet,

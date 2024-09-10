@@ -4,7 +4,7 @@ import type { UserProfile } from "./profile";
 import { useAccount } from "wagmi";
 
 type LinkedWalletsTableProps = {
-  profile: UserProfile;
+  profile?: UserProfile;
 };
 
 export function LinkedWalletsTable({ profile }: LinkedWalletsTableProps) {
@@ -15,7 +15,7 @@ export function LinkedWalletsTable({ profile }: LinkedWalletsTableProps) {
       <DataTable
         title="Linked Wallets"
         subtitle="Link more wallets and get more points"
-        data={profile.linked_wallets}
+        data={profile ? profile.linked_wallets : []}
         emptyText="No linked wallets"
         columns={[
           {
@@ -45,9 +45,14 @@ export function LinkedWalletsTable({ profile }: LinkedWalletsTableProps) {
         ]}
       />
       <div className="flex justify-center">
-        <Button variant="secondary" className="w-full md:w-[33%] lg:w-[20%]">
-          Link wallets
-        </Button>
+        {profile && (
+          <Button variant="secondary" className="w-full md:w-[33%] lg:w-[20%]">
+            Link wallets
+          </Button>
+        )}
+        {!profile && (
+          <Button variant="secondary">Claim points to link a wallet</Button>
+        )}
       </div>
     </Card>
   );
