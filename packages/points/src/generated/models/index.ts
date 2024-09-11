@@ -8,6 +8,7 @@ export * from "./JWTPair";
 export * from "./Points";
 export * from "./ProfileForm";
 export * from "./ProfileFormData";
+export * from "./RegistrationForm";
 export * from "./RegistrationFormData";
 export * from "./SigninData";
 export * from "./UserProfile";

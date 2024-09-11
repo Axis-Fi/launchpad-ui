@@ -322,9 +322,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
 
     const headerParameters: runtime.HTTPHeaders = {};
 
-    const consumes: runtime.Consume[] = [
-      { contentType: "multipart/form-data" },
-    ];
+    const consumes: runtime.Consume[] = [{ contentType: "multipart/form" }];
     // @ts-ignore: canConsumeForm may be unused
     const canConsumeForm = runtime.canConsumeForm(consumes);
 
@@ -364,7 +362,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      JWTPairFromJSON(JSON.parse(jsonValue)),
+      JWTPairFromJSON(jsonValue),
     );
   }
 
@@ -417,7 +415,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      JWTPairFromJSON(JSON.parse(jsonValue)),
+      JWTPairFromJSON(jsonValue),
     );
   }
 

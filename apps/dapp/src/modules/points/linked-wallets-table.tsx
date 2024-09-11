@@ -1,10 +1,11 @@
 import { Button, Card, DataTable } from "@/components";
+import type { FullUserProfile } from "@repo/points";
 import { BlockExplorerLink } from "components/blockexplorer-link";
-import type { UserProfile } from "./profile";
+import { Format } from "modules/token/format";
 import { useAccount } from "wagmi";
 
 type LinkedWalletsTableProps = {
-  profile?: UserProfile;
+  profile?: FullUserProfile;
 };
 
 export function LinkedWalletsTable({ profile }: LinkedWalletsTableProps) {
@@ -14,8 +15,8 @@ export function LinkedWalletsTable({ profile }: LinkedWalletsTableProps) {
     <Card>
       <DataTable
         title="Linked Wallets"
-        subtitle="Link more wallets and get more points"
-        data={profile ? profile.linked_wallets : []}
+        subtitle="Link more wallets and get more points. Linked wallets are only visible to you."
+        data={profile?.wallets ?? []}
         emptyText="No linked wallets"
         columns={[
           {
@@ -32,15 +33,18 @@ export function LinkedWalletsTable({ profile }: LinkedWalletsTableProps) {
           },
           {
             header: "Bidding points",
-            accessorKey: "bidding",
+            accessorKey: "bidPoints",
+            cell: ({ row }) => <Format value={row.original.bidPoints ?? 0} />,
           },
           {
             header: "Referral points",
-            accessorKey: "referrals",
+            accessorKey: "refPoints",
+            cell: ({ row }) => <Format value={row.original.refPoints ?? 0} />,
           },
           {
             header: "Total",
-            accessorKey: "total",
+            accessorKey: "totalPoints",
+            cell: ({ row }) => <Format value={row.original.totalPoints ?? 0} />,
           },
         ]}
       />

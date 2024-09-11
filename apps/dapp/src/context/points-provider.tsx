@@ -1,20 +1,24 @@
-import { createContext, useContext, useEffect } from "react";
-import { useState } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { useAccount, useConfig } from "wagmi";
 import {
   createPointsClient,
-  FullUserProfile,
   TokenStorage,
-  UserProfile,
-  WalletPoints,
+  type FullUserProfile,
+  type JWTPair,
+  type UserProfile,
+  type WalletPoints,
 } from "@repo/points";
+import type { Address } from "viem";
 
-type PointsContextState = {
-  isRegistered: boolean;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  register: (username: string, referrer?: string, avatar?: Blob) => void;
+type PointsContext = {
+  isUserSignedIn: boolean;
+  register: (
+    username: string,
+    referrer?: string,
+    avatar?: Blob,
+  ) => Promise<JWTPair | undefined>;
   isUsernameAvailable: (username: string) => Promise<boolean | undefined>;
+  isUserRegistered: () => Promise<boolean | undefined>;
   signIn: () => void;
   linkWallet: () => void;
   getWalletPoints: (
@@ -26,40 +30,47 @@ type PointsContextState = {
   getAccessToken: () => string | null;
 };
 
-const initialState = {} as PointsContextState;
-export const PointsContext = createContext<PointsContextState>(initialState);
+const initialState = {} as PointsContext;
+export const PointsContext = createContext<PointsContext>(initialState);
 
 export const usePoints = () => {
   return useContext(PointsContext);
 };
 
+const enforceChainId: (chainId?: number) => asserts chainId is number = (
+  chainId?: number,
+) => {
+  if (chainId == null) {
+    throw new Error("Chain ID is not connected.");
+  }
+};
+const enforceAddress: (address?: Address) => asserts address is Address = (
+  address?: Address,
+) => {
+  if (address == null) {
+    throw new Error("Address is not connected.");
+  }
+};
+
 export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
   const config = useConfig();
-  const pointsClient = createPointsClient(config);
-  const { address, chain } = useAccount();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const pointsClient = useMemo(() => createPointsClient(config), [config]);
 
-  // Authentication
+  const { address, chainId } = useAccount();
 
-  useEffect(() => {
-    async function getIsRegistered() {
-      if (address == null) {
-        setIsRegistered(false);
-        return;
-      }
+  /* Authentication */
 
-      try {
-        setIsLoading(true);
-        const registered = await pointsClient.isRegistered(address);
-
-        setIsRegistered(registered);
-      } catch (e) {
-        console.error(e);
-      }
+  const isUserRegistered = async () => {
+    if (address == null) {
+      return false;
     }
-    getIsRegistered();
-  }, [address, pointsClient]);
+
+    try {
+      return pointsClient.isRegistered(address);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const isUsernameAvailable = async (username: string) => {
     try {
@@ -74,10 +85,8 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     referrer?: string,
     avatar?: Blob,
   ) => {
-    const chainId = chain?.id;
-    if (!address || !chainId) return;
-
-    setIsLoading(true);
+    enforceChainId(chainId);
+    enforceAddress(address);
 
     try {
       const response = await pointsClient.register(
@@ -94,45 +103,37 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
       return response;
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const signIn = async () => {
-    const chainId = chain?.id;
     if (!address || !chainId) return;
 
-    setIsLoading(true);
-
     try {
-      const response = await pointsClient.signIn(chainId, address);
-
-      TokenStorage.setAccessToken(response?.accessToken ?? "");
-      TokenStorage.setRefreshToken(response?.refreshToken ?? "");
+      // TODO: undo temp hack
+      // const response = await pointsClient.signIn(chainId, address);
+      // @ts-expect-error TODO
+      const response = JSON.parse(await pointsClient.signIn(chainId, address));
+      TokenStorage.setAccessToken(response?.access_token ?? "");
+      TokenStorage.setRefreshToken(response?.refresh_token ?? "");
+      // TokenStorage.setAccessToken(response?.accessToken ?? "");
+      // TokenStorage.setRefreshToken(response?.refreshToken ?? "");
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const linkWallet = async () => {
-    const chainId = chain?.id;
     if (!address || !chainId) return;
-
-    setIsLoading(true);
 
     try {
       return pointsClient.linkWallet(chainId, address);
     } catch (e) {
       console.error(e);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  // Points
+  /* Points */
 
   const getWalletPoints = async (address: `0x${string}`) => {
     try {
@@ -167,24 +168,26 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const context = useMemo(
+    () => ({
+      isUserRegistered,
+      isUsernameAvailable,
+      register,
+      signIn,
+      linkWallet,
+      getWalletPoints,
+      getLeaderboard,
+      getUserProfile,
+      setUserProfile,
+      getAccessToken: TokenStorage.getAccessToken,
+      isUserSignedIn: !!TokenStorage.getAccessToken(),
+    }),
+    // Only re-render dependentcy tree if the connected wallet or chain changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [address, chainId],
+  );
+
   return (
-    <PointsContext.Provider
-      value={{
-        isRegistered,
-        isLoading,
-        isUsernameAvailable,
-        register,
-        signIn,
-        linkWallet,
-        getWalletPoints,
-        getLeaderboard,
-        getUserProfile,
-        setUserProfile,
-        getAccessToken: TokenStorage.getAccessToken,
-        isAuthenticated: !!TokenStorage.getAccessToken(),
-      }}
-    >
-      {children}
-    </PointsContext.Provider>
+    <PointsContext.Provider value={context}>{children}</PointsContext.Provider>
   );
 };

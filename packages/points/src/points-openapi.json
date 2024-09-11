@@ -50,7 +50,7 @@
       "post": {
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "multipart/form": {
               "encoding": {
                 "profile_image": {
                   "contentType": "image/png, image/jpeg",
@@ -87,7 +87,7 @@
         "tags": ["Authentication"]
       }
     },
-    "/sign_in": {
+    "/sign-in": {
       "post": {
         "requestBody": {
           "content": {
@@ -489,6 +489,9 @@
           },
           "total_points": {
             "type": "integer"
+          },
+          "rank": {
+            "type": "integer"
           }
         },
         "type": "object"
@@ -516,6 +519,9 @@
           },
           "activities": {
             "$ref": "#/components/schemas/FullUserProfile_activities"
+          },
+          "rank": {
+            "type": "integer"
           }
         },
         "type": "object"

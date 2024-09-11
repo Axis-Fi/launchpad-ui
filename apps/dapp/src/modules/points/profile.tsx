@@ -6,123 +6,16 @@ import { BlockExplorerLink } from "components/blockexplorer-link";
 import { PhaseTables } from "./phase-tables";
 import { LinkedWalletsTable } from "./linked-wallets-table";
 import { Link, useLocation } from "react-router-dom";
-
-export type Activity = {
-  platform: string;
-  type: "bid" | "refer";
-  target: string | null;
-  contribution: number;
-  multiplier: number;
-  points: number;
-};
-
-type Phase = {
-  referral: number;
-  bidding: number;
-  total: number;
-  activity: Activity[];
-};
-
-type LinkedWallet = {
-  address: string;
-  referrals: number;
-  bidding: number;
-  total: number;
-};
-
-export type UserProfile = {
-  rank: number;
-  username: string;
-  avatar: string;
-  points: {
-    total: number;
-    phase_1: Phase;
-    phase_2: Phase;
-  };
-  linked_wallets: LinkedWallet[];
-};
-
-const mockProfile = {
-  rank: 420,
-  username: "Tex",
-  avatar: "placeholder-img.jpg", // "/images/default-user-avatar.png",
-  points: {
-    total: 28500,
-    phase_1: {
-      referral: 18000,
-      bidding: 9000,
-      total: 27000,
-      activity: [
-        {
-          platform: "Coinlist",
-          type: "bid",
-          contribution: 100,
-          multiplier: 1,
-          target: "PIZZA",
-          points: 100,
-        },
-        {
-          platform: "Fjord",
-          type: "bid",
-          contribution: 100,
-          multiplier: 1,
-          target: "RAGE",
-          points: 50,
-        },
-        {
-          platform: "Origin",
-          type: "refer",
-          contribution: 100,
-          multiplier: 0.1,
-          target: "Jem",
-          points: 50,
-        },
-      ],
-    },
-    phase_2: {
-      referral: 1000,
-      bidding: 500,
-      total: 1500,
-      activity: [
-        {
-          platform: "Origin",
-          type: "bid",
-          target: "AU",
-          contribution: 100,
-          multiplier: 1,
-          points: 2000,
-        },
-        {
-          platform: "Origin",
-          type: "refer",
-          target: "0xdef",
-          contribution: 100,
-          multiplier: 0.1,
-          points: 500,
-        },
-      ],
-    },
-  },
-  linked_wallets: [
-    {
-      address: "0x123",
-      referrals: 100,
-      bidding: 500,
-      total: 600,
-    },
-    {
-      address: "0x456",
-      referrals: 0,
-      bidding: 10,
-      total: 10,
-    },
-  ],
-} satisfies UserProfile;
+import { useProfile } from "./hooks/use-profile";
 
 export function Profile() {
   const location = useLocation();
   const { address, chainId } = useAccount();
-  const profile = mockProfile;
+  const { profile } = useProfile();
+
+  if (profile == null) return null;
+
+  const totalPoints = profile.points?._0?.totalPoints;
 
   return (
     <>
@@ -131,7 +24,7 @@ export function Profile() {
           <div className="gap-md flex">
             <Avatar
               className="h-[160px] w-[160px] rounded-none"
-              src={profile.avatar}
+              src={profile.profileImageUrl}
             />
             <div className="flex flex-col justify-between">
               <div className="flex flex-col">
@@ -147,7 +40,7 @@ export function Profile() {
                 />
               </div>
               <Metric label="Total Points Earned" size="xl">
-                <Format value={profile.points.total}></Format>
+                <Format value={totalPoints}></Format>
               </Metric>
             </div>
           </div>

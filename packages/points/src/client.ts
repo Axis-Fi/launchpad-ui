@@ -45,8 +45,12 @@ function createSIWEMessage(message: {
 }
 
 const basicMessage = {
-  domain: "axis-testnet.eth.limo", // window.location.host, // TODO: dont use this
-  uri: "https://axis-testnet.eth.limo", // window.location.origin, // TODO: dont use this
+  domain: environment.isDevelopment
+    ? "axis-testnet.eth.limo" // locally we use the testnet environemnt points service
+    : window.location.host,
+  uri: environment.isDevelopment
+    ? "https://axis-testnet.eth.limo"
+    : window.location.origin,
   version: "1",
 };
 

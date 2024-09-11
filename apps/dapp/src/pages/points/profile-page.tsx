@@ -1,24 +1,22 @@
+import { useAccount } from "wagmi";
 import { Profile } from "modules/points/profile";
-import { usePoints } from "context/points-provider";
-import { UnregisteredProfile } from "modules/points/unregistered-profile";
 import { SignIn } from "modules/points/sign-in";
+import { useProfile } from "modules/points/hooks/use-profile";
 
 export function ProfilePage() {
-  const isWalletConnected = true;
-  const { isRegistered, isAuthenticated } = usePoints();
-
-  console.log("isRegistered", isRegistered);
-  console.log("isAuthenticated", isAuthenticated);
+  const { isConnected: isWalletConnected } = useAccount();
+  const { isUserRegistered, isUserSignedIn } = useProfile();
 
   if (!isWalletConnected) {
     return <div>Connect your wallet to continue</div>;
   }
 
-  if (!isRegistered) {
-    return <UnregisteredProfile />;
+  if (!isUserRegistered) {
+    return "Claim flow";
+    // return <UnregisteredProfile />;
   }
 
-  if (!isAuthenticated) {
+  if (!isUserSignedIn) {
     return <SignIn />;
   }
 
