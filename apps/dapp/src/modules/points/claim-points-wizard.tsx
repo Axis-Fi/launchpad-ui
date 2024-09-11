@@ -1,14 +1,16 @@
-import { Text, Button, Card } from "@repo/ui";
-import React from "react";
+import { Text, Button, cn } from "@repo/ui";
 import { Wizard, useWizard } from "react-use-wizard";
-import { useAccount } from "wagmi";
-import ConnectButton from "components/connect-button";
+import { ConnectStep } from "./claim-steps/connect-step";
+import { CreateProfileStep } from "./claim-steps/create-profile-step";
+import { ViewPointsStep } from "./claim-steps/view-points-step";
 
 export function ClaimPointsWizard() {
   return (
     <div className="max-w-sm">
       <Wizard footer={<Footer />}>
         <ConnectStep />
+        <CreateProfileStep />
+        <ViewPointsStep />
 
         <div>Configure </div>
       </Wizard>
@@ -16,11 +18,12 @@ export function ClaimPointsWizard() {
   );
 }
 
+//debug only
 function Footer() {
   const { nextStep, previousStep } = useWizard();
 
   return (
-    <div className="flex gap-x-4">
+    <div className="mt-4 flex justify-center gap-x-4 *:w-full">
       <Button size="sm" onClick={previousStep}>
         Previous step
       </Button>
@@ -31,33 +34,15 @@ function Footer() {
   );
 }
 
-function ConnectStep() {
-  const { isConnected } = useAccount();
-  const { nextStep } = useWizard();
-
-  React.useEffect(() => {
-    if (isConnected) nextStep();
-  }, [isConnected]);
-
-  return (
-    <Card className="bg-surface max-w-[304px]">
-      <AxisPointsHeader />
-      <div className="mt-6 space-y-2">
-        <Text>Welcome to the Axis Points Claim!</Text>
-        <Text>Create a user profile and claim your gift!</Text>
-        <Text>Link addresses and refer friends to multiply your points.</Text>
-        <ConnectButton />
-        <Text uppercase mono size="sm" className="text-foreground-secondary">
-          By using Axis, you agree to our{" "}
-          <span className="font-bold">Terms of Services</span> and our{" "}
-          <span className="font-bold">Privacy Policy </span>
-        </Text>
-      </div>
-    </Card>
-  );
-}
-
-function AxisPointsHeader() {
+export function AxisPointsHeader({
+  title = "Axis Drop",
+  subtitle = "Points Claiming",
+  subtitleClassName,
+}: {
+  title?: string;
+  subtitle?: string;
+  subtitleClassName?: string;
+}) {
   return (
     <div className="text-right">
       <Text
@@ -66,14 +51,17 @@ function AxisPointsHeader() {
         uppercase
         className="text-foreground-tertiary tracking-widest"
       >
-        Axis Drop
+        {title}
       </Text>
       <Text
-        className="ml-auto mt-1 w-2/3 font-light leading-none tracking-normal"
+        className={cn(
+          "ml-auto mt-1 w-2/3 font-light leading-none tracking-wide",
+          subtitleClassName,
+        )}
         size="xl"
         mono
       >
-        Points Claiming
+        {subtitle}
       </Text>
     </div>
   );
