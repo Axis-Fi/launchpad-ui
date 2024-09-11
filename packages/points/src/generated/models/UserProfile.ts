@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from "../runtime";
+import { mapValues } from "../runtime";
 /**
  * A JSON object containing the user's profile information, including points by category and total.
  * @export
@@ -55,15 +55,19 @@ export interface UserProfile {
    * @memberof UserProfile
    */
   totalPoints?: number;
+  /**
+   *
+   * @type {number}
+   * @memberof UserProfile
+   */
+  rank?: number;
 }
 
 /**
  * Check if a given object implements the UserProfile interface.
  */
-export function instanceOfUserProfile(value: object): boolean {
-  let isInstance = true;
-
-  return isInstance;
+export function instanceOfUserProfile(value: object): value is UserProfile {
+  return true;
 }
 
 export function UserProfileFromJSON(json: any): UserProfile {
@@ -74,36 +78,33 @@ export function UserProfileFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
 ): UserProfile {
-  if (json === undefined || json === null) {
+  if (json == null) {
     return json;
   }
   return {
-    username: !exists(json, "username") ? undefined : json["username"],
-    profileImageUrl: !exists(json, "profile_image_url")
-      ? undefined
-      : json["profile_image_url"],
-    referrer: !exists(json, "referrer") ? undefined : json["referrer"],
-    refPoints: !exists(json, "ref_points") ? undefined : json["ref_points"],
-    bidPoints: !exists(json, "bid_points") ? undefined : json["bid_points"],
-    totalPoints: !exists(json, "total_points")
-      ? undefined
-      : json["total_points"],
+    username: json["username"] == null ? undefined : json["username"],
+    profileImageUrl:
+      json["profile_image_url"] == null ? undefined : json["profile_image_url"],
+    referrer: json["referrer"] == null ? undefined : json["referrer"],
+    refPoints: json["ref_points"] == null ? undefined : json["ref_points"],
+    bidPoints: json["bid_points"] == null ? undefined : json["bid_points"],
+    totalPoints:
+      json["total_points"] == null ? undefined : json["total_points"],
+    rank: json["rank"] == null ? undefined : json["rank"],
   };
 }
 
 export function UserProfileToJSON(value?: UserProfile | null): any {
-  if (value === undefined) {
-    return undefined;
-  }
-  if (value === null) {
-    return null;
+  if (value == null) {
+    return value;
   }
   return {
-    username: value.username,
-    profile_image_url: value.profileImageUrl,
-    referrer: value.referrer,
-    ref_points: value.refPoints,
-    bid_points: value.bidPoints,
-    total_points: value.totalPoints,
+    username: value["username"],
+    profile_image_url: value["profileImageUrl"],
+    referrer: value["referrer"],
+    ref_points: value["refPoints"],
+    bid_points: value["bidPoints"],
+    total_points: value["totalPoints"],
+    rank: value["rank"],
   };
 }

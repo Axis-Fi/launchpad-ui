@@ -45,8 +45,12 @@ function createSIWEMessage(message: {
 }
 
 const basicMessage = {
-  domain: "axis-testnet.eth.limo", // window.location.host, // TODO: dont use this
-  uri: "https://axis-testnet.eth.limo", // window.location.origin, // TODO: dont use this
+  domain: environment.isDevelopment
+    ? "axis-testnet.eth.limo" // locally we use the testnet environemnt points service
+    : window.location.host,
+  uri: environment.isDevelopment
+    ? "https://axis-testnet.eth.limo"
+    : window.location.origin,
   version: "1",
 };
 
@@ -242,6 +246,48 @@ export class PointsClient {
       }
     } else {
       throw errorContext.error;
+    }
+  }
+
+  // Points
+
+  async getWalletPoints(address: `0x${string}`) {
+    try {
+      return this.pointsApi.pointsWalletAddressGet({ walletAddress: address });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getLeaderboard() {
+    try {
+      return this.pointsApi.leaderboardGet();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getUserProfile() {
+    try {
+      return this.pointsApi.profileGet({ headers: this.headers() });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async setUserProfile(username?: string, avatar?: Blob) {
+    try {
+      return this.pointsApi.profilePost(
+        {
+          data: {
+            username: username ? username : undefined,
+          },
+          profileImage: avatar ? avatar : undefined,
+        },
+        { headers: this.headers() },
+      );
+    } catch (e) {
+      console.error(e);
     }
   }
 }

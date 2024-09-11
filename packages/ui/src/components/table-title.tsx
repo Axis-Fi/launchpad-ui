@@ -18,7 +18,7 @@ const TableTitle = ({
 }: TableTitleProps) => {
   if (!title) return null;
   return (
-    <div className={cn("mb-6 flex items-center justify-between", className)}>
+    <div className={cn("mb-xs flex items-center justify-between", className)}>
       <div className="flex h-[64px] flex-col justify-end">
         <Text size="xl" weight="light">
           {title}
@@ -26,7 +26,9 @@ const TableTitle = ({
         <Text size="md">{subtitle}</Text>
       </div>
       {titleRightElement && (
-        <div className="flex items-center space-x-2">{titleRightElement}</div>
+        <div className="flex grow items-center space-x-2">
+          {titleRightElement}
+        </div>
       )}
     </div>
   );
