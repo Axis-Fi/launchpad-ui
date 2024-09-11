@@ -19,8 +19,8 @@ type PointsContext = {
   ) => Promise<JWTPair | undefined>;
   isUsernameAvailable: (username: string) => Promise<boolean | undefined>;
   isUserRegistered: () => Promise<boolean | undefined>;
-  signIn: () => void;
-  linkWallet: () => void;
+  signIn: () => Promise<void>;
+  linkWallet: () => Promise<void>;
   getWalletPoints: (
     address: `0x${string}`,
   ) => Promise<WalletPoints | undefined>;

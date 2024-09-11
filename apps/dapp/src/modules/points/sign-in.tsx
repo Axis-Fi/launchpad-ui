@@ -1,8 +1,8 @@
 import { Button, Dialog } from "@/components";
-import { usePoints } from "context/points-provider";
+import { useProfile } from "./hooks/use-profile";
 
 export function SignIn() {
-  const { signIn } = usePoints();
+  const { signIn } = useProfile();
 
   return (
     <Dialog

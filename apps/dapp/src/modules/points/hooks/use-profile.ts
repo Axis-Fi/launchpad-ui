@@ -81,6 +81,10 @@ export function useProfile() {
       points.setUserProfile(profile.username, profile.avatar),
   });
 
+  const signInMutation = useMutation({
+    mutationFn: async () => points.signIn(),
+  });
+
   const register = (profile: ProfileForm) => {
     try {
       schema.parse(profile);
@@ -104,6 +108,14 @@ export function useProfile() {
       } else {
         console.error("Unexpected error: ", e);
       }
+    }
+  };
+
+  const signIn = () => {
+    try {
+      return signInMutation.mutate();
+    } catch (e) {
+      console.error("Unexpected error: ", e);
     }
   };
 
@@ -137,5 +149,6 @@ export function useProfile() {
     },
     register,
     updateProfile,
+    signIn,
   };
 }
