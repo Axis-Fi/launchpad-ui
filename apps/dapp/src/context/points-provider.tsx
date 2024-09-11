@@ -110,14 +110,10 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     if (!address || !chainId) return;
 
     try {
-      // TODO: undo temp hack
-      // const response = await pointsClient.signIn(chainId, address);
-      // @ts-expect-error TODO
-      const response = JSON.parse(await pointsClient.signIn(chainId, address));
-      TokenStorage.setAccessToken(response?.access_token ?? "");
-      TokenStorage.setRefreshToken(response?.refresh_token ?? "");
-      // TokenStorage.setAccessToken(response?.accessToken ?? "");
-      // TokenStorage.setRefreshToken(response?.refreshToken ?? "");
+      const response = await pointsClient.signIn(chainId, address);
+
+      TokenStorage.setAccessToken(response?.accessToken ?? "");
+      TokenStorage.setRefreshToken(response?.refreshToken ?? "");
     } catch (e) {
       console.error(e);
     }
