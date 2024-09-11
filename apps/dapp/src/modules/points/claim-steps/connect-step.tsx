@@ -3,7 +3,7 @@ import React from "react";
 import { useWizard } from "react-use-wizard";
 import { useAccount } from "wagmi";
 import ConnectButton from "components/connect-button";
-import { AxisPointsHeader } from "../claim-points-wizard";
+import { ClaimPointsHeader } from "./claim-points-header";
 
 export function ConnectStep() {
   const { isConnected } = useAccount();
@@ -15,7 +15,7 @@ export function ConnectStep() {
 
   return (
     <Card className="bg-surface max-w-[304px]">
-      <AxisPointsHeader />
+      <ClaimPointsHeader />
       <div className="mt-6 space-y-2">
         <Text>Welcome to the Axis Points Claim!</Text>
         <Text>Create a user profile and claim your gift!</Text>

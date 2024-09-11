@@ -1,4 +1,4 @@
-import { Text, Button, cn } from "@repo/ui";
+import { Button } from "@repo/ui";
 import { Wizard, useWizard } from "react-use-wizard";
 import { ConnectStep } from "./claim-steps/connect-step";
 import { CreateProfileStep } from "./claim-steps/create-profile-step";
@@ -30,39 +30,6 @@ function Footer() {
       <Button size="sm" onClick={nextStep}>
         Next step
       </Button>
-    </div>
-  );
-}
-
-export function AxisPointsHeader({
-  title = "Axis Drop",
-  subtitle = "Points Claiming",
-  subtitleClassName,
-}: {
-  title?: string;
-  subtitle?: string;
-  subtitleClassName?: string;
-}) {
-  return (
-    <div className="text-right">
-      <Text
-        size="sm"
-        mono
-        uppercase
-        className="text-foreground-tertiary tracking-widest"
-      >
-        {title}
-      </Text>
-      <Text
-        className={cn(
-          "ml-auto mt-1 w-2/3 font-light leading-none tracking-wide",
-          subtitleClassName,
-        )}
-        size="xl"
-        mono
-      >
-        {subtitle}
-      </Text>
     </div>
   );
 }

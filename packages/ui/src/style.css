@@ -276,4 +276,13 @@
       rgba(205, 246, 117, 1) 100%
     );
   }
+
+  .claim-points-gradient-horizontal {
+    background: linear-gradient(
+      90deg,
+      rgba(205, 246, 117, 1) 0%,
+      rgba(117, 200, 246, 1) 50%,
+      rgba(117, 161, 246, 1) 100%
+    );
+  }
 }

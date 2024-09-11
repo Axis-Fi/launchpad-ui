@@ -23,10 +23,11 @@ import React from "react";
 export function EditProfile({
   create,
   onSuccess,
-}: {
+  children,
+}: React.PropsWithChildren<{
   create?: boolean;
   onSuccess?: () => void;
-}) {
+}>) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { address } = useAccount();
 
@@ -103,7 +104,7 @@ export function EditProfile({
                     ref={avatarRef}
                   />
                   <Button
-                    className="gap-x-sm w-full"
+                    className="gap-x-sm w-full "
                     size="md"
                     variant="secondary"
                     onClick={handleUploadAvatarPressed}
@@ -125,17 +126,19 @@ export function EditProfile({
             </FormItemWrapper>
           )}
         />
-        <Text className="mt-1 text-center">
+        <Text className="text-foreground-tertiary text-center">
           Connected Wallet <br />
           {trimAddress(address!, 16)}
         </Text>
 
+        {children}
+
         <Button
           disabled={!form.formState.isValid}
           type="submit"
-          className="mt-3 w-full"
+          className="mt-3 w-full max-w-[320px]"
         >
-          {create ? "Save profile and view your Points" : "Save changes"}
+          {create ? "Save profile and claim your Points" : "Save changes"}
         </Button>
       </form>
     </Form>
