@@ -6,7 +6,9 @@ import type { FullUserProfile } from "@repo/points";
 import { zeroAddress } from "viem";
 
 export const schema = z.object({
-  username: z.string().min(3),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters" }),
   referrer: z.string().optional(),
   avatar: z.instanceof(File).optional(),
 });
@@ -86,6 +88,7 @@ export function useProfile() {
   });
 
   const register = (profile: ProfileForm) => {
+<<<<<<< HEAD
     try {
       schema.parse(profile);
       return registerMutation.mutate(profile);
@@ -96,6 +99,9 @@ export function useProfile() {
         console.error("Unexpected error: ", e);
       }
     }
+=======
+    return mutation.mutate(profile);
+>>>>>>> ab70136 (add create profile step)
   };
 
   const updateProfile = (profile: ProfileForm) => {
