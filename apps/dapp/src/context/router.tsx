@@ -15,7 +15,7 @@ import { ReferralPage } from "pages/referral";
 import CuratorListPage from "pages/curator-list-page";
 import { ProfilePage } from "pages/points/profile-page";
 import { LeaderboardPage } from "pages/points/leaderboard-page";
-import { ClaimPointsPage } from "pages/claim-points-page";
+import { ClaimPointsPage } from "pages/points/claim-points-page";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {

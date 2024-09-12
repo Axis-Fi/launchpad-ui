@@ -4,12 +4,10 @@ import { usePoints } from "context/points-provider";
 import { useState } from "react";
 import type { Address } from "@repo/types";
 
-const usernameSchema = z
-  .string()
-  .min(1, { message: "Username must be at least 1 characters" });
-
 export const schema = z.object({
-  username: usernameSchema,
+  username: z
+    .string()
+    .min(1, { message: "Username must be at least 1 characters" }),
   referrer: z.string().optional(),
   avatar: z.instanceof(File).optional(),
 });
@@ -20,53 +18,19 @@ export function useProfile() {
   const points = usePoints();
   const referrer = undefined; // TODO: referre for points progam != referer of a launch
 
-  const registerMutation = useMutation({
+  const register = useMutation({
     mutationFn: async (profile: ProfileForm) =>
       points.register(profile.username, referrer, profile.avatar),
   });
 
-  const updateProfileMutation = useMutation({
+  const updateProfile = useMutation({
     mutationFn: async (profile: ProfileForm) =>
       points.setUserProfile(profile.username, profile.avatar),
   });
 
-  const signInMutation = useMutation({
+  const signIn = useMutation({
     mutationFn: async () => points.signIn(),
   });
-
-  const register = (profile: ProfileForm, onSuccess?: () => void) => {
-    try {
-      schema.parse(profile);
-      return registerMutation.mutate(profile, { onSuccess });
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        console.error("Validation failed: ", e.issues[0]);
-      } else {
-        console.error("Unexpected error: ", e);
-      }
-    }
-  };
-
-  const updateProfile = (profile: ProfileForm, onSuccess?: () => void) => {
-    try {
-      schema.parse(profile);
-      return updateProfileMutation.mutate(profile, { onSuccess });
-    } catch (e) {
-      if (e instanceof z.ZodError) {
-        console.error("Validation failed: ", e.issues[0]);
-      } else {
-        console.error("Unexpected error: ", e);
-      }
-    }
-  };
-
-  const signIn = (onSuccess?: () => void) => {
-    try {
-      return signInMutation.mutate(undefined, { onSuccess });
-    } catch (e) {
-      console.error("Unexpected error: ", e);
-    }
-  };
 
   const [username, setUsername] = useState<string | null>(null);
 

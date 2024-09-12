@@ -14,11 +14,11 @@ export function ConnectStep() {
   }, [isConnected, nextStep]);
 
   return (
-    <Card className="bg-surface max-w-[304px]">
+    <Card className="bg-surface w-[304px]">
       <ClaimPointsHeader />
       <div className="mt-6 space-y-2">
         <Text>Welcome to the Axis Points Claim!</Text>
-        <Text>Create a user profile to claim your points!</Text>
+        <Text>Create a user profile to claim your points.</Text>
         <Text>Link addresses and refer friends to multiply your points.</Text>
         <ConnectButton size="md" />
         <Text uppercase mono size="sm" className="text-foreground-secondary">

@@ -10,7 +10,7 @@ export function SignIn() {
       title="Sign in"
       triggerElement={<Button variant="primary">Sign in to continue</Button>}
       submitText="Sign in"
-      onSubmit={signIn}
+      onSubmit={signIn.mutate}
     >
       <>Sign in to continue.</>
     </Dialog>

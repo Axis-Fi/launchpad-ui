@@ -1,11 +1,15 @@
-import { useRef, useState, useMemo, type default as React } from "react";
+import {
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+  type default as React,
+} from "react";
 import { useForm } from "react-hook-form";
 import debounce from "debounce";
-import { useAccount } from "wagmi";
 import { ShareIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Text,
   Button,
   Input,
   FormField,
@@ -18,7 +22,7 @@ import {
   schema,
   useProfile,
 } from "modules/points/hooks/use-profile";
-import { trimAddress } from "@repo/ui";
+import { ConnectedWallet } from "./connected-wallet";
 
 const FORM_DEBOUNCE_TIME = 600; // ms
 
@@ -31,25 +35,24 @@ export function EditProfile({
   onSuccess?: () => void;
 }>) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const { address } = useAccount();
-
   const { register, usernameCheck } = useProfile();
 
-  const refinedSchema = useMemo(() => {
-    return schema.refine(() => usernameCheck.data !== false, {
-      path: ["username"],
-      message: "Username is already taken",
-    });
-  }, [usernameCheck.data]);
-
   const form = useForm<ProfileForm>({
-    resolver: zodResolver(refinedSchema, { async: true }),
+    resolver: zodResolver(schema),
     mode: "onChange",
-    delayError: FORM_DEBOUNCE_TIME,
     defaultValues: {
       username: "",
     },
   });
+
+  useEffect(() => {
+    if (usernameCheck.data === false) {
+      form.setError("username", {
+        type: "manual",
+        message: "Username is already taken",
+      });
+    }
+  }, [usernameCheck.data, form]);
 
   const avatarRef = useRef<HTMLInputElement>(null);
 
@@ -76,15 +79,12 @@ export function EditProfile({
   };
 
   const handleSubmit = (data: ProfileForm) => {
-    register(data, onSuccess);
+    register.mutate(data, { onSuccess, onError: (e) => console.error({ e }) });
   };
 
   return (
     <Form {...form}>
-      <form
-        className="gap-lg grid py-4"
-        onSubmit={form.handleSubmit(handleSubmit)}
-      >
+      <form className="gap-lg grid" onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="gap-x-md flex items-end">
           <Avatar
             src={avatarPreview ?? "/placeholder-img.png"}
@@ -117,7 +117,6 @@ export function EditProfile({
             }}
           />
         </div>
-
         <FormField
           name="username"
           render={({ field }) => (
@@ -134,22 +133,14 @@ export function EditProfile({
             </FormItemWrapper>
           )}
         />
-        <Text className="text-foreground-tertiary text-start">
-          <span className="flex items-center gap-x-2">
-            Connected Wallet{" "}
-            <Text mono size="xs" as="span">
-              [HIDDEN]
-            </Text>
-          </span>
-          {address != null && trimAddress(address, 16)}
-        </Text>
+        <ConnectedWallet />
 
         {children}
 
         <Button
-          disabled={!form.formState.isValid}
+          disabled={!form.formState.isValid || usernameCheck.isLoading}
           type="submit"
-          className="mt-3 w-full max-w-[320px]"
+          className="mt-3 w-full"
         >
           {create ? "Save profile" : "Save changes"}
         </Button>

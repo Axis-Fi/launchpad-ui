@@ -1,12 +1,13 @@
+import type React from "react";
 import { Text, cn } from "@repo/ui";
 
 export function ClaimPointsHeader({
   title = "Axis Points",
-  subtitle = "Points Claiming",
+  subtitle = "Points Claim",
   subtitleClassName,
 }: {
   title?: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   subtitleClassName?: string;
 }) {
   return (

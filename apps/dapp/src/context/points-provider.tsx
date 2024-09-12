@@ -65,11 +65,7 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
       return false;
     }
 
-    try {
-      return pointsClient.isRegistered(address);
-    } catch (e) {
-      console.error(e);
-    }
+    return pointsClient.isRegistered(address);
   };
 
   const isUsernameAvailable = async (username: string) => {
@@ -88,80 +84,52 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     enforceChainId(chainId);
     enforceAddress(address);
 
-    try {
-      const response = await pointsClient.register(
-        chainId,
-        address,
-        username,
-        referrer,
-        avatar,
-      );
+    const response = await pointsClient.register(
+      chainId,
+      address,
+      username,
+      referrer,
+      avatar,
+    );
 
-      TokenStorage.setAccessToken(response?.accessToken ?? "");
-      TokenStorage.setRefreshToken(response?.refreshToken ?? "");
+    TokenStorage.setAccessToken(response?.accessToken ?? "");
+    TokenStorage.setRefreshToken(response?.refreshToken ?? "");
 
-      return response;
-    } catch (e) {
-      console.error(e);
-    }
+    return response;
   };
 
   const signIn = async () => {
     if (!address || !chainId) return;
 
-    try {
-      const response = await pointsClient.signIn(chainId, address);
+    const response = await pointsClient.signIn(chainId, address);
 
-      TokenStorage.setAccessToken(response?.accessToken ?? "");
-      TokenStorage.setRefreshToken(response?.refreshToken ?? "");
-    } catch (e) {
-      console.error(e);
-    }
+    TokenStorage.setAccessToken(response?.accessToken ?? "");
+    TokenStorage.setRefreshToken(response?.refreshToken ?? "");
   };
 
   const linkWallet = async () => {
     if (!address || !chainId) return;
 
-    try {
-      return pointsClient.linkWallet(chainId, address);
-    } catch (e) {
-      console.error(e);
-    }
+    return pointsClient.linkWallet(chainId, address);
   };
 
   /* Points */
 
   const getWalletPoints = async (address: `0x${string}`) => {
-    try {
-      return pointsClient.getWalletPoints(address);
-    } catch (e) {
-      console.error(e);
-    }
+    return pointsClient.getWalletPoints(address);
   };
 
   const getLeaderboard = async () => {
-    try {
-      return pointsClient.getLeaderboard();
-    } catch (e) {
-      console.error(e);
-    }
+    return pointsClient.getLeaderboard();
   };
 
   // Requires user to be signed in
   const getUserProfile = async () => {
-    try {
-      return pointsClient.getUserProfile();
-    } catch (e) {
-      console.error(e);
-    }
+    return pointsClient.getUserProfile();
   };
 
   const setUserProfile = async (username?: string, avatar?: Blob) => {
-    try {
-      return pointsClient.setUserProfile(username, avatar);
-    } catch (e) {
-      console.error(e);
-    }
+    return pointsClient.setUserProfile(username, avatar);
   };
 
   const context = useMemo(
@@ -178,7 +146,7 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
       getAccessToken: TokenStorage.getAccessToken,
       isUserSignedIn: !!TokenStorage.getAccessToken(),
     }),
-    // Only re-render dependentcy tree if the connected wallet or chain changes
+    // Only re-render dependency tree if the connected wallet or chain changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [address, chainId],
   );

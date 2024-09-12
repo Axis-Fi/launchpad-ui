@@ -162,29 +162,23 @@ export class PointsClient {
     referrer?: string,
     avatar?: Blob,
   ) {
-    try {
-      const statement = "Register to claim your Axis points.";
-      const { message, signature } = await this.sign(
-        chainId,
-        address,
-        statement,
-      );
+    const statement = "Register to claim your Axis points.";
+    const { message, signature } = await this.sign(chainId, address, statement);
 
-      return this.authApi.registerPost(
-        {
-          data: {
-            message,
-            signature,
-            username,
-            referrer: referrer ?? zeroAddress,
-          },
-          profileImage: avatar ? avatar : undefined,
+    const response = await this.authApi.registerPost(
+      {
+        data: {
+          message,
+          signature,
+          username,
+          referrer: referrer ?? zeroAddress,
         },
-        { headers: this.headers() },
-      );
-    } catch (e) {
-      console.error(`Failed to register`, e);
-    }
+        profileImage: avatar ? avatar : undefined,
+      },
+      { headers: this.headers() },
+    );
+
+    return response;
   }
 
   async linkWallet(chainId: number, address: `0x${string}`) {
@@ -197,7 +191,8 @@ export class PointsClient {
       );
 
       return this.authApi.linkPost(
-        { signinData: { message, signature } },
+        // TODO: remove userId once backend is updated
+        { userId: "TODO_UPDATE_BACKEND", signinData: { message, signature } },
         { headers: this.headers() },
       );
     } catch (e) {

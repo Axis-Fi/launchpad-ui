@@ -18,7 +18,7 @@ export function CreateProfileStep() {
   }, [address, walletPoints]);
 
   return (
-    <Card className="pb-0">
+    <Card className="bg-surface w-full">
       <ClaimPointsHeader subtitle="Create Profile" />
       <EditProfile create onSuccess={wizard.nextStep}>
         <PendingPoints points={walletPoints.data?.totalPoints ?? 0} />

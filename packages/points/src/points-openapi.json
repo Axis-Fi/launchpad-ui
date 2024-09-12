@@ -50,7 +50,7 @@
       "post": {
         "requestBody": {
           "content": {
-            "multipart/form": {
+            "multipart/form-data": {
               "encoding": {
                 "profile_image": {
                   "contentType": "image/png, image/jpeg",
@@ -159,6 +159,19 @@
     },
     "/link": {
       "post": {
+        "parameters": [
+          {
+            "description": "The user id to link the wallet to.",
+            "explode": false,
+            "in": "path",
+            "name": "user_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -286,7 +299,7 @@
       "post": {
         "requestBody": {
           "content": {
-            "multipart/form": {
+            "multipart/form-data": {
               "encoding": {
                 "profile_image": {
                   "contentType": "image/png, image/jpeg",

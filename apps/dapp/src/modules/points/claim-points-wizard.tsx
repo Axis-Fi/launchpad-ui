@@ -6,7 +6,7 @@ import { ViewPointsStep } from "./claim-steps/view-points-step";
 
 export function ClaimPointsWizard() {
   return (
-    <div className="max-w-sm">
+    <div className="max-w-[384px]">
       <Wizard footer={<Footer />}>
         <ConnectStep />
         <CreateProfileStep />

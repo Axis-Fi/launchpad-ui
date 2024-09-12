@@ -13,7 +13,7 @@ const sizeMap = {
   sm: "p",
   xs: "p",
   default: "p",
-};
+} as const;
 
 export interface TextProps
   extends Omit<React.HTMLProps<HTMLParagraphElement>, "color" | "size">,
@@ -21,6 +21,7 @@ export interface TextProps
   mono?: boolean;
   uppercase?: boolean;
   spaced?: boolean;
+  size?: keyof typeof sizeMap;
 }
 
 const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
