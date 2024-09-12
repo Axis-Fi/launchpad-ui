@@ -11,7 +11,7 @@ import {
 import type { Address } from "viem";
 
 type PointsContext = {
-  isUserSignedIn: boolean;
+  isUserSignedIn: () => boolean;
   register: (
     username: string,
     referrer?: string,
@@ -144,7 +144,7 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
       getUserProfile,
       setUserProfile,
       getAccessToken: TokenStorage.getAccessToken,
-      isUserSignedIn: !!TokenStorage.getAccessToken(),
+      isUserSignedIn: () => !!TokenStorage.getAccessToken(),
     }),
     // Only re-render dependency tree if the connected wallet or chain changes
     // eslint-disable-next-line react-hooks/exhaustive-deps

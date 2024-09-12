@@ -1,14 +1,14 @@
 import { zeroAddress } from "viem";
 import { pointsServers } from "@repo/env";
-import {
+import type {
   AuthenticationApi,
   Configuration,
   PointsApi,
-  ErrorContext,
   Middleware,
+  ResponseContext,
 } from ".";
 import { environment } from "@repo/env";
-import { Config, signMessage } from "@wagmi/core";
+import { type Config, signMessage } from "@wagmi/core";
 
 // JWT Token Storage
 export const TokenStorage = {
@@ -72,7 +72,7 @@ export class PointsClient {
 
   constructor(config: Configuration = defaultConfig, wagmiConfig: Config) {
     const authMiddleware: Middleware = {
-      onError: this.refreshTokenInterceptor.bind(this),
+      post: this.refreshTokenInterceptor.bind(this),
     };
     const fullConfig = new Configuration({
       ...config,
@@ -121,14 +121,9 @@ export class PointsClient {
   }
 
   async isRegistered(address: `0x${string}`) {
-    try {
-      return this.authApi.isRegisteredWalletAddressGet({
-        walletAddress: address,
-      });
-    } catch (e) {
-      console.error(`Failed to check registration status`, e);
-    }
-    return false;
+    return this.authApi.isRegisteredWalletAddressGet({
+      walletAddress: address,
+    });
   }
 
   async isUsernameAvailable(username: string) {
@@ -173,7 +168,7 @@ export class PointsClient {
           username,
           referrer: referrer ?? zeroAddress,
         },
-        profileImage: avatar ? avatar : undefined,
+        profileImage: avatar ?? undefined,
       },
       { headers: this.headers() },
     );
@@ -207,14 +202,14 @@ export class PointsClient {
   }
 
   //Error interceptor that attempts to refresh a JWT token
-  async refreshTokenInterceptor(errorContext: ErrorContext) {
-    const url = errorContext.url;
-    const init = errorContext.init;
+  async refreshTokenInterceptor(responseContext: ResponseContext) {
+    const url = responseContext.url;
+    const init = responseContext.init;
 
     if (
-      url !== "/sign_in" &&
+      url !== "/sign-in" &&
       url !== "/refresh" &&
-      errorContext.response?.status === 401
+      responseContext.response?.status === 401
     ) {
       const refreshToken = TokenStorage.getRefreshToken();
 
@@ -223,6 +218,7 @@ export class PointsClient {
           const response = await this.authApi.refreshPost({
             body: refreshToken,
           });
+
           TokenStorage.setAccessToken(response.accessToken!);
           TokenStorage.setRefreshToken(response.refreshToken!);
 
@@ -234,13 +230,11 @@ export class PointsClient {
             },
           };
 
-          return errorContext.fetch(url, newInit);
+          return responseContext.fetch(url, newInit);
         } catch (e) {
           return Promise.reject(e);
         }
       }
-    } else {
-      throw errorContext.error;
     }
   }
 

@@ -24,6 +24,7 @@ export function useProfile() {
   const register = useMutation({
     mutationFn: async (profile: ProfileForm) =>
       points.register(profile.username, referrer, profile.avatar),
+    onSuccess: () => profileQuery.refetch(),
   });
 
   const updateProfile = useMutation({
@@ -51,7 +52,7 @@ export function useProfile() {
   const profileQuery = useQuery({
     queryKey: ["profileQuery"],
     queryFn: points.getUserProfile,
-    enabled: points.isUserSignedIn,
+    enabled: points.isUserSignedIn(),
   });
 
   const [address, setAddress] = useState<Address | null>(null);
@@ -65,7 +66,7 @@ export function useProfile() {
   return {
     profile: profileQuery.data,
     isUserRegistered: userRegisteredQuery.data,
-    isUserSignedIn: points.isUserSignedIn,
+    isUserSignedIn: points.isUserSignedIn(),
     usernameCheck: {
       ...usernameQuery,
       fetch: setUsername,

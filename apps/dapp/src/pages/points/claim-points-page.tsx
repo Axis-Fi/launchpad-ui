@@ -20,7 +20,7 @@ export function ClaimPointsPage() {
         >
           <ArrowLeftIcon className="duration-150" />
           <Text uppercase mono className="duration-150">
-            Back to Leaderboard
+            Back
           </Text>
         </Link>
       </div>
