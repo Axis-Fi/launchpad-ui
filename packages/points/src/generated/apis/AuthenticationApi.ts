@@ -322,7 +322,9 @@ export class AuthenticationApi extends runtime.BaseAPI {
 
     const headerParameters: runtime.HTTPHeaders = {};
 
-    const consumes: runtime.Consume[] = [{ contentType: "multipart/form" }];
+    const consumes: runtime.Consume[] = [
+      { contentType: "multipart/form-data" },
+    ];
     // @ts-ignore: canConsumeForm may be unused
     const canConsumeForm = runtime.canConsumeForm(consumes);
 

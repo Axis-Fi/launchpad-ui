@@ -250,7 +250,9 @@ export class PointsApi extends runtime.BaseAPI {
         headerParameters["Authorization"] = `Bearer ${tokenString}`;
       }
     }
-    const consumes: runtime.Consume[] = [{ contentType: "multipart/form" }];
+    const consumes: runtime.Consume[] = [
+      { contentType: "multipart/form-data" },
+    ];
     // @ts-ignore: canConsumeForm may be unused
     const canConsumeForm = runtime.canConsumeForm(consumes);
 

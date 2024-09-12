@@ -50,7 +50,7 @@
       "post": {
         "requestBody": {
           "content": {
-            "multipart/form": {
+            "multipart/form-data": {
               "encoding": {
                 "profile_image": {
                   "contentType": "image/png, image/jpeg",
@@ -286,7 +286,7 @@
       "post": {
         "requestBody": {
           "content": {
-            "multipart/form": {
+            "multipart/form-data": {
               "encoding": {
                 "profile_image": {
                   "contentType": "image/png, image/jpeg",
