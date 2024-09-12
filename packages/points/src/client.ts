@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 import { pointsServers } from "@repo/env";
-import type {
+import {
   AuthenticationApi,
   Configuration,
   PointsApi,
@@ -8,7 +8,7 @@ import type {
   ResponseContext,
 } from ".";
 import { environment } from "@repo/env";
-import { type Config, signMessage } from "@wagmi/core";
+import { Config, signMessage } from "@wagmi/core";
 
 // JWT Token Storage
 export const TokenStorage = {
