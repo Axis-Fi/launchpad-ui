@@ -32,7 +32,7 @@ export function LinkedWalletsTable({ profile }: LinkedWalletsTableProps) {
             ),
           },
           {
-            header: "Bidding points",
+            header: "Bid points",
             accessorKey: "bidPoints",
             cell: ({ row }) => <Format value={row.original.bidPoints ?? 0} />,
           },

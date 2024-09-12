@@ -15,7 +15,7 @@ export function ClaimPointsPage() {
       <div className="z-30 flex justify-center py-10">
         <img src="images/axis-wordmark.svg" width={99} height={32} />
         <Link
-          to="/points"
+          to="/"
           className="hover:text-surface absolute right-20 flex items-center gap-x-1"
         >
           <ArrowLeftIcon className="duration-150" />

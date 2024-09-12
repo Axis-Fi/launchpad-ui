@@ -65,7 +65,7 @@ export function useProfile() {
 
   return {
     profile: profileQuery.data,
-    isUserRegistered: userRegisteredQuery.data,
+    isUserRegistered: userRegisteredQuery,
     isUserSignedIn: points.isUserSignedIn(),
     usernameCheck: {
       ...usernameQuery,

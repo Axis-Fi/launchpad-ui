@@ -186,8 +186,7 @@ export class PointsClient {
       );
 
       return this.authApi.linkPost(
-        // TODO: remove userId once backend is updated
-        { userId: "TODO_UPDATE_BACKEND", signinData: { message, signature } },
+        { signinData: { message, signature } },
         { headers: this.headers() },
       );
     } catch (e) {

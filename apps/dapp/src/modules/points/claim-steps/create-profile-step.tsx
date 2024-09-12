@@ -1,7 +1,7 @@
 import { Card, Text } from "@repo/ui";
 import { useWizard } from "react-use-wizard";
 import { EditProfile } from "../edit-profile";
-import { ClaimPointsHeader } from "./claim-points-header";
+import { PointsHeader } from "../claim-points-header";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useProfile } from "../hooks/use-profile";
@@ -19,7 +19,7 @@ export function CreateProfileStep() {
 
   return (
     <Card className="bg-surface w-full">
-      <ClaimPointsHeader subtitle="Create Profile" />
+      <PointsHeader subtitle="Create Profile" />
       <EditProfile create onSuccess={wizard.nextStep}>
         <PendingPoints points={walletPoints.data?.totalPoints ?? 0} />
       </EditProfile>

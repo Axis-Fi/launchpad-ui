@@ -1,7 +1,7 @@
 import { Button, Card } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { Link } from "react-router-dom";
-import { ClaimPointsHeader } from "./claim-points-header";
+import { PointsHeader } from "../claim-points-header";
 import { ConnectedWallet } from "../connected-wallet";
 import { useProfile } from "../hooks/use-profile";
 
@@ -11,9 +11,7 @@ export function ViewPointsStep() {
 
   return (
     <Card className="bg-surface w-full">
-      <ClaimPointsHeader
-        subtitle={`${trimCurrency(totalPoints)} points claimed`}
-      />
+      <PointsHeader subtitle={`${trimCurrency(totalPoints)} points claimed`} />
       <img src="points-logo.png" className="mx-auto my-8 size-[200px]" />
 
       <div className="mb-6">

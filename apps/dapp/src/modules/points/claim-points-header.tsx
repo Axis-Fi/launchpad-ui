@@ -1,7 +1,7 @@
 import type React from "react";
 import { Text, cn } from "@repo/ui";
 
-export function ClaimPointsHeader({
+export function PointsHeader({
   title = "Axis Points",
   subtitle = "Points Claim",
   subtitleClassName,
