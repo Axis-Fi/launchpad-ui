@@ -239,9 +239,6 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
-      usehooks-ts:
-        specifier: ^3.1.0
-        version: 3.1.0(react@18.2.0)
       vite:
         specifier: ^5.0.8
         version: 5.0.10(@types/node@20.11.5)
@@ -29823,19 +29820,6 @@ packages:
     dependencies:
       react: 18.3.1
     dev: false
-
-  /usehooks-ts@3.1.0(react@18.2.0):
-    resolution:
-      {
-        integrity: sha512-bBIa7yUyPhE1BCc0GmR96VU/15l/9gP1Ch5mYdLcFBaFGQsdmXkvjV0TtOqW1yUd6VjIwDunm+flSciCQXujiw==,
-      }
-    engines: { node: ">=16.15.0" }
-    peerDependencies:
-      react: ^16.8.0  || ^17 || ^18
-    dependencies:
-      lodash.debounce: 4.0.8
-      react: 18.2.0
-    dev: true
 
   /utf-8-validate@6.0.3:
     resolution:
