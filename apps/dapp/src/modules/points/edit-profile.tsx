@@ -1,4 +1,8 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo, type default as React } from "react";
+import { useForm } from "react-hook-form";
+import debounce from "debounce";
+import { useAccount } from "wagmi";
+import { ShareIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Text,
@@ -9,16 +13,14 @@ import {
   Form,
   Avatar,
 } from "@/components";
-import { useForm } from "react-hook-form";
-import { ShareIcon } from "lucide-react";
 import {
   type ProfileForm,
   schema,
   useProfile,
 } from "modules/points/hooks/use-profile";
-import { useAccount } from "wagmi";
 import { trimAddress } from "@repo/ui";
-import React from "react";
+
+const FORM_DEBOUNCE_TIME = 600; // ms
 
 export function EditProfile({
   create,
@@ -31,28 +33,34 @@ export function EditProfile({
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { address } = useAccount();
 
-  const {
-    register,
-    mutation: profileMutation,
-    isUsernameAvailable,
-  } = useProfile();
+  const { register, usernameCheck } = useProfile();
 
-  const refinedSchema = React.useMemo(() => {
-    return schema.refine(async (data) => isUsernameAvailable(data.username), {
+  const refinedSchema = useMemo(() => {
+    return schema.refine(() => usernameCheck.data !== false, {
       path: ["username"],
-      message: "Username already taken",
+      message: "Username is already taken",
     });
-  }, []);
+  }, [usernameCheck.data]);
 
   const form = useForm<ProfileForm>({
     resolver: zodResolver(refinedSchema, { async: true }),
-    mode: "onBlur", //TODO: add a debouncer to isUsernameAvailable instead?
+    mode: "onChange",
+    delayError: FORM_DEBOUNCE_TIME,
     defaultValues: {
       username: "",
     },
   });
 
   const avatarRef = useRef<HTMLInputElement>(null);
+
+  const handleUsernameChanged = useMemo(
+    () =>
+      debounce((username: string) => {
+        if (username.length === 0) return;
+        usernameCheck.fetch(username);
+      }, FORM_DEBOUNCE_TIME),
+    [], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
   const handleUploadAvatarPressed = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -68,16 +76,8 @@ export function EditProfile({
   };
 
   const handleSubmit = (data: ProfileForm) => {
-    console.log("submit called");
-    register(data);
+    register(data, onSuccess);
   };
-
-  React.useEffect(() => {
-    console.log({ profileMutation });
-    if (profileMutation.isSuccess) {
-      onSuccess?.();
-    }
-  });
 
   return (
     <Form {...form}>
@@ -122,13 +122,26 @@ export function EditProfile({
           name="username"
           render={({ field }) => (
             <FormItemWrapper className="flex flex-col gap-y-1">
-              <Input {...field} placeholder="Enter Display Name" type="text" />
+              <Input
+                {...field}
+                placeholder="Enter Display Name"
+                type="text"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  field.onChange(e);
+                  handleUsernameChanged(e.target.value);
+                }}
+              />
             </FormItemWrapper>
           )}
         />
-        <Text className="text-foreground-tertiary text-center">
-          Connected Wallet <br />
-          {trimAddress(address!, 16)}
+        <Text className="text-foreground-tertiary text-start">
+          <span className="flex items-center gap-x-2">
+            Connected Wallet{" "}
+            <Text mono size="xs" as="span">
+              [HIDDEN]
+            </Text>
+          </span>
+          {address != null && trimAddress(address, 16)}
         </Text>
 
         {children}
@@ -138,7 +151,7 @@ export function EditProfile({
           type="submit"
           className="mt-3 w-full max-w-[320px]"
         >
-          {create ? "Save profile and claim your Points" : "Save changes"}
+          {create ? "Save profile" : "Save changes"}
         </Button>
       </form>
     </Form>

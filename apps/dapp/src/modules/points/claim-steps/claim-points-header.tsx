@@ -1,7 +1,7 @@
 import { Text, cn } from "@repo/ui";
 
 export function ClaimPointsHeader({
-  title = "Axis Drop",
+  title = "Axis Points",
   subtitle = "Points Claiming",
   subtitleClassName,
 }: {

@@ -56,11 +56,11 @@ export function RegisterProfileDialog() {
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    profile.isUsernameAvailable.check(e.target.value);
+    profile.isUsernameAvailable.refetch(e.target.value);
   };
 
   useEffect(() => {
-    if (profile.isUsernameAvailable.result) {
+    if (profile.isUsernameAvailable.result.data === false) {
       return form.setError("username", {
         type: "manual",
         message: "Username is already taken",

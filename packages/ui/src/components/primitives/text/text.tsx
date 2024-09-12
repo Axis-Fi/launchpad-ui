@@ -25,10 +25,10 @@ export interface TextProps
 
 const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
   (
-    { className, color, size, weight, mono, uppercase, spaced, ...props },
+    { className, color, size, weight, mono, uppercase, spaced, as, ...props },
     ref,
   ) => {
-    const Element = (size ? sizeMap[size] : sizeMap.default) as "div";
+    const Element = (as ?? (size ? sizeMap[size] : sizeMap.default)) as "div";
 
     return (
       <Element

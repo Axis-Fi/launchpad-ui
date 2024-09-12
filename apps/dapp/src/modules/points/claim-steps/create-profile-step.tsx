@@ -2,15 +2,26 @@ import { Card, Text } from "@repo/ui";
 import { useWizard } from "react-use-wizard";
 import { EditProfile } from "../edit-profile";
 import { ClaimPointsHeader } from "./claim-points-header";
+import { useEffect } from "react";
+import { useAccount } from "wagmi";
+import { useProfile } from "../hooks/use-profile";
+import { Format } from "modules/token/format";
 
 export function CreateProfileStep() {
   const wizard = useWizard();
+  const { address } = useAccount();
+  const { walletPoints } = useProfile();
+
+  useEffect(() => {
+    if (address == null) return;
+    walletPoints.fetch(address);
+  }, [address, walletPoints]);
 
   return (
     <Card className="pb-0">
       <ClaimPointsHeader subtitle="Create Profile" />
       <EditProfile create onSuccess={wizard.nextStep}>
-        <PendingPoints points={1000} />
+        <PendingPoints points={walletPoints.data?.totalPoints ?? 0} />
       </EditProfile>
     </Card>
   );
@@ -24,7 +35,7 @@ function PendingPoints(props: { points: number }) {
           <img src="points-logo.png" className="size-[120px] py-0" />
           <div className="mx-auto">
             <Text size="xl" className="text-foreground-tertiary">
-              {props.points}
+              <Format value={props.points} />
             </Text>
             <Text
               uppercase

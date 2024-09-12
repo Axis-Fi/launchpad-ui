@@ -11,8 +11,6 @@ export function ClaimPointsWizard() {
         <ConnectStep />
         <CreateProfileStep />
         <ViewPointsStep />
-
-        <div>Configure </div>
       </Wizard>
     </div>
   );
@@ -24,10 +22,10 @@ function Footer() {
 
   return (
     <div className="mt-4 flex justify-center gap-x-4 *:w-full">
-      <Button size="sm" onClick={previousStep}>
+      <Button size="sm" variant="secondary" onClick={previousStep}>
         Previous step
       </Button>
-      <Button size="sm" onClick={nextStep}>
+      <Button size="sm" variant="secondary" onClick={nextStep}>
         Next step
       </Button>
     </div>
