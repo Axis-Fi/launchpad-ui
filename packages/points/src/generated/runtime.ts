@@ -16,7 +16,6 @@ export const BASE_PATH = "https://points-api-testnet.up.railway.app".replace(
   /\/+$/,
   "",
 );
-
 export interface ConfigurationParameters {
   basePath?: string; // override base path
   fetchApi?: FetchAPI; // override for fetch implementation

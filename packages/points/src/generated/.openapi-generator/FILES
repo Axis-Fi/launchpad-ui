@@ -8,9 +8,7 @@ models/FullUserProfileActivities.ts
 models/FullUserProfilePoints.ts
 models/JWTPair.ts
 models/Points.ts
-models/ProfileForm.ts
 models/ProfileFormData.ts
-models/RegistrationForm.ts
 models/RegistrationFormData.ts
 models/SigninData.ts
 models/UserProfile.ts

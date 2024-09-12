@@ -15,6 +15,8 @@ import { ReferralPage } from "pages/referral";
 import CuratorListPage from "pages/curator-list-page";
 import { ProfilePage } from "pages/points/profile-page";
 import { LeaderboardPage } from "pages/points/leaderboard-page";
+import { ClaimPointsPage } from "pages/points/claim-points-page";
+import { SignInPage } from "pages/points/sign-in-page";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
@@ -24,6 +26,8 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
     children: [
       { path: "", element: <AuctionListPage /> },
       { path: "points/*", element: <ProfilePage /> },
+      { path: "points/sign-in", element: <SignInPage /> },
+      { path: "points/claim", element: <ClaimPointsPage /> },
       { path: "profile/*", element: <ProfilePage /> },
       { path: "leaderboard", element: <LeaderboardPage /> },
       { path: "dashboard", element: <Dashboard /> },

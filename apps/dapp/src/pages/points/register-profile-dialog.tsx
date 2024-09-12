@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -56,21 +56,11 @@ export function RegisterProfileDialog() {
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    profile.isUsernameAvailable.check(e.target.value);
+    profile.usernameCheck.fetch(e.target.value);
   };
 
-  useEffect(() => {
-    if (profile.isUsernameAvailable.result) {
-      return form.setError("username", {
-        type: "manual",
-        message: "Username is already taken",
-      });
-    }
-    return form.clearErrors("username");
-  }, [form, profile.isUsernameAvailable.result]);
-
   const handleSubmit = (data: ProfileForm) => {
-    return profile.register(data);
+    return profile.register.mutate(data);
   };
 
   return (

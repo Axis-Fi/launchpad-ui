@@ -40,7 +40,7 @@ export function Profile() {
                 />
               </div>
               <Metric label="Total Points Earned" size="xl">
-                <Format value={totalPoints}></Format>
+                <Format value={totalPoints ?? 0}></Format>
               </Metric>
             </div>
           </div>

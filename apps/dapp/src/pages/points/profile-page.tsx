@@ -1,24 +1,23 @@
-import { useAccount } from "wagmi";
 import { Profile } from "modules/points/profile";
-import { SignIn } from "modules/points/sign-in";
 import { useProfile } from "modules/points/hooks/use-profile";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export function ProfilePage() {
-  const { isConnected: isWalletConnected } = useAccount();
   const { isUserRegistered, isUserSignedIn } = useProfile();
+  const navigate = useNavigate();
 
-  if (!isWalletConnected) {
-    return <div>Connect your wallet to continue</div>;
-  }
+  useEffect(() => {
+    if (isUserRegistered.isLoading) return;
 
-  if (!isUserRegistered) {
-    return "Claim flow";
-    // return <UnregisteredProfile />;
-  }
+    if (!isUserRegistered.data) {
+      return navigate("/points/claim");
+    }
 
-  if (!isUserSignedIn) {
-    return <SignIn />;
-  }
+    if (!isUserSignedIn) {
+      return navigate("/points/sign-in");
+    }
+  }, [isUserRegistered, isUserSignedIn, navigate]);
 
   return <Profile />;
 }

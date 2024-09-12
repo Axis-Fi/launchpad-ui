@@ -12,25 +12,25 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from "../runtime";
-import type { WalletPoints } from "./WalletPoints";
-import {
-  WalletPointsFromJSON,
-  WalletPointsFromJSONTyped,
-  WalletPointsToJSON,
-} from "./WalletPoints";
-import type { FullUserProfilePoints } from "./FullUserProfilePoints";
-import {
-  FullUserProfilePointsFromJSON,
-  FullUserProfilePointsFromJSONTyped,
-  FullUserProfilePointsToJSON,
-} from "./FullUserProfilePoints";
+import { exists, mapValues } from "../runtime";
 import type { FullUserProfileActivities } from "./FullUserProfileActivities";
 import {
   FullUserProfileActivitiesFromJSON,
   FullUserProfileActivitiesFromJSONTyped,
   FullUserProfileActivitiesToJSON,
 } from "./FullUserProfileActivities";
+import type { FullUserProfilePoints } from "./FullUserProfilePoints";
+import {
+  FullUserProfilePointsFromJSON,
+  FullUserProfilePointsFromJSONTyped,
+  FullUserProfilePointsToJSON,
+} from "./FullUserProfilePoints";
+import type { WalletPoints } from "./WalletPoints";
+import {
+  WalletPointsFromJSON,
+  WalletPointsFromJSONTyped,
+  WalletPointsToJSON,
+} from "./WalletPoints";
 
 /**
  * A JSON object containing the user's profile information, including points by category and total, and detailed wallet information.
@@ -85,10 +85,10 @@ export interface FullUserProfile {
 /**
  * Check if a given object implements the FullUserProfile interface.
  */
-export function instanceOfFullUserProfile(
-  value: object,
-): value is FullUserProfile {
-  return true;
+export function instanceOfFullUserProfile(value: object): boolean {
+  let isInstance = true;
+
+  return isInstance;
 }
 
 export function FullUserProfileFromJSON(json: any): FullUserProfile {
@@ -99,44 +99,45 @@ export function FullUserProfileFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
 ): FullUserProfile {
-  if (json == null) {
+  if (json === undefined || json === null) {
     return json;
   }
   return {
-    username: json["username"] == null ? undefined : json["username"],
-    profileImageUrl:
-      json["profile_image_url"] == null ? undefined : json["profile_image_url"],
-    referrer: json["referrer"] == null ? undefined : json["referrer"],
-    points:
-      json["points"] == null
-        ? undefined
-        : FullUserProfilePointsFromJSON(json["points"]),
-    wallets:
-      json["wallets"] == null
-        ? undefined
-        : (json["wallets"] as Array<any>).map(WalletPointsFromJSON),
-    activities:
-      json["activities"] == null
-        ? undefined
-        : FullUserProfileActivitiesFromJSON(json["activities"]),
-    rank: json["rank"] == null ? undefined : json["rank"],
+    username: !exists(json, "username") ? undefined : json["username"],
+    profileImageUrl: !exists(json, "profile_image_url")
+      ? undefined
+      : json["profile_image_url"],
+    referrer: !exists(json, "referrer") ? undefined : json["referrer"],
+    points: !exists(json, "points")
+      ? undefined
+      : FullUserProfilePointsFromJSON(json["points"]),
+    wallets: !exists(json, "wallets")
+      ? undefined
+      : (json["wallets"] as Array<any>).map(WalletPointsFromJSON),
+    activities: !exists(json, "activities")
+      ? undefined
+      : FullUserProfileActivitiesFromJSON(json["activities"]),
+    rank: !exists(json, "rank") ? undefined : json["rank"],
   };
 }
 
 export function FullUserProfileToJSON(value?: FullUserProfile | null): any {
-  if (value == null) {
-    return value;
+  if (value === undefined) {
+    return undefined;
+  }
+  if (value === null) {
+    return null;
   }
   return {
-    username: value["username"],
-    profile_image_url: value["profileImageUrl"],
-    referrer: value["referrer"],
-    points: FullUserProfilePointsToJSON(value["points"]),
+    username: value.username,
+    profile_image_url: value.profileImageUrl,
+    referrer: value.referrer,
+    points: FullUserProfilePointsToJSON(value.points),
     wallets:
-      value["wallets"] == null
+      value.wallets === undefined
         ? undefined
-        : (value["wallets"] as Array<any>).map(WalletPointsToJSON),
-    activities: FullUserProfileActivitiesToJSON(value["activities"]),
-    rank: value["rank"],
+        : (value.wallets as Array<any>).map(WalletPointsToJSON),
+    activities: FullUserProfileActivitiesToJSON(value.activities),
+    rank: value.rank,
   };
 }

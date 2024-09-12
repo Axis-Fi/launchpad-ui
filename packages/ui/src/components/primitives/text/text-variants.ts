@@ -7,6 +7,7 @@ const size = {
   md: "text-md",
   lg: "text-lg",
   xl: "text-xl",
+  "1xl": "text-1xl",
   "2xl": "text-2xl font-medium",
   "3xl": "text-3xl",
   "7xl": "text-7xl",
