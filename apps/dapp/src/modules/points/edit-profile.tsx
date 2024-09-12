@@ -59,7 +59,7 @@ export function EditProfile({
   const handleUsernameChanged = useMemo(
     () =>
       debounce((username: string) => {
-        if (username.length === 0) return;
+        if (schema.safeParse({ username }).success === false) return;
         usernameCheck.fetch(username);
       }, FORM_DEBOUNCE_TIME),
     [], // eslint-disable-line react-hooks/exhaustive-deps

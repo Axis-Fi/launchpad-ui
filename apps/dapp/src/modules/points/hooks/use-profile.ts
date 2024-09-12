@@ -7,7 +7,10 @@ import type { Address } from "@repo/types";
 export const schema = z.object({
   username: z
     .string()
-    .min(1, { message: "Username must be at least 1 characters" }),
+    .min(1, { message: "Username must be at least 1 characters" })
+    .refine((value) => value.includes(" ") === false, {
+      message: "Username must not contain any whitespace",
+    }),
   referrer: z.string().optional(),
   avatar: z.instanceof(File).optional(),
 });
