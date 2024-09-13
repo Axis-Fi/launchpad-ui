@@ -51,10 +51,10 @@ export interface Activity {
   phase?: number;
   /**
    *
-   * @type {number}
+   * @type {string}
    * @memberof Activity
    */
-  activityType?: number;
+  activityType?: string;
   /**
    *
    * @type {number}

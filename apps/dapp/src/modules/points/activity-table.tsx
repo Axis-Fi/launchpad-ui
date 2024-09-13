@@ -30,14 +30,16 @@ export function ActivityTable({
             const { platform, event, activityType } = row.original;
             return (
               <div className="m-auto flex items-center gap-2">
-                {activityType === 0 && <HandCoins className="size-6" />}
-                {activityType === 1 && <Share2Icon className="size-6" />}
+                {activityType === "Bid" && <HandCoins className="size-6" />}
+                {activityType === "Referral" && (
+                  <Share2Icon className="size-6" />
+                )}
                 <div className="flex flex-col">
                   <div className="flex gap-x-2">
-                    {activityType === 0 && (
+                    {activityType === "Bid" && (
                       <Text size="sm">Bid on {event}</Text>
                     )}
-                    {activityType === 1 && (
+                    {activityType === "Referral" && (
                       <Text size="sm">
                         Referred user{" "}
                         <Button
@@ -66,7 +68,7 @@ export function ActivityTable({
           accessorKey: "contribution",
           cell: ({ row }) => {
             const { activityType } = row.original;
-            if (activityType === 0) {
+            if (activityType === "Bid") {
               return (
                 <>
                   $<Format value={row.original.contribution ?? 0} />
