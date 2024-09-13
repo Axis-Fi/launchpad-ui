@@ -1,8 +1,6 @@
-import { useAccount } from "wagmi";
 import { Avatar, Badge, Button, Metric, Text } from "@/components";
 import { PageContainer } from "modules/app/page-container";
 import { Format } from "modules/token/format";
-import { BlockExplorerLink } from "components/blockexplorer-link";
 import { PhaseTables } from "./phase-tables";
 import { LinkedWalletsTable } from "./linked-wallets-table";
 import { Link, useLocation } from "react-router-dom";
@@ -10,7 +8,6 @@ import { useProfile } from "./hooks/use-profile";
 
 export function Profile() {
   const location = useLocation();
-  const { address, chainId } = useAccount();
   const { profile } = useProfile();
 
   if (profile == null) return null;
@@ -32,12 +29,6 @@ export function Profile() {
                   <Text size="xl">{profile.username}</Text>
                   <Badge size="m">#{profile.rank}</Badge>
                 </div>
-                <BlockExplorerLink
-                  chainId={chainId!}
-                  address={address}
-                  icon={true}
-                  trim
-                />
               </div>
               <Metric label="Total Points Earned" size="xl">
                 <Format value={totalPoints ?? 0}></Format>
