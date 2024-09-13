@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
 import { HandCoins, Share2Icon } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Text, Button, DataTable } from "@/components";
+import { Text, DataTable } from "@/components";
 import { Format } from "modules/token/format";
 import type { Activity } from "@repo/points";
 
@@ -27,7 +26,7 @@ export function ActivityTable({
         {
           header: "Event",
           cell: ({ row }) => {
-            const { platform, event, activityType } = row.original;
+            const { platform, activityType, description } = row.original;
             return (
               <div className="m-auto flex items-center gap-2">
                 {activityType === "Bid" && <HandCoins className="size-6" />}
@@ -36,24 +35,24 @@ export function ActivityTable({
                 )}
                 <div className="flex flex-col">
                   <div className="flex gap-x-2">
-                    {activityType === "Bid" && (
-                      <Text size="sm">Bid on {event}</Text>
-                    )}
-                    {activityType === "Referral" && (
-                      <Text size="sm">
-                        Referred user{" "}
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="h-[unset] p-[unset]"
-                          asChild
-                        >
-                          <Link to="/TODO" className="capitalize">
-                            {event}
-                          </Link>
-                        </Button>
-                      </Text>
-                    )}
+                    {/* {activityType === "Bid" && ( */}
+                    <Text size="sm">{description}</Text>
+                    {/* // )}
+                    // {activityType === "Referral" && (
+                    //   <Text size="sm">
+                    //     Referred user{" "}
+                    //     <Button
+                    //       variant="link"
+                    //       size="sm"
+                    //       className="h-[unset] p-[unset]"
+                    //       asChild
+                    //     >
+                    //       <Link to="/TODO" className="capitalize">
+                    //         {event}
+                    //       </Link>
+                    //     </Button>
+                    //   </Text>
+                    // )} */}
                   </div>
                   <Text size="sm" className="capitalize" color="secondary">
                     {platform}
@@ -90,6 +89,7 @@ export function ActivityTable({
         {
           header: "Points",
           accessorKey: "points",
+          cell: ({ row }) => <Format value={row.original.points ?? 0} />,
         },
       ]}
     />
