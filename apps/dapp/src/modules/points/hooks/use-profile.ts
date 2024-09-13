@@ -30,6 +30,7 @@ export function useProfile() {
   const updateProfile = useMutation({
     mutationFn: async (profile: ProfileForm) =>
       points.setUserProfile(profile.username, profile.avatar),
+    onSuccess: () => profileQuery.refetch(),
   });
 
   const signIn = useMutation({

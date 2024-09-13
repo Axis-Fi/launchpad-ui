@@ -7,7 +7,6 @@ import {
 } from "react";
 import { useForm } from "react-hook-form";
 import debounce from "debounce";
-import { ShareIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
@@ -23,25 +22,34 @@ import {
   useProfile,
 } from "modules/points/hooks/use-profile";
 import { ConnectedWallet } from "./connected-wallet";
+import type { FullUserProfile } from "@repo/points";
 
 const FORM_DEBOUNCE_TIME = 600; // ms
 
-export function EditProfile({
-  create,
-  onSuccess,
+export function ProfileForm({
+  profile,
+  header,
+  submitText,
   children,
+  onSubmit,
+  isLoading = false,
 }: React.PropsWithChildren<{
-  create?: boolean;
-  onSuccess?: () => void;
+  profile?: FullUserProfile;
+  header?: React.ReactNode;
+  submitText: string;
+  onSubmit?: (data: ProfileForm) => void;
+  isLoading?: boolean;
 }>) {
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const { register, usernameCheck } = useProfile();
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    profile?.profileImageUrl ?? null,
+  );
+  const { usernameCheck } = useProfile();
 
   const form = useForm<ProfileForm>({
     resolver: zodResolver(schema),
     mode: "onChange",
     defaultValues: {
-      username: "",
+      username: profile?.username ?? "",
     },
   });
 
@@ -60,6 +68,7 @@ export function EditProfile({
     () =>
       debounce((username: string) => {
         if (schema.safeParse({ username }).success === false) return;
+
         usernameCheck.fetch(username);
       }, FORM_DEBOUNCE_TIME),
     [], // eslint-disable-line react-hooks/exhaustive-deps
@@ -79,17 +88,19 @@ export function EditProfile({
   };
 
   const handleSubmit = (data: ProfileForm) => {
-    register.mutate(data, { onSuccess, onError: (e) => console.error({ e }) });
+    return onSubmit?.(data);
   };
 
   return (
     <Form {...form}>
+      {header}
+
       <form className="gap-lg grid" onSubmit={form.handleSubmit(handleSubmit)}>
-        <div className="gap-x-md flex items-end">
+        <div className="gap-x-md mt-md flex items-end">
           <Avatar
             src={avatarPreview ?? "/placeholder-img.png"}
-            alt="User profile image"
-            className="h-[88px] w-[88px] rounded-none border-transparent"
+            alt="User avatar"
+            className="h-[140px] w-[140px] rounded-none border-transparent"
           />
           <FormField
             name="avatar"
@@ -104,13 +115,12 @@ export function EditProfile({
                     ref={avatarRef}
                   />
                   <Button
-                    className="gap-x-sm w-full "
+                    className="gap-x-sm w-full"
                     size="md"
                     variant="secondary"
                     onClick={handleUploadAvatarPressed}
                   >
                     Upload avatar
-                    <ShareIcon />
                   </Button>
                 </FormItemWrapper>
               );
@@ -138,11 +148,13 @@ export function EditProfile({
         {children}
 
         <Button
-          disabled={!form.formState.isValid || usernameCheck.isLoading}
+          disabled={
+            !form.formState.isValid || usernameCheck.isLoading || isLoading
+          }
           type="submit"
           className="mt-3 w-full"
         >
-          {create ? "Save profile" : "Save changes"}
+          {submitText}
         </Button>
       </form>
     </Form>

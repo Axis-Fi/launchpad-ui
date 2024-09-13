@@ -1,16 +1,16 @@
 import { Card, Text } from "@repo/ui";
 import { useWizard } from "react-use-wizard";
-import { EditProfile } from "../edit-profile";
-import { PointsHeader } from "../claim-points-header";
+import { ProfileForm } from "../profile-form";
 import { useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useProfile } from "../hooks/use-profile";
 import { Format } from "modules/token/format";
+import { PointsHeader } from "../claim-points-header";
 
 export function CreateProfileStep() {
   const wizard = useWizard();
   const { address } = useAccount();
-  const { walletPoints } = useProfile();
+  const { walletPoints, register } = useProfile();
 
   useEffect(() => {
     if (address == null) return;
@@ -19,10 +19,15 @@ export function CreateProfileStep() {
 
   return (
     <Card className="bg-surface w-full">
-      <PointsHeader subtitle="Create Profile" />
-      <EditProfile create onSuccess={wizard.nextStep}>
+      <ProfileForm
+        header={<PointsHeader subtitle="Create profile" />}
+        submitText="Create profile"
+        onSubmit={(data) =>
+          register.mutate(data, { onSuccess: wizard.nextStep })
+        }
+      >
         <PendingPoints points={walletPoints.data?.totalPoints ?? 0} />
-      </EditProfile>
+      </ProfileForm>
     </Card>
   );
 }

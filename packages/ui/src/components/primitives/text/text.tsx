@@ -7,6 +7,7 @@ const sizeMap = {
   "7xl": "h1",
   "3xl": "h3",
   "2xl": "h3",
+  "1xl": "h3",
   xl: "h3",
   lg: "h4",
   md: "h4",

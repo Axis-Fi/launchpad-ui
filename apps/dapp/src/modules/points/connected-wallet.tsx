@@ -4,7 +4,7 @@ import { trimAddress, Text } from "@repo/ui";
 export function ConnectedWallet() {
   const { address } = useAccount();
   return (
-    <Text className="text-foreground-tertiary text-start">
+    <Text className="text-start">
       <span className="flex items-center gap-x-2">
         Connected Wallet{" "}
         <Text mono size="xs" as="span">

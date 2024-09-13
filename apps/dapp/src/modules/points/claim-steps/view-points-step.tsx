@@ -15,7 +15,6 @@ export function ViewPointsStep() {
 
   useEffect(() => {
     toast({
-      // @ts-expect-error TODO: why is this not a valid React.ReactNode?
       title: (
         <div className="flex items-center gap-x-2">
           <Check size="16" /> Profile successfully created

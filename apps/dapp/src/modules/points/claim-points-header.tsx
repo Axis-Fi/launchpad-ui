@@ -1,13 +1,12 @@
-import type React from "react";
 import { Text, cn } from "@repo/ui";
 
 export function PointsHeader({
   title = "Axis Points",
-  subtitle = "Points Claim",
+  subtitle,
   subtitleClassName,
 }: {
   title?: string;
-  subtitle?: React.ReactNode;
+  subtitle?: string;
   subtitleClassName?: string;
 }) {
   return (
@@ -22,10 +21,10 @@ export function PointsHeader({
       </Text>
       <Text
         className={cn(
-          "ml-auto mt-1 w-2/3 font-light leading-none tracking-wide",
+          "ml-auto mt-1 w-1/2 font-light leading-none tracking-wide",
           subtitleClassName,
         )}
-        size="xl"
+        size="1xl"
         mono
       >
         {subtitle}
