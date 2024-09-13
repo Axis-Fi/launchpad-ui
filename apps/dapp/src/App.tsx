@@ -1,5 +1,6 @@
 import { Providers } from "./context/providers";
 import { Outlet } from "react-router-dom";
+import { Toaster } from "@repo/ui";
 import { AppFooter } from "modules/app/app-footer";
 import { AppControl } from "modules/app/app-control";
 import ScrollToTop from "modules/app/scroll-to-top";
@@ -13,6 +14,7 @@ function App() {
     <Providers disableDevTools={disableDevTools}>
       <ScrollToTop />
       <ReferrerChecker />
+      <Toaster />
       <div className="flex h-dvh flex-col justify-between overflow-x-hidden">
         <div className="flex flex-grow flex-col-reverse lg:flex-col">
           <AppControl />

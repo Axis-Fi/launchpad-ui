@@ -1,13 +1,29 @@
-import { Button, Card } from "@repo/ui";
-import { trimCurrency } from "utils/currency";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Check } from "lucide-react";
+import { Button, Card, useToast } from "@repo/ui";
+import { trimCurrency } from "utils/currency";
 import { PointsHeader } from "../claim-points-header";
 import { ConnectedWallet } from "../connected-wallet";
 import { useProfile } from "../hooks/use-profile";
 
 export function ViewPointsStep() {
   const { profile } = useProfile();
+  const { toast } = useToast();
+
   const totalPoints = profile?.points?._0?.totalPoints ?? 0;
+
+  useEffect(() => {
+    toast({
+      // @ts-expect-error TODO: why is this not a valid React.ReactNode?
+      title: (
+        <div className="flex items-center gap-x-2">
+          <Check size="16" /> Profile successfully created
+        </div>
+      ),
+      description: "Refer your friends to claim more points!",
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Card className="bg-surface w-full">
