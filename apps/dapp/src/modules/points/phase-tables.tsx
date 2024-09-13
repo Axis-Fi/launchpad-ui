@@ -38,17 +38,17 @@ export function PhaseTables({ profile }: PhaseTablesProps) {
         <Card>
           <ActivityTable
             title="Phase 1 activity"
+            activities={profile?.activities?._1 ?? []}
             titleRightElement={
               <div className="flex grow justify-end gap-x-40">
                 <Metric label="Bid points" size="l">
-                  <Format value={profile?.points?._0?.bidPoints ?? 0} />
+                  <Format value={profile?.points?._1?.bidPoints ?? 0} />
                 </Metric>
                 <Metric label="Referral points" size="l">
-                  <Format value={profile?.points?._0?.refPoints ?? 0} />
+                  <Format value={profile?.points?._1?.refPoints ?? 0} />
                 </Metric>
               </div>
             }
-            activities={profile?.activities?._1 ?? []}
           />
           <PhaseCTAs profile={profile} />
         </Card>
@@ -58,6 +58,16 @@ export function PhaseTables({ profile }: PhaseTablesProps) {
           <ActivityTable
             title="Phase 2 activity"
             activities={profile?.activities?._2 ?? []}
+            titleRightElement={
+              <div className="flex grow justify-end gap-x-40">
+                <Metric label="Bid points" size="l">
+                  <Format value={profile?.points?._2?.bidPoints ?? 0} />
+                </Metric>
+                <Metric label="Referral points" size="l">
+                  <Format value={profile?.points?._2?.refPoints ?? 0} />
+                </Metric>
+              </div>
+            }
           />
           <PhaseCTAs profile={profile} />
         </Card>
