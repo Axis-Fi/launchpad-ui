@@ -1,7 +1,7 @@
 import { useAccount } from "wagmi";
 import { trimAddress, Text } from "@repo/ui";
 
-export function ConnectedWallet() {
+export function ConnectedWallet({ trim = true }: { trim?: boolean }) {
   const { address } = useAccount();
   return (
     <Text className="text-start">
@@ -11,7 +11,7 @@ export function ConnectedWallet() {
           [HIDDEN]
         </Text>
       </span>
-      {address != null && trimAddress(address, 16)}
+      {address != null && (trim ? trimAddress(address, 16) : address)}
     </Text>
   );
 }

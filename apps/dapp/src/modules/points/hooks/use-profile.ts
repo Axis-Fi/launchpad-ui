@@ -33,6 +33,11 @@ export function useProfile() {
     onSuccess: () => profileQuery.refetch(),
   });
 
+  const linkWallet = useMutation({
+    mutationFn: async () => points.linkWallet(),
+    onSuccess: () => profileQuery.refetch(),
+  });
+
   const signIn = useMutation({
     mutationFn: async () => points.signIn(),
   });
@@ -79,5 +84,6 @@ export function useProfile() {
     register,
     updateProfile,
     signIn,
+    linkWallet,
   };
 }
