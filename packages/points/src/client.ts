@@ -180,9 +180,14 @@ export class PointsClient {
     const statement = "Link wallet to your Axis points account.";
     const { message, signature } = await this.sign(chainId, address, statement);
 
+    const headers = {
+      ...this.headers(),
+      "Content-Type": "application/json",
+    };
+
     return this.authApi.linkPost(
       { signinData: { message, signature } },
-      { headers: this.headers() },
+      { headers },
     );
   }
 
