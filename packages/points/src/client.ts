@@ -185,9 +185,14 @@ export class PointsClient {
         statement,
       );
 
+      const headers = {
+        ...this.headers(),
+        "Content-Type": "application/json",
+      };
+
       return this.authApi.linkPost(
         { signinData: { message, signature } },
-        { headers: this.headers() },
+        { headers },
       );
     } catch (e) {
       console.error(`Failed to link wallet`, e);
