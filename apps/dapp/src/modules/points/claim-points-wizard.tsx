@@ -3,6 +3,7 @@ import { Wizard, useWizard } from "react-use-wizard";
 import { ConnectStep } from "./claim-steps/connect-step";
 import { CreateProfileStep } from "./claim-steps/create-profile-step";
 import { ViewPointsStep } from "./claim-steps/view-points-step";
+import { LinkWalletStep } from "./claim-steps/link-wallet-step";
 
 export function ClaimPointsWizard() {
   return (
@@ -11,6 +12,7 @@ export function ClaimPointsWizard() {
         <ConnectStep />
         <CreateProfileStep />
         <ViewPointsStep />
+        <LinkWalletStep />
       </Wizard>
     </div>
   );

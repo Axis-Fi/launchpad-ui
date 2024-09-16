@@ -167,7 +167,7 @@
               }
             }
           },
-          "description": "The user's access token and wallet address.",
+          "description": "The Sign in With Ethereum message and signature.",
           "required": true
         },
         "responses": {

@@ -24,6 +24,7 @@ export function LinkedWalletsTable({
 }: LinkedWalletsTableProps) {
   const { profile } = useProfile();
   const { chainId } = useAccount();
+
   const columns = useMemo(() => {
     return (
       [
@@ -50,7 +51,7 @@ export function LinkedWalletsTable({
           cell: ({ row }) => <Format value={row.original.refPoints ?? 0} />,
         },
         {
-          header: "Total",
+          header: "Points",
           accessorKey: "totalPoints",
           cell: ({ row }) => <Format value={row.original.totalPoints ?? 0} />,
         },

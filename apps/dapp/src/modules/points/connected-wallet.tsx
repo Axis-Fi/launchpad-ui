@@ -8,7 +8,7 @@ export function ConnectedWallet({ trim = true }: { trim?: boolean }) {
       <span className="flex items-center gap-x-2">
         Connected Wallet{" "}
         <Text mono size="xs" as="span">
-          [HIDDEN]
+          [PRIVATE]
         </Text>
       </span>
       {address != null && (trim ? trimAddress(address, 16) : address)}

@@ -56,7 +56,7 @@ export function Profile() {
                 className="w-full md:w-[33%] lg:w-[20%]"
                 asChild
               >
-                <Link to="/points/link-wallet">Link wallets</Link>
+                <Link to="/points/link-wallet">Link wallet</Link>
               </Button>
             )}
             {!profile && (

@@ -1,46 +1,11 @@
-import { Check, TriangleAlert } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  useToast,
-  Text,
-} from "@/components";
+import { Dialog, DialogContent, DialogHeader, Text } from "@/components";
 import { useProfile } from "modules/points/hooks/use-profile";
 import { LinkWalletForm } from "modules/points/link-wallet-form";
 
 export function LinkWalletDialog() {
+  const { profile } = useProfile();
   const navigate = useNavigate();
-  const { linkWallet, profile } = useProfile();
-  const { toast } = useToast();
-
-  const handeWalletLinked = () => {
-    linkWallet.mutate(undefined, {
-      onError: (e) => {
-        toast({
-          variant: "destructive",
-          title: (
-            <div className="flex items-center gap-x-2">
-              <TriangleAlert size="16" /> Failed to link wallet
-            </div>
-          ),
-        });
-        console.error({ e });
-      },
-      onSuccess: () => {
-        navigate(-1);
-
-        toast({
-          title: (
-            <div className="flex items-center gap-x-2">
-              <Check size="16" /> Wallet successfully linked
-            </div>
-          ),
-        });
-      },
-    });
-  };
 
   if (profile == null) return null;
 
@@ -57,7 +22,7 @@ export function LinkWalletDialog() {
             Link wallet
           </Text>
         </DialogHeader>
-        <LinkWalletForm onSubmit={handeWalletLinked} />
+        <LinkWalletForm onSuccess={() => navigate(-1)} />
       </DialogContent>
     </Dialog>
   );
