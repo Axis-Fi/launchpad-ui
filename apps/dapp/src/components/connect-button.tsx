@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
 } from "@repo/ui";
 import { useMediaQueries } from "loaders/use-media-queries";
-import { useProfile } from "modules/points/use-profile";
+import { useProfile } from "modules/points/hooks/use-profile";
 import { useNavigate } from "react-router-dom";
 import { useDisconnect } from "wagmi";
 
@@ -23,7 +23,7 @@ export default function ConnectButton({
   size?: ButtonProps["size"];
 }) {
   const { isTabletOrMobile } = useMediaQueries();
-  const { isRegistered, showProfile, profile } = useProfile();
+  const { isUserRegistered, isUserSignedIn, profile } = useProfile();
   const navigate = useNavigate();
   const { disconnect } = useDisconnect();
 
@@ -74,22 +74,25 @@ export default function ConnectButton({
                 <div
                   className={cn(
                     "flex items-center gap-x-1 ",
-                    showProfile && "gap-x-2",
+                    isUserSignedIn && "gap-x-2",
                   )}
                 >
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center gap-x-1">
-                        {showProfile && (
-                          <img className="size-[48px]" src={profile.avatar} />
+                        {isUserSignedIn && (
+                          <img
+                            className="size-[48px]"
+                            src={profile?.profileImageUrl}
+                          />
                         )}
                         <div className="space-y-1">
-                          {showProfile && (
+                          {isUserSignedIn && (
                             <Text
                               className="text-foreground-highlight text-left leading-none"
                               size="lg"
                             >
-                              {profile.username}
+                              {profile?.username}
                             </Text>
                           )}
                           <Text uppercase className="leading-none">
@@ -101,7 +104,7 @@ export default function ConnectButton({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-surface-secondary border-surface-outline">
                       <DropdownMenuItem onClick={() => navigate("/points")}>
-                        {isRegistered ? "Profile" : "Claim Points"}
+                        {isUserRegistered ? "Profile" : "Claim Points"}
                       </DropdownMenuItem>
 
                       <DropdownMenuItem onClick={openChainModal}>

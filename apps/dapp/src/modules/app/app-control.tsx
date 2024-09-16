@@ -22,7 +22,7 @@ export function AppControl() {
           <OriginNavIcon />
           <Navbar onlyDefault={isTabletOrMobile} />
         </div>
-        <div className="flex items-center justify-between gap-x-2">
+        <div className="flex items-center justify-between gap-x-2 ">
           {environment.isTestnet && !isTabletOrMobile && (
             <div className="border-b-tertiary-300 mr-8 flex items-center border-b-2">
               <Tooltip content="These features are only available on testnet">
