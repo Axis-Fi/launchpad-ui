@@ -50,7 +50,7 @@ export function ReferralLinkCard() {
     ? profile?.wallets
         ?.filter((w) => !!w?.address)
         .map((lw) => ({
-          label: trimAddress(lw.address!, 8) ?? "fuck",
+          label: trimAddress(lw.address!, 8),
           value: lw.address!,
         })) ?? []
     : [];
