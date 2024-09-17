@@ -35,24 +35,7 @@ export function ActivityTable({
                 )}
                 <div className="flex flex-col">
                   <div className="flex gap-x-2">
-                    {/* {activityType === "Bid" && ( */}
                     <Text size="sm">{description}</Text>
-                    {/* // )}
-                    // {activityType === "Referral" && (
-                    //   <Text size="sm">
-                    //     Referred user{" "}
-                    //     <Button
-                    //       variant="link"
-                    //       size="sm"
-                    //       className="h-[unset] p-[unset]"
-                    //       asChild
-                    //     >
-                    //       <Link to="/TODO" className="capitalize">
-                    //         {event}
-                    //       </Link>
-                    //     </Button>
-                    //   </Text>
-                    // )} */}
                   </div>
                   <Text size="sm" className="capitalize" color="secondary">
                     {platform}
@@ -75,9 +58,9 @@ export function ActivityTable({
               );
             }
             return (
-              <Text size="sm" color="secondary">
+              <>
                 <Format value={row.original.contribution ?? 0} /> points
-              </Text>
+              </>
             );
           },
         },
