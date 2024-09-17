@@ -18,15 +18,15 @@ import React from "react";
 import { getAuctionPath } from "utils/router";
 import { Address, isAddress } from "viem";
 import { useAccount } from "wagmi";
-import { mockProfile } from "modules/points/profile";
+import { useProfile } from "modules/points/hooks/use-profile";
 
 export function ReferralLinkCard() {
   const { address: connectedAddress } = useAccount();
   const [address, setAddress] = React.useState<Address | undefined>(
     connectedAddress,
   );
-  //TODO: update
-  const profile = mockProfile;
+
+  const { profile, isUserSignedIn } = useProfile();
   const [path, setPath] = React.useState<string | undefined>();
 
   const { generateAndCopyLink, link } = useReferralLink(address);
@@ -46,24 +46,26 @@ export function ReferralLinkCard() {
       imgURL: getLinkUrl("projectLogo", a),
     }));
 
-  const walletOpts: SelectData[] =
-    profile.linked_wallets.map((lw) => ({
-      label: trimAddress(lw.address, 8),
-      value: lw.address,
-    })) ?? [];
+  const walletOptions: SelectData[] = isUserSignedIn
+    ? profile?.wallets
+        ?.filter((w) => !!w?.address)
+        .map((lw) => ({
+          label: trimAddress(lw.address!, 8) ?? "fuck",
+          value: lw.address!,
+        })) ?? []
+    : [];
 
-  //TODO: update with correct profile hook check
-  const isRegistered = walletOpts.length > 0;
+  const defaultAddress = profile?.wallets?.[0].address ?? connectedAddress;
 
   return (
     <div className="flex max-w-lg flex-col items-center justify-center gap-6">
       <Tabs
-        defaultValue={isRegistered ? "linkedWallets" : "address"}
+        defaultValue={isUserSignedIn ? "linkedWallets" : "address"}
         className="flex w-full flex-col items-center"
       >
-        <TabsList defaultValue={isRegistered ? "linkedWallets" : "address"}>
+        <TabsList defaultValue={isUserSignedIn ? "linkedWallets" : "address"}>
           <TabsTrigger value="address">New Address</TabsTrigger>
-          {isRegistered && (
+          {isUserSignedIn && (
             <TabsTrigger value="linkedWallets">Linked Wallets</TabsTrigger>
           )}
         </TabsList>
@@ -83,8 +85,8 @@ export function ReferralLinkCard() {
           </TabsContent>
           <TabsContent value="linkedWallets">
             <Select
-              options={walletOpts}
-              defaultValue={profile.linked_wallets?.[0].address}
+              options={walletOptions}
+              defaultValue={defaultAddress}
               onChange={(value) => setAddress(value as Address)}
               itemClassName="font-mono"
             />
