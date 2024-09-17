@@ -15,6 +15,8 @@ export function UserProfile() {
     return <ConnectButton className="hidden md:block" size="md" />;
   }
 
+  const isLoading = isUserRegistered.isLoading;
+
   const handleClick = () => {
     if (!isRegistered) return navigate("/points/claim");
 
@@ -23,28 +25,30 @@ export function UserProfile() {
     return navigate("/points");
   };
 
-  const points = profile?.points?._1?.totalPoints;
+  const points = profile?.points?._0?.totalPoints;
 
   return (
     <div className="flex items-center justify-center gap-x-4">
       <div className={cn("auction-ended-gradient rounded-md p-[2px]")}>
-        <div className="bg-background flex items-center justify-between gap-x-2 rounded-md p-1">
+        <div className="bg-background px-sm flex items-center justify-between gap-x-2 rounded-md p-1">
           <img className="size-8" src="/points-logo.png" />
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleClick}
-            className={cn(
-              "text-foreground-highlight px-0 py-0 text-center leading-none",
-              !isRegistered && "text-nowrap",
-            )}
-          >
-            {isUserSignedIn
-              ? `${points !== undefined ? trimCurrency(points) : "???"} points`
-              : isRegistered
-                ? "Sign In"
-                : "Claim Profile"}
-          </Button>
+          {!isLoading && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleClick}
+              className={cn(
+                "text-foreground-highlight px-0 py-0 text-center leading-none",
+                !isRegistered && "text-nowrap",
+              )}
+            >
+              {isUserSignedIn
+                ? `${points != null ? trimCurrency(points) : "???"} points`
+                : isRegistered
+                  ? "Sign In"
+                  : "Claim Points"}
+            </Button>
+          )}
         </div>
       </div>
 
