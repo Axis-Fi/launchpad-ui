@@ -49,7 +49,7 @@ export function EncryptedMarginalPriceAuctionConcluded({
           className="mt-4 lg:mt-0 lg:w-[496px]"
           headerRightElement={<Badge>Auction Closed</Badge>}
         >
-          <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">
+          <div className="green-gradient w-fill flex h-[464px] items-center justify-center">
             <div className="flex flex-col items-center gap-2">
               <img
                 className="w-[92.351]px h-[80px]"
