@@ -80,6 +80,12 @@ export interface FullUserProfile {
    * @memberof FullUserProfile
    */
   rank?: number;
+  /**
+   *
+   * @type {Date}
+   * @memberof FullUserProfile
+   */
+  joined?: Date;
 }
 
 /**
@@ -118,6 +124,7 @@ export function FullUserProfileFromJSONTyped(
       ? undefined
       : FullUserProfileActivitiesFromJSON(json["activities"]),
     rank: !exists(json, "rank") ? undefined : json["rank"],
+    joined: !exists(json, "joined") ? undefined : new Date(json["joined"]),
   };
 }
 
@@ -139,5 +146,6 @@ export function FullUserProfileToJSON(value?: FullUserProfile | null): any {
         : (value.wallets as Array<any>).map(WalletPointsToJSON),
     activities: FullUserProfileActivitiesToJSON(value.activities),
     rank: value.rank,
+    joined: value.joined === undefined ? undefined : value.joined.toISOString(),
   };
 }

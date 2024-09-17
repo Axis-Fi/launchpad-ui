@@ -61,6 +61,12 @@ export interface UserProfile {
    * @memberof UserProfile
    */
   rank?: number;
+  /**
+   *
+   * @type {Date}
+   * @memberof UserProfile
+   */
+  joined?: Date;
 }
 
 /**
@@ -95,6 +101,7 @@ export function UserProfileFromJSONTyped(
       ? undefined
       : json["total_points"],
     rank: !exists(json, "rank") ? undefined : json["rank"],
+    joined: !exists(json, "joined") ? undefined : new Date(json["joined"]),
   };
 }
 
@@ -113,5 +120,6 @@ export function UserProfileToJSON(value?: UserProfile | null): any {
     bid_points: value.bidPoints,
     total_points: value.totalPoints,
     rank: value.rank,
+    joined: value.joined === undefined ? undefined : value.joined.toISOString(),
   };
 }

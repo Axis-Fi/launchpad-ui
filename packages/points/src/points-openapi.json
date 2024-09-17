@@ -415,6 +415,30 @@
         "summary": "Retrieves the leaderboard for a specific phase.",
         "tags": ["Points"]
       }
+    },
+    "/recent_joins": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/UserProfile"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The most recent 100 users to join."
+          },
+          "500": {
+            "description": "Error retrieving recent joins."
+          }
+        },
+        "summary": "Retrieves the most recent users 100 to join. Does not include points data for them.",
+        "tags": ["Points"]
+      }
     }
   },
   "components": {
@@ -492,6 +516,10 @@
           },
           "rank": {
             "type": "integer"
+          },
+          "joined": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "type": "object"
@@ -522,6 +550,10 @@
           },
           "rank": {
             "type": "integer"
+          },
+          "joined": {
+            "format": "date-time",
+            "type": "string"
           }
         },
         "type": "object"

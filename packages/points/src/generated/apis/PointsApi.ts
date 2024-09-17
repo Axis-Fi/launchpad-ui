@@ -303,4 +303,39 @@ export class PointsApi extends runtime.BaseAPI {
   ): Promise<void> {
     await this.profilePostRaw(requestParameters, initOverrides);
   }
+
+  /**
+   * Retrieves the most recent users 100 to join. Does not include points data for them.
+   */
+  async recentJoinsGetRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<Array<UserProfile>>> {
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/recent_joins`,
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      jsonValue.map(UserProfileFromJSON),
+    );
+  }
+
+  /**
+   * Retrieves the most recent users 100 to join. Does not include points data for them.
+   */
+  async recentJoinsGet(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<Array<UserProfile>> {
+    const response = await this.recentJoinsGetRaw(initOverrides);
+    return await response.value();
+  }
 }
