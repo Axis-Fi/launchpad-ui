@@ -259,13 +259,35 @@
     );
   }
 
-  .auction-ended-gradient {
+  .green-gradient {
     background: linear-gradient(
       72deg,
       #cdf675 0%,
       #75c8f6 49.99%,
       #75a1f6 99.97%
     );
+  }
+
+  .green-gradient-border {
+    position: relative;
+  }
+
+  .green-gradient-border::before {
+    @apply green-gradient;
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: 8px;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
   }
 
   .claim-points-gradient {
