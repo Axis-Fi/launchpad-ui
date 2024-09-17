@@ -17,7 +17,7 @@ export function Profile() {
   return (
     <>
       <div className="axis-rainbow-reverse p-xl flex h-[224px] w-full items-center">
-        <div className="m-md flex w-full items-start justify-between">
+        <div className="m-md mx-auto flex w-full max-w-[1400px] items-start justify-between">
           <div className="gap-md flex">
             <Avatar
               className="h-[160px] w-[160px] rounded-none"
