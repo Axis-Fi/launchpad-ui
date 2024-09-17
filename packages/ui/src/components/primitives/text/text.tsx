@@ -5,6 +5,7 @@ import { cn } from "@/utils";
 
 const sizeMap = {
   "7xl": "h1",
+  "4xl": "h3",
   "3xl": "h3",
   "2xl": "h3",
   "1xl": "h3",
