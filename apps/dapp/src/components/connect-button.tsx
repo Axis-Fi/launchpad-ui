@@ -1,4 +1,5 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
+import { featureToggles } from "@repo/env";
 import {
   Avatar,
   Button,
@@ -26,6 +27,8 @@ export default function ConnectButton({
   const { isUserRegistered, isUserSignedIn, profile } = useProfile();
   const navigate = useNavigate();
   const { disconnect } = useDisconnect();
+
+  const isPointsFeatureEnabled = featureToggles.POINTS_PHASE_1;
 
   return (
     <RKConnectButton.Custom>
@@ -95,17 +98,33 @@ export default function ConnectButton({
                               {profile?.username}
                             </Text>
                           )}
-                          <Text uppercase className="leading-none">
+                          <Text className="leading-none">
                             {account.ensName ?? account.displayName}
                           </Text>
                         </div>
                         {/*account.displayBalance ? ` (${account.displayBalance})` : ""*/}
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-surface-secondary border-surface-outline">
-                      <DropdownMenuItem onClick={() => navigate("/points")}>
-                        {isUserRegistered ? "Profile" : "Claim Points"}
-                      </DropdownMenuItem>
+                    <DropdownMenuContent className="px-md gap-y-xs bg-surface shadow-3xl flex max-w-[200px] flex-col rounded-none border-none font-mono uppercase">
+                      {isPointsFeatureEnabled && isUserRegistered.data && (
+                        <>
+                          <DropdownMenuItem
+                            onClick={() => navigate("/profile")}
+                          >
+                            Axis points
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => navigate("/profile/edit")}
+                          >
+                            Edit profile
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => navigate("/profile/link-wallet")}
+                          >
+                            {profile?.wallets?.length ?? 0} Linked wallets
+                          </DropdownMenuItem>
+                        </>
+                      )}
 
                       <DropdownMenuItem onClick={openChainModal}>
                         Switch Chain
