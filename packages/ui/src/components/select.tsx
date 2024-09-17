@@ -25,6 +25,7 @@ export type SelectProps = {
   onChange?: (value: string) => void;
   defaultValue?: string;
   triggerClassName?: string;
+  itemClassName?: string;
   disabled?: boolean;
 };
 
@@ -64,6 +65,7 @@ export function Select(props: SelectProps) {
           <SelectItem
             key={label}
             value={value}
+            className={props.itemClassName}
             onClick={() => {
               setSelected(value);
               props.onChange?.(value);

@@ -40,7 +40,9 @@ export function Profile() {
             <Button variant="secondary" asChild>
               <Link to={`${location.pathname}/edit`}>Edit profile</Link>
             </Button>
-            <Button variant="primary">Share ref link</Button>
+            <Button variant="primary">
+              <Link to={`${location.pathname}/refer`}>Share ref link</Link>
+            </Button>
           </div>
         </div>
       </div>
