@@ -6,10 +6,12 @@ import { trimCurrency } from "utils/currency";
 import { PointsHeader } from "../claim-points-header";
 import { ConnectedWallet } from "../connected-wallet";
 import { useProfile } from "../hooks/use-profile";
+import { useWizard } from "react-use-wizard";
 
 export function ViewPointsStep() {
   const { profile } = useProfile();
   const { toast } = useToast();
+  const wizard = useWizard();
 
   const totalPoints = profile?.points?._0?.totalPoints ?? 0;
 
@@ -37,7 +39,9 @@ export function ViewPointsStep() {
         <Button asChild>
           <Link to="/points">View Profile</Link>
         </Button>
-        <Button variant="secondary">Link Wallets to combine Points</Button>
+        <Button variant="secondary" onClick={wizard.nextStep}>
+          Link Wallets to combine Points
+        </Button>
       </div>
     </Card>
   );

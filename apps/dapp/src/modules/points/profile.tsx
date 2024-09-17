@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Metric, Text } from "@/components";
+import { Avatar, Badge, Button, Card, Metric, Text } from "@/components";
 import { PageContainer } from "modules/app/page-container";
 import { Format } from "modules/token/format";
 import { PhaseTables } from "./phase-tables";
@@ -46,7 +46,24 @@ export function Profile() {
 
       <PageContainer>
         <PhaseTables profile={profile} />
-        <LinkedWalletsTable profile={profile} />
+
+        <Card>
+          <LinkedWalletsTable />
+          <div className="flex justify-center">
+            {profile && (
+              <Button
+                variant="secondary"
+                className="w-full md:w-[33%] lg:w-[20%]"
+                asChild
+              >
+                <Link to="/points/link-wallet">Link wallet</Link>
+              </Button>
+            )}
+            {!profile && (
+              <Button variant="secondary">Claim points to link a wallet</Button>
+            )}
+          </div>
+        </Card>
       </PageContainer>
     </>
   );

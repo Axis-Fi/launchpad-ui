@@ -54,23 +54,21 @@ export function PhaseTables({ profile }: PhaseTablesProps) {
         </Card>
       </TabsContent>
       <TabsContent value="phase2">
-        <Card>
-          <ActivityTable
-            title="Phase 2 activity"
-            activities={profile?.activities?._2 ?? []}
-            titleRightElement={
-              <div className="flex grow justify-end gap-x-40">
-                <Metric label="Bid points" size="l">
-                  <Format value={profile?.points?._2?.bidPoints ?? 0} />
-                </Metric>
-                <Metric label="Referral points" size="l">
-                  <Format value={profile?.points?._2?.refPoints ?? 0} />
-                </Metric>
-              </div>
-            }
-          />
-          <PhaseCTAs profile={profile} />
-        </Card>
+        <ActivityTable
+          title="Phase 2 activity"
+          activities={profile?.activities?._2 ?? []}
+          titleRightElement={
+            <div className="flex grow justify-end gap-x-40">
+              <Metric label="Bid points" size="l">
+                <Format value={profile?.points?._2?.bidPoints ?? 0} />
+              </Metric>
+              <Metric label="Referral points" size="l">
+                <Format value={profile?.points?._2?.refPoints ?? 0} />
+              </Metric>
+            </div>
+          }
+        />
+        <PhaseCTAs profile={profile} />
       </TabsContent>
     </Tabs>
   );

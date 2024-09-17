@@ -159,19 +159,6 @@
     },
     "/link": {
       "post": {
-        "parameters": [
-          {
-            "description": "The user id to link the wallet to.",
-            "explode": false,
-            "in": "path",
-            "name": "user_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "style": "simple"
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -180,7 +167,7 @@
               }
             }
           },
-          "description": "The user's access token and wallet address.",
+          "description": "The Sign in With Ethereum message and signature.",
           "required": true
         },
         "responses": {

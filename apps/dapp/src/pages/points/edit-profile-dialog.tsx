@@ -1,9 +1,9 @@
+import { Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, useToast } from "@/components";
 import { ProfileForm } from "modules/points/profile-form";
 import { useProfile } from "modules/points/hooks/use-profile";
 import { PointsHeader } from "modules/points/claim-points-header";
-import { Check } from "lucide-react";
 
 export function EditProfileDialog() {
   const navigate = useNavigate();
@@ -11,7 +11,6 @@ export function EditProfileDialog() {
   const { toast } = useToast();
 
   const handleProfileUpdated = () => {
-    // Close the dialog
     navigate(-1);
 
     toast({

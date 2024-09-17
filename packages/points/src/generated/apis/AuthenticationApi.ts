@@ -36,7 +36,6 @@ export interface IsRegisteredWalletAddressGetRequest {
 }
 
 export interface LinkPostRequest {
-  userId: string;
   signinData: SigninData;
 }
 
@@ -175,16 +174,6 @@ export class AuthenticationApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
     if (
-      requestParameters.userId === null ||
-      requestParameters.userId === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "userId",
-        "Required parameter requestParameters.userId was null or undefined when calling linkPost.",
-      );
-    }
-
-    if (
       requestParameters.signinData === null ||
       requestParameters.signinData === undefined
     ) {
@@ -210,10 +199,7 @@ export class AuthenticationApi extends runtime.BaseAPI {
     }
     const response = await this.request(
       {
-        path: `/link`.replace(
-          `{${"user_id"}}`,
-          encodeURIComponent(String(requestParameters.userId)),
-        ),
+        path: `/link`,
         method: "POST",
         headers: headerParameters,
         query: queryParameters,

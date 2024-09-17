@@ -177,21 +177,18 @@ export class PointsClient {
   }
 
   async linkWallet(chainId: number, address: `0x${string}`) {
-    try {
-      const statement = "Link wallet to your Axis points account.";
-      const { message, signature } = await this.sign(
-        chainId,
-        address,
-        statement,
-      );
+    const statement = "Link wallet to your Axis points account.";
+    const { message, signature } = await this.sign(chainId, address, statement);
 
-      return this.authApi.linkPost(
-        { signinData: { message, signature } },
-        { headers: this.headers() },
-      );
-    } catch (e) {
-      console.error(`Failed to link wallet`, e);
-    }
+    const headers = {
+      ...this.headers(),
+      "Content-Type": "application/json",
+    };
+
+    return this.authApi.linkPost(
+      { signinData: { message, signature } },
+      { headers },
+    );
   }
 
   async signOut() {
@@ -240,43 +237,27 @@ export class PointsClient {
   // Points
 
   async getWalletPoints(address: `0x${string}`) {
-    try {
-      return this.pointsApi.pointsWalletAddressGet({ walletAddress: address });
-    } catch (e) {
-      console.error(e);
-    }
+    return this.pointsApi.pointsWalletAddressGet({ walletAddress: address });
   }
 
   async getLeaderboard() {
-    try {
-      return this.pointsApi.leaderboardGet();
-    } catch (e) {
-      console.error(e);
-    }
+    return this.pointsApi.leaderboardGet();
   }
 
   async getUserProfile() {
-    try {
-      return this.pointsApi.profileGet({ headers: this.headers() });
-    } catch (e) {
-      console.error(e);
-    }
+    return this.pointsApi.profileGet({ headers: this.headers() });
   }
 
   async setUserProfile(username?: string, avatar?: Blob) {
-    try {
-      return this.pointsApi.profilePost(
-        {
-          data: {
-            username: username ? username : undefined,
-          },
-          profileImage: avatar ? avatar : undefined,
+    return this.pointsApi.profilePost(
+      {
+        data: {
+          username: username ? username : undefined,
         },
-        { headers: this.headers() },
-      );
-    } catch (e) {
-      console.error(e);
-    }
+        profileImage: avatar ? avatar : undefined,
+      },
+      { headers: this.headers() },
+    );
   }
 }
 

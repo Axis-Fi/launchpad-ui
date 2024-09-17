@@ -1,63 +1,75 @@
-import { Button, Card, DataTable } from "@/components";
-import type { FullUserProfile } from "@repo/points";
+import { useAccount } from "wagmi";
+import { DataTable } from "@/components";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { Format } from "modules/token/format";
-import { useAccount } from "wagmi";
+import { useProfile } from "./hooks/use-profile";
+import { useMemo } from "react";
+import type { WalletPoints } from "@repo/points";
+import type { ColumnDef } from "@tanstack/react-table";
+
+const enforcedColumns = ["address"];
 
 type LinkedWalletsTableProps = {
-  profile?: FullUserProfile;
+  visibleColumns?: Array<
+    keyof Pick<WalletPoints, "bidPoints" | "refPoints" | "totalPoints">
+  >;
+  trimWalletAddress?: boolean;
+  showSubtitle?: boolean;
 };
 
-export function LinkedWalletsTable({ profile }: LinkedWalletsTableProps) {
+export function LinkedWalletsTable({
+  visibleColumns = ["bidPoints", "refPoints", "totalPoints"],
+  trimWalletAddress = true,
+  showSubtitle = true,
+}: LinkedWalletsTableProps) {
+  const { profile } = useProfile();
   const { chainId } = useAccount();
 
+  const columns = useMemo(() => {
+    return (
+      [
+        {
+          header: "Wallet Address",
+          accessorKey: "address",
+          cell: ({ row }) => (
+            <BlockExplorerLink
+              chainId={chainId!}
+              address={row.original.address}
+              icon={true}
+              trim={trimWalletAddress}
+            />
+          ),
+        },
+        {
+          header: "Bid points",
+          accessorKey: "bidPoints",
+          cell: ({ row }) => <Format value={row.original.bidPoints ?? 0} />,
+        },
+        {
+          header: "Referral points",
+          accessorKey: "refPoints",
+          cell: ({ row }) => <Format value={row.original.refPoints ?? 0} />,
+        },
+        {
+          header: "Points",
+          accessorKey: "totalPoints",
+          cell: ({ row }) => <Format value={row.original.totalPoints ?? 0} />,
+        },
+      ] satisfies ColumnDef<WalletPoints>[]
+    ).filter((column) =>
+      [...enforcedColumns, ...visibleColumns].includes(
+        column.accessorKey as keyof LinkedWalletsTableProps["visibleColumns"],
+      ),
+    );
+  }, [chainId, trimWalletAddress, visibleColumns]);
+
   return (
-    <Card>
-      <DataTable
-        title="Linked Wallets"
-        subtitle="Link more wallets and get more points. Linked wallets are only visible to you."
-        data={profile?.wallets ?? []}
-        emptyText="No linked wallets"
-        columns={[
-          {
-            header: "Wallet Address",
-            accessorKey: "address",
-            cell: ({ row }) => (
-              <BlockExplorerLink
-                chainId={chainId!}
-                address={row.original.address}
-                icon={true}
-                trim
-              />
-            ),
-          },
-          {
-            header: "Bid points",
-            accessorKey: "bidPoints",
-            cell: ({ row }) => <Format value={row.original.bidPoints ?? 0} />,
-          },
-          {
-            header: "Referral points",
-            accessorKey: "refPoints",
-            cell: ({ row }) => <Format value={row.original.refPoints ?? 0} />,
-          },
-          {
-            header: "Total",
-            accessorKey: "totalPoints",
-            cell: ({ row }) => <Format value={row.original.totalPoints ?? 0} />,
-          },
-        ]}
-      />
-      <div className="flex justify-center">
-        {profile && (
-          <Button variant="secondary" className="w-full md:w-[33%] lg:w-[20%]">
-            Link wallets
-          </Button>
-        )}
-        {!profile && (
-          <Button variant="secondary">Claim points to link a wallet</Button>
-        )}
-      </div>
-    </Card>
+    <DataTable
+      title="Linked Wallets"
+      subtitle={showSubtitle ? "Link more wallets to earn more points" : null}
+      data={profile?.wallets ?? []}
+      emptyText="No linked wallets"
+      columns={columns}
+    />
   );
 }
