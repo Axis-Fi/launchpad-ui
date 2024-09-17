@@ -9,5 +9,13 @@ export function useLeaderboard() {
     queryFn: points.getLeaderboard,
   });
 
-  return leaderboardQuery.data;
+  const recentJoinsQuery = useQuery({
+    queryKey: ["recentJoinsQuery"],
+    queryFn: points.getRecentJoins,
+  });
+
+  return {
+    leaderboard: leaderboardQuery.data,
+    recentJoins: recentJoinsQuery.data,
+  };
 }

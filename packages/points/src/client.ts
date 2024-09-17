@@ -122,27 +122,14 @@ export class PointsClient {
   }
 
   async isUsernameAvailable(username: string) {
-    try {
-      return this.authApi.availableUsernameGet({ username });
-    } catch (e) {
-      console.error(`Failed to check username availability`, e);
-    }
-    return false;
+    return this.authApi.availableUsernameGet({ username });
   }
 
   async signIn(chainId: number, address: `0x${string}`) {
-    try {
-      const statement = "Sign in to view your Axis points.";
-      const { message, signature } = await this.sign(
-        chainId,
-        address,
-        statement,
-      );
+    const statement = "Sign in to view your Axis points.";
+    const { message, signature } = await this.sign(chainId, address, statement);
 
-      return this.authApi.signInPost({ signinData: { message, signature } });
-    } catch (e) {
-      console.error(`Failed to sign in`, e);
-    }
+    return this.authApi.signInPost({ signinData: { message, signature } });
   }
 
   async register(
@@ -237,6 +224,10 @@ export class PointsClient {
 
   async getLeaderboard() {
     return this.pointsApi.leaderboardGet();
+  }
+
+  async getRecentJoins() {
+    return this.pointsApi.recentJoinsGet();
   }
 
   async getUserProfile() {

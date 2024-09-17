@@ -27,6 +27,7 @@ type PointsContext = {
     address: `0x${string}`,
   ) => Promise<WalletPoints | undefined>;
   getLeaderboard: () => Promise<Array<UserProfile> | undefined>;
+  getRecentJoins: () => Promise<Array<UserProfile> | undefined>;
   getUserProfile: () => Promise<FullUserProfile | undefined>;
   setUserProfile: (username?: string, avatar?: Blob) => void;
   getAccessToken: () => string | null;
@@ -70,18 +71,6 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     return pointsClient.isRegistered(address);
   };
 
-  const isWalletRegistered = async (address: Address) => {
-    return pointsClient.isRegistered(address);
-  };
-
-  const isUsernameAvailable = async (username: string) => {
-    try {
-      return pointsClient.isUsernameAvailable(username);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const register = async (
     username: string,
     referrer?: string,
@@ -113,48 +102,26 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     TokenStorage.setRefreshToken(response?.refreshToken ?? "");
   };
 
-  const signOut = async () => {
-    return pointsClient.signOut();
-  };
-
   const linkWallet = async () => {
     if (!address || !chainId) return;
 
     return pointsClient.linkWallet(chainId, address);
   };
 
-  /* Points */
-
-  const getWalletPoints = async (address: `0x${string}`) => {
-    return pointsClient.getWalletPoints(address);
-  };
-
-  const getLeaderboard = async () => {
-    return pointsClient.getLeaderboard();
-  };
-
-  // Requires user to be signed in
-  const getUserProfile = async () => {
-    return pointsClient.getUserProfile();
-  };
-
-  const setUserProfile = async (username?: string, avatar?: Blob) => {
-    return pointsClient.setUserProfile(username, avatar);
-  };
-
   const context = useMemo(
     () => ({
       isUserRegistered,
-      isWalletRegistered,
-      isUsernameAvailable,
       register,
       signIn,
-      signOut,
       linkWallet,
-      getWalletPoints,
-      getLeaderboard,
-      getUserProfile,
-      setUserProfile,
+      signOut: pointsClient.signOut.bind(pointsClient),
+      isWalletRegistered: pointsClient.isRegistered.bind(pointsClient),
+      isUsernameAvailable: pointsClient.isUsernameAvailable.bind(pointsClient),
+      getWalletPoints: pointsClient.getWalletPoints.bind(pointsClient),
+      getLeaderboard: pointsClient.getLeaderboard.bind(pointsClient),
+      getRecentJoins: pointsClient.getRecentJoins.bind(pointsClient),
+      getUserProfile: pointsClient.getUserProfile.bind(pointsClient),
+      setUserProfile: pointsClient.setUserProfile.bind(pointsClient),
       getAccessToken: TokenStorage.getAccessToken,
       isUserSignedIn: () => !!TokenStorage.getAccessToken(),
     }),

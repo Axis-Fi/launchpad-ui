@@ -103,7 +103,7 @@ export function ProfileForm({
                 ? avatarPreview
                 : "/placeholder-img.png"
             }
-            alt="Profile image"
+            alt="Avatar"
             className="h-[140px] w-[140px] rounded-none border-transparent"
           />
           <FormField

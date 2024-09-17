@@ -17,7 +17,7 @@ const cols = [
         <img
           className="max-h-[32px] max-w-[32px]"
           src={row.original.profileImageUrl}
-          alt="User profile image"
+          alt="User avatar"
         />
         {row.original.username}
       </div>
@@ -38,7 +38,7 @@ const cols = [
 ];
 
 export function Leaderboard() {
-  const leaderboard = useLeaderboard();
+  const { leaderboard } = useLeaderboard();
 
   return (
     <DataTable

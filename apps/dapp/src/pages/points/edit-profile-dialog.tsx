@@ -36,6 +36,7 @@ export function EditProfileDialog() {
               onSuccess: handleProfileUpdated,
             });
           }}
+          isLoading={updateProfile.isPending}
         />
       </DialogContent>
     </Dialog>

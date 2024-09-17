@@ -11,7 +11,7 @@ export function LeaderboardPage() {
       <div className="axis-rainbow-reverse p-xl gap-sm flex h-[296px] w-full flex-col items-center justify-end">
         <Text size="2xl">Axis points</Text>
         <Button variant="secondary" asChild>
-          <Link to="#">Learn if you&apos;re eligible</Link>
+          <Link to="#">Find out if you&apos;re eligible</Link>
         </Button>
       </div>
 

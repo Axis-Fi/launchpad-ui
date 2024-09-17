@@ -25,6 +25,7 @@ export function CreateProfileStep() {
         onSubmit={(data) =>
           register.mutate(data, { onSuccess: wizard.nextStep })
         }
+        isLoading={register.isPending}
       >
         <PendingPoints points={walletPoints.data?.totalPoints ?? 0} />
       </ProfileForm>
