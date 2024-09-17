@@ -1,9 +1,10 @@
-import { z } from "zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { usePoints } from "context/points-provider";
 import { useEffect, useState } from "react";
-import type { Address } from "@repo/types";
+import { z } from "zod";
 import { useAccount } from "wagmi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type { Address } from "@repo/types";
+import { usePoints } from "context/points-provider";
+import { useReferrer } from "state/referral";
 
 export const schema = z.object({
   username: z
@@ -22,7 +23,7 @@ export function useProfile() {
   const points = usePoints();
   const { address: connectedAddress } = useAccount();
 
-  const referrer = undefined; // TODO: referre for points progam != referer of a launch
+  const referrer = useReferrer();
 
   const register = useMutation({
     mutationFn: async (profile: ProfileForm) =>
