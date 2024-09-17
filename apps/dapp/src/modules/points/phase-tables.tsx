@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Tabs,
   TabsList,
@@ -15,8 +16,12 @@ const PhaseCTAs = ({ profile }: PhaseTablesProps) => {
   return (
     <div className="flex w-full justify-center">
       {profile && (
-        <Button variant="secondary" className="w-full md:w-[33%] lg:w-[20%]">
-          Share referral link
+        <Button
+          variant="secondary"
+          className="w-full md:w-[33%] lg:w-[20%]"
+          asChild
+        >
+          <Link to="/points/refer">Share referral link</Link>
         </Button>
       )}
     </div>
@@ -54,21 +59,23 @@ export function PhaseTables({ profile }: PhaseTablesProps) {
         </Card>
       </TabsContent>
       <TabsContent value="phase2">
-        <ActivityTable
-          title="Phase 2 activity"
-          activities={profile?.activities?._2 ?? []}
-          titleRightElement={
-            <div className="flex grow justify-end gap-x-40">
-              <Metric label="Bid points" size="l">
-                <Format value={profile?.points?._2?.bidPoints ?? 0} />
-              </Metric>
-              <Metric label="Referral points" size="l">
-                <Format value={profile?.points?._2?.refPoints ?? 0} />
-              </Metric>
-            </div>
-          }
-        />
-        <PhaseCTAs profile={profile} />
+        <Card>
+          <ActivityTable
+            title="Phase 2 activity"
+            activities={profile?.activities?._2 ?? []}
+            titleRightElement={
+              <div className="flex grow justify-end gap-x-40">
+                <Metric label="Bid points" size="l">
+                  <Format value={profile?.points?._2?.bidPoints ?? 0} />
+                </Metric>
+                <Metric label="Referral points" size="l">
+                  <Format value={profile?.points?._2?.refPoints ?? 0} />
+                </Metric>
+              </div>
+            }
+          />
+          <PhaseCTAs profile={profile} />
+        </Card>
       </TabsContent>
     </Tabs>
   );

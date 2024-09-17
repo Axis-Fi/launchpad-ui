@@ -1,5 +1,5 @@
 import React from "react";
-import { Address } from "viem";
+import type { Address } from "viem";
 
 /**
  * Exposes a wait to generate a referral link*/
@@ -47,7 +47,7 @@ export function generateReferrerLink(addr: string, path = "") {
 }
 
 function urlSafe(b64Str: string) {
-  return b64Str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "~");
+  return b64Str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 function hexToBinary(hex: string) {

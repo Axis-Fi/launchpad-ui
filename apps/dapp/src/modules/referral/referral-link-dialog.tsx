@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader } from "@repo/ui";
+import { Dialog, DialogContent, DialogHeader, Text } from "@repo/ui";
 import { useNavigate } from "react-router-dom";
 import { ReferralLinkCard } from "./referral-link-card";
 
@@ -7,7 +7,16 @@ export function ReferralLinkDialog() {
   return (
     <Dialog open={true} externalDialog onOpenChange={() => navigate(-1)}>
       <DialogContent className="bg-surface">
-        <DialogHeader>Refer Origin</DialogHeader>
+        <DialogHeader>
+          <Text
+            mono
+            size="sm"
+            uppercase
+            className="leading-none tracking-[0.1em]"
+          >
+            Refer users
+          </Text>
+        </DialogHeader>
         <ReferralLinkCard />
       </DialogContent>
     </Dialog>

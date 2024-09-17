@@ -1,3 +1,6 @@
+import React from "react";
+import { useAccount } from "wagmi";
+import { type Address, isAddress } from "viem";
 import {
   Text,
   Button,
@@ -11,14 +14,8 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@repo/ui";
-import { useAuctions } from "modules/auction/hooks/use-auctions";
-import { useReferralLink } from "./use-referral-link";
-import { getLinkUrl } from "modules/auction/utils/auction-details";
-import React from "react";
-import { getAuctionPath } from "utils/router";
-import { Address, isAddress } from "viem";
-import { useAccount } from "wagmi";
 import { useProfile } from "modules/points/hooks/use-profile";
+import { useReferralLink } from "./use-referral-link";
 
 export function ReferralLinkCard() {
   const { address: connectedAddress } = useAccount();
@@ -27,24 +24,12 @@ export function ReferralLinkCard() {
   );
 
   const { profile, isUserSignedIn } = useProfile();
-  const [path, setPath] = React.useState<string | undefined>();
 
   const { generateAndCopyLink, link } = useReferralLink(address);
-  const auctions = useAuctions();
 
   React.useEffect(() => {
     setAddress(connectedAddress);
   }, [connectedAddress]);
-
-  const opts: SelectData[] = auctions.data
-    .filter(
-      (a) => a.isSecure && (a.status === "created" || a.status === "live"),
-    )
-    .map((a) => ({
-      value: getAuctionPath(a),
-      label: a.info?.name ?? a.baseToken.symbol,
-      imgURL: getLinkUrl("projectLogo", a),
-    }));
 
   const walletOptions: SelectData[] = isUserSignedIn
     ? profile?.wallets
@@ -64,7 +49,7 @@ export function ReferralLinkCard() {
         className="flex w-full flex-col items-center"
       >
         <TabsList defaultValue={isUserSignedIn ? "linkedWallets" : "address"}>
-          <TabsTrigger value="address">New Address</TabsTrigger>
+          <TabsTrigger value="address">Current Wallet</TabsTrigger>
           {isUserSignedIn && (
             <TabsTrigger value="linkedWallets">Linked Wallets</TabsTrigger>
           )}
@@ -93,16 +78,10 @@ export function ReferralLinkCard() {
           </TabsContent>
         </LabelWrapper>
       </Tabs>
-      <LabelWrapper
-        content="Launch"
-        tooltip="Create a referral link to a specific launch. You'll still earn fees if the user participates in other launches"
-      >
-        <Select options={opts} onChange={setPath} />
-      </LabelWrapper>
       <Button
         disabled={!address}
         className="mt-4 inline uppercase"
-        onClick={() => generateAndCopyLink(path)}
+        onClick={() => generateAndCopyLink()}
       >
         Generate and Copy Link
       </Button>

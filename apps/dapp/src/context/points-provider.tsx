@@ -19,7 +19,9 @@ type PointsContext = {
   ) => Promise<JWTPair | undefined>;
   isUsernameAvailable: (username: string) => Promise<boolean | undefined>;
   isUserRegistered: () => Promise<boolean | undefined>;
+  isWalletRegistered: (address: Address) => Promise<boolean | undefined>;
   signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
   linkWallet: () => Promise<void>;
   getWalletPoints: (
     address: `0x${string}`,
@@ -68,6 +70,10 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     return pointsClient.isRegistered(address);
   };
 
+  const isWalletRegistered = async (address: Address) => {
+    return pointsClient.isRegistered(address);
+  };
+
   const isUsernameAvailable = async (username: string) => {
     try {
       return pointsClient.isUsernameAvailable(username);
@@ -107,6 +113,10 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     TokenStorage.setRefreshToken(response?.refreshToken ?? "");
   };
 
+  const signOut = async () => {
+    return pointsClient.signOut();
+  };
+
   const linkWallet = async () => {
     if (!address || !chainId) return;
 
@@ -135,9 +145,11 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
   const context = useMemo(
     () => ({
       isUserRegistered,
+      isWalletRegistered,
       isUsernameAvailable,
       register,
       signIn,
+      signOut,
       linkWallet,
       getWalletPoints,
       getLeaderboard,

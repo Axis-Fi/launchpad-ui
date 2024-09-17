@@ -98,8 +98,12 @@ export function ProfileForm({
       <form className="gap-lg grid" onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="gap-x-md mt-md flex items-end">
           <Avatar
-            src={avatarPreview ?? "/placeholder-img.png"}
-            alt="User avatar"
+            src={
+              avatarPreview && avatarPreview.length
+                ? avatarPreview
+                : "/placeholder-img.png"
+            }
+            alt="Profile image"
             className="h-[140px] w-[140px] rounded-none border-transparent"
           />
           <FormField

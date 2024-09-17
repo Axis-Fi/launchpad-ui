@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { usePoints } from "context/points-provider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Address } from "@repo/types";
+import { useAccount } from "wagmi";
 
 export const schema = z.object({
   username: z
@@ -19,6 +20,8 @@ export type ProfileForm = z.infer<typeof schema>;
 
 export function useProfile() {
   const points = usePoints();
+  const { address: connectedAddress } = useAccount();
+
   const referrer = undefined; // TODO: referre for points progam != referer of a launch
 
   const register = useMutation({
@@ -68,6 +71,39 @@ export function useProfile() {
     queryFn: () => points.getWalletPoints(address!),
     enabled: address != null,
   });
+
+  const isConnectedWalletRegisteredQuery = useQuery({
+    queryKey: ["isConnectedWalletRegistered", connectedAddress],
+    queryFn: () => points.isWalletRegistered(connectedAddress!),
+    enabled: connectedAddress != null,
+  });
+
+  // Automatically sign the user out if they connect a new wallet
+  // which is linked to a different user profile
+  useEffect(() => {
+    async function signOut() {
+      if (connectedAddress == null || profileQuery.data?.wallets == null) {
+        return;
+      }
+
+      const userHasLinkedConnectedWallet = profileQuery.data.wallets.some(
+        (wallet) =>
+          wallet.address?.toLowerCase() === connectedAddress?.toLowerCase(),
+      );
+
+      const isConnectedWalletRegistered = isConnectedWalletRegisteredQuery.data;
+
+      if (isConnectedWalletRegistered && !userHasLinkedConnectedWallet) {
+        points.signOut();
+      }
+    }
+    signOut();
+  }, [
+    connectedAddress,
+    isConnectedWalletRegisteredQuery.data,
+    points,
+    profileQuery.data,
+  ]);
 
   return {
     profile: profileQuery.data,

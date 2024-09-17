@@ -62,8 +62,6 @@ const defaultConfig = new Configuration({
   basePath: serverUrl,
 });
 
-const defaultHeaders = {};
-
 // API Client
 export class PointsClient {
   authApi: AuthenticationApi;
@@ -88,12 +86,9 @@ export class PointsClient {
     const accessToken = TokenStorage.getAccessToken();
     if (accessToken) {
       return {
-        ...defaultHeaders,
         Authorization: `Bearer ${accessToken}`,
       };
     }
-
-    return defaultHeaders;
   }
 
   // Authentication
