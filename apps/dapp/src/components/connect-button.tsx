@@ -83,7 +83,7 @@ export default function ConnectButton({
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center gap-x-1">
-                        {isUserSignedIn && (
+                        {isUserSignedIn && profile?.profileImageUrl && (
                           <img
                             className="size-[48px]"
                             src={profile?.profileImageUrl}
