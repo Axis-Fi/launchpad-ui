@@ -5,6 +5,7 @@ import { PhaseTables } from "./phase-tables";
 import { LinkedWalletsTable } from "./linked-wallets-table";
 import { Link, useLocation } from "react-router-dom";
 import { useProfile } from "./hooks/use-profile";
+import { LinkMoreWalletsBanner } from "./linke-more-wallets-banner";
 
 export function Profile() {
   const location = useLocation();
@@ -45,6 +46,7 @@ export function Profile() {
       </div>
 
       <PageContainer>
+        <LinkMoreWalletsBanner />
         <PhaseTables profile={profile} />
         <LinkedWalletsTable profile={profile} />
       </PageContainer>

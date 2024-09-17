@@ -20,3 +20,4 @@ export * from "./sort-button";
 export * from "./table";
 export * from "./tooltip";
 export * from "./usd-toggle";
+export * from "./banner";
