@@ -184,6 +184,13 @@ export class PointsClient {
     const url = responseContext.url;
     const init = responseContext.init;
 
+    // Handle the case where the refresh token itself has expired (force user to sign in again)
+    if (url.endsWith("/refresh") && responseContext.response?.status === 400) {
+      this.signOut();
+      window.location.href = "#/points/sign-in";
+      return;
+    }
+
     if (
       url !== "/sign-in" &&
       url !== "/refresh" &&
