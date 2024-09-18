@@ -15,7 +15,7 @@ export function LinkWalletDialog() {
         <DialogHeader className="items-start">
           <Text
             mono
-            size="sm"
+            size="md"
             uppercase
             className="leading-none tracking-[0.1em]"
           >

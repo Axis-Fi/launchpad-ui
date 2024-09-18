@@ -51,26 +51,27 @@ export function LinkWalletForm({
   );
 
   return (
-    <div className="gap-y-md flex flex-col">
-      <ConnectedWallet trim={true} />
-
-      <div className="flex items-center gap-x-2">
-        <Info size="18" />
+    <div className="gap-y-md mt-xs flex flex-col">
+      <div className="pl-md p-sm gap-x-md flex items-center rounded-md border">
+        <Info size="28" />
 
         {isConnectedWalletLinked && (
-          <Text>
-            You already linked this wallet. To link a new wallet, switch to the
-            new wallet now.
-          </Text>
+          <div className="flex flex-col">
+            <Text weight="bold">Wallet already linked</Text>
+            <Text>
+              To link a new wallet, switch to the new wallet address now
+            </Text>
+          </div>
         )}
         {!isConnectedWalletLinked && (
           <Text>You&apos;re linking a new wallet</Text>
         )}
       </div>
 
+      <ConnectedWallet trim={false} />
+
       <LinkedWalletsTable
         visibleColumns={["totalPoints"]}
-        // trimWalletAddress={false}
         showSubtitle={false}
       />
       <Button

@@ -8,7 +8,6 @@ import {
   LabelWrapper,
   Select,
   SelectData,
-  trimAddress,
   Tabs,
   TabsList,
   TabsTrigger,
@@ -16,6 +15,7 @@ import {
 } from "@repo/ui";
 import { useProfile } from "modules/points/hooks/use-profile";
 import { useReferralLink } from "./use-referral-link";
+import { ShareRefLinkButton } from "./share-ref-link-button";
 
 export function ReferralLinkCard() {
   const { address: connectedAddress } = useAccount();
@@ -35,7 +35,7 @@ export function ReferralLinkCard() {
     ? profile?.wallets
         ?.filter((w) => !!w?.address)
         .map((lw) => ({
-          label: trimAddress(lw.address!, 8),
+          label: lw.address!,
           value: lw.address!,
         })) ?? []
     : [];
@@ -58,7 +58,7 @@ export function ReferralLinkCard() {
         <LabelWrapper
           content="Address"
           tooltip="The address to collect the referrer fees. An hash of it will be derived and included in the link, not the original address."
-          className="mt-4"
+          className="mt-lg"
         >
           <TabsContent value="address">
             <Input
@@ -78,17 +78,23 @@ export function ReferralLinkCard() {
           </TabsContent>
         </LabelWrapper>
       </Tabs>
-      <Button
-        disabled={!address}
-        className="mt-4 inline uppercase"
-        onClick={() => generateAndCopyLink()}
-      >
-        Generate and Copy Link
-      </Button>
+
+      <div className="gap-x-md mt-md flex justify-center">
+        <ShareRefLinkButton />
+
+        <Button
+          disabled={!address}
+          className="w-full"
+          onClick={() => generateAndCopyLink()}
+        >
+          Generate and Copy Link
+        </Button>
+      </div>
+
       {link && (
-        <div className="mt-4 space-y-2 text-center text-xs">
+        <div className="space-y-xs mt-xs text-center">
           <Text>Your link:</Text>
-          <Text size="xs">{link}</Text>
+          <Text size="md">{link}</Text>
         </div>
       )}
     </div>

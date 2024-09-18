@@ -7,6 +7,7 @@ import { PointsHeader } from "../claim-points-header";
 import { ConnectedWallet } from "../connected-wallet";
 import { useProfile } from "../hooks/use-profile";
 import { useWizard } from "react-use-wizard";
+import { ShareRefLinkButton } from "modules/referral/share-ref-link-button";
 
 export function ViewPointsStep() {
   const { profile } = useProfile();
@@ -42,6 +43,7 @@ export function ViewPointsStep() {
         <Button variant="secondary" onClick={wizard.nextStep}>
           Link Wallets to combine Points
         </Button>
+        <ShareRefLinkButton />
       </div>
     </Card>
   );

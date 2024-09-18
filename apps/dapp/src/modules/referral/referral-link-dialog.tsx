@@ -10,7 +10,7 @@ export function ReferralLinkDialog() {
         <DialogHeader>
           <Text
             mono
-            size="sm"
+            size="md"
             uppercase
             className="leading-none tracking-[0.1em]"
           >
