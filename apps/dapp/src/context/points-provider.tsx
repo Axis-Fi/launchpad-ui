@@ -21,7 +21,7 @@ type PointsContext = {
   isUserRegistered: () => Promise<boolean | undefined>;
   isWalletRegistered: (address: Address) => Promise<boolean | undefined>;
   signIn: () => Promise<void>;
-  signOut: () => Promise<void>;
+  signOut: () => void;
   linkWallet: () => Promise<void>;
   getWalletPoints: (
     address: `0x${string}`,

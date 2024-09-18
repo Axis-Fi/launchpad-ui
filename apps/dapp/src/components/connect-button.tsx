@@ -24,7 +24,7 @@ export default function ConnectButton({
   size?: ButtonProps["size"];
 }) {
   const { isTabletOrMobile } = useMediaQueries();
-  const { isUserRegistered, isUserSignedIn, profile } = useProfile();
+  const { isUserRegistered, isUserSignedIn, profile, signOut } = useProfile();
   const navigate = useNavigate();
   const { disconnect } = useDisconnect();
 
@@ -132,6 +132,11 @@ export default function ConnectButton({
                       <DropdownMenuItem onClick={() => disconnect()}>
                         Disconnect
                       </DropdownMenuItem>
+                      {isPointsFeatureEnabled && isUserSignedIn && (
+                        <DropdownMenuItem onClick={signOut}>
+                          Sign out
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
 

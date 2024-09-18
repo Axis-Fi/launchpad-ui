@@ -173,7 +173,7 @@ export class PointsClient {
     );
   }
 
-  async signOut() {
+  signOut() {
     // Clear tokens
     TokenStorage.setAccessToken("");
     TokenStorage.setRefreshToken("");

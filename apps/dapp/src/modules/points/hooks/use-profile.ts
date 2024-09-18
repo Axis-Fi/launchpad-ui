@@ -5,6 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type { Address } from "@repo/types";
 import { usePoints } from "context/points-provider";
 import { useReferrer } from "state/referral";
+import { useNavigate } from "react-router-dom";
 
 export const schema = z.object({
   username: z
@@ -21,6 +22,7 @@ export type ProfileForm = z.infer<typeof schema>;
 
 export function useProfile() {
   const points = usePoints();
+  const navigate = useNavigate();
   const { address: connectedAddress } = useAccount();
 
   const referrer = useReferrer();
@@ -45,6 +47,11 @@ export function useProfile() {
   const signIn = useMutation({
     mutationFn: async () => points.signIn(),
   });
+
+  const signOut = () => {
+    points.signOut();
+    navigate("/points/sign-in");
+  };
 
   const [username, setUsername] = useState<string | null>(null);
 
@@ -121,6 +128,7 @@ export function useProfile() {
     register,
     updateProfile,
     signIn,
+    signOut,
     linkWallet,
   };
 }
