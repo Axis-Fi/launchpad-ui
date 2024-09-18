@@ -12,12 +12,12 @@ import { Config, signMessage } from "@wagmi/core";
 
 // JWT Token Storage
 export const TokenStorage = {
-  getAccessToken: () => sessionStorage.getItem("points_access_token"),
-  getRefreshToken: () => sessionStorage.getItem("points_refresh_token"),
+  getAccessToken: () => localStorage.getItem("points_access_token"),
+  getRefreshToken: () => localStorage.getItem("points_refresh_token"),
   setAccessToken: (token: string) =>
-    sessionStorage.setItem("points_access_token", token),
+    localStorage.setItem("points_access_token", token),
   setRefreshToken: (token: string) =>
-    sessionStorage.setItem("points_refresh_token", token),
+    localStorage.setItem("points_refresh_token", token),
 };
 
 // SIWE Message Formatting
