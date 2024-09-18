@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { useAccount } from "wagmi";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -11,6 +11,9 @@ export const schema = z.object({
   username: z
     .string()
     .min(1, { message: "Username must be at least 1 characters" })
+    .refine((value) => /^[a-zA-Z0-9_-]+$/.test(value), {
+      message: "Username must contain alphanumeric, _ or, - characters only",
+    })
     .refine((value) => value.includes(" ") === false, {
       message: "Username must not contain any whitespace",
     }),
@@ -23,6 +26,7 @@ export type ProfileForm = z.infer<typeof schema>;
 export function useProfile() {
   const points = usePoints();
   const navigate = useNavigate();
+
   const { address: connectedAddress } = useAccount();
 
   const referrer = useReferrer();
@@ -48,10 +52,10 @@ export function useProfile() {
     mutationFn: async () => points.signIn(),
   });
 
-  const signOut = () => {
+  const signOut = useCallback(() => {
     points.signOut();
-    navigate("/points/sign-in");
-  };
+    navigate("/");
+  }, [points, navigate]);
 
   const [username, setUsername] = useState<string | null>(null);
 
@@ -89,7 +93,7 @@ export function useProfile() {
   // Automatically sign the user out if they connect a new wallet
   // which is linked to a different user profile
   useEffect(() => {
-    async function signOut() {
+    async function autoSignOut() {
       if (connectedAddress == null || profileQuery.data?.wallets == null) {
         return;
       }
@@ -102,16 +106,22 @@ export function useProfile() {
       const isConnectedWalletRegistered = isConnectedWalletRegisteredQuery.data;
 
       if (isConnectedWalletRegistered && !userHasLinkedConnectedWallet) {
-        points.signOut();
+        signOut();
       }
     }
-    signOut();
+    autoSignOut();
   }, [
+    signOut,
     connectedAddress,
     isConnectedWalletRegisteredQuery.data,
     points,
     profileQuery.data,
   ]);
+
+  useEffect(() => {
+    if (connectedAddress == null) return;
+    userRegisteredQuery.refetch({ cancelRefetch: false });
+  }, [connectedAddress, userRegisteredQuery]);
 
   return {
     profile: profileQuery.data,

@@ -1,18 +1,33 @@
+import React from "react";
+import { ArrowLeftIcon } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { metadata } from "@repo/env";
 import { Text, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
-import { ArrowLeftIcon } from "lucide-react";
-import { Link } from "react-router-dom";
 import { ClaimPointsWizard } from "modules/points/claim-points-wizard";
-import React from "react";
+import { useProfile } from "modules/points/hooks/use-profile";
 
 export function ClaimPointsPage() {
+  const { isUserRegistered, isUserSignedIn } = useProfile();
+  const navigate = useNavigate();
   const [isAtTop, setIsAtTop] = React.useState(false);
 
   React.useEffect(() => {
     //Trigger animation
     setTimeout(() => setIsAtTop(true), 3000);
   }, []);
+
+  React.useEffect(() => {
+    if (isUserRegistered.isLoading) return;
+    if (isUserRegistered.data && !isUserSignedIn) {
+      navigate("/points/sign-in");
+    }
+  }, [
+    isUserRegistered.isLoading,
+    isUserRegistered.data,
+    navigate,
+    isUserSignedIn,
+  ]);
 
   return (
     <div

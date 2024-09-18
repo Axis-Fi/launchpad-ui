@@ -21,11 +21,6 @@ export function ConnectStep() {
         <Text>Create a user profile to claim your points.</Text>
         <Text>Link addresses and refer friends to multiply your points.</Text>
         <ConnectButton size="md" />
-        <Text uppercase mono size="sm" className="text-foreground-secondary">
-          By using Axis, you agree to our{" "}
-          <span className="font-bold">Terms of Services</span> and our{" "}
-          <span className="font-bold">Privacy Policy </span>
-        </Text>
       </div>
     </Card>
   );
