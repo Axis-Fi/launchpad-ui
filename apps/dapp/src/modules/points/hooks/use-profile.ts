@@ -11,6 +11,7 @@ export const schema = z.object({
   username: z
     .string()
     .min(1, { message: "Username must be at least 1 characters" })
+    .max(25, { message: "Username must be less than 26 characters" })
     .refine((value) => /^[a-zA-Z0-9_-]+$/.test(value), {
       message: "Username must contain alphanumeric, _ or, - characters only",
     })
