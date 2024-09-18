@@ -7,11 +7,17 @@ import ScrollToTop from "modules/app/scroll-to-top";
 import { ReferrerChecker } from "modules/app/referrer-checker";
 
 import "modules/app/analytics";
+import React from "react";
+import analytics from "modules/app/analytics";
 
 const disableDevTools =
   import.meta.env.VITE_DISABLE_REACT_QUERY_DEV_TOOLS === "true";
 
 function App() {
+  React.useEffect(() => {
+    analytics.enableAutoPageviews();
+  }, []);
+
   return (
     <Providers disableDevTools={disableDevTools}>
       <ScrollToTop />

@@ -5,9 +5,9 @@ const domain = environment.isProduction
   ? metadata.prodURL
   : metadata.testnetURL;
 
-const plausible = Plausible({
+const analytics = Plausible({
   domain,
   hashMode: true,
 });
 
-plausible.enableAutoPageviews();
+export default analytics;
