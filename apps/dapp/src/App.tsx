@@ -6,6 +6,8 @@ import { AppControl } from "modules/app/app-control";
 import ScrollToTop from "modules/app/scroll-to-top";
 import { ReferrerChecker } from "modules/app/referrer-checker";
 
+import "modules/app/analytics";
+
 const disableDevTools =
   import.meta.env.VITE_DISABLE_REACT_QUERY_DEV_TOOLS === "true";
 
