@@ -17,7 +17,7 @@ export function ClaimPointsPage() {
   return (
     <div
       className={cn(
-        "claim-points-gradient absolute inset-0 z-20 flex h-dvh w-dvw flex-col",
+        "claim-points-gradient absolute inset-0 z-20 flex h-dvh w-dvw flex-col overflow-hidden",
         !isAtTop && "cursor-pointer",
       )}
       onClick={() => setIsAtTop(true)}
@@ -57,7 +57,7 @@ export function ClaimPointsPage() {
         <Text
           className={cn(
             "relative left-[154px] top-[30px] text-[50px] font-extralight transition-all duration-1000",
-            isAtTop && "-translate-x-[650%] text-[32px]",
+            isAtTop && "-translate-x-[400%] text-[32px]",
           )}
           mono
         >
