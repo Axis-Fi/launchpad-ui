@@ -15,7 +15,7 @@ const cols = [
     cell: ({ row }) => (
       <div className="flex flex-row items-center gap-x-2">
         <img
-          className="max-h-[32px] max-w-[32px]"
+          className="h-[32px] w-[32px]"
           src={row.original.profileImageUrl}
           alt="User avatar"
         />
