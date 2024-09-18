@@ -11,11 +11,17 @@ export function ClaimPointsPage() {
 
   React.useEffect(() => {
     //Trigger animation
-    setTimeout(() => setIsAtTop(true), 1500);
+    setTimeout(() => setIsAtTop(true), 3000);
   }, []);
 
   return (
-    <div className="claim-points-gradient absolute inset-0 z-20 flex h-dvh w-dvw flex-col">
+    <div
+      className={cn(
+        "claim-points-gradient absolute inset-0 z-20 flex h-dvh w-dvw flex-col",
+        !isAtTop && "cursor-pointer",
+      )}
+      onClick={() => setIsAtTop(true)}
+    >
       <img
         src="dot-grid.svg"
         className="absolute inset-0 h-dvh w-dvw object-cover opacity-50"
@@ -34,7 +40,10 @@ export function ClaimPointsPage() {
           </Text>
         </Link>
       </div>
-      <div className="absolute flex h-screen w-full cursor-pointer items-center justify-center">
+      <div
+        className="absolute flex h-screen w-full items-center justify-center"
+        onClick={() => setIsAtTop(true)}
+      >
         <Text
           className={cn(
             "relative right-[110px] top-[30px] text-[50px] font-extralight transition-all duration-1000",
@@ -59,6 +68,7 @@ export function ClaimPointsPage() {
         </Text>
 
         <div
+          onClick={() => setIsAtTop(true)}
           className={`absolute ${
             isAtTop ? "top-0 pt-10" : "top-1/2"
           } -translate-x-1/2 transform transition-all duration-1000`}
@@ -73,7 +83,12 @@ export function ClaimPointsPage() {
           />
         </div>
       </div>
-      <div className={cn("z-30 flex h-5/6 items-center justify-center")}>
+      <div
+        className={cn(
+          "flex h-5/6 items-center justify-center",
+          isAtTop && "z-30",
+        )}
+      >
         <div
           className={cn(
             "opacity-0 transition-all delay-300 duration-500",
