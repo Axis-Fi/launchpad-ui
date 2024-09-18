@@ -27,7 +27,9 @@ const cols = [
           />
           <div className="flex flex-col">
             <div>{username}</div>
-            {referrer != null && <Text size="xs">Referred by {referrer}</Text>}
+            {referrer != null && referrer !== "" && (
+              <Text size="xs">Referred by {referrer}</Text>
+            )}
           </div>
         </div>
       );
