@@ -57,7 +57,7 @@ export function ReferralLinkCard() {
 
         <LabelWrapper
           content="Address"
-          tooltip="The address to collect the referrer fees. An hash of it will be derived and included in the link, not the original address."
+          tooltip="The address to receive the referrer fees. The link generated uses a hash of the address, not the original address."
           className="mt-lg"
         >
           <TabsContent value="address">

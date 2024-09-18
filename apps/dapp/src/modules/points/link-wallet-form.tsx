@@ -52,7 +52,7 @@ export function LinkWalletForm({
 
   return (
     <div className="gap-y-md mt-xs flex flex-col">
-      <div className="pl-md p-sm gap-x-md flex items-center rounded-md border">
+      <div className="pl-md p-sm gap-x-md items-top flex rounded-md border">
         <Info size="28" />
 
         {isConnectedWalletLinked && (
@@ -60,6 +60,9 @@ export function LinkWalletForm({
             <Text weight="bold">Wallet already linked</Text>
             <Text>
               To link a new wallet, switch to the new wallet address now
+            </Text>
+            <Text>
+              The wallet can&apos;t be already registered to a points account
             </Text>
           </div>
         )}
