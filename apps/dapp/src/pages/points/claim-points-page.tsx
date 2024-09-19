@@ -16,7 +16,6 @@ export function ClaimPointsPage() {
 
   React.useEffect(() => {
     //Trigger animation
-    console.log({ isTabletOrMobile });
     if (isTabletOrMobile) return setIsAtTop(true);
 
     setTimeout(() => setIsAtTop(true), 3000);

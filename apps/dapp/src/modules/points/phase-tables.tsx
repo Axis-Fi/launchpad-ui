@@ -11,6 +11,7 @@ import {
 import { Format } from "modules/token/format";
 import type { FullUserProfile } from "@repo/points";
 import { ActivityTable } from "./activity-table";
+import { useMediaQueries } from "loaders/use-media-queries";
 
 const PhaseCTAs = ({ profile }: PhaseTablesProps) => {
   return (
@@ -33,6 +34,7 @@ type PhaseTablesProps = {
 };
 
 export function PhaseTables({ profile }: PhaseTablesProps) {
+  const { isTabletOrMobile } = useMediaQueries();
   return (
     <Tabs defaultValue="phase1">
       <TabsList>
@@ -45,11 +47,14 @@ export function PhaseTables({ profile }: PhaseTablesProps) {
             title="Phase 1 activity"
             activities={profile?.activities?._1 ?? []}
             titleRightElement={
-              <div className="flex grow justify-end gap-x-40">
-                <Metric label="Bid points" size="l">
+              <div className="grow justify-end gap-x-40 pl-4 lg:flex">
+                <Metric label="Bid points" size={isTabletOrMobile ? "s" : "l"}>
                   <Format value={profile?.points?._1?.bidPoints ?? 0} />
                 </Metric>
-                <Metric label="Referral points" size="l">
+                <Metric
+                  label="Referral points"
+                  size={isTabletOrMobile ? "s" : "l"}
+                >
                   <Format value={profile?.points?._1?.refPoints ?? 0} />
                 </Metric>
               </div>
@@ -64,11 +69,14 @@ export function PhaseTables({ profile }: PhaseTablesProps) {
             title="Phase 2 activity"
             activities={profile?.activities?._2 ?? []}
             titleRightElement={
-              <div className="flex grow justify-end gap-x-40">
-                <Metric label="Bid points" size="l">
+              <div className="flex grow justify-end gap-x-40 pl-4">
+                <Metric label="Bid points" size={isTabletOrMobile ? "s" : "l"}>
                   <Format value={profile?.points?._2?.bidPoints ?? 0} />
                 </Metric>
-                <Metric label="Referral points" size="l">
+                <Metric
+                  label="Referral points"
+                  size={isTabletOrMobile ? "s" : "l"}
+                >
                   <Format value={profile?.points?._2?.refPoints ?? 0} />
                 </Metric>
               </div>
