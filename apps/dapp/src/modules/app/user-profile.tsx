@@ -4,12 +4,15 @@ import ConnectButton from "../../components/connect-button";
 import { trimCurrency } from "utils/currency";
 import { useProfile } from "modules/points/hooks/use-profile";
 import { useNavigate } from "react-router-dom";
+import { useMediaQueries } from "loaders/use-media-queries";
+import { shorten } from "utils/number";
 
 export function UserProfile() {
   const { profile, isUserRegistered, isUserSignedIn, ...profileActions } =
     useProfile();
   const navigate = useNavigate();
   const isRegistered = isUserRegistered.data;
+  const { isTabletOrMobile } = useMediaQueries();
 
   if (!featureToggles.POINTS_PHASE_1) {
     return <ConnectButton className="hidden md:block" size="md" />;
@@ -27,6 +30,12 @@ export function UserProfile() {
 
   const points = profile?.points?._0?.totalPoints;
 
+  const formattedPoints = points
+    ? isTabletOrMobile
+      ? shorten(points)
+      : trimCurrency(points)
+    : null;
+
   return (
     <div className="flex items-center justify-center gap-x-4">
       <div className="bg-background px-md green-gradient-border flex h-[48px] items-center justify-between gap-x-2 rounded-md p-1">
@@ -42,7 +51,7 @@ export function UserProfile() {
             )}
           >
             {isUserSignedIn
-              ? `${points != null ? trimCurrency(points) : "???"} points`
+              ? `${points != null ? formattedPoints : "???"} points`
               : isRegistered
                 ? "Sign In"
                 : "Claim Points"}

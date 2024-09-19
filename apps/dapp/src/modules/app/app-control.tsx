@@ -49,7 +49,7 @@ export function AppControl() {
               </Button>
             </div>
           )}
-          <UserProfile />
+          {!isTabletOrMobile && <UserProfile />}
           {isTabletOrMobile && <AppMenu />}
         </div>
       </div>

@@ -21,12 +21,12 @@ export function Profile() {
     <>
       <div className="axis-rainbow-reverse p-xl flex h-[224px] w-full items-center">
         <div className="m-md mx-auto flex w-full max-w-[1400px] flex-col items-center lg:flex-row lg:items-start lg:justify-between">
-          <div className="gap-md flex">
+          <div className="gap-md flex items-center">
             <Avatar
               className="size-[80px] rounded-none lg:size-[160px]"
               src={profile.profileImageUrl}
             />
-            <div className="flex flex-col justify-between">
+            <div className="-mt-2 flex flex-col justify-between lg:mt-0">
               <div className="flex flex-col">
                 <div className="gap-sm flex">
                   <Text size="xl" className="">
