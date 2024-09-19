@@ -6,6 +6,7 @@ import type { Address } from "@repo/types";
 import { usePoints } from "context/points-provider";
 import { useReferrer } from "state/referral";
 import { useNavigate } from "react-router-dom";
+import analytics from "modules/app/analytics";
 
 export const schema = z.object({
   username: z
@@ -33,8 +34,13 @@ export function useProfile() {
   const referrer = useReferrer();
 
   const register = useMutation({
-    mutationFn: async (profile: ProfileForm) =>
-      points.register(profile.username, referrer, profile.avatar),
+    mutationFn: async (profile: ProfileForm) => {
+      analytics.trackEvent("register", {
+        props: { address: connectedAddress as string },
+      });
+
+      return points.register(profile.username, referrer, profile.avatar);
+    },
     onSuccess: () => profileQuery.refetch(),
   });
 
