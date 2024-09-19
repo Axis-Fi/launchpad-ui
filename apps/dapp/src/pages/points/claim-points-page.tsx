@@ -6,14 +6,19 @@ import { Text, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { ClaimPointsWizard } from "modules/points/claim-points-wizard";
 import { useProfile } from "modules/points/hooks/use-profile";
+import { useMediaQueries } from "loaders/use-media-queries";
 
 export function ClaimPointsPage() {
   const { isUserRegistered, isUserSignedIn } = useProfile();
   const navigate = useNavigate();
   const [isAtTop, setIsAtTop] = React.useState(false);
+  const { isTabletOrMobile } = useMediaQueries();
 
   React.useEffect(() => {
     //Trigger animation
+    console.log({ isTabletOrMobile });
+    if (isTabletOrMobile) return setIsAtTop(true);
+
     setTimeout(() => setIsAtTop(true), 3000);
   }, []);
 
@@ -47,6 +52,7 @@ export function ClaimPointsPage() {
           className={cn(
             "hover:text-surface absolute right-20 flex items-center gap-x-1",
             !isAtTop && "hidden",
+            isTabletOrMobile && "right-4",
           )}
         >
           <ArrowLeftIcon className="duration-150" />
@@ -63,6 +69,7 @@ export function ClaimPointsPage() {
           className={cn(
             "relative right-[110px] top-[30px] text-[50px] font-extralight transition-all duration-1000",
             isAtTop && "-translate-x-[270%] opacity-0",
+            isTabletOrMobile && "hidden",
           )}
           mono
         >
@@ -73,6 +80,8 @@ export function ClaimPointsPage() {
           className={cn(
             "relative left-[154px] top-[30px] text-[50px] font-extralight transition-all duration-1000",
             isAtTop && "-translate-x-[400%] text-[32px]",
+
+            isTabletOrMobile && "hidden",
           )}
           mono
         >
@@ -100,7 +109,7 @@ export function ClaimPointsPage() {
       </div>
       <div
         className={cn(
-          "flex h-5/6 items-center justify-center",
+          "mt-8 flex h-5/6 items-center justify-center",
           isAtTop && "z-30",
         )}
       >
@@ -113,7 +122,7 @@ export function ClaimPointsPage() {
           <ClaimPointsWizard />
         </div>
       </div>
-      <div className="z-30 flex justify-center pb-[64px] pt-10">
+      <div className="z-30 flex justify-center pb-[64px]">
         <SocialRow className="gap-x-8" iconClassName="size-8" {...metadata} />
       </div>
     </div>
