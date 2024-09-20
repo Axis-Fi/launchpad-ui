@@ -1,5 +1,6 @@
 import React from "react";
 import type { Address } from "viem";
+import analytics from "modules/app/analytics";
 
 /**
  * Exposes a wait to generate a referral link*/
@@ -9,6 +10,10 @@ export function useReferralLink(address?: Address) {
   function generateAndCopyLink(path?: string) {
     generateLink(path);
     copyLink();
+
+    analytics.trackEvent("ref-link", {
+      props: { link },
+    });
   }
 
   function generateLink(path?: string) {
