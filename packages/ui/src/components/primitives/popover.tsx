@@ -2,8 +2,9 @@ import * as React from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 import { cn } from "@/utils";
+import { Button } from "./button";
 
-const Popover = PopoverPrimitive.Root;
+const PopoverRoot = PopoverPrimitive.Root;
 
 const PopoverTrigger = PopoverPrimitive.Trigger;
 
@@ -28,4 +29,20 @@ const PopoverContent = React.forwardRef<
 ));
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
+type PopoverProps = React.ComponentPropsWithoutRef<
+  typeof PopoverPrimitive.Content
+> & { label: string };
+const Popover = (props: PopoverProps) => {
+  return (
+    <PopoverRoot>
+      <PopoverTrigger asChild>
+        <Button variant="secondary" size="sm">
+          {props.label}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent {...props}>{props.children}</PopoverContent>
+    </PopoverRoot>
+  );
+};
+
+export { PopoverRoot, PopoverTrigger, PopoverContent, PopoverAnchor, Popover };

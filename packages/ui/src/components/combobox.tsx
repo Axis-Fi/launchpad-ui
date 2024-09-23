@@ -10,7 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-  Popover,
+  PopoverRoot,
   PopoverContent,
   PopoverTrigger,
 } from "./primitives";
@@ -56,7 +56,7 @@ export function ComboBox({
   );
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <PopoverRoot open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild={!props.triggerElement}>
         {triggerElement}
       </PopoverTrigger>
@@ -96,6 +96,6 @@ export function ComboBox({
           </CommandGroup>
         </Command>
       </PopoverContent>
-    </Popover>
+    </PopoverRoot>
   );
 }

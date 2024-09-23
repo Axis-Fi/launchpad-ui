@@ -16,6 +16,7 @@ import { ProfilePage } from "pages/points/profile-page";
 import { LeaderboardPage } from "pages/points/leaderboard-page";
 import { ClaimPointsPage } from "pages/points/claim-points-page";
 import { SignInPage } from "pages/points/sign-in-page";
+import { Bridge } from "components/bridge";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
@@ -37,6 +38,7 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "faucet", element: <FaucetPage /> },
       { path: "deploy", element: <DeployTokenPage /> },
       { path: ":chainId/:lotId", element: <AuctionPage /> },
+      { path: "bridge", element: <Bridge /> },
     ],
   },
 ]);
