@@ -1,6 +1,6 @@
 import type React from "react";
 import { useAccount } from "wagmi";
-import { Check, TriangleAlert, Info } from "lucide-react";
+import { Check, TriangleAlert } from "lucide-react";
 import { Button, Text, useToast } from "@/components";
 import { LinkedWalletsTable } from "./linked-wallets-table";
 import { ConnectedWallet } from "./connected-wallet";
@@ -52,18 +52,17 @@ export function LinkWalletForm({
 
   return (
     <div className="gap-y-md mt-xs flex flex-col">
-      <div className="pl-md p-sm gap-x-md items-top flex rounded-md border">
-        <Info size="28" />
+      <LinkedWalletsTable
+        visibleColumns={["totalPoints"]}
+        showSubtitle={false}
+      />
+      <div className="pl-md p-sm gap-x-md items-top border-feedback-warning flex rounded-md border">
+        <TriangleAlert size="28" className="text-feedback-warning" />
 
         {isConnectedWalletLinked && (
           <div className="flex flex-col">
             <Text weight="bold">Wallet already linked</Text>
-            <Text>
-              To link a new wallet, switch to the new wallet address now
-            </Text>
-            <Text>
-              The wallet can&apos;t be already registered to a points account
-            </Text>
+            <Text>To link a new wallet switch to a new wallet address</Text>
           </div>
         )}
         {!isConnectedWalletLinked && (
@@ -73,10 +72,6 @@ export function LinkWalletForm({
 
       <ConnectedWallet trim={false} />
 
-      <LinkedWalletsTable
-        visibleColumns={["totalPoints"]}
-        showSubtitle={false}
-      />
       <Button
         variant="primary"
         onClick={handleSubmit}

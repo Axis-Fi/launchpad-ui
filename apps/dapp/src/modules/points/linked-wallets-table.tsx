@@ -23,7 +23,7 @@ export function LinkedWalletsTable({
   showSubtitle = true,
 }: LinkedWalletsTableProps) {
   const { profile } = useProfile();
-  const { chainId } = useAccount();
+  const { chainId, address } = useAccount();
 
   const columns = useMemo(() => {
     return (
@@ -32,12 +32,18 @@ export function LinkedWalletsTable({
           header: "Wallet Address",
           accessorKey: "address",
           cell: ({ row }) => (
-            <BlockExplorerLink
-              chainId={chainId!}
-              address={row.original.address}
-              icon={true}
-              trim={trimWalletAddress}
-            />
+            <>
+              <BlockExplorerLink
+                chainId={chainId!}
+                address={row.original.address}
+                icon={true}
+                trim={trimWalletAddress}
+              />
+              {address?.toLowerCase() ===
+                row.original.address?.toLowerCase() && (
+                <sup className="text-primary">(current)</sup>
+              )}
+            </>
           ),
         },
         {

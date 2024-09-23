@@ -25,7 +25,7 @@ const TableTitle = ({
         className,
       )}
     >
-      <div className="flex h-[64px] flex-col justify-end">
+      <div className="flex flex-col justify-end">
         <Text className="text-lg lg:text-xl" weight="light">
           {title}
         </Text>
