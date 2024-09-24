@@ -33,6 +33,24 @@ export interface InputProps
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, variant, textSize, error, ...props }, ref) => {
+    React.useEffect(() => {
+      if (type === "number") {
+        const handleWheel = (e: WheelEvent) => {
+          const activeElement = document.activeElement as HTMLInputElement;
+          if (activeElement && activeElement.type === "number") {
+            e.preventDefault();
+          }
+        };
+
+        window.addEventListener("wheel", handleWheel, { passive: false });
+
+        // Clean up the event listener on component unmount
+        return () => {
+          window.removeEventListener("wheel", handleWheel);
+        };
+      }
+    }, []);
+
     return (
       <div className="relative">
         <input
