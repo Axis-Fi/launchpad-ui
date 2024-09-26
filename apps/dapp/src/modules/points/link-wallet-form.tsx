@@ -62,6 +62,7 @@ export function LinkWalletForm({
         {isConnectedWalletLinked && (
           <div className="flex flex-col">
             <Text weight="bold">Wallet already linked</Text>
+            <Text>The wallet is already registered to your points account</Text>
             <Text>To link a new wallet switch to a new wallet address</Text>
           </div>
         )}
