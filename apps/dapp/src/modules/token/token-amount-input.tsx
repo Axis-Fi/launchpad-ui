@@ -90,9 +90,7 @@ export const TokenAmountInput = React.forwardRef<
               variant="secondary"
               size="sm"
               className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
-              onClick={() => {
-                onClickMaxButton?.();
-              }}
+              onClick={() => onClickMaxButton?.()}
             >
               Max
             </Button>

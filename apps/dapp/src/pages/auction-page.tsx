@@ -25,12 +25,13 @@ import { BidList } from "modules/auction/bid-list";
 import { PurchaseList } from "modules/auction/purchase-list";
 import { getLinkUrl } from "modules/auction/utils/auction-details";
 import { Countdown } from "modules/auction/countdown";
+import { AuctionRegistering } from "modules/auction/status/auction-registering";
 
 const statuses: Record<
   AuctionStatus,
   (props: PropsWithAuction) => React.ReactNode
 > = {
-  registering: () => null,
+  registering: AuctionRegistering,
   created: AuctionCreated,
   live: AuctionLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,
