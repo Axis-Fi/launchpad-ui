@@ -2,15 +2,17 @@ import { Text, cn } from "@repo/ui";
 
 export function PointsHeader({
   title = "Axis Points",
+  className,
   subtitle,
   subtitleClassName,
 }: {
   title?: string;
   subtitle?: string;
+  className?: string;
   subtitleClassName?: string;
 }) {
   return (
-    <div className="text-right">
+    <div className={cn("text-right", className)}>
       <Text
         size="sm"
         mono

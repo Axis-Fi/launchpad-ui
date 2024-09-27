@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, Text } from "@/components";
+import { Dialog, DialogContent } from "@/components";
 import { useProfile } from "modules/points/hooks/use-profile";
 import { LinkWalletForm } from "modules/points/link-wallet-form";
+import { PointsHeader } from "modules/points/claim-points-header";
 
 export function LinkWalletDialog() {
   const { profile } = useProfile();
@@ -12,16 +13,12 @@ export function LinkWalletDialog() {
   return (
     <Dialog open={true} onOpenChange={() => navigate(-1)} externalDialog>
       <DialogContent className="bg-surface sm:max-w-[576px]">
-        <DialogHeader className="items-start">
-          <Text
-            mono
-            size="md"
-            uppercase
-            className="leading-none tracking-[0.1em]"
-          >
-            Link wallet
-          </Text>
-        </DialogHeader>
+        <div className="flex justify-between">
+          <div className="w-1/3">
+            <img src="/points-logo.png" className="size-[120px]" />
+          </div>
+          <PointsHeader subtitle="Link Wallets" className="w-2/3" />
+        </div>
         <LinkWalletForm onSuccess={() => navigate(-1)} />
       </DialogContent>
     </Dialog>
