@@ -6,6 +6,8 @@ import {
   PointsApi,
   Middleware,
   ResponseContext,
+  LaunchesApi,
+  LaunchRegistration,
 } from ".";
 import { environment } from "@repo/env";
 import { Config, signMessage } from "@wagmi/core";
@@ -66,6 +68,7 @@ const defaultConfig = new Configuration({
 export class PointsClient {
   authApi: AuthenticationApi;
   pointsApi: PointsApi;
+  launchesApi: LaunchesApi;
   wagmiConfig: Config;
 
   constructor(config: Configuration = defaultConfig, wagmiConfig: Config) {
@@ -79,6 +82,7 @@ export class PointsClient {
 
     this.authApi = new AuthenticationApi(fullConfig);
     this.pointsApi = new PointsApi(fullConfig);
+    this.launchesApi = new LaunchesApi(fullConfig);
     this.wagmiConfig = wagmiConfig;
   }
 
@@ -251,6 +255,24 @@ export class PointsClient {
       },
       { headers: this.headers() },
     );
+  }
+
+  async getRegisteredLaunches() {
+    return this.launchesApi.launchesActiveGet();
+  }
+
+  async registerUserDemand(launchRegistration: LaunchRegistration) {
+    return this.launchesApi.launchesRegisterPost({ launchRegistration });
+  }
+
+  async updateUserDemand(launchRegistration: LaunchRegistration) {
+    return this.launchesApi.launchesRegisterUpdatePost({ launchRegistration });
+  }
+
+  async cancelUserDemand(launchRegistration: LaunchRegistration) {
+    return this.launchesApi.launchesRegisterCancelPost({
+      launchRegistration,
+    });
   }
 }
 

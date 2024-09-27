@@ -1,4 +1,5 @@
 apis/AuthenticationApi.ts
+apis/LaunchesApi.ts
 apis/PointsApi.ts
 apis/index.ts
 index.ts
@@ -7,6 +8,8 @@ models/FullUserProfile.ts
 models/FullUserProfileActivities.ts
 models/FullUserProfilePoints.ts
 models/JWTPair.ts
+models/Launch.ts
+models/LaunchRegistration.ts
 models/Points.ts
 models/ProfileFormData.ts
 models/RegistrationFormData.ts
