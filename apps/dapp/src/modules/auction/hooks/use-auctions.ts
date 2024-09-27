@@ -12,7 +12,11 @@ import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
 import { useSafeRefetch } from "./use-safe-refetch";
-import { externalAuctionInfo } from "@repo/env/src/external-auction-info";
+import {
+  externalAuctionInfo,
+  featureToggles,
+  registrationLaunches,
+} from "@repo/env";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -46,23 +50,18 @@ export function useAuctions(): AuctionsResult {
   // Refetch auctions if the cache is stale
   const refetch = useSafeRefetch(["auctions"]);
 
-  const rawAuctions = [...data.batchAuctionLots].flat() ?? [];
+  const maybeRegistrationLaunches = featureToggles.REGISTRATION_LAUNCHES
+    ? registrationLaunches // TODO: will be a hook: useRegistrationLaunches()
+    : [];
+
+  const rawAuctions =
+    [...data.batchAuctionLots, ...maybeRegistrationLaunches].flat() ?? [];
 
   // Add external data to auctions before processing
-  const augmentedAuctions = rawAuctions.map((auction) => {
-    let info = auction.info;
-
-    // If no info provided on IPFS, check if we have it locally
-    if (!info) {
-      // See if we have the auction info locally
-      info = externalAuctionInfo[auction.id];
-    }
-
-    return {
-      ...auction,
-      info,
-    };
-  });
+  const augmentedAuctions = rawAuctions.map((auction) => ({
+    ...auction,
+    info: auction.info ?? externalAuctionInfo[auction.id],
+  }));
 
   // Filter out cancelled batch auctions before querying additional data
   const filteredAuctions = augmentedAuctions.filter(
@@ -96,8 +95,8 @@ export function useAuctions(): AuctionsResult {
     .sort(sortAuction);
 
   return {
-    data: auctions,
-    isLoading: isLoading, //|| infos.isLoading,
+    data: auctions as Auction[],
+    isLoading,
     refetch,
     isRefetching,
     isSuccess,

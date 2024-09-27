@@ -10,14 +10,16 @@ type InputToken = Omit<SubgraphToken, "id" | "decimals" | "totalSupply"> & {
 };
 
 type PartialAuction = Pick<Auction, "info" | "chain"> & {
-  quoteToken: InputToken;
-  baseToken: InputToken;
+  quoteToken?: InputToken;
+  baseToken?: InputToken;
 };
 
 export function formatAuctionTokens(
   auction: PartialAuction,
   getToken: (token: TokenBase) => Token | undefined,
 ) {
+  if (auction.quoteToken == null || auction.baseToken == null) return;
+
   const chainId = getChainId(auction.chain);
 
   const quoteToken =

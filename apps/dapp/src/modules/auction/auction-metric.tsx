@@ -3,7 +3,6 @@ import {
   AuctionType,
   CallbacksType,
   type Auction,
-  type BatchAuction,
   type PropsWithAuction,
 } from "@repo/types";
 import { Metric, MetricProps, Tooltip, useToggle } from "@repo/ui";
@@ -132,8 +131,7 @@ const handlers: MetricHandlers = {
   totalRaised: {
     label: "Total Raised",
     handler: (auction) => {
-      const _auction = auction as BatchAuction;
-      return `${_auction.formatted?.purchased} ${_auction.quoteToken.symbol}`;
+      return `${auction.formatted?.purchased} ${auction.quoteToken.symbol}`;
     },
   },
   targetRaise: {
@@ -436,6 +434,7 @@ export function AuctionMetric(props: AuctionMetricProps) {
 
   if (!props.auction) throw new Error("No auction provided");
   if (!element) throw new Error(`No auction metric found for ${props.id}`);
+  if (props.auction.status === "registering") return null;
 
   const value = element.handler(props.auction);
 

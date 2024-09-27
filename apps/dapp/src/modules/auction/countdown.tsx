@@ -7,17 +7,36 @@ import { useMediaQueries } from "loaders/use-media-queries";
 export function Countdown({ auction }: PropsWithAuction) {
   const { isTabletOrMobile } = useMediaQueries();
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
-  const startDate = new Date(Number(auction.start) * 1000);
-  const endDate = new Date(Number(auction.conclusion) * 1000);
+  const isRegistrationLaunch = auction.status === "registering";
+
+  const startDate = isRegistrationLaunch
+    ? new Date(Date.now())
+    : new Date(Number(auction.start) * 1000);
+
+  const endDate = isRegistrationLaunch
+    ? auction.registrationDeadline!
+    : new Date(Number(auction.conclusion) * 1000);
+
   const now = new Date();
 
-  const isOngoing = startDate < now && endDate > now;
+  const isOngoing = startDate <= now && endDate > now;
 
   const hasntStarted = startDate > now;
 
   const inProgress = hasntStarted || isOngoing;
 
-  const targetDate = hasntStarted ? startDate : endDate;
+  const targetDate =
+    hasntStarted && !isRegistrationLaunch ? startDate : endDate;
+
+  console.log("auction", auction.id, {
+    startDate,
+    endDate,
+    isOngoing,
+    hasntStarted,
+    inProgress,
+    targetDate,
+    deadline: auction.registrationDeadline,
+  });
 
   // Immediately set the countdown if the auction is ongoing
   useEffect(() => {

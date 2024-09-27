@@ -14,7 +14,7 @@ export function AuctionStatusBadge({
     <Badge
       size={status === "live" && large ? "xl" : "m"}
       className={className}
-      color={status !== "live" ? "ghost" : "active"}
+      color={status === "live" || status === "registering" ? "active" : "ghost"}
     >
       {status}
     </Badge>

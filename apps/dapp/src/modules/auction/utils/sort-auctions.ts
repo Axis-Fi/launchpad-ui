@@ -1,13 +1,14 @@
 import { AuctionStatus, BaseAuction } from "@repo/types";
 
 const status: { [key in AuctionStatus]: number } = {
-  live: 0,
-  created: 1,
-  concluded: 2,
-  decrypted: 3,
-  settled: 4,
-  cancelled: 5,
-  aborted: 6,
+  registering: 0,
+  live: 1,
+  created: 2,
+  concluded: 3,
+  decrypted: 4,
+  settled: 5,
+  cancelled: 6,
+  aborted: 7,
 };
 
 /** Required fields for an auction to be comparable */
