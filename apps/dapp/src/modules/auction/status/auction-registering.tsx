@@ -1,13 +1,6 @@
 /* eslint-disable */
 
-import {
-  Input,
-  Card,
-  FormItemWrapper,
-  FormField,
-  Form,
-  Button,
-} from "@repo/ui";
+import { Card, FormField, Form, Button } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
 import { ProjectInfoCard } from "../project-info-card";
@@ -16,9 +9,10 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TokenAmountInput } from "modules/token/token-amount-input";
-import { useMutation } from "@tanstack/react-query";
 import { Address, zeroAddress } from "viem";
 import { useProfile } from "modules/points/hooks/use-profile";
+import { useAccount } from "wagmi";
+import { useAuctionRegistrations } from "../hooks/use-auction-registrations";
 
 export function AuctionRegistering({ auction }: PropsWithAuction) {
   return (
@@ -38,13 +32,15 @@ export function AuctionRegistering({ auction }: PropsWithAuction) {
 }
 
 const schema = z.object({
-  commitAmount: z.string(),
+  commitAmount: z.coerce.number(),
 });
 
 type CommitForm = z.infer<typeof schema>;
 
 function AuctionRegisteringForm(props: PropsWithAuction) {
+  const { address } = useAccount();
   const auth = useProfile();
+  const registrations = useAuctionRegistrations();
 
   const form = useForm<CommitForm>({
     mode: "onChange",
@@ -54,32 +50,38 @@ function AuctionRegisteringForm(props: PropsWithAuction) {
 
   const handleSignIn = () => {
     //TODO: figure out how the auth flow will work
-    //auth.isUserRegistered ? auth.register.mutate() : auth.signIn.mutate()
+    auth.isUserRegistered ? auth.register.mutate() : auth.signIn.mutate();
   };
 
-  const mutation = useMutation({
-    mutationFn: () => {
-      //const amount = form.getValues().commitAmount;
-      //api.commit(amount)
-      return Promise.resolve();
-    },
-  });
+  const prepareCommit = () => {
+    return {
+      commitment: form.getValues().commitAmount,
+      walletAddress: address,
+      id: Number(props.auction.lotId),
+      launchName: props.auction.id,
+    };
+  };
+
+  const handleCommit = () => registrations.registerDemand(prepareCommit());
+
+  const handleUpdateCommit = () => registrations.updateDemand(prepareCommit());
+
+  const handleCancelCommit = () => registrations.cancelDemand(prepareCommit());
+
+  const isCommited = false;
 
   return (
     <div>
       <Form {...form}>
-        <form
-          className="flex flex-col items-center space-y-4"
-          onSubmit={() => mutation.mutate()}
-        >
+        <form className="flex flex-col items-center space-y-4">
           <FormField
             name="commitAmount"
             control={form.control}
             render={({ field }) => (
               <TokenAmountInput
                 {...field}
-                label="Commit Amount"
                 disableMaxButton
+                label="Commit Amount"
                 showUsdPrice={false}
                 //@ts-expect-error TODO: component expects a onchain token, this is a one-off use
                 token={{
@@ -90,7 +92,17 @@ function AuctionRegisteringForm(props: PropsWithAuction) {
               />
             )}
           />
-          <Button className="w-full">Commit</Button>
+
+          {!isCommited ? (
+            <Button className="w-full" onClick={handleCommit}>
+              Commit
+            </Button>
+          ) : (
+            <div className="flex gap-x-1">
+              <Button onClick={handleUpdateCommit}>Update</Button>
+              <Button onClick={handleCancelCommit}>Cancel</Button>
+            </div>
+          )}
         </form>
       </Form>
     </div>

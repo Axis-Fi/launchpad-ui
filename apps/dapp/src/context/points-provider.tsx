@@ -31,6 +31,7 @@ type PointsContext = {
   getUserProfile: () => Promise<FullUserProfile | undefined>;
   setUserProfile: (username?: string, avatar?: Blob) => void;
   getAccessToken: () => string | null;
+  pointsClient: ReturnType<typeof createPointsClient>;
 };
 
 const initialState = {} as PointsContext;
@@ -110,6 +111,7 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
 
   const context = useMemo(
     () => ({
+      pointsClient,
       isUserRegistered,
       register,
       signIn,

@@ -257,8 +257,12 @@ export class PointsClient {
     );
   }
 
-  async getRegisteredLaunches() {
+  async getActiveRegistrationLaunches() {
     return this.launchesApi.launchesActiveGet();
+  }
+
+  async getUserRegistrations() {
+    return this.launchesApi.launchesRegistrationsGet();
   }
 
   async registerUserDemand(launchRegistration: LaunchRegistration) {

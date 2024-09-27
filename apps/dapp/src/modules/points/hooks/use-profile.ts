@@ -97,7 +97,6 @@ export function useProfile() {
     enabled: connectedAddress != null,
   });
 
-  // Automatically sign the user out if they connect a new wallet
   // which is linked to a different user profile
   useEffect(() => {
     async function autoSignOut() {
