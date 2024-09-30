@@ -28,8 +28,9 @@ import { Countdown } from "modules/auction/countdown";
 
 const statuses: Record<
   AuctionStatus,
-  (props: PropsWithAuction) => JSX.Element
+  (props: PropsWithAuction) => React.ReactNode
 > = {
+  registering: () => null,
   created: AuctionCreated,
   live: AuctionLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,

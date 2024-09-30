@@ -1,10 +1,10 @@
-import { Auction } from "@repo/types";
+import type { Address, Auction } from "@repo/types";
 import { isAddress, zeroAddress } from "viem";
 import { axisContracts } from "@repo/deployments";
 import { allowedCurators, environment } from "@repo/env";
 
 /** Checks if the curator address on an Auction exists in an address list */
-export function isAllowedCurator(auction: Auction) {
+export function isAllowedCurator(auction: AuctionCuratorAndCallback) {
   const curator = auction.curator;
 
   return (
@@ -17,7 +17,7 @@ export function isAllowedCurator(auction: Auction) {
 }
 
 /** Checks if a callback address is a valid Axis Contract */
-export function isAxisCallback(auction: Auction) {
+export function isAxisCallback(auction: AuctionCuratorAndCallback) {
   return (
     !auction.callbacks ||
     auction.callbacks === zeroAddress ||
@@ -28,7 +28,10 @@ export function isAxisCallback(auction: Auction) {
 }
 
 /** Calls auction filters */
-export function isSecureAuction(auction: Auction) {
+type AuctionCuratorAndCallback = Pick<Auction, "chainId" | "curator"> & {
+  callbacks?: Address;
+};
+export function isSecureAuction(auction: AuctionCuratorAndCallback) {
   return Boolean(
     !environment.isProduction ||
       (isAllowedCurator(auction) && isAxisCallback(auction)),

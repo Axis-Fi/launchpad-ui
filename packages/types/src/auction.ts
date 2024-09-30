@@ -13,17 +13,31 @@ export type BaseAuction = {
   formatted?: AuctionFormattedInfo;
   /** Whether the auction passes the malicious auction verification */
   isSecure?: boolean;
+
+  // Used for registration launches
+  registrationDeadline?: Date;
 };
 
-export type Auction = BatchAuction;
-
-export type BatchAuction = BaseAuction &
-  Omit<BatchSubgraphAuction, "baseToken" | "quoteToken">;
-
-//TODO: see if necessary again, used to branch between auctions in list and detailed view
-export type AuctionListed = Auction; //Omit<BaseAuction, "auctionData" | "formatted"> & Omit<RawSubgraphAuction, "baseToken" | "quoteToken">;
+export type RegistrationLaunch = Pick<
+  BaseAuction,
+  "chainId" | "callbacks" | "registrationDeadline" | "status"
+> &
+  Pick<
+    BatchSubgraphAuction,
+    | "auctionType"
+    | "id"
+    | "chain"
+    | "auctionHouse"
+    | "lotId"
+    | "info"
+    | "curator"
+    | "curatorApproved"
+    | "seller"
+    | "bids"
+  >;
 
 export type AuctionStatus =
+  | "registering"
   | "created"
   | "cancelled"
   | "live"
@@ -31,6 +45,11 @@ export type AuctionStatus =
   | "decrypted"
   | "aborted"
   | "settled";
+
+export type BatchAuction = BaseAuction &
+  Omit<BatchSubgraphAuction, "baseToken" | "quoteToken">;
+
+export type Auction = BatchAuction;
 
 type AllowList = string[][] | undefined;
 

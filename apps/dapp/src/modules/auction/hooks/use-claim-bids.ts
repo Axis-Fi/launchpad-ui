@@ -5,11 +5,11 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { BatchAuction } from "@repo/types";
 import { useAuction } from "./use-auction";
 import { useSdk } from "@repo/sdk/react";
+import { Auction } from "@repo/types";
 
-export function useClaimBids(auction: BatchAuction) {
+export function useClaimBids(auction: Auction) {
   const { address: userAddress } = useAccount();
   const sdk = useSdk();
 

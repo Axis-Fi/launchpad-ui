@@ -126,7 +126,7 @@ export function useAuction(
     result: {
       ...preparedAuction,
       isSecure: isSecureAuction(preparedAuction),
-    },
+    } as Auction,
     isLoading: isLoading, //|| infoQuery.isLoading,
     isRefetching,
     queryKey,

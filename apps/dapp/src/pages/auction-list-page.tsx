@@ -62,13 +62,13 @@ export default function AuctionListPage() {
   const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
 
   const secureAuctions = auctions
-    .filter((a) => a.isSecure)
+    .filter((a) => "isSecure" in a && a.isSecure)
     .filter(
       // Filter only user created or participated auctions
       (a) =>
         !address ||
         !onlyUserAuctions ||
-        a.seller === address.toLowerCase() ||
+        a.seller.toLowerCase() === address.toLowerCase() ||
         a.bids.some((b) => b.bidder.toLowerCase() === address.toLowerCase()),
     );
 

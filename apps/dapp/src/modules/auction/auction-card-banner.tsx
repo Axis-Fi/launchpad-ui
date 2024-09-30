@@ -1,11 +1,9 @@
-import { Auction, Chain } from "@repo/types";
+import type { Chain, PropsWithAuction } from "@repo/types";
 import { Badge, cn } from "@repo/ui";
 import { Countdown } from "./countdown";
 
-type AuctionCardBannerProps = {
-  auction: Auction;
+type AuctionCardBannerProps = PropsWithAuction & {
   chain: Chain;
-  deadline?: Date;
   image?: string;
   curator?: {
     name: string;
