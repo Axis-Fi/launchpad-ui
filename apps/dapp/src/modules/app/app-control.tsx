@@ -2,7 +2,7 @@ import { FlaskConicalIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { CaretUpIcon } from "@radix-ui/react-icons";
 import Navbar, { testnetLinks } from "./navbar";
-import { Button, Tooltip, cn } from "@repo/ui";
+import { Button, ThemeSwitcher, Tooltip, cn } from "@repo/ui";
 import React from "react";
 import { useMediaQueries } from "loaders/use-media-queries";
 import { environment } from "@repo/env";
@@ -23,6 +23,7 @@ export function AppControl() {
           <Navbar onlyDefault={isTabletOrMobile} />
         </div>
         <div className="flex items-center justify-between gap-x-2">
+          <ThemeSwitcher />
           {environment.isTestnet && !isTabletOrMobile && (
             <div className="border-b-tertiary-300 mr-8 flex items-center border-b-2">
               <Tooltip content="These features are only available on testnet">

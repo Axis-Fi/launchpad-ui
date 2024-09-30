@@ -34,9 +34,6 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
-    /** 
-     * TODO: force light mode until/if we decide to resupport dark mode
-     * 
     root.classList.remove("light", "dark");
 
     if (theme === "system") {
@@ -51,8 +48,7 @@ export function ThemeProvider({
     }
 
     root.classList.add(theme);
-    */
-    root.classList.add("light");
+    //root.classList.add("light");
   }, [theme]);
 
   const value = {
