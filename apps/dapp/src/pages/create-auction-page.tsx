@@ -97,6 +97,10 @@ import { useStoredAuctionConfig } from "state/auction-config";
 import type { Token } from "@repo/types";
 import { DownloadIcon, ShareIcon, TrashIcon } from "lucide-react";
 import { TriggerMessage } from "components/trigger-message";
+import {
+  baseDtlOnCreateParams,
+  prepareBaseDTLParameters,
+} from "modules/create-auction/prepare-dtl-parameters";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -145,6 +149,7 @@ const schema = z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
+    dtlUniMaxSlippage: z.array(z.number()).optional(),
     dtlUniV3PoolFee: z.string().optional(),
     customCallbackData: z
       .string()
@@ -584,121 +589,39 @@ export default function CreateAuctionPage() {
         break;
       }
       case CallbacksType.UNIV2_DTL: {
-        const proceedsPercent = values.dtlProceedsPercent
-          ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
-          : 0;
-        const vestingStart = values.dtlVestingStart
-          ? getTimestamp(values.dtlVestingStart)
-          : 0;
-        const vestingExpiry =
-          vestingStart === 0
-            ? 0
-            : vestingStart +
-              getDuration(Number(values.dtlVestingDuration ?? 0));
-        const recipient = !values.dtlRecipient
-          ? zeroAddress
-          : getAddress(values.dtlRecipient);
-        const implParams = toHex("");
-        callbackData = encodeAbiParameters(
-          [
-            {
-              components: [
-                {
-                  type: "uint24",
-                  name: "proceedsUtilisationPercent",
-                },
-                {
-                  type: "uint48",
-                  name: "vestingStart",
-                },
-                {
-                  type: "uint48",
-                  name: "vestingExpiry",
-                },
-                {
-                  type: "address",
-                  name: "recipient",
-                },
-                {
-                  type: "bytes",
-                  name: "implParams",
-                },
-              ],
-              type: "tuple",
-              name: "OnCreateParams",
-            },
-          ],
-          [
-            {
-              proceedsUtilisationPercent: proceedsPercent,
-              vestingStart: vestingStart,
-              vestingExpiry: vestingExpiry,
-              recipient: recipient,
-              implParams: implParams,
-            },
-          ],
-        );
-        break;
-      }
-      case CallbacksType.UNIV3_DTL: {
-        const proceedsPercent = values.dtlProceedsPercent
-          ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
-          : 0;
-        const vestingStart = values.dtlVestingStart
-          ? getTimestamp(values.dtlVestingStart)
-          : 0;
-        const vestingExpiry =
-          vestingStart === 0
-            ? 0
-            : vestingStart +
-              getDuration(Number(values.dtlVestingDuration ?? 0));
-        const recipient = (values.dtlRecipient ?? zeroAddress) as `0x${string}`;
-        const poolFee = values.dtlUniV3PoolFee
-          ? Number(values.dtlUniV3PoolFee)
-          : 0;
+        const baseDTLArgs = prepareBaseDTLParameters(values);
+        const maxSlippage = toBasisPoints(values.dtlUniMaxSlippage?.[0] ?? 0);
+
         const implParams = encodeAbiParameters(
-          parseAbiParameters("uint24 poolFee"),
-          [poolFee],
+          parseAbiParameters("uint24 maxSlippage"),
+          [maxSlippage],
         );
 
         callbackData = encodeAbiParameters(
-          [
-            {
-              components: [
-                {
-                  type: "uint24",
-                  name: "proceedsUtilisationPercent",
-                },
-                {
-                  type: "uint48",
-                  name: "vestingStart",
-                },
-                {
-                  type: "uint48",
-                  name: "vestingExpiry",
-                },
-                {
-                  type: "address",
-                  name: "recipient",
-                },
-                {
-                  type: "bytes",
-                  name: "implParams",
-                },
-              ],
-              type: "tuple",
-              name: "OnCreateParams",
-            },
-          ],
-          [
-            {
-              proceedsUtilisationPercent: proceedsPercent,
-              vestingStart: vestingStart,
-              vestingExpiry: vestingExpiry,
-              recipient: recipient,
-              implParams: implParams,
-            },
-          ],
+          [baseDtlOnCreateParams],
+          [{ ...baseDTLArgs, implParams }],
+        );
+
+        break;
+      }
+
+      case CallbacksType.UNIV3_DTL: {
+        const baseDTLArgs = prepareBaseDTLParameters(values);
+
+        const poolFee = values.dtlUniV3PoolFee
+          ? Number(values.dtlUniV3PoolFee)
+          : 0;
+
+        const maxSlippage = toBasisPoints(values.dtlUniMaxSlippage?.[0] ?? 0);
+
+        const implParams = encodeAbiParameters(
+          parseAbiParameters("uint24 poolFee, uint24 maxSlippage"),
+          [poolFee, maxSlippage],
+        );
+
+        callbackData = encodeAbiParameters(
+          [baseDtlOnCreateParams],
+          [{ ...baseDTLArgs, implParams }],
         );
         break;
       }
@@ -1872,6 +1795,22 @@ export default function CreateAuctionPage() {
                                     ? (deadline as Date)
                                     : addDays(new Date(), 1)
                                 }
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="dtlUniMaxSlippage"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Max Slippage"
+                              tooltip="The maximum slippage allowed when adding liquidity, in percent."
+                            >
+                              <PercentageSlider
+                                field={field}
+                                defaultValue={1}
                               />
                             </FormItemWrapper>
                           )}
