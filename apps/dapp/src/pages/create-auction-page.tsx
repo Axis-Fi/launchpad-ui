@@ -313,6 +313,8 @@ const schema = z
     path: ["capacity"],
   });
 
+// TODO validate baseline callbacks
+
 export type CreateAuctionForm = z.infer<typeof schema>;
 
 export default function CreateAuctionPage() {
@@ -521,6 +523,8 @@ export default function CreateAuctionPage() {
 
     // Set the callback data based on the type and user inputs
     let callbackData = toHex("");
+
+    // TODO add support for baseline callback variants
 
     switch (callbacksType) {
       case CallbacksType.NONE: {
@@ -1026,6 +1030,8 @@ export default function CreateAuctionPage() {
         "A UniV3 pool already exists for the selected tokens at the selected fee tier. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
     });
   }
+
+  // TODO check here if the payout token is the same as the one in the baseline callbacks
 
   // Load the balance for the payout token
   const { balance: payoutTokenBalance, decimals: payoutTokenDecimals } =
