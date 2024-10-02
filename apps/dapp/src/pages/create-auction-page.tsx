@@ -146,6 +146,10 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
     dtlUniV3PoolFee: z.string().optional(),
+    baselinePoolPercent: z.array(z.number()).optional(),
+    baselineFloorReservesPercent: z.array(z.number()).optional(),
+    baselineFloorRangeGap: StringNumberNotNegative.optional(),
+    baselineAnchorTickWidth: StringNumberNotNegative.optional(),
     customCallbackData: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]$/)
@@ -316,6 +320,139 @@ const schema = z
 // TODO validate baseline callbacks
 
 export type CreateAuctionForm = z.infer<typeof schema>;
+
+const generateAllowlistCallbackData = (
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const allowlistTree =
+    values.allowlist && StandardMerkleTree.of(values.allowlist, ["address"]);
+  const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+  return encodeAbiParameters(parseAbiParameters("bytes32 merkleRoot"), [root]);
+};
+
+const generateCappedAllowlistCallbackData = (
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const cap = parseUnits(
+    values.cappedAllowlistLimit ?? "0",
+    values.quoteToken.decimals,
+  );
+  const allowlistTree =
+    values.allowlist && StandardMerkleTree.of(values.allowlist, ["address"]);
+  const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+  return encodeAbiParameters(
+    parseAbiParameters("bytes32 merkleRoot, uint256 cap"),
+    [root, cap],
+  );
+};
+
+const generateAllocatedAllowlistCallbackData = (
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const allowlistTree =
+    values.allowlist &&
+    StandardMerkleTree.of(values.allowlist, ["address", "uint256"]);
+  const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+  return encodeAbiParameters(parseAbiParameters("bytes32 merkleRoot"), [root]);
+};
+
+const generateTokenAllowlistCallbackData = (
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const allowlistToken = (values.allowlistToken?.address ??
+    zeroAddress) as `0x${string}`;
+  const threshold = parseUnits(
+    values.allowlistTokenThreshold ?? "0",
+    values.allowlistToken?.decimals ?? 0,
+  );
+  return encodeAbiParameters(
+    parseAbiParameters("address token, uint256 threshold"),
+    [allowlistToken, threshold],
+  );
+};
+
+const generateBaselineCallbackData = (
+  type: CallbacksType,
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const recipient = (values.dtlRecipient ?? zeroAddress) as `0x${string}`;
+  const poolPercent = values.baselinePoolPercent
+    ? toBasisPoints(values.baselinePoolPercent[0] ?? 0)
+    : 0;
+  const floorReservesPercent = values.baselineFloorReservesPercent
+    ? toBasisPoints(values.baselineFloorReservesPercent[0] ?? 0)
+    : 0;
+  const floorRangeGap = Number(values.baselineFloorRangeGap ?? 0);
+  const anchorTickU = 0; // TODO automatically calculate this
+  const anchorTickWidth = Number(values.baselineAnchorTickWidth ?? 0);
+  const poolTargetTick = 0; // TODO automatically calculate this
+  let allowlistParams = toHex("");
+
+  if (type === CallbacksType.BASELINE_ALLOWLIST) {
+    allowlistParams = generateAllowlistCallbackData(values);
+  } else if (type === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST) {
+    allowlistParams = generateAllocatedAllowlistCallbackData(values);
+  } else if (type === CallbacksType.BASELINE_CAPPED_ALLOWLIST) {
+    allowlistParams = generateCappedAllowlistCallbackData(values);
+  } else if (type === CallbacksType.BASELINE_TOKEN_ALLOWLIST) {
+    allowlistParams = generateTokenAllowlistCallbackData(values);
+  }
+
+  return encodeAbiParameters(
+    [
+      {
+        components: [
+          {
+            type: "address",
+            name: "recipient",
+          },
+          {
+            type: "uint24",
+            name: "poolPercent",
+          },
+          {
+            type: "uint24",
+            name: "floorReservesPercent",
+          },
+          {
+            type: "int24",
+            name: "floorRangeGap",
+          },
+          {
+            type: "int24",
+            name: "anchorTickU",
+          },
+          {
+            type: "int24",
+            name: "anchorTickWidth",
+          },
+          {
+            type: "int24",
+            name: "poolTargetTick",
+          },
+          {
+            type: "bytes",
+            name: "allowlistParams",
+          },
+        ],
+        type: "tuple",
+        name: "CreateData",
+      },
+    ],
+    [
+      {
+        recipient: recipient,
+        poolPercent: poolPercent,
+        floorReservesPercent: floorReservesPercent,
+        floorRangeGap: floorRangeGap,
+        anchorTickU: anchorTickU,
+        anchorTickWidth: anchorTickWidth,
+        poolTargetTick: poolTargetTick,
+        allowlistParams: allowlistParams,
+      },
+    ],
+  );
+};
 
 export default function CreateAuctionPage() {
   // Due to components being uncontrolled the form inputs wont clear
@@ -524,8 +661,6 @@ export default function CreateAuctionPage() {
     // Set the callback data based on the type and user inputs
     let callbackData = toHex("");
 
-    // TODO add support for baseline callback variants
-
     switch (callbacksType) {
       case CallbacksType.NONE: {
         callbackData = toHex("");
@@ -537,54 +672,20 @@ export default function CreateAuctionPage() {
       }
       case CallbacksType.MERKLE_ALLOWLIST: {
         // TODO need to handle errors here? May not be necessary since we are validating the file format
-        const allowlistTree =
-          values.allowlist &&
-          StandardMerkleTree.of(values.allowlist, ["address"]);
-        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
-        callbackData = encodeAbiParameters(
-          parseAbiParameters("bytes32 merkleRoot"),
-          [root],
-        );
+        callbackData = generateAllowlistCallbackData(values);
         break;
       }
       case CallbacksType.CAPPED_MERKLE_ALLOWLIST: {
-        const cap = parseUnits(
-          values.cappedAllowlistLimit ?? "0",
-          values.quoteToken.decimals,
-        );
-        const allowlistTree =
-          values.allowlist &&
-          StandardMerkleTree.of(values.allowlist, ["address"]);
-        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
-        callbackData = encodeAbiParameters(
-          parseAbiParameters("bytes32 merkleRoot, uint256 cap"),
-          [root, cap],
-        );
+        callbackData = generateCappedAllowlistCallbackData(values);
         break;
       }
       case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST: {
         // TODO need to handle errors here? May not be necessary since we are validating the file format
-        const allowlistTree =
-          values.allowlist &&
-          StandardMerkleTree.of(values.allowlist, ["address", "uint256"]);
-        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
-        callbackData = encodeAbiParameters(
-          parseAbiParameters("bytes32 merkleRoot"),
-          [root],
-        );
+        callbackData = generateAllocatedAllowlistCallbackData(values);
         break;
       }
       case CallbacksType.TOKEN_ALLOWLIST: {
-        const allowlistToken = (values.allowlistToken?.address ??
-          zeroAddress) as `0x${string}`;
-        const threshold = parseUnits(
-          values.allowlistTokenThreshold ?? "0",
-          values.allowlistToken?.decimals ?? 0,
-        );
-        callbackData = encodeAbiParameters(
-          parseAbiParameters("address token, uint256 threshold"),
-          [allowlistToken, threshold],
-        );
+        callbackData = generateTokenAllowlistCallbackData(values);
         break;
       }
       case CallbacksType.UNIV2_DTL: {
@@ -704,6 +805,26 @@ export default function CreateAuctionPage() {
             },
           ],
         );
+        break;
+      }
+      case CallbacksType.BASELINE: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
+      case CallbacksType.BASELINE_ALLOWLIST: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
+      case CallbacksType.BASELINE_CAPPED_ALLOWLIST: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
+      case CallbacksType.BASELINE_TOKEN_ALLOWLIST: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
+      case CallbacksType.BASELINE_ALLOCATED_ALLOWLIST: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
         break;
       }
     }
@@ -1918,6 +2039,7 @@ export default function CreateAuctionPage() {
                         )}
                       />
                     )}
+                    {/* TODO: add Baseline callbacks */}
                     {/* {callbacksType === CallbacksType.CUSTOM && (
                       <>
                         <FormField
