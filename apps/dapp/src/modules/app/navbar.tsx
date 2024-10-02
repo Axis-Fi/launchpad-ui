@@ -48,6 +48,7 @@ export const mobileSideLinks = [
     { label: "Leaderboard", href: "/leaderboard" },
     "POINTS_PHASE_1",
   ),
+  { label: "Bridge", href: "/bridge" },
   {
     label: "Docs",
     href: "https://axis.finance/docs/overview",
