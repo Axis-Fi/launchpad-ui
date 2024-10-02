@@ -44,5 +44,17 @@ export function Bridge({ targetChainId, order }: BridgeProps) {
     featuredTokens: tokens,
   };
 
-  return <Widget config={config} />;
+  const theme = {
+    colors: {
+      primary: "#feae52",
+      gradient: ["#feae52", "#ffd88a"],
+    },
+    components: {
+      button: {
+        variant: "filled" as const,
+      },
+    },
+  };
+
+  return <Widget config={config} theme={theme} />;
 }
