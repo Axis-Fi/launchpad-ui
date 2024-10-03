@@ -124,6 +124,8 @@ export function useProfile() {
     profileQuery.data,
   ]);
 
+  // When a user connects a new wallet, refetch
+  // the isRegistered query if there's not already one in-flight
   useEffect(() => {
     if (connectedAddress == null) return;
     userRegisteredQuery.refetch({ cancelRefetch: false });

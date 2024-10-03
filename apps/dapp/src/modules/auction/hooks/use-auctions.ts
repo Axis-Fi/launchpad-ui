@@ -12,11 +12,8 @@ import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
 import { useSafeRefetch } from "./use-safe-refetch";
-import {
-  externalAuctionInfo,
-  featureToggles,
-  registrationLaunches,
-} from "@repo/env";
+import { externalAuctionInfo, featureToggles } from "@repo/env";
+import { useAuctionRegistrations } from "./use-auction-registrations";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -50,18 +47,21 @@ export function useAuctions(): AuctionsResult {
   // Refetch auctions if the cache is stale
   const refetch = useSafeRefetch(["auctions"]);
 
+  const { activeRegistrations } = useAuctionRegistrations();
   const maybeRegistrationLaunches = featureToggles.REGISTRATION_LAUNCHES
-    ? registrationLaunches // TODO: will be a hook: useRegistrationLaunches()
+    ? activeRegistrations.data ?? []
     : [];
 
   const rawAuctions =
     [...data.batchAuctionLots, ...maybeRegistrationLaunches].flat() ?? [];
 
   // Add external data to auctions before processing
-  const augmentedAuctions = rawAuctions.map((auction) => ({
-    ...auction,
-    info: auction.info ?? externalAuctionInfo[auction.id],
-  }));
+  const augmentedAuctions = rawAuctions
+    .filter((x) => x != null)
+    .map((auction) => ({
+      ...auction,
+      info: auction.info ?? externalAuctionInfo[auction.id],
+    }));
 
   // Filter out cancelled batch auctions before querying additional data
   const filteredAuctions = augmentedAuctions.filter(

@@ -3,7 +3,7 @@
   "include": [
     "src",
     "../../packages/ui/src/components/sort-button.tsx",
-    "../../packages/types/types"
+    "../../packages/types"
   ],
   "exclude": ["cypress"],
   "compilerOptions": {

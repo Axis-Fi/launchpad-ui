@@ -31,12 +31,12 @@ const statuses: Record<
   AuctionStatus,
   (props: PropsWithAuction) => React.ReactNode
 > = {
-  registering: AuctionRegistering,
+  registering: () => null, // Registration state is not handled in this component, but in auction-registering.tsx
   created: AuctionCreated,
   live: AuctionLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
-  settled: AuctionSettled,
+  settled: AuctionRegistering,
   aborted: AuctionSettled,
   cancelled: AuctionSettled,
 };
@@ -74,6 +74,7 @@ export default function AuctionPage() {
         <AuctionElement auction={auction} />
       </AuctionPageView>
       {auction.status !== "created" &&
+        auction.status !== "registering" &&
         (!isFPA ? (
           <BidList auction={auction} />
         ) : (
@@ -103,7 +104,9 @@ export function AuctionPageView({
         <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
           <div className="flex w-full flex-row justify-end">
             <div className="mr-4 mt-4">
-              <AuctionStatusBadge status={auction.status} large />
+              {!isAuctionLoading && (
+                <AuctionStatusBadge status={auction.status} large />
+              )}
             </div>
           </div>
           <div className="flex w-full flex-col justify-end">
@@ -113,7 +116,7 @@ export function AuctionPageView({
                 mono
                 className={cn(textColor === "light" && "text-background")}
               >
-                {auction.info?.name}
+                {!isAuctionLoading && auction.info?.name}
               </Text>
 
               <Text
@@ -124,11 +127,11 @@ export function AuctionPageView({
                   textColor === "light" && "text-background",
                 )}
               >
-                {auction.info?.tagline}
+                {!isAuctionLoading && auction.info?.tagline}
               </Text>
             </div>
             <div className="mb-4 ml-4 self-start">
-              <Countdown auction={auction} />
+              {!isAuctionLoading && <Countdown auction={auction} />}
             </div>
           </div>
         </div>
@@ -138,7 +141,7 @@ export function AuctionPageView({
   );
 }
 
-function AuctionPageLoading() {
+export function AuctionPageLoading() {
   return (
     <div>
       <ImageBanner isLoading={true} />
@@ -152,7 +155,7 @@ function AuctionPageLoading() {
   );
 }
 
-function AuctionPageMissing() {
+export function AuctionPageMissing() {
   const { chainId, lotId } = useParams();
 
   const { refetch } = useAuction(chainId!, lotId!);

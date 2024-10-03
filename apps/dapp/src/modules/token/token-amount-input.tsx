@@ -10,7 +10,7 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** the input's token label, defaults to the token's symbol */
   tokenLabel?: string;
   /** the input's token type */
-  token: Token;
+  token?: Token;
   /** whether to show the USD price of the token */
   showUsdPrice?: boolean;
   /** the user's balance */
@@ -40,7 +40,7 @@ export const TokenAmountInput = React.forwardRef<
       label,
       token,
       showUsdPrice = true,
-      tokenLabel = token.symbol,
+      tokenLabel = token?.symbol,
       balance,
       limit,
       error,
@@ -97,7 +97,7 @@ export const TokenAmountInput = React.forwardRef<
           )}
         </div>
         <div className="flex justify-between">
-          {showUsdPrice && (
+          {token && showUsdPrice && (
             <div className="flex items-start">
               <Text size="xs" color="secondary">
                 {!value && "≈ $0"}
