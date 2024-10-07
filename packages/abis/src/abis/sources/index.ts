@@ -12,6 +12,11 @@ import uniV2Dtl from "./UniswapV2DirectToLiquidity.json";
 import uniV3Dtl from "./UniswapV3DirectToLiquidity.json";
 import uniV2Factory from "./IUniswapV2Factory.json";
 import uniV3Factory from "./IUniswapV3Factory.json";
+import baseline from "./Baseline.json";
+import baselineAllowlist from "./BaselineAllowlist.json";
+import baselineAllocatedAllowlist from "./BaselineAllocatedAllowlist.json";
+import baselineCappedAllowlist from "./BaselineCappedAllowlist.json";
+import baselineTokenAllowlist from "./BaselineTokenAllowlist.json";
 
 //Fetch errors from modules to include in the AuctionHouse ABI
 const errors = [
@@ -41,4 +46,9 @@ export default {
   uniV3Dtl,
   uniV2Factory,
   uniV3Factory,
+  baseline,
+  baselineAllowlist,
+  baselineAllocatedAllowlist,
+  baselineCappedAllowlist,
+  baselineTokenAllowlist,
 } as const;
