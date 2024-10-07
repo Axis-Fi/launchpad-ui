@@ -67,6 +67,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
     callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
 
+  // TODO add support for baseline allowlists
+
   // Set default values for the return variables
   let canBid = false;
   let amountLimited = false;

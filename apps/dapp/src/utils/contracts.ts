@@ -54,7 +54,6 @@ export function getAuctionHouse(
   };
 }
 
-// TODO add DTL contracts once they exist
 export const callbackMap: Record<CallbacksType, string> = {
   [CallbacksType.NONE]: "",
   [CallbacksType.CUSTOM]: "",
@@ -64,6 +63,11 @@ export const callbackMap: Record<CallbacksType, string> = {
   [CallbacksType.ALLOCATED_MERKLE_ALLOWLIST]: "allocatedMerkleAllowlist",
   [CallbacksType.UNIV2_DTL]: "uniV2Dtl",
   [CallbacksType.UNIV3_DTL]: "uniV3Dtl",
+  [CallbacksType.BASELINE]: "baseline",
+  [CallbacksType.BASELINE_ALLOWLIST]: "baselineAllowlist",
+  [CallbacksType.BASELINE_ALLOCATED_ALLOWLIST]: "baselineAllocatedAllowlist",
+  [CallbacksType.BASELINE_CAPPED_ALLOWLIST]: "baselineCappedAllowlist",
+  [CallbacksType.BASELINE_TOKEN_ALLOWLIST]: "baselineTokenAllowlist",
 };
 
 /** Labels for callback contract options */
@@ -77,13 +81,58 @@ export const callbackLabels: Record<CallbacksType, string> = {
   [CallbacksType.TOKEN_ALLOWLIST]: "Token Allowlist",
   [CallbacksType.UNIV2_DTL]: "Deposit to Uniswap V2 Pool",
   [CallbacksType.UNIV3_DTL]: "Deposit to Uniswap V3 Pool",
+  [CallbacksType.BASELINE]: "Deposit to Baseline Market",
+  [CallbacksType.BASELINE_ALLOWLIST]:
+    "Deposit to Baseline Market with Allowlist",
+  [CallbacksType.BASELINE_ALLOCATED_ALLOWLIST]:
+    "Deposit to Baseline Market with Allocated Allowlist",
+  [CallbacksType.BASELINE_CAPPED_ALLOWLIST]:
+    "Deposit to Baseline Market with Capped Allowlist",
+  [CallbacksType.BASELINE_TOKEN_ALLOWLIST]:
+    "Deposit to Baseline Market with Token Allowlist",
 };
 
-export function getCallbacks(chainId: number, callbackType: CallbacksType) {
+/**
+ * Gets the latest callback contract for a given chain and callback type.
+ *
+ * As there can be multiple callbacks for a given type (i.e. baseline has multiple),
+ * the last one in the list is returned. This is useful for auction creation, where the latest version is desired.
+ *
+ * @param chainId The chain ID to get the callback contract for.
+ * @param callbackType The callback type to get the contract for.
+ * @returns The ABI and address of the callback contract.
+ */
+export function getLatestCallback(
+  chainId: number,
+  callbackType: CallbacksType,
+) {
   const contractName = callbackMap[callbackType] as AxisCallbackNames;
+
+  const addresses = axisContracts.addresses[chainId][contractName];
 
   return {
     abi: axisContracts.abis[contractName],
-    address: axisContracts.addresses[chainId][contractName] as Address,
+    address: addresses[addresses.length - 1],
+  };
+}
+
+/**
+ * Gets the callback contract for a given chain and callback type.
+ *
+ * As there can be multiple callbacks for a given type (i.e. baseline has multiple),
+ * the last one in the list is returned.
+ *
+ * @param chainId The chain ID to get the callback contract for.
+ * @param callbackType The callback type to get the contract for.
+ * @returns The ABI and address of the callback contract.
+ */
+export function getCallbacks(chainId: number, callbackType: CallbacksType) {
+  const contractName = callbackMap[callbackType] as AxisCallbackNames;
+
+  const addresses = axisContracts.addresses[chainId][contractName];
+
+  return {
+    abi: axisContracts.abis[contractName],
+    address: addresses[addresses.length - 1],
   };
 }

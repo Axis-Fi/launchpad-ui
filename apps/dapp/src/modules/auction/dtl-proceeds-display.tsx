@@ -8,6 +8,9 @@ export function DtlProceedsDisplay({ auction }: PropsWithAuction) {
     baseTokenDecimals: auction.baseToken.decimals,
     callback: auction.callbacks,
   });
+
+  // TODO add support for baseline callbacks
+
   const utilizationAmount =
     dtlCallbackConfiguration?.proceedsUtilisationPercent ?? 0;
 

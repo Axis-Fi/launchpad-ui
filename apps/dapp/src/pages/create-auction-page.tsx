@@ -72,7 +72,7 @@ import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create
 import { RequiresChain } from "components/requires-chain";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
-import { getAuctionHouse, getCallbacks } from "utils/contracts";
+import { getAuctionHouse, getLatestCallback } from "utils/contracts";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
@@ -516,7 +516,7 @@ export default function CreateAuctionPage() {
     ) {
       callbacks = values.callbacks ? getAddress(values.callbacks) : zeroAddress;
     } else {
-      callbacks = getCallbacks(chainId, callbacksType).address;
+      callbacks = getLatestCallback(chainId, callbacksType).address;
     }
 
     // Set the callback data based on the type and user inputs
@@ -786,7 +786,7 @@ export default function CreateAuctionPage() {
     approveReceipt: callbackApproveReceipt,
     approveTx: callbackApproveTx,
   } = useAllowance({
-    spenderAddress: getCallbacks(chainId, callbacksType as CallbacksType)
+    spenderAddress: getLatestCallback(chainId, callbacksType as CallbacksType)
       .address,
     ownerAddress: address,
     tokenAddress: payoutToken?.address as Address,
@@ -961,7 +961,7 @@ export default function CreateAuctionPage() {
   // We get the factory address from the callbacks contract
   const { data: uniV2Factory } = useReadContract({
     abi: abis.uniV2Dtl,
-    address: getCallbacks(chainId, callbacksType as CallbacksType).address,
+    address: getLatestCallback(chainId, callbacksType as CallbacksType).address,
     functionName: "uniV2Factory",
     query: { enabled: callbacksType === CallbacksType.UNIV2_DTL },
   });
@@ -986,7 +986,7 @@ export default function CreateAuctionPage() {
   // If the auction uses a UniV3 DTL, we need to check if a pool exists for the base/quote token pair and fee tier
   const { data: uniV3Factory } = useReadContract({
     abi: abis.uniV3Dtl,
-    address: getCallbacks(chainId, callbacksType as CallbacksType).address,
+    address: getLatestCallback(chainId, callbacksType as CallbacksType).address,
     functionName: "uniV3Factory",
     query: { enabled: callbacksType === CallbacksType.UNIV3_DTL },
   });

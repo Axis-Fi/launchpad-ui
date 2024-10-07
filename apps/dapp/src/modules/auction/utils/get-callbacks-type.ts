@@ -8,26 +8,99 @@ export function getCallbacksType(auction: Auction): CallbacksType {
     return CallbacksType.NONE;
   }
 
+  const callbacksLower = auction.callbacks.toLowerCase();
+
   // Load the chain addresses
   const chainAddresses = axisContracts.addresses[auction.chainId];
 
   // Check if the callback address on the auction matches one of the first-party callbacks
-  // Otherwise, return custom (which isn't supported)
-  // Convert to lower case to avoid comparison of checksummed vs. non-checksummed addresses
-  switch (auction.callbacks.toLowerCase()) {
-    case chainAddresses.merkleAllowlist.toLowerCase():
-      return CallbacksType.MERKLE_ALLOWLIST;
-    case chainAddresses.cappedMerkleAllowlist.toLowerCase():
-      return CallbacksType.CAPPED_MERKLE_ALLOWLIST;
-    case chainAddresses.allocatedMerkleAllowlist.toLowerCase():
-      return CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
-    case chainAddresses.tokenAllowlist.toLowerCase():
-      return CallbacksType.TOKEN_ALLOWLIST;
-    case chainAddresses.uniV2Dtl.toLowerCase():
-      return CallbacksType.UNIV2_DTL;
-    case chainAddresses.uniV3Dtl.toLowerCase():
-      return CallbacksType.UNIV3_DTL;
-    default:
-      return CallbacksType.CUSTOM;
+  if (
+    chainAddresses.merkleAllowlist.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.MERKLE_ALLOWLIST;
   }
+
+  if (
+    chainAddresses.cappedMerkleAllowlist.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.CAPPED_MERKLE_ALLOWLIST;
+  }
+
+  if (
+    chainAddresses.allocatedMerkleAllowlist.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
+  }
+
+  if (
+    chainAddresses.tokenAllowlist.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.TOKEN_ALLOWLIST;
+  }
+
+  if (
+    chainAddresses.uniV2Dtl.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.UNIV2_DTL;
+  }
+
+  if (
+    chainAddresses.uniV3Dtl.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.UNIV3_DTL;
+  }
+
+  if (
+    chainAddresses.baseline.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.BASELINE;
+  }
+
+  if (
+    chainAddresses.baselineAllowlist.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.BASELINE_ALLOWLIST;
+  }
+
+  if (
+    chainAddresses.baselineAllocatedAllowlist.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.BASELINE_ALLOCATED_ALLOWLIST;
+  }
+
+  if (
+    chainAddresses.baselineCappedAllowlist.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.BASELINE_CAPPED_ALLOWLIST;
+  }
+
+  if (
+    chainAddresses.baselineTokenAllowlist.some(
+      (addr) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.BASELINE_TOKEN_ALLOWLIST;
+  }
+
+  return CallbacksType.CUSTOM;
 }

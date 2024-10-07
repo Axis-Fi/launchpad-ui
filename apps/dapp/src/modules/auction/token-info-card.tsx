@@ -11,6 +11,7 @@ export function TokenInfoCard({ auction }: PropsWithAuction) {
     baseTokenDecimals: auction.baseToken.decimals,
     callback: auction.callbacks,
   });
+  // TODO add support for baseline callbacks
 
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const isFixedPriceBatch =

@@ -19,10 +19,15 @@ export type AxisCallbackNames =
   | "cappedMerkleAllowlist"
   | "allocatedMerkleAllowlist"
   | "uniV2Dtl"
-  | "uniV3Dtl";
+  | "uniV3Dtl"
+  | "baseline"
+  | "baselineAllowlist"
+  | "baselineAllocatedAllowlist"
+  | "baselineCappedAllowlist"
+  | "baselineTokenAllowlist";
 
 export type AxisContractAddresses = Record<AxisContractNames, Address>;
-export type AxisCallbackAddresses = Record<AxisCallbackNames, Address>;
+export type AxisCallbackAddresses = Record<AxisCallbackNames, Address[]>;
 
 export type AxisContractAbis = Record<AxisContractNames, unknown>;
 
