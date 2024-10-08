@@ -1,6 +1,7 @@
 import { axisContracts } from "@repo/deployments";
 import { Address, CallbacksType } from "@repo/types";
 import { getCallbacks } from "utils/contracts";
+import { toBasisPoints } from "utils/number";
 import { formatUnits, parseUnits } from "viem";
 import { useReadContract } from "wagmi";
 
@@ -34,7 +35,7 @@ const parseDTLParams = (
     recipient: data[0],
     lotCapacity: Number(formatUnits(data[1], baseTokenDecimals)),
     lotCuratorPayout: Number(formatUnits(data[2], baseTokenDecimals)),
-    proceedsUtilisationPercent: data[3] / 1e5,
+    proceedsUtilisationPercent: toBasisPoints(data[3]),
     vestingStart: data[4],
     vestingExpiry: data[5],
     linearVestingModule: data[6],
