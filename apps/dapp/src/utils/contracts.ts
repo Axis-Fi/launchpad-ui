@@ -124,7 +124,7 @@ export function getLatestCallback(
  *
  * @param chainId The chain ID to get the callback contract for.
  * @param callbackType The callback type to get the contract for.
- * @returns The ABI and address of the callback contract.
+ * @returns The ABI and addresses of the callback contracts.
  */
 export function getCallbacks(chainId: number, callbackType: CallbacksType) {
   const contractName = callbackMap[callbackType] as AxisCallbackNames;
@@ -133,6 +133,6 @@ export function getCallbacks(chainId: number, callbackType: CallbacksType) {
 
   return {
     abi: axisContracts.abis[contractName],
-    address: addresses[addresses.length - 1],
+    address: addresses,
   };
 }

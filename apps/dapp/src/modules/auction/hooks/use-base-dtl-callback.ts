@@ -55,11 +55,17 @@ export function useBaseDTLCallback({
   callback?: Address;
 }) {
   // No point in calling lotConfiguration if it is not a base DTL callback
-  const uniV2Dtl = getCallbacks(chainId || 0, CallbacksType.UNIV2_DTL);
-  const uniV3Dtl = getCallbacks(chainId || 0, CallbacksType.UNIV3_DTL);
+  const callbackLower = (callback || "").toLowerCase();
+  const uniV2Dtl = getCallbacks(
+    chainId || 0,
+    CallbacksType.UNIV2_DTL,
+  ).address.map((address) => address.toLowerCase());
+  const uniV3Dtl = getCallbacks(
+    chainId || 0,
+    CallbacksType.UNIV3_DTL,
+  ).address.map((address) => address.toLowerCase());
   const isBaseDTLCallback =
-    (callback || "").toLowerCase() === uniV2Dtl?.address?.toLowerCase() ||
-    (callback || "").toLowerCase() === uniV3Dtl?.address?.toLowerCase();
+    uniV2Dtl.includes(callbackLower) || uniV3Dtl.includes(callbackLower);
 
   const response = useReadContract({
     abi: axisContracts.abis.uniV2Dtl, // We can use this for all DTL callbacks, since the Uniswap V2 DTL does not have additional parameters
