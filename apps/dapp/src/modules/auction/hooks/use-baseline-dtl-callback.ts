@@ -10,7 +10,6 @@ export function useBaselineDTLCallback({
 }: {
   chainId?: number;
   lotId?: string;
-  baseTokenDecimals: number;
   callback?: Address;
 }) {
   // Determine if the callback is a baseline DTL callback
@@ -88,7 +87,12 @@ export function useBaselineDTLCallback({
   return {
     ...response,
     data:
-      response.isSuccess && response.data.length === 5
+      response.isSuccess &&
+      response.data[0].result &&
+      response.data[1].result &&
+      response.data[2].result &&
+      response.data[3].result &&
+      response.data[4].result
         ? {
             auctionComplete: response.data[0].result,
             poolPercent: response.data[1].result,
