@@ -62,18 +62,17 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
             amount={clearingPrice}
             token={batchAuction.quoteToken}
             timestamp={auctionEndTimestamp}
-            size="l"
             className="min-w-[292px]"
           />
           <ToggledAmount
-            label={`${batchAuction.quoteToken.symbol} Raised`}
+            label={` Raised`}
             amount={Number(batchAuction.purchased) ?? 0}
             token={batchAuction.quoteToken}
             timestamp={auctionEndTimestamp}
             className="min-w-[188px]"
           />
           <ToggledAmount
-            label="FDV"
+            label="Launch FDV"
             token={batchAuction.quoteToken}
             amount={fdv ?? 0}
             timestamp={auctionEndTimestamp}
