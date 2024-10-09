@@ -12,6 +12,7 @@ export function useBaselineDTLCallback({
   lotId?: string;
   callback?: Address;
 }) {
+  // TODO shift to subgraph call
   // Determine if the callback is a baseline DTL callback
   const callbackLower = (callback || "").toLowerCase();
   const baselineAddresses = getCallbacks(

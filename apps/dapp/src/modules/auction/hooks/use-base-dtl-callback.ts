@@ -55,6 +55,7 @@ export function useBaseDTLCallback({
   baseTokenDecimals: number;
   callback?: Address;
 }) {
+  // TODO shift to subgraph call
   // No point in calling lotConfiguration if it is not a base DTL callback
   const callbackLower = (callback || "").toLowerCase();
   const uniV2Dtl = getCallbacks(
