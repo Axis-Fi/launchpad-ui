@@ -60,7 +60,8 @@ export function useAuctions(): AuctionsResult {
     .filter((x) => x != null)
     .map((auction) => ({
       ...auction,
-      info: auction.info ?? externalAuctionInfo[auction.id],
+      info:
+        auction?.info && auction?.id ? externalAuctionInfo[auction.id] : null,
     }));
 
   // Filter out cancelled batch auctions before querying additional data

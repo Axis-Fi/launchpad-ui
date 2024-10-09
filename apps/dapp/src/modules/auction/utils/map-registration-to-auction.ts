@@ -12,8 +12,7 @@ export const mapRegistrationToAuction = (
 
     const launchNameId = lowerDashify(launch.name.toLowerCase());
 
-    // const chain = getChainById(168587773);
-    const chain = getChainById(launch.chainId); // TODO: remove
+    const chain = getChainById(launch.chainId);
 
     const auctionHouse = getAuctionHouse({
       chainId: chain.id,

@@ -23,7 +23,7 @@ export function UserProfile() {
   const handleClick = () => {
     if (!isRegistered) return navigate("/points/claim");
 
-    if (!isUserSignedIn) return profileActions.signIn.mutate();
+    if (!isUserSignedIn) return profileActions.signIn.mutate(undefined);
 
     return navigate("/points");
   };
