@@ -22,6 +22,10 @@ export function useBaselineDTLCallback({
     chainId || 0,
     CallbacksType.BASELINE_ALLOWLIST,
   ).address.map((address) => address.toLowerCase());
+  const baselineAllocatedAllowlistAddresses = getCallbacks(
+    chainId || 0,
+    CallbacksType.BASELINE_ALLOCATED_ALLOWLIST,
+  ).address.map((address) => address.toLowerCase());
   const baselineCappedAllowlistAddresses = getCallbacks(
     chainId || 0,
     CallbacksType.BASELINE_CAPPED_ALLOWLIST,
@@ -33,6 +37,7 @@ export function useBaselineDTLCallback({
   const isBaselineDTLCallback =
     baselineAddresses.includes(callbackLower) ||
     baselineAllowlistAddresses.includes(callbackLower) ||
+    baselineAllocatedAllowlistAddresses.includes(callbackLower) ||
     baselineCappedAllowlistAddresses.includes(callbackLower) ||
     baselineTokenAllowlistAddresses.includes(callbackLower);
 
