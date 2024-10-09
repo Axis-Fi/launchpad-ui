@@ -1,11 +1,11 @@
 import { cn } from "@repo/ui";
 import React, { useEffect } from "react";
 
-type ImageBannerProps = React.PropsWithChildren<{
+type ImageBannerProps = React.HTMLProps<HTMLDivElement> & {
   imgUrl?: string;
   isLoading?: boolean;
   onTextColorChange?: (color: string) => void;
-}>;
+};
 
 /** Renders an image blurred as a banner with a gradient */
 export function ImageBanner({
@@ -35,14 +35,20 @@ export function ImageBanner({
   return (
     <div
       className={cn(
-        "flex h-[480px] w-full items-end justify-center",
+        "relative flex h-[480px] w-full items-end justify-center",
         (isLoading || !imgUrl) && "loading-gradient items-center",
-        !isLoading && "bg-cover bg-center bg-no-repeat",
+        props.className,
       )}
-      style={imgUrl ? { backgroundImage: `url(${imgUrl})` } : {}}
     >
+      <div
+        className={cn(
+          "absolute h-full w-dvw",
+          !isLoading && "bg-cover bg-center bg-no-repeat object-scale-down",
+        )}
+        style={imgUrl ? { backgroundImage: `url(${imgUrl})` } : {}}
+      />
       <img ref={ref} src={imgUrl} className="hidden w-full" />
-      {children}
+      <div className="z-10 h-full w-full">{children}</div>
     </div>
   );
 }
