@@ -72,7 +72,7 @@ const AuctionHeader = ({ auction }: PropsWithAuction) => {
             className="min-w-[188px]"
           />
           <ToggledAmount
-            label="Launch FDV"
+            label="FDV"
             token={batchAuction.quoteToken}
             amount={fdv ?? 0}
             timestamp={auctionEndTimestamp}
