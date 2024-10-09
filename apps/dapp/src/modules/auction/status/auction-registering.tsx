@@ -3,8 +3,9 @@ import { z } from "zod";
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { useForm } from "react-hook-form";
+import { Check, CircleX } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, FormField, Form, Button, useToast } from "@repo/ui";
+import { Card, FormField, Form, Button, useToast, Metric } from "@repo/ui";
 import type { Auction, PropsWithAuction } from "@repo/types";
 import type {
   LaunchRegistration,
@@ -22,7 +23,7 @@ import {
   AuctionPageView,
 } from "pages/auction-page";
 import { generateRandomProfile } from "../utils/generate-random-profile";
-import { Check, CircleX } from "lucide-react";
+import { trimCurrency } from "utils";
 
 export function AuctionRegistering() {
   const { chainId, lotId } = useParams();
@@ -53,7 +54,13 @@ export function AuctionRegistering() {
       <AuctionPageView auction={auction!} isAuctionLoading={isLoading}>
         <div className="auction-action-container h-full items-stretch gap-x-4 lg:flex">
           <div className="space-y-4 lg:w-2/3">
-            <ProjectInfoCard auction={auction!} canRefer={false} />
+            <ProjectInfoCard auction={auction!} canRefer={false}>
+              {auction.fdv && (
+                <Metric size="m" label="FDV" className="mb-sm">
+                  ${trimCurrency(auction.fdv)}
+                </Metric>
+              )}
+            </ProjectInfoCard>
           </div>
           <div className="items-strech h-full lg:w-1/3">
             <Card title="Register your interest">

@@ -14,6 +14,7 @@ type ProjectInfoCardProps = PropsWithAuction &
 export function ProjectInfoCard({
   auction,
   canRefer = true,
+  children,
   ...props
 }: ProjectInfoCardProps) {
   const description =
@@ -33,6 +34,7 @@ export function ProjectInfoCard({
       title={`About ${auction.info?.name || ""}`}
       headerRightElement={canRefer && <ReferrerPopover auction={auction} />}
     >
+      {children}
       <div className="mb-4 flex">{description}</div>
       <div className="flex-start flex space-x-4">
         {twitter && (

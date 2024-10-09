@@ -1,8 +1,5 @@
-import {
-  GetAuctionLotsDocument,
-  GetAuctionLotsQuery,
-} from "@repo/subgraph-client/src/generated";
-import type { Address, Auction } from "@repo/types";
+import { GetAuctionLotsDocument } from "@repo/subgraph-client/src/generated";
+import type { Auction, GetAuctionLots } from "@repo/types";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "modules/auction/utils/format-tokens";
@@ -22,16 +19,6 @@ export type AuctionsResult = {
   ReturnType<typeof useQueryAll>,
   "isSuccess" | "isLoading" | "isRefetching"
 >;
-
-/** Patched auction lots query that treats callbacks as Address
- *  simpler than casting it further down the line */
-type GetAuctionLots = {
-  batchAuctionLots: Array<
-    GetAuctionLotsQuery["batchAuctionLots"][0] & {
-      callbacks: Address;
-    }
-  >;
-};
 
 export const getAuctionsQueryKey = (chainId: number) =>
   ["auctions", chainId] as const;

@@ -34,6 +34,7 @@ export const mapRegistrationToAuction = (
       bids: [],
       status: "registering",
       registrationDeadline: launch.deadline,
+      fdv: launch.valuation,
       info: {
         key: auctionId,
         name: launch.name,
