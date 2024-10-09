@@ -16,6 +16,7 @@ type PointsContext = {
     username: string,
     referrer?: string,
     avatar?: Blob,
+    statement?: string,
   ) => Promise<JWTPair | undefined>;
   isUsernameAvailable: (username: string) => Promise<boolean | undefined>;
   isUserRegistered: () => Promise<boolean | undefined>;
@@ -76,6 +77,7 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     username: string,
     referrer?: string,
     avatar?: Blob,
+    statement?: string,
   ) => {
     enforceChainId(chainId);
     enforceAddress(address);
@@ -86,6 +88,7 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
       username,
       referrer,
       avatar,
+      statement,
     );
 
     TokenStorage.setAccessToken(response?.accessToken ?? "");

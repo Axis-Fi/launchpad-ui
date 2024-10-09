@@ -34,7 +34,7 @@ export function UserProfile() {
     ? isTabletOrMobile
       ? shorten(points)
       : trimCurrency(points)
-    : null;
+    : 0;
 
   return (
     <div className="flex items-center justify-center gap-x-4">

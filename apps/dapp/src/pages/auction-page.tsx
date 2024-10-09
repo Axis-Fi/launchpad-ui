@@ -92,7 +92,7 @@ export function AuctionPageView({
   isAuctionLoading?: boolean;
 }>) {
   const [textColor, setTextColor] = React.useState<string>();
-  console.log({ auction });
+
   return (
     <>
       <ImageBanner

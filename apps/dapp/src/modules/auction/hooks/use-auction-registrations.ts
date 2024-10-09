@@ -10,7 +10,7 @@ import { mapRegistrationToAuction } from "../utils/map-registration-to-auction";
 
 export function useAuctionRegistrations() {
   const { address } = useAccount();
-  const { pointsClient } = usePoints();
+  const { pointsClient, isUserSignedIn } = usePoints();
 
   const activeRegistrations = useQuery({
     queryKey: ["registration-launches"],
@@ -21,13 +21,15 @@ export function useAuctionRegistrations() {
   const userRegistrations = useQuery({
     queryKey: ["user-launch-registrations", address],
     queryFn: () => pointsClient.getUserRegistrations(),
+    enabled: isUserSignedIn(),
   });
 
   const registerDemandMutation = useMutation({
     mutationFn: (registration: LaunchRegistrationRequest) =>
       pointsClient.registerUserDemand(registration),
     onSuccess: () => {
-      activeRegistrations.refetch(), userRegistrations.refetch();
+      activeRegistrations.refetch();
+      userRegistrations.refetch();
     },
   });
 
@@ -35,7 +37,8 @@ export function useAuctionRegistrations() {
     mutationFn: (registration: LaunchRegistration) =>
       pointsClient.updateUserDemand(registration),
     onSuccess: () => {
-      activeRegistrations.refetch(), userRegistrations.refetch();
+      activeRegistrations.refetch();
+      userRegistrations.refetch();
     },
   });
 
@@ -43,7 +46,8 @@ export function useAuctionRegistrations() {
     mutationFn: (registration: LaunchRegistration) =>
       pointsClient.cancelUserDemand(registration),
     onSuccess: () => {
-      activeRegistrations.refetch(), userRegistrations.refetch();
+      activeRegistrations.refetch();
+      userRegistrations.refetch();
     },
   });
 

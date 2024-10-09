@@ -21,7 +21,7 @@ import {
   AuctionPageMissing,
   AuctionPageView,
 } from "pages/auction-page";
-import { generateRandomProfile } from "../utils/generate-randon-profile";
+import { generateRandomProfile } from "../utils/generate-random-profile";
 import { Check, CircleX } from "lucide-react";
 
 export function AuctionRegistering() {
@@ -33,7 +33,7 @@ export function AuctionRegistering() {
   const auction = getRegistrationLaunch(lotId, Number(chainId)) as
     | Auction
     | undefined;
-  console.log({ auction });
+
   const isLoading = activeRegistrations.isLoading || isUserRegistered.isLoading;
 
   if (isLoading) {
@@ -124,11 +124,25 @@ function AuctionRegisteringForm(props: PropsWithAuction) {
 
   const handleSignIn = () => {
     if (auth.isUserRegistered.data) {
-      return auth.signIn.mutate("Sign in to make your committment.");
+      return auth.signIn.mutate("Sign in to see or make your committment.");
     }
 
     const profile = generateRandomProfile();
-    return auth.register.mutate(profile);
+
+    return auth.register.mutate(
+      { profile, statement: "Sign in to see or make your commitment" },
+      {
+        onSuccess: () => {
+          toast({
+            title: (
+              <div className="flex items-center gap-x-2">
+                <Check size="16" /> Sign in successful
+              </div>
+            ),
+          });
+        },
+      },
+    );
   };
 
   const prepareCommit = (): LaunchRegistrationRequest => {

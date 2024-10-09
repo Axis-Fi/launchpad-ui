@@ -146,8 +146,8 @@ export class PointsClient {
     username: string,
     referrer?: string,
     avatar?: Blob,
+    statement: string = "Register to claim your Axis points.",
   ) {
-    const statement = "Register to claim your Axis points.";
     const { message, signature } = await this.sign(chainId, address, statement);
 
     const response = await this.authApi.registerPost(

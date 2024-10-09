@@ -5,16 +5,10 @@ declare module "angry-purple-tiger" {
    * @param input - The input string to generate a name from. Typically a Helium hotspot ID.
    * @returns The generated animal-based name.
    */
-  function animalHash(input: string): string;
+  function animalHash(
+    input: string,
+    options?: { separator?: string; style?: "lowercase" | "uppercase" },
+  ): string;
 
-  /**
-   * Generates an animal-based name from a given input string.
-   * This is an alias for the animalHash function.
-   *
-   * @param input - The input string to generate a name from. Typically a Helium hotspot ID.
-   * @returns The generated animal-based name.
-   */
-  function generate(input: string): string;
-
-  export { animalHash, generate };
+  export default animalHash;
 }

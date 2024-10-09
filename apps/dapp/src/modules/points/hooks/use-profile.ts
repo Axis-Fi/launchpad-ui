@@ -34,12 +34,23 @@ export function useProfile() {
   const referrer = useReferrer();
 
   const register = useMutation({
-    mutationFn: async (profile: ProfileForm) => {
+    mutationFn: async ({
+      profile,
+      statement,
+    }: {
+      profile: ProfileForm;
+      statement?: string;
+    }) => {
       analytics.trackEvent("register", {
         props: { address: connectedAddress as string },
       });
 
-      return points.register(profile.username, referrer, profile.avatar);
+      return points.register(
+        profile.username,
+        referrer,
+        profile.avatar,
+        statement,
+      );
     },
     onSuccess: () => profileQuery.refetch(),
   });
