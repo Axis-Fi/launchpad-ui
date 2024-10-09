@@ -4,7 +4,6 @@ import { Card } from "@repo/ui";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInput } from "../auction-bid-input";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
-import { TokenInfoCard } from "../token-info-card";
 
 //TODO: create a preview auction type to avoid mismatches
 export function AuctionLivePreview({ auction }: PropsWithAuction) {
@@ -15,7 +14,6 @@ export function AuctionLivePreview({ auction }: PropsWithAuction) {
       <div className="w-2/3 space-y-4">
         <AuctionCoreMetrics auction={auction} />
 
-        <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
       <div className="w-1/3">

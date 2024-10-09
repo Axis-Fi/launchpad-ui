@@ -15,7 +15,6 @@ import React, { useEffect, useState } from "react";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
 import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
-import { TokenInfoCard } from "../token-info-card";
 import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
 import useERC20Balance from "loaders/use-erc20-balance";
@@ -303,7 +302,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     <div className="auction-action-container">
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         <AuctionCoreMetrics auction={auction} />
-        <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
 

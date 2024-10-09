@@ -9,7 +9,6 @@ import { LoadingIndicator } from "modules/app/loading-indicator";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
 import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
-import { TokenInfoCard } from "../token-info-card";
 
 // TODO needs story tests, given the amount of potential states
 
@@ -43,7 +42,6 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
     <div className="auction-action-container">
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         <AuctionCoreMetrics auction={props.auction} />
-        <TokenInfoCard auction={props.auction} />
         <ProjectInfoCard auction={props.auction} />
       </div>
       <div className="lg:w-1/3">
