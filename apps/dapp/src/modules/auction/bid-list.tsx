@@ -69,7 +69,7 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
       value = Number(bid.amountIn) / amountOut;
     }
 
-    const display = value ? (
+    let display = value ? (
       <>
         <Format value={value} /> {info.row.original.auction.quoteToken.symbol}
         <LockOpen1Icon />
@@ -79,6 +79,10 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
         ████████ <LockClosedIcon />
       </>
     );
+
+    if (!bid.rawSubmittedPrice && Number(bid.settledAmountInRefunded)) {
+      display = <span className="text-feedback-alert">Cancelled</span>;
+    }
 
     return (
       <Tooltip
@@ -118,15 +122,18 @@ export const bidderCol = bidListColumnHelper.accessor("bidder", {
   enableSorting: true,
   cell: (info) => {
     // Define the outcome or status of the bid
-    const bidStatus = info.row.original.status;
-    const bidOutcome = info.row.original.outcome;
-    const amountOut = info.row.original.settledAmountOut;
+    const bid = info.row.original;
+    const bidStatus = bid.status;
+    const bidOutcome = bid.outcome;
+    const amountOut = bid.settledAmountOut;
     const isRefunded = bidStatus === "claimed" && !amountOut;
     const status = isRefunded ? "refunded" : bidOutcome;
     const statusColour =
       status === "won" || status === "won - partial fill"
         ? "text-green-500"
         : "text-red-500";
+    const cancelledBid =
+      !bid.rawSubmittedPrice && Number(bid.settledAmountInRefunded);
 
     return (
       <div className="flex flex-col">
@@ -136,9 +143,11 @@ export const bidderCol = bidListColumnHelper.accessor("bidder", {
           icon={true}
           trim
         />
-        <Text size="xs" className={statusColour}>
-          {status}
-        </Text>
+        {!cancelledBid && (
+          <Text size="xs" className={statusColour}>
+            {status}
+          </Text>
+        )}
       </div>
     );
   },
