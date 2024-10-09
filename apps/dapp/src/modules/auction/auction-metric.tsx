@@ -327,7 +327,7 @@ const handlers: MetricHandlers = {
       return (
         <Tooltip
           content={<CuratorCard hideButton curator={curator} />}
-          contentClassName="max-w-lg"
+          contentClassName="max-w-xl"
         >
           <div className="flex items-center gap-x-2">
             {curator.name} <InfoIcon size="20" />

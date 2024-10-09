@@ -54,7 +54,7 @@ export function CuratorCard({
         />
         <div className="flex w-full flex-col items-start justify-between">
           <div className="flex flex-row">
-            <Text mono size="xl">
+            <Text mono size="xl" className="mt-2 text-nowrap">
               {curator.name}
             </Text>
             <SocialRow
