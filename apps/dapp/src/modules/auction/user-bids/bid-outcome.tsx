@@ -33,19 +33,21 @@ export function BidOutcome({ auction }: PropsWithAuction) {
         </Metric>
       </div>
 
-      {userTotalUnsuccessfulBidAmount > 0 && (
+      <div className="flex gap-x-2 *:w-full">
+        {userTotalUnsuccessfulBidAmount > 0 && (
+          <div className="bg-surface-tertiary p-sm rounded">
+            <Metric size="l" label="Your Refund">
+              {shorten(userTotalUnsuccessfulBidAmount)}{" "}
+              {auction.quoteToken.symbol}
+            </Metric>
+          </div>
+        )}
+
         <div className="bg-surface-tertiary p-sm rounded">
-          <Metric size="l" label="Your Refund">
-            {shorten(userTotalUnsuccessfulBidAmount)}{" "}
-            {auction.quoteToken.symbol}
+          <Metric size="l" label="You Get">
+            {shorten(userTotalTokensWon)} {auction.baseToken.symbol}
           </Metric>
         </div>
-      )}
-
-      <div className="bg-surface-tertiary p-sm rounded">
-        <Metric size="l" label="You Get">
-          {shorten(userTotalTokensWon)} {auction.baseToken.symbol}
-        </Metric>
       </div>
     </>
   );
