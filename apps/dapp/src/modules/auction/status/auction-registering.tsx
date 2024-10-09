@@ -1,11 +1,15 @@
+import { useEffect } from "react";
 import { z } from "zod";
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Card, FormField, Form, Button } from "@repo/ui";
+import { Card, FormField, Form, Button, useToast } from "@repo/ui";
 import type { Auction, PropsWithAuction } from "@repo/types";
-import type { LaunchRegistration } from "@repo/points";
+import type {
+  LaunchRegistration,
+  LaunchRegistrationRequest,
+} from "@repo/points";
 import { ProjectInfoCard } from "../project-info-card";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { useProfile } from "modules/points/hooks/use-profile";
@@ -18,6 +22,7 @@ import {
   AuctionPageView,
 } from "pages/auction-page";
 import { generateRandomProfile } from "../utils/generate-randon-profile";
+import { Check, CircleX } from "lucide-react";
 
 export function AuctionRegistering() {
   const { chainId, lotId } = useParams();
@@ -28,7 +33,7 @@ export function AuctionRegistering() {
   const auction = getRegistrationLaunch(lotId, Number(chainId)) as
     | Auction
     | undefined;
-
+  console.log({ auction });
   const isLoading = activeRegistrations.isLoading || isUserRegistered.isLoading;
 
   if (isLoading) {
@@ -66,8 +71,10 @@ const schema = z.object({ commitmentAmount: z.string() });
 type CommitForm = z.infer<typeof schema>;
 
 function AuctionRegisteringForm(props: PropsWithAuction) {
+  const { toast } = useToast();
   const { address } = useAccount();
   const auth = useProfile();
+
   const { registerDemand, updateDemand, cancelDemand, userRegistrations } =
     useAuctionRegistrations();
 
@@ -80,26 +87,63 @@ function AuctionRegisteringForm(props: PropsWithAuction) {
     delayError: 600,
     resolver: zodResolver(schema),
     defaultValues: {
-      commitmentAmount: (userRegistration?.commitment ?? 0).toString(),
+      commitmentAmount: userRegistration?.commitment?.toString() ?? undefined,
     },
   });
 
+  // useForm() can run before the async userRegistration data has resolved
+  // so update the form manually when it comes in
+  useEffect(() => {
+    if (userRegistration) {
+      form.reset({
+        commitmentAmount: userRegistration.commitment?.toString() ?? undefined,
+      });
+    }
+  }, [userRegistration, form]);
+
+  const responseToasts = {
+    onError: () => {
+      toast({
+        title: (
+          <div className="flex items-center gap-x-2">
+            <CircleX size="16" /> Committment failed
+          </div>
+        ),
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: (
+          <div className="flex items-center gap-x-2">
+            <Check size="16" /> Committment successfully saved
+          </div>
+        ),
+      });
+    },
+  };
+
   const handleSignIn = () => {
     if (auth.isUserRegistered.data) {
-      return auth.signIn.mutate(undefined, {
-        onSuccess: () => registerDemand(prepareCommit()),
-      });
+      return auth.signIn.mutate("Sign in to make your committment.");
     }
 
     const profile = generateRandomProfile();
     return auth.register.mutate(profile);
   };
 
-  const prepareCommit = (): LaunchRegistration => {
+  const prepareCommit = (): LaunchRegistrationRequest => {
     return {
       commitment: Number(form.getValues().commitmentAmount ?? 0),
       walletAddress: address,
-      // id: props.auction.lotId, TODO: what is id?
+      launchName: props.auction.info!.name!,
+    };
+  };
+
+  const prepareUpdate = (): LaunchRegistration => {
+    return {
+      id: userRegistration?.id,
+      commitment: Number(form.getValues().commitmentAmount ?? 0),
+      walletAddress: address,
       launchName: props.auction.info!.name!,
     };
   };
@@ -108,55 +152,74 @@ function AuctionRegisteringForm(props: PropsWithAuction) {
     e.preventDefault();
 
     if (!auth.isUserSignedIn) return handleSignIn();
-    registerDemand(prepareCommit());
+
+    registerDemand(prepareCommit(), responseToasts);
   };
 
   const handleUpdateCommit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    updateDemand(prepareCommit());
+
+    if (!auth.isUserSignedIn) return handleSignIn();
+
+    updateDemand(prepareUpdate(), responseToasts);
   };
 
   const handleCancelCommit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    cancelDemand(prepareCommit());
+
+    if (!auth.isUserSignedIn) return handleSignIn();
+
+    cancelDemand(prepareUpdate(), {
+      onSuccess: () => {
+        form.reset({
+          commitmentAmount: undefined,
+        });
+        responseToasts.onSuccess?.();
+      },
+      onError: responseToasts.onError,
+    });
   };
 
-  const userHasCommitted = userRegistration != null;
+  const hasUserCommitted = userRegistration != null;
 
   return (
     <div>
       <Form {...form}>
         <form className="flex flex-col items-center space-y-4">
-          <FormField
-            name="commitmentAmount"
-            control={form.control}
-            render={({ field }) => (
-              <TokenAmountInput
-                {...field}
-                disableMaxButton
-                label="Commitment amount"
-                showUsdPrice={false}
-              />
-            )}
-          />
+          {auth.isUserSignedIn && (
+            <FormField
+              name="commitmentAmount"
+              control={form.control}
+              render={({ field }) => (
+                <TokenAmountInput
+                  {...field}
+                  disableMaxButton
+                  label="Commitment amount"
+                  showUsdPrice={false}
+                  tokenLabel="USD"
+                  amountPrefix="$"
+                />
+              )}
+            />
+          )}
 
-          {userHasCommitted && (
-            <Button className="w-full" onClick={handleSubmitCommit}>
-              Commit
+          {!auth.isUserSignedIn && (
+            <Button className="w-full" onClick={handleSignIn}>
+              Sign in
             </Button>
           )}
-          {!userHasCommitted && (
-            <div className="flex w-full gap-x-1">
-              <Button
-                className="flex-1"
-                variant="secondary"
-                onClick={handleCancelCommit}
-              >
-                Cancel
+
+          {auth.isUserSignedIn && !hasUserCommitted && (
+            <Button className="w-full" onClick={handleSubmitCommit}>
+              Submit
+            </Button>
+          )}
+          {auth.isUserSignedIn && hasUserCommitted && (
+            <div className="gap-y-sm flex w-full flex-col">
+              <Button variant="secondary" onClick={handleCancelCommit}>
+                Cancel committment
               </Button>
-              <Button className="flex-1" onClick={handleUpdateCommit}>
-                Update
-              </Button>
+              <Button onClick={handleUpdateCommit}>Update commitment</Button>
             </div>
           )}
         </form>

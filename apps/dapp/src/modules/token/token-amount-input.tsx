@@ -29,6 +29,8 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   disableMaxButton?: boolean;
   /** callback when the max button is clicked */
   onClickMaxButton?: () => void;
+  /** the prefix to add to the amount */
+  amountPrefix?: string;
 };
 
 export const TokenAmountInput = React.forwardRef<
@@ -49,6 +51,7 @@ export const TokenAmountInput = React.forwardRef<
       disabled,
       disableMaxButton,
       onClickMaxButton,
+      amountPrefix,
       ...props
     },
     ref,
@@ -67,6 +70,9 @@ export const TokenAmountInput = React.forwardRef<
           </div>
         </div>
         <div className="mt-0.5 flex items-center">
+          <Text size="xl" className="font-light">
+            {amountPrefix}
+          </Text>
           <Input
             value={value === undefined ? "" : value}
             type="number"

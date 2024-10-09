@@ -56,7 +56,7 @@ export function useProfile() {
   });
 
   const signIn = useMutation({
-    mutationFn: async () => points.signIn(),
+    mutationFn: async (statement?: string) => points.signIn(statement),
   });
 
   const signOut = useCallback(() => {

@@ -13,12 +13,18 @@
  */
 
 import * as runtime from "../runtime";
-import type { Launch, LaunchRegistration } from "../models/index";
+import type {
+  Launch,
+  LaunchRegistration,
+  LaunchRegistrationRequest,
+} from "../models/index";
 import {
   LaunchFromJSON,
   LaunchToJSON,
   LaunchRegistrationFromJSON,
   LaunchRegistrationToJSON,
+  LaunchRegistrationRequestFromJSON,
+  LaunchRegistrationRequestToJSON,
 } from "../models/index";
 
 export interface LaunchesRegisterCancelPostRequest {
@@ -26,7 +32,7 @@ export interface LaunchesRegisterCancelPostRequest {
 }
 
 export interface LaunchesRegisterPostRequest {
-  launchRegistration: LaunchRegistration;
+  launchRegistrationRequest: LaunchRegistrationRequest;
 }
 
 export interface LaunchesRegisterUpdatePostRequest {
@@ -170,12 +176,12 @@ export class LaunchesApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
     if (
-      requestParameters.launchRegistration === null ||
-      requestParameters.launchRegistration === undefined
+      requestParameters.launchRegistrationRequest === null ||
+      requestParameters.launchRegistrationRequest === undefined
     ) {
       throw new runtime.RequiredError(
-        "launchRegistration",
-        "Required parameter requestParameters.launchRegistration was null or undefined when calling launchesRegisterPost.",
+        "launchRegistrationRequest",
+        "Required parameter requestParameters.launchRegistrationRequest was null or undefined when calling launchesRegisterPost.",
       );
     }
 
@@ -186,20 +192,24 @@ export class LaunchesApi extends runtime.BaseAPI {
     headerParameters["Content-Type"] = "application/json";
 
     if (this.configuration && this.configuration.accessToken) {
+      ("");
       const token = this.configuration.accessToken;
       const tokenString = await token("JWTAuthorization", []);
-
+      console.log({ tokenString });
       if (tokenString) {
         headerParameters["Authorization"] = `Bearer ${tokenString}`;
       }
     }
+    console.log({ headerParameters });
     const response = await this.request(
       {
         path: `/launches/register`,
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: LaunchRegistrationToJSON(requestParameters.launchRegistration),
+        body: LaunchRegistrationRequestToJSON(
+          requestParameters.launchRegistrationRequest,
+        ),
       },
       initOverrides,
     );

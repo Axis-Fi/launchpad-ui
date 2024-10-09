@@ -10,6 +10,7 @@ models/FullUserProfilePoints.ts
 models/JWTPair.ts
 models/Launch.ts
 models/LaunchRegistration.ts
+models/LaunchRegistrationRequest.ts
 models/Points.ts
 models/ProfileFormData.ts
 models/RegistrationFormData.ts

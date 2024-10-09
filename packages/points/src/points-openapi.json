@@ -498,7 +498,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LaunchRegistration"
+                "$ref": "#/components/schemas/LaunchRegistrationRequest"
               }
             }
           },
@@ -852,13 +852,25 @@
             "format": "date-time",
             "type": "string"
           },
-          "image_url": {
+          "website_url": {
+            "type": "string"
+          },
+          "twitter_url": {
+            "type": "string"
+          },
+          "discord_url": {
+            "type": "string"
+          },
+          "project_logo_url": {
+            "type": "string"
+          },
+          "project_banner_url": {
+            "type": "string"
+          },
+          "tagline": {
             "type": "string"
           },
           "description": {
-            "type": "string"
-          },
-          "quote_token": {
             "type": "string"
           },
           "valuation": {
@@ -873,6 +885,21 @@
           "id": {
             "type": "integer"
           },
+          "launch_name": {
+            "type": "string"
+          },
+          "wallet_address": {
+            "type": "string"
+          },
+          "commitment": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "LaunchRegistrationRequest": {
+        "description": "A JSON object containing information about a user's registration request for a launch.",
+        "properties": {
           "launch_name": {
             "type": "string"
           },

@@ -8,6 +8,7 @@ import {
   ResponseContext,
   LaunchesApi,
   LaunchRegistration,
+  LaunchRegistrationRequest,
 } from ".";
 import { environment } from "@repo/env";
 import { Config, signMessage } from "@wagmi/core";
@@ -129,8 +130,11 @@ export class PointsClient {
     return this.authApi.availableUsernameGet({ username });
   }
 
-  async signIn(chainId: number, address: `0x${string}`) {
-    const statement = "Sign in to view your Axis points.";
+  async signIn(
+    chainId: number,
+    address: `0x${string}`,
+    statement: string = "Sign in to view your Axis points.",
+  ) {
     const { message, signature } = await this.sign(chainId, address, statement);
 
     return this.authApi.signInPost({ signinData: { message, signature } });
@@ -191,7 +195,8 @@ export class PointsClient {
     // Handle the case where the refresh token itself has expired (force user to sign in again)
     if (url.endsWith("/refresh") && responseContext.response?.status === 400) {
       this.signOut();
-      window.location.href = "#/points/sign-in";
+      // TODO:
+      // window.location.href = "#/points/sign-in";
       return;
     }
 
@@ -262,21 +267,52 @@ export class PointsClient {
   }
 
   async getUserRegistrations() {
-    return this.launchesApi.launchesRegistrationsGet();
+    return this.launchesApi.launchesRegistrationsGet({
+      headers: {
+        "Content-Type": "application/json",
+        ...this.headers(),
+      },
+    });
   }
 
-  async registerUserDemand(launchRegistration: LaunchRegistration) {
-    return this.launchesApi.launchesRegisterPost({ launchRegistration });
+  async registerUserDemand(launchRegistration: LaunchRegistrationRequest) {
+    return this.launchesApi.launchesRegisterPost(
+      {
+        launchRegistrationRequest: launchRegistration,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...this.headers(),
+        },
+      },
+    );
   }
 
   async updateUserDemand(launchRegistration: LaunchRegistration) {
-    return this.launchesApi.launchesRegisterUpdatePost({ launchRegistration });
+    return this.launchesApi.launchesRegisterUpdatePost(
+      { launchRegistration },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...this.headers(),
+        },
+      },
+    );
   }
 
   async cancelUserDemand(launchRegistration: LaunchRegistration) {
-    return this.launchesApi.launchesRegisterCancelPost({
-      launchRegistration,
-    });
+    return this.launchesApi.launchesRegisterCancelPost(
+      {
+        launchRegistration,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...this.headers(),
+        },
+      },
+    );
   }
 }
 

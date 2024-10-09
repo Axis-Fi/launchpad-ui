@@ -42,19 +42,43 @@ export interface Launch {
    * @type {string}
    * @memberof Launch
    */
-  imageUrl?: string;
+  websiteUrl?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof Launch
+   */
+  twitterUrl?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof Launch
+   */
+  discordUrl?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof Launch
+   */
+  projectLogoUrl?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof Launch
+   */
+  projectBannerUrl?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof Launch
+   */
+  tagline?: string;
   /**
    *
    * @type {string}
    * @memberof Launch
    */
   description?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Launch
-   */
-  quoteToken?: string;
   /**
    *
    * @type {number}
@@ -89,9 +113,17 @@ export function LaunchFromJSONTyped(
     deadline: !exists(json, "deadline")
       ? undefined
       : new Date(json["deadline"]),
-    imageUrl: !exists(json, "image_url") ? undefined : json["image_url"],
+    websiteUrl: !exists(json, "website_url") ? undefined : json["website_url"],
+    twitterUrl: !exists(json, "twitter_url") ? undefined : json["twitter_url"],
+    discordUrl: !exists(json, "discord_url") ? undefined : json["discord_url"],
+    projectLogoUrl: !exists(json, "project_logo_url")
+      ? undefined
+      : json["project_logo_url"],
+    projectBannerUrl: !exists(json, "project_banner_url")
+      ? undefined
+      : json["project_banner_url"],
+    tagline: !exists(json, "tagline") ? undefined : json["tagline"],
     description: !exists(json, "description") ? undefined : json["description"],
-    quoteToken: !exists(json, "quote_token") ? undefined : json["quote_token"],
     valuation: !exists(json, "valuation") ? undefined : json["valuation"],
   };
 }
@@ -108,9 +140,13 @@ export function LaunchToJSON(value?: Launch | null): any {
     chain_id: value.chainId,
     deadline:
       value.deadline === undefined ? undefined : value.deadline.toISOString(),
-    image_url: value.imageUrl,
+    website_url: value.websiteUrl,
+    twitter_url: value.twitterUrl,
+    discord_url: value.discordUrl,
+    project_logo_url: value.projectLogoUrl,
+    project_banner_url: value.projectBannerUrl,
+    tagline: value.tagline,
     description: value.description,
-    quote_token: value.quoteToken,
     valuation: value.valuation,
   };
 }

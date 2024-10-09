@@ -1,7 +1,10 @@
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { LaunchRegistration } from "@repo/points";
+import type {
+  LaunchRegistration,
+  LaunchRegistrationRequest,
+} from "@repo/points";
 import { usePoints } from "context/points-provider";
 import { mapRegistrationToAuction } from "../utils/map-registration-to-auction";
 
@@ -17,22 +20,31 @@ export function useAuctionRegistrations() {
 
   const userRegistrations = useQuery({
     queryKey: ["user-launch-registrations", address],
-    queryFn: pointsClient.getUserRegistrations,
+    queryFn: () => pointsClient.getUserRegistrations(),
   });
 
   const registerDemandMutation = useMutation({
-    mutationFn: (registration: LaunchRegistration) =>
+    mutationFn: (registration: LaunchRegistrationRequest) =>
       pointsClient.registerUserDemand(registration),
+    onSuccess: () => {
+      activeRegistrations.refetch(), userRegistrations.refetch();
+    },
   });
 
   const updateDemandMutation = useMutation({
     mutationFn: (registration: LaunchRegistration) =>
       pointsClient.updateUserDemand(registration),
+    onSuccess: () => {
+      activeRegistrations.refetch(), userRegistrations.refetch();
+    },
   });
 
   const cancelDemandMutation = useMutation({
     mutationFn: (registration: LaunchRegistration) =>
       pointsClient.cancelUserDemand(registration),
+    onSuccess: () => {
+      activeRegistrations.refetch(), userRegistrations.refetch();
+    },
   });
 
   const getRegistrationLaunch = useCallback(

@@ -20,7 +20,7 @@ type PointsContext = {
   isUsernameAvailable: (username: string) => Promise<boolean | undefined>;
   isUserRegistered: () => Promise<boolean | undefined>;
   isWalletRegistered: (address: Address) => Promise<boolean | undefined>;
-  signIn: () => Promise<void>;
+  signIn: (statement?: string) => Promise<void>;
   signOut: () => void;
   linkWallet: () => Promise<void>;
   getWalletPoints: (
@@ -94,10 +94,10 @@ export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
     return response;
   };
 
-  const signIn = async () => {
+  const signIn = async (statement?: string) => {
     if (!address || !chainId) return;
 
-    const response = await pointsClient.signIn(chainId, address);
+    const response = await pointsClient.signIn(chainId, address, statement);
 
     TokenStorage.setAccessToken(response?.accessToken ?? "");
     TokenStorage.setRefreshToken(response?.refreshToken ?? "");

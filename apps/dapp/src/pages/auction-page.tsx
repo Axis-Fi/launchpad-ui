@@ -25,7 +25,6 @@ import { BidList } from "modules/auction/bid-list";
 import { PurchaseList } from "modules/auction/purchase-list";
 import { getLinkUrl } from "modules/auction/utils/auction-details";
 import { Countdown } from "modules/auction/countdown";
-import { AuctionRegistering } from "modules/auction/status/auction-registering";
 
 const statuses: Record<
   AuctionStatus,
@@ -36,7 +35,7 @@ const statuses: Record<
   live: AuctionLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
-  settled: AuctionRegistering,
+  settled: AuctionSettled,
   aborted: AuctionSettled,
   cancelled: AuctionSettled,
 };
@@ -93,7 +92,7 @@ export function AuctionPageView({
   isAuctionLoading?: boolean;
 }>) {
   const [textColor, setTextColor] = React.useState<string>();
-
+  console.log({ auction });
   return (
     <>
       <ImageBanner
