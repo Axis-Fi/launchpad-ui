@@ -7,7 +7,6 @@ import { ProjectInfoCard } from "../project-info-card";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
-import { TokenInfoCard } from "../token-info-card";
 
 export function EncryptedMarginalPriceAuctionConcluded({
   auction,
@@ -23,7 +22,6 @@ export function EncryptedMarginalPriceAuctionConcluded({
     <div className="auction-action-container">
       <div className="flex w-full flex-col gap-y-4">
         <AuctionCoreMetrics auction={auction} />
-        <TokenInfoCard auction={auction} />
         <ProjectInfoCard auction={auction} />
       </div>
 
