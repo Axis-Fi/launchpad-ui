@@ -7,7 +7,7 @@ import {
 } from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { trimCurrency } from "src/utils/currency";
-import { Button, Card, DataTable, Text, Tooltip } from "@repo/ui";
+import { Button, Card, Chip, DataTable, Text, Tooltip } from "@repo/ui";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -187,6 +187,7 @@ export function BidList(props: BidListProps) {
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [bidToRefund, setBidToRefund] = React.useState<BatchAuctionBid>();
+  const [onlyUserBids, setOnlyUserBids] = React.useState(false);
   const { index: bidIndex } = useBidIndex(
     props.auction,
     BigInt(bidToRefund?.bidId ?? -1),
@@ -194,22 +195,27 @@ export function BidList(props: BidListProps) {
 
   const mappedBids = React.useMemo(
     () =>
-      encryptedBids.map((bid) => {
-        //Checks if its a user bid and in local storage
-        const storedBid =
-          userBids.find(
-            (storageBid) =>
-              storageBid.bidId === bid.bidId &&
-              bid.bidder.toLowerCase() === address?.toLowerCase(),
-          ) ?? {};
+      encryptedBids
+        .filter(
+          (b) =>
+            !onlyUserBids || address?.toLowerCase() === b.bidder.toLowerCase(),
+        )
+        .map((bid) => {
+          //Checks if its a user bid and in local storage
+          const storedBid =
+            userBids.find(
+              (storageBid) =>
+                storageBid.bidId === bid.bidId &&
+                bid.bidder.toLowerCase() === address?.toLowerCase(),
+            ) ?? {};
 
-        return {
-          ...bid,
-          ...storedBid,
-          auction: props.auction,
-        };
-      }) ?? [],
-    [props.auction, address],
+          return {
+            ...bid,
+            ...storedBid,
+            auction: props.auction,
+          };
+        }) ?? [],
+    [props.auction, address, onlyUserBids],
   );
 
   const isLoading = refund.isPending || refundReceipt.isLoading;
@@ -292,19 +298,30 @@ export function BidList(props: BidListProps) {
     <Card
       title={"Bid History"}
       headerRightElement={
-        <CSVDownloader
-          tooltip="Download this bid history in CSV format."
-          filename={`bids-${auction.auctionType}-${auction.id}`}
-          headers={headers}
-          data={body}
-        />
+        <div className="flex gap-x-3">
+          <Chip
+            variant={onlyUserBids ? "active" : "default"}
+            className="cursor-pointer"
+            onClick={() => setOnlyUserBids((prev) => !prev)}
+          >
+            {onlyUserBids ? "All" : "My"} Bids
+          </Chip>
+          <CSVDownloader
+            tooltip="Download this bid history in CSV format."
+            filename={`bids-${auction.auctionType}-${auction.id}`}
+            headers={headers}
+            data={body}
+          />
+        </div>
       }
     >
       <DataTable
         emptyText={
           props.auction.status == "created" || props.auction.status == "live"
             ? "No bids yet"
-            : "No bids received"
+            : onlyUserBids
+              ? "No bids from this address"
+              : "No bids received"
         }
         columns={columns}
         data={mappedBids}
