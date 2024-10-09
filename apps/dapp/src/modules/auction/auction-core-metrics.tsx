@@ -4,17 +4,11 @@ import { BlockExplorerLink } from "components/blockexplorer-link";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
 import AuctionProgressBar from "./auction-progress-bar";
-import { useBaseDTLCallback } from "./hooks/use-base-dtl-callback";
 
 export function AuctionCoreMetrics(
   props: PropsWithAuction & { className?: string },
 ) {
   const auction = props.auction as BatchAuction;
-
-  const { data: isDTL } = useBaseDTLCallback({
-    ...props.auction,
-    baseTokenDecimals: props.auction.quoteToken.decimals,
-  });
 
   const showProgress = auction.status === "live";
   const isSealedBid = auction.auctionType === AuctionType.SEALED_BID;
@@ -22,6 +16,7 @@ export function AuctionCoreMetrics(
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const isSuccessful =
     isSealedBid && auction.encryptedMarginalPrice?.settlementSuccessful;
+  const isVested = !!auction.linearVesting;
 
   return (
     <Card
@@ -53,15 +48,24 @@ export function AuctionCoreMetrics(
         <AuctionMetric id="targetRaise" />
         <AuctionMetric id="minRaise" />
         {isSealedBid && <AuctionMetric id="minPrice" />}
+        {isSealedBid && <AuctionMetric id="minPriceFDV" />}
         {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
+        {isFixedPriceBatch && <AuctionMetric id="fixedPriceFDV" />}
+
+        <AuctionMetric id="totalSupply" />
+        <AuctionMetric id="tokensAvailable" />
+
         {isSuccessful && (
           <>
-            <AuctionMetric auction={auction} id="totalRaised" />
-            <AuctionMetric auction={auction} id="clearingPrice" />
+            {/* TODO: review if we need these metrics somewhere */}
+            {/* <AuctionMetric auction={auction} id="totalRaised" /> */}
+            {/* <AuctionMetric auction={auction} id="clearingPrice" />*/}
             <AuctionMetric auction={auction} id="tokensLaunched" />
           </>
         )}
-        {isDTL && <AuctionMetric id="dtlProceeds" />}
+
+        {isVested && <AuctionMetric id="vestingDuration" auction={auction} />}
+        {/*isDTL && <AuctionMetric id="dtlProceeds" />*/}
       </AuctionMetricsContainer>
     </Card>
   );
