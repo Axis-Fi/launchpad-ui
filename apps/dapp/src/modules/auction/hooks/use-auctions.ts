@@ -35,24 +35,15 @@ export function useAuctions(): AuctionsResult {
   const refetch = useSafeRefetch(["auctions"]);
 
   const { activeRegistrations } = useAuctionRegistrations();
-  const maybeRegistrationLaunches = featureToggles.REGISTRATION_LAUNCHES
+
+  const registrationLaunches = featureToggles.REGISTRATION_LAUNCHES
     ? activeRegistrations.data ?? []
     : [];
 
-  const rawAuctions =
-    [...data.batchAuctionLots, ...maybeRegistrationLaunches].flat() ?? [];
+  const rawAuctions = data.batchAuctionLots.flat() ?? [];
 
-  // Add external data to auctions before processing
-  const augmentedAuctions = rawAuctions
-    .filter((x) => x != null)
-    .map((auction) => ({
-      ...auction,
-      info:
-        auction?.info && auction?.id ? externalAuctionInfo[auction.id] : null,
-    }));
-
-  // Filter out cancelled batch auctions before querying additional data
-  const filteredAuctions = augmentedAuctions.filter(
+  // Filter out cancelled auctions
+  const filteredAuctions = rawAuctions.filter(
     (auction) => getAuctionStatus(auction) !== "cancelled",
   );
 
@@ -73,13 +64,17 @@ export function useAuctions(): AuctionsResult {
         ...formatAuctionTokens(auction, getToken),
         status: getAuctionStatus(auction),
         chainId,
+
+        // Handle external auction data
+        info: auction.info ?? externalAuctionInfo[auction.id] ?? null,
       };
 
       return {
         ...preparedAuction,
         isSecure: isSecureAuction(preparedAuction),
-      };
+      } as Auction;
     })
+    .concat(registrationLaunches)
     .sort(sortAuction);
 
   return {

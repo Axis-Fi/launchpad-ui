@@ -1,14 +1,16 @@
 import { getAuctionHouse } from "utils/contracts";
 import { getChainById } from "utils";
 import type { Launch } from "@repo/points";
-import { AuctionType, type RegistrationLaunch } from "@repo/types";
+import { type Auction, AuctionType } from "@repo/types";
 import { lowerDashify } from "./format-chain-name";
 
 export const mapRegistrationToAuction = (
   launches: Launch[] = [],
-): (RegistrationLaunch | undefined)[] => {
-  return launches.map((launch) => {
-    if (launch.name == null || launch.chainId == null) return undefined;
+): Auction[] => {
+  const auctions: Auction[] = [];
+
+  launches.forEach((launch) => {
+    if (launch.name == null || launch.chainId == null) return;
 
     const launchNameId = lowerDashify(launch.name.toLowerCase());
 
@@ -21,9 +23,9 @@ export const mapRegistrationToAuction = (
 
     const auctionId = `${chain.id}-${auctionHouse.address}-${launchNameId}`;
 
-    return {
+    auctions.push({
       callbacks: "0x0000000000000000000000000000000000000000",
-      auctionType: "01EMPA",
+      auctionType: AuctionType.SEALED_BID, // For registration launches, the auction type has no effect
       id: auctionId,
       chain: chain.name.toLowerCase(),
       chainId: chain.id,
@@ -35,6 +37,7 @@ export const mapRegistrationToAuction = (
       status: "registering",
       registrationDeadline: launch.deadline,
       fdv: launch.valuation,
+      isSecure: true,
       info: {
         key: auctionId,
         name: launch.name,
@@ -67,6 +70,49 @@ export const mapRegistrationToAuction = (
           },
         ],
       },
-    } satisfies RegistrationLaunch;
+
+      // TODO: update subgraph so these values aren't required
+      createdBlockNumber: "",
+      createdBlockTimestamp: "",
+      createdDate: "",
+      createdTransactionHash: "",
+      capacityInitial: "",
+      start: "",
+      conclusion: "",
+      wrapDerivative: false,
+      curatorFee: "",
+      protocolFee: "",
+      referrerFee: "",
+      capacity: "",
+      sold: "",
+      purchased: "",
+      lastUpdatedBlockNumber: "",
+      lastUpdatedBlockTimestamp: "",
+      lastUpdatedDate: "",
+      lastUpdatedTransactionHash: "",
+      maxBidId: "",
+      created: {
+        infoHash: "",
+      },
+      bidsDecrypted: [],
+      bidsClaimed: [],
+      bidsRefunded: [],
+      baseToken: {
+        chainId: 0,
+        address: "0x",
+        symbol: "",
+        decimals: 0,
+        name: "",
+      },
+      quoteToken: {
+        chainId: 0,
+        address: "0x",
+        symbol: "",
+        decimals: 0,
+        name: "",
+      },
+    });
   });
+
+  return auctions satisfies Auction[];
 };

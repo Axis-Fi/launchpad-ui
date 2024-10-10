@@ -20,35 +20,14 @@ export type BaseAuction = {
   fdv?: number;
 };
 
-/** Patched auction lots query that treats callbacks as Address
- * and adds FDV field for registration launches */
+/** Patched auction lots query that treats callbacks as Address */
 export type GetAuctionLots = {
   batchAuctionLots: Array<
     GetAuctionLotsQuery["batchAuctionLots"][0] & {
       callbacks: Address;
-      fdv?: number;
     }
   >;
 };
-
-export type RegistrationLaunch = Pick<
-  BaseAuction,
-  "chainId" | "callbacks" | "registrationDeadline" | "status"
-> &
-  Pick<GetAuctionLots["batchAuctionLots"][0], "fdv"> &
-  Pick<
-    BatchSubgraphAuction,
-    | "auctionType"
-    | "id"
-    | "chain"
-    | "auctionHouse"
-    | "lotId"
-    | "info"
-    | "curator"
-    | "curatorApproved"
-    | "seller"
-    | "bids"
-  >;
 
 export type AuctionStatus =
   | "registering"
