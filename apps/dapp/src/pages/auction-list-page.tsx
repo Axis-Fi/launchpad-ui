@@ -9,10 +9,8 @@ import {
   cn,
   usePagination,
   Select,
-  Chip,
   UsdToggle,
 } from "@repo/ui";
-import { ReloadButton } from "components/reload-button";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { ArrowDownIcon, ArrowRightIcon, SearchIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
@@ -47,12 +45,11 @@ const options = [
 export default function AuctionListPage() {
   const { isTabletOrMobile } = useMediaQueries();
   const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
-  const [onlyUserAuctions, setOnlyUserAuctions] = useState(
-    userSettings.onlyUserAuctions,
-  );
+
   const [gridView, setGridView] = useState(
     isTabletOrMobile ?? userSettings.gridView,
   );
+
   const [sortByStatus, setSortByStatus] = useState<string | undefined>(
     userSettings.activeSort,
   );
@@ -60,7 +57,7 @@ export default function AuctionListPage() {
   const [searchText, setSearchText] = useState<string>("");
 
   const { address } = useAccount();
-  const { data: auctions, isLoading, refetch, isRefetching } = useAuctions();
+  const { data: auctions, isLoading } = useAuctions();
 
   const secureAuctions = auctions
     .filter((a) => "isSecure" in a && a.isSecure)
@@ -68,7 +65,6 @@ export default function AuctionListPage() {
       // Filter only user created or participated auctions
       (a) =>
         !address ||
-        !onlyUserAuctions ||
         a.seller.toLowerCase() === address.toLowerCase() ||
         a.bids.some((b) => b.bidder.toLowerCase() === address.toLowerCase()),
     );
@@ -104,17 +100,6 @@ export default function AuctionListPage() {
     });
   };
 
-  const handleSetUserAuctions = () => {
-    setOnlyUserAuctions((prev) => {
-      const value = !prev;
-      dispatch({
-        type: AuctionListSettingsActions.ONLY_USER_AUCTIONS,
-        value,
-      });
-      return value;
-    });
-  };
-
   const handleViewChange = (value?: string) => {
     const gridView = value === "grid";
 
@@ -140,9 +125,13 @@ export default function AuctionListPage() {
 
   return (
     <div id="__AXIS_ORIGIN_HOME_PAGE__">
-      <div className="bg-hero-banner flex w-full items-end justify-center py-3 lg:h-[522px] lg:py-0">
+      <div className="bg-hero-banner relative flex w-full items-end justify-center py-3 lg:h-[522px] lg:py-0">
+        <img
+          src="dot-grid.svg"
+          className="absolute inset-0 size-full object-cover opacity-50"
+        />
         {!isTabletOrMobile && (
-          <div className="mb-10 text-center">
+          <div className="z-10 mb-10 text-center">
             <Text size={isTabletOrMobile ? "2xl" : "7xl"} mono>
               Welcome to Origin
             </Text>
@@ -193,11 +182,11 @@ export default function AuctionListPage() {
                 </Text>
               </Tooltip>
             )}
-            <div className="flex gap-x-2 px-2 lg:px-0">
-              <div className="ml-6 flex flex-grow items-center justify-start">
-                <UsdToggle currencySymbol="Quote" />
-              </div>
+            <div className="ml-6 flex flex-grow items-center justify-start">
+              <UsdToggle currencySymbol="Quote" />
+            </div>
 
+            <div className="flex gap-x-2 px-2 lg:px-0">
               <IconnedInput
                 icon={<SearchIcon />}
                 className="placeholder:text-foreground"
@@ -212,18 +201,6 @@ export default function AuctionListPage() {
                 onChange={(value) => handleSorting(value)}
               />
 
-              <Tooltip
-                triggerClassName="cursor-pointer"
-                content="Only show auctions you've created or participated in."
-              >
-                <Chip
-                  className="text-xs"
-                  variant={onlyUserAuctions ? "active" : "default"}
-                  onClick={() => handleSetUserAuctions()}
-                >
-                  My Launches
-                </Chip>
-              </Tooltip>
               {!isTabletOrMobile && (
                 <>
                   <ToggleGroup
@@ -238,12 +215,6 @@ export default function AuctionListPage() {
                       <DashboardIcon />
                     </ToggleGroupItem>
                   </ToggleGroup>
-
-                  <ReloadButton
-                    tooltip="Reload Auctions"
-                    refetching={isRefetching}
-                    onClick={() => refetch()}
-                  />
                 </>
               )}
             </div>
