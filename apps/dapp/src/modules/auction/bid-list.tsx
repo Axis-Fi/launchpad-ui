@@ -6,8 +6,7 @@ import {
   BatchAuction,
 } from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
-import { trimCurrency } from "src/utils/currency";
-import { Button, Card, Chip, DataTable, Text, Tooltip } from "@repo/ui";
+import { Button, Card, Chip, DataTable, Text } from "@repo/ui";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -23,8 +22,8 @@ import { format } from "date-fns";
 import { useStorageBids } from "state/bids/handlers";
 import { CSVDownloader } from "components/csv-downloader";
 import { arrayToCSV } from "utils/csv";
-import { LockClosedIcon, LockOpen1Icon } from "@radix-ui/react-icons";
-import { Format } from "modules/token/format";
+import { PriceCell } from "./cells/PriceCell";
+import { AmountInCell } from "./cells/AmountInCell";
 
 export const bidListColumnHelper = createColumnHelper<
   BatchAuctionBid & { auction: Auction }
@@ -56,65 +55,17 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
   enableSorting: true,
 
   cell: (info) => {
-    let value = Number(info.getValue());
-    const bid = info.row.original;
-    const auction = bid.auction;
-    //@ts-expect-error update type
-    const amountOut = bid.amountOut;
-
-    const isUserBid = //Only show on live and concluded states
-      amountOut && ["live", "concluded"].includes(auction.status);
-
-    if (isUserBid) {
-      value = Number(bid.amountIn) / amountOut;
-    }
-
-    let display = value ? (
-      <>
-        <Format value={value} /> {info.row.original.auction.quoteToken.symbol}
-        <LockOpen1Icon />
-      </>
-    ) : (
-      <>
-        ████████ <LockClosedIcon />
-      </>
-    );
-
-    if (!bid.rawSubmittedPrice && Number(bid.settledAmountInRefunded)) {
-      display = <span className="text-feedback-alert">Cancelled</span>;
-    }
-
     return (
-      <Tooltip
-        content={
-          isUserBid ? (
-            <>
-              Your estimate payout out at this price is{" "}
-              {trimCurrency(amountOut)} {auction.baseToken.symbol}.<br />
-              Only you can see your bid price until the auction concludes and
-              settles.
-            </>
-          ) : (
-            <>
-              Other users&apos; bid prices are private until the auction
-              concludes and settles.
-            </>
-          )
-        }
-      >
-        <div className="flex items-center gap-x-1">{display}</div>
-      </Tooltip>
+      <PriceCell bid={info.row.original} value={Number(info.getValue())} />
     );
   },
 });
+
 export const amountInCol = bidListColumnHelper.accessor("amountIn", {
   header: "Amount In",
   enableSorting: true,
   cell: (info) => (
-    <>
-      <Format value={info.getValue()} />{" "}
-      {info.row.original.auction.quoteToken.symbol}
-    </>
+    <AmountInCell bid={info.row.original} value={+info.getValue()} />
   ),
 });
 export const bidderCol = bidListColumnHelper.accessor("bidder", {
