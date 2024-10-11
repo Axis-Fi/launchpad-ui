@@ -1,5 +1,5 @@
 import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
-import { Card, Text, Metric, UsdToggle } from "@repo/ui";
+import { Card, Text, Metric } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
@@ -31,7 +31,6 @@ export function AuctionCoreMetrics(
               address={auction.baseToken.address}
             />
           </Metric>
-          <UsdToggle currencySymbol={auction.quoteToken.symbol} />
         </div>
       }
     >
