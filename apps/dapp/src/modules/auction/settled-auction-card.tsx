@@ -1,12 +1,5 @@
-import {
-  Card,
-  cn,
-  Metric,
-  ToggleProvider,
-  type MetricProps,
-  type TextWeight,
-} from "@repo/ui";
 import type { Token, PropsWithAuction, BatchAuction } from "@repo/types";
+import { Card, cn, Metric, type MetricProps, type TextWeight } from "@repo/ui";
 import { SettledAuctionChart } from "./settled-auction-chart";
 import { useToggleUsdAmount } from "./hooks/use-toggle-usd-amount";
 import { getTimestamp } from "utils/date";
@@ -94,10 +87,8 @@ const SettledAuctionCard = (
 
   return (
     <Card className="h-[640px] flex-grow gap-16">
-      <ToggleProvider initialToggle={true}>
-        <AuctionHeader auction={auction} />
-        <SettledAuctionChart auction={auction as BatchAuction} />
-      </ToggleProvider>
+      <AuctionHeader auction={auction} />
+      <SettledAuctionChart auction={auction as BatchAuction} />
     </Card>
   );
 };
