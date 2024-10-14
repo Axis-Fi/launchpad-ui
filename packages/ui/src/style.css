@@ -280,15 +280,6 @@
     );
   }
 
-  .dark .bg-hero-banner {
-    background: linear-gradient(
-      72deg,
-      hsla(11, 100%, 63%, 1),
-      hsla(32, 99%, 66%, 1),
-      hsla(40, 100%, 77%, 1)
-    );
-  }
-
   .loading-gradient {
     background: linear-gradient(
       42deg,
