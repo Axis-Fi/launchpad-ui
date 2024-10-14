@@ -58,7 +58,7 @@ import {
   getScaledCapacityWithCuratorFee,
 } from "src/utils";
 
-import { AuctionType, CallbacksType } from "@repo/types";
+import { AuctionType, CallbacksType, isBaselineCallback } from "@repo/types";
 
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
@@ -146,7 +146,6 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
     dtlUniV3PoolFee: z.string().optional(),
-    baselinePoolPercent: z.array(z.number()).optional(),
     baselineFloorReservesPercent: z.array(z.number()).optional(),
     baselineFloorRangeGap: StringNumberNotNegative.optional(),
     baselineAnchorTickWidth: StringNumberNotNegative.optional(),
@@ -304,6 +303,54 @@ const schema = z
   )
   .refine(
     (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.dtlProceedsPercent &&
+          data.dtlProceedsPercent.length > 0 &&
+          data.dtlProceedsPercent[0] >= 1 &&
+          data.dtlProceedsPercent[0] <= 100,
+    {
+      message: "Liquidity proceeds percent must be 1-100",
+      path: ["dtlProceedsPercent"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.baselineFloorReservesPercent &&
+          data.baselineFloorReservesPercent.length > 0 &&
+          data.baselineFloorReservesPercent[0] >= 10 &&
+          data.baselineFloorReservesPercent[0] <= 100,
+    {
+      message: "Floor reserves percent must be 10-100",
+      path: ["baselineFloorReservesPercent"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.baselineFloorRangeGap && Number(data.baselineFloorRangeGap) >= 0,
+    {
+      message: "Floor range gap must be a positive number",
+      path: ["baselineFloorRangeGap"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.baselineAnchorTickWidth &&
+          Number(data.baselineAnchorTickWidth) >= 1 &&
+          Number(data.baselineAnchorTickWidth) <= 50,
+    {
+      message: "Anchor tick width must be 10-50",
+      path: ["baselineAnchorTickWidth"],
+    },
+  )
+  .refine(
+    (data) =>
       !(data.callbacksType === CallbacksType.UNIV3_DTL)
         ? true
         : data.dtlUniV3PoolFee,
@@ -316,8 +363,6 @@ const schema = z
     message: "Insufficient balance",
     path: ["capacity"],
   });
-
-// TODO validate baseline callbacks
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
@@ -376,8 +421,8 @@ const generateBaselineCallbackData = (
   values: CreateAuctionForm,
 ): `0x${string}` => {
   const recipient = (values.dtlRecipient ?? zeroAddress) as `0x${string}`;
-  const poolPercent = values.baselinePoolPercent
-    ? toBasisPoints(values.baselinePoolPercent[0] ?? 0)
+  const poolPercent = values.dtlProceedsPercent
+    ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
     : 0;
   const floorReservesPercent = values.baselineFloorReservesPercent
     ? toBasisPoints(values.baselineFloorReservesPercent[0] ?? 0)
@@ -1152,7 +1197,72 @@ export default function CreateAuctionPage() {
     });
   }
 
-  // TODO check here if the payout token is the same as the one in the baseline callbacks
+  // Validate the Baseline callbacks
+  // Check here if the auction house address is the same as the one in the baseline callbacks
+  const { data: baselineAuctionHouse } = useReadContract({
+    abi: abis.baseline,
+    address: form.getValues("callbacks") as Address,
+    functionName: "AUCTION_HOUSE",
+    query: {
+      enabled:
+        form.getValues("callbacks") !== undefined &&
+        callbacksType !== undefined &&
+        isBaselineCallback(callbacksType),
+    },
+  });
+  if (
+    baselineAuctionHouse &&
+    baselineAuctionHouse.toLowerCase() !== auctionHouseAddress?.toLowerCase()
+  ) {
+    form.setError("callbacks", {
+      message:
+        "The auction house address must be the same as the one in the Baseline callbacks",
+    });
+  }
+
+  // Check here if the payout token is the same as the one in the baseline callbacks
+  const { data: baselineBaseToken } = useReadContract({
+    abi: abis.baseline,
+    address: form.getValues("callbacks") as Address,
+    functionName: "bAsset",
+    query: {
+      enabled:
+        form.getValues("callbacks") !== undefined &&
+        callbacksType !== undefined &&
+        isBaselineCallback(callbacksType),
+    },
+  });
+  if (
+    baselineBaseToken &&
+    baselineBaseToken.toLowerCase() !== payoutToken?.address?.toLowerCase()
+  ) {
+    form.setError("callbacks", {
+      message:
+        "The payout token must be the same as the one in the Baseline callbacks",
+    });
+  }
+
+  // Check here if the quote token is the same as the one in the baseline callbacks
+  const { data: baselineQuoteToken } = useReadContract({
+    abi: abis.baseline,
+    address: form.getValues("callbacks") as Address,
+    functionName: "RESERVE",
+    query: {
+      enabled:
+        form.getValues("callbacks") !== undefined &&
+        callbacksType !== undefined &&
+        isBaselineCallback(callbacksType),
+    },
+  });
+  if (
+    baselineQuoteToken &&
+    baselineQuoteToken.toLowerCase() !== quoteToken?.address?.toLowerCase()
+  ) {
+    form.setError("callbacks", {
+      message:
+        "The quote token must be the same as the one in the Baseline callbacks",
+    });
+  }
 
   // Load the balance for the payout token
   const { balance: payoutTokenBalance, decimals: payoutTokenDecimals } =

@@ -13,3 +13,13 @@ export enum CallbacksType {
   BASELINE_CAPPED_ALLOWLIST = "BaselineCappedAllowlist",
   BASELINE_TOKEN_ALLOWLIST = "BaselineTokenAllowlist",
 }
+
+export const isBaselineCallback = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.BASELINE ||
+    callbacksType === CallbacksType.BASELINE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_CAPPED_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_TOKEN_ALLOWLIST
+  );
+};
