@@ -46,8 +46,7 @@ export function Bridge({ targetChainId, order }: BridgeProps) {
 
   const theme = {
     colors: {
-      primary: "#feae52",
-      gradient: ["#feae52", "#ffd88a"],
+      primary: "5783db",
     },
     components: {
       button: {
