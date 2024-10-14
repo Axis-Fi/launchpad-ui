@@ -100,7 +100,6 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   const baselineLotIdMatches = baselineLotId == parseUnits(auction.lotId, 0);
 
   // Query the amount the user has already spent from the contract
-  // TODO shift to subgraph calls
   let { data: spent } = useReadContract({
     abi: axisContracts.abis.cappedMerkleAllowlist, // we can use this ABI for both capped and allocated allowlists since they have the same function signature
     address: auction.callbacks,

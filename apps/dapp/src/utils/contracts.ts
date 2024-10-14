@@ -133,6 +133,6 @@ export function getCallbacks(chainId: number, callbackType: CallbacksType) {
 
   return {
     abi: axisContracts.abis[contractName],
-    address: addresses,
+    address: addresses || [],
   };
 }

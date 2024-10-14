@@ -1,8 +1,14 @@
 import { axisContracts } from "@repo/deployments";
 import { Address, CallbacksType } from "@repo/types";
 import { getCallbacks } from "utils/contracts";
+import { fromBasisPoints } from "utils/number";
 import { useReadContract, useReadContracts } from "wagmi";
 
+/**
+ * Returns the configuration of a Baseline DTL callback
+ *
+ * The `poolPercent` and `floorReservesPercent` are returned as decimal values, where 1 = 100%.
+ */
 export function useBaselineDTLCallback({
   chainId,
   lotId,
@@ -12,7 +18,6 @@ export function useBaselineDTLCallback({
   lotId?: string;
   callback?: Address;
 }) {
-  // TODO shift to subgraph call
   // Determine if the callback is a baseline DTL callback
   const callbackLower = (callback || "").toLowerCase();
   const baselineAddresses = getCallbacks(
@@ -50,7 +55,9 @@ export function useBaselineDTLCallback({
     functionName: "lotId",
     args: [],
   });
-  const lotIdMatches = baselineLotId === lotId;
+  const lotIdMatches = baselineLotId
+    ? baselineLotId.toString() === lotId
+    : false;
 
   const response = useReadContracts({
     contracts: [
@@ -101,8 +108,9 @@ export function useBaselineDTLCallback({
       response.data[4].result
         ? {
             auctionComplete: response.data[0].result,
-            poolPercent: response.data[1].result,
-            floorReservesPercent: response.data[2].result,
+            poolPercent: fromBasisPoints(response.data[1].result) / 100,
+            floorReservesPercent:
+              fromBasisPoints(response.data[2].result) / 100,
             recipient: response.data[3].result,
             poolTargetTick: response.data[4].result,
           }
