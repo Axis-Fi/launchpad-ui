@@ -1,4 +1,4 @@
-import { Button, Card, Link, Metric, Text, Tooltip } from "@repo/ui";
+import { Button, Card, Link, Metric, Popover, Text, Tooltip } from "@repo/ui";
 import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "../auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
@@ -25,6 +25,7 @@ import {
   PopupTokenWrapper,
   isQuoteAWrappedGasToken,
 } from "modules/token/popup-token-wrapper";
+import { Bridge } from "components/bridge";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -298,6 +299,16 @@ export function AuctionLive({ auction }: PropsWithAuction) {
         : maxBidAmount;
 
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
+  //
+
+  const bridgeSwapOrder = React.useMemo(() => {
+    return {
+      toToken: {
+        address: auction.quoteToken.address,
+        chainId: auction.chainId.toString(),
+      },
+    };
+  }, [auction]);
 
   return (
     <div className="auction-action-container">
@@ -323,13 +334,24 @@ export function AuctionLive({ auction }: PropsWithAuction) {
                     : `Place your bid`
                 }
                 headerRightElement={
-                  isQuoteAWrappedGasToken(auction) && (
-                    <Tooltip
-                      content={`Wrap ${deployment?.chain.nativeCurrency.symbol} into ${auction.quoteToken.symbol}`}
-                    >
-                      <PopupTokenWrapper auction={auction} />
+                  <div className="flex gap-x-1">
+                    {isQuoteAWrappedGasToken(auction) && (
+                      <Tooltip
+                        content={`Wrap ${deployment?.chain.nativeCurrency.symbol} into ${auction.quoteToken.symbol}`}
+                      >
+                        <PopupTokenWrapper auction={auction} />
+                      </Tooltip>
+                    )}
+                    <Tooltip content="Bridge your tokens">
+                      <Popover
+                        label="Bridge"
+                        side="left"
+                        className="min-w-[540px] border-none bg-transparent pt-[200px] shadow-none"
+                      >
+                        <Bridge order={bridgeSwapOrder} />
+                      </Popover>
                     </Tooltip>
-                  )
+                  </div>
                 }
               >
                 {isFixedPriceBatch ? (

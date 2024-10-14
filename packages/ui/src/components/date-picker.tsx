@@ -5,7 +5,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/utils";
 import { Button, Input } from "./primitives";
 import { Calendar } from "./primitives";
-import { Popover, PopoverContent, PopoverTrigger } from "./primitives";
+import { PopoverRoot, PopoverContent, PopoverTrigger } from "./primitives";
 import { useTimeInput } from "..";
 import { addTimeToDate, formatDate } from "../helpers";
 
@@ -50,7 +50,7 @@ export function DatePicker({
 
   // TODO fix "Function components cannot be given refs" which seems to be breaking datetime validation
   return (
-    <Popover onOpenChange={(open) => !open && props.onBlur?.()}>
+    <PopoverRoot onOpenChange={(open) => !open && props.onBlur?.()}>
       <PopoverTrigger asChild>
         <Button
           variant="input"
@@ -89,6 +89,6 @@ export function DatePicker({
           />
         )}
       </PopoverContent>
-    </Popover>
+    </PopoverRoot>
   );
 }

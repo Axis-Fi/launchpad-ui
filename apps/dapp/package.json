@@ -44,6 +44,7 @@
     "@tanstack/react-query-devtools": "^5.18.1",
     "@tanstack/react-table": "^8.11.7",
     "@trpc/client": "^10.45.1",
+    "@xyfinance/widget": "^4.6.1",
     "ajv": "^8.12.0",
     "ajv-formats": "^2.1.1",
     "date-fns": "^3.3.1",

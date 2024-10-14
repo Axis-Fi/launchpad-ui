@@ -4,7 +4,7 @@ import {
   Text,
   Input,
   LabelWrapper,
-  Popover,
+  PopoverRoot,
   PopoverContent,
   PopoverTrigger,
   cn,
@@ -37,7 +37,7 @@ export function ReferrerPopover({ auction }: PropsWithAuction) {
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
 
   return (
-    <Popover>
+    <PopoverRoot>
       <PopoverTrigger asChild>
         <Button variant="secondary" size="sm">
           Refer this launch
@@ -81,6 +81,6 @@ export function ReferrerPopover({ auction }: PropsWithAuction) {
           </LabelWrapper>
         </div>
       </PopoverContent>
-    </Popover>
+    </PopoverRoot>
   );
 }
