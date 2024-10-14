@@ -19,4 +19,5 @@ export default {
   baselineAllocatedAllowlist: abis.baselineAllocatedAllowlistAbi,
   baselineCappedAllowlist: abis.baselineCappedAllowlistAbi,
   baselineTokenAllowlist: abis.baselineTokenAllowlistAbi,
+  bpool: abis.bpoolAbi,
 } as const;

@@ -110,6 +110,13 @@ export function getLatestCallback(
 
   const addresses = axisContracts.addresses[chainId][contractName];
 
+  if (!addresses || addresses.length === 0) {
+    return {
+      abi: axisContracts.abis[contractName],
+      address: "0x" as Address,
+    };
+  }
+
   return {
     abi: axisContracts.abis[contractName],
     address: addresses[addresses.length - 1],

@@ -42,6 +42,7 @@ import {
   formatUnits,
   fromHex,
   getAddress,
+  isAddress,
   isHex,
   parseAbiParameters,
   parseUnits,
@@ -149,6 +150,8 @@ const schema = z
     baselineFloorReservesPercent: z.array(z.number()).optional(),
     baselineFloorRangeGap: StringNumberNotNegative.optional(),
     baselineAnchorTickWidth: StringNumberNotNegative.optional(),
+    baselineAnchorTickU: z.string().optional(),
+    baselinePoolTargetTick: z.string().optional(),
     customCallbackData: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]$/)
@@ -318,6 +321,16 @@ const schema = z
     (data) =>
       !isBaselineCallback(data.callbacksType)
         ? true
+        : data.callbacks != undefined && isAddress(data.callbacks),
+    {
+      message: "Invalid callbacks address",
+      path: ["callbacks"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
         : data.baselineFloorReservesPercent &&
           data.baselineFloorReservesPercent.length > 0 &&
           data.baselineFloorReservesPercent[0] >= 10 &&
@@ -347,6 +360,19 @@ const schema = z
     {
       message: "Anchor tick width must be 10-50",
       path: ["baselineAnchorTickWidth"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.baselinePoolTargetTick &&
+          Number(data.baselinePoolTargetTick) <=
+            Number(data.baselineAnchorTickU),
+    {
+      message:
+        "Pool target tick must be less than or equal to upper anchor tick",
+      path: ["baselinePoolTargetTick"],
     },
   )
   .refine(
@@ -428,9 +454,9 @@ const generateBaselineCallbackData = (
     ? toBasisPoints(values.baselineFloorReservesPercent[0] ?? 0)
     : 0;
   const floorRangeGap = Number(values.baselineFloorRangeGap ?? 0);
-  const anchorTickU = 0; // TODO automatically calculate this
+  const anchorTickU = Number(values.baselineAnchorTickU ?? 0);
   const anchorTickWidth = Number(values.baselineAnchorTickWidth ?? 0);
-  const poolTargetTick = 0; // TODO automatically calculate this
+  const poolTargetTick = Number(values.baselinePoolTargetTick ?? 0);
   let allowlistParams = toHex("");
 
   if (type === CallbacksType.BASELINE_ALLOWLIST) {
@@ -1264,6 +1290,26 @@ export default function CreateAuctionPage() {
     });
   }
 
+  // Set the upper anchor tick for the Baseline pool
+  const { data: baselinePoolActiveTS } = useReadContract({
+    abi: abis.bpool,
+    address: baselineBaseToken,
+    functionName: "getActiveTS",
+    query: {
+      enabled: baselineBaseToken !== undefined,
+    },
+  });
+  useEffect(() => {
+    form.setValue(
+      "baselineAnchorTickU",
+      baselinePoolActiveTS?.toString() ?? "0",
+    );
+    form.setValue(
+      "baselinePoolTargetTick",
+      baselinePoolActiveTS?.toString() ?? "0",
+    );
+  }, [baselinePoolActiveTS, form]);
+
   // Load the balance for the payout token
   const { balance: payoutTokenBalance, decimals: payoutTokenDecimals } =
     useERC20Balance({
@@ -1332,6 +1378,7 @@ export default function CreateAuctionPage() {
     form.resetField("callbacksType");
     return getExistingCallbacks(chainId);
   }, [chainId]);
+  // TODO append with Baseline options
 
   const handlePreview = () => {
     form.trigger();
@@ -2149,7 +2196,110 @@ export default function CreateAuctionPage() {
                         )}
                       />
                     )}
-                    {/* TODO: add Baseline callbacks */}
+                    {isBaselineCallback(callbacksType) && (
+                      <>
+                        <FormField
+                          name="callbacks"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Callbacks Address"
+                              tooltip={
+                                "The address of the Baseline callbacks contract."
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="dtlProceedsPercent"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Percent of Proceeds to Deposit"
+                              tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
+                            >
+                              <PercentageSlider
+                                field={field}
+                                defaultValue={100}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="baselineFloorReservesPercent"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Percent of Liquidity in Floor"
+                              tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
+                            >
+                              <PercentageSlider
+                                field={field}
+                                defaultValue={50}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="baselineFloorRangeGap"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Gap Between Floor and Anchor"
+                              tooltip="The gap (in terms of tick spacings) between the floor and anchor ticks."
+                            >
+                              <Input
+                                {...field}
+                                placeholder="0"
+                                defaultValue={0}
+                                type="number"
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="baselineAnchorTickWidth"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Anchor Tick Width"
+                              tooltip="The width (in terms of tick spacings) of the anchor tick."
+                            >
+                              <Input
+                                {...field}
+                                placeholder="10"
+                                defaultValue={10}
+                                type="number"
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          name="dtlRecipient"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Liquidity Recipient"
+                              tooltip={
+                                "The address that will receive the liquidity tokens"
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
+                    )}
                     {/* {callbacksType === CallbacksType.CUSTOM && (
                       <>
                         <FormField

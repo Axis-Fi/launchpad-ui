@@ -17,6 +17,7 @@ import baselineAllowlist from "./BaselineAllowlist.json";
 import baselineAllocatedAllowlist from "./BaselineAllocatedAllowlist.json";
 import baselineCappedAllowlist from "./BaselineCappedAllowlist.json";
 import baselineTokenAllowlist from "./BaselineTokenAllowlist.json";
+import bpool from "./BPOOL.json";
 
 //Fetch errors from modules to include in the AuctionHouse ABI
 const errors = [
@@ -51,4 +52,5 @@ export default {
   baselineAllocatedAllowlist,
   baselineCappedAllowlist,
   baselineTokenAllowlist,
+  bpool,
 } as const;
