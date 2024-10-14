@@ -193,9 +193,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   // Set values based on conditional logic
 
   // For merkle allowlists, we need to check if the user is on the allowlist
+  // These expect that the allowlist has been stored in JSON stored in IPFS
   if (isMerkle) {
-    // TODO get the allowlist for the baseline auction
-
     // Check if the account is on the allowlist
     canBid =
       allowlist
