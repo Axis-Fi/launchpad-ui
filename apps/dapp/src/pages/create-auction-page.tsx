@@ -73,7 +73,11 @@ import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create
 import { RequiresChain } from "components/requires-chain";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
-import { getAuctionHouse, getLatestCallback } from "utils/contracts";
+import {
+  callbackLabels,
+  getAuctionHouse,
+  getLatestCallback,
+} from "utils/contracts";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
@@ -697,6 +701,9 @@ export default function CreateAuctionPage() {
     const isEMP = auctionType === AuctionType.SEALED_BID;
     const isFPB = auctionType === AuctionType.FIXED_PRICE_BATCH;
     const code = isEMP ? "EMPA" : isFPB ? "FPBA" : "unknown";
+
+    console.log("callbacksType", values.callbacksType);
+    console.log("callbacks", values.callbacks);
 
     const auctionTypeKeycode = toKeycode(code);
 
@@ -1376,9 +1383,43 @@ export default function CreateAuctionPage() {
 
   const callbackOptions = React.useMemo(() => {
     form.resetField("callbacksType");
-    return getExistingCallbacks(chainId);
-  }, [chainId]);
-  // TODO append with Baseline options
+    const existingCallbacks = getExistingCallbacks(chainId);
+
+    // Define the Baseline callback options
+    const baselineCallbackOptions = [
+      {
+        value: CallbacksType.BASELINE,
+        label: callbackLabels[CallbacksType.BASELINE],
+      },
+      {
+        value: CallbacksType.BASELINE_ALLOWLIST,
+        label: callbackLabels[CallbacksType.BASELINE_ALLOWLIST],
+      },
+      {
+        value: CallbacksType.BASELINE_ALLOCATED_ALLOWLIST,
+        label: callbackLabels[CallbacksType.BASELINE_ALLOCATED_ALLOWLIST],
+      },
+      {
+        value: CallbacksType.BASELINE_CAPPED_ALLOWLIST,
+        label: callbackLabels[CallbacksType.BASELINE_CAPPED_ALLOWLIST],
+      },
+      {
+        value: CallbacksType.BASELINE_TOKEN_ALLOWLIST,
+        label: callbackLabels[CallbacksType.BASELINE_TOKEN_ALLOWLIST],
+      },
+    ];
+
+    // Iterate through the existing callbacks and add the Baseline callbacks if they are not present
+    baselineCallbackOptions.forEach((option) => {
+      if (
+        !existingCallbacks.some((callback) => callback.value === option.value)
+      ) {
+        existingCallbacks.push(option);
+      }
+    });
+
+    return existingCallbacks;
+  }, [chainId, form]);
 
   const handlePreview = () => {
     form.trigger();
