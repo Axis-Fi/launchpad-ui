@@ -702,9 +702,6 @@ export default function CreateAuctionPage() {
     const isFPB = auctionType === AuctionType.FIXED_PRICE_BATCH;
     const code = isEMP ? "EMPA" : isFPB ? "FPBA" : "unknown";
 
-    console.log("callbacksType", values.callbacksType);
-    console.log("callbacks", values.callbacks);
-
     const auctionTypeKeycode = toKeycode(code);
 
     const publicKey = isEMP
@@ -1381,6 +1378,7 @@ export default function CreateAuctionPage() {
     !minBidSize ||
     Number(minBidSize) >= (Number(capacity) * Number(minPrice)) / 10_000; //10k here represents a potential max amount of bids
 
+  // Define the options listed in the callback select dropdown
   const callbackOptions = React.useMemo(() => {
     form.resetField("callbacksType");
     const existingCallbacks = getExistingCallbacks(chainId);
@@ -1419,7 +1417,7 @@ export default function CreateAuctionPage() {
     });
 
     return existingCallbacks;
-  }, [chainId, form]);
+  }, [chainId]);
 
   const handlePreview = () => {
     form.trigger();
