@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Badge, Button, Card, Text } from "@repo/ui";
+import { Button, Card, Text } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
-import { ProjectInfoCard } from "../project-info-card";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
@@ -43,7 +42,6 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
     <div className="auction-action-container ">
       <div className="mt-4 flex w-full flex-col justify-between gap-y-4 lg:mt-0">
         <AuctionCoreMetrics auction={auction} />
-        <ProjectInfoCard auction={auction} />
       </div>
 
       <div className="w-full max-w-lg">
@@ -63,11 +61,7 @@ export function AuctionDecrypted({ auction }: PropsWithAuction) {
             }
           }}
         />
-        <Card
-          title="Decrypted"
-          className="w-[496px]"
-          headerRightElement={<Badge color="ghost">Auction Closed</Badge>}
-        >
+        <Card title="Decrypted">
           <div className="green-gradient w-fill flex h-[464px] items-center justify-center">
             <div className="flex flex-col items-center gap-2">
               <img

@@ -1,6 +1,5 @@
 import { Badge, Button, Card, Text } from "@repo/ui";
 import { type PropsWithAuction } from "@repo/types";
-import { ProjectInfoCard } from "../project-info-card";
 import React, { useState } from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useSettleAuction } from "../hooks/use-settle-auction";
@@ -42,7 +41,6 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
     <div className="auction-action-container">
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         <AuctionCoreMetrics auction={props.auction} />
-        <ProjectInfoCard auction={props.auction} />
       </div>
       <div className="lg:w-1/3">
         <TransactionDialog

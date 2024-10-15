@@ -13,7 +13,6 @@ import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React, { useEffect, useState } from "react";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
-import { ProjectInfoCard } from "../project-info-card";
 import { AuctionBidInputSingle } from "../auction-bid-input-single";
 import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "../hooks/use-allowlist";
@@ -313,7 +312,6 @@ export function AuctionLive({ auction }: PropsWithAuction) {
     <div className="auction-action-container">
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         <AuctionCoreMetrics auction={auction} />
-        <ProjectInfoCard auction={auction} />
       </div>
 
       <div className="lg:w-1/3">

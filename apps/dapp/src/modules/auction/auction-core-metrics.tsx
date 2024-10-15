@@ -4,6 +4,7 @@ import { BlockExplorerLink } from "components/blockexplorer-link";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
 import AuctionProgressBar from "./auction-progress-bar";
+import { ProjectInfoCard } from "./project-info-card";
 
 export function AuctionCoreMetrics(
   props: PropsWithAuction & { className?: string },
@@ -21,7 +22,7 @@ export function AuctionCoreMetrics(
   return (
     <Card
       className={props.className}
-      title="Launch Info"
+      title={`Details`} //TODO: About didnt feel right, open to suggestions on this one
       headerRightElement={
         <div className="flex gap-x-8">
           <Metric size="s" label="Token Address">
@@ -42,30 +43,33 @@ export function AuctionCoreMetrics(
           <AuctionProgressBar auction={auction} />
         </div>
       )}
+      <div className="flex flex-col justify-between ">
+        <AuctionMetricsContainer auction={auction}>
+          <AuctionMetric id="targetRaise" />
+          <AuctionMetric id="minRaise" />
+          {isSealedBid && <AuctionMetric id="minPrice" />}
+          {isSealedBid && <AuctionMetric id="minPriceFDV" />}
+          {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
+          {isFixedPriceBatch && <AuctionMetric id="fixedPriceFDV" />}
 
-      <AuctionMetricsContainer auction={auction}>
-        <AuctionMetric id="targetRaise" />
-        <AuctionMetric id="minRaise" />
-        {isSealedBid && <AuctionMetric id="minPrice" />}
-        {isSealedBid && <AuctionMetric id="minPriceFDV" />}
-        {isFixedPriceBatch && <AuctionMetric id="fixedPrice" />}
-        {isFixedPriceBatch && <AuctionMetric id="fixedPriceFDV" />}
+          <AuctionMetric id="totalSupply" />
+          <AuctionMetric id="tokensAvailable" />
 
-        <AuctionMetric id="totalSupply" />
-        <AuctionMetric id="tokensAvailable" />
+          {isSuccessful && (
+            <>
+              {/* TODO: review if we need these metrics somewhere */}
+              {/* <AuctionMetric auction={auction} id="totalRaised" /> */}
+              {/* <AuctionMetric auction={auction} id="clearingPrice" />*/}
+              <AuctionMetric auction={auction} id="tokensLaunched" />
+            </>
+          )}
 
-        {isSuccessful && (
-          <>
-            {/* TODO: review if we need these metrics somewhere */}
-            {/* <AuctionMetric auction={auction} id="totalRaised" /> */}
-            {/* <AuctionMetric auction={auction} id="clearingPrice" />*/}
-            <AuctionMetric auction={auction} id="tokensLaunched" />
-          </>
-        )}
+          {isVested && <AuctionMetric id="vestingDuration" auction={auction} />}
+          {/*isDTL && <AuctionMetric id="dtlProceeds" />*/}
+        </AuctionMetricsContainer>
 
-        {isVested && <AuctionMetric id="vestingDuration" auction={auction} />}
-        {/*isDTL && <AuctionMetric id="dtlProceeds" />*/}
-      </AuctionMetricsContainer>
+        <ProjectInfoCard className="mt-8" auction={auction} />
+      </div>
     </Card>
   );
 }

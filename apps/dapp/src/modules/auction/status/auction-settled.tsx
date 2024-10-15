@@ -1,6 +1,5 @@
 import { AuctionType, type PropsWithAuction } from "@repo/types";
 import { SettledAuctionCard } from "modules/auction/settled-auction-card";
-import { ProjectInfoCard } from "../project-info-card";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
 import { UserBidsCardContainer } from "../user-bids";
 import { ReferralRewards } from "../referral-rewards";
@@ -13,7 +12,6 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         {isEMP && <SettledAuctionCard auction={auction} />}
         <AuctionCoreMetrics auction={auction} />
-        <ProjectInfoCard auction={auction} />
       </div>
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-1/3">
         <UserBidsCardContainer auction={auction} />

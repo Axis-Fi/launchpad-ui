@@ -1,9 +1,8 @@
 import React from "react";
-import { Badge, Button, Card, Text } from "@repo/ui";
+import { Button, Card, Text } from "@repo/ui";
 import type { PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
-import { ProjectInfoCard } from "../project-info-card";
 import { RequiresChain } from "components/requires-chain";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
@@ -20,12 +19,11 @@ export function EncryptedMarginalPriceAuctionConcluded({
 
   return (
     <div className="auction-action-container">
-      <div className="flex w-full flex-col gap-y-4">
+      <div className="flex w-full flex-col gap-y-4 lg:w-3/5">
         <AuctionCoreMetrics auction={auction} />
-        <ProjectInfoCard auction={auction} />
       </div>
 
-      <div className="lg:w-1/3">
+      <div className="lg:w-2/5">
         <TransactionDialog
           signatureMutation={decrypt.decryptTx}
           disabled={decrypt.isWaiting}
@@ -42,12 +40,8 @@ export function EncryptedMarginalPriceAuctionConcluded({
             }
           }}
         />
-        <Card
-          title="Concluded"
-          className="mt-4 lg:mt-0 lg:w-[496px]"
-          headerRightElement={<Badge>Auction Closed</Badge>}
-        >
-          <div className="green-gradient w-fill flex h-[464px] items-center justify-center">
+        <Card title="Concluded" className="mt-4 w-full lg:mt-0">
+          <div className="green-gradient w-fill flex h-[264px] items-center justify-center">
             <div className="flex flex-col items-center gap-2">
               <img
                 className="w-[92.351]px h-[80px]"

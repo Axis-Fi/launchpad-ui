@@ -1,6 +1,5 @@
-import { Card, Link, Metric, cn } from "@repo/ui";
+import { Link, Metric, cn } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
-import { ReferrerPopover } from "modules/referral/referrer-popover";
 import { getLinkUrl } from "./utils/auction-details";
 import { AuctionMetric } from "./auction-metric";
 import { allowedCurators } from "@repo/env";
@@ -29,10 +28,9 @@ export function ProjectInfoCard({
   );
 
   return (
-    <Card
-      className={cn(props.className, "items-center")}
-      title={`About ${auction.info?.name || ""}`}
-      headerRightElement={canRefer && <ReferrerPopover auction={auction} />}
+    <div
+      className={cn(props.className, "flex h-full flex-col justify-between")}
+      title={``}
     >
       {children}
       <div className="mb-4 flex">{description}</div>
@@ -89,6 +87,6 @@ export function ProjectInfoCard({
           )}
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
