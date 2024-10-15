@@ -529,6 +529,34 @@ const generateBaselineCallbackData = (
   );
 };
 
+const isSimpleAllowlist = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_ALLOWLIST
+  );
+};
+
+const isCappedAllowlist = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_CAPPED_ALLOWLIST
+  );
+};
+
+const isAllocatedAllowlist = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST
+  );
+};
+
+const isTokenAllowlist = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.TOKEN_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_TOKEN_ALLOWLIST
+  );
+};
+
 export default function CreateAuctionPage() {
   // Due to components being uncontrolled the form inputs wont clear
   // after calling form.reset() so we have to force it
@@ -2026,9 +2054,8 @@ export default function CreateAuctionPage() {
                         </FormItemWrapper>
                       )}
                     />
-                    {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
-                      callbacksType ==
-                        CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
+                    {(isSimpleAllowlist(callbacksType) ||
+                      isCappedAllowlist(callbacksType)) && (
                       <FormItemWrapper
                         label="Allowlist"
                         tooltip={
@@ -2044,7 +2071,7 @@ export default function CreateAuctionPage() {
                         />
                       </FormItemWrapper>
                     )}
-                    {callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST && (
+                    {isCappedAllowlist(callbacksType) && (
                       <FormField
                         control={form.control}
                         name="cappedAllowlistLimit"
@@ -2058,8 +2085,7 @@ export default function CreateAuctionPage() {
                         )}
                       />
                     )}
-                    {callbacksType ===
-                      CallbacksType.ALLOCATED_MERKLE_ALLOWLIST && (
+                    {isAllocatedAllowlist(callbacksType) && (
                       <FormItemWrapper
                         label="Allowlist"
                         tooltip={
@@ -2079,7 +2105,7 @@ export default function CreateAuctionPage() {
                         />
                       </FormItemWrapper>
                     )}
-                    {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
+                    {isTokenAllowlist(callbacksType) && (
                       <>
                         <FormField
                           name="allowlistToken"
