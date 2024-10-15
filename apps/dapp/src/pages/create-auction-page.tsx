@@ -2291,6 +2291,8 @@ export default function CreateAuctionPage() {
                               <PercentageSlider
                                 field={field}
                                 defaultValue={100}
+                                min={1}
+                                max={100}
                               />
                             </FormItemWrapper>
                           )}
@@ -2307,6 +2309,8 @@ export default function CreateAuctionPage() {
                               <PercentageSlider
                                 field={field}
                                 defaultValue={50}
+                                min={10}
+                                max={100}
                               />
                             </FormItemWrapper>
                           )}
@@ -2325,6 +2329,7 @@ export default function CreateAuctionPage() {
                                 placeholder="0"
                                 defaultValue={0}
                                 type="number"
+                                min={0}
                               />
                             </FormItemWrapper>
                           )}
@@ -2343,6 +2348,8 @@ export default function CreateAuctionPage() {
                                 placeholder="10"
                                 defaultValue={10}
                                 type="number"
+                                min={1}
+                                max={50}
                               />
                             </FormItemWrapper>
                           )}
