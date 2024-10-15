@@ -325,20 +325,22 @@ const schema = z
     (data) =>
       !isBaselineCallback(data.callbacksType)
         ? true
-        : data.callbacks != undefined && isAddress(data.callbacks),
+        : data.callbacks === undefined || isAddress(data.callbacks),
     {
       message: "Invalid callbacks address",
       path: ["callbacks"],
     },
   )
   .refine(
-    (data) =>
-      !isBaselineCallback(data.callbacksType)
+    (data) => {
+      console.log({ data });
+      return !isBaselineCallback(data.callbacksType)
         ? true
         : data.baselineFloorReservesPercent &&
-          data.baselineFloorReservesPercent.length > 0 &&
-          data.baselineFloorReservesPercent[0] >= 10 &&
-          data.baselineFloorReservesPercent[0] <= 100,
+            data.baselineFloorReservesPercent.length > 0 &&
+            data.baselineFloorReservesPercent[0] >= 10 &&
+            data.baselineFloorReservesPercent[0] <= 100;
+    },
     {
       message: "Floor reserves percent must be 10-100",
       path: ["baselineFloorReservesPercent"],
@@ -567,6 +569,11 @@ export default function CreateAuctionPage() {
     minFillPercent: [50],
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
+    dtlProceedsPercent: [100],
+    baselineFloorReservesPercent: [50],
+    baselineFloorRangeGap: "0",
+    baselineAnchorTickU: "0",
+    baselineAnchorTickWidth: "10",
   };
 
   const { address } = useAccount();
@@ -723,7 +730,9 @@ export default function CreateAuctionPage() {
     onError: (error) => console.error("Error during submission:", error),
   });
 
+  console.log(form.formState.errors);
   const creationHandler = async (values: CreateAuctionForm) => {
+    console.log("submitt");
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
@@ -1030,6 +1039,7 @@ export default function CreateAuctionPage() {
     callbacksType === CallbacksType.UNIV3_DTL;
 
   const onSubmit = () => {
+    console.log("submit");
     // 1. If we need to approve the auction house
     if (!isSufficientAuctionHouseAllowance) {
       executeApproveAuctionHouse();
@@ -2290,7 +2300,6 @@ export default function CreateAuctionPage() {
                             >
                               <PercentageSlider
                                 field={field}
-                                defaultValue={100}
                                 min={1}
                                 max={100}
                               />
@@ -2308,7 +2317,6 @@ export default function CreateAuctionPage() {
                             >
                               <PercentageSlider
                                 field={field}
-                                defaultValue={50}
                                 min={10}
                                 max={100}
                               />
@@ -2324,13 +2332,7 @@ export default function CreateAuctionPage() {
                               label="Gap Between Floor and Anchor"
                               tooltip="The gap (in terms of tick spacings) between the floor and anchor ticks."
                             >
-                              <Input
-                                {...field}
-                                placeholder="0"
-                                defaultValue={0}
-                                type="number"
-                                min={0}
-                              />
+                              <Input {...field} type="number" min={0} />
                             </FormItemWrapper>
                           )}
                         />
@@ -2346,7 +2348,6 @@ export default function CreateAuctionPage() {
                               <Input
                                 {...field}
                                 placeholder="10"
-                                defaultValue={10}
                                 type="number"
                                 min={1}
                                 max={50}
