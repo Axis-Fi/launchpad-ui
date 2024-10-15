@@ -29,7 +29,7 @@ import {
 } from "state/user-settings/auction-list-settings";
 import { useAtom } from "jotai";
 import React from "react";
-import { useAccount } from "wagmi";
+//import { useAccount } from "wagmi";
 import { environment } from "@repo/env";
 import { useMediaQueries } from "loaders/use-media-queries";
 
@@ -56,18 +56,10 @@ export default function AuctionListPage() {
   const [filters] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
-  const { address } = useAccount();
+  //const { address } = useAccount();
   const { data: auctions, isLoading } = useAuctions();
 
-  const secureAuctions = auctions
-    .filter((a) => "isSecure" in a && a.isSecure)
-    .filter(
-      // Filter only user created or participated auctions
-      (a) =>
-        !address ||
-        a.seller.toLowerCase() === address.toLowerCase() ||
-        a.bids.some((b) => b.bidder.toLowerCase() === address.toLowerCase()),
-    );
+  const secureAuctions = auctions.filter((a) => "isSecure" in a && a.isSecure);
 
   const filteredAuctions =
     filters.length || searchText.length

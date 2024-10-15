@@ -25,6 +25,7 @@ import { BidList } from "modules/auction/bid-list";
 import { PurchaseList } from "modules/auction/purchase-list";
 import { getLinkUrl } from "modules/auction/utils/auction-details";
 import { Countdown } from "modules/auction/countdown";
+import { AuctionBaselineLive } from "modules/auction/status/auction-baseline-live";
 
 const statuses: Record<
   AuctionStatus,
@@ -58,10 +59,15 @@ export default function AuctionPage() {
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
   const isFPA = auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
+  //TODO: implement check
+  const isBaseline = true;
+
   const AuctionElement =
     auction.status === "concluded" && isFPA
       ? FixedPriceBatchAuctionConcluded
-      : statuses[auction.status];
+      : isBaseline
+        ? AuctionBaselineLive
+        : statuses[auction.status];
 
   return (
     <PageContainer id="__AXIS_ORIGIN_LAUNCH_PAGE__" className="mb-20">

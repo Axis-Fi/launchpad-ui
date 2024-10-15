@@ -40,8 +40,9 @@ const CardTitle = React.forwardRef<
     ref={ref}
     className={cn(
       textVariants({ color: "secondary", size: "3xl", weight: "light" }),
-      "font-mono leading-none tracking-tight",
+      "font-mono tracking-tight",
       "text-[40px]",
+      "leading-[40px]",
       className,
     )}
     {...props}

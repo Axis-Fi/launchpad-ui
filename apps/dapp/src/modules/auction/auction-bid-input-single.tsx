@@ -35,6 +35,8 @@ export function AuctionBidInputSingle({
 
     form.setValue("baseTokenAmount", formattedAmountOut);
   }
+  const showAmountOut =
+    form.formState.isValid && isFinite(Number(formAmountOut));
 
   return (
     <div className="text-foreground flex flex-col gap-y-2">
@@ -49,6 +51,11 @@ export function AuctionBidInputSingle({
                   {...field}
                   disabled={disabled}
                   label="Spend Amount"
+                  message={
+                    showAmountOut
+                      ? `You will receive ${formAmountOut} ${auction.baseToken.symbol}`
+                      : ""
+                  }
                   balance={formatUnits(balance, auction.quoteToken.decimals)}
                   limit={
                     limit
@@ -93,18 +100,6 @@ export function AuctionBidInputSingle({
                 />
               </FormItemWrapperSlim>
             )}
-          />
-        </div>
-      </div>
-
-      <div className="bg-secondary flex justify-between rounded-sm pt-1">
-        <div>
-          <TokenAmountInput
-            disabled={disabled}
-            disableMaxButton={true}
-            token={auction.baseToken}
-            label="Amount Received"
-            value={formAmountOut}
           />
         </div>
       </div>
