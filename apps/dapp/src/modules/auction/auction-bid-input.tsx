@@ -1,11 +1,11 @@
 import { FormField, FormItemWrapperSlim } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
 import { PropsWithAuction } from "@repo/types";
-import { BidForm } from "./status";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { trimCurrency } from "utils/currency";
 import { useState } from "react";
 import { formatUnits, parseUnits } from "viem";
+import { BidForm } from "./auction-purchase";
 
 export function AuctionBidInput({
   auction,
