@@ -325,9 +325,10 @@ const schema = z
     (data) =>
       !isBaselineCallback(data.callbacksType)
         ? true
-        : data.callbacks === undefined || isAddress(data.callbacks),
+        : data.callbacks !== undefined && isAddress(data.callbacks),
     {
-      message: "Invalid callbacks address",
+      message:
+        "Callbacks address must be specified for Baseline callbacks type",
       path: ["callbacks"],
     },
   )
