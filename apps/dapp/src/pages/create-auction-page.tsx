@@ -334,7 +334,6 @@ const schema = z
   )
   .refine(
     (data) => {
-      console.log({ data });
       return !isBaselineCallback(data.callbacksType)
         ? true
         : data.baselineFloorReservesPercent &&
@@ -731,9 +730,7 @@ export default function CreateAuctionPage() {
     onError: (error) => console.error("Error during submission:", error),
   });
 
-  console.log(form.formState.errors);
   const creationHandler = async (values: CreateAuctionForm) => {
-    console.log("submitt");
     const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
