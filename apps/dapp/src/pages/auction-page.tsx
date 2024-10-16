@@ -18,9 +18,7 @@ import {
   AuctionSettled,
 } from "modules/auction/status";
 import { PageContainer } from "modules/app/page-container";
-import { ReloadButton } from "components/reload-button";
 import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
-import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 import { BidList } from "modules/auction/bid-list";
 import { PurchaseList } from "modules/auction/purchase-list";
 import { getLinkUrl } from "modules/auction/utils/auction-details";
@@ -45,12 +43,10 @@ const statuses: Record<
 export default function AuctionPage() {
   const { chainId, lotId } = useParams();
 
-  const {
-    result: auction,
-    isLoading: isAuctionLoading,
-    isRefetching,
-    refetch,
-  } = useAuction(chainId!, lotId!);
+  const { result: auction, isLoading: isAuctionLoading } = useAuction(
+    chainId!,
+    lotId!,
+  );
 
   if (isAuctionLoading) {
     return <AuctionPageLoading />;
@@ -58,6 +54,8 @@ export default function AuctionPage() {
 
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
   const isFPA = auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+  //TODO: implement
+  const showBidHistory = false;
 
   //TODO: implement check
   const isBaseline = true;
@@ -71,15 +69,23 @@ export default function AuctionPage() {
 
   return (
     <PageContainer id="__AXIS_ORIGIN_LAUNCH_PAGE__" className="mb-20">
-      <PageHeader backNavigationPath="/#" backNavigationText="Back to Launches">
-        <ReloadButton refetching={isRefetching} onClick={() => refetch?.()} />
-      </PageHeader>
-
       <AuctionPageView auction={auction} isAuctionLoading={isAuctionLoading}>
-        <AuctionElement auction={auction} />
+        <PageHeader
+          className="mt-0 lg:mt-0"
+          backNavigationPath="/#"
+          backNavigationText="Back to Launches"
+          toggle
+          toggleSymbol={auction.quoteToken.symbol}
+        >
+          <Countdown auction={auction} />
+        </PageHeader>
+        <div className="mt-10">
+          <AuctionElement auction={auction} />
+        </div>
       </AuctionPageView>
       {auction.status !== "created" &&
         auction.status !== "registering" &&
+        showBidHistory &&
         (!isFPA ? (
           <BidList auction={auction} />
         ) : (
@@ -107,15 +113,8 @@ export function AuctionPageView({
         onTextColorChange={setTextColor}
       >
         <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
-          <div className="flex w-full flex-row justify-end">
-            <div className="mr-4 mt-4">
-              {!isAuctionLoading && (
-                <AuctionStatusBadge status={auction.status} large />
-              )}
-            </div>
-          </div>
           <div className="flex w-full flex-col justify-end">
-            <div className="self-center text-center align-bottom">
+            <div className="mb-10 self-center text-center">
               <Text
                 size="7xl"
                 mono
@@ -134,9 +133,6 @@ export function AuctionPageView({
               >
                 {!isAuctionLoading && auction.info?.tagline}
               </Text>
-            </div>
-            <div className="mb-4 ml-4 self-start">
-              {!isAuctionLoading && <Countdown auction={auction} />}
             </div>
           </div>
         </div>

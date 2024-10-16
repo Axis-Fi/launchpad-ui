@@ -80,9 +80,10 @@ export const TokenAmountInput = React.forwardRef<
             disabled={disabled}
             placeholder="0"
             className={cn(
-              "hover:bg-surface-secondary ml-0 pl-0",
+              "hover:bg-surface-secondary ",
               error && "text-feedback-alert",
             )}
+            style={{ padding: 0 }} //TODO: figure out why this is necessary
             {...props}
             ref={ref}
           />

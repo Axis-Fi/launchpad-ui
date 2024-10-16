@@ -4,7 +4,12 @@ import { EditProfileDialog } from "pages/points/edit-profile-dialog";
 import { LinkWalletDialog } from "pages/points/link-wallet-dialog";
 import { ReferralLinkDialog } from "modules/referral/referral-link-dialog";
 
-export function DialogProvider({ children }: PropsWithChildren) {
+export function DialogProvider({
+  children,
+  disabled,
+}: PropsWithChildren & { disabled?: boolean }) {
+  if (disabled) return children;
+
   return (
     <>
       {children}

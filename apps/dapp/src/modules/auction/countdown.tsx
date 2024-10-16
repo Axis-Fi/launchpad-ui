@@ -1,28 +1,18 @@
 import { useEffect, useState } from "react";
 import type { PropsWithAuction } from "@repo/types";
-import { Badge, Metric } from "@repo/ui";
+import { Metric, Text } from "@repo/ui";
 import { getCountdown } from "utils";
-import { useMediaQueries } from "loaders/use-media-queries";
-import { formatDate } from "utils";
 
 export function Countdown({ auction }: PropsWithAuction) {
-  const { isTabletOrMobile } = useMediaQueries();
-  const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
-  const isRegistrationLaunch = auction.status === "registering";
-
-  const startDate = isRegistrationLaunch
-    ? new Date(Date.now())
-    : new Date(Number(auction.start) * 1000);
-
-  const endDate = isRegistrationLaunch
-    ? auction.registrationDeadline!
-    : new Date(Number(auction.conclusion) * 1000);
-
+  const [timeDistance, setTimeDistance] = useState<string | null>("");
+  const startDate = new Date(Number(auction.start) * 1000);
+  const endDate = new Date(Number(auction.conclusion) * 1000);
   const now = new Date();
 
   const isOngoing = startDate <= now && endDate > now;
 
-  const hasntStarted = startDate > now;
+  const isntStarted = startDate > now;
+  const isntFinished = isntStarted || isOngoing;
 
   const isFinished =
     now > endDate ||
@@ -30,15 +20,12 @@ export function Countdown({ auction }: PropsWithAuction) {
     auction.status === "settled" ||
     auction.status === "decrypted";
 
-  const inProgress = hasntStarted || isOngoing;
-
-  const targetDate =
-    hasntStarted && !isRegistrationLaunch ? startDate : endDate;
+  const targetDate = isntStarted ? startDate : endDate;
 
   // Immediately set the countdown if the auction is ongoing
   useEffect(() => {
-    if (inProgress) {
-      setTimeRemaining(getCountdown(targetDate));
+    if (isntFinished) {
+      setTimeDistance(getCountdown(targetDate));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -46,30 +33,51 @@ export function Countdown({ auction }: PropsWithAuction) {
   // Refresh the countdown every second
   useEffect(() => {
     const interval = setInterval(() => {
-      if (inProgress) {
-        setTimeRemaining(getCountdown(targetDate));
+      if (isntFinished) {
+        setTimeDistance(getCountdown(targetDate));
       }
     }, 1000);
 
     return () => clearInterval(interval);
   }, [startDate, endDate, isOngoing]);
 
-  if (!inProgress && !isFinished) return null;
+  return (
+    <div className="flex items-center gap-x-6">
+      <CountdownStatus auction={auction} />
+      <CountdownDisplay time={isFinished ? "00:00:00:00" : timeDistance!} />
+    </div>
+  );
+}
+
+function CountdownStatus(props: PropsWithAuction) {
+  let phrasalVerb = "ended in";
+
+  switch (props.auction.status) {
+    case "created":
+      phrasalVerb = "starts in";
+      break;
+    case "live":
+      phrasalVerb = "ends in";
+  }
 
   return (
-    <Badge size={isTabletOrMobile ? "s" : "xl"} className="px-4">
-      <Metric
-        size={isTabletOrMobile ? "s" : "m"}
-        className="text-center"
-        isLabelSpaced
-        label={
-          isFinished ? "Ended on " : hasntStarted ? "Upcoming in" : "Remaining"
-        }
-      >
-        {isFinished
-          ? formatDate.day(new Date(+auction.conclusion * 1000))
-          : timeRemaining}
+    <Text uppercase spaced mono size="sm" color="secondary" className="">
+      Launch <br />
+      {phrasalVerb}
+    </Text>
+  );
+}
+
+function CountdownDisplay({ time }: { time: string }) {
+  const [d, h, m, s] = time.split(":");
+  return (
+    <div className="m-0 flex gap-x-5 self-center justify-self-center pb-0 *:leading-none">
+      <Metric label="days">{d}</Metric>
+      <Metric label="hours">{h}</Metric>
+      <Metric label="mins" className="-ml-2">
+        {m}
       </Metric>
-    </Badge>
+      <Metric label="secs">{s}</Metric>
+    </div>
   );
 }

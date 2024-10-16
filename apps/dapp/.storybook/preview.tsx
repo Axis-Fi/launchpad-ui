@@ -35,7 +35,7 @@ const preview: Preview = {
     withRouter,
     (Story) => (
       <ThemeProvider>
-        <Providers disableDevTools>
+        <Providers disableDevTools disableDialogProvider>
           <Story />
         </Providers>
       </ThemeProvider>
