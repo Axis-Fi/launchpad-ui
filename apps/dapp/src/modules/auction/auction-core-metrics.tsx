@@ -1,9 +1,8 @@
 import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
-import { Card, Text, Metric } from "@repo/ui";
+import { Card, Metric } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
-import AuctionProgressBar from "./auction-progress-bar";
 import { ProjectInfoCard } from "./project-info-card";
 
 export function AuctionCoreMetrics(
@@ -11,7 +10,6 @@ export function AuctionCoreMetrics(
 ) {
   const auction = props.auction as BatchAuction;
 
-  const showProgress = auction.status === "live";
   const isSealedBid = auction.auctionType === AuctionType.SEALED_BID;
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
@@ -35,14 +33,6 @@ export function AuctionCoreMetrics(
         </div>
       }
     >
-      {showProgress && (
-        <div className="mb-4">
-          <Text uppercase size="xs" spaced>
-            Auction Progress
-          </Text>
-          <AuctionProgressBar auction={auction} />
-        </div>
-      )}
       <div className="flex flex-col justify-between ">
         <AuctionMetricsContainer auction={auction}>
           <AuctionMetric id="targetRaise" />

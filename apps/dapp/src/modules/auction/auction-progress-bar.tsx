@@ -2,6 +2,7 @@ import { PropsWithAuction } from "@repo/types";
 import { Progress, Text, cn } from "@repo/ui";
 import { calculateAuctionProgress } from "./utils/get-auction-progress";
 import { ToggledUsdAmount } from "./toggled-usd-amount";
+import { trimCurrency } from "utils/currency";
 
 /** Renders a progress bar with the amount of tokens commited in bids*/
 export default function AuctionProgressBar({ auction }: PropsWithAuction) {
@@ -45,7 +46,9 @@ function ProgressMetric(props: ProgressMetricProps) {
         <ToggledUsdAmount
           token={props.auction.quoteToken}
           amount={props.value}
-          untoggledFormat={(val) => val + " " + props.auction.quoteToken.symbol}
+          untoggledFormat={(val) =>
+            trimCurrency(val) + " " + props.auction.quoteToken.symbol
+          }
         />
       </Text>
 
