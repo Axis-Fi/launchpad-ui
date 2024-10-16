@@ -383,6 +383,39 @@ const schema = z
   )
   .refine(
     (data) =>
+      !isSimpleAllowlist(data.callbacksType) &&
+      !isCappedAllowlist(data.callbacksType) &&
+      !isAllocatedAllowlist(data.callbacksType)
+        ? true
+        : data.allowlist !== undefined,
+    {
+      message: "Allowlist must be set",
+      path: ["allowlist"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isTokenAllowlist(data.callbacksType)
+        ? true
+        : data.allowlistToken && isAddress(data.allowlistToken.address),
+    {
+      message: "Allowlist token must be a valid address",
+      path: ["allowlistToken"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isTokenAllowlist(data.callbacksType)
+        ? true
+        : data.allowlistTokenThreshold &&
+          Number(data.allowlistTokenThreshold) >= 0,
+    {
+      message: "Allowlist token threshold must be a positive number",
+      path: ["allowlistTokenThreshold"],
+    },
+  )
+  .refine(
+    (data) =>
       !(data.callbacksType === CallbacksType.UNIV3_DTL)
         ? true
         : data.dtlUniV3PoolFee,
@@ -403,8 +436,6 @@ const schema = z
       path: ["capacity"],
     },
   );
-
-// TODO add validation of allowlist files
 
 export type CreateAuctionForm = z.infer<typeof schema>;
 
