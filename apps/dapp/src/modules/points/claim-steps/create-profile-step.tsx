@@ -23,7 +23,7 @@ export function CreateProfileStep() {
         header={<PointsHeader subtitle="Create profile" />}
         submitText="Create profile"
         onSubmit={(data) =>
-          register.mutate(data, { onSuccess: wizard.nextStep })
+          register.mutate({ profile: data }, { onSuccess: wizard.nextStep })
         }
         isLoading={register.isPending}
       >

@@ -4,8 +4,10 @@ import { axisContracts } from "@repo/deployments";
 import { allowedCurators, environment } from "@repo/env";
 
 /** Checks if the curator address on an Auction exists in an address list */
-export function isAllowedCurator(auction: AuctionCuratorAndCallback) {
+export function isAllowedCurator(auction: AuctionProps) {
   const curator = auction.curator;
+
+  if (auction.status === "registering") return true;
 
   return (
     curator &&
@@ -17,7 +19,7 @@ export function isAllowedCurator(auction: AuctionCuratorAndCallback) {
 }
 
 /** Checks if a callback address is a valid Axis Contract */
-export function isAxisCallback(auction: AuctionCuratorAndCallback) {
+export function isAxisCallback(auction: AuctionProps) {
   return (
     !auction.callbacks ||
     auction.callbacks === zeroAddress ||
@@ -28,10 +30,10 @@ export function isAxisCallback(auction: AuctionCuratorAndCallback) {
 }
 
 /** Calls auction filters */
-type AuctionCuratorAndCallback = Pick<Auction, "chainId" | "curator"> & {
+type AuctionProps = Pick<Auction, "status" | "chainId" | "curator"> & {
   callbacks?: Address;
 };
-export function isSecureAuction(auction: AuctionCuratorAndCallback) {
+export function isSecureAuction(auction: AuctionProps) {
   return Boolean(
     !environment.isProduction ||
       (isAllowedCurator(auction) && isAxisCallback(auction)),

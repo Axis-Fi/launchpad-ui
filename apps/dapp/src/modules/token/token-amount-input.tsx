@@ -10,7 +10,7 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** the input's token label, defaults to the token's symbol */
   tokenLabel?: string;
   /** the input's token type */
-  token: Token;
+  token?: Token;
   /** whether to show the USD price of the token */
   showUsdPrice?: boolean;
   /** the user's balance */
@@ -29,6 +29,8 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   disableMaxButton?: boolean;
   /** callback when the max button is clicked */
   onClickMaxButton?: () => void;
+  /** the prefix to add to the amount */
+  amountPrefix?: string;
 };
 
 export const TokenAmountInput = React.forwardRef<
@@ -40,7 +42,7 @@ export const TokenAmountInput = React.forwardRef<
       label,
       token,
       showUsdPrice = true,
-      tokenLabel = token.symbol,
+      tokenLabel = token?.symbol,
       balance,
       limit,
       error,
@@ -49,6 +51,7 @@ export const TokenAmountInput = React.forwardRef<
       disabled,
       disableMaxButton,
       onClickMaxButton,
+      amountPrefix,
       ...props
     },
     ref,
@@ -67,6 +70,9 @@ export const TokenAmountInput = React.forwardRef<
           </div>
         </div>
         <div className="mt-0.5 flex items-center">
+          <Text size="xl" className="font-light">
+            {amountPrefix}
+          </Text>
           <Input
             value={value === undefined ? "" : value}
             type="number"
@@ -90,16 +96,14 @@ export const TokenAmountInput = React.forwardRef<
               variant="secondary"
               size="sm"
               className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
-              onClick={() => {
-                onClickMaxButton?.();
-              }}
+              onClick={() => onClickMaxButton?.()}
             >
               Max
             </Button>
           )}
         </div>
         <div className="flex justify-between">
-          {showUsdPrice && (
+          {token && showUsdPrice && (
             <div className="flex items-start">
               <Text size="xs" color="secondary">
                 {!value && "≈ $0"}

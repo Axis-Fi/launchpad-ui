@@ -6,10 +6,17 @@ import { AuctionMetric } from "./auction-metric";
 import { allowedCurators } from "@repo/env";
 import ExternalLink from "components/external-link";
 
+type ProjectInfoCardProps = PropsWithAuction &
+  React.HTMLAttributes<HTMLDivElement> & {
+    canRefer?: boolean;
+  };
+
 export function ProjectInfoCard({
   auction,
+  canRefer = true,
+  children,
   ...props
-}: PropsWithAuction & React.HTMLAttributes<HTMLDivElement>) {
+}: ProjectInfoCardProps) {
   const description =
     auction.info?.description ?? "No description found for this project.";
 
@@ -25,8 +32,9 @@ export function ProjectInfoCard({
     <Card
       className={props.className}
       title={`About ${auction.info?.name || ""}`}
-      headerRightElement={<ReferrerPopover auction={auction} />}
+      headerRightElement={canRefer && <ReferrerPopover auction={auction} />}
     >
+      {children}
       <div className="mb-4 flex">{description}</div>
       <div className="flex-start flex space-x-4">
         {twitter && (

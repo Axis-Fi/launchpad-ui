@@ -1,3 +1,4 @@
+import { GetAuctionLotsQuery } from "@repo/subgraph-client";
 import { AuctionType } from "./auction-modules";
 import { Address } from "./axis-contracts";
 import { BatchSubgraphAuction } from "./subgraph-queries";
@@ -16,25 +17,17 @@ export type BaseAuction = {
 
   // Used for registration launches
   registrationDeadline?: Date;
+  fdv?: number;
 };
 
-export type RegistrationLaunch = Pick<
-  BaseAuction,
-  "chainId" | "callbacks" | "registrationDeadline" | "status"
-> &
-  Pick<
-    BatchSubgraphAuction,
-    | "auctionType"
-    | "id"
-    | "chain"
-    | "auctionHouse"
-    | "lotId"
-    | "info"
-    | "curator"
-    | "curatorApproved"
-    | "seller"
-    | "bids"
+/** Patched auction lots query that treats callbacks as Address */
+export type GetAuctionLots = {
+  batchAuctionLots: Array<
+    GetAuctionLotsQuery["batchAuctionLots"][0] & {
+      callbacks: Address;
+    }
   >;
+};
 
 export type AuctionStatus =
   | "registering"

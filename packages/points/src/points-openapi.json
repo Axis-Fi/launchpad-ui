@@ -22,6 +22,10 @@
     {
       "description": "Endpoints for retrieving user and wallet points data.",
       "name": "Points"
+    },
+    {
+      "description": "Endpoints for using the launch pre-registration system.",
+      "name": "Launches"
     }
   ],
   "paths": {
@@ -439,6 +443,211 @@
         "summary": "Retrieves the most recent users 100 to join. Does not include points data for them.",
         "tags": ["Points"]
       }
+    },
+    "/launches": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Launch"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The list of launches."
+          },
+          "500": {
+            "description": "Error retrieving launches."
+          }
+        },
+        "summary": "Retrieves the list of all launches that have used the pre-registration system.",
+        "tags": ["Launches"]
+      }
+    },
+    "/launches/active": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Launch"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The list of active launches."
+          },
+          "500": {
+            "description": "Error retrieving active launches."
+          }
+        },
+        "summary": "Retrieves the list of all active launches that are using the pre-registration system.",
+        "tags": ["Launches"]
+      }
+    },
+    "/launches/register": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LaunchRegistrationRequest"
+              }
+            }
+          },
+          "description": "The user's wallet address and commitment for the launch.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully registered for launch."
+          },
+          "400": {
+            "description": "Bad Request - wallet address is invalid, commitment is invalid, launch is not active, or the user is already registered."
+          },
+          "500": {
+            "description": "Error registering for launch."
+          }
+        },
+        "security": [
+          {
+            "JWTAuthorization": []
+          }
+        ],
+        "summary": "Registers a user for a launch.",
+        "tags": ["Launches"]
+      }
+    },
+    "/launches/register/update": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LaunchRegistration"
+              }
+            }
+          },
+          "description": "The user's wallet address and new commitment for the launch.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated commitment for launch."
+          },
+          "400": {
+            "description": "Bad Request - wallet address is invalid, commitment is invalid, launch is not active, or the user is not registered."
+          },
+          "500": {
+            "description": "Error updating commitment for launch."
+          }
+        },
+        "security": [
+          {
+            "JWTAuthorization": []
+          }
+        ],
+        "summary": "Updates a user's commitment for a launch.",
+        "tags": ["Launches"]
+      }
+    },
+    "/launches/register/cancel": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LaunchRegistration"
+              }
+            }
+          },
+          "description": "The user's wallet address and launch name.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully cancelled registration for launch."
+          },
+          "400": {
+            "description": "Bad Request - wallet address is invalid, launch is not active, or the user is not registered."
+          },
+          "500": {
+            "description": "Error cancelling registration for launch."
+          }
+        },
+        "security": [
+          {
+            "JWTAuthorization": []
+          }
+        ],
+        "summary": "Cancels a user's registration for a launch.",
+        "tags": ["Launches"]
+      }
+    },
+    "/launches/registrations": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LaunchRegistration"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The user's registrations for launches."
+          },
+          "500": {
+            "description": "Error retrieving registrations for launches."
+          }
+        },
+        "security": [
+          {
+            "JWTAuthorization": []
+          }
+        ],
+        "summary": "Retrieves the user's registrations for launches.",
+        "tags": ["Launches"]
+      }
+    },
+    "/launches/registrations/active": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/LaunchRegistration"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "The user's registrations for active launches."
+          },
+          "500": {
+            "description": "Error retrieving registrations for active launches."
+          }
+        },
+        "security": [
+          {
+            "JWTAuthorization": []
+          }
+        ],
+        "summary": "Retrieves the user's registrations for active launches.",
+        "tags": ["Launches"]
+      }
     }
   },
   "components": {
@@ -625,6 +834,79 @@
             "type": "float"
           },
           "points": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Launch": {
+        "description": "A JSON object containing information about a launch.",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "chain_id": {
+            "type": "integer"
+          },
+          "deadline": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "website_url": {
+            "type": "string"
+          },
+          "twitter_url": {
+            "type": "string"
+          },
+          "discord_url": {
+            "type": "string"
+          },
+          "project_logo_url": {
+            "type": "string"
+          },
+          "project_banner_url": {
+            "type": "string"
+          },
+          "tagline": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "valuation": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "LaunchRegistration": {
+        "description": "A JSON object containing information about a user's registration for a launch.",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "launch_name": {
+            "type": "string"
+          },
+          "wallet_address": {
+            "type": "string"
+          },
+          "commitment": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "LaunchRegistrationRequest": {
+        "description": "A JSON object containing information about a user's registration request for a launch.",
+        "properties": {
+          "launch_name": {
+            "type": "string"
+          },
+          "wallet_address": {
+            "type": "string"
+          },
+          "commitment": {
             "type": "integer"
           }
         },

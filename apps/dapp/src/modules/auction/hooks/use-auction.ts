@@ -26,6 +26,7 @@ import { useIsCacheStale } from "./use-is-cache-stale";
 import { useSafeRefetch } from "./use-safe-refetch";
 import { getAuctionId } from "../utils/get-auction-id";
 import { getAuctionType } from "../utils/get-auction-type";
+import { externalAuctionInfo } from "@repo/env";
 
 type AuctionQueryKey = QueryKey &
   readonly ["getBatchAuctionLot", { id: AuctionId }];
@@ -103,6 +104,7 @@ export function useAuction(
     ...rawAuction,
     chainId,
     status,
+    info: rawAuction.info ?? externalAuctionInfo[id],
   };
 
   const tokens = formatAuctionTokens(auction, getToken);

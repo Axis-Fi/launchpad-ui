@@ -6,6 +6,9 @@ import {
   PointsApi,
   Middleware,
   ResponseContext,
+  LaunchesApi,
+  LaunchRegistration,
+  LaunchRegistrationRequest,
 } from ".";
 import { environment } from "@repo/env";
 import { Config, signMessage } from "@wagmi/core";
@@ -66,6 +69,7 @@ const defaultConfig = new Configuration({
 export class PointsClient {
   authApi: AuthenticationApi;
   pointsApi: PointsApi;
+  launchesApi: LaunchesApi;
   wagmiConfig: Config;
 
   constructor(config: Configuration = defaultConfig, wagmiConfig: Config) {
@@ -79,6 +83,7 @@ export class PointsClient {
 
     this.authApi = new AuthenticationApi(fullConfig);
     this.pointsApi = new PointsApi(fullConfig);
+    this.launchesApi = new LaunchesApi(fullConfig);
     this.wagmiConfig = wagmiConfig;
   }
 
@@ -125,8 +130,11 @@ export class PointsClient {
     return this.authApi.availableUsernameGet({ username });
   }
 
-  async signIn(chainId: number, address: `0x${string}`) {
-    const statement = "Sign in to view your Axis points.";
+  async signIn(
+    chainId: number,
+    address: `0x${string}`,
+    statement: string = "Sign in to view your Axis points.",
+  ) {
     const { message, signature } = await this.sign(chainId, address, statement);
 
     return this.authApi.signInPost({ signinData: { message, signature } });
@@ -138,8 +146,8 @@ export class PointsClient {
     username: string,
     referrer?: string,
     avatar?: Blob,
+    statement: string = "Register to claim your Axis points.",
   ) {
-    const statement = "Register to claim your Axis points.";
     const { message, signature } = await this.sign(chainId, address, statement);
 
     const response = await this.authApi.registerPost(
@@ -187,7 +195,8 @@ export class PointsClient {
     // Handle the case where the refresh token itself has expired (force user to sign in again)
     if (url.endsWith("/refresh") && responseContext.response?.status === 400) {
       this.signOut();
-      window.location.href = "#/points/sign-in";
+      // TODO:
+      // window.location.href = "#/points/sign-in";
       return;
     }
 
@@ -250,6 +259,59 @@ export class PointsClient {
         profileImage: avatar ? avatar : undefined,
       },
       { headers: this.headers() },
+    );
+  }
+
+  async getActiveRegistrationLaunches() {
+    return this.launchesApi.launchesActiveGet();
+  }
+
+  async getUserRegistrations() {
+    return this.launchesApi.launchesRegistrationsGet({
+      headers: {
+        "Content-Type": "application/json",
+        ...this.headers(),
+      },
+    });
+  }
+
+  async registerUserDemand(launchRegistration: LaunchRegistrationRequest) {
+    return this.launchesApi.launchesRegisterPost(
+      {
+        launchRegistrationRequest: launchRegistration,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...this.headers(),
+        },
+      },
+    );
+  }
+
+  async updateUserDemand(launchRegistration: LaunchRegistration) {
+    return this.launchesApi.launchesRegisterUpdatePost(
+      { launchRegistration },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...this.headers(),
+        },
+      },
+    );
+  }
+
+  async cancelUserDemand(launchRegistration: LaunchRegistration) {
+    return this.launchesApi.launchesRegisterCancelPost(
+      {
+        launchRegistration,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          ...this.headers(),
+        },
+      },
     );
   }
 }

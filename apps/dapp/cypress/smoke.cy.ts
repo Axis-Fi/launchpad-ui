@@ -24,11 +24,6 @@ describe("smoke tests", () => {
     cy.shouldRenderPageWithId("__AXIS_ORIGIN_CURATORS_PAGE__");
   });
 
-  it("renders referral page", () => {
-    cy.visit(URLS.REFERRALS);
-    cy.shouldRenderPageWithId("__AXIS_ORIGIN_REFERRALS_PAGE__");
-  });
-
   it("renders launch page", () => {
     cy.visit(URLS.LAUNCH);
     cy.shouldRenderPageWithId("__AXIS_ORIGIN_LAUNCH_PAGE__");

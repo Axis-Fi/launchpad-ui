@@ -1,8 +1,4 @@
-import {
-  AuctionStatus,
-  type NonNullSubgraphAuction,
-  type RegistrationLaunch,
-} from "@repo/types";
+import { AuctionStatus, type NonNullSubgraphAuction } from "@repo/types";
 
 /**
  * Determines the auction status dynamically.
@@ -10,12 +6,8 @@ import {
  * we need to derive this on the frontend.
  */
 export function getAuctionStatus(
-  auction: NonNullSubgraphAuction | RegistrationLaunch,
+  auction: NonNullSubgraphAuction,
 ): AuctionStatus {
-  if ("status" in auction && auction.status === "registering") {
-    return "registering";
-  }
-
   const subgraphAuction = auction as NonNullSubgraphAuction;
 
   const { start, conclusion } = subgraphAuction;

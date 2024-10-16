@@ -23,7 +23,7 @@ export function UserProfile() {
   const handleClick = () => {
     if (!isRegistered) return navigate("/points/claim");
 
-    if (!isUserSignedIn) return profileActions.signIn.mutate();
+    if (!isUserSignedIn) return profileActions.signIn.mutate(undefined);
 
     return navigate("/points");
   };
@@ -34,7 +34,7 @@ export function UserProfile() {
     ? isTabletOrMobile
       ? shorten(points)
       : trimCurrency(points)
-    : null;
+    : 0;
 
   return (
     <div className="flex items-center justify-center gap-x-4">

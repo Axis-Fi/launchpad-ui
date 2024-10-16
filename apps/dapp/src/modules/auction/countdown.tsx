@@ -28,16 +28,6 @@ export function Countdown({ auction }: PropsWithAuction) {
   const targetDate =
     hasntStarted && !isRegistrationLaunch ? startDate : endDate;
 
-  console.log("auction", auction.id, {
-    startDate,
-    endDate,
-    isOngoing,
-    hasntStarted,
-    inProgress,
-    targetDate,
-    deadline: auction.registrationDeadline,
-  });
-
   // Immediately set the countdown if the auction is ongoing
   useEffect(() => {
     if (inProgress) {

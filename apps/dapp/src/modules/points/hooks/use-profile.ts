@@ -34,12 +34,23 @@ export function useProfile() {
   const referrer = useReferrer();
 
   const register = useMutation({
-    mutationFn: async (profile: ProfileForm) => {
+    mutationFn: async ({
+      profile,
+      statement,
+    }: {
+      profile: ProfileForm;
+      statement?: string;
+    }) => {
       analytics.trackEvent("register", {
         props: { address: connectedAddress as string },
       });
 
-      return points.register(profile.username, referrer, profile.avatar);
+      return points.register(
+        profile.username,
+        referrer,
+        profile.avatar,
+        statement,
+      );
     },
     onSuccess: () => profileQuery.refetch(),
   });
@@ -56,7 +67,7 @@ export function useProfile() {
   });
 
   const signIn = useMutation({
-    mutationFn: async () => points.signIn(),
+    mutationFn: async (statement?: string) => points.signIn(statement),
   });
 
   const signOut = useCallback(() => {
@@ -97,7 +108,6 @@ export function useProfile() {
     enabled: connectedAddress != null,
   });
 
-  // Automatically sign the user out if they connect a new wallet
   // which is linked to a different user profile
   useEffect(() => {
     async function autoSignOut() {
@@ -125,6 +135,8 @@ export function useProfile() {
     profileQuery.data,
   ]);
 
+  // When a user connects a new wallet, refetch
+  // the isRegistered query if there's not already one in-flight
   useEffect(() => {
     if (connectedAddress == null) return;
     userRegisteredQuery.refetch({ cancelRefetch: false });

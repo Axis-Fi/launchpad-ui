@@ -67,7 +67,10 @@ function AuctionCardDetails(
   const isFPB = props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const hasCurator = !!props.auction.curator && props.auction.curatorApproved;
 
-  const externalSite = getLinkUrl("externalSite", props.auction);
+  const isRegistrationLaunch = props.auction.status === "registering";
+
+  const detailsPageUrl =
+    getAuctionPath(props.auction) + (isRegistrationLaunch ? "/register" : "");
 
   return (
     <div
@@ -146,10 +149,7 @@ function AuctionCardDetails(
           <AuctionMetric size="s" id="curator" auction={props.auction} />
         )}
 
-        <Link
-          className={"flex self-end"}
-          to={externalSite ?? getAuctionPath(props.auction)}
-        >
+        <Link className={"flex self-end"} to={detailsPageUrl}>
           <Button
             disabled={props.disabledViewButton}
             size={props.isGrid ? "sm" : "lg"}
