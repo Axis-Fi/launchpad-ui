@@ -396,6 +396,8 @@ const schema = z
     path: ["capacity"],
   });
 
+// TODO add validation of allowlist files
+
 export type CreateAuctionForm = z.infer<typeof schema>;
 
 const generateAllowlistCallbackData = (
@@ -1202,6 +1204,12 @@ export default function CreateAuctionPage() {
     query: { enabled: callbacksType === CallbacksType.UNIV2_DTL },
   });
 
+  // Validate the UniV2 pool
+  const isUniV2PoolQueryEnabled =
+    callbacksType === CallbacksType.UNIV2_DTL &&
+    !!uniV2Factory &&
+    !!payoutToken?.address &&
+    !!quoteToken?.address;
   const { data: uniV2Pool } = useReadContract({
     abi: abis.uniV2Factory,
     address: uniV2Factory,
@@ -1211,13 +1219,24 @@ export default function CreateAuctionPage() {
         ? [getAddress(payoutToken.address), getAddress(quoteToken.address)]
         : undefined,
     query: {
-      enabled:
-        callbacksType === CallbacksType.UNIV2_DTL &&
-        !!uniV2Factory &&
-        !!payoutToken?.address &&
-        !!quoteToken?.address,
+      enabled: isUniV2PoolQueryEnabled,
     },
   });
+  useEffect(() => {
+    if (uniV2Pool && uniV2Pool !== zeroAddress) {
+      console.error(
+        `Existing UniV2 pool found for ${payoutToken?.address} and ${quoteToken?.address}: ${uniV2Pool}`,
+      );
+      form.setError("callbacksType", {
+        message:
+          "A UniV2 pool already exists for the selected tokens. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for UniV2 pool");
+    form.clearErrors("callbacksType");
+  }, [uniV2Pool, form, payoutToken?.address, quoteToken?.address]);
 
   // If the auction uses a UniV3 DTL, we need to check if a pool exists for the base/quote token pair and fee tier
   const { data: uniV3Factory } = useReadContract({
@@ -1227,6 +1246,13 @@ export default function CreateAuctionPage() {
     query: { enabled: callbacksType === CallbacksType.UNIV3_DTL },
   });
 
+  // Validate the UniV3 pool
+  const isUniV3PoolQueryEnabled =
+    callbacksType === CallbacksType.UNIV3_DTL &&
+    !!uniV3Factory &&
+    !!payoutToken?.address &&
+    !!quoteToken?.address &&
+    !!dtlUniV3PoolFee;
   const { data: uniV3Pool } = useReadContract({
     abi: abis.uniV3Factory,
     address: uniV3Factory,
@@ -1240,51 +1266,61 @@ export default function CreateAuctionPage() {
           ]
         : undefined,
     query: {
-      enabled:
-        callbacksType === CallbacksType.UNIV3_DTL &&
-        !!uniV3Factory &&
-        !!payoutToken?.address &&
-        !!quoteToken?.address &&
-        !!dtlUniV3PoolFee,
+      enabled: isUniV3PoolQueryEnabled,
     },
   });
+  useEffect(() => {
+    if (uniV3Pool && uniV3Pool !== zeroAddress) {
+      console.error(
+        `Existing UniV3 pool found for ${payoutToken?.address} and ${quoteToken?.address} at fee tier ${dtlUniV3PoolFee}: ${uniV3Pool}`,
+      );
+      form.setError("callbacksType", {
+        message:
+          "A UniV3 pool already exists for the selected tokens at the selected fee tier. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
+      });
+      return;
+    }
 
-  if (uniV2Pool && uniV2Pool !== zeroAddress) {
-    form.setError("callbacksType", {
-      message:
-        "A UniV2 pool already exists for the selected tokens. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
-    });
-  }
-
-  if (uniV3Pool && uniV3Pool !== zeroAddress) {
-    form.setError("callbacksType", {
-      message:
-        "A UniV3 pool already exists for the selected tokens at the selected fee tier. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
-    });
-  }
+    console.log("Clearing errors for UniV3 pool");
+    form.clearErrors("callbacksType");
+  }, [
+    uniV3Pool,
+    form,
+    payoutToken?.address,
+    quoteToken?.address,
+    dtlUniV3PoolFee,
+  ]);
 
   // Validate the Baseline callbacks
+  const isBaselineQueryEnabled =
+    isBaselineCallback(callbacksType) &&
+    form.getValues("callbacks") !== undefined;
   // Check here if the auction house address is the same as the one in the baseline callbacks
   const { data: baselineAuctionHouse } = useReadContract({
     abi: abis.baseline,
     address: form.getValues("callbacks") as Address,
     functionName: "AUCTION_HOUSE",
     query: {
-      enabled:
-        form.getValues("callbacks") !== undefined &&
-        callbacksType !== undefined &&
-        isBaselineCallback(callbacksType),
+      enabled: isBaselineQueryEnabled,
     },
   });
-  if (
-    baselineAuctionHouse &&
-    baselineAuctionHouse.toLowerCase() !== auctionHouseAddress?.toLowerCase()
-  ) {
-    form.setError("callbacks", {
-      message:
-        "The auction house address must be the same as the one in the Baseline callbacks",
-    });
-  }
+  useEffect(() => {
+    if (
+      baselineAuctionHouse?.toLowerCase() !== auctionHouseAddress?.toLowerCase()
+    ) {
+      console.error(
+        `Baseline auction house address ${baselineAuctionHouse} does not match the auction house address ${auctionHouseAddress}`,
+      );
+      form.setError("callbacks", {
+        message:
+          "The auction house address must be the same as the one in the Baseline callbacks",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for Baseline Auction House");
+    form.clearErrors("callbacks");
+  }, [baselineAuctionHouse, auctionHouseAddress, form]);
 
   // Check here if the payout token is the same as the one in the baseline callbacks
   const { data: baselineBaseToken } = useReadContract({
@@ -1292,21 +1328,26 @@ export default function CreateAuctionPage() {
     address: form.getValues("callbacks") as Address,
     functionName: "bAsset",
     query: {
-      enabled:
-        form.getValues("callbacks") !== undefined &&
-        callbacksType !== undefined &&
-        isBaselineCallback(callbacksType),
+      enabled: isBaselineQueryEnabled,
     },
   });
-  if (
-    baselineBaseToken &&
-    baselineBaseToken.toLowerCase() !== payoutToken?.address?.toLowerCase()
-  ) {
-    form.setError("callbacks", {
-      message:
-        "The payout token must be the same as the one in the Baseline callbacks",
-    });
-  }
+  useEffect(() => {
+    if (
+      baselineBaseToken?.toLowerCase() !== payoutToken?.address?.toLowerCase()
+    ) {
+      console.error(
+        `Baseline base token ${baselineBaseToken} does not match the payout token ${payoutToken?.address}`,
+      );
+      form.setError("payoutToken", {
+        message:
+          "The payout token must be the same as the one in the Baseline callbacks",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for Baseline base token");
+    form.clearErrors("payoutToken");
+  }, [baselineBaseToken, payoutToken, form]);
 
   // Check here if the quote token is the same as the one in the baseline callbacks
   const { data: baselineQuoteToken } = useReadContract({
@@ -1314,21 +1355,26 @@ export default function CreateAuctionPage() {
     address: form.getValues("callbacks") as Address,
     functionName: "RESERVE",
     query: {
-      enabled:
-        form.getValues("callbacks") !== undefined &&
-        callbacksType !== undefined &&
-        isBaselineCallback(callbacksType),
+      enabled: isBaselineQueryEnabled,
     },
   });
-  if (
-    baselineQuoteToken &&
-    baselineQuoteToken.toLowerCase() !== quoteToken?.address?.toLowerCase()
-  ) {
-    form.setError("callbacks", {
-      message:
-        "The quote token must be the same as the one in the Baseline callbacks",
-    });
-  }
+  useEffect(() => {
+    if (
+      baselineQuoteToken?.toLowerCase() !== quoteToken?.address?.toLowerCase()
+    ) {
+      console.error(
+        `Baseline quote token ${baselineQuoteToken} does not match the quote token ${quoteToken?.address}`,
+      );
+      form.setError("quoteToken", {
+        message:
+          "The quote token must be the same as the one in the Baseline callbacks",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for Baseline quote token");
+    form.clearErrors("quoteToken");
+  }, [baselineQuoteToken, quoteToken, form]);
 
   // Set the upper anchor tick for the Baseline pool
   const { data: baselinePoolActiveTS } = useReadContract({
