@@ -6,11 +6,17 @@ import {
 import * as core from "../core";
 import { type AxisDeployments, deployments } from "@repo/deployments";
 import { type OriginConfig } from "../types";
-import type { BidParams, BidConfig } from "../core/bid";
 import type { GetAuctionParams, GetAuctionResult } from "../core/auction";
-import type { Core } from "../core";
+import type {
+  Core,
+  BidParams,
+  BidConfig,
+  ClaimBidsParams,
+  ClaimBidsConfig,
+  RefundBidConfig,
+  RefundBidParams,
+} from "../core";
 import type { GetTokenPriceParams } from "../core/tokens";
-import type { ClaimBidsParams, ClaimBidsConfig } from "../core/claim-bids";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -146,6 +152,31 @@ class OriginSdk {
    */
   claimBids(params: ClaimBidsParams): ClaimBidsConfig {
     return this.core.claimBids.functions.getConfig(params);
+  }
+
+  /**
+   * Gets the contract config required to execute a refundBid transaction on the auction house smart contract.
+   *
+   * @param params refundBid parameters
+   * @returns Contract config for the refundBid transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.refundBid({
+   *     lotId: 1,
+   *     bidId: 10,
+   *     bidIndex: 1,
+   *     chainId: 1,
+   *     auctionType: AuctionType.SEALED_BID,
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  refundBid(params: RefundBidParams): RefundBidConfig {
+    return this.core.refundBid.getConfig(params);
   }
 }
 
