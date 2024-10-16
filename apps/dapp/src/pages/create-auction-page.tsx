@@ -391,10 +391,18 @@ const schema = z
       path: ["dtlUniV3PoolFee"],
     },
   )
-  .refine((data) => Number(data.payoutTokenBalance) >= Number(data.capacity), {
-    message: "Insufficient balance",
-    path: ["capacity"],
-  });
+  .refine(
+    (data) =>
+      // Baseline callbacks will supply the payout token
+      // TODO determine this from the flags embedded in the contract address
+      isBaselineCallback(data.callbacksType)
+        ? true
+        : Number(data.payoutTokenBalance) >= Number(data.capacity),
+    {
+      message: "Insufficient balance",
+      path: ["capacity"],
+    },
+  );
 
 // TODO add validation of allowlist files
 
