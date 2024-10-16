@@ -2,6 +2,7 @@ import type { Token } from "@repo/types";
 import { useTokenPrice } from "./use-token-price";
 import { formatUsdValue } from "../utils/format-usd-amount";
 import { formatUnits, parseUnits } from "viem";
+import { trimCurrency } from "utils/currency";
 
 const useUsdAmount = ({
   amount,
@@ -22,7 +23,7 @@ const useUsdAmount = ({
     amount === undefined ||
     decimals === undefined
   )
-    return;
+    return {};
 
   // Multiply the price and amount by the token decimals to get a bigint, so we get a precise number at the end
   const priceBigInt = parseUnits(price.toString(), decimals);
@@ -30,9 +31,10 @@ const useUsdAmount = ({
 
   // Convert USD amount in USD decimals as a string
   const usdAmount = (amountBigInt * priceBigInt) / parseUnits("1", decimals);
-  const formatted = formatUsdValue(Number(formatUnits(usdAmount, decimals)));
+  const decimal = formatUnits(usdAmount, decimals);
+  const short = formatUsdValue(Number(decimal));
 
-  return formatted;
+  return { decimal: trimCurrency(decimal), short };
 };
 
 export { useUsdAmount };

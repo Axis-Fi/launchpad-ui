@@ -27,19 +27,23 @@ export function PageHeader({
     >
       <Button
         size="icon"
-        className="ml-4 "
+        className="w-1/5 "
         variant="ghost"
         //@ts-expect-error interesting TS quirk below,
         //both string and number are valid but on different signatures
         onClick={() => navigate(backNavigationPath ?? -1)}
       >
-        <div className="relative left-20 flex">
+        <div className="relative -ml-4">
           <ArrowLeft className="absolute -left-7" />
           {backNavigationText}
         </div>
       </Button>
-      <div className="mx-auto">{children}</div>
-      {toggle && <UsdToggle currencySymbol={toggleSymbol} />}
+      <div className="mx-auto ">{children}</div>
+      {toggle && (
+        <div className="flex w-1/5 justify-end ">
+          <UsdToggle currencySymbol={toggleSymbol} />
+        </div>
+      )}
     </div>
   );
 }

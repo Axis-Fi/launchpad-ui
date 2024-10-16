@@ -22,5 +22,6 @@ export function calculateAuctionProgress(auction: Auction) {
     current,
     /** The minimum percentual target raise of an auction*/
     minTarget,
+    targetAmount,
   };
 }

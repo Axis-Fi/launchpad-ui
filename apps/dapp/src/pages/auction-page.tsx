@@ -14,16 +14,16 @@ import {
   EncryptedMarginalPriceAuctionConcluded,
   AuctionCreated,
   AuctionDecrypted,
-  AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
 import { PageContainer } from "modules/app/page-container";
 import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
 import { BidList } from "modules/auction/bid-list";
 import { PurchaseList } from "modules/auction/purchase-list";
-import { getLinkUrl } from "modules/auction/utils/auction-details";
 import { Countdown } from "modules/auction/countdown";
 import { AuctionBaselineLive } from "modules/auction/status/auction-baseline-live";
+import AuctionProgressBar from "modules/auction/auction-progress-bar";
+import { getLinkUrl } from "modules/auction/utils/auction-details";
 
 const statuses: Record<
   AuctionStatus,
@@ -31,7 +31,7 @@ const statuses: Record<
 > = {
   registering: () => null, // Registration state is not handled in this component, but in auction-registering.tsx
   created: AuctionCreated,
-  live: AuctionLive,
+  live: AuctionBaselineLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
@@ -48,24 +48,18 @@ export default function AuctionPage() {
     lotId!,
   );
 
-  if (isAuctionLoading) {
-    return <AuctionPageLoading />;
-  }
-
+  if (isAuctionLoading) return <AuctionPageLoading />;
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
-  const isFPA = auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
-  //TODO: implement
-  const showBidHistory = false;
 
-  //TODO: implement check
-  const isBaseline = true;
+  const isFPA = auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+
+  //TODO: check wen to display
+  const showBidHistory = !["created", "live"].includes(auction.status);
 
   const AuctionElement =
     auction.status === "concluded" && isFPA
       ? FixedPriceBatchAuctionConcluded
-      : isBaseline
-        ? AuctionBaselineLive
-        : statuses[auction.status];
+      : statuses[auction.status];
 
   return (
     <PageContainer id="__AXIS_ORIGIN_LAUNCH_PAGE__" className="mb-20">
@@ -103,37 +97,29 @@ export function AuctionPageView({
   auction: Auction;
   isAuctionLoading?: boolean;
 }>) {
-  const [textColor, setTextColor] = React.useState<string>();
-
   return (
     <>
       <ImageBanner
         isLoading={isAuctionLoading}
         imgUrl={getLinkUrl("projectBanner", auction)}
-        onTextColorChange={setTextColor}
       >
         <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
-          <div className="flex w-full flex-col justify-end">
-            <div className="mb-10 self-center text-center">
-              <Text
-                size="7xl"
-                mono
-                className={cn(textColor === "light" && "text-background")}
-              >
-                {!isAuctionLoading && auction.info?.name}
+          <div className="mb-10 flex w-full flex-col items-center justify-end">
+            <div className="relative mb-2 self-center text-center">
+              <div className="border-primary absolute inset-0 top-3 -z-10 -ml-10 size-full w-[120%] border bg-neutral-950 blur-2xl" />
+              <Text size="7xl" mono className="text-neutral-200">
+                {auction.info?.name}
               </Text>
 
               <Text
                 size="3xl"
                 color="secondary"
-                className={cn(
-                  "mx-auto w-fit text-nowrap",
-                  textColor === "light" && "text-background",
-                )}
+                className={cn("mx-auto w-fit text-nowrap text-neutral-200")}
               >
                 {!isAuctionLoading && auction.info?.tagline}
               </Text>
             </div>
+            <AuctionProgressBar auction={auction} />
           </div>
         </div>
       </ImageBanner>

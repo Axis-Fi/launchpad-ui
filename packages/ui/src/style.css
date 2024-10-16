@@ -307,4 +307,10 @@
       rgba(117, 161, 246, 1) 100%
     );
   }
+
+  .banner-shadow {
+    -webkit-box-shadow: -2px 10px 78px 1px rgba(0, 0, 0, 0.57);
+    -moz-box-shadow: -2px 10px 78px 1px rgba(0, 0, 0, 0.57);
+    box-shadow: -2px 10px 78px 1px rgba(0, 0, 0, 0.57);
+  }
 }

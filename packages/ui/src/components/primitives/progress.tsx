@@ -25,7 +25,7 @@ const Progress = React.forwardRef<
       {...props}
     >
       <ProgressPrimitive.Indicator
-        className="bg-surface-progress absolute flex h-full items-center justify-end transition-all"
+        className="bg-surface-progress absolute flex h-full w-full items-center justify-end transition-all"
         style={{ width: `${currentPercentage}%` }}
       >
         {!isLowPercentage && (
