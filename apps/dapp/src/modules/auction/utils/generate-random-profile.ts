@@ -2,23 +2,21 @@ import blockies from "ethereum-blockies";
 import animalHash from "angry-purple-tiger";
 import { ProfileForm } from "modules/points/hooks/use-profile";
 
-const generateRandomAvatar = (): File => {
-  const canvas: HTMLCanvasElement = blockies.create({
-    seed: Math.random().toString(),
-  });
+const generateRandomAvatar = async (): Promise<File> => {
+  // blockies lib has a bug where the first generated blockie is always black
+  // so we genereate two and ignore the first one
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const canvasUnused: HTMLCanvasElement = blockies.create();
+  const canvas: HTMLCanvasElement = blockies.create();
   const fileName = "avatar.jpg";
 
-  const dataURI = canvas.toDataURL();
-  const byteString = atob(dataURI.split(",")[1]);
-  const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-
-  return new File([ab], fileName, { type: mimeString });
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(new File([blob], fileName, { type: "image/png" }));
+      }
+    }, "image/png");
+  });
 };
 
 const genereateRandomUsername = () => {
@@ -31,9 +29,9 @@ const genereateRandomUsername = () => {
   return `${randomName[0]}-${randomName[2]}`;
 };
 
-export const generateRandomProfile = (): ProfileForm => {
+export const generateRandomProfile = async (): Promise<ProfileForm> => {
   return {
     username: genereateRandomUsername(),
-    avatar: generateRandomAvatar(),
+    avatar: await generateRandomAvatar(),
   };
 };

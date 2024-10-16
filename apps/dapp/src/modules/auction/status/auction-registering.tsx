@@ -129,12 +129,12 @@ function AuctionRegisteringForm(props: PropsWithAuction) {
     },
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (auth.isUserRegistered.data) {
       return auth.signIn.mutate("Sign in to see or make your committment.");
     }
 
-    const profile = generateRandomProfile();
+    const profile = await generateRandomProfile();
 
     return auth.register.mutate(
       { profile, statement: "Sign in to see or make your commitment" },
@@ -144,6 +144,15 @@ function AuctionRegisteringForm(props: PropsWithAuction) {
             title: (
               <div className="flex items-center gap-x-2">
                 <Check size="16" /> Sign in successful
+              </div>
+            ),
+          });
+        },
+        onError: () => {
+          toast({
+            title: (
+              <div className="flex items-center gap-x-2">
+                <CircleX size="16" /> Sign in failed
               </div>
             ),
           });
