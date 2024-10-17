@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import type { PropsWithAuction } from "@repo/types";
-import { Metric, Text } from "@repo/ui";
-import { getCountdown } from "utils";
+import { Metric, Text, cn } from "@repo/ui";
+import { formatDate } from "@repo/ui";
+import { getCountdown } from "utils/date";
 
-export function Countdown({ auction }: PropsWithAuction) {
+export function Countdown({
+  auction,
+  className,
+}: PropsWithAuction & {
+  className?: string;
+}) {
   const [timeDistance, setTimeDistance] = useState<string | null>("");
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
@@ -42,15 +48,21 @@ export function Countdown({ auction }: PropsWithAuction) {
   }, [startDate, endDate, isOngoing]);
 
   return (
-    <div className="flex items-center gap-x-6">
+    <div className={cn("flex items-center gap-x-6", className)}>
       <CountdownStatus auction={auction} />
-      <CountdownDisplay time={isFinished ? "00:00:00:00" : timeDistance!} />
+      {isFinished ? (
+        <Text size="lg">
+          {formatDate.simple(new Date(+auction.conclusion * 1000))}
+        </Text>
+      ) : (
+        <CountdownDisplay time={isFinished ? "00:00:00:00" : timeDistance!} />
+      )}
     </div>
   );
 }
 
 function CountdownStatus(props: PropsWithAuction) {
-  let phrasalVerb = "ended in";
+  let phrasalVerb = "ended on";
 
   switch (props.auction.status) {
     case "created":

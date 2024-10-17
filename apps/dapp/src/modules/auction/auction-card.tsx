@@ -7,9 +7,9 @@ import { AuctionCardBanner } from "./auction-card-banner";
 import { getChainById } from "utils";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
-import { AuctionStatusBadge } from "./auction-status-badge";
 import { getAuctionPath } from "utils/router";
 import { getLinkUrl } from "./utils/auction-details";
+import { Countdown } from "./countdown";
 
 type AuctionCardConditionalProps =
   | { loading: true; auction?: never }
@@ -90,11 +90,7 @@ function AuctionCardDetails(
             {props.auction.info?.name}
           </IconedLabel>
 
-          <AuctionStatusBadge
-            large={!props.isGrid}
-            className={cn(!props.isGrid && "-mr-3 -mt-4")}
-            status={props.auction.status}
-          />
+          <Countdown auction={props.auction} />
         </div>
         <SocialRow
           className="py-6"
