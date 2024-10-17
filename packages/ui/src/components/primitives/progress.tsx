@@ -5,7 +5,11 @@ import { cn } from "@/utils";
 
 type ProgressProps = React.ComponentPropsWithoutRef<
   typeof ProgressPrimitive.Root
-> & { minTarget?: number };
+> & {
+  minTarget?: number;
+  hideMinTarget?: boolean;
+  hideCurrentProgress?: boolean;
+};
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
@@ -13,7 +17,8 @@ const Progress = React.forwardRef<
 >(({ className, value, ...props }, ref) => {
   //If low percentage render the children outside the indicator to remain visible
   const currentPercentage = value ?? 0;
-  const isLowPercentage = currentPercentage < 10;
+
+  const showMinTarget = !props.hideMinTarget && props.minTarget !== null;
 
   return (
     <ProgressPrimitive.Root
@@ -24,25 +29,16 @@ const Progress = React.forwardRef<
       )}
       {...props}
     >
+      <span className="z-10" style={{ left: `${currentPercentage}%` }}>
+        {props.children}
+      </span>
+
       <ProgressPrimitive.Indicator
         className="bg-surface-progress absolute flex h-full w-full items-center justify-end transition-all"
         style={{ width: `${currentPercentage}%` }}
-      >
-        {!isLowPercentage && (
-          <span className="text-foreground pr-2">{props.children}</span>
-        )}
-      </ProgressPrimitive.Indicator>
+      ></ProgressPrimitive.Indicator>
 
-      {isLowPercentage && (
-        <span
-          className="text-foreground absolute left-4 mt-0.5 pr-2"
-          style={{ left: `${currentPercentage}%` }}
-        >
-          {props.children}
-        </span>
-      )}
-
-      {props.minTarget != null && (
+      {showMinTarget && (
         <div
           className="absolute h-full w-1 border-l-[2px] border-dashed"
           style={{ left: `${props.minTarget}%` }}

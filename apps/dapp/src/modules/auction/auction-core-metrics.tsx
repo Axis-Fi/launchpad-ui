@@ -20,7 +20,7 @@ export function AuctionCoreMetrics(
   return (
     <Card
       className={props.className}
-      title={`Details`} //TODO: About didnt feel right, open to suggestions on this one
+      title={`About ${auction.info?.name}`} //TODO: About didnt feel right, open to suggestions on this one
       headerRightElement={
         <div className="flex gap-x-8">
           <Metric size="s" label="Token Address">
