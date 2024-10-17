@@ -1,11 +1,6 @@
-import { Address } from "abitype";
 import * as v from "valibot";
 import { AuctionType } from "@repo/types";
-
-// TODO: hoist to top/common area
-const AddressSchema = v.special<Address>(
-  (value) => typeof value === "string" && /0x[a-fA-F0-9]{40}$/.test(value),
-);
+import { AddressSchema } from "../schema";
 
 const BidParamsSchema = v.object({
   lotId: v.number(),

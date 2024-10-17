@@ -39,17 +39,21 @@ function getContractsByModuleType(auction: Auction) {
   return { abi, address };
 }
 
-function getAuctionHouse(auction: Pick<Auction, "chainId" | "auctionType">) {
+function getAuctionHouse(
+  auction: Partial<Pick<Auction, "chainId" | "auctionType">>,
+) {
   //TODO: find a better way to handle this, see useAuction for usecase
-  if (!auction.auctionType || !auction.chainId) {
+  if (auction.chainId == null) {
     return {
       abi: axisContracts.abis.batchAuctionHouse,
       address: "0x" as Address,
     };
   }
-  const contractName = auctionHouseMap[
+  const contractName = (
     auction.auctionType
-  ] as AxisContractNames;
+      ? auctionHouseMap[auction.auctionType]
+      : "batchAuctionHouse"
+  ) as AxisContractNames;
 
   return {
     abi: axisContracts.abis[contractName],
