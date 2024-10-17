@@ -1538,7 +1538,7 @@ export default function CreateAuctionPage() {
     });
 
     return existingCallbacks;
-  }, [chainId]);
+  }, [chainId, form]);
 
   const handlePreview = () => {
     form.trigger();
