@@ -94,9 +94,7 @@ export function TokenWrapper() {
         balance={formatUnits(inputTokenBalance ?? 0n, decimals)}
         label={inputLabel}
         value={amount}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setAmount(e.target.value!)
-        }
+        onChange={(value) => setAmount(value as string)}
         token={inputToken as Token}
         showUsdPrice={false}
         disableMaxButton

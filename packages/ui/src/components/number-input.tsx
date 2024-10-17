@@ -1,13 +1,15 @@
 import React from "react";
 import { Input, InputProps } from "./primitives/input";
 export type NumberInputProps = {
-  value: string;
+  value?: string;
   onChange: (value: string) => void;
 } & InputProps;
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
   ({ value, onChange, ...props }, ref) => {
-    const [internalValue, setInternalValue] = React.useState<string>(value);
+    const [internalValue, setInternalValue] = React.useState<string>(
+      value ?? "",
+    );
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     React.useImperativeHandle(ref, () => inputRef.current!, [inputRef]);

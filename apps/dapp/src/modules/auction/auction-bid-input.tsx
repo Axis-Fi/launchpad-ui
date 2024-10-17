@@ -75,9 +75,7 @@ export function AuctionBidInput({
                     field.onChange(e);
 
                     // Display USD value of input amount
-                    const rawAmountIn = (e.target as HTMLInputElement)
-                      .value as string;
-
+                    const rawAmountIn = e as string;
                     // Update amount out value
                     handleAmountOutChange(
                       parseUnits(rawAmountIn, auction.quoteToken.decimals),
@@ -131,8 +129,7 @@ export function AuctionBidInput({
                   onChange={(e) => {
                     field.onChange(e);
                     // Update amount out value
-                    const rawPrice = (e.target as HTMLInputElement)
-                      .value as string;
+                    const rawPrice = e as string;
                     setBidPrice(rawPrice);
                     const price = parseUnits(
                       rawPrice,

@@ -22,7 +22,7 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** an optional status message */
   message?: string;
   /** the current input value */
-  value?: string;
+  value?: string | undefined;
   /** whether to disable the input */
   disabled?: boolean;
   /** whether to disable the max button */
