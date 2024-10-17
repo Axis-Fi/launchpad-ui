@@ -341,10 +341,10 @@ const schema = z
         : data.baselineFloorReservesPercent &&
             data.baselineFloorReservesPercent.length > 0 &&
             data.baselineFloorReservesPercent[0] >= 10 &&
-            data.baselineFloorReservesPercent[0] <= 100;
+            data.baselineFloorReservesPercent[0] <= 99;
     },
     {
-      message: "Floor reserves percent must be 10-100",
+      message: "Floor reserves percent must be 10-99",
       path: ["baselineFloorReservesPercent"],
     },
   )
@@ -2468,7 +2468,7 @@ export default function CreateAuctionPage() {
                               <PercentageSlider
                                 field={field}
                                 min={10}
-                                max={100}
+                                max={99}
                               />
                             </FormItemWrapper>
                           )}
