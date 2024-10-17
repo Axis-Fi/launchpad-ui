@@ -68,8 +68,7 @@ export function AuctionBidInputSingle({
                   onChange={(e) => {
                     field.onChange(e);
 
-                    const rawAmountIn = (e.target as HTMLInputElement)
-                      .value as string;
+                    const rawAmountIn = e as string;
                     const amountIn = parseUnits(
                       rawAmountIn,
                       auction.quoteToken.decimals,

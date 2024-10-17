@@ -1,6 +1,6 @@
 import React from "react";
 import type { Token } from "@repo/types";
-import { Input, Text, Button, cn } from "@repo/ui";
+import { Text, Button, cn, NumberInput, NumberInputProps } from "@repo/ui";
 import { UsdAmount } from "modules/auction/usd-amount";
 import { Format } from "./format";
 
@@ -31,7 +31,7 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   onClickMaxButton?: () => void;
   /** the prefix to add to the amount */
   amountPrefix?: string;
-};
+} & NumberInputProps;
 
 export const TokenAmountInput = React.forwardRef<
   HTMLInputElement,
@@ -66,16 +66,17 @@ export const TokenAmountInput = React.forwardRef<
       >
         <div className="flex">
           <div className="flex-start">
-            <Text color="secondary">{label}</Text>
+            <Text uppercase color="secondary">
+              {label}
+            </Text>
           </div>
         </div>
         <div className="mt-0.5 flex items-center">
           <Text size="xl" className="font-light">
             {amountPrefix}
           </Text>
-          <Input
+          <NumberInput
             value={value === undefined ? "" : value}
-            type="number"
             variant="lg"
             disabled={disabled}
             placeholder="0"
