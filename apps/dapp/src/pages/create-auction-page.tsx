@@ -389,8 +389,8 @@ const schema = z
         ? true
         : data.allowlist !== undefined,
     {
-      message: "Allowlist must be set",
-      path: ["allowlist"],
+      message: "Allowlist file must be provided",
+      path: ["callbacksType"], // The allowlist field is not displayed, so display the error on the callbacks type
     },
   )
   .refine(
@@ -1372,6 +1372,7 @@ export default function CreateAuctionPage() {
   });
   useEffect(() => {
     if (
+      isBaselineQueryEnabled &&
       baselineBaseToken?.toLowerCase() !== payoutToken?.address?.toLowerCase()
     ) {
       console.error(
@@ -1384,9 +1385,9 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for Baseline base token");
+    console.log("Clearing errors for the payout token");
     form.clearErrors("payoutToken");
-  }, [baselineBaseToken, payoutToken, form]);
+  }, [baselineBaseToken, payoutToken, form, isBaselineQueryEnabled]);
 
   // Check here if the quote token is the same as the one in the baseline callbacks
   const { data: baselineQuoteToken } = useReadContract({
@@ -1399,6 +1400,7 @@ export default function CreateAuctionPage() {
   });
   useEffect(() => {
     if (
+      isBaselineQueryEnabled &&
       baselineQuoteToken?.toLowerCase() !== quoteToken?.address?.toLowerCase()
     ) {
       console.error(
@@ -1411,9 +1413,9 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for Baseline quote token");
+    console.log("Clearing errors for the quote token");
     form.clearErrors("quoteToken");
-  }, [baselineQuoteToken, quoteToken, form]);
+  }, [baselineQuoteToken, quoteToken, form, isBaselineQueryEnabled]);
 
   // Set the upper anchor tick for the Baseline pool
   const { data: baselinePoolActiveTS } = useReadContract({
@@ -1421,13 +1423,21 @@ export default function CreateAuctionPage() {
     address: baselineBaseToken,
     functionName: "getActiveTS",
     query: {
-      enabled: baselineBaseToken !== undefined,
+      enabled: isBaselineQueryEnabled && baselineBaseToken !== undefined,
     },
   });
   useEffect(() => {
+    console.log(
+      "Setting the upper anchor tick for the Baseline pool to",
+      baselinePoolActiveTS,
+    );
     form.setValue(
       "baselineAnchorTickU",
       baselinePoolActiveTS?.toString() ?? "0",
+    );
+    console.log(
+      "Setting the target tick for the Baseline pool to",
+      baselinePoolActiveTS,
     );
     form.setValue(
       "baselinePoolTargetTick",
