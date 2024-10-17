@@ -1211,10 +1211,9 @@ export default function CreateAuctionPage() {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
-    const parseFn =
-      callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST
-        ? parseAllocatedAllowlistFile
-        : parseAllowlistFile;
+    const parseFn = isAllocatedAllowlist(callbacksType)
+      ? parseAllocatedAllowlistFile
+      : parseAllowlistFile;
 
     if (!file) return;
 
