@@ -13,10 +13,12 @@ import type {
   BidConfig,
   ClaimBidsParams,
   ClaimBidsConfig,
-  RefundBidConfig,
   RefundBidParams,
+  RefundBidConfig,
   SettleParams,
   SettleConfig,
+  AbortParams,
+  AbortConfig,
 } from "../core";
 import type { GetTokenPriceParams } from "../core/tokens";
 
@@ -201,6 +203,28 @@ class OriginSdk {
    */
   settle(params: SettleParams): SettleConfig {
     return this.core.settle.getConfig(params);
+  }
+
+  /**
+   * Gets the contract config required to execute a abort transaction on the auction house smart contract.
+   *
+   * @param params abort parameters
+   * @returns Contract config for the abort transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.abort({
+   *     lotId: 1,
+   *     chainId: 1,
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  abort(params: AbortParams): AbortConfig {
+    return this.core.abort.getConfig(params);
   }
 }
 

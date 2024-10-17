@@ -4,8 +4,7 @@ import { CloakClient } from "@repo/cloak";
 import * as cloakDep from "@repo/cloak";
 import { AuctionType } from "@repo/types";
 import { OriginSdk } from "./sdk";
-import type { Core } from "../core";
-import type { BidParams } from "../core/bid";
+import type { Core, BidParams } from "../core";
 
 const mockConfig = {
   cloak: {
