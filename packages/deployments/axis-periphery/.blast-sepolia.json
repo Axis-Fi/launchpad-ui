@@ -19,7 +19,9 @@
   ],
   "deployments.callbacks.Baseline": [],
   "deployments.callbacks.BaselineAllowlist": [],
-  "deployments.callbacks.BaselineAllocatedAllowlist": [],
+  "deployments.callbacks.BaselineAllocatedAllowlist": [
+    "0xEF7CDf8963d32413a6bB0d023dBAE50347ae4567"
+  ],
   "deployments.callbacks.BaselineCappedAllowlist": [],
   "deployments.callbacks.BaselineTokenAllowlist": []
 }

@@ -101,11 +101,11 @@ export function useBaselineDTLCallback({
     ...response,
     data:
       response.isSuccess &&
-      response.data[0].result &&
-      response.data[1].result &&
-      response.data[2].result &&
-      response.data[3].result &&
-      response.data[4].result
+      response.data[0].result !== undefined &&
+      response.data[1].result !== undefined &&
+      response.data[2].result !== undefined &&
+      response.data[3].result !== undefined &&
+      response.data[4].result !== undefined
         ? {
             auctionComplete: response.data[0].result,
             poolPercent: fromBasisPoints(response.data[1].result) / 100,
