@@ -1254,7 +1254,7 @@ export default function CreateAuctionPage() {
     address: uniV2Factory,
     functionName: "getPair",
     args:
-      payoutToken && quoteToken
+      payoutToken?.address && quoteToken?.address
         ? [getAddress(payoutToken.address), getAddress(quoteToken.address)]
         : undefined,
     query: {
@@ -1297,7 +1297,7 @@ export default function CreateAuctionPage() {
     address: uniV3Factory,
     functionName: "getPool",
     args:
-      payoutToken && quoteToken
+      payoutToken?.address && quoteToken?.address
         ? [
             getAddress(payoutToken.address),
             getAddress(quoteToken.address),
