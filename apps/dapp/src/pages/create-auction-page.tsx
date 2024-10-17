@@ -985,6 +985,8 @@ export default function CreateAuctionPage() {
 
     createAuctionTx.writeContract(
       {
+        // TODO insert errors from the callback contract (if applicable) so that they are decoded
+        // This works (but is crude): `abi: [...auctionHouseAbi, ...baselineAbi],`
         abi: auctionHouseAbi,
         address: auctionHouseAddress,
         functionName: "auction",
