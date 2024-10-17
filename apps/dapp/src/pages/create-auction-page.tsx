@@ -387,7 +387,7 @@ const schema = z
       !isCappedAllowlist(data.callbacksType) &&
       !isAllocatedAllowlist(data.callbacksType)
         ? true
-        : data.allowlist !== undefined,
+        : data.allowlist !== undefined && data.allowlist.length > 0,
     {
       message: "Allowlist file must be provided",
       path: ["callbacksType"], // The allowlist field is not displayed, so display the error on the callbacks type
