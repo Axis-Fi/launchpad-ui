@@ -12,6 +12,7 @@ import uniV2Dtl from "./UniswapV2DirectToLiquidity.json";
 import uniV3Dtl from "./UniswapV3DirectToLiquidity.json";
 import uniV2Factory from "./IUniswapV2Factory.json";
 import uniV3Factory from "./IUniswapV3Factory.json";
+import uniV3Pool from "./UniswapV3Pool.json";
 import baseline from "./Baseline.json";
 import baselineAllowlist from "./BaselineAllowlist.json";
 import baselineAllocatedAllowlist from "./BaselineAllocatedAllowlist.json";
@@ -47,6 +48,7 @@ export default {
   uniV3Dtl,
   uniV2Factory,
   uniV3Factory,
+  uniV3Pool,
   baseline,
   baselineAllowlist,
   baselineAllocatedAllowlist,

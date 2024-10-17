@@ -102,6 +102,7 @@ import { useStoredAuctionConfig } from "state/auction-config";
 import type { Token } from "@repo/types";
 import { DownloadIcon, ShareIcon, TrashIcon } from "lucide-react";
 import { TriggerMessage } from "components/trigger-message";
+import { getTickAtPrice } from "utils/uniswapV3";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -377,8 +378,7 @@ const schema = z
           Number(data.baselinePoolTargetTick) <=
             Number(data.baselineAnchorTickU),
     {
-      message:
-        "Pool target tick must be less than or equal to upper anchor tick",
+      message: "Pool target tick must be less than upper anchor tick",
       path: ["baselinePoolTargetTick"],
     },
   )
@@ -1421,6 +1421,60 @@ export default function CreateAuctionPage() {
     form.clearErrors("quoteToken");
   }, [baselineQuoteToken, quoteToken, form, isBaselineQueryEnabled]);
 
+  // Validate that the pool active tick is above or equal to the tick for the auction price
+  const auctionPrice = Number(form.getValues("price"));
+  const { data: baselinePool } = useReadContract({
+    abi: abis.bpool,
+    address: baselineBaseToken,
+    functionName: "pool",
+    query: {
+      enabled: isBaselineQueryEnabled && baselineBaseToken !== undefined,
+    },
+  });
+  const { data: baselinePoolSlot0 } = useReadContract({
+    abi: abis.uniV3Pool,
+    address: baselinePool,
+    functionName: "slot0",
+    query: {
+      enabled: isBaselineQueryEnabled && baselinePool !== undefined,
+    },
+  });
+  useEffect(() => {
+    if (!isBaselineQueryEnabled || !baselinePoolSlot0 || !auctionPrice) {
+      form.clearErrors("price");
+      return;
+    }
+
+    const poolTick = baselinePoolSlot0[1];
+    const auctionPriceTick = getTickAtPrice(
+      auctionPrice,
+      payoutToken?.decimals,
+      quoteToken?.decimals,
+    );
+    console.log("Price", form.getValues("price"));
+    console.log("Tick at price", auctionPriceTick);
+    console.log("Pool tick", baselinePoolSlot0[1]);
+    // TODO this fires intermittently, need to debug
+
+    if (poolTick < auctionPriceTick) {
+      form.setError("price", {
+        message:
+          "The auction price is greater than the pool tick. Please select a lower price.",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for the price");
+    form.clearErrors("price");
+  }, [
+    baselinePoolSlot0,
+    form,
+    auctionPrice,
+    isBaselineQueryEnabled,
+    payoutToken?.decimals,
+    quoteToken?.decimals,
+  ]);
+
   // Set the upper anchor tick for the Baseline pool
   const { data: baselinePoolActiveTS } = useReadContract({
     abi: abis.bpool,
@@ -1431,23 +1485,22 @@ export default function CreateAuctionPage() {
     },
   });
   useEffect(() => {
+    if (!isBaselineQueryEnabled || !baselinePoolActiveTS) {
+      console.log("Resetting the upper anchor tick for the Baseline pool");
+      form.setValue("baselineAnchorTickU", undefined);
+      return;
+    }
+
     console.log(
       "Setting the upper anchor tick for the Baseline pool to",
       baselinePoolActiveTS,
     );
     form.setValue(
       "baselineAnchorTickU",
-      baselinePoolActiveTS?.toString() ?? "0",
+      baselinePoolActiveTS.toString() ?? "0",
     );
-    console.log(
-      "Setting the target tick for the Baseline pool to",
-      baselinePoolActiveTS,
-    );
-    form.setValue(
-      "baselinePoolTargetTick",
-      baselinePoolActiveTS?.toString() ?? "0",
-    );
-  }, [baselinePoolActiveTS, form]);
+    // TODO trigger when the price changes?
+  }, [baselinePoolActiveTS, form, isBaselineQueryEnabled]);
 
   // Load the balance for the payout token
   const { balance: payoutTokenBalance, decimals: payoutTokenDecimals } =
@@ -2449,6 +2502,19 @@ export default function CreateAuctionPage() {
                                 min={1}
                                 max={50}
                               />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="baselinePoolTargetTick"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Pool Target Tick"
+                              tooltip="The tick to set the pool to on creation."
+                            >
+                              <Input {...field} type="number" />
                             </FormItemWrapper>
                           )}
                         />
