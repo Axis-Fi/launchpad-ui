@@ -796,13 +796,15 @@ export default function CreateAuctionPage() {
     // Set the callbacks address
     let callbacks;
 
-    // Two main cases:
+    // Three main cases:
     // 1. No callback or custom callback
     // 2. Selected one of our standard callbacks
+    // 3. Baseline callback
     if (
       values.callbacksType === undefined ||
       values.callbacksType === CallbacksType.CUSTOM ||
-      values.callbacksType === CallbacksType.NONE
+      values.callbacksType === CallbacksType.NONE ||
+      isBaselineCallback(values.callbacksType)
     ) {
       callbacks = values.callbacks ? getAddress(values.callbacks) : zeroAddress;
     } else {
@@ -1077,10 +1079,12 @@ export default function CreateAuctionPage() {
     callbacksType === CallbacksType.UNIV2_DTL ||
     callbacksType === CallbacksType.UNIV3_DTL;
 
+  const requiresAuctionHouseApproval = !isBaselineCallback(callbacksType);
+
   const onSubmit = () => {
     console.log("submit");
     // 1. If we need to approve the auction house
-    if (!isSufficientAuctionHouseAllowance) {
+    if (requiresAuctionHouseApproval && !isSufficientAuctionHouseAllowance) {
       executeApproveAuctionHouse();
       return;
     }
@@ -2534,6 +2538,7 @@ export default function CreateAuctionPage() {
                 <AuctionCreationStatus
                   lotId={lotId}
                   auctionType={auctionType as AuctionType}
+                  requiresAuctionHouseApproval={requiresAuctionHouseApproval}
                   requiresCallbacksApproval={requiresCallbacksApproval}
                   isSufficientAuctionHouseAllowance={
                     isSufficientAuctionHouseAllowance
