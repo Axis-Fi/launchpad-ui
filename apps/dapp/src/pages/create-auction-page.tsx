@@ -1442,7 +1442,13 @@ export default function CreateAuctionPage() {
     },
   });
   useEffect(() => {
-    if (!isBaselineQueryEnabled || !baselinePoolSlot0 || !auctionPrice) {
+    if (
+      !isBaselineQueryEnabled ||
+      !baselinePoolSlot0 ||
+      !auctionPrice ||
+      !payoutToken?.decimals ||
+      !quoteToken?.decimals
+    ) {
       form.clearErrors("price");
       return;
     }
@@ -1453,7 +1459,7 @@ export default function CreateAuctionPage() {
       payoutToken?.decimals,
       quoteToken?.decimals,
     );
-    console.log("Price", form.getValues("price"));
+    console.log("Price", auctionPrice);
     console.log("Tick at price", auctionPriceTick);
     console.log("Pool tick", baselinePoolSlot0[1]);
     // TODO this fires intermittently, need to debug
