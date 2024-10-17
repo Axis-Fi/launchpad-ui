@@ -283,7 +283,8 @@ const schema = z
     (data) =>
       !(
         data.callbacksType === CallbacksType.UNIV2_DTL ||
-        data.callbacksType === CallbacksType.UNIV3_DTL
+        data.callbacksType === CallbacksType.UNIV3_DTL ||
+        isBaselineCallback(data.callbacksType)
       )
         ? true
         : data.dtlRecipient,
