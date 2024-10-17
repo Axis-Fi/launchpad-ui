@@ -16,6 +16,7 @@ const mockConfig = {
 const mockCore = {
   bid: { functions: { getConfig: vi.fn() } },
   claimBids: { functions: { getConfig: vi.fn() } },
+  refundBid: { getConfig: vi.fn() },
   auction: { functions: { getAuction: vi.fn() } },
 } as unknown as Core;
 
@@ -130,5 +131,22 @@ describe("OriginSdk: getAuction()", () => {
     expect(mockCore.auction.functions.getAuction).toHaveBeenCalledWith(
       mockParams,
     );
+  });
+
+  describe("OriginSdk: refundBid()", () => {
+    it("calls refundBid module's getConfig() with the correct params", async () => {
+      const mockParams = {
+        lotId: 1,
+        bidId: 10,
+        bidIndex: 10,
+        chainId: 1,
+        auctionType: AuctionType.SEALED_BID,
+      };
+
+      const sdk = new OriginSdk(mockConfig, mockCore);
+      sdk.refundBid(mockParams);
+
+      expect(mockCore.refundBid.getConfig).toHaveBeenCalledWith(mockParams);
+    });
   });
 });
