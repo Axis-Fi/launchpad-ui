@@ -6,8 +6,7 @@ import {
   BatchAuction,
 } from "@repo/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
-import { trimCurrency } from "src/utils/currency";
-import { Button, Card, DataTable, Text, Tooltip } from "@repo/ui";
+import { Button, Card, Chip, DataTable, Text } from "@repo/ui";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -23,8 +22,8 @@ import { format } from "date-fns";
 import { useStorageBids } from "state/bids/handlers";
 import { CSVDownloader } from "components/csv-downloader";
 import { arrayToCSV } from "utils/csv";
-import { LockClosedIcon, LockOpen1Icon } from "@radix-ui/react-icons";
-import { Format } from "modules/token/format";
+import { PriceCell } from "./cells/PriceCell";
+import { AmountInCell } from "./cells/AmountInCell";
 
 export const bidListColumnHelper = createColumnHelper<
   BatchAuctionBid & { auction: Auction }
@@ -56,61 +55,17 @@ const priceCol = bidListColumnHelper.accessor("submittedPrice", {
   enableSorting: true,
 
   cell: (info) => {
-    let value = Number(info.getValue());
-    const bid = info.row.original;
-    const auction = bid.auction;
-    //@ts-expect-error update type
-    const amountOut = bid.amountOut;
-
-    const isUserBid = //Only show on live and concluded states
-      amountOut && ["live", "concluded"].includes(auction.status);
-
-    if (isUserBid) {
-      value = Number(bid.amountIn) / amountOut;
-    }
-
-    const display = value ? (
-      <>
-        <Format value={value} /> {info.row.original.auction.quoteToken.symbol}
-        <LockOpen1Icon />
-      </>
-    ) : (
-      <>
-        ████████ <LockClosedIcon />
-      </>
-    );
-
     return (
-      <Tooltip
-        content={
-          isUserBid ? (
-            <>
-              Your estimate payout out at this price is{" "}
-              {trimCurrency(amountOut)} {auction.baseToken.symbol}.<br />
-              Only you can see your bid price until the auction concludes and
-              settles.
-            </>
-          ) : (
-            <>
-              Other users&apos; bid prices are private until the auction
-              concludes and settles.
-            </>
-          )
-        }
-      >
-        <div className="flex items-center gap-x-1">{display}</div>
-      </Tooltip>
+      <PriceCell bid={info.row.original} value={Number(info.getValue())} />
     );
   },
 });
+
 export const amountInCol = bidListColumnHelper.accessor("amountIn", {
   header: "Amount In",
   enableSorting: true,
   cell: (info) => (
-    <>
-      <Format value={info.getValue()} />{" "}
-      {info.row.original.auction.quoteToken.symbol}
-    </>
+    <AmountInCell bid={info.row.original} value={+info.getValue()} />
   ),
 });
 export const bidderCol = bidListColumnHelper.accessor("bidder", {
@@ -118,15 +73,18 @@ export const bidderCol = bidListColumnHelper.accessor("bidder", {
   enableSorting: true,
   cell: (info) => {
     // Define the outcome or status of the bid
-    const bidStatus = info.row.original.status;
-    const bidOutcome = info.row.original.outcome;
-    const amountOut = info.row.original.settledAmountOut;
+    const bid = info.row.original;
+    const bidStatus = bid.status;
+    const bidOutcome = bid.outcome;
+    const amountOut = bid.settledAmountOut;
     const isRefunded = bidStatus === "claimed" && !amountOut;
     const status = isRefunded ? "refunded" : bidOutcome;
     const statusColour =
       status === "won" || status === "won - partial fill"
         ? "text-green-500"
         : "text-red-500";
+    const cancelledBid =
+      !bid.rawSubmittedPrice && Number(bid.settledAmountInRefunded);
 
     return (
       <div className="flex flex-col">
@@ -136,9 +94,11 @@ export const bidderCol = bidListColumnHelper.accessor("bidder", {
           icon={true}
           trim
         />
-        <Text size="xs" className={statusColour}>
-          {status}
-        </Text>
+        {!cancelledBid && (
+          <Text size="xs" className={statusColour}>
+            {status}
+          </Text>
+        )}
       </div>
     );
   },
@@ -187,6 +147,7 @@ export function BidList(props: BidListProps) {
   const refundReceipt = useWaitForTransactionReceipt({ hash: refund.data });
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [bidToRefund, setBidToRefund] = React.useState<BatchAuctionBid>();
+  const [onlyUserBids, setOnlyUserBids] = React.useState(false);
   const { index: bidIndex } = useBidIndex(
     props.auction,
     BigInt(bidToRefund?.bidId ?? -1),
@@ -194,22 +155,27 @@ export function BidList(props: BidListProps) {
 
   const mappedBids = React.useMemo(
     () =>
-      encryptedBids.map((bid) => {
-        //Checks if its a user bid and in local storage
-        const storedBid =
-          userBids.find(
-            (storageBid) =>
-              storageBid.bidId === bid.bidId &&
-              bid.bidder.toLowerCase() === address?.toLowerCase(),
-          ) ?? {};
+      encryptedBids
+        .filter(
+          (b) =>
+            !onlyUserBids || address?.toLowerCase() === b.bidder.toLowerCase(),
+        )
+        .map((bid) => {
+          //Checks if its a user bid and in local storage
+          const storedBid =
+            userBids.find(
+              (storageBid) =>
+                storageBid.bidId === bid.bidId &&
+                bid.bidder.toLowerCase() === address?.toLowerCase(),
+            ) ?? {};
 
-        return {
-          ...bid,
-          ...storedBid,
-          auction: props.auction,
-        };
-      }) ?? [],
-    [props.auction, address],
+          return {
+            ...bid,
+            ...storedBid,
+            auction: props.auction,
+          };
+        }) ?? [],
+    [props.auction, address, onlyUserBids],
   );
 
   const isLoading = refund.isPending || refundReceipt.isLoading;
@@ -292,19 +258,30 @@ export function BidList(props: BidListProps) {
     <Card
       title={"Bid History"}
       headerRightElement={
-        <CSVDownloader
-          tooltip="Download this bid history in CSV format."
-          filename={`bids-${auction.auctionType}-${auction.id}`}
-          headers={headers}
-          data={body}
-        />
+        <div className="flex gap-x-3">
+          <Chip
+            variant={onlyUserBids ? "active" : "default"}
+            className="cursor-pointer"
+            onClick={() => setOnlyUserBids((prev) => !prev)}
+          >
+            {onlyUserBids ? "All" : "My"} Bids
+          </Chip>
+          <CSVDownloader
+            tooltip="Download this bid history in CSV format."
+            filename={`bids-${auction.auctionType}-${auction.id}`}
+            headers={headers}
+            data={body}
+          />
+        </div>
       }
     >
       <DataTable
         emptyText={
           props.auction.status == "created" || props.auction.status == "live"
             ? "No bids yet"
-            : "No bids received"
+            : onlyUserBids
+              ? "No bids from this address"
+              : "No bids received"
         }
         columns={columns}
         data={mappedBids}

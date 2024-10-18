@@ -18,7 +18,7 @@ export function ReferralRewards({ auction }: PropsWithAuction) {
   const hasRewards = rewards != null && rewards > 0;
 
   return (
-    <Card title="Referral Rewards">
+    <Card title="Referral">
       <div className="gap-y-md flex flex-col">
         <div className="bg-surface-tertiary p-sm rounded">
           <Metric size="l" label="Claimable rewards">

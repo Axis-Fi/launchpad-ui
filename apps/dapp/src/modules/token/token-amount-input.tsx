@@ -1,6 +1,6 @@
 import React from "react";
 import type { Token } from "@repo/types";
-import { Input, Text, Button, cn } from "@repo/ui";
+import { Text, Button, cn, NumberInput, NumberInputProps } from "@repo/ui";
 import { UsdAmount } from "modules/auction/usd-amount";
 import { Format } from "./format";
 
@@ -22,7 +22,7 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** an optional status message */
   message?: string;
   /** the current input value */
-  value?: string;
+  value?: string | undefined;
   /** whether to disable the input */
   disabled?: boolean;
   /** whether to disable the max button */
@@ -31,7 +31,7 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   onClickMaxButton?: () => void;
   /** the prefix to add to the amount */
   amountPrefix?: string;
-};
+} & NumberInputProps;
 
 export const TokenAmountInput = React.forwardRef<
   HTMLInputElement,
@@ -59,30 +59,32 @@ export const TokenAmountInput = React.forwardRef<
     return (
       <div
         className={cn(
-          "hover:bg-surface-secondary bg-surface-tertiary group rounded border-2 border-transparent p-4 transition-all",
+          "hover:bg-surface-secondary border-primary bg-surface-tertiary group rounded border-2 p-4 transition-all",
           error && "border-feedback-alert",
           disabled && "opacity-50",
         )}
       >
         <div className="flex">
           <div className="flex-start">
-            <Text color="secondary">{label}</Text>
+            <Text uppercase color="secondary">
+              {label}
+            </Text>
           </div>
         </div>
         <div className="mt-0.5 flex items-center">
           <Text size="xl" className="font-light">
             {amountPrefix}
           </Text>
-          <Input
+          <NumberInput
             value={value === undefined ? "" : value}
-            type="number"
             variant="lg"
             disabled={disabled}
             placeholder="0"
             className={cn(
-              "hover:bg-surface-secondary ml-0 pl-0",
+              "hover:bg-surface-secondary ",
               error && "text-feedback-alert",
             )}
+            style={{ padding: 0 }} //TODO: figure out why this is necessary
             {...props}
             ref={ref}
           />
@@ -95,8 +97,10 @@ export const TokenAmountInput = React.forwardRef<
               uppercase
               variant="secondary"
               size="sm"
-              className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
-              onClick={() => onClickMaxButton?.()}
+              className="border-primary ml-1 h-min rounded-full px-1.5 py-1 leading-none"
+              onClick={() => {
+                onClickMaxButton?.();
+              }}
             >
               Max
             </Button>

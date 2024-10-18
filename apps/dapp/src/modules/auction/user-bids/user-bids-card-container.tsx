@@ -10,7 +10,6 @@ import { VestingCard } from "./vesting-card";
 import { AuctionFailedCard } from "../auction-failed-card";
 import { hasDerivative } from "../utils/auction-details";
 import { NoUserBidsCard } from "./no-user-bids-card";
-import { UserBidInfoCard } from "./user-bid-info-card";
 import { UserBidsCard } from "./user-bids-card";
 
 type CardStatusParams = {
@@ -84,12 +83,7 @@ export function UserBidsCardContainer({ auction }: PropsWithAuction) {
     }
 
     case "AUCTION_VESTING": {
-      return (
-        <>
-          <VestingCard auction={auction} />
-          <UserBidInfoCard auction={auction} />
-        </>
-      );
+      return <VestingCard auction={auction} />;
     }
 
     case "USER_HAS_BIDS": {

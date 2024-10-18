@@ -17,6 +17,8 @@ import { useFormContext } from "react-hook-form";
 import { AuctionCard } from "modules/auction/auction-card";
 import { getDuration } from "utils/date";
 import { addMilliseconds } from "date-fns";
+import { PageHeader } from "modules/app/page-header";
+import { Countdown } from "modules/auction/countdown";
 
 type CreateAuctionPreviewProps = {
   chainId: number;
@@ -61,7 +63,18 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
             <div className="-mt-8 flex flex-col items-center justify-center p-4">
               <TabsContent value="page" className="bg-background p-4">
                 <AuctionPageView auction={auction}>
-                  <AuctionLivePreview auction={auction} />
+                  <PageHeader
+                    className="mt-0 lg:mt-0"
+                    backNavigationPath="/#"
+                    backNavigationText="Back to Launches"
+                    toggle
+                    toggleSymbol={auction.quoteToken.symbol}
+                  >
+                    <Countdown auction={auction} />
+                  </PageHeader>
+                  <div className="mt-10">
+                    <AuctionLivePreview auction={auction} />
+                  </div>
                 </AuctionPageView>
               </TabsContent>
               <TabsContent value="list" className="bg-background p-4">

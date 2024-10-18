@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Button, Skeleton, Text, cn } from "@repo/ui";
+import { Button, Skeleton, Text, cn, useToggle } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
@@ -14,17 +14,16 @@ import {
   EncryptedMarginalPriceAuctionConcluded,
   AuctionCreated,
   AuctionDecrypted,
-  AuctionLive,
   AuctionSettled,
 } from "modules/auction/status";
 import { PageContainer } from "modules/app/page-container";
-import { ReloadButton } from "components/reload-button";
 import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
-import { AuctionStatusBadge } from "modules/auction/auction-status-badge";
 import { BidList } from "modules/auction/bid-list";
 import { PurchaseList } from "modules/auction/purchase-list";
-import { getLinkUrl } from "modules/auction/utils/auction-details";
 import { Countdown } from "modules/auction/countdown";
+import { AuctionBaselineLive } from "modules/auction/status/auction-baseline-live";
+import AuctionProgressBar from "modules/auction/auction-progress-bar";
+import { getLinkUrl } from "modules/auction/utils/auction-details";
 
 const statuses: Record<
   AuctionStatus,
@@ -32,7 +31,7 @@ const statuses: Record<
 > = {
   registering: () => null, // Registration state is not handled in this component, but in auction-registering.tsx
   created: AuctionCreated,
-  live: AuctionLive,
+  live: AuctionBaselineLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
@@ -44,19 +43,30 @@ const statuses: Record<
 export default function AuctionPage() {
   const { chainId, lotId } = useParams();
 
-  const {
-    result: auction,
-    isLoading: isAuctionLoading,
-    isRefetching,
-    refetch,
-  } = useAuction(chainId!, lotId!);
+  const { result: auction, isLoading: isAuctionLoading } = useAuction(
+    chainId!,
+    lotId!,
+  );
 
-  if (isAuctionLoading) {
-    return <AuctionPageLoading />;
-  }
+  //TODO: improve this check
+  const isUSDQuote =
+    auction && auction.quoteToken.symbol.toLowerCase().includes("usd");
 
+  const toggle = useToggle();
+  //Enforce showing as quote token when it's a USD stable
+  React.useEffect(() => {
+    if (auction && isUSDQuote && toggle.isToggled) {
+      toggle.toggle();
+    }
+  }, [auction]);
+
+  if (isAuctionLoading) return <AuctionPageLoading />;
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
+
   const isFPA = auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
+
+  //TODO: check wen to display
+  const showBidHistory = !["created", "live"].includes(auction.status);
 
   const AuctionElement =
     auction.status === "concluded" && isFPA
@@ -64,16 +74,24 @@ export default function AuctionPage() {
       : statuses[auction.status];
 
   return (
-    <PageContainer id="__AXIS_ORIGIN_LAUNCH_PAGE__" className="mb-20">
-      <PageHeader backNavigationPath="/#" backNavigationText="Back to Launches">
-        <ReloadButton refetching={isRefetching} onClick={() => refetch?.()} />
-      </PageHeader>
-
+    <PageContainer id="__AXIS_ORIGIN_LAUNCH_PAGE__" className="lg:pb-20">
       <AuctionPageView auction={auction} isAuctionLoading={isAuctionLoading}>
-        <AuctionElement auction={auction} />
+        <PageHeader
+          className="mt-0 lg:mt-0"
+          backNavigationPath="/#"
+          backNavigationText="Back to Launches"
+          toggle={!isUSDQuote}
+          toggleSymbol={auction.quoteToken.symbol}
+        >
+          <Countdown auction={auction} />
+        </PageHeader>
+        <div className="mt-10">
+          <AuctionElement auction={auction} />
+        </div>
       </AuctionPageView>
       {auction.status !== "created" &&
         auction.status !== "registering" &&
+        showBidHistory &&
         (!isFPA ? (
           <BidList auction={auction} />
         ) : (
@@ -91,47 +109,29 @@ export function AuctionPageView({
   auction: Auction;
   isAuctionLoading?: boolean;
 }>) {
-  const [textColor, setTextColor] = React.useState<string>();
-
   return (
     <>
       <ImageBanner
         isLoading={isAuctionLoading}
         imgUrl={getLinkUrl("projectBanner", auction)}
-        onTextColorChange={setTextColor}
       >
         <div className="max-w-limit flex h-full w-full flex-row flex-wrap">
-          <div className="flex w-full flex-row justify-end">
-            <div className="mr-4 mt-4">
-              {!isAuctionLoading && (
-                <AuctionStatusBadge status={auction.status} large />
-              )}
-            </div>
-          </div>
-          <div className="flex w-full flex-col justify-end">
-            <div className="self-center text-center align-bottom">
-              <Text
-                size="7xl"
-                mono
-                className={cn(textColor === "light" && "text-background")}
-              >
-                {!isAuctionLoading && auction.info?.name}
+          <div className="mb-10 flex w-full flex-col items-center justify-end">
+            <div className="relative mb-2 self-center text-center">
+              <div className="border-primary absolute inset-0 top-3 -z-10 -ml-10 size-full w-[120%] border bg-neutral-950 blur-2xl" />
+              <Text size="7xl" mono className="text-neutral-200">
+                {auction.info?.name}
               </Text>
 
               <Text
                 size="3xl"
                 color="secondary"
-                className={cn(
-                  "mx-auto w-fit text-nowrap",
-                  textColor === "light" && "text-background",
-                )}
+                className={cn("mx-auto w-fit text-nowrap text-neutral-200")}
               >
                 {!isAuctionLoading && auction.info?.tagline}
               </Text>
             </div>
-            <div className="mb-4 ml-4 self-start">
-              {!isAuctionLoading && <Countdown auction={auction} />}
-            </div>
+            <AuctionProgressBar auction={auction} />
           </div>
         </div>
       </ImageBanner>

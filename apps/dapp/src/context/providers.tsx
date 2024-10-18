@@ -16,6 +16,7 @@ const sdk = new OriginSdk({
 
 type ProviderProps = React.PropsWithChildren<{
   disableDevTools?: boolean;
+  disableDialogProvider?: boolean;
 }>;
 
 export function Providers(props: ProviderProps) {
@@ -25,7 +26,9 @@ export function Providers(props: ProviderProps) {
         <PointsProvider>
           <OriginSdkProvider sdk={sdk}>
             <TooltipProvider delayDuration={350}>
-              <DialogProvider>{props.children}</DialogProvider>
+              <DialogProvider disabled={props.disableDialogProvider}>
+                {props.children}
+              </DialogProvider>
             </TooltipProvider>
           </OriginSdkProvider>
         </PointsProvider>
