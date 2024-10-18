@@ -26,7 +26,14 @@ export function ImageBanner({
           "absolute h-full w-dvw",
           !isLoading && "bg-center bg-no-repeat",
         )}
-        style={imgUrl ? { backgroundImage: `url(${imgUrl})` } : {}}
+        style={
+          imgUrl
+            ? {
+                backgroundSize: "auto 480px",
+                backgroundImage: `url(${imgUrl})`,
+              }
+            : {}
+        }
       />
       <div className="z-10 h-full w-full">{children}</div>
     </div>
