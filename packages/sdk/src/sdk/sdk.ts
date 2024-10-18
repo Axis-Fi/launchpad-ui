@@ -15,6 +15,8 @@ import type {
   ClaimBidsConfig,
   RefundBidConfig,
   RefundBidParams,
+  SettleParams,
+  SettleConfig,
 } from "../core";
 import type { GetTokenPriceParams } from "../core/tokens";
 
@@ -144,7 +146,6 @@ class OriginSdk {
    *     lotId: 1,
    *     bids: [1, 2, 3],
    *     chainId: 1,
-   *     auctionType: AuctionType.SEALED_BID,
    *   })
    * } catch (error: SdkError) {
    *   console.log(error.message, error.issues)
@@ -169,7 +170,6 @@ class OriginSdk {
    *     bidId: 10,
    *     bidIndex: 1,
    *     chainId: 1,
-   *     auctionType: AuctionType.SEALED_BID,
    *   })
    * } catch (error: SdkError) {
    *   console.log(error.message, error.issues)
@@ -177,6 +177,30 @@ class OriginSdk {
    */
   refundBid(params: RefundBidParams): RefundBidConfig {
     return this.core.refundBid.getConfig(params);
+  }
+
+  /**
+   * Gets the contract config required to execute a settle transaction on the auction house smart contract.
+   *
+   * @param params settle parameters
+   * @returns Contract config for the settle transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.settle({
+   *     lotId: 1,
+   *     chainId: 1,
+   *     numBids: 10,
+   *     callbackData: "0x...",
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  settle(params: SettleParams): SettleConfig {
+    return this.core.settle.getConfig(params);
   }
 }
 
