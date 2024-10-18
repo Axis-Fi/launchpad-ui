@@ -207,8 +207,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     if (canBid) {
       // Handle conditional logic for the different allowlist types and set the callback data
       switch (callbacksType) {
-        case CallbacksType.MERKLE_ALLOWLIST ||
-          CallbacksType.BASELINE_ALLOWLIST: {
+        case CallbacksType.MERKLE_ALLOWLIST:
+        case CallbacksType.BASELINE_ALLOWLIST: {
           // Generate the proof for inclusion in callback data
           const tree = StandardMerkleTree.of(allowlist, ["address"]);
           const proof = tree.getProof([user]) as `0x${string}`[];
@@ -217,8 +217,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
           ]);
           break;
         }
-        case CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
-          CallbacksType.BASELINE_CAPPED_ALLOWLIST: {
+        case CallbacksType.CAPPED_MERKLE_ALLOWLIST:
+        case CallbacksType.BASELINE_CAPPED_ALLOWLIST: {
           // For capped allowlists, the user's limit is the global limit minus what they've already spent
           amountLimited = true;
           limit = (cap ?? BigInt(0)) - spent;
@@ -231,8 +231,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
           ]);
           break;
         }
-        case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST ||
-          CallbacksType.BASELINE_ALLOCATED_ALLOWLIST: {
+        case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST:
+        case CallbacksType.BASELINE_ALLOCATED_ALLOWLIST: {
           // For allocated allowlists, the user's limit is in the allowlist
           amountLimited = true;
 
