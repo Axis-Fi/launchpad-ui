@@ -59,7 +59,7 @@ export const TokenAmountInput = React.forwardRef<
     return (
       <div
         className={cn(
-          "hover:bg-surface-secondary bg-surface-tertiary group rounded border-2 border-transparent p-4 transition-all",
+          "hover:bg-surface-secondary border-primary bg-surface-tertiary group rounded border-2 p-4 transition-all",
           error && "border-feedback-alert",
           disabled && "opacity-50",
         )}
@@ -97,8 +97,10 @@ export const TokenAmountInput = React.forwardRef<
               uppercase
               variant="secondary"
               size="sm"
-              className="ml-1 h-min rounded-full px-1.5 py-1 leading-none"
-              onClick={() => onClickMaxButton?.()}
+              className="border-primary ml-1 h-min rounded-full px-1.5 py-1 leading-none"
+              onClick={() => {
+                onClickMaxButton?.();
+              }}
             >
               Max
             </Button>
