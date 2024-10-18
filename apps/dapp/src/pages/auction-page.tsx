@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Button, Skeleton, Text, cn } from "@repo/ui";
+import { Button, Skeleton, Text, cn, useToggle } from "@repo/ui";
 import {
   type PropsWithAuction,
   type AuctionStatus,
@@ -48,6 +48,18 @@ export default function AuctionPage() {
     lotId!,
   );
 
+  //TODO: improve this check
+  const isUSDQuote =
+    auction && auction.quoteToken.symbol.toLowerCase().includes("usd");
+
+  const toggle = useToggle();
+  //Enforce showing as quote token when it's a USD stable
+  React.useEffect(() => {
+    if (auction && isUSDQuote && toggle.isToggled) {
+      toggle.toggle();
+    }
+  }, [auction]);
+
   if (isAuctionLoading) return <AuctionPageLoading />;
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
 
@@ -68,7 +80,7 @@ export default function AuctionPage() {
           className="mt-0 lg:mt-0"
           backNavigationPath="/#"
           backNavigationText="Back to Launches"
-          toggle
+          toggle={!isUSDQuote}
           toggleSymbol={auction.quoteToken.symbol}
         >
           <Countdown auction={auction} />

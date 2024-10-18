@@ -39,11 +39,10 @@ export function PageHeader({
         </div>
       </Button>
       <div className="mx-auto ">{children}</div>
-      {toggle && (
-        <div className="flex w-1/5 justify-end ">
-          <UsdToggle currencySymbol={toggleSymbol} />
-        </div>
-      )}
+
+      <div className="flex w-1/5 justify-end ">
+        {toggle && <UsdToggle currencySymbol={toggleSymbol} />}
+      </div>
     </div>
   );
 }
