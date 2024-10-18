@@ -24,7 +24,9 @@ export function isAxisCallback(auction: AuctionProps) {
     !auction.callbacks ||
     auction.callbacks === zeroAddress ||
     Object.values(axisContracts.addresses[auction.chainId])
-      .map((c) => c.toLowerCase())
+      .map((c) =>
+        typeof c === "string" ? c.toLowerCase() : c.map((c) => c.toLowerCase()),
+      )
       .includes(auction.callbacks.toLowerCase())
   );
 }

@@ -3,12 +3,18 @@ import { AuctionType, type PropsWithAuction } from "@repo/types";
 import { useBaseDTLCallback } from "modules/auction/hooks/use-base-dtl-callback";
 import { AuctionMetrics } from "./auction-metrics";
 import { AuctionMetric } from "./auction-metric";
+import { useBaselineDTLCallback } from "./hooks/use-baseline-dtl-callback";
 
 export function TokenInfoCard({ auction }: PropsWithAuction) {
   const { data: dtlCallbackConfiguration } = useBaseDTLCallback({
     chainId: auction.chainId,
     lotId: auction.lotId,
     baseTokenDecimals: auction.baseToken.decimals,
+    callback: auction.callbacks,
+  });
+  const { data: baselineCallbackConfiguration } = useBaselineDTLCallback({
+    chainId: auction.chainId,
+    lotId: auction.lotId,
     callback: auction.callbacks,
   });
 
@@ -36,6 +42,16 @@ export function TokenInfoCard({ auction }: PropsWithAuction) {
             tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
           >
             {dtlCallbackConfiguration.proceedsUtilisationPercent * 100}%
+          </Metric>
+        )}
+        {baselineCallbackConfiguration && (
+          // TODO fix alignment of metric title
+          <Metric
+            label="Direct to Liquidity"
+            size="m"
+            tooltip="The percentage of proceeds that will be automatically deposited into the liquidity pool"
+          >
+            {baselineCallbackConfiguration.poolPercent * 100}%
           </Metric>
         )}
       </AuctionMetrics>

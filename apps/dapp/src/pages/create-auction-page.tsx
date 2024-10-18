@@ -42,6 +42,7 @@ import {
   formatUnits,
   fromHex,
   getAddress,
+  isAddress,
   isHex,
   parseAbiParameters,
   parseUnits,
@@ -58,7 +59,7 @@ import {
   getScaledCapacityWithCuratorFee,
 } from "src/utils";
 
-import { AuctionType, CallbacksType } from "@repo/types";
+import { AuctionType, CallbacksType, isBaselineCallback } from "@repo/types";
 
 import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
 import { addDays, addHours, addMinutes } from "date-fns";
@@ -72,7 +73,11 @@ import { getAuctionCreateParams } from "modules/auction/utils/get-auction-create
 import { RequiresChain } from "components/requires-chain";
 import { getLinearVestingParams } from "modules/auction/utils/get-derivative-params";
 import { useNavigate } from "react-router-dom";
-import { getAuctionHouse, getCallbacks } from "utils/contracts";
+import {
+  callbackLabels,
+  getAuctionHouse,
+  getLatestCallback,
+} from "utils/contracts";
 import Papa from "papaparse";
 import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import { PageContainer } from "modules/app/page-container";
@@ -97,6 +102,7 @@ import { useStoredAuctionConfig } from "state/auction-config";
 import type { Token } from "@repo/types";
 import { DownloadIcon, ShareIcon, TrashIcon } from "lucide-react";
 import { TriggerMessage } from "components/trigger-message";
+import { getTickAtPrice } from "utils/uniswapV3";
 
 const optionalURL = z.union([z.string().url().optional(), z.literal("")]);
 
@@ -146,6 +152,11 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
       .optional(),
     dtlUniV3PoolFee: z.string().optional(),
+    baselineFloorReservesPercent: z.array(z.number()).optional(),
+    baselineFloorRangeGap: StringNumberNotNegative.optional(),
+    baselineAnchorTickWidth: StringNumberNotNegative.optional(),
+    baselineAnchorTickU: z.string().optional(),
+    baselinePoolTargetTick: z.string().optional(),
     customCallbackData: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]$/)
@@ -273,7 +284,8 @@ const schema = z
     (data) =>
       !(
         data.callbacksType === CallbacksType.UNIV2_DTL ||
-        data.callbacksType === CallbacksType.UNIV3_DTL
+        data.callbacksType === CallbacksType.UNIV3_DTL ||
+        isBaselineCallback(data.callbacksType)
       )
         ? true
         : data.dtlRecipient,
@@ -300,6 +312,111 @@ const schema = z
   )
   .refine(
     (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.dtlProceedsPercent &&
+          data.dtlProceedsPercent.length > 0 &&
+          data.dtlProceedsPercent[0] >= 1 &&
+          data.dtlProceedsPercent[0] <= 100,
+    {
+      message: "Liquidity proceeds percent must be 1-100",
+      path: ["dtlProceedsPercent"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.callbacks !== undefined && isAddress(data.callbacks),
+    {
+      message:
+        "Callbacks address must be specified for Baseline callbacks type",
+      path: ["callbacks"],
+    },
+  )
+  .refine(
+    (data) => {
+      return !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.baselineFloorReservesPercent &&
+            data.baselineFloorReservesPercent.length > 0 &&
+            data.baselineFloorReservesPercent[0] >= 10 &&
+            data.baselineFloorReservesPercent[0] <= 99;
+    },
+    {
+      message: "Floor reserves percent must be 10-99",
+      path: ["baselineFloorReservesPercent"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.baselineFloorRangeGap && Number(data.baselineFloorRangeGap) >= 0,
+    {
+      message: "Floor range gap must be a positive number",
+      path: ["baselineFloorRangeGap"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.baselineAnchorTickWidth &&
+          Number(data.baselineAnchorTickWidth) >= 1 &&
+          Number(data.baselineAnchorTickWidth) <= 50,
+    {
+      message: "Anchor tick width must be 10-50",
+      path: ["baselineAnchorTickWidth"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isBaselineCallback(data.callbacksType)
+        ? true
+        : data.baselinePoolTargetTick &&
+          Number(data.baselinePoolTargetTick) <=
+            Number(data.baselineAnchorTickU),
+    {
+      message: "Pool target tick must be less than upper anchor tick",
+      path: ["baselinePoolTargetTick"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isSimpleAllowlist(data.callbacksType) &&
+      !isCappedAllowlist(data.callbacksType) &&
+      !isAllocatedAllowlist(data.callbacksType)
+        ? true
+        : data.allowlist !== undefined && data.allowlist.length > 0,
+    {
+      message: "Allowlist file must be provided",
+      path: ["callbacksType"], // The allowlist field is not displayed, so display the error on the callbacks type
+    },
+  )
+  .refine(
+    (data) =>
+      !isTokenAllowlist(data.callbacksType)
+        ? true
+        : data.allowlistToken && isAddress(data.allowlistToken.address),
+    {
+      message: "Allowlist token must be a valid address",
+      path: ["allowlistToken"],
+    },
+  )
+  .refine(
+    (data) =>
+      !isTokenAllowlist(data.callbacksType)
+        ? true
+        : data.allowlistTokenThreshold &&
+          Number(data.allowlistTokenThreshold) >= 0,
+    {
+      message: "Allowlist token threshold must be a positive number",
+      path: ["allowlistTokenThreshold"],
+    },
+  )
+  .refine(
+    (data) =>
       !(data.callbacksType === CallbacksType.UNIV3_DTL)
         ? true
         : data.dtlUniV3PoolFee,
@@ -308,12 +425,181 @@ const schema = z
       path: ["dtlUniV3PoolFee"],
     },
   )
-  .refine((data) => Number(data.payoutTokenBalance) >= Number(data.capacity), {
-    message: "Insufficient balance",
-    path: ["capacity"],
-  });
+  .refine(
+    (data) =>
+      // Baseline callbacks will supply the payout token
+      // TODO determine this from the flags embedded in the contract address
+      isBaselineCallback(data.callbacksType)
+        ? true
+        : Number(data.payoutTokenBalance) >= Number(data.capacity),
+    {
+      message: "Insufficient balance",
+      path: ["capacity"],
+    },
+  );
 
 export type CreateAuctionForm = z.infer<typeof schema>;
+
+const generateAllowlistCallbackData = (
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const allowlistTree =
+    values.allowlist && StandardMerkleTree.of(values.allowlist, ["address"]);
+  const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+  return encodeAbiParameters(parseAbiParameters("bytes32 merkleRoot"), [root]);
+};
+
+const generateCappedAllowlistCallbackData = (
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const cap = parseUnits(
+    values.cappedAllowlistLimit ?? "0",
+    values.quoteToken.decimals,
+  );
+  const allowlistTree =
+    values.allowlist && StandardMerkleTree.of(values.allowlist, ["address"]);
+  const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+  return encodeAbiParameters(
+    parseAbiParameters("bytes32 merkleRoot, uint256 cap"),
+    [root, cap],
+  );
+};
+
+const generateAllocatedAllowlistCallbackData = (
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const allowlistTree =
+    values.allowlist &&
+    StandardMerkleTree.of(values.allowlist, ["address", "uint256"]);
+  const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
+  return encodeAbiParameters(parseAbiParameters("bytes32 merkleRoot"), [root]);
+};
+
+const generateTokenAllowlistCallbackData = (
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const allowlistToken = (values.allowlistToken?.address ??
+    zeroAddress) as `0x${string}`;
+  const threshold = parseUnits(
+    values.allowlistTokenThreshold ?? "0",
+    values.allowlistToken?.decimals ?? 0,
+  );
+  return encodeAbiParameters(
+    parseAbiParameters("address token, uint256 threshold"),
+    [allowlistToken, threshold],
+  );
+};
+
+const generateBaselineCallbackData = (
+  type: CallbacksType,
+  values: CreateAuctionForm,
+): `0x${string}` => {
+  const recipient = (values.dtlRecipient ?? zeroAddress) as `0x${string}`;
+  const poolPercent = values.dtlProceedsPercent
+    ? toBasisPoints(values.dtlProceedsPercent[0] ?? 0)
+    : 0;
+  const floorReservesPercent = values.baselineFloorReservesPercent
+    ? toBasisPoints(values.baselineFloorReservesPercent[0] ?? 0)
+    : 0;
+  const floorRangeGap = Number(values.baselineFloorRangeGap ?? 0);
+  const anchorTickU = Number(values.baselineAnchorTickU ?? 0);
+  const anchorTickWidth = Number(values.baselineAnchorTickWidth ?? 0);
+  const poolTargetTick = Number(values.baselinePoolTargetTick ?? 0);
+  let allowlistParams = toHex("");
+
+  if (type === CallbacksType.BASELINE_ALLOWLIST) {
+    allowlistParams = generateAllowlistCallbackData(values);
+  } else if (type === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST) {
+    allowlistParams = generateAllocatedAllowlistCallbackData(values);
+  } else if (type === CallbacksType.BASELINE_CAPPED_ALLOWLIST) {
+    allowlistParams = generateCappedAllowlistCallbackData(values);
+  } else if (type === CallbacksType.BASELINE_TOKEN_ALLOWLIST) {
+    allowlistParams = generateTokenAllowlistCallbackData(values);
+  }
+
+  return encodeAbiParameters(
+    [
+      {
+        components: [
+          {
+            type: "address",
+            name: "recipient",
+          },
+          {
+            type: "uint24",
+            name: "poolPercent",
+          },
+          {
+            type: "uint24",
+            name: "floorReservesPercent",
+          },
+          {
+            type: "int24",
+            name: "floorRangeGap",
+          },
+          {
+            type: "int24",
+            name: "anchorTickU",
+          },
+          {
+            type: "int24",
+            name: "anchorTickWidth",
+          },
+          {
+            type: "int24",
+            name: "poolTargetTick",
+          },
+          {
+            type: "bytes",
+            name: "allowlistParams",
+          },
+        ],
+        type: "tuple",
+        name: "CreateData",
+      },
+    ],
+    [
+      {
+        recipient: recipient,
+        poolPercent: poolPercent,
+        floorReservesPercent: floorReservesPercent,
+        floorRangeGap: floorRangeGap,
+        anchorTickU: anchorTickU,
+        anchorTickWidth: anchorTickWidth,
+        poolTargetTick: poolTargetTick,
+        allowlistParams: allowlistParams,
+      },
+    ],
+  );
+};
+
+const isSimpleAllowlist = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_ALLOWLIST
+  );
+};
+
+const isCappedAllowlist = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_CAPPED_ALLOWLIST
+  );
+};
+
+const isAllocatedAllowlist = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST
+  );
+};
+
+const isTokenAllowlist = (callbacksType?: string) => {
+  return (
+    callbacksType === CallbacksType.TOKEN_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_TOKEN_ALLOWLIST
+  );
+};
 
 export default function CreateAuctionPage() {
   // Due to components being uncontrolled the form inputs wont clear
@@ -325,6 +611,11 @@ export default function CreateAuctionPage() {
     minFillPercent: [50],
     auctionType: AuctionType.SEALED_BID,
     start: dateMath.addMinutes(new Date(), 15),
+    dtlProceedsPercent: [100],
+    baselineFloorReservesPercent: [50],
+    baselineFloorRangeGap: "0",
+    baselineAnchorTickU: "0",
+    baselineAnchorTickWidth: "10",
   };
 
   const { address } = useAccount();
@@ -506,17 +797,19 @@ export default function CreateAuctionPage() {
     // Set the callbacks address
     let callbacks;
 
-    // Two main cases:
+    // Three main cases:
     // 1. No callback or custom callback
     // 2. Selected one of our standard callbacks
+    // 3. Baseline callback
     if (
       values.callbacksType === undefined ||
       values.callbacksType === CallbacksType.CUSTOM ||
-      values.callbacksType === CallbacksType.NONE
+      values.callbacksType === CallbacksType.NONE ||
+      isBaselineCallback(values.callbacksType)
     ) {
       callbacks = values.callbacks ? getAddress(values.callbacks) : zeroAddress;
     } else {
-      callbacks = getCallbacks(chainId, callbacksType).address;
+      callbacks = getLatestCallback(chainId, callbacksType).address;
     }
 
     // Set the callback data based on the type and user inputs
@@ -533,54 +826,20 @@ export default function CreateAuctionPage() {
       }
       case CallbacksType.MERKLE_ALLOWLIST: {
         // TODO need to handle errors here? May not be necessary since we are validating the file format
-        const allowlistTree =
-          values.allowlist &&
-          StandardMerkleTree.of(values.allowlist, ["address"]);
-        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
-        callbackData = encodeAbiParameters(
-          parseAbiParameters("bytes32 merkleRoot"),
-          [root],
-        );
+        callbackData = generateAllowlistCallbackData(values);
         break;
       }
       case CallbacksType.CAPPED_MERKLE_ALLOWLIST: {
-        const cap = parseUnits(
-          values.cappedAllowlistLimit ?? "0",
-          values.quoteToken.decimals,
-        );
-        const allowlistTree =
-          values.allowlist &&
-          StandardMerkleTree.of(values.allowlist, ["address"]);
-        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
-        callbackData = encodeAbiParameters(
-          parseAbiParameters("bytes32 merkleRoot, uint256 cap"),
-          [root, cap],
-        );
+        callbackData = generateCappedAllowlistCallbackData(values);
         break;
       }
       case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST: {
         // TODO need to handle errors here? May not be necessary since we are validating the file format
-        const allowlistTree =
-          values.allowlist &&
-          StandardMerkleTree.of(values.allowlist, ["address", "uint256"]);
-        const root = (allowlistTree?.root ?? "0x") as `0x${string}`;
-        callbackData = encodeAbiParameters(
-          parseAbiParameters("bytes32 merkleRoot"),
-          [root],
-        );
+        callbackData = generateAllocatedAllowlistCallbackData(values);
         break;
       }
       case CallbacksType.TOKEN_ALLOWLIST: {
-        const allowlistToken = (values.allowlistToken?.address ??
-          zeroAddress) as `0x${string}`;
-        const threshold = parseUnits(
-          values.allowlistTokenThreshold ?? "0",
-          values.allowlistToken?.decimals ?? 0,
-        );
-        callbackData = encodeAbiParameters(
-          parseAbiParameters("address token, uint256 threshold"),
-          [allowlistToken, threshold],
-        );
+        callbackData = generateTokenAllowlistCallbackData(values);
         break;
       }
       case CallbacksType.UNIV2_DTL: {
@@ -702,10 +961,32 @@ export default function CreateAuctionPage() {
         );
         break;
       }
+      case CallbacksType.BASELINE: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
+      case CallbacksType.BASELINE_ALLOWLIST: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
+      case CallbacksType.BASELINE_CAPPED_ALLOWLIST: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
+      case CallbacksType.BASELINE_TOKEN_ALLOWLIST: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
+      case CallbacksType.BASELINE_ALLOCATED_ALLOWLIST: {
+        callbackData = generateBaselineCallbackData(callbacksType, values);
+        break;
+      }
     }
 
     createAuctionTx.writeContract(
       {
+        // TODO insert errors from the callback contract (if applicable) so that they are decoded
+        // This works (but is crude): `abi: [...auctionHouseAbi, ...baselineAbi],`
         abi: auctionHouseAbi,
         address: auctionHouseAddress,
         functionName: "auction",
@@ -786,7 +1067,7 @@ export default function CreateAuctionPage() {
     approveReceipt: callbackApproveReceipt,
     approveTx: callbackApproveTx,
   } = useAllowance({
-    spenderAddress: getCallbacks(chainId, callbacksType as CallbacksType)
+    spenderAddress: getLatestCallback(chainId, callbacksType as CallbacksType)
       .address,
     ownerAddress: address,
     tokenAddress: payoutToken?.address as Address,
@@ -801,9 +1082,12 @@ export default function CreateAuctionPage() {
     callbacksType === CallbacksType.UNIV2_DTL ||
     callbacksType === CallbacksType.UNIV3_DTL;
 
+  const requiresAuctionHouseApproval = !isBaselineCallback(callbacksType);
+
   const onSubmit = () => {
+    console.log("submit");
     // 1. If we need to approve the auction house
-    if (!isSufficientAuctionHouseAllowance) {
+    if (requiresAuctionHouseApproval && !isSufficientAuctionHouseAllowance) {
       executeApproveAuctionHouse();
       return;
     }
@@ -930,10 +1214,9 @@ export default function CreateAuctionPage() {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
-    const parseFn =
-      callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST
-        ? parseAllocatedAllowlistFile
-        : parseAllowlistFile;
+    const parseFn = isAllocatedAllowlist(callbacksType)
+      ? parseAllocatedAllowlistFile
+      : parseAllowlistFile;
 
     if (!file) return;
 
@@ -961,42 +1244,66 @@ export default function CreateAuctionPage() {
   // We get the factory address from the callbacks contract
   const { data: uniV2Factory } = useReadContract({
     abi: abis.uniV2Dtl,
-    address: getCallbacks(chainId, callbacksType as CallbacksType).address,
+    address: getLatestCallback(chainId, callbacksType as CallbacksType).address,
     functionName: "uniV2Factory",
     query: { enabled: callbacksType === CallbacksType.UNIV2_DTL },
   });
 
+  // Validate the UniV2 pool
+  const isUniV2PoolQueryEnabled =
+    callbacksType === CallbacksType.UNIV2_DTL &&
+    !!uniV2Factory &&
+    !!payoutToken?.address &&
+    !!quoteToken?.address;
   const { data: uniV2Pool } = useReadContract({
     abi: abis.uniV2Factory,
     address: uniV2Factory,
     functionName: "getPair",
     args:
-      payoutToken && quoteToken
+      payoutToken?.address && quoteToken?.address
         ? [getAddress(payoutToken.address), getAddress(quoteToken.address)]
         : undefined,
     query: {
-      enabled:
-        callbacksType === CallbacksType.UNIV2_DTL &&
-        !!uniV2Factory &&
-        !!payoutToken?.address &&
-        !!quoteToken?.address,
+      enabled: isUniV2PoolQueryEnabled,
     },
   });
+  useEffect(() => {
+    if (uniV2Pool && uniV2Pool !== zeroAddress) {
+      console.error(
+        `Existing UniV2 pool found for ${payoutToken?.address} and ${quoteToken?.address}: ${uniV2Pool}`,
+      );
+      form.setError("callbacksType", {
+        message:
+          "A UniV2 pool already exists for the selected tokens. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for UniV2 pool");
+    form.clearErrors("callbacksType");
+  }, [uniV2Pool, form, payoutToken?.address, quoteToken?.address]);
 
   // If the auction uses a UniV3 DTL, we need to check if a pool exists for the base/quote token pair and fee tier
   const { data: uniV3Factory } = useReadContract({
     abi: abis.uniV3Dtl,
-    address: getCallbacks(chainId, callbacksType as CallbacksType).address,
+    address: getLatestCallback(chainId, callbacksType as CallbacksType).address,
     functionName: "uniV3Factory",
     query: { enabled: callbacksType === CallbacksType.UNIV3_DTL },
   });
 
+  // Validate the UniV3 pool
+  const isUniV3PoolQueryEnabled =
+    callbacksType === CallbacksType.UNIV3_DTL &&
+    !!uniV3Factory &&
+    !!payoutToken?.address &&
+    !!quoteToken?.address &&
+    !!dtlUniV3PoolFee;
   const { data: uniV3Pool } = useReadContract({
     abi: abis.uniV3Factory,
     address: uniV3Factory,
     functionName: "getPool",
     args:
-      payoutToken && quoteToken
+      payoutToken?.address && quoteToken?.address
         ? [
             getAddress(payoutToken.address),
             getAddress(quoteToken.address),
@@ -1004,28 +1311,204 @@ export default function CreateAuctionPage() {
           ]
         : undefined,
     query: {
-      enabled:
-        callbacksType === CallbacksType.UNIV3_DTL &&
-        !!uniV3Factory &&
-        !!payoutToken?.address &&
-        !!quoteToken?.address &&
-        !!dtlUniV3PoolFee,
+      enabled: isUniV3PoolQueryEnabled,
     },
   });
+  useEffect(() => {
+    if (uniV3Pool && uniV3Pool !== zeroAddress) {
+      console.error(
+        `Existing UniV3 pool found for ${payoutToken?.address} and ${quoteToken?.address} at fee tier ${dtlUniV3PoolFee}: ${uniV3Pool}`,
+      );
+      form.setError("callbacksType", {
+        message:
+          "A UniV3 pool already exists for the selected tokens at the selected fee tier. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
+      });
+      return;
+    }
 
-  if (uniV2Pool && uniV2Pool !== zeroAddress) {
-    form.setError("callbacksType", {
-      message:
-        "A UniV2 pool already exists for the selected tokens. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
-    });
-  }
+    console.log("Clearing errors for UniV3 pool");
+    form.clearErrors("callbacksType");
+  }, [
+    uniV3Pool,
+    form,
+    payoutToken?.address,
+    quoteToken?.address,
+    dtlUniV3PoolFee,
+  ]);
 
-  if (uniV3Pool && uniV3Pool !== zeroAddress) {
-    form.setError("callbacksType", {
-      message:
-        "A UniV3 pool already exists for the selected tokens at the selected fee tier. DTL not supported. It's not recommended to due DTL for tokens that are already liquid.",
-    });
-  }
+  // Validate the Baseline callbacks
+  const isBaselineQueryEnabled =
+    isBaselineCallback(callbacksType) &&
+    form.getValues("callbacks") !== undefined;
+  // Check here if the auction house address is the same as the one in the baseline callbacks
+  const { data: baselineAuctionHouse } = useReadContract({
+    abi: abis.baseline,
+    address: form.getValues("callbacks") as Address,
+    functionName: "AUCTION_HOUSE",
+    query: {
+      enabled: isBaselineQueryEnabled,
+    },
+  });
+  useEffect(() => {
+    if (
+      baselineAuctionHouse?.toLowerCase() !== auctionHouseAddress?.toLowerCase()
+    ) {
+      console.error(
+        `Baseline auction house address ${baselineAuctionHouse} does not match the auction house address ${auctionHouseAddress}`,
+      );
+      form.setError("callbacks", {
+        message:
+          "The auction house address must be the same as the one in the Baseline callbacks",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for Baseline Auction House");
+    form.clearErrors("callbacks");
+  }, [baselineAuctionHouse, auctionHouseAddress, form]);
+
+  // Check here if the payout token is the same as the one in the baseline callbacks
+  const { data: baselineBaseToken } = useReadContract({
+    abi: abis.baseline,
+    address: form.getValues("callbacks") as Address,
+    functionName: "bAsset",
+    query: {
+      enabled: isBaselineQueryEnabled,
+    },
+  });
+  useEffect(() => {
+    if (
+      isBaselineQueryEnabled &&
+      baselineBaseToken?.toLowerCase() !== payoutToken?.address?.toLowerCase()
+    ) {
+      console.error(
+        `Baseline base token ${baselineBaseToken} does not match the payout token ${payoutToken?.address}`,
+      );
+      form.setError("payoutToken", {
+        message:
+          "The payout token must be the same as the one in the Baseline callbacks",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for the payout token");
+    form.clearErrors("payoutToken");
+  }, [baselineBaseToken, payoutToken, form, isBaselineQueryEnabled]);
+
+  // Check here if the quote token is the same as the one in the baseline callbacks
+  const { data: baselineQuoteToken } = useReadContract({
+    abi: abis.baseline,
+    address: form.getValues("callbacks") as Address,
+    functionName: "RESERVE",
+    query: {
+      enabled: isBaselineQueryEnabled,
+    },
+  });
+  useEffect(() => {
+    if (
+      isBaselineQueryEnabled &&
+      baselineQuoteToken?.toLowerCase() !== quoteToken?.address?.toLowerCase()
+    ) {
+      console.error(
+        `Baseline quote token ${baselineQuoteToken} does not match the quote token ${quoteToken?.address}`,
+      );
+      form.setError("quoteToken", {
+        message:
+          "The quote token must be the same as the one in the Baseline callbacks",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for the quote token");
+    form.clearErrors("quoteToken");
+  }, [baselineQuoteToken, quoteToken, form, isBaselineQueryEnabled]);
+
+  // Validate that the pool active tick is above or equal to the tick for the auction price
+  const auctionPrice = Number(form.getValues("price"));
+  const { data: baselinePool } = useReadContract({
+    abi: abis.bpool,
+    address: baselineBaseToken,
+    functionName: "pool",
+    query: {
+      enabled: isBaselineQueryEnabled && baselineBaseToken !== undefined,
+    },
+  });
+  const { data: baselinePoolSlot0 } = useReadContract({
+    abi: abis.uniV3Pool,
+    address: baselinePool,
+    functionName: "slot0",
+    query: {
+      enabled: isBaselineQueryEnabled && baselinePool !== undefined,
+    },
+  });
+  useEffect(() => {
+    if (
+      !isBaselineQueryEnabled ||
+      !baselinePoolSlot0 ||
+      !auctionPrice ||
+      !payoutToken?.decimals ||
+      !quoteToken?.decimals
+    ) {
+      form.clearErrors("price");
+      return;
+    }
+
+    const poolTick = baselinePoolSlot0[1];
+    const auctionPriceTick = getTickAtPrice(
+      auctionPrice,
+      payoutToken?.decimals,
+      quoteToken?.decimals,
+    );
+    console.log("Price", auctionPrice);
+    console.log("Tick at price", auctionPriceTick);
+    console.log("Pool tick", baselinePoolSlot0[1]);
+    // TODO this fires intermittently, need to debug
+
+    if (poolTick < auctionPriceTick) {
+      form.setError("price", {
+        message:
+          "The auction price is greater than the pool tick. Please select a lower price.",
+      });
+      return;
+    }
+
+    console.log("Clearing errors for the price");
+    form.clearErrors("price");
+  }, [
+    baselinePoolSlot0,
+    form,
+    auctionPrice,
+    isBaselineQueryEnabled,
+    payoutToken?.decimals,
+    quoteToken?.decimals,
+  ]);
+
+  // Set the upper anchor tick for the Baseline pool
+  const { data: baselinePoolActiveTS } = useReadContract({
+    abi: abis.bpool,
+    address: baselineBaseToken,
+    functionName: "getActiveTS",
+    query: {
+      enabled: isBaselineQueryEnabled && baselineBaseToken !== undefined,
+    },
+  });
+  useEffect(() => {
+    if (!isBaselineQueryEnabled || !baselinePoolActiveTS) {
+      console.log("Resetting the upper anchor tick for the Baseline pool");
+      form.setValue("baselineAnchorTickU", undefined);
+      return;
+    }
+
+    console.log(
+      "Setting the upper anchor tick for the Baseline pool to",
+      baselinePoolActiveTS,
+    );
+    form.setValue(
+      "baselineAnchorTickU",
+      baselinePoolActiveTS.toString() ?? "0",
+    );
+    // TODO trigger when the price changes?
+  }, [baselinePoolActiveTS, form, isBaselineQueryEnabled]);
 
   // Load the balance for the payout token
   const { balance: payoutTokenBalance, decimals: payoutTokenDecimals } =
@@ -1091,10 +1574,46 @@ export default function CreateAuctionPage() {
     !minBidSize ||
     Number(minBidSize) >= (Number(capacity) * Number(minPrice)) / 10_000; //10k here represents a potential max amount of bids
 
+  // Define the options listed in the callback select dropdown
   const callbackOptions = React.useMemo(() => {
     form.resetField("callbacksType");
-    return getExistingCallbacks(chainId);
-  }, [chainId]);
+    const existingCallbacks = getExistingCallbacks(chainId);
+
+    // Define the Baseline callback options
+    const baselineCallbackOptions = [
+      {
+        value: CallbacksType.BASELINE,
+        label: callbackLabels[CallbacksType.BASELINE],
+      },
+      {
+        value: CallbacksType.BASELINE_ALLOWLIST,
+        label: callbackLabels[CallbacksType.BASELINE_ALLOWLIST],
+      },
+      {
+        value: CallbacksType.BASELINE_ALLOCATED_ALLOWLIST,
+        label: callbackLabels[CallbacksType.BASELINE_ALLOCATED_ALLOWLIST],
+      },
+      {
+        value: CallbacksType.BASELINE_CAPPED_ALLOWLIST,
+        label: callbackLabels[CallbacksType.BASELINE_CAPPED_ALLOWLIST],
+      },
+      {
+        value: CallbacksType.BASELINE_TOKEN_ALLOWLIST,
+        label: callbackLabels[CallbacksType.BASELINE_TOKEN_ALLOWLIST],
+      },
+    ];
+
+    // Iterate through the existing callbacks and add the Baseline callbacks if they are not present
+    baselineCallbackOptions.forEach((option) => {
+      if (
+        !existingCallbacks.some((callback) => callback.value === option.value)
+      ) {
+        existingCallbacks.push(option);
+      }
+    });
+
+    return existingCallbacks;
+  }, [chainId, form]);
 
   const handlePreview = () => {
     form.trigger();
@@ -1703,9 +2222,8 @@ export default function CreateAuctionPage() {
                         </FormItemWrapper>
                       )}
                     />
-                    {(callbacksType == CallbacksType.MERKLE_ALLOWLIST ||
-                      callbacksType ==
-                        CallbacksType.CAPPED_MERKLE_ALLOWLIST) && (
+                    {(isSimpleAllowlist(callbacksType) ||
+                      isCappedAllowlist(callbacksType)) && (
                       <FormItemWrapper
                         label="Allowlist"
                         tooltip={
@@ -1721,7 +2239,7 @@ export default function CreateAuctionPage() {
                         />
                       </FormItemWrapper>
                     )}
-                    {callbacksType == CallbacksType.CAPPED_MERKLE_ALLOWLIST && (
+                    {isCappedAllowlist(callbacksType) && (
                       <FormField
                         control={form.control}
                         name="cappedAllowlistLimit"
@@ -1735,8 +2253,7 @@ export default function CreateAuctionPage() {
                         )}
                       />
                     )}
-                    {callbacksType ===
-                      CallbacksType.ALLOCATED_MERKLE_ALLOWLIST && (
+                    {isAllocatedAllowlist(callbacksType) && (
                       <FormItemWrapper
                         label="Allowlist"
                         tooltip={
@@ -1756,7 +2273,7 @@ export default function CreateAuctionPage() {
                         />
                       </FormItemWrapper>
                     )}
-                    {callbacksType === CallbacksType.TOKEN_ALLOWLIST && (
+                    {isTokenAllowlist(callbacksType) && (
                       <>
                         <FormField
                           name="allowlistToken"
@@ -1912,6 +2429,121 @@ export default function CreateAuctionPage() {
                         )}
                       />
                     )}
+                    {isBaselineCallback(callbacksType) && (
+                      <>
+                        <FormField
+                          name="callbacks"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Callbacks Address"
+                              tooltip={
+                                "The address of the Baseline callbacks contract."
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="dtlProceedsPercent"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Percent of Proceeds to Deposit"
+                              tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
+                            >
+                              <PercentageSlider
+                                field={field}
+                                min={1}
+                                max={100}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="baselineFloorReservesPercent"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Percent of Liquidity in Floor"
+                              tooltip="Percent of the auction proceeds to deposit into the liquidity pool."
+                            >
+                              <PercentageSlider
+                                field={field}
+                                min={10}
+                                max={99}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="baselineFloorRangeGap"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Gap Between Floor and Anchor"
+                              tooltip="The gap (in terms of tick spacings) between the floor and anchor ticks."
+                            >
+                              <Input {...field} type="number" min={0} />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="baselineAnchorTickWidth"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Anchor Tick Width"
+                              tooltip="The width (in terms of tick spacings) of the anchor tick."
+                            >
+                              <Input
+                                {...field}
+                                placeholder="10"
+                                type="number"
+                                min={1}
+                                max={50}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="baselinePoolTargetTick"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              className="mt-4"
+                              label="Pool Target Tick"
+                              tooltip="The tick to set the pool to on creation."
+                            >
+                              <Input {...field} type="number" />
+                            </FormItemWrapper>
+                          )}
+                        />
+                        <FormField
+                          name="dtlRecipient"
+                          render={({ field }) => (
+                            <FormItemWrapper
+                              label="Liquidity Recipient"
+                              tooltip={
+                                "The address that will receive the liquidity tokens"
+                              }
+                            >
+                              <Input
+                                {...field}
+                                placeholder={trimAddress("0x0000000")}
+                              />
+                            </FormItemWrapper>
+                          )}
+                        />
+                      </>
+                    )}
                     {/* {callbacksType === CallbacksType.CUSTOM && (
                       <>
                         <FormField
@@ -1980,6 +2612,7 @@ export default function CreateAuctionPage() {
                 <AuctionCreationStatus
                   lotId={lotId}
                   auctionType={auctionType as AuctionType}
+                  requiresAuctionHouseApproval={requiresAuctionHouseApproval}
                   requiresCallbacksApproval={requiresCallbacksApproval}
                   isSufficientAuctionHouseAllowance={
                     isSufficientAuctionHouseAllowance
