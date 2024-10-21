@@ -1,10 +1,10 @@
-import { Button, Card, Link, Metric, Text, Tooltip } from "@repo/ui";
+import { Button, Card, Link, Metric, Text, Tooltip, cn } from "@repo/ui";
 import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "./auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
-import { LockIcon } from "lucide-react";
+import { ChevronLeft, LockIcon } from "lucide-react";
 import { shorten } from "utils";
 import { useBidAuction } from "./hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
@@ -33,6 +33,8 @@ export type BidForm = z.infer<typeof schema>;
 
 type AuctionPurchaseProps = PropsWithAuction & {
   hideInfo?: boolean;
+  showMetrics?: boolean;
+  handleShowMetrics?: () => void;
 };
 
 export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
@@ -342,7 +344,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                 />
               )}
               <div className="mx-auto mt-4 w-full space-y-4">
-                {
+                {isFixedPriceBatch && (
                   <Text size="sm" className="leading-none tracking-normal">
                     You’re participating in a fixed-price sale. Bids are
                     first-come first-served <br />
@@ -355,7 +357,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                       Learn More
                     </Link>
                   </Text>
-                }
+                )}
               </div>
 
               <RequiresChain chainId={auction.chainId} className="mt-4">
@@ -389,6 +391,16 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                   </Button>
                 </div>
               </RequiresChain>
+              <Button
+                variant="ghost"
+                className="w-full pb-0 lg:pb-0"
+                onClick={() => props.handleShowMetrics?.()}
+              >
+                {props.showMetrics ? "Hide" : "View"} Auction Info{" "}
+                <ChevronLeft
+                  className={cn(!props.showMetrics && "rotate-180")}
+                />
+              </Button>
             </Card>
 
             <TransactionDialog
