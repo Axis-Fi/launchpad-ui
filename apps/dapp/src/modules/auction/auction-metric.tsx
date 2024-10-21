@@ -214,20 +214,44 @@ const handlers: MetricHandlers = {
 
   price: {
     label: "Price",
-    handler: (auction) => (
-      <>
-        <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
-      </>
-    ),
+    handler: (auction) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { isToggled: isUsdToggled } = useToggle();
+
+      const price = getPrice(auction);
+      if (!price) return undefined;
+
+      if (isUsdToggled) {
+        return <UsdAmount token={auction.quoteToken} amount={price} />;
+      }
+
+      return (
+        <>
+          <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
+        </>
+      );
+    },
   },
 
   fixedPrice: {
     label: "Price",
-    handler: (auction) => (
-      <>
-        <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
-      </>
-    ),
+    handler: (auction) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { isToggled: isUsdToggled } = useToggle();
+
+      const price = getPrice(auction);
+      if (!price) return undefined;
+
+      if (isUsdToggled) {
+        return <UsdAmount token={auction.quoteToken} amount={price} />;
+      }
+
+      return (
+        <>
+          <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
+        </>
+      );
+    },
   },
 
   sold: {
@@ -290,7 +314,16 @@ const handlers: MetricHandlers = {
       if (!price) return undefined;
 
       const fdv = Number(auction.baseToken.totalSupply) * price;
-      return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
+
+      return (
+        <ToggledUsdAmount
+          token={auction.quoteToken}
+          amount={fdv}
+          untoggledFormat={(amount) =>
+            `${shorten(amount)} ${auction.quoteToken.symbol}`
+          }
+        />
+      );
     },
   },
   rate: {

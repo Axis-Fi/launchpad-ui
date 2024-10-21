@@ -64,7 +64,7 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
           headerRightElement={<Badge color="ghost">Auction Closed</Badge>}
         >
           <div className="flex flex-col gap-y-4">
-            <div className="green-gradient w-fill flex h-[464px] items-center justify-center">
+            <div className="green-gradient w-fill flex min-h-[244px] items-center justify-center">
               <div className="flex flex-col items-center gap-2">
                 <img
                   className="h-[80px]"
