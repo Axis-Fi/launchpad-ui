@@ -5,7 +5,7 @@ import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { ChevronLeft, LockIcon } from "lucide-react";
-import { shorten } from "utils";
+import { shorten, trimCurrency } from "utils";
 import { useBidAuction } from "./hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -48,6 +48,16 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
 
   const [maxBidAmount, setMaxBidAmount] = useState<bigint | undefined>();
   const deployment = getDeployment(auction.chainId);
+  const userBids = auction.bids
+    .filter(
+      (b) => b.bidder.toLowerCase() === walletAccount.address?.toLowerCase(),
+    )
+    .reduce((total, b) => {
+      total += BigInt(b.rawAmountIn);
+      return total;
+    }, 0n);
+
+  const formattedAmount = formatUnits(userBids, auction.quoteToken.decimals);
 
   // Cache the max bid amount
   useEffect(() => {
@@ -303,7 +313,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
 
   return (
-    <div className="mx-auto">
+    <div className="mx-auto lg:min-w-[477px]">
       {canBid ? (
         <FormProvider {...form}>
           <form onSubmit={(e) => e.preventDefault()}>
@@ -343,12 +353,25 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                   disabled={isWalletChainIncorrect}
                 />
               )}
+
+              <div
+                className={
+                  "mx-auto mt-4 flex w-full justify-between space-y-4 "
+                }
+              >
+                <Metric
+                  childrenClassName={"text-tertiary-300"}
+                  label={`You ${isEMP ? "bid" : "spent"}`}
+                >
+                  {trimCurrency(formattedAmount)} {auction.quoteToken.symbol}
+                </Metric>
+              </div>
               <div className="mx-auto mt-4 w-full space-y-4">
                 {isFixedPriceBatch && (
                   <Text size="sm" className="leading-none tracking-normal">
                     You’re participating in a fixed-price sale. Bids are
-                    first-come first-served <br />
-                    and can be canceled before the sale concludes.
+                    first-come first-served and can be canceled before the sale
+                    concludes.
                     <Link
                       target="_blank"
                       href="https://axis.finance/docs/origin/fps-overview"
