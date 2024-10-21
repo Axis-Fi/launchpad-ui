@@ -26,6 +26,7 @@ export type AllowlistResult = {
   limit: bigint; // number of quote tokens as a formatted string
   criteria: string;
   callbackData: `0x${string}`;
+  allocation?: string;
 };
 
 export function useAllowlist(auction: Auction): AllowlistResult {
@@ -84,6 +85,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   let canBid = false;
   let amountLimited = false;
   let limit = BigInt(0);
+  let userAllocation = "";
   let criteria = "";
   let callbackData = toHex("");
 
@@ -242,7 +244,9 @@ export function useAllowlist(auction: Auction): AllowlistResult {
               (entry: string[]) =>
                 entry[0].toLowerCase() === user?.toLowerCase(),
             )?.[1] ?? "0";
+
           limit = BigInt(allocation) - spent;
+          userAllocation = allocation;
 
           // Generate the proof for inclusion in callback data
           const tree = StandardMerkleTree.of(allowlist, ["address", "uint256"]);
@@ -266,6 +270,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       limit,
       criteria,
       callbackData,
+      allocation: userAllocation,
     };
   }
 
@@ -292,5 +297,6 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     limit: BigInt(0),
     criteria,
     callbackData,
+    allocation: userAllocation,
   };
 }

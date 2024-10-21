@@ -41,6 +41,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
   const [open, setOpen] = React.useState(false);
   const currentChainId = useChainId();
   const walletAccount = useAccount();
+  const { allocation } = useAllowlist(auction);
 
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
@@ -354,11 +355,21 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                 />
               )}
 
-              <div
-                className={
-                  "mx-auto mt-4 flex w-full justify-between space-y-4 "
-                }
-              >
+              <div className={"mx-auto mt-4 flex w-full justify-between "}>
+                {allocation && +allocation > 0 && (
+                  <Metric
+                    childrenClassName={"text-primary"}
+                    label={`Your Allocation`}
+                  >
+                    {trimCurrency(
+                      formatUnits(
+                        BigInt(allocation),
+                        auction.quoteToken.decimals,
+                      ),
+                    )}{" "}
+                    {auction.quoteToken.symbol}
+                  </Metric>
+                )}
                 <Metric
                   childrenClassName={"text-tertiary-300"}
                   label={`You ${isEMP ? "bid" : "spent"}`}
