@@ -5,7 +5,7 @@ import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { ChevronLeft, LockIcon } from "lucide-react";
-import { shorten, trimCurrency } from "utils";
+import { trimCurrency } from "utils";
 import { useBidAuction } from "./hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +17,6 @@ import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "./hooks/use-allowlist";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { getDeployment } from "@repo/deployments";
-import { ToggledUsdAmount } from "./toggled-usd-amount";
 import {
   PopupTokenWrapper,
   isQuoteAWrappedGasToken,
@@ -49,7 +48,8 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
 
   const [maxBidAmount, setMaxBidAmount] = useState<bigint | undefined>();
   const deployment = getDeployment(auction.chainId);
-  const userBids = auction.bids
+
+  const totalUserBidAmount = auction.bids
     .filter(
       (b) => b.bidder.toLowerCase() === walletAccount.address?.toLowerCase(),
     )
@@ -58,7 +58,10 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
       return total;
     }, 0n);
 
-  const formattedAmount = formatUnits(userBids, auction.quoteToken.decimals);
+  const formattedUserBidAmount = formatUnits(
+    totalUserBidAmount,
+    auction.quoteToken.decimals,
+  );
 
   // Cache the max bid amount
   useEffect(() => {
@@ -281,20 +284,6 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
   const isWalletChainIncorrect =
     auction.chainId !== currentChainId || !walletAccount.isConnected;
 
-  const [bidPrice] = form.watch(["bidPrice"]);
-
-  // Calculate FDV based on the bid
-  const [bidFdv, setBidFdv] = useState<number>();
-
-  useEffect(() => {
-    if (bidPrice === undefined || !auction.baseToken.totalSupply) {
-      return;
-    }
-
-    const fdv = Number(auction.baseToken.totalSupply) * Number(bidPrice);
-    setBidFdv(fdv);
-  }, [bidPrice, auction.baseToken.totalSupply, auction.quoteToken.symbol]);
-
   // Calculate the limit for the user as the minimum of the allowlist limit (where applicable) and the max bid amount
   // Truth table
   // Allowlist limit | Max bid amount | Bid limit
@@ -370,12 +359,15 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                     {auction.quoteToken.symbol}
                   </Metric>
                 )}
-                <Metric
-                  childrenClassName={"text-tertiary-300"}
-                  label={`You ${isEMP ? "bid" : "spent"}`}
-                >
-                  {trimCurrency(formattedAmount)} {auction.quoteToken.symbol}
-                </Metric>
+                {totalUserBidAmount > 0n && (
+                  <Metric
+                    childrenClassName={"text-tertiary-300"}
+                    label={`You ${isEMP ? "bid" : "spent"}`}
+                  >
+                    {trimCurrency(formattedUserBidAmount)}{" "}
+                    {auction.quoteToken.symbol}
+                  </Metric>
+                )}
               </div>
               <div className="mx-auto mt-4 w-full space-y-4">
                 {isFixedPriceBatch && (
@@ -485,29 +477,6 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
           <p>This sale is restricted to {criteria}.</p>
           <p>The connected wallet is not approved to bid.</p>
         </Card>
-      )}
-      {!props.hideInfo && canBid && isEMP && (
-        <div className="mt-4">
-          <Card title="Bid Info">
-            <div className="gap-y-md flex">
-              <div className="p-sm rounded">
-                <Metric size="s" label="Your Estimated FDV">
-                  {bidFdv === undefined || bidFdv === 0 ? (
-                    "-"
-                  ) : (
-                    <ToggledUsdAmount
-                      token={auction.quoteToken}
-                      amount={bidFdv}
-                      untoggledFormat={(bidFdv: number) =>
-                        `${shorten(bidFdv)} ${auction.quoteToken.symbol}`
-                      }
-                    />
-                  )}
-                </Metric>
-              </div>
-            </div>
-          </Card>
-        </div>
       )}
     </div>
   );
