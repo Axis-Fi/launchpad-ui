@@ -13,7 +13,11 @@ export function isAllowedCurator(auction: AuctionProps) {
     curator &&
     isAddress(curator) &&
     allowedCurators
-      .map((c) => c.address.toLowerCase())
+      .flatMap((c) =>
+        Array.isArray(c.address)
+          ? c.address.map((a) => a.toLowerCase())
+          : c.address.toLowerCase(),
+      )
       .includes(curator.toLowerCase())
   );
 }
@@ -35,6 +39,7 @@ export function isAxisCallback(auction: AuctionProps) {
 type AuctionProps = Pick<Auction, "status" | "chainId" | "curator"> & {
   callbacks?: Address;
 };
+
 export function isSecureAuction(auction: AuctionProps) {
   return Boolean(!environment.isProduction || isAllowedCurator(auction));
 }

@@ -30,7 +30,7 @@ import {
 import { useAtom } from "jotai";
 import React from "react";
 //import { useAccount } from "wagmi";
-import { environment } from "@repo/env";
+import { environment, metadata } from "@repo/env";
 import { useMediaQueries } from "loaders/use-media-queries";
 
 const options = [
@@ -152,7 +152,9 @@ export default function AuctionListPage() {
               </ScrollLink>
 
               <Button className="uppercase" size="lg" variant="secondary">
-                Apply for Launch
+                <Link target="_blank" to={metadata.contact}>
+                  Apply for Launch
+                </Link>
               </Button>
             </div>
           </div>

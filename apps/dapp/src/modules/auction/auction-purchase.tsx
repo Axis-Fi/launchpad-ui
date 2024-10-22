@@ -419,7 +419,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
               </RequiresChain>
               <Button
                 variant="ghost"
-                className="w-full pb-0 lg:pb-0"
+                className="hidden w-full pb-0 lg:flex lg:pb-0"
                 onClick={() => props.handleShowMetrics?.()}
               >
                 {props.showMetrics ? "Hide" : "View"} Auction Info{" "}

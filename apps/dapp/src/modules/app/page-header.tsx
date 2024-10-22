@@ -21,13 +21,13 @@ export function PageHeader({
   return (
     <div
       className={cn(
-        "mt-2 flex w-full items-center justify-between lg:my-5",
+        "grid w-full grid-cols-2 grid-rows-2 items-center justify-between justify-items-center gap-y-4 lg:my-5 lg:mt-2 lg:flex lg:justify-between",
         className,
       )}
     >
       <Button
         size="icon"
-        className="w-1/5 "
+        className="row-start-1 lg:w-1/5"
         variant="ghost"
         //@ts-expect-error interesting TS quirk below,
         //both string and number are valid but on different signatures
@@ -38,9 +38,9 @@ export function PageHeader({
           {backNavigationText}
         </div>
       </Button>
-      <div className="mx-auto ">{children}</div>
+      <div className="col-span-2 row-start-2 mx-auto ">{children}</div>
 
-      <div className="flex w-1/5 justify-end ">
+      <div className="flex w-full items-center justify-end lg:w-1/5 lg:pr-0">
         {toggle && <UsdToggle currencySymbol={toggleSymbol} />}
       </div>
     </div>

@@ -8,11 +8,11 @@ export function AuctionLive({ auction }: PropsWithAuction) {
   const [showMetrics, setShowMetrics] = React.useState(false);
 
   return (
-    <div className="auction-action-container relative transition-all ">
+    <div className="auction-action-container relative gap-y-4 transition-all ">
       <div
         className={cn(
-          "mt-4 -translate-x-[220%] space-y-4 transition-all duration-500 lg:mt-0 lg:w-2/3",
-          showMetrics && "translate-x-0",
+          "transition-all duration-500 lg:w-2/3 lg:-translate-x-[220%]",
+          showMetrics && "lg:translate-x-0",
         )}
       >
         <AuctionCoreMetrics auction={auction} />
@@ -20,8 +20,8 @@ export function AuctionLive({ auction }: PropsWithAuction) {
 
       <div
         className={cn(
-          "-translate-x-full transition-all duration-500 lg:w-1/3",
-          showMetrics && "translate-x-0",
+          "transition-all duration-500 lg:w-1/3 lg:-translate-x-full",
+          showMetrics && "lg:translate-x-0",
         )}
       >
         <AuctionPurchase

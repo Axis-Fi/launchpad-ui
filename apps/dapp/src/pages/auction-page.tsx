@@ -85,7 +85,7 @@ export default function AuctionPage() {
         >
           <Countdown auction={auction} />
         </PageHeader>
-        <div className="mt-10">
+        <div className="lg:mt-10">
           <AuctionElement auction={auction} />
         </div>
       </AuctionPageView>
