@@ -116,7 +116,7 @@ export default function AuctionListPage() {
   }, [pagination.selectedPage]);
 
   return (
-    <div id="__AXIS_ORIGIN_HOME_PAGE__">
+    <div id="__AXIS_HOME_PAGE__">
       <div className="bg-hero-banner relative flex w-full items-end justify-center py-3 lg:h-[522px] lg:py-0">
         <img
           src="dot-grid.svg"
@@ -125,7 +125,7 @@ export default function AuctionListPage() {
         {!isTabletOrMobile && (
           <div className="z-10 mb-10 text-center">
             <Text size={isTabletOrMobile ? "2xl" : "7xl"} mono>
-              Welcome to Origin
+              Welcome to Axis
             </Text>
 
             <Text
@@ -133,7 +133,7 @@ export default function AuctionListPage() {
               color="secondary"
               className="mx-auto w-fit lg:text-nowrap"
             >
-              Experience the New Era of Token Launches
+              Next-Generation Token Launches
             </Text>
             <div className="mx-auto mt-6 flex w-min flex-col-reverse  gap-2 lg:flex-row">
               <ScrollLink to="auctions" offset={-10} smooth={true}>
@@ -159,7 +159,7 @@ export default function AuctionListPage() {
         )}
         {isTabletOrMobile && (
           <Text size="7xl" mono>
-            Origin
+            Axis
           </Text>
         )}
       </div>
@@ -168,7 +168,7 @@ export default function AuctionListPage() {
         <PageContainer>
           <div className="flex items-center justify-between">
             {!isTabletOrMobile && (
-              <Tooltip content={"Origin is a modular Auction suite"}>
+              <Tooltip content={"Axis is a modular auction protocol"}>
                 <Text size="lg">
                   {isLoading ? "Loading " : ""}Token Launches
                 </Text>

@@ -18,22 +18,13 @@ export function AppFooter() {
             website={website}
             iconClassName={"size-8"}
           />
-          <Link target="_blank" href="https://docs.axis.finance/">
-            <Button
-              size="sm"
-              className="text-surface px-0 pl-2 uppercase tracking-wide"
-              variant="link"
-            >
-              Docs
-            </Button>
-          </Link>
           <Link href={contact} target="_blank">
             <Button
               size="sm"
               className="text-surface px-0 uppercase"
               variant="link"
             >
-              Apply for Launch
+              Contact
             </Button>
           </Link>
         </div>

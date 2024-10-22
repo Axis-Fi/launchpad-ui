@@ -1639,10 +1639,7 @@ export default function CreateAuctionPage() {
   };
 
   return (
-    <PageContainer
-      id="__AXIS_ORIGIN_CREATE_LAUNCH_PAGE__"
-      key={resetKey.toString()}
-    >
+    <PageContainer id="__AXIS_CREATE_LAUNCH_PAGE__" key={resetKey.toString()}>
       <PageHeader
         backNavigationPath="/#"
         backNavigationText="Back to Launches"

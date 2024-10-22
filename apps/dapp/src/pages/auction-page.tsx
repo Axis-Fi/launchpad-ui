@@ -74,10 +74,7 @@ export default function AuctionPage() {
       : statuses[auction.status];
 
   return (
-    <PageContainer
-      id="__AXIS_ORIGIN_LAUNCH_PAGE__"
-      className="pt-0 lg:pb-20 lg:pt-0"
-    >
+    <PageContainer id="__AXIS_LAUNCH_PAGE__" className="pt-0 lg:pb-20 lg:pt-0">
       <AuctionPageView auction={auction} isAuctionLoading={isAuctionLoading}>
         <PageHeader
           className="mt-0 lg:mt-0"

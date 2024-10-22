@@ -11,7 +11,7 @@ export default function CuratorListPage() {
 
   return (
     <PageContainer
-      id="__AXIS_ORIGIN_CURATORS_PAGE__"
+      id="__AXIS_CURATORS_LIST__"
       containerClassName="mt-12 lg:mx-0 items-center"
     >
       <>
