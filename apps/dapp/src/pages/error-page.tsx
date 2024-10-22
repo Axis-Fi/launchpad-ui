@@ -26,7 +26,7 @@ export default function ErrorPage() {
 
   return (
     <div
-      id="__AXIS_ORIGIN_ERROR_PAGE__"
+      id="__AXIS_ERROR_PAGE__"
       className="flex h-screen flex-col items-center justify-center"
     >
       <div id="error-page" className="text-center">

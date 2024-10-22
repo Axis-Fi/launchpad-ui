@@ -4,12 +4,12 @@ export const allowedCurators: Curator[] = [
   {
     name: "Baseline Markets",
     type: "platform",
-    address: "0x32f33a14e36Cb75b3F58E1822418599e3f075Ffb",
+    address: "0x93d2f6a92af6add436df7ba185dd736ec13f0aaa",
     twitter: "baselinemarkets",
     website: "https://www.baseline.markets/",
     avatar: "/images/baseline-markets.png",
     description:
-      "Baseline is a decentralized protocol that leverages Uniswap V3 to manage the liquidity and pricing of ERC20 tokens. By employing smart contracts to execute a basic market making strategy, Baseline eliminates the need for traditional market makers. Since the token controls its own market making operations, it can maintain a unique liquidity structure that helps facilitate positive price development.",
+      "Baseline creates tokens with programmatic liquidity and rising floor prices. Their innovative tokenomics system combines automated market-making with built-in protections to ensure sustainable value growth through all market conditions.",
   },
   {
     name: "Revelo Intel",

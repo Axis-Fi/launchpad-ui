@@ -36,8 +36,5 @@ type AuctionProps = Pick<Auction, "status" | "chainId" | "curator"> & {
   callbacks?: Address;
 };
 export function isSecureAuction(auction: AuctionProps) {
-  return Boolean(
-    !environment.isProduction ||
-      (isAllowedCurator(auction) && isAxisCallback(auction)),
-  );
+  return Boolean(!environment.isProduction || isAllowedCurator(auction));
 }
