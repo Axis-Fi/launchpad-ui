@@ -22,7 +22,7 @@ function transformHTML(mode: string) {
       if (env.VITE_ENVIRONMENT !== "production") {
         return html.replace(
           /<title>(.*?)<\/title>/,
-          `<title>Origin Testnet</title>`,
+          `<title>Axis Testnet</title>`,
         );
       }
     },
