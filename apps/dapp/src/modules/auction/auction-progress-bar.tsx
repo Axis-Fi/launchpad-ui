@@ -21,11 +21,11 @@ export default function AuctionProgressBar({ auction }: PropsWithAuction) {
       hideMinTarget
       value={current}
       minTarget={minTarget}
-      className="mt-1 flex h-[64px] w-[900px] items-center"
+      className="mt-1 flex h-[64px] w-[400px] items-center lg:w-[900px]"
     >
       <div
         className={cn(
-          "flex w-[900px] justify-between ",
+          "flex w-[400px] justify-between lg:w-[900px] ",
           !showCurrentProgress && "justify-end",
         )}
       >
@@ -52,7 +52,7 @@ type ProgressMetricProps = {
 function ProgressMetric(props: ProgressMetricProps) {
   return (
     <div className={cn("flex flex-col gap-y-0.5 px-2.5", props.className)}>
-      <Text mono className="-mt-1 text-[24px] font-bold leading-none">
+      <Text mono className="-mt-1 font-bold leading-none lg:text-lg ">
         <ToggledUsdAmount
           token={props.auction.quoteToken}
           amount={props.value}
