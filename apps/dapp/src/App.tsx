@@ -23,7 +23,7 @@ function App() {
       <ScrollToTop />
       <ReferrerChecker />
       <Toaster />
-      <div className="flex h-dvh flex-col justify-between overflow-x-hidden">
+      <div className="flex h-dvh flex-col justify-between ">
         <div className="flex flex-grow flex-col-reverse lg:flex-col">
           <AppControl />
           <div className="flex-grow">
