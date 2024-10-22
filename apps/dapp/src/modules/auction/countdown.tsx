@@ -84,12 +84,18 @@ function CountdownDisplay({ time }: { time: string }) {
   const [d, h, m, s] = time.split(":");
   return (
     <div className="m-0 flex gap-x-5 self-center justify-self-center pb-0 *:leading-none">
-      <Metric label="days">{d}</Metric>
-      <Metric label="hours">{h}</Metric>
-      <Metric label="mins" className="-ml-2">
+      <Metric mono label="days">
+        {d}
+      </Metric>
+      <Metric mono label="hours">
+        {h}
+      </Metric>
+      <Metric mono label="mins" className="-ml-2">
         {m}
       </Metric>
-      <Metric label="secs">{s}</Metric>
+      <Metric mono label="secs">
+        {s}
+      </Metric>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { Chain, PropsWithAuction } from "@repo/types";
 import { Badge, cn } from "@repo/ui";
+import { CountdownChip } from "./countdown-chip";
 
 type AuctionCardBannerProps = PropsWithAuction & {
   chain: Chain;
@@ -43,6 +44,8 @@ export function AuctionCardBanner(props: AuctionCardBannerProps) {
             {props.curator.name}
           </Badge>
         )}
+
+        <CountdownChip auction={props.auction} />
       </div>
     </div>
   );
