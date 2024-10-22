@@ -14,13 +14,13 @@ export default function AuctionProgressBar({ auction }: PropsWithAuction) {
     return total;
   }, 0);
 
-  const showCurrentProgress = auction.status !== "created";
+  const showCurrentProgress = auction.status !== "created" && bidAmount > 0;
 
   return (
     <Progress
+      hideMinTarget
       value={current}
       minTarget={minTarget}
-      hideMinTarget={!showCurrentProgress}
       className="mt-1 flex h-[64px] w-[900px] items-center"
     >
       <div
