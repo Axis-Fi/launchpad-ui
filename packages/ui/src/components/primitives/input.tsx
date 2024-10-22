@@ -33,12 +33,43 @@ export interface InputProps
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, variant, textSize, error, ...props }, ref) => {
+    const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+    // Handle both function and object refs
+    React.useEffect(() => {
+      if (typeof ref === "function") {
+        ref(inputRef.current);
+      } else if (ref) {
+        ref.current = inputRef.current;
+      }
+    }, [ref]);
+
+    React.useEffect(() => {
+      if (type === "number" && inputRef.current) {
+        const handleWheel = (e: WheelEvent) => {
+          if (inputRef.current && inputRef.current.type === "number") {
+            e.preventDefault();
+          }
+        };
+
+        inputRef.current.addEventListener("wheel", handleWheel, {
+          passive: false,
+        });
+
+        return () => {
+          if (inputRef.current) {
+            inputRef.current.removeEventListener("wheel", handleWheel);
+          }
+        };
+      }
+    }, [type]);
+
     return (
       <div className="relative">
         <input
           type={type}
           className={cn(inputVariants({ variant, textSize, className }))}
-          ref={ref}
+          ref={inputRef}
           {...props}
         />
         <p className="text-destructive text-xs">{error ?? ""}</p>

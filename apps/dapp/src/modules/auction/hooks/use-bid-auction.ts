@@ -19,6 +19,7 @@ import {
   optimisticUpdate,
 } from "modules/auction/utils/optimistic";
 import { getAuctionId } from "../utils/get-auction-id";
+import analytics from "modules/app/analytics";
 
 export function useBidAuction(
   chainId: string | number,
@@ -71,6 +72,14 @@ export function useBidAuction(
     if (bidderAddress === undefined) {
       throw new Error("Not connected. Try connecting your wallet.");
     }
+
+    analytics.trackEvent("bid", {
+      props: {
+        auction: auction.id,
+        chainId: auction.chainId,
+      },
+    });
+
     const { abi, address, functionName, args } = await bidConfig();
 
     bidTx.writeContractAsync({ abi, address, functionName, args });

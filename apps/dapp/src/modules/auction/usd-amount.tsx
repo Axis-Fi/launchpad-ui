@@ -5,11 +5,19 @@ type UsdAmountProps = {
   token: Token;
   amount: number;
   timestamp?: number;
+  decimal?: boolean;
 };
 
-function UsdAmount({ token, amount, timestamp }: UsdAmountProps) {
-  const usdPrice = useUsdAmount({ token, amount, timestamp });
-  return usdPrice ? usdPrice : undefined;
+function UsdAmount({
+  token,
+  amount,
+  timestamp,
+  decimal: inDecimal,
+}: UsdAmountProps) {
+  const { decimal, short } = useUsdAmount({ token, amount, timestamp });
+  if (!short) return undefined;
+
+  return inDecimal ? decimal : short;
 }
 
 export { UsdAmount };

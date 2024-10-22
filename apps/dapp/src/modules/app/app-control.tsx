@@ -49,7 +49,7 @@ export function AppControl() {
               </Button>
             </div>
           )}
-          <UserProfile />
+          {!isTabletOrMobile && <UserProfile />}
           {isTabletOrMobile && <AppMenu />}
         </div>
       </div>
@@ -96,7 +96,7 @@ export function OriginNavIcon() {
       to="/"
     >
       <div className="flex gap-x-2">
-        <img src="/images/origin-logo.svg" />
+        <img src="/images/axis-logo.png" width={55} height={48} />
       </div>
     </Link>
   );

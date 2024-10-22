@@ -1,7 +1,9 @@
 import type { Chain } from "viem";
 
+const lowerDashify = (str: string) => str.toLowerCase().replace(/ /g, "-");
+
 const formatChainName = (chain: Chain) => {
-  return chain.name.toLowerCase().replace(/ /g, "-");
+  return lowerDashify(chain.name);
 };
 
-export { formatChainName };
+export { formatChainName, lowerDashify };

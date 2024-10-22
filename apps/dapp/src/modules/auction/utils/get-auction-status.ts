@@ -1,4 +1,4 @@
-import { AuctionStatus, NonNullSubgraphAuction } from "@repo/types";
+import { AuctionStatus, type NonNullSubgraphAuction } from "@repo/types";
 
 /**
  * Determines the auction status dynamically.
@@ -8,7 +8,9 @@ import { AuctionStatus, NonNullSubgraphAuction } from "@repo/types";
 export function getAuctionStatus(
   auction: NonNullSubgraphAuction,
 ): AuctionStatus {
-  const { start, conclusion } = auction;
+  const subgraphAuction = auction as NonNullSubgraphAuction;
+
+  const { start, conclusion } = subgraphAuction;
 
   const isConcluded =
     Date.now() > new Date(Number(conclusion) * 1000).getTime();
@@ -17,7 +19,8 @@ export function getAuctionStatus(
     !isConcluded && Date.now() > new Date(Number(start) * 1000).getTime();
 
   const subgraphStatus = (
-    auction?.encryptedMarginalPrice?.status || auction?.fixedPrice?.status
+    subgraphAuction?.encryptedMarginalPrice?.status ||
+    subgraphAuction?.fixedPrice?.status
   )?.toLowerCase();
 
   // All auctions are "live" once their start time has passed

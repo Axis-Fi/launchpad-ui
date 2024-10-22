@@ -1,8 +1,5 @@
-import {
-  GetAuctionLotsDocument,
-  GetAuctionLotsQuery,
-} from "@repo/subgraph-client/src/generated";
-import type { Address, Auction } from "@repo/types";
+import { GetAuctionLotsDocument } from "@repo/subgraph-client/src/generated";
+import type { Auction, GetAuctionLots } from "@repo/types";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "modules/auction/utils/format-tokens";
@@ -12,7 +9,8 @@ import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
 import { useSafeRefetch } from "./use-safe-refetch";
-import { externalAuctionInfo } from "@repo/env/src/external-auction-info";
+import { externalAuctionInfo, featureToggles } from "@repo/env";
+import { useAuctionRegistrations } from "./use-auction-registrations";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -21,16 +19,6 @@ export type AuctionsResult = {
   ReturnType<typeof useQueryAll>,
   "isSuccess" | "isLoading" | "isRefetching"
 >;
-
-/** Patched auction lots query that treats callbacks as Address
- *  simpler than casting it further down the line */
-type GetAuctionLots = {
-  batchAuctionLots: Array<
-    GetAuctionLotsQuery["batchAuctionLots"][0] & {
-      callbacks: Address;
-    }
-  >;
-};
 
 export const getAuctionsQueryKey = (chainId: number) =>
   ["auctions", chainId] as const;
@@ -46,32 +34,18 @@ export function useAuctions(): AuctionsResult {
   // Refetch auctions if the cache is stale
   const refetch = useSafeRefetch(["auctions"]);
 
-  const rawAuctions = [...data.batchAuctionLots].flat() ?? [];
+  const { activeRegistrations } = useAuctionRegistrations();
 
-  console.log("raw", rawAuctions);
+  const registrationLaunches = featureToggles.REGISTRATION_LAUNCHES
+    ? activeRegistrations.data ?? []
+    : [];
 
-  // Add external data to auctions before processing
-  const augmentedAuctions = rawAuctions.map((auction) => {
-    let info = auction.info;
+  const rawAuctions = data.batchAuctionLots.flat() ?? [];
 
-    // If no info provided on IPFS, check if we have it locally
-    if (!info) {
-      // See if we have the auction info locally
-      info = externalAuctionInfo[auction.id];
-    }
-
-    return {
-      ...auction,
-      info,
-    };
-  });
-
-  // Filter out cancelled batch auctions before querying additional data
-  const filteredAuctions = augmentedAuctions.filter(
+  // Filter out cancelled auctions
+  const filteredAuctions = rawAuctions.filter(
     (auction) => getAuctionStatus(auction) !== "cancelled",
   );
-
-  console.log("no cancelled", filteredAuctions.length);
 
   const { getToken } = useTokenLists();
 
@@ -90,20 +64,22 @@ export function useAuctions(): AuctionsResult {
         ...formatAuctionTokens(auction, getToken),
         status: getAuctionStatus(auction),
         chainId,
+
+        // Handle external auction data
+        info: auction.info ?? externalAuctionInfo[auction.id] ?? null,
       };
 
       return {
         ...preparedAuction,
         isSecure: isSecureAuction(preparedAuction),
-      };
+      } as Auction;
     })
+    .concat(registrationLaunches)
     .sort(sortAuction);
 
-  console.log("final", auctions.length);
-
   return {
-    data: auctions,
-    isLoading: isLoading, //|| infos.isLoading,
+    data: auctions as Auction[],
+    isLoading,
     refetch,
     isRefetching,
     isSuccess,

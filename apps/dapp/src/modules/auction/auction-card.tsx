@@ -1,19 +1,19 @@
+import React from "react";
+import { Link } from "react-router-dom";
 import { Button, Card, IconedLabel, Skeleton, Text, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
-import { AuctionListed, AuctionType, PropsWithAuction } from "@repo/types";
+import { AuctionType, type Auction, type PropsWithAuction } from "@repo/types";
 import { AuctionCardBanner } from "./auction-card-banner";
 import { getChainById } from "utils";
 import { AuctionMetricsContainer } from "./auction-metrics-container";
 import { AuctionMetric } from "./auction-metric";
-import { AuctionStatusBadge } from "./auction-status-badge";
-import React from "react";
-import { Link } from "react-router-dom";
 import { getAuctionPath } from "utils/router";
 import { getLinkUrl } from "./utils/auction-details";
+import { AuctionStatusBadge } from "./auction-status-badge";
 
 type AuctionCardConditionalProps =
   | { loading: true; auction?: never }
-  | { loading?: false; auction: AuctionListed };
+  | { loading?: false; auction: Auction };
 
 type AuctionCardProps = React.HTMLAttributes<HTMLDivElement> & {
   /** Whether the card renders in list or grid view */
@@ -44,7 +44,6 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
             auction={auction}
             image={getLinkUrl("projectBanner", auction)}
             chain={getChainById(auction?.chainId)}
-            deadline={new Date(Number(auction.conclusion) * 1000)}
             isGrid={props.isGrid}
           />
           <AuctionCardDetails
@@ -68,7 +67,10 @@ function AuctionCardDetails(
   const isFPB = props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const hasCurator = !!props.auction.curator && props.auction.curatorApproved;
 
-  const externalSite = getLinkUrl("externalSite", props.auction);
+  const isRegistrationLaunch = props.auction.status === "registering";
+
+  const detailsPageUrl =
+    getAuctionPath(props.auction) + (isRegistrationLaunch ? "/register" : "");
 
   return (
     <div
@@ -80,12 +82,13 @@ function AuctionCardDetails(
         >
           <IconedLabel
             large
-            alt={props.auction.baseToken.symbol}
+            alt={
+              "baseToken" in props.auction ? props.auction.baseToken.symbol : ""
+            }
             src={getLinkUrl("projectLogo", props.auction)}
           >
             {props.auction.info?.name}
           </IconedLabel>
-
           <AuctionStatusBadge
             large={!props.isGrid}
             className={cn(!props.isGrid && "-mr-3 -mt-4")}
@@ -145,10 +148,7 @@ function AuctionCardDetails(
           <AuctionMetric size="s" id="curator" auction={props.auction} />
         )}
 
-        <Link
-          className={cn("self-end")}
-          to={externalSite ?? getAuctionPath(props.auction)}
-        >
+        <Link className={"flex self-end"} to={detailsPageUrl}>
           <Button
             disabled={props.disabledViewButton}
             size={props.isGrid ? "sm" : "lg"}
@@ -158,7 +158,9 @@ function AuctionCardDetails(
                 "absolute bottom-0 right-0 mb-3 mr-3 opacity-0 group-hover:opacity-100",
             )}
           >
-            View Auction
+            {props.auction.status === "registering"
+              ? "Register now"
+              : "View Launch"}
           </Button>
         </Link>
       </div>

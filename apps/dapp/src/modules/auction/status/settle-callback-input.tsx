@@ -40,9 +40,7 @@ export function SettleAuctionCallbackInput({
     resolver: zodResolver(uniswapSchema),
     mode: "onChange",
     delayError: 600,
-    defaultValues: {
-      maxSlippage: DEFAULT_MAX_SLIPPAGE,
-    },
+    defaultValues: { maxSlippage: DEFAULT_MAX_SLIPPAGE },
   });
 
   const updateUniswapDtlCallbackData = (maxSlippage: number) => {

@@ -26,17 +26,4 @@ type EncryptBidParams = Pick<
   auctionHouseAddress: Address;
 };
 
-type BidModule = {
-  schema: typeof bid.schema;
-  functions: typeof bid.functions;
-  abi: typeof bid.abi;
-  utils: typeof bid.utils;
-};
-
-export type {
-  PrimedBidParams,
-  BidParams,
-  BidConfig,
-  EncryptBidParams,
-  BidModule,
-};
+export type { PrimedBidParams, BidParams, BidConfig, EncryptBidParams };

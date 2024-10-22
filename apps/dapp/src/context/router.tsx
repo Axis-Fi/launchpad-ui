@@ -11,10 +11,13 @@ import AuctionListPage from "pages/auction-list-page";
 import { CuratorPage } from "pages/curator-page";
 import { FaucetPage } from "pages/faucet-page";
 import { DeployTokenPage } from "pages/deploy-token-page";
-import { ReferralPage } from "pages/referral";
 import CuratorListPage from "pages/curator-list-page";
-import { ProfilePage } from "pages/profile-page";
-import { LeaderboardPage } from "pages/leaderboard-page";
+import { ProfilePage } from "pages/points/profile-page";
+import { LeaderboardPage } from "pages/points/leaderboard-page";
+import { ClaimPointsPage } from "pages/points/claim-points-page";
+import { SignInPage } from "pages/points/sign-in-page";
+import { BridgePage } from "pages/bridge-page";
+import { AuctionRegistering } from "modules/auction/status/auction-registering";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
@@ -24,6 +27,8 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
     children: [
       { path: "", element: <AuctionListPage /> },
       { path: "points/*", element: <ProfilePage /> },
+      { path: "points/sign-in", element: <SignInPage /> },
+      { path: "points/claim", element: <ClaimPointsPage /> },
       { path: "profile/*", element: <ProfilePage /> },
       { path: "leaderboard", element: <LeaderboardPage /> },
       { path: "dashboard", element: <Dashboard /> },
@@ -33,8 +38,12 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "curators", element: <CuratorListPage /> },
       { path: "faucet", element: <FaucetPage /> },
       { path: "deploy", element: <DeployTokenPage /> },
-      { path: "refer", element: <ReferralPage /> },
+      { path: ":chainId/:lotId/register", element: <AuctionRegistering /> },
       { path: ":chainId/:lotId", element: <AuctionPage /> },
+      {
+        path: "bridge",
+        element: <BridgePage />,
+      },
     ],
   },
 ]);

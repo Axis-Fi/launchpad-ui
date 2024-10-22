@@ -11,7 +11,7 @@ export default function CuratorListPage() {
 
   return (
     <PageContainer
-      id="__AXIS_ORIGIN_CURATORS_PAGE__"
+      id="__AXIS_CURATORS_LIST__"
       containerClassName="mt-12 lg:mx-0 items-center"
     >
       <>
@@ -54,7 +54,7 @@ export function CuratorCard({
         />
         <div className="flex w-full flex-col items-start justify-between">
           <div className="flex flex-row">
-            <Text mono size="xl">
+            <Text mono size="xl" className="mt-2 text-nowrap">
               {curator.name}
             </Text>
             <SocialRow

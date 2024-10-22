@@ -6,19 +6,22 @@ export type MetricProps = Omit<React.HTMLProps<HTMLDivElement>, "size"> & {
   label: string;
   size?: "s" | "m" | "l" | "xl";
   metricWeight?: TextWeight;
-  className?: string;
   tooltip?: string;
   isLabelSpaced?: boolean;
+  childrenClassName?: string;
+  mono?: boolean;
 };
 
 export function Metric({
   label,
   children,
   className,
+  childrenClassName,
   size = "m",
   metricWeight = "default",
   tooltip,
   isLabelSpaced = false,
+  mono,
 }: MetricProps) {
   const metricSize =
     size === "xl" ? "2xl" : size === "l" ? "xl" : size === "m" ? "lg" : "md";
@@ -38,11 +41,15 @@ export function Metric({
         </Text>
       </Tooltip>
       <Text
-        mono
+        mono={mono}
         size={metricSize}
         weight={metricWeight}
         spaced={isLabelSpaced}
-        className={cn("leading-none", size === "l" && "mt-sm")}
+        className={cn(
+          "tracking-wide",
+          size === "l" && "mt-sm",
+          childrenClassName,
+        )}
       >
         {children}
       </Text>

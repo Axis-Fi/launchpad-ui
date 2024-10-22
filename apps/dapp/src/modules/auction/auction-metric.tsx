@@ -3,7 +3,6 @@ import {
   AuctionType,
   CallbacksType,
   type Auction,
-  type BatchAuction,
   type PropsWithAuction,
 } from "@repo/types";
 import { Metric, MetricProps, Tooltip, useToggle } from "@repo/ui";
@@ -132,8 +131,7 @@ const handlers: MetricHandlers = {
   totalRaised: {
     label: "Total Raised",
     handler: (auction) => {
-      const _auction = auction as BatchAuction;
-      return `${_auction.formatted?.purchased} ${_auction.quoteToken.symbol}`;
+      return `${auction.formatted?.purchased} ${auction.quoteToken.symbol}`;
     },
   },
   targetRaise: {
@@ -216,20 +214,44 @@ const handlers: MetricHandlers = {
 
   price: {
     label: "Price",
-    handler: (auction) => (
-      <>
-        <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
-      </>
-    ),
+    handler: (auction) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { isToggled: isUsdToggled } = useToggle();
+
+      const price = getPrice(auction);
+      if (!price) return undefined;
+
+      if (isUsdToggled) {
+        return <UsdAmount token={auction.quoteToken} amount={price} />;
+      }
+
+      return (
+        <>
+          <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
+        </>
+      );
+    },
   },
 
   fixedPrice: {
     label: "Price",
-    handler: (auction) => (
-      <>
-        <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
-      </>
-    ),
+    handler: (auction) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { isToggled: isUsdToggled } = useToggle();
+
+      const price = getPrice(auction);
+      if (!price) return undefined;
+
+      if (isUsdToggled) {
+        return <UsdAmount token={auction.quoteToken} amount={price} />;
+      }
+
+      return (
+        <>
+          <Format value={getPrice(auction) ?? 0} /> {auction.quoteToken.symbol}
+        </>
+      );
+    },
   },
 
   sold: {
@@ -292,7 +314,16 @@ const handlers: MetricHandlers = {
       if (!price) return undefined;
 
       const fdv = Number(auction.baseToken.totalSupply) * price;
-      return `${shorten(fdv)} ${auction.quoteToken.symbol}`;
+
+      return (
+        <ToggledUsdAmount
+          token={auction.quoteToken}
+          amount={fdv}
+          untoggledFormat={(amount) =>
+            `${shorten(amount)} ${auction.quoteToken.symbol}`
+          }
+        />
+      );
     },
   },
   rate: {
@@ -327,7 +358,7 @@ const handlers: MetricHandlers = {
       return (
         <Tooltip
           content={<CuratorCard hideButton curator={curator} />}
-          contentClassName="max-w-lg"
+          contentClassName="max-w-xl"
         >
           <div className="flex items-center gap-x-2">
             {curator.name} <InfoIcon size="20" />
@@ -436,6 +467,7 @@ export function AuctionMetric(props: AuctionMetricProps) {
 
   if (!props.auction) throw new Error("No auction provided");
   if (!element) throw new Error(`No auction metric found for ${props.id}`);
+  if (props.auction.status === "registering") return null;
 
   const value = element.handler(props.auction);
 

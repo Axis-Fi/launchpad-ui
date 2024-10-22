@@ -1,28 +1,37 @@
 import { useEffect, useState } from "react";
 import type { PropsWithAuction } from "@repo/types";
-import { Badge, Metric } from "@repo/ui";
-import { getCountdown } from "utils";
-import { useMediaQueries } from "loaders/use-media-queries";
+import { Metric, Text, cn } from "@repo/ui";
+import { formatDate } from "@repo/ui";
+import { getCountdown } from "utils/date";
 
-export function Countdown({ auction }: PropsWithAuction) {
-  const { isTabletOrMobile } = useMediaQueries();
-  const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
+export function Countdown({
+  auction,
+  className,
+}: PropsWithAuction & {
+  className?: string;
+}) {
+  const [timeDistance, setTimeDistance] = useState<string | null>("");
   const startDate = new Date(Number(auction.start) * 1000);
   const endDate = new Date(Number(auction.conclusion) * 1000);
   const now = new Date();
 
-  const isOngoing = startDate < now && endDate > now;
+  const isOngoing = startDate <= now && endDate > now;
 
-  const hasntStarted = startDate > now;
+  const isntStarted = startDate > now;
+  const isntFinished = isntStarted || isOngoing;
 
-  const inProgress = hasntStarted || isOngoing;
+  const isFinished =
+    now > endDate ||
+    auction.status === "concluded" ||
+    auction.status === "settled" ||
+    auction.status === "decrypted";
 
-  const targetDate = hasntStarted ? startDate : endDate;
+  const targetDate = isntStarted ? startDate : endDate;
 
   // Immediately set the countdown if the auction is ongoing
   useEffect(() => {
-    if (inProgress) {
-      setTimeRemaining(getCountdown(targetDate));
+    if (isntFinished) {
+      setTimeDistance(getCountdown(targetDate));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -30,26 +39,63 @@ export function Countdown({ auction }: PropsWithAuction) {
   // Refresh the countdown every second
   useEffect(() => {
     const interval = setInterval(() => {
-      if (inProgress) {
-        setTimeRemaining(getCountdown(targetDate));
+      if (isntFinished) {
+        setTimeDistance(getCountdown(targetDate));
       }
     }, 1000);
 
     return () => clearInterval(interval);
   }, [startDate, endDate, isOngoing]);
 
-  if (!inProgress) return null;
+  return (
+    <div className={cn("flex items-center gap-x-6", className)}>
+      <CountdownStatus auction={auction} />
+      {isFinished ? (
+        <Text size="lg">
+          {formatDate.simple(new Date(+auction.conclusion * 1000))}
+        </Text>
+      ) : (
+        <CountdownDisplay time={isFinished ? "00:00:00:00" : timeDistance!} />
+      )}
+    </div>
+  );
+}
+
+function CountdownStatus(props: PropsWithAuction) {
+  let phrasalVerb = "ended on";
+
+  switch (props.auction.status) {
+    case "created":
+      phrasalVerb = "starts in";
+      break;
+    case "live":
+      phrasalVerb = "ends in";
+  }
 
   return (
-    <Badge size={isTabletOrMobile ? "s" : "xl"} className="px-4">
-      <Metric
-        size={isTabletOrMobile ? "s" : "m"}
-        className="text-center"
-        isLabelSpaced
-        label={hasntStarted ? "Upcoming in" : "Remaining"}
-      >
-        {timeRemaining}
+    <Text uppercase spaced mono size="sm" color="secondary" className="">
+      Launch <br />
+      {phrasalVerb}
+    </Text>
+  );
+}
+
+function CountdownDisplay({ time }: { time: string }) {
+  const [d, h, m, s] = time.split(":");
+  return (
+    <div className="m-0 flex gap-x-5 self-center justify-self-center pb-0 *:leading-none">
+      <Metric mono label="days">
+        {d}
       </Metric>
-    </Badge>
+      <Metric mono label="hours">
+        {h}
+      </Metric>
+      <Metric mono label="mins" className="-ml-2">
+        {m}
+      </Metric>
+      <Metric mono label="secs">
+        {s}
+      </Metric>
+    </div>
   );
 }

@@ -44,7 +44,7 @@ export function DeployTokenPage() {
   const disabled = !mint.mintCall.isSuccess;
 
   return (
-    <PageContainer id="__AXIS_ORIGIN_DEPLOY_PAGE__" title="Token Utilities">
+    <PageContainer id="__AXIS_DEPLOY_PAGE__" title="Token Utilities">
       <div className="flex">
         <div className="flex w-1/2 flex-col items-center justify-center gap-y-2">
           <h4>Deploy</h4>

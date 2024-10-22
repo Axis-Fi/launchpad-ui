@@ -2,7 +2,7 @@ import { Button, DataTable, Tooltip, trimAddress } from "@repo/ui";
 import { Link } from "react-router-dom";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
-import { AuctionType, type AuctionListed } from "@repo/types";
+import { AuctionType, type Auction } from "@repo/types";
 import { useAccount } from "wagmi";
 import { AuctionStatusBadge } from "./auction-status-badge";
 import { CheckIcon, XIcon } from "lucide-react";
@@ -12,7 +12,7 @@ import { useCurateAuction } from "./hooks/use-curate-auction";
 import { ChainIcon } from "components/chain-icon";
 import { getAuctionPath } from "utils/router";
 
-const col = createColumnHelper<AuctionListed>();
+const col = createColumnHelper<Auction>();
 const cols = [
   col.accessor("chainId", {
     header: "Chain",

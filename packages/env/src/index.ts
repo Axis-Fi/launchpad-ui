@@ -6,3 +6,5 @@ export { default as ipfsServers } from "./ipfs-servers";
 export { default as metadata } from "./metadata";
 export * from "./curators";
 export * from "./feature-toggles";
+export { default as pointsServers } from "./points-servers";
+export * from "./external-auction-info";

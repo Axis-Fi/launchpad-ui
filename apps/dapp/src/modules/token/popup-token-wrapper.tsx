@@ -1,4 +1,4 @@
-import { Button, Popover, PopoverContent, PopoverTrigger } from "@repo/ui";
+import { Popover } from "@repo/ui";
 import { TokenWrapper } from "./token-wrapper";
 import { Auction, PropsWithAuction } from "@repo/types";
 import { getChainById } from "utils/chain";
@@ -9,15 +9,8 @@ export function PopupTokenWrapper({ auction }: PropsWithAuction) {
 
   if (isQuoteAGasToken && nativeCurrency.wrapperContract) {
     return (
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="secondary" size="sm">
-            Wrap
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[340px]">
-          <TokenWrapper />
-        </PopoverContent>
+      <Popover label="Wrap" className="w-[340px]">
+        <TokenWrapper />
       </Popover>
     );
   }

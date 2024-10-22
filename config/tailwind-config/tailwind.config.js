@@ -32,6 +32,7 @@ module.exports = {
         md: "var(--sizing-200)",
         lg: "var(--sizing-300)",
         xl: "var(--sizing-400)",
+        "1xl": "var(--sizing-500)",
         "2xl": "var(--sizing-700)",
       },
       boxShadow: {

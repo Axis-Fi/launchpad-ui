@@ -9,7 +9,7 @@ export function NoUserBidsCard() {
       headerRightElement={<Badge color="ghost">No bid</Badge>}
     >
       <div className="flex flex-col gap-y-4">
-        <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">
+        <div className="green-gradient w-fill flex h-[464px] items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <img
               className="w-[92.351]px h-[80px]"

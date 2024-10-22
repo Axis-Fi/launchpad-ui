@@ -1,7 +1,7 @@
 import { FormField, FormItemWrapperSlim } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
 import { PropsWithAuction } from "@repo/types";
-import { BidForm } from "./status";
+import { BidForm } from "./auction-purchase";
 import { formatUnits, parseUnits } from "viem";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { trimCurrency } from "utils/currency";
@@ -35,6 +35,8 @@ export function AuctionBidInputSingle({
 
     form.setValue("baseTokenAmount", formattedAmountOut);
   }
+  const showAmountOut =
+    form.formState.isValid && isFinite(Number(formAmountOut));
 
   return (
     <div className="text-foreground flex flex-col gap-y-2">
@@ -49,6 +51,11 @@ export function AuctionBidInputSingle({
                   {...field}
                   disabled={disabled}
                   label="Spend Amount"
+                  message={
+                    showAmountOut
+                      ? `You will receive ${formAmountOut} ${auction.baseToken.symbol}`
+                      : ""
+                  }
                   balance={formatUnits(balance, auction.quoteToken.decimals)}
                   limit={
                     limit
@@ -61,8 +68,7 @@ export function AuctionBidInputSingle({
                   onChange={(e) => {
                     field.onChange(e);
 
-                    const rawAmountIn = (e.target as HTMLInputElement)
-                      .value as string;
+                    const rawAmountIn = e as string;
                     const amountIn = parseUnits(
                       rawAmountIn,
                       auction.quoteToken.decimals,
@@ -93,18 +99,6 @@ export function AuctionBidInputSingle({
                 />
               </FormItemWrapperSlim>
             )}
-          />
-        </div>
-      </div>
-
-      <div className="bg-secondary flex justify-between rounded-sm pt-1">
-        <div>
-          <TokenAmountInput
-            disabled={disabled}
-            disableMaxButton={true}
-            token={auction.baseToken}
-            label="Amount Received"
-            value={formAmountOut}
           />
         </div>
       </div>

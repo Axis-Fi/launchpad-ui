@@ -1,6 +1,5 @@
 import { Badge, Button, Card, Text } from "@repo/ui";
 import { type PropsWithAuction } from "@repo/types";
-import { ProjectInfoCard } from "../project-info-card";
 import React, { useState } from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useSettleAuction } from "../hooks/use-settle-auction";
@@ -9,7 +8,6 @@ import { LoadingIndicator } from "modules/app/loading-indicator";
 import { SettleAuctionCallbackInput } from "./settle-callback-input";
 import { SettleAuctionDtlCallbackBalance } from "./settle-dtl-callback-balance";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
-import { TokenInfoCard } from "../token-info-card";
 
 // TODO needs story tests, given the amount of potential states
 
@@ -43,8 +41,6 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
     <div className="auction-action-container">
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-2/3">
         <AuctionCoreMetrics auction={props.auction} />
-        <TokenInfoCard auction={props.auction} />
-        <ProjectInfoCard auction={props.auction} />
       </div>
       <div className="lg:w-1/3">
         <TransactionDialog
@@ -68,7 +64,7 @@ export function FixedPriceBatchAuctionConcluded(props: PropsWithAuction) {
           headerRightElement={<Badge color="ghost">Auction Closed</Badge>}
         >
           <div className="flex flex-col gap-y-4">
-            <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">
+            <div className="green-gradient w-fill flex min-h-[244px] items-center justify-center">
               <div className="flex flex-col items-center gap-2">
                 <img
                   className="h-[80px]"

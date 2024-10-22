@@ -1,4 +1,4 @@
-import { Link, trimAddress } from "@repo/ui";
+import { Link, cn, trimAddress } from "@repo/ui";
 import { chains } from "@repo/env";
 import { ArrowUpRightIcon } from "lucide-react";
 
@@ -14,6 +14,7 @@ export function BlockExplorerLink({
   hash,
   trim,
   icon = true,
+  className,
   ...props
 }: {
   chainId: number;
@@ -22,6 +23,7 @@ export function BlockExplorerLink({
   trim?: boolean;
   icon?: boolean;
   showName?: boolean;
+  className?: string;
 }) {
   const chain = activeChains.find((c) => c.id === chainId);
 
@@ -32,7 +34,7 @@ export function BlockExplorerLink({
 
   return (
     <Link
-      className="text-md inline-flex items-center leading-none"
+      className={cn("text-md inline-flex items-center leading-none", className)}
       href={blockExplorer.url + path + target}
     >
       {trim

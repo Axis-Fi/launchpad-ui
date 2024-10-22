@@ -18,6 +18,7 @@ export const formatDate = {
 
   /** Formats date and time in the local timezone: 2024.02.14 - 02:00 GMT+0 */
   fullLocal: (date: Date) => format(date, "yyyy.MM.dd - HH:mm z"),
+  day: (date: Date) => format(date, "yyyy.MM.dd"),
 };
 
 // Date math operations

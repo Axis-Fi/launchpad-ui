@@ -14,4 +14,11 @@ export default {
   uniV3Dtl: abis.uniV3DtlAbi,
   uniV2Factory: abis.uniV2FactoryAbi,
   uniV3Factory: abis.uniV3FactoryAbi,
+  uniV3Pool: abis.uniV3PoolAbi,
+  baseline: abis.baselineAbi,
+  baselineAllowlist: abis.baselineAllowlistAbi,
+  baselineAllocatedAllowlist: abis.baselineAllocatedAllowlistAbi,
+  baselineCappedAllowlist: abis.baselineCappedAllowlistAbi,
+  baselineTokenAllowlist: abis.baselineTokenAllowlistAbi,
+  bpool: abis.bpoolAbi,
 } as const;

@@ -26,6 +26,7 @@ export type AllowlistResult = {
   limit: bigint; // number of quote tokens as a formatted string
   criteria: string;
   callbackData: `0x${string}`;
+  allocation?: string;
 };
 
 export function useAllowlist(auction: Auction): AllowlistResult {
@@ -61,20 +62,44 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   const isMerkle =
     callbacksType === CallbacksType.MERKLE_ALLOWLIST ||
     callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
-    callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
+    callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_CAPPED_ALLOWLIST;
 
   const hasLimit =
     callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
     callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
 
+  const hasLimitBaseline =
+    callbacksType === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_CAPPED_ALLOWLIST;
+
+  const isBaseline =
+    callbacksType === CallbacksType.BASELINE_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_CAPPED_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_TOKEN_ALLOWLIST;
+
   // Set default values for the return variables
   let canBid = false;
   let amountLimited = false;
   let limit = BigInt(0);
+  let userAllocation = "";
   let criteria = "";
   let callbackData = toHex("");
 
   // Use hooks before conditional logic
+
+  // Obtain the lotId for the baseline allowlist
+  const { data: baselineLotId } = useReadContract({
+    abi: axisContracts.abis.baselineAllowlist,
+    address: auction.callbacks,
+    functionName: "lotId",
+    args: [],
+    query: { enabled: isBaseline },
+  });
+  const baselineLotIdMatches = baselineLotId == parseUnits(auction.lotId, 0);
 
   // Query the amount the user has already spent from the contract
   let { data: spent } = useReadContract({
@@ -84,10 +109,17 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     args: [parseUnits(auction.lotId, 0), user],
     query: { enabled: hasLimit },
   });
-  spent = spent ?? BigInt(0);
+  const { data: spentBaseline } = useReadContract({
+    abi: axisContracts.abis.baselineAllocatedAllowlist,
+    address: auction.callbacks,
+    functionName: "buyerSpent",
+    args: [user],
+    query: { enabled: hasLimitBaseline && baselineLotIdMatches },
+  });
+  spent = spent ?? spentBaseline ?? BigInt(0);
 
   // For capped allowlists, the global per user limit is also on the contract
-  const { data: cap } = useReadContract({
+  let { data: cap } = useReadContract({
     abi: axisContracts.abis.cappedMerkleAllowlist,
     address: auction.callbacks,
     functionName: "lotBuyerLimit",
@@ -96,6 +128,18 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       enabled: callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST,
     },
   });
+  const { data: capBaseline } = useReadContract({
+    abi: axisContracts.abis.baselineCappedAllowlist,
+    address: auction.callbacks,
+    functionName: "buyerLimit",
+    args: [],
+    query: {
+      enabled:
+        callbacksType === CallbacksType.BASELINE_CAPPED_ALLOWLIST &&
+        baselineLotIdMatches,
+    },
+  });
+  cap = cap ?? capBaseline ?? BigInt(0);
 
   // Get the token contract and balance threshold from the callback contract
   const { data: callbackResponse } = useReadContract({
@@ -105,10 +149,19 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     args: [parseUnits(auction.lotId, 0)],
     query: { enabled: callbacksType === CallbacksType.TOKEN_ALLOWLIST },
   });
-  const [tokenAddress, threshold] = callbackResponse ?? [
-    zeroAddress,
-    BigInt(0),
-  ];
+  const { data: callbackResponseBaseline } = useReadContract({
+    abi: axisContracts.abis.baselineTokenAllowlist,
+    address: auction.callbacks,
+    functionName: "tokenCheck",
+    args: [],
+    query: {
+      enabled:
+        callbacksType === CallbacksType.BASELINE_TOKEN_ALLOWLIST &&
+        baselineLotIdMatches,
+    },
+  });
+  const [tokenAddress, threshold] = callbackResponse ??
+    callbackResponseBaseline ?? [zeroAddress, BigInt(0)];
 
   const tokenContract = {
     address: tokenAddress,
@@ -142,6 +195,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   // Set values based on conditional logic
 
   // For merkle allowlists, we need to check if the user is on the allowlist
+  // These expect that the allowlist has been stored in JSON stored in IPFS
   if (isMerkle) {
     // Check if the account is on the allowlist
     canBid =
@@ -155,7 +209,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     if (canBid) {
       // Handle conditional logic for the different allowlist types and set the callback data
       switch (callbacksType) {
-        case CallbacksType.MERKLE_ALLOWLIST: {
+        case CallbacksType.MERKLE_ALLOWLIST:
+        case CallbacksType.BASELINE_ALLOWLIST: {
           // Generate the proof for inclusion in callback data
           const tree = StandardMerkleTree.of(allowlist, ["address"]);
           const proof = tree.getProof([user]) as `0x${string}`[];
@@ -164,7 +219,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
           ]);
           break;
         }
-        case CallbacksType.CAPPED_MERKLE_ALLOWLIST: {
+        case CallbacksType.CAPPED_MERKLE_ALLOWLIST:
+        case CallbacksType.BASELINE_CAPPED_ALLOWLIST: {
           // For capped allowlists, the user's limit is the global limit minus what they've already spent
           amountLimited = true;
           limit = (cap ?? BigInt(0)) - spent;
@@ -177,7 +233,8 @@ export function useAllowlist(auction: Auction): AllowlistResult {
           ]);
           break;
         }
-        case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST: {
+        case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST:
+        case CallbacksType.BASELINE_ALLOCATED_ALLOWLIST: {
           // For allocated allowlists, the user's limit is in the allowlist
           amountLimited = true;
 
@@ -187,7 +244,9 @@ export function useAllowlist(auction: Auction): AllowlistResult {
               (entry: string[]) =>
                 entry[0].toLowerCase() === user?.toLowerCase(),
             )?.[1] ?? "0";
+
           limit = BigInt(allocation) - spent;
+          userAllocation = allocation;
 
           // Generate the proof for inclusion in callback data
           const tree = StandardMerkleTree.of(allowlist, ["address", "uint256"]);
@@ -211,11 +270,15 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       limit,
       criteria,
       callbackData,
+      allocation: userAllocation,
     };
   }
 
   // For token allowlists, we need to check if the user has enough tokens to bid and set values
-  if (callbacksType === CallbacksType.TOKEN_ALLOWLIST) {
+  if (
+    callbacksType === CallbacksType.TOKEN_ALLOWLIST ||
+    callbacksType === CallbacksType.BASELINE_TOKEN_ALLOWLIST
+  ) {
     // Check if the user has enough tokens to bid
     canBid = balance >= threshold;
 
@@ -234,5 +297,6 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     limit: BigInt(0),
     criteria,
     callbackData,
+    allocation: userAllocation,
   };
 }

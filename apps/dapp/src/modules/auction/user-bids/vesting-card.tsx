@@ -134,7 +134,7 @@ export function VestingCard({ auction }: PropsWithAuction) {
 
   const vestingBadgeText =
     vestingProgress >= 100
-      ? "Vesting Complete"
+      ? "Complete"
       : vestingProgress < 0
         ? "Upcoming"
         : "Vesting";
@@ -160,17 +160,6 @@ export function VestingCard({ auction }: PropsWithAuction) {
       }
     >
       <div className="gap-y-md flex flex-col">
-        <div className="grid grid-cols-2 gap-4">
-          <Metric size="s" label="Vesting Begins">
-            {auction.linearVesting?.startDate != null &&
-              formatDate.fullLocal(new Date(auction.linearVesting.startDate))}
-          </Metric>
-          <Metric size="s" label="Vesting Ends">
-            {auction.linearVesting?.startDate != null &&
-              formatDate.fullLocal(new Date(auction.linearVesting.expiryDate))}
-          </Metric>
-        </div>
-
         <BidOutcome auction={auction} />
 
         <div>
@@ -181,6 +170,16 @@ export function VestingCard({ auction }: PropsWithAuction) {
                 {vestingTerm}
               </Metric>
             </Progress>
+          </Metric>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <Metric size="s" label="Vesting Begins" childrenClassName="text-sm">
+            {auction.linearVesting?.startDate != null &&
+              formatDate.fullLocal(new Date(auction.linearVesting.startDate))}
+          </Metric>
+          <Metric size="s" label="Vesting Ends" childrenClassName="text-sm">
+            {auction.linearVesting?.startDate != null &&
+              formatDate.fullLocal(new Date(auction.linearVesting.expiryDate))}
           </Metric>
         </div>
 

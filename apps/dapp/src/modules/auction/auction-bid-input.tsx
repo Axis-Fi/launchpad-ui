@@ -1,11 +1,11 @@
 import { FormField, FormItemWrapperSlim } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
 import { PropsWithAuction } from "@repo/types";
-import { BidForm } from "./status";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { trimCurrency } from "utils/currency";
 import { useState } from "react";
 import { formatUnits, parseUnits } from "viem";
+import { BidForm } from "./auction-purchase";
 
 export function AuctionBidInput({
   auction,
@@ -75,9 +75,7 @@ export function AuctionBidInput({
                     field.onChange(e);
 
                     // Display USD value of input amount
-                    const rawAmountIn = (e.target as HTMLInputElement)
-                      .value as string;
-
+                    const rawAmountIn = e as string;
                     // Update amount out value
                     handleAmountOutChange(
                       parseUnits(rawAmountIn, auction.quoteToken.decimals),
@@ -131,8 +129,7 @@ export function AuctionBidInput({
                   onChange={(e) => {
                     field.onChange(e);
                     // Update amount out value
-                    const rawPrice = (e.target as HTMLInputElement)
-                      .value as string;
+                    const rawPrice = e as string;
                     setBidPrice(rawPrice);
                     const price = parseUnits(
                       rawPrice,

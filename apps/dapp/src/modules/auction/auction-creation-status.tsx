@@ -33,6 +33,7 @@ type CreateAuctionStatusCardProps = {
   onSuccess: (lotId?: number | undefined) => void;
   lotId?: number | null;
   auctionType: AuctionType;
+  requiresAuctionHouseApproval: boolean;
   requiresCallbacksApproval: boolean;
   isSufficientAuctionHouseAllowance: boolean;
   isSufficientCallbacksAllowance: boolean;
@@ -51,6 +52,7 @@ export function AuctionCreationStatus({
   txReceipt,
   chainId,
   auctionType,
+  requiresAuctionHouseApproval,
   requiresCallbacksApproval,
   isSufficientAuctionHouseAllowance,
   isSufficientCallbacksAllowance,
@@ -119,26 +121,30 @@ export function AuctionCreationStatus({
   return (
     <div>
       <div className="flex max-w-screen-md items-center justify-between transition-all">
-        <StatusIcon
-          {...auctionHouseApproveTx}
-          Icon={BoxIcon}
-          isLoading={isSigningAuctionHouseApprove}
-          isSuccess={auctionHouseApprovalComplete}
-          tooltip="Approve the AuctionHouse to transfer the auction capacity"
-        />
-        <StatusSeparator
-          className={cn(
-            auctionHouseApprovalComplete && "border-feedback-success",
-          )}
-        />
-        <StatusIcon
-          {...auctionHouseApproveReceipt}
-          Icon={RadioTowerIcon}
-          isLoading={isAuctionHouseApprovalConfirming}
-          isSuccess={auctionHouseApprovalComplete}
-          tooltip="Confirming the transaction to approve the AuctionHouse"
-        />
-        <div className="border-foreground mx-2 h-8 border-l-2" />
+        {requiresAuctionHouseApproval && (
+          <>
+            <StatusIcon
+              {...auctionHouseApproveTx}
+              Icon={BoxIcon}
+              isLoading={isSigningAuctionHouseApprove}
+              isSuccess={auctionHouseApprovalComplete}
+              tooltip="Approve the AuctionHouse to transfer the auction capacity"
+            />
+            <StatusSeparator
+              className={cn(
+                auctionHouseApprovalComplete && "border-feedback-success",
+              )}
+            />
+            <StatusIcon
+              {...auctionHouseApproveReceipt}
+              Icon={RadioTowerIcon}
+              isLoading={isAuctionHouseApprovalConfirming}
+              isSuccess={auctionHouseApprovalComplete}
+              tooltip="Confirming the transaction to approve the AuctionHouse"
+            />
+            <div className="border-foreground mx-2 h-8 border-l-2" />
+          </>
+        )}
         {requiresCallbacksApproval && (
           <>
             <StatusIcon
@@ -204,7 +210,7 @@ export function AuctionCreationStatus({
       <div className="mt-8 flex justify-center">
         {isIdle && !error && (
           <p className="text-center">
-            {!auctionHouseApprovalComplete
+            {requiresAuctionHouseApproval && !auctionHouseApprovalComplete
               ? "Approve the capacity for the AuctionHouse"
               : requiresCallbacksApproval && !callbackApprovalComplete
                 ? "Approve the capacity for the Callbacks contract"
@@ -269,7 +275,9 @@ export function AuctionCreationStatus({
           <Button onClick={handleSubmit}>
             {error
               ? "RETRY"
-              : !auctionHouseApprovalComplete || !callbackApprovalComplete
+              : (requiresAuctionHouseApproval &&
+                    !auctionHouseApprovalComplete) ||
+                  (requiresCallbacksApproval && !callbackApprovalComplete)
                 ? "APPROVE"
                 : "DEPLOY"}
           </Button>

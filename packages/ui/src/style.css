@@ -259,12 +259,58 @@
     );
   }
 
-  .auction-ended-gradient {
+  .green-gradient {
     background: linear-gradient(
       72deg,
       #cdf675 0%,
       #75c8f6 49.99%,
       #75a1f6 99.97%
     );
+  }
+
+  .green-gradient-border {
+    position: relative;
+  }
+
+  .green-gradient-border::before {
+    @apply green-gradient;
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: 8px;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .claim-points-gradient {
+    background: linear-gradient(
+      180deg,
+      rgba(117, 161, 246, 1) 0%,
+      rgba(117, 200, 246, 1) 50%,
+      rgba(205, 246, 117, 1) 100%
+    );
+  }
+
+  .claim-points-gradient-horizontal {
+    background: linear-gradient(
+      90deg,
+      rgba(205, 246, 117, 1) 0%,
+      rgba(117, 200, 246, 1) 50%,
+      rgba(117, 161, 246, 1) 100%
+    );
+  }
+
+  .banner-shadow {
+    -webkit-box-shadow: -2px 10px 78px 1px rgba(0, 0, 0, 0.57);
+    -moz-box-shadow: -2px 10px 78px 1px rgba(0, 0, 0, 0.57);
+    box-shadow: -2px 10px 78px 1px rgba(0, 0, 0, 0.57);
   }
 }

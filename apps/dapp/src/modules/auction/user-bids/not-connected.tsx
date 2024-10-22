@@ -6,13 +6,9 @@ export function NotConnectedClaimCard({ auction: _auction }: PropsWithAuction) {
   const auction = _auction as BatchAuction;
 
   return (
-    <Card
-      title="Claim"
-      className="lg:w-[496px]"
-      headerRightElement={<Badge>Auction Closed</Badge>}
-    >
+    <Card title="Claim" headerRightElement={<Badge>Auction Closed</Badge>}>
       <div className="flex flex-col gap-y-4">
-        <div className="auction-ended-gradient w-fill flex h-[464px] items-center justify-center">
+        <div className="green-gradient w-fill flex h-[464px] items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <img
               className="w-[92.351]px h-[80px]"

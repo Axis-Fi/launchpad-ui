@@ -6,11 +6,21 @@ import {
 import * as core from "../core";
 import { type AxisDeployments, deployments } from "@repo/deployments";
 import { type OriginConfig } from "../types";
-import type { BidParams, BidConfig } from "../core/bid";
 import type { GetAuctionParams, GetAuctionResult } from "../core/auction";
-import type { Core } from "../core";
+import type {
+  Core,
+  BidParams,
+  BidConfig,
+  ClaimBidsParams,
+  ClaimBidsConfig,
+  RefundBidParams,
+  RefundBidConfig,
+  SettleParams,
+  SettleConfig,
+  AbortParams,
+  AbortConfig,
+} from "../core";
 import type { GetTokenPriceParams } from "../core/tokens";
-import type { ClaimBidsParams, ClaimBidsConfig } from "../core/claim-bids";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -138,7 +148,6 @@ class OriginSdk {
    *     lotId: 1,
    *     bids: [1, 2, 3],
    *     chainId: 1,
-   *     auctionType: AuctionType.SEALED_BID,
    *   })
    * } catch (error: SdkError) {
    *   console.log(error.message, error.issues)
@@ -146,6 +155,76 @@ class OriginSdk {
    */
   claimBids(params: ClaimBidsParams): ClaimBidsConfig {
     return this.core.claimBids.functions.getConfig(params);
+  }
+
+  /**
+   * Gets the contract config required to execute a refundBid transaction on the auction house smart contract.
+   *
+   * @param params refundBid parameters
+   * @returns Contract config for the refundBid transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.refundBid({
+   *     lotId: 1,
+   *     bidId: 10,
+   *     bidIndex: 1,
+   *     chainId: 1,
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  refundBid(params: RefundBidParams): RefundBidConfig {
+    return this.core.refundBid.getConfig(params);
+  }
+
+  /**
+   * Gets the contract config required to execute a settle transaction on the auction house smart contract.
+   *
+   * @param params settle parameters
+   * @returns Contract config for the settle transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.settle({
+   *     lotId: 1,
+   *     chainId: 1,
+   *     numBids: 10,
+   *     callbackData: "0x...",
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  settle(params: SettleParams): SettleConfig {
+    return this.core.settle.getConfig(params);
+  }
+
+  /**
+   * Gets the contract config required to execute a abort transaction on the auction house smart contract.
+   *
+   * @param params abort parameters
+   * @returns Contract config for the abort transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.abort({
+   *     lotId: 1,
+   *     chainId: 1,
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  abort(params: AbortParams): AbortConfig {
+    return this.core.abort.getConfig(params);
   }
 }
 

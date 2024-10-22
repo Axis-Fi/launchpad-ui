@@ -1,3 +1,4 @@
+import { GetAuctionLotsQuery } from "@repo/subgraph-client";
 import { AuctionType } from "./auction-modules";
 import { Address } from "./axis-contracts";
 import { BatchSubgraphAuction } from "./subgraph-queries";
@@ -13,17 +14,23 @@ export type BaseAuction = {
   formatted?: AuctionFormattedInfo;
   /** Whether the auction passes the malicious auction verification */
   isSecure?: boolean;
+
+  // Used for registration launches
+  registrationDeadline?: Date;
+  fdv?: number;
 };
 
-export type Auction = BatchAuction;
-
-export type BatchAuction = BaseAuction &
-  Omit<BatchSubgraphAuction, "baseToken" | "quoteToken">;
-
-//TODO: see if necessary again, used to branch between auctions in list and detailed view
-export type AuctionListed = Auction; //Omit<BaseAuction, "auctionData" | "formatted"> & Omit<RawSubgraphAuction, "baseToken" | "quoteToken">;
+/** Patched auction lots query that treats callbacks as Address */
+export type GetAuctionLots = {
+  batchAuctionLots: Array<
+    GetAuctionLotsQuery["batchAuctionLots"][0] & {
+      callbacks: Address;
+    }
+  >;
+};
 
 export type AuctionStatus =
+  | "registering"
   | "created"
   | "cancelled"
   | "live"
@@ -31,6 +38,11 @@ export type AuctionStatus =
   | "decrypted"
   | "aborted"
   | "settled";
+
+export type BatchAuction = BaseAuction &
+  Omit<BatchSubgraphAuction, "baseToken" | "quoteToken">;
+
+export type Auction = BatchAuction;
 
 type AllowList = string[][] | undefined;
 
