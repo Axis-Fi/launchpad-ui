@@ -15,13 +15,13 @@ import {
   AuctionCreated,
   AuctionDecrypted,
   AuctionSettled,
+  AuctionLive,
 } from "modules/auction/status";
 import { PageContainer } from "modules/app/page-container";
 import { FixedPriceBatchAuctionConcluded } from "modules/auction/status/auction-concluded-fixed-price-batch";
 import { BidList } from "modules/auction/bid-list";
 import { PurchaseList } from "modules/auction/purchase-list";
 import { Countdown } from "modules/auction/countdown";
-import { AuctionBaselineLive } from "modules/auction/status/auction-baseline-live";
 import AuctionProgressBar from "modules/auction/auction-progress-bar";
 import { getLinkUrl } from "modules/auction/utils/auction-details";
 
@@ -31,7 +31,7 @@ const statuses: Record<
 > = {
   registering: () => null, // Registration state is not handled in this component, but in auction-registering.tsx
   created: AuctionCreated,
-  live: AuctionBaselineLive,
+  live: AuctionLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
   settled: AuctionSettled,
@@ -74,7 +74,10 @@ export default function AuctionPage() {
       : statuses[auction.status];
 
   return (
-    <PageContainer id="__AXIS_ORIGIN_LAUNCH_PAGE__" className="lg:pb-20">
+    <PageContainer
+      id="__AXIS_ORIGIN_LAUNCH_PAGE__"
+      className="pt-0 lg:pb-20 lg:pt-0"
+    >
       <AuctionPageView auction={auction} isAuctionLoading={isAuctionLoading}>
         <PageHeader
           className="mt-0 lg:mt-0"

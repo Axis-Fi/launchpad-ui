@@ -1,11 +1,11 @@
-import { Button, Card, Link, Metric, Text, Tooltip } from "@repo/ui";
+import { Button, Card, Link, Metric, Text, Tooltip, cn } from "@repo/ui";
 import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "./auction-bid-input";
 import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
-import { LockIcon } from "lucide-react";
-import { shorten } from "utils";
+import { ChevronLeft, LockIcon } from "lucide-react";
+import { trimCurrency } from "utils";
 import { useBidAuction } from "./hooks/use-bid-auction";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +17,6 @@ import { useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "./hooks/use-allowlist";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { getDeployment } from "@repo/deployments";
-import { ToggledUsdAmount } from "./toggled-usd-amount";
 import {
   PopupTokenWrapper,
   isQuoteAWrappedGasToken,
@@ -33,12 +32,15 @@ export type BidForm = z.infer<typeof schema>;
 
 type AuctionPurchaseProps = PropsWithAuction & {
   hideInfo?: boolean;
+  showMetrics?: boolean;
+  handleShowMetrics?: () => void;
 };
 
 export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
   const [open, setOpen] = React.useState(false);
   const currentChainId = useChainId();
   const walletAccount = useAccount();
+  const { allocation } = useAllowlist(auction);
 
   const isFixedPriceBatch =
     auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
@@ -46,6 +48,20 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
 
   const [maxBidAmount, setMaxBidAmount] = useState<bigint | undefined>();
   const deployment = getDeployment(auction.chainId);
+
+  const totalUserBidAmount = auction.bids
+    .filter(
+      (b) => b.bidder.toLowerCase() === walletAccount.address?.toLowerCase(),
+    )
+    .reduce((total, b) => {
+      total += BigInt(b.rawAmountIn);
+      return total;
+    }, 0n);
+
+  const formattedUserBidAmount = formatUnits(
+    totalUserBidAmount,
+    auction.quoteToken.decimals,
+  );
 
   // Cache the max bid amount
   useEffect(() => {
@@ -268,20 +284,6 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
   const isWalletChainIncorrect =
     auction.chainId !== currentChainId || !walletAccount.isConnected;
 
-  const [bidPrice] = form.watch(["bidPrice"]);
-
-  // Calculate FDV based on the bid
-  const [bidFdv, setBidFdv] = useState<number>();
-
-  useEffect(() => {
-    if (bidPrice === undefined || !auction.baseToken.totalSupply) {
-      return;
-    }
-
-    const fdv = Number(auction.baseToken.totalSupply) * Number(bidPrice);
-    setBidFdv(fdv);
-  }, [bidPrice, auction.baseToken.totalSupply, auction.quoteToken.symbol]);
-
   // Calculate the limit for the user as the minimum of the allowlist limit (where applicable) and the max bid amount
   // Truth table
   // Allowlist limit | Max bid amount | Bid limit
@@ -301,7 +303,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
   // TODO display "waiting" in modal when the tx is waiting to be signed by the user
 
   return (
-    <div className="mx-auto">
+    <div className="mx-auto lg:min-w-[477px]">
       {canBid ? (
         <FormProvider {...form}>
           <form onSubmit={(e) => e.preventDefault()}>
@@ -341,12 +343,38 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                   disabled={isWalletChainIncorrect}
                 />
               )}
+
+              <div className={"mx-auto mt-4 flex w-full justify-between "}>
+                {allocation && +allocation > 0 && (
+                  <Metric
+                    childrenClassName={"text-primary"}
+                    label={`Your Allocation`}
+                  >
+                    {trimCurrency(
+                      formatUnits(
+                        BigInt(allocation),
+                        auction.quoteToken.decimals,
+                      ),
+                    )}{" "}
+                    {auction.quoteToken.symbol}
+                  </Metric>
+                )}
+                {totalUserBidAmount > 0n && (
+                  <Metric
+                    childrenClassName={"text-tertiary-300"}
+                    label={`You ${isEMP ? "bid" : "spent"}`}
+                  >
+                    {trimCurrency(formattedUserBidAmount)}{" "}
+                    {auction.quoteToken.symbol}
+                  </Metric>
+                )}
+              </div>
               <div className="mx-auto mt-4 w-full space-y-4">
-                {
+                {isFixedPriceBatch && (
                   <Text size="sm" className="leading-none tracking-normal">
                     You’re participating in a fixed-price sale. Bids are
-                    first-come first-served <br />
-                    and can be canceled before the sale concludes.
+                    first-come first-served and can be canceled before the sale
+                    concludes.
                     <Link
                       target="_blank"
                       href="https://axis.finance/docs/origin/fps-overview"
@@ -355,7 +383,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                       Learn More
                     </Link>
                   </Text>
-                }
+                )}
               </div>
 
               <RequiresChain chainId={auction.chainId} className="mt-4">
@@ -389,6 +417,16 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                   </Button>
                 </div>
               </RequiresChain>
+              <Button
+                variant="ghost"
+                className="w-full pb-0 lg:pb-0"
+                onClick={() => props.handleShowMetrics?.()}
+              >
+                {props.showMetrics ? "Hide" : "View"} Auction Info{" "}
+                <ChevronLeft
+                  className={cn(!props.showMetrics && "rotate-180")}
+                />
+              </Button>
             </Card>
 
             <TransactionDialog
@@ -439,29 +477,6 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
           <p>This sale is restricted to {criteria}.</p>
           <p>The connected wallet is not approved to bid.</p>
         </Card>
-      )}
-      {!props.hideInfo && canBid && isEMP && (
-        <div className="mt-4">
-          <Card title="Bid Info">
-            <div className="gap-y-md flex">
-              <div className="p-sm rounded">
-                <Metric size="s" label="Your Estimated FDV">
-                  {bidFdv === undefined || bidFdv === 0 ? (
-                    "-"
-                  ) : (
-                    <ToggledUsdAmount
-                      token={auction.quoteToken}
-                      amount={bidFdv}
-                      untoggledFormat={(bidFdv: number) =>
-                        `${shorten(bidFdv)} ${auction.quoteToken.symbol}`
-                      }
-                    />
-                  )}
-                </Metric>
-              </div>
-            </div>
-          </Card>
-        </div>
       )}
     </div>
   );
