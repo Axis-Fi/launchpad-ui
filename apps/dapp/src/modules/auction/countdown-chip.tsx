@@ -52,11 +52,11 @@ export function CountdownChip({ auction }: PropsWithAuction) {
   return (
     <Badge size={isTabletOrMobile ? "s" : "xl"} className="px-4">
       <Metric
-        mono
         size={isTabletOrMobile ? "s" : "m"}
         className="text-center"
         isLabelSpaced
         label={hasntStarted ? "Upcoming in" : "Remaining"}
+        childrenClassName="min-w-[160px]"
       >
         {timeRemaining}
       </Metric>
