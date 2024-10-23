@@ -1,7 +1,7 @@
 import type { Address, Auction } from "@repo/types";
 import { isAddress, zeroAddress } from "viem";
 import { axisContracts } from "@repo/deployments";
-import { allowedCurators, environment } from "@repo/env";
+import { allowedCuratorAddresses, environment } from "@repo/env";
 
 /** Checks if the curator address on an Auction exists in an address list */
 export function isAllowedCurator(auction: AuctionProps) {
@@ -12,13 +12,7 @@ export function isAllowedCurator(auction: AuctionProps) {
   return (
     curator &&
     isAddress(curator) &&
-    allowedCurators
-      .flatMap((c) =>
-        Array.isArray(c.address)
-          ? c.address.map((a) => a.toLowerCase())
-          : c.address.toLowerCase(),
-      )
-      .includes(curator.toLowerCase())
+    allowedCuratorAddresses.includes(curator.toLowerCase() as Address)
   );
 }
 

@@ -1,10 +1,13 @@
-import { Curator } from "@repo/types";
+import { Address, Curator } from "@repo/types";
 
 export const allowedCurators: Curator[] = [
   {
     name: "Baseline Markets",
     type: "platform",
-    address: "0x93d2f6a92af6add436df7ba185dd736ec13f0aaa",
+    address: [
+      "0x93d2f6a92af6add436df7ba185dd736ec13f0aaa",
+      "0x32f33a14e36cb75b3f58e1822418599e3f075ffb",
+    ],
     twitter: "baselinemarkets",
     website: "https://www.baseline.markets/",
     avatar: "/images/baseline-markets.png",
@@ -24,3 +27,18 @@ export const allowedCurators: Curator[] = [
       "https://revelointel.com/wp-content/uploads/2024/08/Aurelius-Finance-Overview-by-Revelo-Intel.pdf",
   },
 ];
+
+export const allowedCuratorAddresses: string[] = allowedCurators
+  .flatMap((c) => c.address)
+  .map((c) => c.toLowerCase());
+
+export const getCurator = (address: Address | string) => {
+  const targetAddress = address.toLowerCase();
+
+  return allowedCurators.find((c) => {
+    if (Array.isArray(c.address)) {
+      return c.address.map((a) => a.toLowerCase()).includes(targetAddress);
+    }
+    return c.address.toLowerCase() === targetAddress;
+  });
+};

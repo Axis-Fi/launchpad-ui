@@ -1,7 +1,7 @@
 import { Address } from "./axis-contracts";
 
 export type Curator = {
-  address: Address;
+  address: Address | Address[];
   name: string;
   avatar: string;
   description?: string;

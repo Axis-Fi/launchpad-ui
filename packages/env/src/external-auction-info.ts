@@ -22,11 +22,11 @@ export const externalAuctionInfo: Record<string, AuctionInfo> = {
       },
       {
         linkId: "projectBanner",
-        url: "https://images-ext-1.discordapp.net/external/9LTqOdHidoVo40M1m28XC1wNd_zhtRO-wLwzKOYLsjs/https/pbs.twimg.com/media/GV_5kLFbkAApUKX.jpg%3Alarge?format=webp&width=861&height=861",
+        url: "https://app.baseline.markets/presale-header.png",
       },
       {
         linkId: "discord",
-        url: "",
+        url: "https://storage.bondprotocol.finance/6e41a561-e275-4698-bc36-548d30a80e96-bucket/machi-banner.png",
       },
       {
         linkId: "externalSite",
