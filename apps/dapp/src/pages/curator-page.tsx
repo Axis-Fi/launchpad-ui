@@ -8,7 +8,7 @@ import { auctionMetadata } from "modules/auction/metadata";
 import React from "react";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { CuratorCard } from "./curator-list-page";
-import { allowedCurators } from "@repo/env";
+import { getCurator } from "@repo/env";
 
 const auctionModuleOptions = Object.values(auctionMetadata);
 const auctionModules = Object.keys(auctionMetadata) as AuctionType[];
@@ -21,9 +21,7 @@ export function CuratorPage() {
     auctionModuleOptions[0].value,
   );
 
-  const curator = allowedCurators.find(
-    (c) => c.address.toLowerCase() === address?.toLowerCase(),
-  );
+  const curator = getCurator(address ?? "");
 
   const options = activeChains.map((c) => ({
     label: c.name,

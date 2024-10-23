@@ -12,7 +12,7 @@ import { getCallbacksType } from "./utils/get-callbacks-type";
 import { getMinFilled, getPrice, hasDerivative } from "./utils/auction-details";
 import { getDaysBetweenDates } from "utils/date";
 import { Format } from "modules/token/format";
-import { allowedCurators } from "@repo/env";
+import { getCurator } from "@repo/env";
 import { CuratorCard } from "pages/curator-list-page";
 import { InfoIcon } from "lucide-react";
 import { UsdAmount } from "./usd-amount";
@@ -349,9 +349,7 @@ const handlers: MetricHandlers = {
     handler: (auction) => {
       if (!auction.curator) return undefined;
 
-      const curator = allowedCurators.find(
-        (c) => c.address.toLowerCase() === auction.curator?.toLowerCase(),
-      );
+      const curator = getCurator(auction.curator);
 
       if (!curator) return undefined;
 
