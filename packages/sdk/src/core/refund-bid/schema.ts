@@ -6,7 +6,7 @@ const schema = v.object({
   bidId: v.number(),
   bidIndex: v.number(),
   chainId: v.number(),
-  auctionType: v.enum_(AuctionType),
+  auctionType: v.optional(v.enum_(AuctionType)),
 });
 
 export default schema;

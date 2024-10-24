@@ -7,13 +7,13 @@ import {
 import { ContractFunctionReturn } from "../../types";
 import * as auction from ".";
 
-type GetAuctionParams = v.Input<typeof GetAuctionParamsSchema>;
+type GetAuctionParams = v.InferOutput<typeof GetAuctionParamsSchema>;
 type GetAuctionResult = ContractFunctionReturn<
   typeof abis.batchCatalogue, // TODO multiple catalogue types
   "getRouting"
 >;
 
-type GetAuctionTokenDecimalsParams = v.Input<
+type GetAuctionTokenDecimalsParams = v.InferOutput<
   typeof GetAuctionTokenDecimalsParamsSchema
 >;
 

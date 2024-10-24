@@ -5,7 +5,7 @@ import { abis } from "@repo/abis";
 import * as bid from ".";
 import type { ContractConfig } from "../../types";
 
-type BidParams = v.Input<typeof bid.schema.BidParamsSchema>;
+type BidParams = v.InferOutput<typeof bid.schema.BidParamsSchema>;
 type BidConfig = ContractConfig<typeof abis.batchAuctionHouse, "bid">;
 
 type PrimedBidParams = Pick<
