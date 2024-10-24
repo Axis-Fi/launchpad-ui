@@ -23,20 +23,21 @@ export function ImageBanner({
     >
       <div
         className={cn(
-          "saturate-75 absolute top-4 hidden h-[115%] w-[280%] blur-xl lg:block",
-          !isLoading && "bg-center ",
+          "saturate-75 absolute h-[480px] w-[150%] blur-md lg:block",
+          !isLoading && "bg-center",
         )}
         style={
           imgUrl
             ? {
-                backgroundSize: "auto",
                 backgroundImage: `url(${imgUrl})`,
+                backgroundSize: "200% 480px",
+                clipPath: "inset(0 0 0 0)",
               }
             : {}
         }
       />
       <div
-        className="absolute h-full w-dvw bg-center bg-no-repeat lg:top-8"
+        className="absolute h-full w-dvw bg-center bg-no-repeat "
         style={
           imgUrl
             ? {
