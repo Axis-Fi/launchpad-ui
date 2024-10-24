@@ -24,6 +24,7 @@ import { PurchaseList } from "modules/auction/purchase-list";
 import { Countdown } from "modules/auction/countdown";
 import AuctionProgressBar from "modules/auction/auction-progress-bar";
 import { getLinkUrl } from "modules/auction/utils/auction-details";
+import { useAccount, useSwitchChain } from "wagmi";
 
 const statuses: Record<
   AuctionStatus,
@@ -42,6 +43,8 @@ const statuses: Record<
 /** Displays Auction details and status*/
 export default function AuctionPage() {
   const { chainId, lotId } = useParams();
+  const { isConnected, chainId: connectedChainId } = useAccount();
+  const { switchChain } = useSwitchChain();
 
   const { result: auction, isLoading: isAuctionLoading } = useAuction(
     chainId!,
@@ -53,6 +56,16 @@ export default function AuctionPage() {
     auction && auction.quoteToken.symbol.toLowerCase().includes("usd");
 
   const toggle = useToggle();
+
+  //Forcefully switch chain
+  React.useEffect(() => {
+    const auctionChainId = +chainId!;
+
+    if (isConnected && auctionChainId !== connectedChainId) {
+      switchChain({ chainId: +chainId! });
+    }
+  }, [isConnected]);
+
   //Enforce showing as quote token when it's a USD stable
   React.useEffect(() => {
     if (auction && isUSDQuote && toggle.isToggled) {
