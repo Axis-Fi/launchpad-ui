@@ -7582,7 +7582,7 @@ export const BatchCommonFieldsFragmentDoc = `
 export const BatchAuctionFieldsFragmentDoc = `
     fragment BatchAuctionFields on BatchAuctionLot {
   maxBidId
-  bids {
+  bids(first: 1000) {
     bidId
     bidder
     blockTimestamp
