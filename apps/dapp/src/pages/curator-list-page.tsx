@@ -16,12 +16,12 @@ export default function CuratorListPage() {
     >
       <>
         <CuratorCard
-          key={newestCurator.address}
+          key={newestCurator.name}
           curator={newestCurator}
           className="gradient-border gradient-border-shift"
         />
         {curators.map((c) => (
-          <CuratorCard key={c.address} curator={c} />
+          <CuratorCard key={c.name} curator={c} />
         ))}
       </>
 

@@ -2,8 +2,9 @@ import { Link, Metric, cn } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { getLinkUrl } from "./utils/auction-details";
 import { AuctionMetric } from "./auction-metric";
-import { allowedCurators } from "@repo/env";
+import { getCurator } from "@repo/env";
 import ExternalLink from "components/external-link";
+import { ReferrerPopover } from "modules/referral/referrer-popover";
 
 type ProjectInfoCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -23,16 +24,13 @@ export function ProjectInfoCard({
   const twitter = getLinkUrl("twitter", auction);
   const discord = getLinkUrl("discord", auction);
   const farcaster = getLinkUrl("farcaster", auction);
-  const curator = allowedCurators.find(
-    (c) => c.address.toLowerCase() === auction.curator?.toLowerCase(),
-  );
-
+  const curator = getCurator(auction.curator?.toLowerCase() ?? "");
   return (
     <div
       className={cn(props.className, "flex h-full flex-col justify-between")}
       title={``}
     >
-      {children}
+      <div className="flex justify-between">{children}</div>
       <div className="mb-4 flex">{description}</div>
       <div className="flex items-end justify-between space-x-4">
         {auction.curatorApproved && (
@@ -52,6 +50,8 @@ export function ProjectInfoCard({
             )}
           </div>
         )}
+
+        {canRefer && <ReferrerPopover auction={auction} />}
         <div className="flex gap-x-4">
           {twitter && (
             <Link className="text-primary flex" href={twitter}>

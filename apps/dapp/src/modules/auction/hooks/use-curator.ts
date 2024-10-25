@@ -1,4 +1,4 @@
-import { allowedCurators } from "@repo/env";
+import { allowedCuratorAddresses } from "@repo/env";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { useAccount } from "wagmi";
 
@@ -17,9 +17,9 @@ export function useCurator() {
       ["live", "created"].includes(a.status.toLocaleLowerCase()),
   );
 
-  const isKnownCurator = allowedCurators
-    .map((c) => c.address.toLowerCase())
-    .includes(address?.toLowerCase() || "");
+  const isKnownCurator = allowedCuratorAddresses.includes(
+    address?.toLowerCase() ?? "",
+  );
 
   return {
     isCurator:

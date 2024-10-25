@@ -21,6 +21,7 @@ import type {
   AbortConfig,
 } from "../core";
 import type { GetTokenPriceParams } from "../core/tokens";
+import { CancelConfig, CancelParams } from "../core/cancel";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -206,7 +207,8 @@ class OriginSdk {
   }
 
   /**
-   * Gets the contract config required to execute a abort transaction on the auction house smart contract.
+   * Gets the contract config required to execute an abort transaction on the auction house smart contract.
+   * Aborting an auction ends it and enables bidders to reclaim their bids.
    *
    * @param params abort parameters
    * @returns Contract config for the abort transaction
@@ -225,6 +227,29 @@ class OriginSdk {
    */
   abort(params: AbortParams): AbortConfig {
     return this.core.abort.getConfig(params);
+  }
+
+  /**
+   * Gets the contract config required to execute a cancel transaction on the auction house smart contract.
+   * Cancelling an auction ends the auction, and is only possible before a bidder has bid on it.
+   *
+   * @param params abort parameters
+   * @returns Contract config for the abort transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.abort({
+   *     lotId: 1,
+   *     chainId: 1,
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  cancel(params: CancelParams): CancelConfig {
+    return this.core.cancel.getConfig(params);
   }
 }
 

@@ -7,10 +7,13 @@ import type {
   ExtractAbiFunctionNames,
 } from "abitype";
 
-class SdkError extends Error {
-  issues?: v.SchemaIssues | undefined;
+class SdkError<TInput> extends Error {
+  issues?: v.BaseIssue<TInput>[] | undefined;
 
-  constructor(message: string, issues: v.SchemaIssues | undefined = undefined) {
+  constructor(
+    message: string,
+    issues: v.BaseIssue<TInput>[] | undefined = undefined,
+  ) {
     super(message);
     this.name = "OriginSdkError";
     this.issues = issues;
