@@ -7405,7 +7405,6 @@ export type GetBatchAuctionLotQuery = {
       description?: string | null;
       tagline?: string | null;
       links: Array<{ linkId: string; url: string }>;
-      allowlist?: Array<Array<string>> | null;
     } | null;
     linearVesting?: {
       id: string;
