@@ -19,6 +19,7 @@ import { axisContracts, deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";
 import { getCallbacksType } from "../utils/get-callbacks-type";
 import { isAllowlistCallback } from "../utils/auction-details";
+import { externalAuctionInfo } from "@repo/env";
 
 export type AllowlistResult = {
   canBid: boolean;
@@ -37,8 +38,17 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   // If the auction has a custom callback it could be an allowlist so give it the benefit of the doubt
   const callbacksType = getCallbacksType(auction);
   const isCustomCallback = callbacksType === CallbacksType.CUSTOM;
+  // Determine if the allowlist is defined in the external data
+  const externalAllowlist: string[][] | undefined =
+    externalAuctionInfo[auction.id!] &&
+    externalAuctionInfo[auction.id!].allowlist !== undefined &&
+    externalAuctionInfo[auction.id!].allowlist!.length > 0
+      ? externalAuctionInfo[auction.id!].allowlist
+      : undefined;
+
   const shouldFetchAllowList =
-    isAllowlistCallback(callbacksType) || isCustomCallback;
+    externalAllowlist !== undefined &&
+    (isAllowlistCallback(callbacksType) || isCustomCallback);
 
   // Fetch allow list for this auction from the subgraph
   const {
@@ -54,9 +64,11 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     },
   );
   const allowlist =
-    auctionWithAllowlist?.batchAuctionLot?.info?.allowlist.map(
-      (list) => list.values,
-    ) ?? [];
+    externalAllowlist !== undefined
+      ? externalAllowlist
+      : auctionWithAllowlist?.batchAuctionLot?.info?.allowlist.map(
+          (list) => list.values,
+        ) ?? [];
 
   // Check if the callback type is an allowlist, if not return default values
   const isMerkle =
