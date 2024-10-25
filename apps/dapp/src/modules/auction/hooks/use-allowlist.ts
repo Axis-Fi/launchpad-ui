@@ -37,8 +37,12 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   // If the auction has a custom callback it could be an allowlist so give it the benefit of the doubt
   const callbacksType = getCallbacksType(auction);
   const isCustomCallback = callbacksType === CallbacksType.CUSTOM;
+  // Determine if the allowlist is defined in the external data
+  const hasExternalInfoAllowlist =
+    auction.info && auction.info.allowlist && auction.info.allowlist.length > 0;
   const shouldFetchAllowList =
-    isAllowlistCallback(callbacksType) || isCustomCallback;
+    !hasExternalInfoAllowlist &&
+    (isAllowlistCallback(callbacksType) || isCustomCallback);
 
   // Fetch allow list for this auction from the subgraph
   const {
@@ -54,9 +58,11 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     },
   );
   const allowlist =
-    auctionWithAllowlist?.batchAuctionLot?.info?.allowlist.map(
-      (list) => list.values,
-    ) ?? [];
+    auction.info && auction.info.allowlist && auction.info.allowlist.length > 0
+      ? auction.info.allowlist
+      : auctionWithAllowlist?.batchAuctionLot?.info?.allowlist.map(
+          (list) => list.values,
+        ) ?? [];
 
   // Check if the callback type is an allowlist, if not return default values
   const isMerkle =
