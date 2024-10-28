@@ -6,15 +6,10 @@ import { trimCurrency } from "utils/currency";
 
 /** Renders a progress bar with the amount of tokens commited in bids*/
 export default function AuctionProgressBar({ auction }: PropsWithAuction) {
-  const { current, minTarget, targetAmount } =
+  const { current, minTarget, targetAmount, currentAmount } =
     calculateAuctionProgress(auction);
 
-  const bidAmount = auction.bids.reduce((total, b) => {
-    total += Number(b.amountIn);
-    return total;
-  }, 0);
-
-  const showCurrentProgress = auction.status !== "created" && bidAmount > 0;
+  const showCurrentProgress = auction.status !== "created" && currentAmount > 0;
 
   return (
     <Progress
@@ -30,7 +25,11 @@ export default function AuctionProgressBar({ auction }: PropsWithAuction) {
         )}
       >
         {showCurrentProgress && (
-          <ProgressMetric auction={auction} label="Raised" value={bidAmount} />
+          <ProgressMetric
+            auction={auction}
+            label="Raised"
+            value={currentAmount}
+          />
         )}
         <ProgressMetric
           auction={auction}
