@@ -90,7 +90,7 @@ export default function AuctionPage() {
     <PageContainer id="__AXIS_LAUNCH_PAGE__" className="pt-0 lg:pb-20 lg:pt-0">
       <AuctionPageView auction={auction} isAuctionLoading={isAuctionLoading}>
         <PageHeader
-          className="mt-0 lg:mt-0"
+          className="relative mt-0 lg:mt-0"
           backNavigationPath="/#"
           backNavigationText="Back to Launches"
           toggle={!isUSDQuote}
