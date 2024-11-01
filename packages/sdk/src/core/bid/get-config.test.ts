@@ -6,10 +6,10 @@ import * as deployments from "@repo/deployments";
 import type { CloakClient } from "@repo/cloak";
 import type { AxisDeployments } from "@repo/deployments";
 import { getConfig } from "./get-config";
-import type { AuctionModule } from "../../auction";
-import { getEncryptedBid, encodeEncryptedBid } from "../utils";
-import * as deps from "./get-config-from-primed-params";
-import type { BidParams } from "../types";
+import type { AuctionModule } from "../auction";
+import { getEncryptedBid, encodeEncryptedBid } from "./utils";
+import * as deps from "./prepare-config";
+import type { BidParams } from "./types";
 
 const mockAddress = zeroAddress;
 const mockTokenDecimals = 18;
@@ -17,7 +17,7 @@ const mockEncryptedBid = { ciphertext: "1", x: "1", y: "1" };
 const mockEncodedEncryptedBid = "0x1";
 const mockCallbackData = "0x2";
 
-vi.mock("../utils", () => ({
+vi.mock("./utils", () => ({
   getEncryptedBid: vi.fn(() => mockEncryptedBid),
   encodeEncryptedBid: vi.fn(() => mockEncodedEncryptedBid),
 }));
@@ -123,7 +123,11 @@ describe("getConfig()", () => {
 
     expect(getEncryptedBid).toHaveBeenCalledWith(
       {
-        ...mockParams,
+        lotId: mockParams.lotId,
+        amountIn: mockParams.amountIn,
+        amountOut: mockParams.amountOut,
+        chainId: mockParams.chainId,
+        bidderAddress: mockParams.bidderAddress,
         quoteTokenDecimals: mockTokenDecimals,
         baseTokenDecimals: mockTokenDecimals,
         auctionHouseAddress: mockAddress,
@@ -145,11 +149,8 @@ describe("getConfig()", () => {
   });
 
   // TODO: you can't spy or mock a dep that is included in the same file as the function under test
-  it("calls getConfigFromPrimedParams with correct params", async () => {
-    const getConfigFromPrimedParamsSpy = vi.spyOn(
-      deps,
-      "getConfigFromPrimedParams",
-    );
+  it("calls prepareConfig with correct params", async () => {
+    const prepareConfigSpy = vi.spyOn(deps, "prepareConfig");
 
     await getConfig(
       mockParams,
@@ -159,7 +160,7 @@ describe("getConfig()", () => {
       mockDeployments,
     );
 
-    expect(getConfigFromPrimedParamsSpy).toHaveBeenCalledWith(
+    expect(prepareConfigSpy).toHaveBeenCalledWith(
       {
         lotId: mockParams.lotId,
         amountIn: mockParams.amountIn,
@@ -186,7 +187,7 @@ describe("getConfig()", () => {
     );
 
     expect(result).rejects.toThrowErrorMatchingInlineSnapshot(
-      `[OriginSdkError: Invalid parameters supplied to getConfig]`,
+      `[OriginSdkError: Invalid parameters supplied to getConfig()]`,
     );
   });
 

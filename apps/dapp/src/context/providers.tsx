@@ -3,14 +3,15 @@ import { BlockchainProvider } from "./blockchain-provider";
 import { PointsProvider } from "./points-provider";
 import { OriginSdkProvider } from "@repo/sdk/react";
 import { OriginSdk } from "@repo/sdk";
-import { getCloakServer } from "@repo/env";
+import { getCloakServer, getMetadataServer } from "@repo/env";
 import { DialogProvider } from "./dialog-provider";
-
-const cloakServer = getCloakServer();
 
 const sdk = new OriginSdk({
   cloak: {
-    url: cloakServer.url,
+    url: getCloakServer().url,
+  },
+  metadata: {
+    url: getMetadataServer().url,
   },
 });
 

@@ -84,7 +84,7 @@ import { PageContainer } from "modules/app/page-container";
 import { PageHeader } from "modules/app/page-header";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
-import type { AuctionInfoWriteType } from "@repo/ipfs-api/src/types";
+import type { AuctionMetadata } from "@repo/ipfs-api/src/types";
 import { useFees } from "modules/auction/hooks/use-fees";
 import { getAuctionsQueryKey } from "modules/auction/hooks/use-auctions";
 import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
@@ -725,7 +725,7 @@ export default function CreateAuctionPage() {
 
   const auctionInfoMutation = useMutation({
     mutationFn: async (values: CreateAuctionForm) => {
-      const auctionInfo: AuctionInfoWriteType = {
+      const auctionInfo: AuctionMetadata = {
         key: `${values.auctionType}-${values.payoutToken.chainId}_${
           values.payoutToken.address
         }_${values.start.getTime()}`,

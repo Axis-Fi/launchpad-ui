@@ -13,7 +13,7 @@ const mockConfig = {
 };
 
 const mockCore = {
-  bid: { functions: { getConfig: vi.fn() } },
+  bid: { getConfig: vi.fn() },
   claimBids: { functions: { getConfig: vi.fn() } },
   refundBid: { getConfig: vi.fn() },
   auction: { functions: { getAuction: vi.fn() } },
@@ -88,7 +88,7 @@ describe("OriginSdk: bid()", () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     await sdk.bid(mockParams, mockCallbackData);
 
-    expect(mockCore.bid.functions.getConfig).toHaveBeenCalledWith(
+    expect(mockCore.bid.getConfig).toHaveBeenCalledWith(
       mockParams,
       mockCallbackData,
       sdk.cloakClient,

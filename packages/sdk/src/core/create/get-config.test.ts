@@ -3,7 +3,7 @@ import { zeroAddress } from "viem";
 import { abis } from "@repo/abis";
 import { AuctionType } from "@repo/types";
 import { getConfig } from "./get-config";
-import type { RefundBidConfig, RefundBidParams } from "./types";
+import type { CreateConfig, CreateParams } from "./types";
 
 const mockAddress = zeroAddress;
 
@@ -22,7 +22,7 @@ const mockParams = {
   bidIndex: 1,
   chainId: 1,
   auctionType: AuctionType.SEALED_BID,
-} satisfies RefundBidParams;
+} satisfies CreateParams;
 
 describe("getConfig()", () => {
   it("returns contract configuration", async () => {
@@ -37,7 +37,7 @@ describe("getConfig()", () => {
         BigInt(mockParams.bidId),
         BigInt(mockParams.bidIndex),
       ],
-    } satisfies RefundBidConfig);
+    } satisfies CreateConfig);
   });
 
   it("throws an error if invalid params are supplied", async () => {

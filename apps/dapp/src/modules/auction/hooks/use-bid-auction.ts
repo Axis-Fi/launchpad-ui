@@ -46,6 +46,7 @@ export function useBidAuction(
 
   const auctionHouse = getAuctionHouse(auction);
 
+  // TODO: think this can be removed in favor of simply const config = await sdk.bid(...) lower down.
   const bidConfig = useDeferredQuery((sdk) => {
     if (bidderAddress === undefined) {
       throw new Error("Wallet not connected. Please connect your wallet.");

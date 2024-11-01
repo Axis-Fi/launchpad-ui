@@ -1,14 +1,14 @@
 import * as v from "valibot";
+import { AuctionType } from "@repo/types";
 import type { CloakClient } from "@repo/cloak";
 import { getAuctionHouse, type AxisDeployments } from "@repo/deployments";
-import { SdkError } from "../../../types";
-import { BidParamsSchema } from "../schema";
-import type { BidConfig, BidParams } from "../types";
-import { getEncryptedBid } from "../utils";
-import type { AuctionModule } from "../../auction";
-import { getConfigFromPrimedParams } from "./get-config-from-primed-params";
-import { AuctionType } from "@repo/types";
-import { encodeEncryptedBid } from "../utils";
+import { SdkError } from "../../types";
+import { BidParamsSchema } from "./schema";
+import type { BidConfig, BidParams } from "./types";
+import { getEncryptedBid } from "./utils";
+import type { AuctionModule } from "../auction";
+import { prepareConfig } from "./prepare-config";
+import { encodeEncryptedBid } from "./utils";
 
 const getConfig = async (
   params: BidParams,
@@ -21,7 +21,7 @@ const getConfig = async (
 
   if (!parsedParams.success) {
     throw new SdkError(
-      "Invalid parameters supplied to getConfig",
+      "Invalid parameters supplied to getConfig()",
       parsedParams.issues,
     );
   }
@@ -29,6 +29,7 @@ const getConfig = async (
   const {
     lotId,
     amountIn,
+    amountOut,
     bidderAddress,
     referrerAddress,
     chainId,
@@ -53,7 +54,11 @@ const getConfig = async (
   const shouldEncryptBid = auctionType === AuctionType.SEALED_BID;
 
   const paramsToEncrypt = {
-    ...params,
+    lotId,
+    amountIn,
+    amountOut,
+    chainId,
+    bidderAddress,
     quoteTokenDecimals,
     baseTokenDecimals,
     auctionHouseAddress,
@@ -63,7 +68,7 @@ const getConfig = async (
     ? encodeEncryptedBid(await getEncryptedBid(paramsToEncrypt, cloakClient))
     : undefined;
 
-  return getConfigFromPrimedParams(
+  return prepareConfig(
     {
       lotId,
       amountIn,
