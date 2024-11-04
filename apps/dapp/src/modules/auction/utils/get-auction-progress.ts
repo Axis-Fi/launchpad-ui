@@ -3,10 +3,7 @@ import { getPrice } from "./auction-details";
 import { getMinRaiseForAuction, getTargetRaise } from "../auction-metric";
 
 export function calculateAuctionProgress(auction: Auction) {
-  const currentAmount = auction.bids.reduce((total, b) => {
-    total += Number(b.amountIn);
-    return total;
-  }, 0);
+  const currentAmount = +auction.purchased;
 
   const minRaise = getMinRaiseForAuction(auction) ?? 0;
   const targetAmount = getTargetRaise(auction, getPrice(auction)) ?? 0;
@@ -22,6 +19,9 @@ export function calculateAuctionProgress(auction: Auction) {
     current,
     /** The minimum percentual target raise of an auction*/
     minTarget,
+    /** The current nominal progress of an auction's raise*/
+    currentAmount,
+    /** The nominal target of an auction's raise*/
     targetAmount,
   };
 }
