@@ -1,4 +1,4 @@
-import { AuctionStatus, BaseAuction } from "@repo/types";
+import { AuctionStatus, Auction } from "@repo/types";
 
 const status: { [key in AuctionStatus]: number } = {
   registering: 0,
@@ -12,9 +12,11 @@ const status: { [key in AuctionStatus]: number } = {
 };
 
 /** Required fields for an auction to be comparable */
-type SortableAuction = Pick<BaseAuction, "status">;
+type SortableAuction = Pick<Auction, "status" | "start">;
 
 /** Sorts an auction by status */
 export function sortAuction(a: SortableAuction, b: SortableAuction) {
+  if (a.status === b.status) return +b.start - +a.start;
+
   return status[a.status] - status[b.status];
 }
