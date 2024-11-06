@@ -3,8 +3,8 @@ import { AuctionType } from "@repo/types";
 
 const GetAuctionParamsSchema = v.object({
   lotId: v.number(),
-  chainId: v.number(), // TODO: limit to deployment chainIds?
-  auctionType: v.enum_(AuctionType),
+  chainId: v.number(),
+  auctionType: v.optional(v.enum_(AuctionType)),
 });
 
 const GetAuctionTokenDecimalsParamsSchema = GetAuctionParamsSchema;

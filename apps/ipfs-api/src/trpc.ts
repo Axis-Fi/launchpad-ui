@@ -1,7 +1,7 @@
 import { initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { storeData } from "./fleek";
-import { auctionInfoWriteType } from "./types";
+import { AuctionMetadataSchema } from "./types";
 
 // Create express context
 const createContext = ({
@@ -15,7 +15,7 @@ const t = initTRPC.context<Context>().create();
 
 export const appRouter = t.router({
   storeAuctionInfo: t.procedure
-    .input(auctionInfoWriteType)
+    .input(AuctionMetadataSchema)
     .mutation(async (opts) => {
       const {
         input: { key, ...data },

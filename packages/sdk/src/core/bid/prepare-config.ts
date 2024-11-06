@@ -1,8 +1,8 @@
 import { toHex } from "viem";
 import { abis } from "@repo/abis";
-import type { BidConfig, PrimedBidParams } from "../types";
+import type { BidConfig, PrimedBidParams } from "./types";
 
-const getConfigFromPrimedParams = (
+const prepareConfig = (
   params: PrimedBidParams,
   callbackData: `0x${string}`,
 ): BidConfig => {
@@ -33,4 +33,4 @@ const getConfigFromPrimedParams = (
   };
 };
 
-export { getConfigFromPrimedParams };
+export { prepareConfig };

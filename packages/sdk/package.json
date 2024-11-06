@@ -17,8 +17,11 @@
     "@repo/cloak": "workspace:*",
     "@repo/deployments": "workspace:*",
     "@repo/eslint-config": "workspace:*",
+    "@repo/ipfs-api": "workspace:^",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@tanstack/react-query": "^5.17.19",
+    "@trpc/client": "^10.45.1",
     "abitype": "1.0.2",
     "valibot": "0.42.1",
     "viem": "2.8.16"

@@ -10,10 +10,13 @@ const mockConfig = {
   cloak: {
     url: "https://cloak.example.com/api",
   },
+  metadata: {
+    url: "https://metadata.example.com/api",
+  },
 };
 
 const mockCore = {
-  bid: { functions: { getConfig: vi.fn() } },
+  bid: { getConfig: vi.fn() },
   claimBids: { functions: { getConfig: vi.fn() } },
   refundBid: { getConfig: vi.fn() },
   auction: { functions: { getAuction: vi.fn() } },
@@ -32,6 +35,11 @@ describe("OriginSdk", () => {
   it("creates a cloak client", () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     expect(sdk.cloakClient).toBeInstanceOf(CloakClient);
+  });
+
+  it("creates a metadata client", () => {
+    const sdk = new OriginSdk(mockConfig, mockCore);
+    expect(sdk.metadataClient).toBeDefined();
   });
 
   it("calls Configuration() with the supplied cloak config", () => {
@@ -88,7 +96,7 @@ describe("OriginSdk: bid()", () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     await sdk.bid(mockParams, mockCallbackData);
 
-    expect(mockCore.bid.functions.getConfig).toHaveBeenCalledWith(
+    expect(mockCore.bid.getConfig).toHaveBeenCalledWith(
       mockParams,
       mockCallbackData,
       sdk.cloakClient,

@@ -2,13 +2,13 @@ import { describe, it, expect, vi } from "vitest";
 import { parseUnits } from "viem";
 import { abis } from "@repo/abis";
 import type { Address } from "@repo/types";
-import { getConfigFromPrimedParams } from "./get-config-from-primed-params";
+import { prepareConfig } from "./prepare-config";
 
 const mockTokenDecimals = 18;
 const mockEncryptedBid = { ciphertext: "1", x: "1", y: "1" };
 const mockEncodedEncryptedBid = "0x";
 
-vi.mock("../utils", () => ({
+vi.mock("./utils", () => ({
   encryptBid: vi.fn(() => mockEncryptedBid),
   encodeEncryptedBid: vi.fn(() => mockEncodedEncryptedBid),
 }));
@@ -25,9 +25,9 @@ const mockParams = {
 
 const mockCallbackData = "0x";
 
-describe("getConfigFromPrimedParams()", () => {
+describe("prepareConfig()", () => {
   it("returns contract configuration", () => {
-    const result = getConfigFromPrimedParams(mockParams, mockCallbackData);
+    const result = prepareConfig(mockParams, mockCallbackData);
 
     expect(result).toStrictEqual({
       abi: abis.batchAuctionHouse,
