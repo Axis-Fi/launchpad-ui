@@ -60,7 +60,9 @@ type OriginConfig = {
     url: string;
   };
   subgraph?: {
-    // TODO: urls?
+    [chainId: number]: {
+      url: string;
+    };
   };
 };
 

@@ -18,6 +18,7 @@
     "@repo/deployments": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/ipfs-api": "workspace:^",
+    "@repo/subgraph-client": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@trpc/client": "^10.45.1",
