@@ -10,6 +10,9 @@ const mockConfig = {
   cloak: {
     url: "https://cloak.example.com/api",
   },
+  metadata: {
+    url: "https://metadata.example.com/api",
+  },
 };
 
 const mockCore = {
@@ -32,6 +35,11 @@ describe("OriginSdk", () => {
   it("creates a cloak client", () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     expect(sdk.cloakClient).toBeInstanceOf(CloakClient);
+  });
+
+  it("creates a metadata client", () => {
+    const sdk = new OriginSdk(mockConfig, mockCore);
+    expect(sdk.metadataClient).toBeDefined();
   });
 
   it("calls Configuration() with the supplied cloak config", () => {
