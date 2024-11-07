@@ -1,4 +1,3 @@
-import { GetAuctionLotsDocument } from "@repo/subgraph-client";
 import type { Auction, GetAuctionLots } from "@repo/types";
 import { useLaunches } from "@repo/sdk/react";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
@@ -27,8 +26,6 @@ export const getAuctionsQueryKey = (chainId: number) =>
 export function useAuctions(): AuctionsResult {
   const { data, isLoading, isSuccess, isRefetching } =
     useLaunches<GetAuctionLots>({
-      document: GetAuctionLotsDocument,
-      fields: ["batchAuctionLots"],
       queryKeyFn: getAuctionsQueryKey,
     });
 
