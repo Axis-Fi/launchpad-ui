@@ -6,9 +6,9 @@ import {
   type UseQueryResult,
   type UseMutationOptions,
 } from "@tanstack/react-query";
-import { OriginSdk } from "..";
-import { OriginSdkContext } from ".";
-import type { EnhancedMutation } from "./types";
+import { OriginSdk } from "../..";
+import { OriginSdkContext } from "..";
+import type { EnhancedMutation } from "../types";
 
 /**
  * A hook for calling Origin SDK's read functions.

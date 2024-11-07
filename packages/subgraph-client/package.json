@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "exports": {
-    ".": "./src/generated/index.ts",
+    ".": "./src/index.ts",
     "./request": "./src/request.ts"
   },
   "scripts": {

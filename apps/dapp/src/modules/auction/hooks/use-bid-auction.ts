@@ -6,7 +6,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client/src/generated";
+import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
 import { AuctionType } from "@repo/types";
 import { useDeferredQuery } from "@repo/sdk/react";
 import { useAllowance } from "loaders/use-allowance";

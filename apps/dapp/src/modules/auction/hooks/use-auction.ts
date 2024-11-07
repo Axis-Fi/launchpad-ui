@@ -1,7 +1,7 @@
 import {
   GetBatchAuctionLotQuery,
   useGetBatchAuctionLotQuery,
-} from "@repo/subgraph-client/src/generated";
+} from "@repo/subgraph-client";
 import type { QueryKey, UseQueryResult } from "@tanstack/react-query";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { AuctionType } from "@repo/types";

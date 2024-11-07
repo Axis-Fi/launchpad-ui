@@ -1,4 +1,4 @@
-import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client/src/generated";
+import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
 
 export type BatchSubgraphAuction = NonNullable<
   GetBatchAuctionLotQuery["batchAuctionLot"]

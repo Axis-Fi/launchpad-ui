@@ -171,9 +171,7 @@ export default function AuctionListPage() {
           <div className="flex items-center justify-between">
             {!isTabletOrMobile && (
               <Tooltip content={"Axis is a modular auction protocol"}>
-                <Text size="lg">
-                  {isLoading ? "Loading " : ""}Token Launches
-                </Text>
+                <Text size="lg">Token Launches</Text>
               </Tooltip>
             )}
             <div className="ml-6 flex flex-grow items-center justify-start">
@@ -224,10 +222,10 @@ export default function AuctionListPage() {
               gridView
                 ? "grid grid-cols-1 gap-4 px-2 md:grid-cols-2 lg:mx-auto lg:grid-cols-3 lg:px-0"
                 : "space-y-4",
-              isLoading && "mask",
+              isLoading && rows.length === 0 && "mask",
             )}
           >
-            {isLoading
+            {isLoading && rows.length === 0
               ? Array(3)
                   .fill(0)
                   .map((_e, i) => (

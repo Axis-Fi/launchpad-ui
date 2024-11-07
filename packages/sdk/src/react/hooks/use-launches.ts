@@ -4,7 +4,7 @@ import { Variables } from "graphql-request";
 import { mainnetDeployments, testnetDeployments } from "@repo/deployments";
 import { environment } from "@repo/env";
 import { GetAuctionLotsDocument, request } from "@repo/subgraph-client";
-import { useSdk } from "../use-sdk";
+import { useSdk } from "./use-sdk";
 import type { OriginConfig } from "../../types";
 
 const defaultSubgraphUrls = (
@@ -12,7 +12,7 @@ const defaultSubgraphUrls = (
 ).map((d) => [d.chain.id, d.subgraphURL]) satisfies [number, string][];
 
 type LaunchesQueryConfig = {
-  document: string;
+  document: typeof GetAuctionLotsDocument;
   variables?: Variables;
   queryKeyFn?: (chainId: number) => QueryKey;
 };
@@ -45,6 +45,7 @@ export const useLaunches = <T>({
         request<T>(subgraphUrl, document, {
           ...variables,
         }),
+      // keepPreviousData: true,
     })),
     combine: (results) => {
       const data = results

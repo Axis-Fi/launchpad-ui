@@ -5,7 +5,7 @@ import {
 } from "@repo/subgraph-client";
 import { deployments } from "@repo/deployments";
 import { getLaunchId } from "../../core/utils";
-import { useSdk } from "../use-sdk";
+import { useSdk } from "./use-sdk";
 
 export const useLaunch = (chainId: number, lotId: number) => {
   const sdk = useSdk();
