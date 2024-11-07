@@ -46,8 +46,6 @@ export const useLaunches = <T>(
     // Ignore chains which the consumer isn't interested in
     .filter(([chainId]) => chainIds == null || chainIds?.includes(chainId));
 
-  console.log({ defaultSubgraphUrls, subgraphUrls, x: sdk.config.subgraph });
-
   return useQueries({
     queries: subgraphUrls.map(([chainId, subgraphUrl]) => ({
       queryKey: queryKeyFn?.(Number(chainId)) ?? [subgraphUrl],
