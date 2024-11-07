@@ -3,11 +3,9 @@ import {
   type GetBatchAuctionLotQuery,
   useGetBatchAuctionLotQuery,
 } from "@repo/subgraph-client";
-import { getLaunchId } from "../../core/utils";
 import { deployments } from "@repo/deployments";
+import { getLaunchId } from "../../core/utils";
 import { useSdk } from "../use-sdk";
-
-type LaunchQuery = GetBatchAuctionLotQuery["batchAuctionLot"];
 
 export const useLaunch = (chainId: number, lotId: number) => {
   const sdk = useSdk();
@@ -17,7 +15,7 @@ export const useLaunch = (chainId: number, lotId: number) => {
   const subgraphUrl =
     sdk.config?.subgraph?.[chainId]?.url ?? deployments[chainId!].subgraphURL;
 
-  const { data, isLoading }: UseQueryResult<LaunchQuery> =
+  const { data, ...rest }: UseQueryResult<GetBatchAuctionLotQuery> =
     useGetBatchAuctionLotQuery(
       {
         endpoint: subgraphUrl,
@@ -27,7 +25,7 @@ export const useLaunch = (chainId: number, lotId: number) => {
     );
 
   return {
-    data,
-    isLoading,
+    data: data?.batchAuctionLot,
+    ...rest,
   };
 };

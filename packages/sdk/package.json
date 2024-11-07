@@ -17,6 +17,7 @@
     "@repo/cloak": "workspace:*",
     "@repo/deployments": "workspace:*",
     "@repo/eslint-config": "workspace:*",
+    "@repo/env": "workspace:*",
     "@repo/ipfs-api": "workspace:^",
     "@repo/subgraph-client": "workspace:*",
     "@repo/types": "workspace:*",

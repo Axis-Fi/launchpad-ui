@@ -418,6 +418,9 @@ importers:
       "@repo/deployments":
         specifier: workspace:*
         version: link:../deployments
+      "@repo/env":
+        specifier: workspace:*
+        version: link:../env
       "@repo/eslint-config":
         specifier: workspace:*
         version: link:../../config/eslint-config
