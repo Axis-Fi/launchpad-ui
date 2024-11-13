@@ -13,7 +13,7 @@ import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import {
   GetAuctionAllowlistQuery,
   useGetAuctionAllowlistQuery,
-} from "@repo/subgraph-client/src/generated";
+} from "@repo/subgraph-client";
 import { Auction, CallbacksType } from "@repo/types";
 import { axisContracts, deployments } from "@repo/deployments";
 import { fetchParams } from "utils/fetch";

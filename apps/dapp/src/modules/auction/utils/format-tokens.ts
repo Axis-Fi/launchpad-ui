@@ -1,5 +1,5 @@
 import type { Address, Auction, Token, TokenBase } from "@repo/types";
-import { Token as SubgraphToken } from "@repo/subgraph-client/src/generated";
+import { Token as SubgraphToken } from "@repo/subgraph-client";
 import { getChainId } from "utils/chain";
 import { formatUnits } from "viem";
 import { getLinkUrl } from "./auction-details";

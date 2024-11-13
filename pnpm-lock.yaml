@@ -418,12 +418,18 @@ importers:
       "@repo/deployments":
         specifier: workspace:*
         version: link:../deployments
+      "@repo/env":
+        specifier: workspace:*
+        version: link:../env
       "@repo/eslint-config":
         specifier: workspace:*
         version: link:../../config/eslint-config
       "@repo/ipfs-api":
         specifier: workspace:^
         version: link:../../apps/ipfs-api
+      "@repo/subgraph-client":
+        specifier: workspace:*
+        version: link:../subgraph-client
       "@repo/types":
         specifier: workspace:*
         version: link:../types
