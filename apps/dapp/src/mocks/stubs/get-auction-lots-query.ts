@@ -1,13 +1,10 @@
-import type {
-  BatchAuctionLot,
-  GetAuctionLotsQuery,
-} from "@repo/subgraph-client";
+import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
 import { allowedCurators } from "@repo/env";
 
 const allowedCurator = allowedCurators[0].address[0];
 
 export const stubGetAuctionLotsQuery = (
-  overrides: Pick<BatchAuctionLot, "chain">,
+  overrides: Pick<GetAuctionLotsQuery["batchAuctionLots"][0], "chain">,
 ): GetAuctionLotsQuery => {
   const { chain } = overrides;
 

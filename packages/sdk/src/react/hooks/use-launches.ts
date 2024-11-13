@@ -48,10 +48,11 @@ export const useLaunches = <T>(
 
   return useQueries({
     queries: subgraphUrls.map(([chainId, subgraphUrl]) => ({
-      queryKey: queryKeyFn?.(Number(chainId)) ?? [subgraphUrl],
+      queryKey: queryKeyFn?.(chainId) ?? [subgraphUrl],
       queryFn: () =>
         request<T>(subgraphUrl, document, {
           ...variables,
+          chainId,
         }),
     })),
     combine: (results) => {
