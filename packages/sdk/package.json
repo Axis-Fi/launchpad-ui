@@ -2,26 +2,27 @@
   "name": "@repo/sdk",
   "type": "module",
   "version": "0.0.0",
-  "main": "./src/index.ts",
-  "exports": {
-    ".": "./src/index.ts",
-    "./react": "./src/react/index.ts"
-  },
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "build": "rollup -c"
   },
   "dependencies": {
+    "@rainbow-me/rainbowkit": "^2.2.0",
     "@repo/abis": "workspace:*",
     "@repo/cloak": "workspace:*",
     "@repo/deployments": "workspace:*",
     "@repo/eslint-config": "workspace:*",
-    "@repo/ipfs-api": "workspace:^",
+    "@repo/rollup-config": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@tanstack/react-query": "^5.17.19",
-    "@trpc/client": "^10.45.1",
     "abitype": "1.0.2",
     "valibot": "0.42.1",
     "viem": "2.8.16"
@@ -30,7 +31,13 @@
     "access": "public"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/react": "^18.3.12",
     "@vitest/coverage-istanbul": "^1.5.0",
+    "rollup": "^4.24.4",
     "vite": "^5.0.8",
     "vitest": "^1.5.0"
   }

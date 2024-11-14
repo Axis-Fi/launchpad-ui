@@ -2,12 +2,11 @@ import { getCatalogue } from "@repo/deployments";
 import { createClient } from "../../public-client";
 import type { GetAuctionParams, GetAuctionResult } from "../types";
 import { SdkError } from "../../../types";
-import { AuctionType } from "@repo/types";
 
 const getAuction = async (
   params: GetAuctionParams,
 ): Promise<GetAuctionResult> => {
-  const { chainId, lotId, auctionType = AuctionType.SEALED_BID } = params;
+  const { chainId, lotId, auctionType } = params;
   const client = createClient(chainId);
   const catalogue = getCatalogue({ chainId, auctionType });
 

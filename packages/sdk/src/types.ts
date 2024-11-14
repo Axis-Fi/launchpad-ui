@@ -56,12 +56,7 @@ type OriginConfig = {
   cloak: {
     url: string;
   };
-  metadata: {
-    url: string;
-  };
-  subgraph?: {
-    // TODO: urls?
-  };
+  // TODO: ipfs, subgraph, etc.
 };
 
 export type { OriginConfig, ContractConfig, ContractFunctionReturn };

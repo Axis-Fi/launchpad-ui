@@ -1,4 +1,4 @@
-import { mantleSepoliaTestnet } from "viem/chains";
+import { mantleTestnet } from "viem/chains";
 import { AxisDeploymentConfig } from "../../src/types";
 import { weth, usdc } from "../../tokens/common";
 import core from "../../axis-core/.mantle-sepolia.json";
@@ -7,7 +7,7 @@ import { extractCallbacks, extractAddresses } from "../helpers";
 
 const config: AxisDeploymentConfig = {
   name: "mantle-sepolia-testnet",
-  chain: mantleSepoliaTestnet,
+  chain: mantleTestnet,
   chainIconUrl: "/mantle-logo.svg",
   subgraphURL:
     "https://subgraph-api.mantle.xyz/api/public/d124a5f1-0609-435a-9a3a-dd525001afbe/subgraphs/axis-origin-mantle-sepolia/v<VERSION>/gn",

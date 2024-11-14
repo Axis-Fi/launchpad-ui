@@ -1,6 +1,7 @@
 {
-  "name": "axis-frontend",
-  "private": true,
+  "name": "@axis/tools",
+  "version": "0.1.0",
+  "description": "Monorepo for Axis Finance frontend utilities",
   "scripts": {
     "build": "turbo run build",
     "postbuild": "turbo run lint",

@@ -6,7 +6,6 @@ export * as settle from "./settle";
 export * as refundBid from "./refund-bid";
 export * as abort from "./abort";
 export * as cancel from "./cancel";
-export * as create from "./create";
 export * as auction from "./auction";
 export * as tokens from "./tokens";
 
