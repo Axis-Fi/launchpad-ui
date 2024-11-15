@@ -14,11 +14,11 @@ type ProgressProps = React.ComponentPropsWithoutRef<
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   ProgressProps
->(({ className, value, ...props }, ref) => {
+>(({ className, value, hideMinTarget, minTarget, ...props }, ref) => {
   //If low percentage render the children outside the indicator to remain visible
   const currentPercentage = value ?? 0;
 
-  const showMinTarget = !props.hideMinTarget && props.minTarget !== null;
+  const showMinTarget = !hideMinTarget && minTarget !== null;
 
   return (
     <ProgressPrimitive.Root
@@ -41,7 +41,7 @@ const Progress = React.forwardRef<
       {showMinTarget && (
         <div
           className="absolute h-full w-1 border-l-[2px] border-dashed"
-          style={{ left: `${props.minTarget}%` }}
+          style={{ left: `${minTarget}%` }}
         />
       )}
     </ProgressPrimitive.Root>
