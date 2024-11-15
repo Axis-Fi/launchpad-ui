@@ -1,5 +1,5 @@
 {
-  "name": "@repo/tsup",
+  "name": "@repo/tsup-config",
   "version": "1.0.0",
   "main": "tsup.base.config.js",
   "type": "module",

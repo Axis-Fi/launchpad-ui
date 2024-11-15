@@ -10,7 +10,7 @@
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/eslint-config": "workspace:*",
-    "@repo/tsup": "workspace:*"
+    "@repo/tsup-config": "workspace:*"
   },
   "peerDependencies": {
     "viem": "^2.2.0"

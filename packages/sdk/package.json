@@ -33,7 +33,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/types": "workspace:*",
-    "@repo/tsup": "workspace:*",
+    "@repo/tsup-config": "workspace:*",
     "@types/react": "^18.3.12",
     "@vitest/coverage-istanbul": "^1.5.0",
     "rollup": "^4.24.4",

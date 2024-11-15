@@ -8,7 +8,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@repo/tsup": "workspace:*",
+    "@repo/tsup-config": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@wagmi/cli": "^2.1.0"
   },

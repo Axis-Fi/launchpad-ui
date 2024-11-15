@@ -28,6 +28,5 @@ This Turborepo includes the following packages and applications:
 - `packages/sdk`: JS Library for interacting with Axis contracts and subgraphs
 - `packages/subgraph-client`: Subgraph client and queries
 - `packages/types`: Common TS types
-- `config/tailwind-config`: Shared TailwindCSS configs
 - `config/typescript-config`: Shared `tsconfig.json`s used throughout the Turborepo
 - `config/eslint-config`: ESLint preset

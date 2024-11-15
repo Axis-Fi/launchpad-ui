@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "2.9.0",
-    "@repo/tsup": "workspace:*",
+    "@repo/tsup-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/eslint-config": "workspace:*"
   },
