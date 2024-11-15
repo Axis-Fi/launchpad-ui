@@ -4,7 +4,6 @@
 
 export const allocatedMerkleAllowlistAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -24,16 +23,16 @@ export const allocatedMerkleAllowlistAbi = [
         ],
       },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId", internalType: "uint96", type: "uint96" },
@@ -41,23 +40,23 @@ export const allocatedMerkleAllowlistAbi = [
     ],
     name: "lotBuyerSpent",
     outputs: [{ name: "spent", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotMerkleRoot",
     outputs: [{ name: "merkleRoot", internalType: "bytes32", type: "bytes32" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -68,9 +67,9 @@ export const allocatedMerkleAllowlistAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -80,9 +79,9 @@ export const allocatedMerkleAllowlistAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -95,9 +94,9 @@ export const allocatedMerkleAllowlistAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -107,9 +106,9 @@ export const allocatedMerkleAllowlistAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -121,9 +120,9 @@ export const allocatedMerkleAllowlistAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -133,9 +132,9 @@ export const allocatedMerkleAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -143,6 +142,7 @@ export const allocatedMerkleAllowlistAbi = [
     ],
     name: "setMerkleRoot",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -175,7 +175,6 @@ export const allocatedMerkleAllowlistAbi = [
 
 export const baselineAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -183,111 +182,111 @@ export const baselineAbi = [
       { name: "reserve_", internalType: "address", type: "address" },
       { name: "owner_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "BPOOL",
     outputs: [{ name: "", internalType: "contract IBPOOLv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "CREDT",
     outputs: [{ name: "", internalType: "contract ICREDTv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "LOOPS",
     outputs: [{ name: "", internalType: "contract ILOOPSv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "RESERVE",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "auctionComplete",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "bAsset",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "newKernel_", internalType: "contract Kernel", type: "address" },
     ],
     name: "changeKernel",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "configureDependencies",
     outputs: [
       { name: "dependencies", internalType: "Keycode[]", type: "bytes5[]" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "floorReservesPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "isActive",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "kernel",
     outputs: [{ name: "", internalType: "contract Kernel", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "lotId",
     outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -298,9 +297,9 @@ export const baselineAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -310,9 +309,9 @@ export const baselineAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -325,9 +324,9 @@ export const baselineAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -337,9 +336,9 @@ export const baselineAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -351,9 +350,9 @@ export const baselineAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -363,37 +362,37 @@ export const baselineAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "owner",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolTargetTick",
     outputs: [{ name: "", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "recipient",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "requestPermissions",
@@ -408,16 +407,16 @@ export const baselineAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
     name: "transferOwnership",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "bAssetDelta_", internalType: "int256", type: "int256" },
@@ -426,6 +425,7 @@ export const baselineAbi = [
     ],
     name: "uniswapV3SwapCallback",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -583,7 +583,6 @@ export const baselineAbi = [
 
 export const baselineAllocatedAllowlistAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -591,125 +590,125 @@ export const baselineAllocatedAllowlistAbi = [
       { name: "reserve_", internalType: "address", type: "address" },
       { name: "owner_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "BPOOL",
     outputs: [{ name: "", internalType: "contract IBPOOLv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "CREDT",
     outputs: [{ name: "", internalType: "contract ICREDTv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "LOOPS",
     outputs: [{ name: "", internalType: "contract ILOOPSv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "RESERVE",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "auctionComplete",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "bAsset",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "address", type: "address" }],
     name: "buyerSpent",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "newKernel_", internalType: "contract Kernel", type: "address" },
     ],
     name: "changeKernel",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "configureDependencies",
     outputs: [
       { name: "dependencies", internalType: "Keycode[]", type: "bytes5[]" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "floorReservesPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "isActive",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "kernel",
     outputs: [{ name: "", internalType: "contract Kernel", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "lotId",
     outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "merkleRoot",
     outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -720,9 +719,9 @@ export const baselineAllocatedAllowlistAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -732,9 +731,9 @@ export const baselineAllocatedAllowlistAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -747,9 +746,9 @@ export const baselineAllocatedAllowlistAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -759,9 +758,9 @@ export const baselineAllocatedAllowlistAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -773,9 +772,9 @@ export const baselineAllocatedAllowlistAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -785,37 +784,37 @@ export const baselineAllocatedAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "owner",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolTargetTick",
     outputs: [{ name: "", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "recipient",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "requestPermissions",
@@ -830,23 +829,23 @@ export const baselineAllocatedAllowlistAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "merkleRoot_", internalType: "bytes32", type: "bytes32" }],
     name: "setMerkleRoot",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
     name: "transferOwnership",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "bAssetDelta_", internalType: "int256", type: "int256" },
@@ -855,6 +854,7 @@ export const baselineAllocatedAllowlistAbi = [
     ],
     name: "uniswapV3SwapCallback",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -1027,7 +1027,6 @@ export const baselineAllocatedAllowlistAbi = [
 
 export const baselineAllowlistAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -1035,118 +1034,118 @@ export const baselineAllowlistAbi = [
       { name: "reserve_", internalType: "address", type: "address" },
       { name: "owner_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "BPOOL",
     outputs: [{ name: "", internalType: "contract IBPOOLv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "CREDT",
     outputs: [{ name: "", internalType: "contract ICREDTv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "LOOPS",
     outputs: [{ name: "", internalType: "contract ILOOPSv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "RESERVE",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "auctionComplete",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "bAsset",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "newKernel_", internalType: "contract Kernel", type: "address" },
     ],
     name: "changeKernel",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "configureDependencies",
     outputs: [
       { name: "dependencies", internalType: "Keycode[]", type: "bytes5[]" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "floorReservesPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "isActive",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "kernel",
     outputs: [{ name: "", internalType: "contract Kernel", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "lotId",
     outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "merkleRoot",
     outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1157,9 +1156,9 @@ export const baselineAllowlistAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1169,9 +1168,9 @@ export const baselineAllowlistAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1184,9 +1183,9 @@ export const baselineAllowlistAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1196,9 +1195,9 @@ export const baselineAllowlistAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1210,9 +1209,9 @@ export const baselineAllowlistAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1222,37 +1221,37 @@ export const baselineAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "owner",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolTargetTick",
     outputs: [{ name: "", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "recipient",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "requestPermissions",
@@ -1267,23 +1266,23 @@ export const baselineAllowlistAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "merkleRoot_", internalType: "bytes32", type: "bytes32" }],
     name: "setMerkleRoot",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
     name: "transferOwnership",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "bAssetDelta_", internalType: "int256", type: "int256" },
@@ -1292,6 +1291,7 @@ export const baselineAllowlistAbi = [
     ],
     name: "uniswapV3SwapCallback",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -1463,7 +1463,6 @@ export const baselineAllowlistAbi = [
 
 export const baselineCappedAllowlistAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -1471,132 +1470,132 @@ export const baselineCappedAllowlistAbi = [
       { name: "reserve_", internalType: "address", type: "address" },
       { name: "owner_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "BPOOL",
     outputs: [{ name: "", internalType: "contract IBPOOLv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "CREDT",
     outputs: [{ name: "", internalType: "contract ICREDTv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "LOOPS",
     outputs: [{ name: "", internalType: "contract ILOOPSv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "RESERVE",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "auctionComplete",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "bAsset",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "buyerLimit",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "address", type: "address" }],
     name: "buyerSpent",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "newKernel_", internalType: "contract Kernel", type: "address" },
     ],
     name: "changeKernel",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "configureDependencies",
     outputs: [
       { name: "dependencies", internalType: "Keycode[]", type: "bytes5[]" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "floorReservesPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "isActive",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "kernel",
     outputs: [{ name: "", internalType: "contract Kernel", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "lotId",
     outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "merkleRoot",
     outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1607,9 +1606,9 @@ export const baselineCappedAllowlistAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1619,9 +1618,9 @@ export const baselineCappedAllowlistAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1634,9 +1633,9 @@ export const baselineCappedAllowlistAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1646,9 +1645,9 @@ export const baselineCappedAllowlistAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1660,9 +1659,9 @@ export const baselineCappedAllowlistAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -1672,37 +1671,37 @@ export const baselineCappedAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "owner",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolTargetTick",
     outputs: [{ name: "", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "recipient",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "requestPermissions",
@@ -1717,23 +1716,23 @@ export const baselineCappedAllowlistAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "merkleRoot_", internalType: "bytes32", type: "bytes32" }],
     name: "setMerkleRoot",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
     name: "transferOwnership",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "bAssetDelta_", internalType: "int256", type: "int256" },
@@ -1742,6 +1741,7 @@ export const baselineCappedAllowlistAbi = [
     ],
     name: "uniswapV3SwapCallback",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -1914,7 +1914,6 @@ export const baselineCappedAllowlistAbi = [
 
 export const baselineTokenAllowlistAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -1922,111 +1921,111 @@ export const baselineTokenAllowlistAbi = [
       { name: "reserve_", internalType: "address", type: "address" },
       { name: "owner_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "BPOOL",
     outputs: [{ name: "", internalType: "contract IBPOOLv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "CREDT",
     outputs: [{ name: "", internalType: "contract ICREDTv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "LOOPS",
     outputs: [{ name: "", internalType: "contract ILOOPSv1", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "RESERVE",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "auctionComplete",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "bAsset",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "newKernel_", internalType: "contract Kernel", type: "address" },
     ],
     name: "changeKernel",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "configureDependencies",
     outputs: [
       { name: "dependencies", internalType: "Keycode[]", type: "bytes5[]" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "floorReservesPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "isActive",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "kernel",
     outputs: [{ name: "", internalType: "contract Kernel", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "lotId",
     outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2037,9 +2036,9 @@ export const baselineTokenAllowlistAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2049,9 +2048,9 @@ export const baselineTokenAllowlistAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2064,9 +2063,9 @@ export const baselineTokenAllowlistAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2076,9 +2075,9 @@ export const baselineTokenAllowlistAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2090,9 +2089,9 @@ export const baselineTokenAllowlistAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2102,37 +2101,37 @@ export const baselineTokenAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "owner",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolPercent",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "poolTargetTick",
     outputs: [{ name: "", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "recipient",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "requestPermissions",
@@ -2147,9 +2146,9 @@ export const baselineTokenAllowlistAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "tokenCheck",
@@ -2161,16 +2160,16 @@ export const baselineTokenAllowlistAbi = [
       },
       { name: "threshold", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
     name: "transferOwnership",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "bAssetDelta_", internalType: "int256", type: "int256" },
@@ -2179,6 +2178,7 @@ export const baselineTokenAllowlistAbi = [
     ],
     name: "uniswapV3SwapCallback",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -2336,23 +2336,22 @@ export const baselineTokenAllowlistAbi = [
 
 export const batchAuctionHouseAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "owner_", internalType: "address", type: "address" },
       { name: "protocol_", internalType: "address", type: "address" },
       { name: "permit2_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "abort",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       {
@@ -2392,9 +2391,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "auction",
     outputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       {
@@ -2414,9 +2413,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "bid",
     outputs: [{ name: "bidId", internalType: "uint64", type: "uint64" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [
       { name: "protocolFee_", internalType: "uint48", type: "uint48" },
@@ -2429,9 +2428,9 @@ export const batchAuctionHouseAbi = [
       { name: "toReferrer", internalType: "uint256", type: "uint256" },
       { name: "toProtocol", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2439,9 +2438,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "cancel",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2449,16 +2448,16 @@ export const batchAuctionHouseAbi = [
     ],
     name: "claimBids",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "token_", internalType: "address", type: "address" }],
     name: "claimRewards",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "auctionRef", internalType: "Veecode", type: "bytes7" },
@@ -2468,9 +2467,9 @@ export const batchAuctionHouseAbi = [
     outputs: [
       { name: "condenserRef", internalType: "Veecode", type: "bytes7" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2478,9 +2477,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "curate",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "veecode_", internalType: "Veecode", type: "bytes7" },
@@ -2488,9 +2487,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "execOnModule",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "Keycode", type: "bytes5" }],
     name: "fees",
@@ -2499,16 +2498,16 @@ export const batchAuctionHouseAbi = [
       { name: "maxReferrerFee", internalType: "uint48", type: "uint48" },
       { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getAuctionModuleForId",
     outputs: [{ name: "", internalType: "contract IAuction", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getBatchModuleForId",
@@ -2519,9 +2518,9 @@ export const batchAuctionHouseAbi = [
         type: "address",
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "auctionType_", internalType: "Keycode", type: "bytes5" },
@@ -2529,18 +2528,18 @@ export const batchAuctionHouseAbi = [
     ],
     name: "getCuratorFee",
     outputs: [{ name: "curatorFee", internalType: "uint48", type: "uint48" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getDerivativeModuleForId",
     outputs: [
       { name: "", internalType: "contract IDerivative", type: "address" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "auctionType_", internalType: "Keycode", type: "bytes5" }],
     name: "getFees",
@@ -2549,16 +2548,16 @@ export const batchAuctionHouseAbi = [
       { name: "maxReferrerFee", internalType: "uint48", type: "uint48" },
       { name: "maxCuratorFee", internalType: "uint48", type: "uint48" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "Veecode", type: "bytes7" }],
     name: "getModuleForVeecode",
     outputs: [{ name: "", internalType: "contract Module", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "Keycode", type: "bytes5" }],
     name: "getModuleStatus",
@@ -2566,16 +2565,16 @@ export const batchAuctionHouseAbi = [
       { name: "latestVersion", internalType: "uint8", type: "uint8" },
       { name: "sunset", internalType: "bool", type: "bool" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "getProtocol",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "recipient_", internalType: "address", type: "address" },
@@ -2583,32 +2582,32 @@ export const batchAuctionHouseAbi = [
     ],
     name: "getRewards",
     outputs: [{ name: "reward", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "newModule_", internalType: "contract Module", type: "address" },
     ],
     name: "installModule",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "isExecOnModule",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "lotCounter",
     outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotFees",
@@ -2619,9 +2618,9 @@ export const batchAuctionHouseAbi = [
       { name: "protocolFee", internalType: "uint48", type: "uint48" },
       { name: "referrerFee", internalType: "uint48", type: "uint48" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotRouting",
@@ -2640,30 +2639,30 @@ export const batchAuctionHouseAbi = [
       { name: "wrapDerivative", internalType: "bool", type: "bool" },
       { name: "derivativeParams", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
     name: "modules",
     outputs: [{ name: "", internalType: "Keycode", type: "bytes5" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "modulesCount",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "owner",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2672,9 +2671,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "refundBid",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "address", type: "address" },
@@ -2682,9 +2681,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "rewards",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "auctionRef_", internalType: "Veecode", type: "bytes7" },
@@ -2693,9 +2692,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "setCondenser",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "auctionType_", internalType: "Keycode", type: "bytes5" },
@@ -2703,9 +2702,9 @@ export const batchAuctionHouseAbi = [
     ],
     name: "setCuratorFee",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "auctionType_", internalType: "Keycode", type: "bytes5" },
@@ -2718,16 +2717,16 @@ export const batchAuctionHouseAbi = [
     ],
     name: "setFee",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "protocol_", internalType: "address", type: "address" }],
     name: "setProtocol",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -2741,20 +2740,21 @@ export const batchAuctionHouseAbi = [
       { name: "finished", internalType: "bool", type: "bool" },
       { name: "auctionOutput", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "keycode_", internalType: "Keycode", type: "bytes5" }],
     name: "sunsetModule",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
     name: "transferOwnership",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -3191,21 +3191,20 @@ export const batchAuctionHouseAbi = [
 
 export const batchCatalogueAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "auctionHouse",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "baseToken_", internalType: "address", type: "address" },
@@ -3214,9 +3213,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getAuctionsByBaseToken",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "curator_", internalType: "address", type: "address" },
@@ -3225,9 +3224,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getAuctionsByCurator",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "derivativeReference_", internalType: "Veecode", type: "bytes7" },
@@ -3236,9 +3235,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getAuctionsByDerivative",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "auctionFormat_", internalType: "Keycode", type: "bytes5" },
@@ -3247,9 +3246,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getAuctionsByFormat",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "auctionReference_", internalType: "Veecode", type: "bytes7" },
@@ -3258,9 +3257,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getAuctionsByModule",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "quoteToken_", internalType: "address", type: "address" },
@@ -3269,9 +3268,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getAuctionsByQuoteToken",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "curator_", internalType: "address", type: "address" },
@@ -3280,9 +3279,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getAuctionsByRequestedCurator",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "seller_", internalType: "address", type: "address" },
@@ -3291,9 +3290,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getAuctionsBySeller",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -3314,9 +3313,9 @@ export const batchCatalogueAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -3324,9 +3323,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getBidIdAtIndex",
     outputs: [{ name: "", internalType: "uint64", type: "uint64" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -3335,9 +3334,9 @@ export const batchCatalogueAbi = [
     ],
     name: "getBidIds",
     outputs: [{ name: "", internalType: "uint64[]", type: "uint64[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getFeeData",
@@ -3355,9 +3354,9 @@ export const batchCatalogueAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "startId_", internalType: "uint96", type: "uint96" },
@@ -3365,23 +3364,23 @@ export const batchCatalogueAbi = [
     ],
     name: "getLiveAuctions",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "getMaxLotId",
     outputs: [{ name: "", internalType: "uint96", type: "uint96" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getNumBids",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getRouting",
@@ -3411,9 +3410,9 @@ export const batchCatalogueAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "startId_", internalType: "uint96", type: "uint96" },
@@ -3421,34 +3420,35 @@ export const batchCatalogueAbi = [
     ],
     name: "getUpcomingAuctions",
     outputs: [{ name: "", internalType: "uint96[]", type: "uint96[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "hasEnded",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "isLive",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "isUpcoming",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "remainingCapacity",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   { type: "error", inputs: [], name: "InvalidParams" },
   {
@@ -3464,7 +3464,6 @@ export const batchCatalogueAbi = [
 
 export const bpoolAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "_kernel", internalType: "contract Kernel", type: "address" },
@@ -3478,44 +3477,44 @@ export const bpoolAbi = [
       { name: "_blast", internalType: "address", type: "address" },
       { name: "_blastGovernor", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "DOMAIN_SEPARATOR",
     outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "FEE_TIER",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "INIT",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "KEYCODE",
     outputs: [{ name: "", internalType: "Keycode", type: "bytes5" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "TICK_SPACING",
     outputs: [{ name: "", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "VERSION",
@@ -3523,9 +3522,9 @@ export const bpoolAbi = [
       { name: "major", internalType: "uint8", type: "uint8" },
       { name: "minor", internalType: "uint8", type: "uint8" },
     ],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "_range", internalType: "enum Range", type: "uint8" },
@@ -3537,9 +3536,9 @@ export const bpoolAbi = [
       { name: "reservesAdded_", internalType: "uint256", type: "uint256" },
       { name: "liquidityFinal_", internalType: "uint128", type: "uint128" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "_range", internalType: "enum Range", type: "uint8" },
@@ -3551,9 +3550,9 @@ export const bpoolAbi = [
       { name: "reservesAdded_", internalType: "uint256", type: "uint256" },
       { name: "liquidityFinal_", internalType: "uint128", type: "uint128" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "address", type: "address" },
@@ -3561,9 +3560,9 @@ export const bpoolAbi = [
     ],
     name: "allowance",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "spender", internalType: "address", type: "address" },
@@ -3571,46 +3570,46 @@ export const bpoolAbi = [
     ],
     name: "approve",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "address", type: "address" }],
     name: "balanceOf",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "burnAllBAssetsInContract",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "newKernel_", internalType: "contract Kernel", type: "address" },
     ],
     name: "changeKernel",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "decimals",
     outputs: [{ name: "", internalType: "uint8", type: "uint8" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "getActiveTS",
     outputs: [{ name: "activeTS_", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "_sqrtPriceL", internalType: "uint160", type: "uint160" },
@@ -3622,16 +3621,16 @@ export const bpoolAbi = [
       { name: "bAssets_", internalType: "uint256", type: "uint256" },
       { name: "reserves_", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "getBaselineValue",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [
       { name: "_sqrtPriceL", internalType: "uint160", type: "uint160" },
@@ -3641,9 +3640,9 @@ export const bpoolAbi = [
     ],
     name: "getCapacityForLiquidity",
     outputs: [{ name: "capacity_", internalType: "uint256", type: "uint256" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "_sqrtPriceL", internalType: "uint160", type: "uint160" },
@@ -3652,9 +3651,9 @@ export const bpoolAbi = [
     ],
     name: "getCapacityForReserves",
     outputs: [{ name: "capacity_", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [
       { name: "_sqrtPriceL", internalType: "uint160", type: "uint160" },
@@ -3664,16 +3663,16 @@ export const bpoolAbi = [
     ],
     name: "getCapacityForReservesAtPrice",
     outputs: [{ name: "capacity_", internalType: "uint256", type: "uint256" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "enum Range", type: "uint8" }],
     name: "getLiquidity",
     outputs: [{ name: "", internalType: "uint128", type: "uint128" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [
       { name: "_sqrtPriceL", internalType: "uint160", type: "uint160" },
@@ -3683,9 +3682,9 @@ export const bpoolAbi = [
     ],
     name: "getLiquidityForReserves",
     outputs: [{ name: "liquidity_", internalType: "uint128", type: "uint128" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "_range", internalType: "enum Range", type: "uint8" }],
     name: "getPosition",
@@ -3704,9 +3703,9 @@ export const bpoolAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "enum Range", type: "uint8" }],
     name: "getTicks",
@@ -3714,23 +3713,23 @@ export const bpoolAbi = [
       { name: "lower", internalType: "int24", type: "int24" },
       { name: "upper", internalType: "int24", type: "int24" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "kernel",
     outputs: [{ name: "", internalType: "contract Kernel", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "locked",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "_to", internalType: "address", type: "address" },
@@ -3738,23 +3737,23 @@ export const bpoolAbi = [
     ],
     name: "mint",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "name",
     outputs: [{ name: "", internalType: "string", type: "string" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "address", type: "address" }],
     name: "nonces",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "owner", internalType: "address", type: "address" },
@@ -3767,18 +3766,18 @@ export const bpoolAbi = [
     ],
     name: "permit",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "pool",
     outputs: [
       { name: "", internalType: "contract IUniswapV3Pool", type: "address" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "_range", internalType: "enum Range", type: "uint8" }],
     name: "removeAllFrom",
@@ -3788,16 +3787,16 @@ export const bpoolAbi = [
       { name: "reservesRemoved_", internalType: "uint256", type: "uint256" },
       { name: "reserveFees_", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "reserve",
     outputs: [{ name: "", internalType: "contract ERC20", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "_range", internalType: "enum Range", type: "uint8" },
@@ -3806,30 +3805,30 @@ export const bpoolAbi = [
     ],
     name: "setTicks",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "_lock", internalType: "bool", type: "bool" }],
     name: "setTransferLock",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "symbol",
     outputs: [{ name: "", internalType: "string", type: "string" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "totalSupply",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "_to", internalType: "address", type: "address" },
@@ -3837,9 +3836,9 @@ export const bpoolAbi = [
     ],
     name: "transfer",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "_from", internalType: "address", type: "address" },
@@ -3848,9 +3847,9 @@ export const bpoolAbi = [
     ],
     name: "transferFrom",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "_bAssetsOwed", internalType: "uint256", type: "uint256" },
@@ -3859,6 +3858,7 @@ export const bpoolAbi = [
     ],
     name: "uniswapV3MintCallback",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -3923,7 +3923,6 @@ export const bpoolAbi = [
 
 export const cappedMerkleAllowlistAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -3943,23 +3942,23 @@ export const cappedMerkleAllowlistAbi = [
         ],
       },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotBuyerLimit",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "uint96", type: "uint96" },
@@ -3967,23 +3966,23 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "lotBuyerSpent",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotMerkleRoot",
     outputs: [{ name: "merkleRoot", internalType: "bytes32", type: "bytes32" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -3994,9 +3993,9 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4006,9 +4005,9 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4021,9 +4020,9 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4033,9 +4032,9 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4047,9 +4046,9 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4059,9 +4058,9 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4069,6 +4068,7 @@ export const cappedMerkleAllowlistAbi = [
     ],
     name: "setMerkleRoot",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -4101,49 +4101,48 @@ export const cappedMerkleAllowlistAbi = [
 
 export const encryptedMarginalPriceAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "INIT",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "PARENT",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "TYPE",
     outputs: [{ name: "", internalType: "enum Module.Type", type: "uint8" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "VEECODE",
     outputs: [{ name: "", internalType: "Veecode", type: "bytes7" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "abort",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4164,9 +4163,9 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "auction",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "auctionData",
@@ -4194,18 +4193,18 @@ export const encryptedMarginalPriceAbi = [
       },
       { name: "privateKey", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "auctionType",
     outputs: [
       { name: "", internalType: "enum IAuction.AuctionType", type: "uint8" },
     ],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4216,9 +4215,9 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "bid",
     outputs: [{ name: "bidId", internalType: "uint64", type: "uint64" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId", internalType: "uint96", type: "uint96" },
@@ -4236,23 +4235,23 @@ export const encryptedMarginalPriceAbi = [
         type: "uint8",
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "cancelAuction",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "capacityInQuote",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4274,9 +4273,9 @@ export const encryptedMarginalPriceAbi = [
       },
       { name: "auctionOutput", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4285,9 +4284,9 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "decryptAndSortBids",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4295,23 +4294,23 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "decryptBid",
     outputs: [{ name: "amountOut", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "decryptedBids",
     outputs: [{ name: "numBids", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "dedicatedSettlePeriod",
     outputs: [{ name: "", internalType: "uint48", type: "uint48" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId", internalType: "uint96", type: "uint96" },
@@ -4330,9 +4329,9 @@ export const encryptedMarginalPriceAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getAuctionData",
@@ -4368,9 +4367,9 @@ export const encryptedMarginalPriceAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4416,9 +4415,9 @@ export const encryptedMarginalPriceAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4439,9 +4438,9 @@ export const encryptedMarginalPriceAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4449,9 +4448,9 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "getBidIdAtIndex",
     outputs: [{ name: "", internalType: "uint64", type: "uint64" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4460,9 +4459,9 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "getBidIds",
     outputs: [{ name: "", internalType: "uint64[]", type: "uint64[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getLot",
@@ -4483,9 +4482,9 @@ export const encryptedMarginalPriceAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4493,23 +4492,23 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "getNextInQueue",
     outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getNumBids",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getNumBidsInQueue",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getPartialFill",
@@ -4526,37 +4525,37 @@ export const encryptedMarginalPriceAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "hasEnded",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "isLive",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "isUpcoming",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotAuctionOutput",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "id", internalType: "uint96", type: "uint96" }],
     name: "lotData",
@@ -4570,16 +4569,16 @@ export const encryptedMarginalPriceAbi = [
       { name: "sold", internalType: "uint256", type: "uint256" },
       { name: "purchased", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "minAuctionDuration",
     outputs: [{ name: "", internalType: "uint48", type: "uint48" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4589,30 +4588,30 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "refundBid",
     outputs: [{ name: "refund", internalType: "uint256", type: "uint256" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "remainingCapacity",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "period_", internalType: "uint48", type: "uint48" }],
     name: "setDedicatedSettlePeriod",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "duration_", internalType: "uint48", type: "uint48" }],
     name: "setMinAuctionDuration",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4626,9 +4625,9 @@ export const encryptedMarginalPriceAbi = [
       { name: "finished", internalType: "bool", type: "bool" },
       { name: "auctionOutput", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4638,6 +4637,7 @@ export const encryptedMarginalPriceAbi = [
     ],
     name: "submitPrivateKey",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -4762,49 +4762,48 @@ export const encryptedMarginalPriceAbi = [
 
 export const fixedPriceBatchAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "INIT",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "PARENT",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "TYPE",
     outputs: [{ name: "", internalType: "enum Module.Type", type: "uint8" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "VEECODE",
     outputs: [{ name: "", internalType: "Veecode", type: "bytes7" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "abort",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4825,18 +4824,18 @@ export const fixedPriceBatchAbi = [
     ],
     name: "auction",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "auctionType",
     outputs: [
       { name: "", internalType: "enum IAuction.AuctionType", type: "uint8" },
     ],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4847,23 +4846,23 @@ export const fixedPriceBatchAbi = [
     ],
     name: "bid",
     outputs: [{ name: "bidId", internalType: "uint64", type: "uint64" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "cancelAuction",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "capacityInQuote",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4885,16 +4884,16 @@ export const fixedPriceBatchAbi = [
       },
       { name: "auctionOutput", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "dedicatedSettlePeriod",
     outputs: [{ name: "", internalType: "uint48", type: "uint48" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getAuctionData",
@@ -4917,9 +4916,9 @@ export const fixedPriceBatchAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4943,9 +4942,9 @@ export const fixedPriceBatchAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -4966,9 +4965,9 @@ export const fixedPriceBatchAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "uint96", type: "uint96" },
@@ -4976,9 +4975,9 @@ export const fixedPriceBatchAbi = [
     ],
     name: "getBidIdAtIndex",
     outputs: [{ name: "", internalType: "uint64", type: "uint64" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "uint96", type: "uint96" },
@@ -4987,9 +4986,9 @@ export const fixedPriceBatchAbi = [
     ],
     name: "getBidIds",
     outputs: [{ name: "", internalType: "uint64[]", type: "uint64[]" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getLot",
@@ -5010,16 +5009,16 @@ export const fixedPriceBatchAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "getNumBids",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "getPartialFill",
@@ -5036,37 +5035,37 @@ export const fixedPriceBatchAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "hasEnded",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "isLive",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "isUpcoming",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotAuctionOutput",
     outputs: [{ name: "", internalType: "bytes", type: "bytes" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "id", internalType: "uint96", type: "uint96" }],
     name: "lotData",
@@ -5080,16 +5079,16 @@ export const fixedPriceBatchAbi = [
       { name: "sold", internalType: "uint256", type: "uint256" },
       { name: "purchased", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "minAuctionDuration",
     outputs: [{ name: "", internalType: "uint48", type: "uint48" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5099,30 +5098,30 @@ export const fixedPriceBatchAbi = [
     ],
     name: "refundBid",
     outputs: [{ name: "refund", internalType: "uint256", type: "uint256" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId_", internalType: "uint96", type: "uint96" }],
     name: "remainingCapacity",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "period_", internalType: "uint48", type: "uint48" }],
     name: "setDedicatedSettlePeriod",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "duration_", internalType: "uint48", type: "uint48" }],
     name: "setMinAuctionDuration",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5136,6 +5135,7 @@ export const fixedPriceBatchAbi = [
       { name: "finished", internalType: "bool", type: "bool" },
       { name: "auctionOutput", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "nonpayable",
   },
   { type: "error", inputs: [], name: "Auction_AmountLessThanMinimum" },
   {
@@ -5230,40 +5230,39 @@ export const fixedPriceBatchAbi = [
 
 export const linearVestingAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [{ name: "parent_", internalType: "address", type: "address" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [],
     name: "INIT",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "PARENT",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "TYPE",
     outputs: [{ name: "", internalType: "enum Module.Type", type: "uint8" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [],
     name: "VEECODE",
     outputs: [{ name: "", internalType: "Veecode", type: "bytes7" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "address", type: "address" },
@@ -5272,9 +5271,9 @@ export const linearVestingAbi = [
     ],
     name: "allowance",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "", internalType: "address", type: "address" },
@@ -5283,9 +5282,9 @@ export const linearVestingAbi = [
     ],
     name: "approve",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "address", type: "address" },
@@ -5293,9 +5292,9 @@ export const linearVestingAbi = [
     ],
     name: "balanceOf",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [
       { name: "underlyingToken_", internalType: "address", type: "address" },
@@ -5303,16 +5302,16 @@ export const linearVestingAbi = [
     ],
     name: "computeId",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
     name: "decimals",
     outputs: [{ name: "", internalType: "uint8", type: "uint8" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "underlyingToken_", internalType: "address", type: "address" },
@@ -5324,9 +5323,9 @@ export const linearVestingAbi = [
       { name: "tokenId_", internalType: "uint256", type: "uint256" },
       { name: "wrappedAddress_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "", internalType: "uint256", type: "uint256" },
@@ -5334,9 +5333,9 @@ export const linearVestingAbi = [
     ],
     name: "exercise",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "uint256", type: "uint256" },
@@ -5344,9 +5343,9 @@ export const linearVestingAbi = [
     ],
     name: "exerciseCost",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "tokenId", internalType: "uint256", type: "uint256" }],
     name: "getTokenMetadata",
@@ -5364,9 +5363,9 @@ export const linearVestingAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
     name: "getTokenVestingParams",
@@ -5381,9 +5380,9 @@ export const linearVestingAbi = [
         ],
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "", internalType: "address", type: "address" },
@@ -5391,9 +5390,9 @@ export const linearVestingAbi = [
     ],
     name: "isOperator",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "to_", internalType: "address", type: "address" },
@@ -5407,9 +5406,9 @@ export const linearVestingAbi = [
       { name: "", internalType: "address", type: "address" },
       { name: "", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "to_", internalType: "address", type: "address" },
@@ -5424,23 +5423,23 @@ export const linearVestingAbi = [
       { name: "wrappedAddress_", internalType: "address", type: "address" },
       { name: "amountCreated_", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
     name: "name",
     outputs: [{ name: "", internalType: "string", type: "string" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
     name: "reclaim",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "tokenId_", internalType: "uint256", type: "uint256" },
@@ -5448,16 +5447,16 @@ export const linearVestingAbi = [
     ],
     name: "redeem",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
     name: "redeemMax",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "owner_", internalType: "address", type: "address" },
@@ -5465,9 +5464,9 @@ export const linearVestingAbi = [
     ],
     name: "redeemable",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "operator", internalType: "address", type: "address" },
@@ -5475,23 +5474,23 @@ export const linearVestingAbi = [
     ],
     name: "setOperator",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "interfaceId", internalType: "bytes4", type: "bytes4" }],
     name: "supportsInterface",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
     name: "symbol",
     outputs: [{ name: "", internalType: "string", type: "string" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "tokenId", internalType: "uint256", type: "uint256" }],
     name: "tokenMetadata",
@@ -5502,23 +5501,23 @@ export const linearVestingAbi = [
       { name: "supply", internalType: "uint256", type: "uint256" },
       { name: "data", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "tokenId_", internalType: "uint256", type: "uint256" }],
     name: "tokenURI",
     outputs: [{ name: "", internalType: "string", type: "string" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "tokenId", internalType: "uint256", type: "uint256" }],
     name: "totalSupply",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "", internalType: "address", type: "address" },
@@ -5527,9 +5526,9 @@ export const linearVestingAbi = [
     ],
     name: "transfer",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "", internalType: "address", type: "address" },
@@ -5539,9 +5538,9 @@ export const linearVestingAbi = [
     ],
     name: "transferFrom",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "", internalType: "uint256", type: "uint256" },
@@ -5550,9 +5549,9 @@ export const linearVestingAbi = [
     ],
     name: "transform",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "tokenId_", internalType: "uint256", type: "uint256" },
@@ -5560,9 +5559,9 @@ export const linearVestingAbi = [
     ],
     name: "unwrap",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "owner_", internalType: "address", type: "address" },
@@ -5570,9 +5569,9 @@ export const linearVestingAbi = [
     ],
     name: "userClaimed",
     outputs: [{ name: "claimed_", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "pure",
     type: "function",
     inputs: [
       { name: "underlyingToken_", internalType: "address", type: "address" },
@@ -5580,9 +5579,9 @@ export const linearVestingAbi = [
     ],
     name: "validate",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "pure",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "tokenId_", internalType: "uint256", type: "uint256" },
@@ -5590,6 +5589,7 @@ export const linearVestingAbi = [
     ],
     name: "wrap",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -5828,7 +5828,6 @@ export const linearVestingAbi = [
 
 export const merkleAllowlistAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -5848,30 +5847,30 @@ export const merkleAllowlistAbi = [
         ],
       },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotMerkleRoot",
     outputs: [{ name: "merkleRoot", internalType: "bytes32", type: "bytes32" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5882,9 +5881,9 @@ export const merkleAllowlistAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5894,9 +5893,9 @@ export const merkleAllowlistAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5909,9 +5908,9 @@ export const merkleAllowlistAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5921,9 +5920,9 @@ export const merkleAllowlistAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5935,9 +5934,9 @@ export const merkleAllowlistAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5947,9 +5946,9 @@ export const merkleAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -5957,6 +5956,7 @@ export const merkleAllowlistAbi = [
     ],
     name: "setMerkleRoot",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -5988,7 +5988,6 @@ export const merkleAllowlistAbi = [
 
 export const tokenAllowlistAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
@@ -6008,16 +6007,16 @@ export const tokenAllowlistAbi = [
         ],
       },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotChecks",
@@ -6029,16 +6028,16 @@ export const tokenAllowlistAbi = [
       },
       { name: "threshold", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6049,9 +6048,9 @@ export const tokenAllowlistAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6061,9 +6060,9 @@ export const tokenAllowlistAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6076,9 +6075,9 @@ export const tokenAllowlistAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6088,9 +6087,9 @@ export const tokenAllowlistAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6102,9 +6101,9 @@ export const tokenAllowlistAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6114,6 +6113,7 @@ export const tokenAllowlistAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   { type: "error", inputs: [], name: "Callback_InvalidParams" },
   { type: "error", inputs: [], name: "Callback_NotAuthorized" },
@@ -6131,37 +6131,36 @@ export const tokenAllowlistAbi = [
 
 export const uniV2DtlAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
       { name: "uniswapV2Factory_", internalType: "address", type: "address" },
       { name: "uniswapV2Router_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "LINEAR_VESTING_KEYCODE",
     outputs: [{ name: "", internalType: "bytes5", type: "bytes5" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "ONE_HUNDRED_PERCENT",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotConfiguration",
@@ -6184,16 +6183,16 @@ export const uniV2DtlAbi = [
       { name: "active", internalType: "bool", type: "bool" },
       { name: "implParams", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6204,9 +6203,9 @@ export const uniV2DtlAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6216,9 +6215,9 @@ export const uniV2DtlAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6231,9 +6230,9 @@ export const uniV2DtlAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6243,9 +6242,9 @@ export const uniV2DtlAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6257,9 +6256,9 @@ export const uniV2DtlAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6269,18 +6268,18 @@ export const uniV2DtlAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "uniV2Factory",
     outputs: [
       { name: "", internalType: "contract IUniswapV2Factory", type: "address" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "uniV2Router",
@@ -6291,6 +6290,7 @@ export const uniV2DtlAbi = [
         type: "address",
       },
     ],
+    stateMutability: "view",
   },
   {
     type: "error",
@@ -6331,21 +6331,20 @@ export const uniV2DtlAbi = [
 
 export const uniV2FactoryAbi = [
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
     name: "allPairs",
     outputs: [{ name: "pair", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "allPairsLength",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "tokenA", internalType: "address", type: "address" },
@@ -6353,23 +6352,23 @@ export const uniV2FactoryAbi = [
     ],
     name: "createPair",
     outputs: [{ name: "pair", internalType: "address", type: "address" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "feeTo",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "feeToSetter",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "tokenA", internalType: "address", type: "address" },
@@ -6377,20 +6376,21 @@ export const uniV2FactoryAbi = [
     ],
     name: "getPair",
     outputs: [{ name: "pair", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "", internalType: "address", type: "address" }],
     name: "setFeeTo",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "", internalType: "address", type: "address" }],
     name: "setFeeToSetter",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -6426,46 +6426,45 @@ export const uniV2FactoryAbi = [
 
 export const uniV3DtlAbi = [
   {
-    stateMutability: "nonpayable",
     type: "constructor",
     inputs: [
       { name: "auctionHouse_", internalType: "address", type: "address" },
       { name: "uniV3Factory_", internalType: "address", type: "address" },
       { name: "gUniFactory_", internalType: "address", type: "address" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "AUCTION_HOUSE",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "LINEAR_VESTING_KEYCODE",
     outputs: [{ name: "", internalType: "bytes5", type: "bytes5" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "ONE_HUNDRED_PERCENT",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "gUniFactory",
     outputs: [
       { name: "", internalType: "contract IGUniFactory", type: "address" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "lotId", internalType: "uint96", type: "uint96" }],
     name: "lotConfiguration",
@@ -6488,16 +6487,16 @@ export const uniV3DtlAbi = [
       { name: "active", internalType: "bool", type: "bool" },
       { name: "implParams", internalType: "bytes", type: "bytes" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint96", type: "uint96" }],
     name: "lotIdRegistered",
     outputs: [{ name: "", internalType: "bool", type: "bool" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6508,9 +6507,9 @@ export const uniV3DtlAbi = [
     ],
     name: "onBid",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6520,9 +6519,9 @@ export const uniV3DtlAbi = [
     ],
     name: "onCancel",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6535,9 +6534,9 @@ export const uniV3DtlAbi = [
     ],
     name: "onCreate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6547,9 +6546,9 @@ export const uniV3DtlAbi = [
     ],
     name: "onCurate",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6561,9 +6560,9 @@ export const uniV3DtlAbi = [
     ],
     name: "onPurchase",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "lotId_", internalType: "uint96", type: "uint96" },
@@ -6573,15 +6572,16 @@ export const uniV3DtlAbi = [
     ],
     name: "onSettle",
     outputs: [{ name: "", internalType: "bytes4", type: "bytes4" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "uniV3Factory",
     outputs: [
       { name: "", internalType: "contract IUniswapV3Factory", type: "address" },
     ],
+    stateMutability: "view",
   },
   {
     type: "error",
@@ -6632,7 +6632,6 @@ export const uniV3DtlAbi = [
 
 export const uniV3FactoryAbi = [
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "tokenA", internalType: "address", type: "address" },
@@ -6641,9 +6640,9 @@ export const uniV3FactoryAbi = [
     ],
     name: "createPool",
     outputs: [{ name: "pool", internalType: "address", type: "address" }],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "fee", internalType: "uint24", type: "uint24" },
@@ -6651,16 +6650,16 @@ export const uniV3FactoryAbi = [
     ],
     name: "enableFeeAmount",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "fee", internalType: "uint24", type: "uint24" }],
     name: "feeAmountTickSpacing",
     outputs: [{ name: "", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "tokenA", internalType: "address", type: "address" },
@@ -6669,20 +6668,21 @@ export const uniV3FactoryAbi = [
     ],
     name: "getPool",
     outputs: [{ name: "pool", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "owner",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [{ name: "_owner", internalType: "address", type: "address" }],
     name: "setOwner",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
     type: "event",
@@ -6756,9 +6756,8 @@ export const uniV3FactoryAbi = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const uniV3PoolAbi = [
-  { stateMutability: "nonpayable", type: "constructor", inputs: [] },
+  { type: "constructor", inputs: [], stateMutability: "nonpayable" },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "tickLower", internalType: "int24", type: "int24" },
@@ -6770,9 +6769,9 @@ export const uniV3PoolAbi = [
       { name: "amount0", internalType: "uint256", type: "uint256" },
       { name: "amount1", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "recipient", internalType: "address", type: "address" },
@@ -6786,9 +6785,9 @@ export const uniV3PoolAbi = [
       { name: "amount0", internalType: "uint128", type: "uint128" },
       { name: "amount1", internalType: "uint128", type: "uint128" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "recipient", internalType: "address", type: "address" },
@@ -6800,37 +6799,37 @@ export const uniV3PoolAbi = [
       { name: "amount0", internalType: "uint128", type: "uint128" },
       { name: "amount1", internalType: "uint128", type: "uint128" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "factory",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "fee",
     outputs: [{ name: "", internalType: "uint24", type: "uint24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "feeGrowthGlobal0X128",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "feeGrowthGlobal1X128",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "recipient", internalType: "address", type: "address" },
@@ -6840,9 +6839,9 @@ export const uniV3PoolAbi = [
     ],
     name: "flash",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       {
@@ -6853,32 +6852,32 @@ export const uniV3PoolAbi = [
     ],
     name: "increaseObservationCardinalityNext",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "sqrtPriceX96", internalType: "uint160", type: "uint160" },
     ],
     name: "initialize",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "liquidity",
     outputs: [{ name: "", internalType: "uint128", type: "uint128" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "maxLiquidityPerTick",
     outputs: [{ name: "", internalType: "uint128", type: "uint128" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "recipient", internalType: "address", type: "address" },
@@ -6892,9 +6891,9 @@ export const uniV3PoolAbi = [
       { name: "amount0", internalType: "uint256", type: "uint256" },
       { name: "amount1", internalType: "uint256", type: "uint256" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
     name: "observations",
@@ -6908,9 +6907,9 @@ export const uniV3PoolAbi = [
       },
       { name: "initialized", internalType: "bool", type: "bool" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "secondsAgos", internalType: "uint32[]", type: "uint32[]" },
@@ -6924,9 +6923,9 @@ export const uniV3PoolAbi = [
         type: "uint160[]",
       },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "bytes32", type: "bytes32" }],
     name: "positions",
@@ -6945,9 +6944,9 @@ export const uniV3PoolAbi = [
       { name: "tokensOwed0", internalType: "uint128", type: "uint128" },
       { name: "tokensOwed1", internalType: "uint128", type: "uint128" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "protocolFees",
@@ -6955,9 +6954,9 @@ export const uniV3PoolAbi = [
       { name: "token0", internalType: "uint128", type: "uint128" },
       { name: "token1", internalType: "uint128", type: "uint128" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "feeProtocol0", internalType: "uint8", type: "uint8" },
@@ -6965,9 +6964,9 @@ export const uniV3PoolAbi = [
     ],
     name: "setFeeProtocol",
     outputs: [],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "slot0",
@@ -6988,9 +6987,9 @@ export const uniV3PoolAbi = [
       { name: "feeProtocol", internalType: "uint8", type: "uint8" },
       { name: "unlocked", internalType: "bool", type: "bool" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [
       { name: "tickLower", internalType: "int24", type: "int24" },
@@ -7006,9 +7005,9 @@ export const uniV3PoolAbi = [
       },
       { name: "secondsInside", internalType: "uint32", type: "uint32" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "nonpayable",
     type: "function",
     inputs: [
       { name: "recipient", internalType: "address", type: "address" },
@@ -7022,23 +7021,23 @@ export const uniV3PoolAbi = [
       { name: "amount0", internalType: "int256", type: "int256" },
       { name: "amount1", internalType: "int256", type: "int256" },
     ],
+    stateMutability: "nonpayable",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "int16", type: "int16" }],
     name: "tickBitmap",
     outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "tickSpacing",
     outputs: [{ name: "", internalType: "int24", type: "int24" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [{ name: "", internalType: "int24", type: "int24" }],
     name: "ticks",
@@ -7064,20 +7063,21 @@ export const uniV3PoolAbi = [
       { name: "secondsOutside", internalType: "uint32", type: "uint32" },
       { name: "initialized", internalType: "bool", type: "bool" },
     ],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "token0",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
-    stateMutability: "view",
     type: "function",
     inputs: [],
     name: "token1",
     outputs: [{ name: "", internalType: "address", type: "address" }],
+    stateMutability: "view",
   },
   {
     type: "event",

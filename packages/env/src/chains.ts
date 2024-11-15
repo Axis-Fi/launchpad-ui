@@ -1,6 +1,6 @@
-import { http } from "wagmi";
-import { Chain } from "@repo/types";
+import { http } from "viem";
 import { testnetDeployments, mainnetDeployments } from "@repo/deployments";
+import type { Chain } from "@repo/types";
 import type { AxisDeployment } from "@repo/deployments/src/types";
 
 //Mainnet Config

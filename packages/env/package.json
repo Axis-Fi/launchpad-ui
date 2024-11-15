@@ -4,14 +4,21 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@repo/abis": "workspace:*",
+    "@repo/deployments": "workspace:*"
+  },
+  "devDependencies": {
     "@repo/types": "workspace:*",
-    "@repo/deployments": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/eslint-config": "workspace:*",
-    "wagmi": "2.5.2"
+    "@repo/tsup": "workspace:*"
+  },
+  "peerDependencies": {
+    "viem": "^2.2.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "build": "tsup"
   }
 }

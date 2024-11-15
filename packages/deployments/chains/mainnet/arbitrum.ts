@@ -1,5 +1,5 @@
 import { arbitrum } from "viem/chains";
-import { AxisDeploymentConfig } from "../../src/types";
+import type { AxisDeploymentConfig } from "../../src/types";
 import core from "../../axis-core/.arbitrum-one.json";
 import periphery from "../../axis-periphery/.arbitrum-one.json";
 import { extractAddresses, extractCallbacks } from "../helpers";

@@ -1,5 +1,5 @@
 import { mantleTestnet } from "viem/chains";
-import { AxisDeploymentConfig } from "../../src/types";
+import type { AxisDeploymentConfig } from "../../src/types";
 import { weth, usdc } from "../../tokens/common";
 import core from "../../axis-core/.mantle-sepolia.json";
 import periphery from "../../axis-periphery/.mantle-sepolia.json";
