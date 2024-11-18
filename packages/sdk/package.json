@@ -1,5 +1,5 @@
 {
-  "name": "@repo/sdk",
+  "name": "@axis/sdk",
   "type": "module",
   "version": "0.0.3",
   "main": "dist/bundle.cjs.js",

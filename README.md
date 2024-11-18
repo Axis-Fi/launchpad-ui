@@ -20,7 +20,6 @@ Monorepo for Axis Finance frontend utilities [turbo](https://turbo.build/repo)
 
 This Turborepo includes the following packages and applications:
 
-- `apps/ipfs-api`: Proxy API for an IPFS gateway
 - `packages/abis`: Protocol's contract abis
 - `packages/cloak`: Key management API
 - `packages/deployments`: Metadata and configuration for the protocol's chain deployments
