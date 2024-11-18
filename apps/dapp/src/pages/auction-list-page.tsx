@@ -29,9 +29,9 @@ import {
 } from "state/user-settings/auction-list-settings";
 import { useAtom } from "jotai";
 import React from "react";
-//import { useAccount } from "wagmi";
 import { environment, metadata } from "@repo/env";
 import { useMediaQueries } from "loaders/use-media-queries";
+import { Curator } from "@repo/types";
 
 const options = [
   { value: "registering", label: "Registering" },
@@ -42,7 +42,10 @@ const options = [
   { value: "settled", label: "Settled" },
 ];
 
-export default function AuctionListPage() {
+type AuctionListPageProps = {
+  curator?: Curator;
+};
+export default function AuctionListPage({ curator }: AuctionListPageProps) {
   const { isTabletOrMobile } = useMediaQueries();
   const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
 
@@ -56,8 +59,9 @@ export default function AuctionListPage() {
   const [filters] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
-  //const { address } = useAccount();
-  const { data: auctions, isLoading } = useAuctions();
+  const { data: auctions, isLoading } = useAuctions({
+    curator: curator?.id,
+  });
 
   const secureAuctions = auctions.filter((a) => "isSecure" in a && a.isSecure);
 
@@ -117,11 +121,25 @@ export default function AuctionListPage() {
 
   return (
     <div id="__AXIS_HOME_PAGE__">
-      <div className="bg-hero-banner relative flex w-full items-end justify-center py-3 lg:h-[522px] lg:py-0">
-        <img
-          src="dot-grid.svg"
-          className="absolute inset-0 size-full object-cover opacity-50"
-        />
+      <div
+        className={cn(
+          "relative flex w-full items-end justify-center py-3 lg:h-[480px] lg:py-0",
+          !curator && "bg-hero-banner",
+        )}
+      >
+        {curator && (
+          <img
+            src={curator.banner}
+            className="absolute inset-0 mx-auto size-full h-[480px] w-auto bg-center bg-no-repeat"
+          />
+        )}
+
+        {!curator && (
+          <img
+            src="dot-grid.svg"
+            className="absolute inset-0 size-full object-cover opacity-50"
+          />
+        )}
         {!isTabletOrMobile && (
           <div className="z-10 mb-10 text-center">
             <Text
@@ -129,7 +147,7 @@ export default function AuctionListPage() {
               mono
               className="dark:text-neutral-100"
             >
-              Welcome to Axis
+              {curator ? curator.name : "Welcome to Axis"}
             </Text>
 
             <Text
@@ -137,37 +155,39 @@ export default function AuctionListPage() {
               color="secondary"
               className="mx-auto w-fit lg:text-nowrap dark:text-neutral-200"
             >
-              Next-Generation Token Launches
+              {curator ? "" : "Next-Generation Token Launches"}
             </Text>
-            <div className="mx-auto mt-6 flex w-min flex-col-reverse  gap-2 lg:flex-row">
-              <ScrollLink to="auctions" offset={-10} smooth={true}>
-                <Button
-                  onClick={() => handleSorting("created")}
-                  className="uppercase"
-                  size="lg"
-                >
-                  <div className="flex items-center">
-                    Upcoming Sales
-                    <div className="size-6">
-                      <ArrowDownIcon />
+            {!curator && (
+              <div className="mx-auto mt-6 flex w-min flex-col-reverse  gap-2 lg:flex-row">
+                <ScrollLink to="auctions" offset={-10} smooth={true}>
+                  <Button
+                    onClick={() => handleSorting("created")}
+                    className="uppercase"
+                    size="lg"
+                  >
+                    <div className="flex items-center">
+                      Upcoming Sales
+                      <div className="size-6">
+                        <ArrowDownIcon />
+                      </div>
                     </div>
-                  </div>
-                </Button>
-              </ScrollLink>
+                  </Button>
+                </ScrollLink>
 
-              <Button
-                className="uppercase dark:border-neutral-200 dark:text-neutral-200"
-                size="lg"
-                variant="secondary"
-              >
-                <Link target="_blank" to={metadata.contact}>
-                  Apply for Launch
-                </Link>
-              </Button>
-            </div>
+                <Button
+                  className="uppercase dark:border-neutral-200 dark:text-neutral-200"
+                  size="lg"
+                  variant="secondary"
+                >
+                  <Link target="_blank" to={metadata.contact}>
+                    Apply for Launch
+                  </Link>
+                </Button>
+              </div>
+            )}
           </div>
         )}
-        {isTabletOrMobile && (
+        {!curator && isTabletOrMobile && (
           <Text size="7xl" mono>
             Axis
           </Text>

@@ -1,6 +1,7 @@
 import { Address } from "./axis-contracts";
 
 export type Curator = {
+  id: string;
   address: Address | Address[];
   name: string;
   avatar: string;
@@ -9,4 +10,7 @@ export type Curator = {
   website?: string;
   reportURL?: string;
   type: "curator" | "platform";
+
+  banner?: string;
+  bannerMobile?: string;
 };
