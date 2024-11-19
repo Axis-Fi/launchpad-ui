@@ -15,7 +15,9 @@ export function useAxisTransaction<
   TParamsSchema extends v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>,
   TFunctionName extends AxisFunctionName,
   TConfig extends ContractConfig<BatchAuctionHouseAbi, TFunctionName>,
-  TGetConfig extends (params: TParams, deps: TDeps) => Promise<TConfig>,
+  TGetConfig extends
+    | ((params: TParams, deps: TDeps) => TConfig | Promise<TConfig>)
+    | ((params: TParams) => TConfig | Promise<TConfig>),
   TDeps = unknown,
 >(
   _params: TParams extends { chainId: number } ? TParams : never,

@@ -4,7 +4,7 @@ import type { CloakClient } from "@repo/cloak";
 import { abis } from "@repo/abis";
 import { getAuctionHouse } from "@repo/deployments";
 import { SdkError } from "../../types";
-import { BidParamsSchema } from "./schema";
+import { schema } from "./schema";
 import type { BidConfig, BidParams, EncryptBidParams } from "./types";
 import { getEncryptedBid } from "./utils";
 import { encodeEncryptedBid } from "./utils";
@@ -14,7 +14,7 @@ const getConfig = async (
   params: BidParams,
   cloak: CloakClient,
 ): Promise<BidConfig> => {
-  const parsedParams = v.safeParse(BidParamsSchema, params);
+  const parsedParams = v.safeParse(schema, params);
 
   if (!parsedParams.success) {
     throw new SdkError(

@@ -158,7 +158,7 @@ class OriginSdk {
    * }
    */
   claimBids(params: ClaimBidsParams): ClaimBidsConfig {
-    return this.core.claimBids.functions.getConfig(params);
+    return this.core.claimBids.getConfig(params);
   }
 
   /**

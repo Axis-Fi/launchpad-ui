@@ -1,4 +1,4 @@
-export * as schema from "./schema";
+export { schema } from "./schema";
 export * as abi from "./abi";
 export * as utils from "./utils";
 export { getConfig } from "./get-config";

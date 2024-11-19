@@ -8,7 +8,7 @@ const Bytes5Schema = v.custom<Hex>((input: unknown): boolean =>
   typeof input === "string" ? /^0x[a-fA-F0-9]*$/.test(input) : false,
 );
 
-export const AucitonMetadataSchema = v.object({
+const AuctionMetadataSchema = v.object({
   name: v.string(),
   description: v.string(),
   tagline: v.string(),
@@ -30,7 +30,7 @@ const CommonAuctionSchema = v.object({
   endDate: v.date(),
   isCapacityDenominatedInQuoteToken: v.optional(v.boolean()),
   capacity: v.string(),
-  metadata: AucitonMetadataSchema,
+  metadata: AuctionMetadataSchema,
 });
 
 const schema = v.object({
@@ -68,4 +68,4 @@ const schema = v.object({
   }),
 });
 
-export default schema;
+export { schema, AuctionMetadataSchema };

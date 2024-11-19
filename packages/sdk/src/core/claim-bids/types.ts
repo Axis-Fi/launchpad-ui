@@ -1,6 +1,6 @@
 import * as v from "valibot";
 import { abis } from "@repo/abis";
-import { schema } from ".";
+import { schema } from "./schema";
 import type { ContractConfig } from "../../types";
 
 type ClaimBidsParams = v.InferOutput<typeof schema>;
