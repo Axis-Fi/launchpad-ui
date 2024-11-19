@@ -17,7 +17,7 @@ const mockConfig = {
 
 const mockCore = {
   bid: { getConfig: vi.fn() },
-  claimBids: { functions: { getConfig: vi.fn() } },
+  claimBids: { getConfig: vi.fn() },
   refundBid: { getConfig: vi.fn() },
   auction: { functions: { getAuction: vi.fn() } },
 } as unknown as Core;
@@ -114,9 +114,7 @@ describe("OriginSdk: claimBids()", () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     sdk.claimBids(mockParams);
 
-    expect(mockCore.claimBids.functions.getConfig).toHaveBeenCalledWith(
-      mockParams,
-    );
+    expect(mockCore.claimBids.getConfig).toHaveBeenCalledWith(mockParams);
   });
 });
 
