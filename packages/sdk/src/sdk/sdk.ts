@@ -134,17 +134,8 @@ class OriginSdk {
    *   console.log(error.message, error.issues)
    * }
    */
-  async bid(
-    params: BidParams,
-    callbackData: `0x${string}`,
-  ): Promise<BidConfig> {
-    return this.core.bid.getConfig(
-      params,
-      callbackData,
-      this.cloakClient,
-      this.core.auction,
-      this.deployments,
-    );
+  async bid(params: BidParams): Promise<BidConfig> {
+    return this.core.bid.getConfig(params, this.cloakClient);
   }
 
   /**

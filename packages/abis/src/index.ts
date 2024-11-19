@@ -3,3 +3,5 @@ import rawAbis from "./abis/sources";
 export * from "./abis/sources";
 
 export { abis, rawAbis };
+
+export type * from "./types";

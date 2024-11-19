@@ -1,21 +1,18 @@
 import * as v from "valibot";
 import { AuctionType } from "@repo/types";
 import type { CloakClient } from "@repo/cloak";
-import { getAuctionHouse, type AxisDeployments } from "@repo/deployments";
+import { abis } from "@repo/abis";
+import { getAuctionHouse } from "@repo/deployments";
 import { SdkError } from "../../types";
 import { BidParamsSchema } from "./schema";
-import type { BidConfig, BidParams } from "./types";
+import type { BidConfig, BidParams, EncryptBidParams } from "./types";
 import { getEncryptedBid } from "./utils";
-import type { AuctionModule } from "../auction";
-import { prepareConfig } from "./prepare-config";
 import { encodeEncryptedBid } from "./utils";
+import { toHex } from "viem";
 
 const getConfig = async (
   params: BidParams,
-  callbackData: `0x${string}`,
-  cloakClient: CloakClient,
-  auction: AuctionModule,
-  deployments: AxisDeployments,
+  cloak: CloakClient,
 ): Promise<BidConfig> => {
   const parsedParams = v.safeParse(BidParamsSchema, params);
 
@@ -34,6 +31,7 @@ const getConfig = async (
     referrerAddress,
     chainId,
     auctionType,
+    callbackData,
   } = params;
 
   const auctionHouseAddress = getAuctionHouse({ chainId, auctionType })
@@ -45,12 +43,6 @@ const getConfig = async (
     );
   }
 
-  const { quoteTokenDecimals, baseTokenDecimals } =
-    await auction.functions.getAuctionTokenDecimals(
-      { lotId, chainId, auctionType },
-      deployments,
-    );
-
   const shouldEncryptBid = auctionType === AuctionType.SEALED_BID;
 
   const paramsToEncrypt = {
@@ -59,27 +51,29 @@ const getConfig = async (
     amountOut,
     chainId,
     bidderAddress,
-    quoteTokenDecimals,
-    baseTokenDecimals,
-    auctionHouseAddress,
-  };
+    auctionType,
+  } satisfies EncryptBidParams;
 
   const encryptedBid = shouldEncryptBid
-    ? encodeEncryptedBid(await getEncryptedBid(paramsToEncrypt, cloakClient))
+    ? encodeEncryptedBid(await getEncryptedBid(paramsToEncrypt, cloak))
     : undefined;
 
-  return prepareConfig(
-    {
-      lotId,
-      amountIn,
-      bidderAddress,
-      referrerAddress,
-      auctionHouseAddress,
-      quoteTokenDecimals,
-      auctionData: encryptedBid,
-    },
-    callbackData,
-  );
+  return {
+    abi: abis.batchAuctionHouse,
+    address: auctionHouseAddress,
+    functionName: "bid",
+    args: [
+      {
+        lotId: BigInt(lotId),
+        bidder: bidderAddress,
+        referrer: referrerAddress,
+        amount: amountIn,
+        auctionData: encryptedBid || toHex(""),
+        permit2Data: toHex(""), // TODO: handle permit2Data
+      },
+      callbackData,
+    ],
+  };
 };
 
 export { getConfig };

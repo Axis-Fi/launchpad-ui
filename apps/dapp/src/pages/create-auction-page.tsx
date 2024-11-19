@@ -1085,7 +1085,6 @@ export default function CreateAuctionPage() {
   const requiresAuctionHouseApproval = !isBaselineCallback(callbacksType);
 
   const onSubmit = () => {
-    console.log("submit");
     // 1. If we need to approve the auction house
     if (requiresAuctionHouseApproval && !isSufficientAuctionHouseAllowance) {
       executeApproveAuctionHouse();
@@ -1877,7 +1876,7 @@ export default function CreateAuctionPage() {
                         options={[
                           {
                             value: AuctionType.SEALED_BID,
-                            label: "Encrypted Marginal Price",
+                            label: "Sealed Bid",
                           },
 
                           {

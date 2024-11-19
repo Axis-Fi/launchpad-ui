@@ -1,14 +1,10 @@
 import React, { useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Address, formatUnits, fromHex, toHex, zeroAddress } from "viem";
-import {
-  useAccount,
-  useWaitForTransactionReceipt,
-  useWriteContract,
-} from "wagmi";
+import { useAccount } from "wagmi";
 import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
 import { AuctionType } from "@repo/types";
-import { useDeferredQuery } from "@repo/sdk/react";
+import { useBid } from "@repo/sdk/react";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { useReferrer } from "state/referral";
@@ -40,33 +36,24 @@ export function useBidAuction(
   const { address: bidderAddress } = useAccount();
   const referrer = useReferrer();
 
-  const bidTx = useWriteContract();
-
-  const bidReceipt = useWaitForTransactionReceipt({ hash: bidTx.data });
-
   const auctionHouse = getAuctionHouse(auction);
 
-  // TODO: think this can be removed in favor of simply const config = await sdk.bid(...) lower down.
-  const bidConfig = useDeferredQuery((sdk) => {
-    if (bidderAddress === undefined) {
-      throw new Error("Wallet not connected. Please connect your wallet.");
-    }
-
-    return sdk.bid(
-      {
-        lotId: Number(lotId),
-        amountIn,
-        amountOut,
-        chainId: auction.chainId,
-        auctionType: auction.auctionType,
-        referrerAddress:
-          referrer === zeroAddress ? (auction.seller as Address) : referrer,
-        bidderAddress: bidderAddress,
-        signedPermit2Approval: toHex(""), // TODO implement permit2
-      },
-      callbackData,
-    );
+  const bid = useBid({
+    lotId: Number(lotId),
+    amountIn,
+    amountOut,
+    chainId: auction.chainId,
+    auctionType: auction.auctionType,
+    referrerAddress:
+      referrer === zeroAddress ? (auction.seller as Address) : referrer,
+    bidderAddress: bidderAddress!,
+    signedPermit2Approval: toHex(""), // TODO implement permit2
+    callbackData,
   });
+
+  const bidTx = bid.transaction;
+
+  const bidReceipt = bid.receipt;
 
   // Main action, calls SDK which encrypts the bid and returns contract configuration data
   const handleBid = async () => {
@@ -81,9 +68,7 @@ export function useBidAuction(
       },
     });
 
-    const { abi, address, functionName, args } = await bidConfig();
-
-    bidTx.writeContractAsync({ abi, address, functionName, args });
+    bid.submit?.();
   };
 
   const {
@@ -106,7 +91,7 @@ export function useBidAuction(
   const confirmedBids = useRef(new Set<string>([]));
 
   React.useEffect(() => {
-    if (!bidReceipt.isSuccess) return;
+    if (bidReceipt == null || !bidReceipt.isSuccess) return;
 
     // Get bid id from transaction logs
     const hexBidId = bidReceipt.data.logs[1].topics[2];
@@ -159,8 +144,6 @@ export function useBidAuction(
     onSuccess,
   ]);
 
-  const error = [bidReceipt, bidTx, bidConfig].find((m) => m.isError)?.error;
-
   return {
     handleBid,
     approveCapacity,
@@ -168,8 +151,9 @@ export function useBidAuction(
     approveReceipt,
     bidReceipt,
     bidTx,
-    bidDependenciesMutation: bidConfig,
-    error,
+    isWaiting: bid.isWaiting,
+    receipt: bidReceipt,
+    error: bid.error,
     allowanceUtils,
   };
 }

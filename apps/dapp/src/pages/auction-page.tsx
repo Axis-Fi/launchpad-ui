@@ -43,7 +43,7 @@ const statuses: Record<
 /** Displays Auction details and status*/
 export default function AuctionPage() {
   const { chainId, lotId } = useParams();
-  const { isConnected, chainId: connectedChainId } = useAccount();
+  const { isConnected, address, chainId: connectedChainId } = useAccount();
   const { switchChain } = useSwitchChain();
 
   const { result: auction, isLoading: isAuctionLoading } = useAuction(
@@ -78,8 +78,16 @@ export default function AuctionPage() {
 
   const isFPA = auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
 
-  //TODO: check wen to display
-  const showBidHistory = !["created", "live"].includes(auction.status);
+  const userHasBids = auction.bids.some(
+    (bid) => bid.bidder.toLowerCase() === address?.toLowerCase(),
+  );
+
+  const showBidHistory =
+    auction.auctionType === AuctionType.SEALED_BID &&
+    (auction.status === "concluded" ||
+      auction.status === "decrypted" ||
+      auction.status === "settled" ||
+      userHasBids);
 
   const AuctionElement =
     auction.status === "concluded" && isFPA
@@ -102,9 +110,7 @@ export default function AuctionPage() {
           <AuctionElement auction={auction} />
         </div>
       </AuctionPageView>
-      {auction.status !== "created" &&
-        auction.status !== "registering" &&
-        showBidHistory &&
+      {showBidHistory &&
         (!isFPA ? (
           <BidList auction={auction} />
         ) : (

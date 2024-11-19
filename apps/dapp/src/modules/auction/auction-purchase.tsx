@@ -63,6 +63,8 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
     auction.quoteToken.decimals,
   );
 
+  const isEMP = auction.auctionType === AuctionType.SEALED_BID;
+
   // Cache the max bid amount
   useEffect(() => {
     // Only for FPB, since we don't know the amount out for each bid in EMP
@@ -209,12 +211,10 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
     "baseTokenAmount",
   ]);
 
-  // const parsedAmountIn = Number(amountIn);
-  // const parsedMinAmountOut = Number(minAmountOut);
-
   const parsedAmountIn = amountIn
     ? parseUnits(amountIn, auction.quoteToken.decimals)
     : BigInt(0);
+
   const parsedMinAmountOut = minAmountOut
     ? parseUnits(minAmountOut, auction.baseToken.decimals)
     : BigInt(0);
@@ -250,17 +250,12 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
   const shouldDisable =
     !isValidInput ||
     bid.approveReceipt.isLoading ||
-    bid.bidReceipt.isLoading ||
-    bid.bidTx.isPending;
+    bid?.bidReceipt?.isLoading ||
+    bid?.bidTx?.isPending;
 
-  const isWaiting =
-    bid.approveReceipt.isLoading ||
-    bid.bidReceipt.isLoading ||
-    bid.bidTx.isPending ||
-    bid.bidDependenciesMutation.isPending;
+  const isWaiting = bid.approveReceipt.isLoading || bid.isWaiting;
 
   const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
-  const isEMP = auction.auctionType === AuctionType.SEALED_BID;
   const actionKeyword = "Bid";
 
   const amountInInvalid =
@@ -344,7 +339,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                 />
               )}
 
-              <div className={"mx-auto mt-4 flex w-full justify-between "}>
+              <div className={"gap-x-xl mx-auto mt-4 flex w-full"}>
                 {allocation && +allocation > 0 && (
                   <Metric
                     childrenClassName={"text-primary"}
@@ -368,11 +363,19 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                     {auction.quoteToken.symbol}
                   </Metric>
                 )}
+                {/* {!isEMP && totalUserBidAmount > 0n && (
+                  <Metric
+                    childrenClassName={"text-tertiary-300"}
+                    label="You Receive"
+                  >
+                    {trimCurrency(minAmountOut)} {auction.baseToken.symbol}
+                  </Metric>
+                )} */}
               </div>
               <div className="mx-auto mt-4 w-full space-y-4">
                 {isFixedPriceBatch && (
                   <Text size="sm" className="leading-none tracking-normal">
-                    You’re participating in a fixed-price sale. Bids are
+                    You&apos;re participating in a fixed-price sale. Bids are
                     first-come first-served and can be canceled before the sale
                     concludes.
                     <Link
@@ -438,7 +441,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
               chainId={auction.chainId}
               onOpenChange={(open) => {
                 if (!open) {
-                  bid.bidTx.reset();
+                  bid.bidTx?.reset();
                 }
                 setOpen(open);
               }}
