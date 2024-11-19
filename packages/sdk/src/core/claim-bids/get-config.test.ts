@@ -3,7 +3,7 @@ import { zeroAddress } from "viem";
 import { abis } from "@repo/abis";
 import { AuctionType } from "@repo/types";
 import { getConfig } from "./get-config";
-import type { ClaimBidsParams } from "../types";
+import type { ClaimBidsParams } from "./types";
 
 const mockAddress = zeroAddress;
 

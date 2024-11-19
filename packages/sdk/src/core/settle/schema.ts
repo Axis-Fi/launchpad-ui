@@ -10,4 +10,4 @@ const schema = v.object({
   auctionType: v.optional(v.enum_(AuctionType)),
 });
 
-export default schema;
+export { schema };
