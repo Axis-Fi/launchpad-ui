@@ -1,21 +1,18 @@
 import { describe, it, expect, vi } from "vitest";
 import { parseUnits, zeroAddress } from "viem";
 import { abis } from "@repo/abis";
-import { AuctionType } from "@repo/types";
+import { Address, AuctionType } from "@repo/types";
 import * as deployments from "@repo/deployments";
 import type { CloakClient } from "@repo/cloak";
-import type { AxisDeployments } from "@repo/deployments";
 import { getConfig } from "./get-config";
-import type { AuctionModule } from "../auction";
 import { getEncryptedBid, encodeEncryptedBid } from "./utils";
-import * as deps from "./prepare-config";
 import type { BidParams } from "./types";
 
 const mockAddress = zeroAddress;
 const mockTokenDecimals = 18;
 const mockEncryptedBid = { ciphertext: "1", x: "1", y: "1" };
-const mockEncodedEncryptedBid = "0x1";
-const mockCallbackData = "0x2";
+const mockEncodedEncryptedBid = "0xeeb";
+const mockCallbackData = "0xca11";
 
 vi.mock("./utils", () => ({
   getEncryptedBid: vi.fn(() => mockEncryptedBid),
@@ -37,43 +34,21 @@ const mockCloak = {
   },
 } as unknown as CloakClient;
 
-const mockAuction = {
-  functions: {
-    getAuctionTokenDecimals: vi.fn(() => ({
-      quoteTokenDecimals: mockTokenDecimals,
-      baseTokenDecimals: mockTokenDecimals,
-    })),
-  },
-} as unknown as AuctionModule;
-
-const mockDeployments = {
-  1: {
-    addresses: {
-      auctionHouse: mockAddress,
-    },
-  },
-} as unknown as AxisDeployments;
-
 const mockParams = {
   lotId: 1,
   amountIn: parseUnits("100", mockTokenDecimals),
   amountOut: parseUnits("50", mockTokenDecimals),
-  referrerAddress: mockAddress,
   auctionType: AuctionType.SEALED_BID,
   chainId: 1,
-  bidderAddress: mockAddress,
+  bidderAddress: "0x1111111111111111111111111111111111111111" as Address,
+  referrerAddress: "0x2222222222222222222222222222222222222222" as Address,
   signedPermit2Approval: "0x",
+  callbackData: mockCallbackData,
 } satisfies BidParams;
 
 describe("getConfig()", () => {
   it("returns contract configuration", async () => {
-    const result = await getConfig(
-      mockParams,
-      mockCallbackData,
-      mockCloak,
-      mockAuction,
-      mockDeployments,
-    );
+    const result = await getConfig(mockParams, mockCloak);
 
     expect(result).toStrictEqual({
       abi: abis.batchAuctionHouse,
@@ -82,9 +57,9 @@ describe("getConfig()", () => {
       args: [
         {
           lotId: BigInt(mockParams.lotId),
-          bidder: mockAddress,
-          referrer: mockAddress,
-          amount: BigInt(100000000000000000000),
+          referrer: mockParams.referrerAddress,
+          bidder: mockParams.bidderAddress,
+          amount: mockParams.amountIn,
           auctionData: mockEncodedEncryptedBid,
           permit2Data: "0x",
         },
@@ -93,33 +68,8 @@ describe("getConfig()", () => {
     });
   });
 
-  it("calls getAuctionTokenDecimals with correct params", async () => {
-    await getConfig(
-      mockParams,
-      mockCallbackData,
-      mockCloak,
-      mockAuction,
-      mockDeployments,
-    );
-
-    expect(mockAuction.functions.getAuctionTokenDecimals).toHaveBeenCalledWith(
-      {
-        lotId: mockParams.lotId,
-        chainId: mockParams.chainId,
-        auctionType: mockParams.auctionType,
-      },
-      mockDeployments,
-    );
-  });
-
   it("calls getEncryptedBid() with correct params", async () => {
-    await getConfig(
-      mockParams,
-      mockCallbackData,
-      mockCloak,
-      mockAuction,
-      mockDeployments,
-    );
+    await getConfig(mockParams, mockCloak);
 
     expect(getEncryptedBid).toHaveBeenCalledWith(
       {
@@ -128,50 +78,16 @@ describe("getConfig()", () => {
         amountOut: mockParams.amountOut,
         chainId: mockParams.chainId,
         bidderAddress: mockParams.bidderAddress,
-        quoteTokenDecimals: mockTokenDecimals,
-        baseTokenDecimals: mockTokenDecimals,
-        auctionHouseAddress: mockAddress,
+        auctionType: mockParams.auctionType,
       },
       mockCloak,
     );
   });
 
   it("calls encodeEncryptedBid() with correct params", async () => {
-    await getConfig(
-      mockParams,
-      mockCallbackData,
-      mockCloak,
-      mockAuction,
-      mockDeployments,
-    );
+    await getConfig(mockParams, mockCloak);
 
     expect(encodeEncryptedBid).toHaveBeenCalledWith(mockEncryptedBid);
-  });
-
-  // TODO: you can't spy or mock a dep that is included in the same file as the function under test
-  it("calls prepareConfig with correct params", async () => {
-    const prepareConfigSpy = vi.spyOn(deps, "prepareConfig");
-
-    await getConfig(
-      mockParams,
-      mockCallbackData,
-      mockCloak,
-      mockAuction,
-      mockDeployments,
-    );
-
-    expect(prepareConfigSpy).toHaveBeenCalledWith(
-      {
-        lotId: mockParams.lotId,
-        amountIn: mockParams.amountIn,
-        referrerAddress: mockParams.referrerAddress,
-        bidderAddress: mockParams.bidderAddress,
-        auctionHouseAddress: mockAddress,
-        quoteTokenDecimals: mockTokenDecimals,
-        auctionData: mockEncodedEncryptedBid,
-      },
-      mockCallbackData,
-    );
   });
 
   it("throws an error if invalid params are supplied", async () => {
@@ -180,10 +96,7 @@ describe("getConfig()", () => {
     const result = getConfig(
       // @ts-expect-error - deliberately testing invalid params
       invalidParams,
-      mockCallbackData,
       mockCloak,
-      mockAuction,
-      mockDeployments,
     );
 
     expect(result).rejects.toThrowErrorMatchingInlineSnapshot(
@@ -202,10 +115,7 @@ describe("getConfig()", () => {
 
     const result = getConfig(
       paramsWithChainIdWithNoCorrespondingDeployment,
-      mockCallbackData,
       mockCloak,
-      mockAuction,
-      mockDeployments,
     );
 
     expect(result).rejects.toThrowErrorMatchingInlineSnapshot(
