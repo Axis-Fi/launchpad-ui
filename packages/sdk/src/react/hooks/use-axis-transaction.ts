@@ -74,8 +74,7 @@ export function useAxisTransaction<
     }
   };
 
-  const isWaiting =
-    transaction.isPending || receipt.isLoading || config.isLoading;
+  const isWaiting = transaction.isPending || receipt.isLoading;
 
   const error =
     simulation.error || transaction.error || receipt.error || config.error;

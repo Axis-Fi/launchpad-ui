@@ -87,7 +87,7 @@ const router = t.router({
         }),
       ),
     )
-    .mutation(() => ({ hash: { hashV0: "example" } })),
+    .mutation(() => ({ hash: { hashV0: "" } })),
 });
 
 type MetadataRouter = typeof router;

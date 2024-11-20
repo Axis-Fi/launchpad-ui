@@ -5,6 +5,7 @@ import {
 } from "@repo/cloak";
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import { type AxisDeployments, deployments } from "@repo/deployments";
+import { getCloakServer, getMetadataServer } from "@repo/env";
 import * as core from "../core";
 import type { MetadataClient, MetadataRouter, OriginConfig } from "../types";
 import type {
@@ -26,6 +27,15 @@ import type {
   CreateParams,
 } from "../core";
 
+const defaultConfig: OriginConfig = {
+  cloak: {
+    url: getCloakServer().url,
+  },
+  metadata: {
+    url: getMetadataServer().url,
+  },
+};
+
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
  *
@@ -46,7 +56,7 @@ class OriginSdk {
   metadataClient: MetadataClient;
 
   constructor(
-    _config: OriginConfig,
+    _config: OriginConfig = defaultConfig,
     _core: Core = core,
     _deployments: AxisDeployments = deployments,
   ) {
@@ -252,4 +262,8 @@ class OriginSdk {
   }
 }
 
-export { OriginSdk };
+const createSdk = (config?: OriginConfig) => new OriginSdk(config);
+
+export { OriginSdk, createSdk };
+
+export type * from "../core";

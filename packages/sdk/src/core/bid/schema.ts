@@ -7,7 +7,7 @@ export const schema = v.object({
   amountIn: v.pipe(v.bigint(), v.minValue(BigInt(1))),
   amountOut: v.bigint(),
   chainId: v.number(),
-  auctionType: v.enum_(AuctionType),
+  auctionType: v.optional(v.enum_(AuctionType)),
   bidderAddress: AddressSchema,
   referrerAddress: AddressSchema,
   signedPermit2Approval: v.optional(v.string()),

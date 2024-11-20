@@ -1,7 +1,7 @@
 {
-  "name": "@axis/tools",
-  "version": "0.1.0",
-  "description": "Monorepo for Axis Finance utilities",
+  "name": "@axis-finance/web3",
+  "version": "0.0.1",
+  "description": "Monorepo for Axis Finance frontend libraries",
   "scripts": {
     "build": "turbo run build",
     "postbuild": "turbo run lint",

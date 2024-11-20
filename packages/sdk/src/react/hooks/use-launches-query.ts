@@ -26,7 +26,7 @@ const defaultQueryConfig: LaunchesQueryConfig<GetAuctionLots> = {
   queryKeyFn: (chainId: number) => ["launches", chainId] as const,
 };
 
-export const useLaunches = <T>(
+export const useLaunchesQuery = <T>(
   queryConfig?: Partial<LaunchesQueryConfig<T>>,
 ) => {
   const { chainIds, document, fields, variables, queryKeyFn } = {
