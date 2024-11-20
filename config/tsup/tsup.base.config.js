@@ -7,7 +7,8 @@ export default function createConfig(overrides = {}) {
     dts: {
       compilerOptions: {
         declaration: true,
-        module: "esnext",
+        declarationMap: true,
+        module: "es2020",
       },
     },
     sourcemap: true,
