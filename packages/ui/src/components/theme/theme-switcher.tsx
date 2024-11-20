@@ -15,7 +15,7 @@ export function ThemeSwitcher() {
       variant="link"
       className="text-tertiary-300 dark:text-tertiary-300-highlight"
     >
-      <ThemeIcon />
+      <ThemeIcon size={24} />
     </Button>
   );
 }

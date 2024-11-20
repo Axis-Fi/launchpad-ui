@@ -9,6 +9,7 @@ import { environment } from "@repo/env";
 import { useCurator } from "modules/auction/hooks/use-curator";
 import { NotificationBadge } from "components/notification-badge";
 import { UserProfile } from "./user-profile";
+import AxisIcon from "./axis-icon";
 
 export function AppControl() {
   const { isTabletOrMobile } = useMediaQueries();
@@ -22,7 +23,7 @@ export function AppControl() {
           <OriginNavIcon />
           <Navbar onlyDefault={isTabletOrMobile} />
         </div>
-        <div className="flex items-center justify-between gap-x-2">
+        <div className="flex items-center justify-between gap-x-2 ">
           {environment.isTestnet && !isTabletOrMobile && (
             <div className="border-b-tertiary-300 mr-8 flex items-center border-b-2">
               <Tooltip content="These features are only available on testnet">
@@ -51,7 +52,9 @@ export function AppControl() {
           )}
           {!isTabletOrMobile && <UserProfile />}
           {isTabletOrMobile && <AppMenu />}
-          <ThemeSwitcher />
+          <div className="w-1/6">
+            <ThemeSwitcher />
+          </div>
         </div>
       </div>
     </div>
@@ -97,7 +100,7 @@ export function OriginNavIcon() {
       to="/"
     >
       <div className="flex gap-x-2">
-        <img src="/images/axis-logo.png" width={55} height={48} />
+        <AxisIcon />
       </div>
     </Link>
   );
