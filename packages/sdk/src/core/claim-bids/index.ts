@@ -1,4 +1,4 @@
-export { default as schema } from "./schema";
-export * as functions from "./functions";
+export * as schema from "./schema";
+export * from "./get-config";
 
 export type * from "./types";

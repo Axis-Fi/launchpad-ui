@@ -1,7 +1,7 @@
 import * as v from "valibot";
 import { getAuctionHouse } from "@repo/deployments";
 import { abis } from "@repo/abis";
-import schema from "./schema";
+import { schema } from "./schema";
 import { SdkError } from "../../types";
 import type { CancelConfig, CancelParams } from "./types";
 

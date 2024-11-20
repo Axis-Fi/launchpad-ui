@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
-import type { Address } from "viem";
+import { parseUnits, type Address } from "viem";
+import { AuctionType } from "@repo/types";
 import type { CloakClient } from "@repo/cloak";
 import * as utils from "./utils";
+import type { EncryptBidParams } from "./types";
 
 const mockEncryptedBid = { ciphertext: "1", x: "1", y: "1" };
 const mockCloakClient = {
@@ -12,15 +14,12 @@ const mockCloakClient = {
 
 const mockBid = {
   lotId: 1,
-  amountIn: 100,
-  amountOut: 100,
-  chainId: 1,
-  bidderAddress: "0x1" as Address,
-  quoteTokenDecimals: 18,
-  baseTokenDecimals: 18,
-  auctionHouseAddress: "0x2" as Address,
-  referrerAddress: "0x3" as Address,
-};
+  amountIn: parseUnits("100", 18),
+  amountOut: parseUnits("50", 18),
+  auctionType: AuctionType.SEALED_BID,
+  chainId: 168587773,
+  bidderAddress: "0x1111111111111111111111111111111111111111" as Address,
+} satisfies EncryptBidParams;
 
 describe("encryptBid()", () => {
   it("returns the given amountOut encrypted", async () => {

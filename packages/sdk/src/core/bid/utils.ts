@@ -2,23 +2,21 @@ import { type Hex, fromHex, toHex, encodeAbiParameters } from "viem";
 import type { EncryptLotIdPost200Response, CloakClient } from "@repo/cloak";
 import { abi, type EncryptBidParams } from ".";
 import { SdkError } from "../../types";
+import { getAuctionHouse } from "@repo/deployments";
 
 const getEncryptedBid = async (
   params: EncryptBidParams,
   cloakClient: CloakClient,
 ): Promise<EncryptLotIdPost200Response> => {
-  const {
-    lotId,
-    amountIn,
-    amountOut,
-    chainId,
-    bidderAddress,
-    auctionHouseAddress,
-  } = params;
-
   let result;
 
   try {
+    const { lotId, amountIn, amountOut, chainId, bidderAddress, auctionType } =
+      params;
+
+    const auctionHouseAddress = getAuctionHouse({ chainId, auctionType })
+      ?.address;
+
     result = await cloakClient.keysApi.encryptLotIdPost({
       xChainId: chainId,
       xAuctionHouse: auctionHouseAddress,
@@ -29,7 +27,8 @@ const getEncryptedBid = async (
         bidder: bidderAddress,
       },
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
     throw new SdkError("Failed to encrypt bid via cloak service");
   }
 

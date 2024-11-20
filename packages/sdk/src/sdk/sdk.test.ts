@@ -13,8 +13,8 @@ const mockConfig = {
 };
 
 const mockCore = {
-  bid: { functions: { getConfig: vi.fn() } },
-  claimBids: { functions: { getConfig: vi.fn() } },
+  bid: { getConfig: vi.fn() },
+  claimBids: { getConfig: vi.fn() },
   refundBid: { getConfig: vi.fn() },
   auction: { functions: { getAuction: vi.fn() } },
 } as unknown as Core;
@@ -81,19 +81,15 @@ describe("OriginSdk: bid()", () => {
       chainId: 1,
       bidderAddress: mockAddress,
       signedPermit2Approval: "0x",
+      callbackData: "0x2",
     } satisfies BidParams;
 
-    const mockCallbackData = "0x2";
-
     const sdk = new OriginSdk(mockConfig, mockCore);
-    await sdk.bid(mockParams, mockCallbackData);
+    await sdk.bid(mockParams);
 
     expect(mockCore.bid.functions.getConfig).toHaveBeenCalledWith(
       mockParams,
-      mockCallbackData,
       sdk.cloakClient,
-      mockCore.auction,
-      sdk.deployments,
     );
   });
 });
@@ -110,9 +106,7 @@ describe("OriginSdk: claimBids()", () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     sdk.claimBids(mockParams);
 
-    expect(mockCore.claimBids.functions.getConfig).toHaveBeenCalledWith(
-      mockParams,
-    );
+    expect(mockCore.claimBids.getConfig).toHaveBeenCalledWith(mockParams);
   });
 });
 

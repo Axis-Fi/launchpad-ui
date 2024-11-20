@@ -1,2 +1,2 @@
 export * from "./provider";
-export * from "./use-sdk";
+export * from "./hooks";
