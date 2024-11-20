@@ -1,4 +1,4 @@
-import { ToggleProvider, TooltipProvider } from "@repo/ui";
+import { ThemeProvider, ToggleProvider, TooltipProvider } from "@repo/ui";
 import { BlockchainProvider } from "./blockchain-provider";
 import { PointsProvider } from "./points-provider";
 import { OriginSdkProvider } from "@repo/sdk/react";
@@ -22,18 +22,20 @@ type ProviderProps = React.PropsWithChildren<{
 
 export function Providers(props: ProviderProps) {
   return (
-    <ToggleProvider initialToggle={true}>
-      <BlockchainProvider disableDevTools={props.disableDevTools}>
-        <PointsProvider>
-          <OriginSdkProvider sdk={sdk}>
-            <TooltipProvider delayDuration={350}>
-              <DialogProvider disabled={props.disableDialogProvider}>
-                {props.children}
-              </DialogProvider>
-            </TooltipProvider>
-          </OriginSdkProvider>
-        </PointsProvider>
-      </BlockchainProvider>
-    </ToggleProvider>
+    <ThemeProvider>
+      <ToggleProvider initialToggle={true}>
+        <BlockchainProvider disableDevTools={props.disableDevTools}>
+          <PointsProvider>
+            <OriginSdkProvider sdk={sdk}>
+              <TooltipProvider delayDuration={350}>
+                <DialogProvider disabled={props.disableDialogProvider}>
+                  {props.children}
+                </DialogProvider>
+              </TooltipProvider>
+            </OriginSdkProvider>
+          </PointsProvider>
+        </BlockchainProvider>
+      </ToggleProvider>
+    </ThemeProvider>
   );
 }

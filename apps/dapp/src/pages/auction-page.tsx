@@ -138,14 +138,20 @@ export function AuctionPageView({
           <div className="mb-10 flex w-full flex-col items-center justify-end">
             <div className="relative mb-2 self-center text-center">
               <div className="border-primary absolute inset-0 top-3 -z-10 -ml-10 size-full w-[120%] border bg-neutral-950 blur-2xl" />
-              <Text size="7xl" mono className="text-neutral-200">
+              <Text
+                size="7xl"
+                mono
+                className="text-neutral-200 dark:text-neutral-700"
+              >
                 {auction.info?.name}
               </Text>
 
               <Text
                 size="3xl"
                 color="secondary"
-                className={cn("mx-auto w-fit text-nowrap text-neutral-200")}
+                className={cn(
+                  "mx-auto w-fit text-nowrap text-neutral-200 dark:text-neutral-700",
+                )}
               >
                 {!isAuctionLoading && auction.info?.tagline}
               </Text>

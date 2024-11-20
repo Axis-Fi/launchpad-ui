@@ -1,4 +1,4 @@
-import { Badge } from "@repo/ui";
+import { Badge, cn } from "@repo/ui";
 import { AuctionStatus } from "@repo/types";
 
 /** Displays a indicator with the auction's current status */
@@ -13,7 +13,7 @@ export function AuctionStatusBadge({
   return (
     <Badge
       size={status === "live" && large ? "xl" : "m"}
-      className={className}
+      className={cn(className, "dark:text-black")}
       color={status === "live" || status === "registering" ? "active" : "ghost"}
     >
       {status}

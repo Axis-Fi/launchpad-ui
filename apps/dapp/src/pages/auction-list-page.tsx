@@ -124,14 +124,18 @@ export default function AuctionListPage() {
         />
         {!isTabletOrMobile && (
           <div className="z-10 mb-10 text-center">
-            <Text size={isTabletOrMobile ? "2xl" : "7xl"} mono>
+            <Text
+              size={isTabletOrMobile ? "2xl" : "7xl"}
+              mono
+              className="dark:text-neutral-100"
+            >
               Welcome to Axis
             </Text>
 
             <Text
               size="3xl"
               color="secondary"
-              className="mx-auto w-fit lg:text-nowrap"
+              className="mx-auto w-fit lg:text-nowrap dark:text-neutral-200"
             >
               Next-Generation Token Launches
             </Text>
@@ -151,7 +155,11 @@ export default function AuctionListPage() {
                 </Button>
               </ScrollLink>
 
-              <Button className="uppercase" size="lg" variant="secondary">
+              <Button
+                className="uppercase dark:border-neutral-200 dark:text-neutral-200"
+                size="lg"
+                variant="secondary"
+              >
                 <Link target="_blank" to={metadata.contact}>
                   Apply for Launch
                 </Link>
