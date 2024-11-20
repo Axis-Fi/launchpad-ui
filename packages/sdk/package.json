@@ -2,7 +2,6 @@
   "name": "@axis/sdk",
   "type": "module",
   "version": "0.0.3",
-  "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -28,8 +27,7 @@
     "valibot": "^0.42.1"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "http://localhost:4873"
+    "access": "public"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

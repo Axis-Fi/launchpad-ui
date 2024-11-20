@@ -29,9 +29,6 @@ import type {
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
  *
- * @remarks
- * React hooks are available for
- *
  * @example
  * import { OriginSdk } from "@axis-fi/sdk";
  *

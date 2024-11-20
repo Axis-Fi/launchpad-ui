@@ -3,7 +3,7 @@ import { defineConfig } from "tsup";
 export default function createConfig(overrides = {}) {
   return defineConfig({
     entry: ["src/index.ts"],
-    format: "esm",
+    format: ["esm"],
     dts: {
       compilerOptions: {
         declaration: true,
