@@ -1,4 +1,4 @@
-import * as core from ".";
+import * as core from "./";
 
 type Core = typeof core;
 

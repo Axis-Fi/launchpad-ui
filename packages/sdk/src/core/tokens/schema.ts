@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { AddressSchema } from "../bid/schema";
+import { AddressSchema } from "../schema";
 
 const GetTokenPriceSchema = v.object({
   token: v.object({

@@ -3,10 +3,10 @@ import {
   createCloakClient,
   Configuration,
 } from "@repo/cloak";
-import * as core from "../core";
+import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import { type AxisDeployments, deployments } from "@repo/deployments";
-import { type OriginConfig } from "../types";
-import type { GetAuctionParams, GetAuctionResult } from "../core/auction";
+import * as core from "../core";
+import type { MetadataClient, MetadataRouter, OriginConfig } from "../types";
 import type {
   Core,
   BidParams,
@@ -19,22 +19,21 @@ import type {
   SettleConfig,
   AbortParams,
   AbortConfig,
+  GetTokenPriceParams,
+  CancelConfig,
+  CancelParams,
+  CreateConfig,
+  CreateParams,
 } from "../core";
-import type { GetTokenPriceParams } from "../core/tokens";
-import { CancelConfig, CancelParams } from "../core/cancel";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
  *
  * @remarks
- * This SDK is web3 client agnostic and doesn't perform transactions on behalf of the consumer.
- * Instead, the SDK functions return smart contract data to enable the consumer
- * to execute the transaction inside their own web3 client.
- *
- * TODO: Web3 client SDK adapters are available for Wagmi and Ethers. See: @axis/origin-sdk/wagmi and @axis/origin-sdk/ethers.
+ * React hooks are available for
  *
  * @example
- * import { OriginSdk } from "@axis-fi/origin-sdk";
+ * import { OriginSdk } from "@axis-fi/sdk";
  *
  * const sdk = new OriginSdk({
  *   cloak: {
@@ -44,9 +43,10 @@ import { CancelConfig, CancelParams } from "../core/cancel";
  */
 class OriginSdk {
   config: OriginConfig;
-  private core: Core;
-  private deployments: AxisDeployments;
-  private cloakClient: CloakClient;
+  core: Core;
+  deployments: AxisDeployments;
+  cloakClient: CloakClient;
+  metadataClient: MetadataClient;
 
   constructor(
     _config: OriginConfig,
@@ -60,25 +60,14 @@ class OriginSdk {
     this.cloakClient = createCloakClient(
       new Configuration({ basePath: _config.cloak.url }),
     );
-  }
 
-  /**
-   * Gets the auction details for a given lot.
-   *
-   * @param params - The lot ID to get the auction details for
-   * @returns The auction details for the given lot
-   *
-   * @example
-   * import { sdk } from "./sdk"
-   *
-   * try {
-   *   const auction = await sdk.getAuction({ lotId: 1, chainId: 1, auctionType: AuctionType.SEALED_BID })
-   * } catch (error: SdkError) {
-   *   console.log(error.message, error.issues)
-   * }
-   */
-  async getAuction(params: GetAuctionParams): Promise<GetAuctionResult> {
-    return this.core.auction.functions.getAuction(params);
+    this.metadataClient = createTRPCProxyClient<MetadataRouter>({
+      links: [
+        httpBatchLink({
+          url: _config.metadata.url,
+        }),
+      ],
+    });
   }
 
   async getTokenPrice(params: GetTokenPriceParams): Promise<number> {
@@ -122,17 +111,8 @@ class OriginSdk {
    *   console.log(error.message, error.issues)
    * }
    */
-  async bid(
-    params: BidParams,
-    callbackData: `0x${string}`,
-  ): Promise<BidConfig> {
-    return this.core.bid.functions.getConfig(
-      params,
-      callbackData,
-      this.cloakClient,
-      this.core.auction,
-      this.deployments,
-    );
+  async bid(params: BidParams): Promise<BidConfig> {
+    return this.core.bid.getConfig(params, this.cloakClient);
   }
 
   /**
@@ -145,7 +125,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.claimBids({
+   *   const config = sdk.claimBids({
    *     lotId: 1,
    *     bids: [1, 2, 3],
    *     chainId: 1,
@@ -155,7 +135,7 @@ class OriginSdk {
    * }
    */
   claimBids(params: ClaimBidsParams): ClaimBidsConfig {
-    return this.core.claimBids.functions.getConfig(params);
+    return this.core.claimBids.getConfig(params);
   }
 
   /**
@@ -168,7 +148,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.refundBid({
+   *   const config = sdk.refundBid({
    *     lotId: 1,
    *     bidId: 10,
    *     bidIndex: 1,
@@ -192,7 +172,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.settle({
+   *   const config = sdk.settle({
    *     lotId: 1,
    *     chainId: 1,
    *     numBids: 10,
@@ -217,7 +197,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.abort({
+   *   const config = sdk.abort({
    *     lotId: 1,
    *     chainId: 1,
    *   })
@@ -233,14 +213,14 @@ class OriginSdk {
    * Gets the contract config required to execute a cancel transaction on the auction house smart contract.
    * Cancelling an auction ends the auction, and is only possible before a bidder has bid on it.
    *
-   * @param params abort parameters
-   * @returns Contract config for the abort transaction
+   * @param params cancel parameters
+   * @returns Contract config for the cancel transaction
    *
    * @example
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.abort({
+   *   const config = sdk.cancel({
    *     lotId: 1,
    *     chainId: 1,
    *   })
@@ -250,6 +230,28 @@ class OriginSdk {
    */
   cancel(params: CancelParams): CancelConfig {
     return this.core.cancel.getConfig(params);
+  }
+
+  /**
+   * // TODO
+   * todo
+   *
+   * @param params create parameters
+   * @returns Contract config for the create transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.create({
+   *     //TODO: 1,
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  async create(params: CreateParams): Promise<CreateConfig> {
+    return this.core.create.getConfig(params, this.metadataClient);
   }
 }
 

@@ -2,7 +2,11 @@
   "name": "@repo/subgraph-client",
   "version": "1.0.0",
   "description": "",
-  "main": "src/generated/index.ts",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./request": "./src/request.ts"
+  },
   "scripts": {
     "build": "graphql-codegen"
   },

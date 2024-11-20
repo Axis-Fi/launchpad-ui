@@ -1,4 +1,4 @@
-import createTsupConfig from "@repo/tsup";
+import createTsupConfig from "@repo/tsup-config";
 
 export default createTsupConfig({
   dts: false,

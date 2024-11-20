@@ -10,11 +10,14 @@ const mockConfig = {
   cloak: {
     url: "https://cloak.example.com/api",
   },
+  metadata: {
+    url: "https://metadata.example.com/api",
+  },
 };
 
 const mockCore = {
-  bid: { functions: { getConfig: vi.fn() } },
-  claimBids: { functions: { getConfig: vi.fn() } },
+  bid: { getConfig: vi.fn() },
+  claimBids: { getConfig: vi.fn() },
   refundBid: { getConfig: vi.fn() },
   auction: { functions: { getAuction: vi.fn() } },
 } as unknown as Core;
@@ -32,6 +35,11 @@ describe("OriginSdk", () => {
   it("creates a cloak client", () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     expect(sdk.cloakClient).toBeInstanceOf(CloakClient);
+  });
+
+  it("creates a metadata client", () => {
+    const sdk = new OriginSdk(mockConfig, mockCore);
+    expect(sdk.metadataClient).toBeDefined();
   });
 
   it("calls Configuration() with the supplied cloak config", () => {
@@ -81,19 +89,15 @@ describe("OriginSdk: bid()", () => {
       chainId: 1,
       bidderAddress: mockAddress,
       signedPermit2Approval: "0x",
+      callbackData: "0x2",
     } satisfies BidParams;
 
-    const mockCallbackData = "0x2";
-
     const sdk = new OriginSdk(mockConfig, mockCore);
-    await sdk.bid(mockParams, mockCallbackData);
+    await sdk.bid(mockParams);
 
-    expect(mockCore.bid.functions.getConfig).toHaveBeenCalledWith(
+    expect(mockCore.bid.getConfig).toHaveBeenCalledWith(
       mockParams,
-      mockCallbackData,
       sdk.cloakClient,
-      mockCore.auction,
-      sdk.deployments,
     );
   });
 });
@@ -110,42 +114,23 @@ describe("OriginSdk: claimBids()", () => {
     const sdk = new OriginSdk(mockConfig, mockCore);
     sdk.claimBids(mockParams);
 
-    expect(mockCore.claimBids.functions.getConfig).toHaveBeenCalledWith(
-      mockParams,
-    );
+    expect(mockCore.claimBids.getConfig).toHaveBeenCalledWith(mockParams);
   });
 });
 
-describe("OriginSdk: getAuction()", () => {
-  it("calls auction module's getAuction() with correct params", async () => {
+describe("OriginSdk: refundBid()", () => {
+  it("calls refundBid module's getConfig() with the correct params", async () => {
     const mockParams = {
       lotId: 1,
+      bidId: 10,
+      bidIndex: 10,
       chainId: 1,
       auctionType: AuctionType.SEALED_BID,
     };
 
     const sdk = new OriginSdk(mockConfig, mockCore);
-    await sdk.getAuction(mockParams);
+    sdk.refundBid(mockParams);
 
-    expect(mockCore.auction.functions.getAuction).toHaveBeenCalledWith(
-      mockParams,
-    );
-  });
-
-  describe("OriginSdk: refundBid()", () => {
-    it("calls refundBid module's getConfig() with the correct params", async () => {
-      const mockParams = {
-        lotId: 1,
-        bidId: 10,
-        bidIndex: 10,
-        chainId: 1,
-        auctionType: AuctionType.SEALED_BID,
-      };
-
-      const sdk = new OriginSdk(mockConfig, mockCore);
-      sdk.refundBid(mockParams);
-
-      expect(mockCore.refundBid.getConfig).toHaveBeenCalledWith(mockParams);
-    });
+    expect(mockCore.refundBid.getConfig).toHaveBeenCalledWith(mockParams);
   });
 });

@@ -1,3 +1,3 @@
-import createConfig from "@repo/tsup";
+import createConfig from "@repo/tsup-config";
 
 export default createConfig();

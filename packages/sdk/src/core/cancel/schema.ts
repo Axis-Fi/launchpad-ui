@@ -9,4 +9,4 @@ const schema = v.object({
   callback: v.optional(BytesSchema),
 });
 
-export default schema;
+export { schema };
