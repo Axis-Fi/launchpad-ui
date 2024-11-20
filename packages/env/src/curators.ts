@@ -33,6 +33,8 @@ export const allowedCurators: Curator[] = [
     id: "axis",
     name: "Axis Dev Team",
     type: "curator",
+    banner:
+      "https://axis.finance/assets/images/AxisBanner-9eace5008e36844929f95d3d709b4aaf.png",
     address: "0x62A665d3f9fc9a968dC35a789122981d9109349a", //TODO: DEV ADDRESS, REPLACE WITH -> "0x63c4fC41B61853997d51b73419a5Cf41C4be1A6F",
     website: "https://axis.finance",
     avatar: "https://avatars.githubusercontent.com/u/158601375",
