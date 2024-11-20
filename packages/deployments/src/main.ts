@@ -12,7 +12,7 @@ export const allDeployments = [testnetDeployments, mainnetDeployments];
 //Indexes deployments by chain for ease of use
 export const testnets = createDeploymentRecord(testnetDeployments);
 export const mainnets = createDeploymentRecord(mainnetDeployments);
-export const deployments = { ...testnets, ...mainnets };
+export const deployments = { ...testnets, ...mainnets } as const;
 
 const lists = [mainnetDeployments, testnetDeployments].flatMap((list) =>
   list.flatMap((t) => t.tokenList),

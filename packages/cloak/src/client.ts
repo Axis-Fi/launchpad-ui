@@ -1,9 +1,8 @@
 import { cloakServers } from "@repo/env";
 import { ConfigsApi, Configuration, KeysApi } from ".";
-import { environment } from "@repo/env";
 
-const { url: serverUrl } =
-  cloakServers[environment.current] ?? cloakServers.testing;
+//TODO: add environment check
+const { url: serverUrl } = cloakServers.production;
 
 const defaultConfig = new Configuration({
   basePath: serverUrl,

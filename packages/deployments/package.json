@@ -4,15 +4,19 @@
   "version": "0.0.0",
   "main": "./src/index.ts",
   "dependencies": {
-    "@repo/abis": "workspace:*",
+    "@repo/abis": "workspace:*"
+  },
+  "devDependencies": {
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@repo/eslint-config": "workspace:*"
+    "@repo/eslint-config": "workspace:*",
+    "@repo/tsup-config": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "sync": "node ./get-deployments.cjs"
+    "sync": "node ./get-deployments.cjs",
+    "build": "tsup"
   }
 }

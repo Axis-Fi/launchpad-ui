@@ -1,5 +1,5 @@
 import { arbitrumSepolia } from "viem/chains";
-import { AxisDeploymentConfig } from "../../src/types";
+import type { AxisDeploymentConfig } from "../../src/types";
 import { usdc, weth } from "../../tokens/common";
 // TODO axis-core will become a versioned dev dependency to this package
 import core from "../../axis-core/.arbitrum-sepolia.json";

@@ -1,5 +1,5 @@
 import { modeTestnet } from "viem/chains";
-import { AxisDeploymentConfig } from "../../src/types";
+import type { AxisDeploymentConfig } from "../../src/types";
 import { usdc, weth } from "../../tokens/common";
 import core from "../../axis-core/.mode-sepolia.json";
 import periphery from "../../axis-periphery/.mode-sepolia.json";

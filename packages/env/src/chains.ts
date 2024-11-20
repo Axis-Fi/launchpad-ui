@@ -1,24 +1,15 @@
-import { http } from "wagmi";
-import { environment } from "./environment";
-import { Chain } from "@repo/types";
+import { http } from "viem";
 import { testnetDeployments, mainnetDeployments } from "@repo/deployments";
+import type { Chain } from "@repo/types";
 import type { AxisDeployment } from "@repo/deployments/src/types";
 
 //Mainnet Config
 export const mainnets: Chain[] = mainnetDeployments.map(({ chain }) => chain);
-const mainnetConfig = generateConfig(mainnetDeployments);
+export const mainnetConfig = generateConfig(mainnetDeployments);
 
 //Testnet Config
 export const testnets: Chain[] = testnetDeployments.map(({ chain }) => chain);
-const testnetConfig = generateConfig(testnetDeployments);
-
-export const activeChains = (environment.isTestnet ? testnets : mainnets).sort(
-  (a, b) => a.name.localeCompare(b.name),
-);
-
-export const activeConfig = environment.isTestnet
-  ? testnetConfig
-  : mainnetConfig;
+export const testnetConfig = generateConfig(testnetDeployments);
 
 function generateConfig(deployment: AxisDeployment[]) {
   return deployment.reduce(

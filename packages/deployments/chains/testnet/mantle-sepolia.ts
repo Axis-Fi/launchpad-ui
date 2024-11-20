@@ -1,5 +1,5 @@
-import { mantleSepoliaTestnet } from "viem/chains";
-import { AxisDeploymentConfig } from "../../src/types";
+import { mantleTestnet } from "viem/chains";
+import type { AxisDeploymentConfig } from "../../src/types";
 import { weth, usdc } from "../../tokens/common";
 import core from "../../axis-core/.mantle-sepolia.json";
 import periphery from "../../axis-periphery/.mantle-sepolia.json";
@@ -7,7 +7,7 @@ import { extractCallbacks, extractAddresses } from "../helpers";
 
 const config: AxisDeploymentConfig = {
   name: "mantle-sepolia-testnet",
-  chain: mantleSepoliaTestnet,
+  chain: mantleTestnet,
   chainIconUrl: "/mantle-logo.svg",
   subgraphURL:
     "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mantle-sepolia/<VERSION>/gn",

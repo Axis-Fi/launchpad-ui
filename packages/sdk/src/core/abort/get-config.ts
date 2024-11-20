@@ -11,7 +11,7 @@ const getConfig = (params: AbortParams): AbortConfig => {
 
   if (!parsedParams.success) {
     throw new SdkError(
-      "Invalid parameters supplied to getConfig()",
+      "Invalid parameters supplied to getConfig",
       parsedParams.issues,
     );
   }

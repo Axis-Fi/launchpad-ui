@@ -1,5 +1,5 @@
 import { mantle } from "viem/chains";
-import { AxisDeploymentConfig } from "../../src/types";
+import type { AxisDeploymentConfig } from "../../src/types";
 import core from "../../axis-core/.mantle.json";
 import periphery from "../../axis-periphery/.mantle.json";
 import { extractAddresses, extractCallbacks } from "../helpers";

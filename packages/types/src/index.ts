@@ -4,6 +4,6 @@ export * from "./callbacks";
 export * from "./chain";
 export * from "./curator";
 
-export type * from "./axis-contracts";
-export type * from "./token";
-export type * from "./subgraph-queries";
+export * from "./axis-contracts";
+export * from "./token";
+export * from "./subgraph-queries";

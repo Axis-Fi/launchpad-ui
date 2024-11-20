@@ -43,7 +43,7 @@ describe("getConfig()", () => {
         invalidParams,
       ),
     ).toThrowErrorMatchingInlineSnapshot(
-      `[OriginSdkError: Invalid parameters supplied to getConfig()]`,
+      `[OriginSdkError: Invalid parameters supplied to getConfig]`,
     );
   });
 });

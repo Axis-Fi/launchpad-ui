@@ -1,0 +1,9 @@
+{
+  "name": "@repo/tsup-config",
+  "version": "1.0.0",
+  "main": "tsup.base.config.js",
+  "type": "module",
+  "dependencies": {
+    "tsup": "^8.1.0"
+  }
+}

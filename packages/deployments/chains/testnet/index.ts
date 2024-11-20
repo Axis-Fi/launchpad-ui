@@ -3,7 +3,6 @@ import arbitrumSepolia from "./arbitrum-sepolia";
 import modeTestnet from "./mode-testnet";
 import baseSepolia from "./base-sepolia";
 import mantleSepolia from "./mantle-sepolia";
-import berachainBartio from "./berachain-bartio";
 
 export default [
   blastSepolia,
@@ -11,5 +10,4 @@ export default [
   modeTestnet,
   baseSepolia,
   mantleSepolia,
-  berachainBartio,
 ];

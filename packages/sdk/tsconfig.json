@@ -1,3 +1,14 @@
 {
-  "extends": "@repo/typescript-config/react-library.json"
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "jsx": "react-jsx",
+    "lib": ["ES2020", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ESNext"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts", "**/test/**"]
 }
