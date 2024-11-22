@@ -254,7 +254,6 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
     bid?.bidTx?.isPending;
 
   const isWaiting = bid.approveReceipt.isLoading || bid.isWaiting;
-
   const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
   const actionKeyword = "Bid";
 
@@ -405,18 +404,21 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
                         : bid.approveCapacity()
                     }
                   >
-                    {/*TODO: simplify*/}
-                    {bid.isSufficientAllowance ? (
-                      actionKeyword.toUpperCase()
-                    ) : isWaiting ? (
+                    {bid.isSufficientAllowance &&
+                      !isWaiting &&
+                      actionKeyword.toUpperCase()}
+
+                    {isWaiting && (
                       <div className="flex">
                         Waiting for confirmation...
                         <div className="w-1/2"></div>
                         <LoadingIndicator />
                       </div>
-                    ) : (
-                      `APPROVE TO ${actionKeyword.toUpperCase()}`
                     )}
+
+                    {!bid.isSufficientAllowance &&
+                      !isWaiting &&
+                      `APPROVE TO ${actionKeyword.toUpperCase()}`}
                   </Button>
                 </div>
               </RequiresChain>

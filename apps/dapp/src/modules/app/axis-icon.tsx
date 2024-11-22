@@ -3,7 +3,7 @@ import { useTheme } from "@repo/ui";
 export default function AxisIcon() {
   const { themeColor } = useTheme();
   const fill = themeColor === "dark" ? "#ffffff" : "#252026";
-  console.log({ themeColor });
+
   return (
     <svg
       width="55"
