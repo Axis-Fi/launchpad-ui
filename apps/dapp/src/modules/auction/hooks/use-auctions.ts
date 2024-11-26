@@ -1,5 +1,5 @@
 import type { Auction, Curator, GetAuctionLots } from "@repo/types";
-import { useLaunches } from "@repo/sdk/react";
+import { useLaunchesQuery } from "@axis-finance/sdk/react";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "modules/auction/utils/format-tokens";
@@ -37,7 +37,7 @@ type UseAuctionsArgs = {
 
 export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   const { data, isLoading, isSuccess, isRefetching } =
-    useLaunches<GetAuctionLots>({
+    useLaunchesQuery<GetAuctionLots>({
       queryKeyFn: getAuctionsQueryKey,
     });
 
@@ -48,7 +48,7 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   const { activeRegistrations } = useAuctionRegistrations();
 
   const registrationLaunches = featureToggles.REGISTRATION_LAUNCHES
-    ? activeRegistrations.data ?? []
+    ? (activeRegistrations.data ?? [])
     : [];
 
   // Filter out cancelled auctions

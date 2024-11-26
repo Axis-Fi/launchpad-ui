@@ -1,12 +1,12 @@
 import { ThemeProvider, ToggleProvider, TooltipProvider } from "@repo/ui";
 import { BlockchainProvider } from "./blockchain-provider";
 import { PointsProvider } from "./points-provider";
-import { OriginSdkProvider } from "@repo/sdk/react";
-import { OriginSdk } from "@repo/sdk";
+import { OriginSdkProvider } from "@axis-finance/sdk/react";
+import { createSdk } from "@axis-finance/sdk";
 import { getCloakServer, getMetadataServer } from "@repo/env";
 import { DialogProvider } from "./dialog-provider";
 
-const sdk = new OriginSdk({
+const sdk = createSdk({
   cloak: {
     url: getCloakServer().url,
   },

@@ -22,7 +22,7 @@ import { useSafeRefetch } from "./use-safe-refetch";
 import { getAuctionId } from "../utils/get-auction-id";
 import { getAuctionType } from "../utils/get-auction-type";
 import { externalAuctionInfo } from "@repo/env";
-import { useLaunch } from "@repo/sdk/react";
+import { useLaunchQuery } from "@axis-finance/sdk/react";
 
 type AuctionQueryKey = QueryKey &
   readonly ["getBatchAuctionLot", { id: AuctionId }];
@@ -61,7 +61,7 @@ export function useAuction(
     data: rawAuction,
     isLoading,
     isRefetching,
-  } = useLaunch({
+  } = useLaunchQuery({
     chainId,
     lotId: Number(lotId),
     options: {

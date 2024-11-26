@@ -4,7 +4,7 @@ import { Address, formatUnits, fromHex, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
 import { AuctionType } from "@repo/types";
-import { useBid } from "@repo/sdk/react";
+import { useBid } from "@axis-finance/sdk/react";
 import { useAllowance } from "loaders/use-allowance";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { useReferrer } from "state/referral";

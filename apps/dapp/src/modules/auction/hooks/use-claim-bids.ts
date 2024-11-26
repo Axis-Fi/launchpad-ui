@@ -6,7 +6,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { useAuction } from "./use-auction";
-import { useSdk } from "@repo/sdk/react";
+import { useSdk } from "@axis-finance/sdk/react";
 import { Auction } from "@repo/types";
 
 export function useClaimBids(auction: Auction) {

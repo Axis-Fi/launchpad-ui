@@ -1,4 +1,4 @@
-import { useSdk } from "@repo/sdk/react";
+import { useSdk } from "@axis-finance/sdk/react";
 import type { PropsWithAuction } from "@repo/types";
 import { UsdToggle } from "@repo/ui";
 
