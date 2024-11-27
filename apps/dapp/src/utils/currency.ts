@@ -16,10 +16,12 @@ export function trimCurrency(input: string | number): string {
   }
 
   if (value < 1 && value !== 0) {
-    const absLog = -Math.floor(Math.log10(Math.abs(value)));
-    const decimalPlaces = Math.min(8, absLog); // Allow at least 2 significant figures
-    const adjustedValue = Number(value.toFixed(decimalPlaces));
-    return adjustedValue.toString();
+    const stringValue = value.toString();
+
+    // Regex to remove trailing zeros after the decimal point but preserve non-zero decimals
+    const trimmedValue = stringValue.replace(/(\.\d*?[1-9])0+$/g, "$1");
+
+    return trimmedValue;
   } else {
     return currencyFormatter.format(value);
   }
