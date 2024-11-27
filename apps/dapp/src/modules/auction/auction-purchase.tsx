@@ -240,6 +240,17 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
     handleSuccessfulBid,
   );
 
+  React.useEffect(() => {
+    // Auto populate the amount with max allocation on allocated allowlist
+    if (canBid && allowlistLimit > 0n) {
+      form.setValue(
+        "quoteTokenAmount",
+        formatUnits(allowlistLimit, auction.quoteToken.decimals),
+        { shouldDirty: true, shouldValidate: true },
+      );
+    }
+  }, [canBid]);
+
   // TODO Permit2 signature
   const handleSubmit = () => {
     bid.isSufficientAllowance ? bid.handleBid() : bid.approveCapacity();
