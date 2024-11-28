@@ -45,6 +45,9 @@ const options = [
 type AuctionListPageProps = {
   curator?: Curator;
 };
+
+const ROW_LIMIT = 9;
+
 export default function AuctionListPage({ curator }: AuctionListPageProps) {
   const { isTabletOrMobile } = useMediaQueries();
   const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
@@ -86,7 +89,10 @@ export default function AuctionListPage({ curator }: AuctionListPageProps) {
     return sortAuction(a, b);
   });
 
-  const { rows, ...pagination } = usePagination(sortedAuctions, 9);
+  const { rows, totalRows, ...pagination } = usePagination(
+    sortedAuctions,
+    ROW_LIMIT,
+  );
 
   const handleSorting = (value: string) => {
     setSortByStatus(value);
@@ -272,7 +278,9 @@ export default function AuctionListPage({ curator }: AuctionListPageProps) {
                   />
                 ))}
           </div>
-          {rows.length > 9 && <Pagination className="mt-6" {...pagination} />}
+          {totalRows > ROW_LIMIT && (
+            <Pagination className="mt-6" {...pagination} />
+          )}
 
           {!environment.isProduction && (
             <div className="flex flex-col items-center justify-center py-8">
