@@ -10,11 +10,16 @@ export function AuctionStatusBadge({
   status: AuctionStatus;
   large?: boolean;
 } & React.HTMLAttributes<HTMLParagraphElement>) {
+  const isLiveOrRegistering = ["live", "registering"].includes(status);
+
   return (
     <Badge
       size={status === "live" && large ? "xl" : "m"}
-      className={cn(className, "dark:text-black")}
-      color={status === "live" || status === "registering" ? "active" : "ghost"}
+      className={cn(
+        className,
+        isLiveOrRegistering ? "dark:text-black" : "dark:text-neutral-500",
+      )}
+      color={isLiveOrRegistering ? "active" : "ghost"}
     >
       {status}
     </Badge>
