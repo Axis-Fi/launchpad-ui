@@ -1,6 +1,6 @@
 import { formatUnits } from "viem";
 import type { Address, BatchAuctionBid } from "@repo/types";
-import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client/src/generated";
+import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
 
 /**
  * Creates a fake bid entry on an auction.

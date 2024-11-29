@@ -7,6 +7,7 @@ export const allowedCurators: Curator[] = [
     address: [
       "0x93d2f6a92af6add436df7ba185dd736ec13f0aaa",
       "0x32f33a14e36cb75b3f58e1822418599e3f075ffb",
+      "0x82A22117b8A0AD72628Bf4b01BF822aeea88B9b3",
     ],
     twitter: "baselinemarkets",
     website: "https://www.baseline.markets/",

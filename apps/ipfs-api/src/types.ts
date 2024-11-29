@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const auctionInfoWriteType = z.object({
+export const AuctionMetadataSchema = z.object({
   key: z.string().optional().nullable(),
   name: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
@@ -9,4 +9,4 @@ export const auctionInfoWriteType = z.object({
   links: z.record(z.string().optional()).optional(),
 });
 
-export type AuctionInfoWriteType = z.infer<typeof auctionInfoWriteType>;
+export type AuctionMetadata = z.infer<typeof AuctionMetadataSchema>;

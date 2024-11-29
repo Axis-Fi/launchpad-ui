@@ -10,7 +10,7 @@ const config: AxisDeploymentConfig = {
   chain: mantleSepoliaTestnet,
   chainIconUrl: "/mantle-logo.svg",
   subgraphURL:
-    "https://subgraph-api.mantle.xyz/api/public/d124a5f1-0609-435a-9a3a-dd525001afbe/subgraphs/axis-origin-mantle-sepolia/v<VERSION>/gn",
+    "https://api.goldsky.com/api/public/project_clu16lu24lqh201x9f0qh135t/subgraphs/axis-origin-mantle-sepolia/<VERSION>/gn",
   rpcURL: "https://rpc.sepolia.mantle.xyz",
   tokenList: [
     {

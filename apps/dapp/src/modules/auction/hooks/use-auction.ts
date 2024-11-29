@@ -1,8 +1,5 @@
-import {
-  GetBatchAuctionLotQuery,
-  useGetBatchAuctionLotQuery,
-} from "@repo/subgraph-client/src/generated";
-import type { QueryKey, UseQueryResult } from "@tanstack/react-query";
+import { useGetBatchAuctionLotQuery } from "@repo/subgraph-client";
+import type { QueryKey } from "@tanstack/react-query";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { AuctionType } from "@repo/types";
 import type {
@@ -19,14 +16,13 @@ import { formatDistanceToNow } from "date-fns";
 import { trimCurrency } from "utils";
 import { useTokenLists } from "state/tokenlist";
 import { formatAuctionTokens } from "../utils/format-tokens";
-import { deployments } from "@repo/deployments";
-import { fetchParams } from "utils/fetch";
 import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
 import { useIsCacheStale } from "./use-is-cache-stale";
 import { useSafeRefetch } from "./use-safe-refetch";
 import { getAuctionId } from "../utils/get-auction-id";
 import { getAuctionType } from "../utils/get-auction-type";
 import { externalAuctionInfo } from "@repo/env";
+import { useLaunch } from "@repo/sdk/react";
 
 type AuctionQueryKey = QueryKey &
   readonly ["getBatchAuctionLot", { id: AuctionId }];
@@ -60,26 +56,20 @@ export function useAuction(
   // Don't fetch the auction if an optimistic update (e.g. a bid) is still fresh.
   // This allows the subgraph time to update before refetching.
   const isCacheStale = useIsCacheStale(queryKey);
-  const isQueryEnabled = !!chainId && !!id && isCacheStale;
 
   const {
-    data,
+    data: rawAuction,
     isLoading,
     isRefetching,
-  }: UseQueryResult<GetBatchAuctionLotQuery> = useGetBatchAuctionLotQuery(
-    {
-      endpoint: deployments[chainId!].subgraphURL,
-      fetchParams,
+  } = useLaunch({
+    chainId,
+    lotId: Number(lotId),
+    options: {
+      enabled: isCacheStale,
     },
-    { id: id! },
-    { enabled: isQueryEnabled },
-  );
+  });
 
   const refetch = useSafeRefetch(queryKey);
-
-  const rawAuction: GetBatchAuctionLotQuery["batchAuctionLot"] = (
-    data as GetBatchAuctionLotQuery
-  )?.batchAuctionLot;
 
   const auctionType = getAuctionType(rawAuction?.auctionType) as AuctionType;
 

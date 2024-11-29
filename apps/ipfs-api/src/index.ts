@@ -1,6 +1,7 @@
 import { appRouter, context } from "./trpc";
 import express from "express";
 import * as trpcExpress from "@trpc/server/adapters/express";
+import { createTRPCProxyClient } from "@trpc/client";
 import * as dotenv from "dotenv";
 import cors from "cors";
 
@@ -25,3 +26,7 @@ app.listen(port, () => {
 });
 
 export type AppRouter = typeof appRouter;
+
+export type MetadataClient = ReturnType<
+  typeof createTRPCProxyClient<AppRouter>
+>;

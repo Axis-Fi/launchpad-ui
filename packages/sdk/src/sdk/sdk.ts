@@ -3,6 +3,8 @@ import {
   createCloakClient,
   Configuration,
 } from "@repo/cloak";
+import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
+import type { AppRouter, MetadataClient } from "@repo/ipfs-api";
 import * as core from "../core";
 import { type AxisDeployments, deployments } from "@repo/deployments";
 import { type OriginConfig } from "../types";
@@ -22,6 +24,7 @@ import type {
 } from "../core";
 import type { GetTokenPriceParams } from "../core/tokens";
 import { CancelConfig, CancelParams } from "../core/cancel";
+import { CreateConfig, CreateParams } from "../core/create";
 
 /**
  * OriginSdk provides convenience helpers for interacting with Axis Origin protocol.
@@ -47,6 +50,7 @@ class OriginSdk {
   core: Core;
   deployments: AxisDeployments;
   cloakClient: CloakClient;
+  metadataClient: MetadataClient;
 
   constructor(
     _config: OriginConfig,
@@ -60,6 +64,14 @@ class OriginSdk {
     this.cloakClient = createCloakClient(
       new Configuration({ basePath: _config.cloak.url }),
     );
+
+    this.metadataClient = createTRPCProxyClient<AppRouter>({
+      links: [
+        httpBatchLink({
+          url: _config.metadata.url,
+        }),
+      ],
+    });
   }
 
   /**
@@ -122,17 +134,8 @@ class OriginSdk {
    *   console.log(error.message, error.issues)
    * }
    */
-  async bid(
-    params: BidParams,
-    callbackData: `0x${string}`,
-  ): Promise<BidConfig> {
-    return this.core.bid.functions.getConfig(
-      params,
-      callbackData,
-      this.cloakClient,
-      this.core.auction,
-      this.deployments,
-    );
+  async bid(params: BidParams): Promise<BidConfig> {
+    return this.core.bid.getConfig(params, this.cloakClient);
   }
 
   /**
@@ -145,7 +148,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.claimBids({
+   *   const config = sdk.claimBids({
    *     lotId: 1,
    *     bids: [1, 2, 3],
    *     chainId: 1,
@@ -155,7 +158,7 @@ class OriginSdk {
    * }
    */
   claimBids(params: ClaimBidsParams): ClaimBidsConfig {
-    return this.core.claimBids.functions.getConfig(params);
+    return this.core.claimBids.getConfig(params);
   }
 
   /**
@@ -168,7 +171,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.refundBid({
+   *   const config = sdk.refundBid({
    *     lotId: 1,
    *     bidId: 10,
    *     bidIndex: 1,
@@ -192,7 +195,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.settle({
+   *   const config = sdk.settle({
    *     lotId: 1,
    *     chainId: 1,
    *     numBids: 10,
@@ -217,7 +220,7 @@ class OriginSdk {
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.abort({
+   *   const config = sdk.abort({
    *     lotId: 1,
    *     chainId: 1,
    *   })
@@ -233,14 +236,14 @@ class OriginSdk {
    * Gets the contract config required to execute a cancel transaction on the auction house smart contract.
    * Cancelling an auction ends the auction, and is only possible before a bidder has bid on it.
    *
-   * @param params abort parameters
-   * @returns Contract config for the abort transaction
+   * @param params cancel parameters
+   * @returns Contract config for the cancel transaction
    *
    * @example
    * import { sdk } from "./sdk"
    *
    * try {
-   *   const config = await sdk.abort({
+   *   const config = sdk.cancel({
    *     lotId: 1,
    *     chainId: 1,
    *   })
@@ -250,6 +253,28 @@ class OriginSdk {
    */
   cancel(params: CancelParams): CancelConfig {
     return this.core.cancel.getConfig(params);
+  }
+
+  /**
+   * // TODO
+   * todo
+   *
+   * @param params create parameters
+   * @returns Contract config for the create transaction
+   *
+   * @example
+   * import { sdk } from "./sdk"
+   *
+   * try {
+   *   const config = await sdk.create({
+   *     //TODO: 1,
+   *   })
+   * } catch (error: SdkError) {
+   *   console.log(error.message, error.issues)
+   * }
+   */
+  async create(params: CreateParams): Promise<CreateConfig> {
+    return this.core.create.getConfig(params, this.metadataClient);
   }
 }
 

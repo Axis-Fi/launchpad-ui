@@ -124,14 +124,18 @@ export default function AuctionListPage() {
         />
         {!isTabletOrMobile && (
           <div className="z-10 mb-10 text-center">
-            <Text size={isTabletOrMobile ? "2xl" : "7xl"} mono>
+            <Text
+              size={isTabletOrMobile ? "2xl" : "7xl"}
+              mono
+              className="dark:text-neutral-100"
+            >
               Welcome to Axis
             </Text>
 
             <Text
               size="3xl"
               color="secondary"
-              className="mx-auto w-fit lg:text-nowrap"
+              className="mx-auto w-fit lg:text-nowrap dark:text-neutral-200"
             >
               Next-Generation Token Launches
             </Text>
@@ -151,7 +155,11 @@ export default function AuctionListPage() {
                 </Button>
               </ScrollLink>
 
-              <Button className="uppercase" size="lg" variant="secondary">
+              <Button
+                className="uppercase dark:border-neutral-200 dark:text-neutral-200"
+                size="lg"
+                variant="secondary"
+              >
                 <Link target="_blank" to={metadata.contact}>
                   Apply for Launch
                 </Link>
@@ -171,9 +179,7 @@ export default function AuctionListPage() {
           <div className="flex items-center justify-between">
             {!isTabletOrMobile && (
               <Tooltip content={"Axis is a modular auction protocol"}>
-                <Text size="lg">
-                  {isLoading ? "Loading " : ""}Token Launches
-                </Text>
+                <Text size="lg">Token Launches</Text>
               </Tooltip>
             )}
             <div className="ml-6 flex flex-grow items-center justify-start">
@@ -224,10 +230,10 @@ export default function AuctionListPage() {
               gridView
                 ? "grid grid-cols-1 gap-4 px-2 md:grid-cols-2 lg:mx-auto lg:grid-cols-3 lg:px-0"
                 : "space-y-4",
-              isLoading && "mask",
+              isLoading && rows.length === 0 && "mask",
             )}
           >
-            {isLoading
+            {isLoading && rows.length === 0
               ? Array(3)
                   .fill(0)
                   .map((_e, i) => (

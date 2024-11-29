@@ -1,5 +1,5 @@
-import { GetAuctionLotsDocument } from "@repo/subgraph-client/src/generated";
 import type { Auction, GetAuctionLots } from "@repo/types";
+import { useLaunches } from "@repo/sdk/react";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "modules/auction/utils/format-tokens";
@@ -25,10 +25,8 @@ export const getAuctionsQueryKey = (chainId: number) =>
 
 export function useAuctions(): AuctionsResult {
   const { data, isLoading, isSuccess, isRefetching } =
-    useQueryAll<GetAuctionLots>({
-      document: GetAuctionLotsDocument,
-      fields: ["batchAuctionLots"],
-      queryKeyFn: (deployment) => getAuctionsQueryKey(deployment.chain.id),
+    useLaunches<GetAuctionLots>({
+      queryKeyFn: getAuctionsQueryKey,
     });
 
   // Refetch auctions if the cache is stale
@@ -40,10 +38,8 @@ export function useAuctions(): AuctionsResult {
     ? activeRegistrations.data ?? []
     : [];
 
-  const rawAuctions = data.batchAuctionLots.flat() ?? [];
-
   // Filter out cancelled auctions
-  const filteredAuctions = rawAuctions.filter(
+  const filteredAuctions = data.filter(
     (auction) => getAuctionStatus(auction) !== "cancelled",
   );
 

@@ -31,7 +31,9 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   onClickMaxButton?: () => void;
   /** the prefix to add to the amount */
   amountPrefix?: string;
-} & NumberInputProps;
+
+  onChange: NumberInputProps["onChange"];
+};
 
 export const TokenAmountInput = React.forwardRef<
   HTMLInputElement,
@@ -117,10 +119,12 @@ export const TokenAmountInput = React.forwardRef<
             </div>
           )}
           {balance && (
-            <div className="ml-auto flex items-end">
+            <div className="gap-x-sm ml-auto flex items-end">
               <Text size="xs" color="secondary" uppercase>
-                Balance: <Format value={balance} />{" "}
                 {limit ? `Limit: ${limit}` : ""}
+              </Text>
+              <Text size="xs" color="secondary" uppercase>
+                Balance: <Format value={balance} />
               </Text>
             </div>
           )}
