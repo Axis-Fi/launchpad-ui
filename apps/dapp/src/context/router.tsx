@@ -49,6 +49,10 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
         path: ":curatorId/launches",
         element: <CuratorDedicatedPage />,
       },
+      {
+        path: ":curatorId/:chainId/:lotId",
+        element: <AuctionPage />,
+      },
     ],
   },
 ]);

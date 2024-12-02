@@ -13,7 +13,8 @@ export const allowedCurators: Curator[] = [
     twitter: "baselinemarkets",
     website: "https://www.baseline.markets/",
     avatar: "/images/baseline-markets.png",
-    banner: "/images/baseline-banner.png",
+    banner:
+      "https://pbs.twimg.com/profile_banners/1617681275791486976/1732350035/1500x500",
     description:
       "Baseline creates tokens with programmatic liquidity and rising floor prices. Their innovative tokenomics system combines automated market-making with built-in protections to ensure sustainable value growth through all market conditions.",
   },
