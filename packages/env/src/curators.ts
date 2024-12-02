@@ -9,7 +9,7 @@ export const allowedCurators: Curator[] = [
       "0x93d2f6a92af6add436df7ba185dd736ec13f0aaa",
       "0x32f33a14e36cb75b3f58e1822418599e3f075ffb",
       "0x82A22117b8A0AD72628Bf4b01BF822aeea88B9b3",
-    ],
+    ].map((s) => s.toLowerCase() as Address),
     twitter: "baselinemarkets",
     website: "https://www.baseline.markets/",
     avatar: "/images/baseline-markets.png",
@@ -28,17 +28,6 @@ export const allowedCurators: Curator[] = [
       "Revelo Intel is a firm that prepares institutional-grade research focusing on DeFi ecosystems, protocols, and narratives. Our comprehensive coverage allows users and investor to do proper due diligence in this fast-paced and complex space.",
     reportURL:
       "https://revelointel.com/wp-content/uploads/2024/08/Aurelius-Finance-Overview-by-Revelo-Intel.pdf",
-  },
-  {
-    id: "axis",
-    name: "Axis Dev Team",
-    type: "curator",
-    banner:
-      "https://axis.finance/assets/images/AxisBanner-9eace5008e36844929f95d3d709b4aaf.png",
-    address: "0x62A665d3f9fc9a968dC35a789122981d9109349a", //TODO: DEV ADDRESS, REPLACE WITH -> "0x63c4fC41B61853997d51b73419a5Cf41C4be1A6F",
-    website: "https://axis.finance",
-    avatar: "https://avatars.githubusercontent.com/u/158601375",
-    description: "Developers adding bugs",
   },
 ];
 

@@ -4,7 +4,10 @@ import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "modules/auction/utils/format-tokens";
 import { getAuctionType } from "modules/auction/utils/get-auction-type";
-import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
+import {
+  isPreviousBaselineAuction,
+  isSecureAuction,
+} from "modules/auction/utils/malicious-auction-filters";
 import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
@@ -60,7 +63,7 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
       (a) =>
         !curator ||
         (isCuratorAddress(a.curator as Address, targetCurator) &&
-          a.curatorApproved),
+          (a.curatorApproved || isPreviousBaselineAuction(a))),
     )
     .map((auction) => {
       const type = getAuctionType(auction.auctionType);
@@ -100,6 +103,7 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
 
 function isCuratorAddress(address: Address, curator?: Curator) {
   if (!curator || !address) return false;
+
   return Array.isArray(curator.address)
     ? curator.address.includes(address.toLowerCase() as Address)
     : curator.address.toLowerCase() === address.toLowerCase();
