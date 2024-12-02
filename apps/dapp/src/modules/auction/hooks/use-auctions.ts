@@ -1,16 +1,24 @@
-import type { Auction, GetAuctionLots } from "@repo/types";
+import type { Auction, Curator, GetAuctionLots } from "@repo/types";
 import { useLaunches } from "@repo/sdk/react";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "modules/auction/utils/format-tokens";
 import { getAuctionType } from "modules/auction/utils/get-auction-type";
-import { isSecureAuction } from "modules/auction/utils/malicious-auction-filters";
+import {
+  isPreviousBaselineAuction,
+  isSecureAuction,
+} from "modules/auction/utils/malicious-auction-filters";
 import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
 import { useSafeRefetch } from "./use-safe-refetch";
-import { externalAuctionInfo, featureToggles } from "@repo/env";
+import {
+  allowedCurators,
+  externalAuctionInfo,
+  featureToggles,
+} from "@repo/env";
 import { useAuctionRegistrations } from "./use-auction-registrations";
+import { Address } from "viem";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -23,7 +31,11 @@ export type AuctionsResult = {
 export const getAuctionsQueryKey = (chainId: number) =>
   ["auctions", chainId] as const;
 
-export function useAuctions(): AuctionsResult {
+type UseAuctionsArgs = {
+  curator?: string;
+};
+
+export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   const { data, isLoading, isSuccess, isRefetching } =
     useLaunches<GetAuctionLots>({
       queryKeyFn: getAuctionsQueryKey,
@@ -31,6 +43,7 @@ export function useAuctions(): AuctionsResult {
 
   // Refetch auctions if the cache is stale
   const refetch = useSafeRefetch(["auctions"]);
+  const targetCurator = allowedCurators.find((c) => c.id === curator);
 
   const { activeRegistrations } = useAuctionRegistrations();
 
@@ -46,6 +59,12 @@ export function useAuctions(): AuctionsResult {
   const { getToken } = useTokenLists();
 
   const auctions = filteredAuctions
+    .filter(
+      (a) =>
+        !curator ||
+        (isCuratorAddress(a.curator as Address, targetCurator) &&
+          (a.curatorApproved || isPreviousBaselineAuction(a))),
+    )
     .map((auction) => {
       const type = getAuctionType(auction.auctionType);
       if (!type) {
@@ -80,4 +99,12 @@ export function useAuctions(): AuctionsResult {
     isRefetching,
     isSuccess,
   };
+}
+
+function isCuratorAddress(address: Address, curator?: Curator) {
+  if (!curator || !address) return false;
+
+  return Array.isArray(curator.address)
+    ? curator.address.includes(address.toLowerCase() as Address)
+    : curator.address.toLowerCase() === address.toLowerCase();
 }

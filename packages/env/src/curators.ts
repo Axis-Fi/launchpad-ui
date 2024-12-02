@@ -2,20 +2,23 @@ import { Address, Curator } from "@repo/types";
 
 export const allowedCurators: Curator[] = [
   {
+    id: "baseline",
     name: "Baseline Markets",
     type: "platform",
     address: [
       "0x93d2f6a92af6add436df7ba185dd736ec13f0aaa",
       "0x32f33a14e36cb75b3f58e1822418599e3f075ffb",
       "0x82A22117b8A0AD72628Bf4b01BF822aeea88B9b3",
-    ],
+    ].map((s) => s.toLowerCase() as Address),
     twitter: "baselinemarkets",
     website: "https://www.baseline.markets/",
     avatar: "/images/baseline-markets.png",
+    banner: "/images/baseline-banner.png",
     description:
       "Baseline creates tokens with programmatic liquidity and rising floor prices. Their innovative tokenomics system combines automated market-making with built-in protections to ensure sustainable value growth through all market conditions.",
   },
   {
+    id: "revelo",
     name: "Revelo Intel",
     type: "curator",
     address: "0x63c4fC41B61853997d51b73419a5Cf41C4be1A6F",

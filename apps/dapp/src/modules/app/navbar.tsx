@@ -63,6 +63,7 @@ type NavbarProps = {
   mobile?: boolean;
   showAll?: boolean;
   onlyDefault?: boolean;
+  isCuratorPage?: boolean;
   className?: string;
   onNavClick?: () => void;
 };
@@ -74,7 +75,13 @@ export default function Navbar(props: NavbarProps) {
     if (props.links) return props.links;
     if (props.onlyDefault) return defaultLinks;
 
-    return props.mobile && !props.showAll ? defaultLinks : desktopLinks;
+    const _links = props.mobile && !props.showAll ? defaultLinks : desktopLinks;
+
+    return _links.filter(
+      (
+        r, //Disabled for curator specific pages
+      ) => !props.isCuratorPage || !["Curators", "Referrals"].includes(r.label),
+    );
   }, [props.links, props.onlyDefault]);
 
   return (

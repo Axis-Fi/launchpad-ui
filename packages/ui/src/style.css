@@ -161,7 +161,7 @@
     --feedback-warning: var(--red-600);
 
     --surface-primary-fill: var(--neutral-50);
-    --surface-primary-outline: var(--neutral-300);
+    --surface-primary-outline: var(--neutral-100);
     --surface-secondary-fill: var(--neutral-200);
     --surface-secondary-outline: var(--neutral-400);
     --surface-tertiary-fill: var(--neutral-300);
