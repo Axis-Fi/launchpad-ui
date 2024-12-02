@@ -9,6 +9,7 @@ import {
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { featureToggles, type FeatureToggle } from "@repo/env";
+import { useCuratorPage } from "loaders/use-curator-page";
 
 type LinkConfig = {
   label: string;
@@ -70,6 +71,7 @@ type NavbarProps = {
 
 export default function Navbar(props: NavbarProps) {
   const isRoot = window.location.hash === "#/";
+  const { isCuratorPage, curator } = useCuratorPage();
 
   const links: LinkConfig[] = React.useMemo(() => {
     if (props.links) return props.links;
@@ -82,7 +84,7 @@ export default function Navbar(props: NavbarProps) {
         r, //Disabled for curator specific pages
       ) => !props.isCuratorPage || !["Curators", "Referrals"].includes(r.label),
     );
-  }, [props.links, props.onlyDefault]);
+  }, [props.links, props.onlyDefault, isCuratorPage]);
 
   return (
     <NavigationMenu>
@@ -92,27 +94,35 @@ export default function Navbar(props: NavbarProps) {
           props.className,
         )}
       >
-        {links.map((l) => (
-          <NavigationMenuItem key={l.href}>
-            <NavigationMenuLink asChild>
-              <NavLink to={l.href} target={l.target ?? "_self"}>
-                {({ isActive }) => (
-                  <Button
-                    variant="link"
-                    onClick={() => props.onNavClick?.()}
-                    className={cn(
-                      "text-foreground px-2 uppercase",
-                      (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
-                        "text-primary",
-                    )}
-                  >
-                    {l.label}
-                  </Button>
-                )}
-              </NavLink>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ))}
+        {links
+          .map((l) => {
+            if (l.href === "/#" && isCuratorPage) {
+              const link = { ...l, href: `/${curator?.id}/launches` };
+              return link;
+            }
+            return l;
+          })
+          .map((l) => (
+            <NavigationMenuItem key={l.href}>
+              <NavigationMenuLink asChild>
+                <NavLink to={l.href} target={l.target ?? "_self"}>
+                  {({ isActive }) => (
+                    <Button
+                      variant="link"
+                      onClick={() => props.onNavClick?.()}
+                      className={cn(
+                        "text-foreground px-2 uppercase",
+                        (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
+                          "text-primary",
+                      )}
+                    >
+                      {l.label}
+                    </Button>
+                  )}
+                </NavLink>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ))}
       </NavigationMenuList>
     </NavigationMenu>
   );
