@@ -69,8 +69,8 @@ export const externalAuctionInfo: Record<string, AuctionInfo> = {
     ],
     allowlist: [],
   },
-  "blast-0xba000055df41da8584e1251bcdf45e91acb61108-3": {
-    key: "blast-0xba000055df41da8584e1251bcdf45e91acb61108-3",
+  "blast-0xba000055df41da8584e1251bcdf45e91acb61108-4": {
+    key: "blast-0xba000055df41da8584e1251bcdf45e91acb61108-4",
     name: "FlappyETH",
     description:
       "FlappyEth is a Play-to-Earn blockchain based game developed by Devsbased Labs, where skill and strategy come together for fun and rewards. Revenues are distributed to the Prize Fund, rewarding top players for their achievements. Devsbased Labs is committed to creating secure, enjoyable games while empowering players to benefit from protocol revenues.",
