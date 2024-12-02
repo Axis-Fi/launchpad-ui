@@ -1,10 +1,11 @@
-import { Link, Metric, cn } from "@repo/ui";
+import { Metric, cn } from "@repo/ui";
 import { PropsWithAuction } from "@repo/types";
 import { getLinkUrl } from "./utils/auction-details";
 import { AuctionMetric } from "./auction-metric";
 import { getCurator } from "@repo/env";
 import ExternalLink from "components/external-link";
 import { ReferrerPopover } from "modules/referral/referrer-popover";
+import { SocialRow } from "components/social-row";
 
 type ProjectInfoCardProps = PropsWithAuction &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -13,7 +14,6 @@ type ProjectInfoCardProps = PropsWithAuction &
 
 export function ProjectInfoCard({
   auction,
-  canRefer = true,
   children,
   ...props
 }: ProjectInfoCardProps) {
@@ -25,6 +25,8 @@ export function ProjectInfoCard({
   const discord = getLinkUrl("discord", auction);
   const farcaster = getLinkUrl("farcaster", auction);
   const curator = getCurator(auction.curator?.toLowerCase() ?? "");
+  const canRefer = parseFloat(auction.referrerFee) > 0;
+
   return (
     <div
       className={cn(props.className, "flex h-full flex-col justify-between")}
@@ -52,40 +54,13 @@ export function ProjectInfoCard({
         )}
 
         {canRefer && <ReferrerPopover auction={auction} />}
-        <div className="flex gap-x-4">
-          {twitter && (
-            <Link className="text-primary flex" href={twitter}>
-              <img
-                src="/images/twitter-logo.svg"
-                alt="twitter logo"
-                width="35px"
-              />
-            </Link>
-          )}
-          {discord && (
-            <Link className="text-primary flex" href={discord}>
-              <img
-                src="/images/discord-logo.svg"
-                alt="discord logo"
-                width="35px"
-              />
-            </Link>
-          )}
-          {farcaster && (
-            <Link className="text-primary flex" href={farcaster}>
-              <img
-                src="/images/farcaster-logo.svg"
-                alt="farcaster logo"
-                width="35px"
-              />
-            </Link>
-          )}
-          {website && (
-            <Link className="text-primary flex" href={website}>
-              <img src="/images/web-logo.svg" alt="web logo" width="35px" />
-            </Link>
-          )}
-        </div>
+        <SocialRow
+          iconClassName="size-10"
+          twitter={twitter}
+          discord={discord}
+          website={website}
+          farcaster={farcaster}
+        />
       </div>
     </div>
   );

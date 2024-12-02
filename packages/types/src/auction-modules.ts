@@ -1,4 +1,4 @@
-export type AuctionModuleReference = "01EMPA" | "01FPBA";
+export type AuctionModuleReference = "01EMPA" | "01FPBA" | "02FPBA";
 
 export enum AuctionType {
   SEALED_BID = "EMPA",

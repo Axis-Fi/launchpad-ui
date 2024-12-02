@@ -3,6 +3,7 @@ import { type AuctionModuleReference, AuctionType } from "@repo/types";
 const auctionTypes: Record<AuctionModuleReference, AuctionType> = {
   "01EMPA": AuctionType.SEALED_BID,
   "01FPBA": AuctionType.FIXED_PRICE_BATCH,
+  "02FPBA": AuctionType.FIXED_PRICE_BATCH,
 };
 
 export const auctionHouseTypes: Record<AuctionType, string> = {

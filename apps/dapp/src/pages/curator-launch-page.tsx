@@ -12,16 +12,13 @@ import {
   UsdToggle,
 } from "@repo/ui";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
-import { ArrowDownIcon, ArrowRightIcon, SearchIcon } from "lucide-react";
+import { ArrowRightIcon, SearchIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
 import { AuctionCard } from "modules/auction/auction-card";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { DashboardIcon, RowsIcon } from "@radix-ui/react-icons";
-import {
-  Link as ScrollLink,
-  Element as ScrollTargetElement,
-} from "react-scroll";
+import { Element as ScrollTargetElement } from "react-scroll";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import {
   AuctionListSettingsActions,
@@ -29,9 +26,10 @@ import {
 } from "state/user-settings/auction-list-settings";
 import { useAtom } from "jotai";
 import React from "react";
-import { environment, metadata } from "@repo/env";
+import { environment } from "@repo/env";
 import { useMediaQueries } from "loaders/use-media-queries";
 import { Curator } from "@repo/types";
+import { ImageBanner } from "components/image-banner";
 
 const options = [
   { value: "registering", label: "Registering" },
@@ -46,15 +44,11 @@ type AuctionListPageProps = {
   curator?: Curator;
 };
 
-const ROW_LIMIT = 9;
-
-export default function AuctionListPage({ curator }: AuctionListPageProps) {
+export default function CuratorLaunchPage({ curator }: AuctionListPageProps) {
   const { isTabletOrMobile } = useMediaQueries();
   const [userSettings, dispatch] = useAtom(auctionListSettingsAtom);
 
-  const [gridView, setGridView] = useState(
-    isTabletOrMobile ?? userSettings.gridView,
-  );
+  const [gridView, setGridView] = useState(userSettings.gridView ?? true);
 
   const [sortByStatus, setSortByStatus] = useState<string | undefined>(
     userSettings.activeSort,
@@ -89,10 +83,7 @@ export default function AuctionListPage({ curator }: AuctionListPageProps) {
     return sortAuction(a, b);
   });
 
-  const { rows, totalRows, ...pagination } = usePagination(
-    sortedAuctions,
-    ROW_LIMIT,
-  );
+  const { rows, ...pagination } = usePagination(sortedAuctions, 9);
 
   const handleSorting = (value: string) => {
     setSortByStatus(value);
@@ -133,71 +124,22 @@ export default function AuctionListPage({ curator }: AuctionListPageProps) {
           !curator && "bg-hero-banner",
         )}
       >
-        {curator && (
-          <img
-            src={curator.banner}
-            className="absolute inset-0 mx-auto size-full h-[480px] w-auto bg-center bg-no-repeat"
-          />
-        )}
-
-        {!curator && (
-          <img
-            src="dot-grid.svg"
-            className="absolute inset-0 size-full object-cover opacity-50"
-          />
-        )}
-        {!isTabletOrMobile && (
-          <div className="z-10 mb-10 text-center">
-            <Text
-              size={isTabletOrMobile ? "2xl" : "7xl"}
-              mono
-              className="dark:text-neutral-100"
-            >
-              {curator ? curator.name : "Welcome to Axis"}
-            </Text>
-
-            <Text
-              size="3xl"
-              color="secondary"
-              className="mx-auto w-fit lg:text-nowrap dark:text-neutral-200"
-            >
-              {curator ? "" : "Next-Generation Token Launches"}
-            </Text>
-            {!curator && (
-              <div className="mx-auto mt-6 flex w-min flex-col-reverse  gap-2 lg:flex-row">
-                <ScrollLink to="auctions" offset={-10} smooth={true}>
-                  <Button
-                    onClick={() => handleSorting("created")}
-                    className="uppercase"
-                    size="lg"
-                  >
-                    <div className="flex items-center">
-                      Upcoming Sales
-                      <div className="size-6">
-                        <ArrowDownIcon />
-                      </div>
-                    </div>
-                  </Button>
-                </ScrollLink>
-
-                <Button
-                  className="uppercase dark:border-neutral-200 dark:text-neutral-200"
-                  size="lg"
-                  variant="secondary"
+        <ImageBanner imgUrl={curator?.banner} className="absolute">
+          <div className="max-w-limit mx-auto flex h-full w-full flex-row flex-wrap ">
+            <div className="mb-10 flex w-full flex-col items-center justify-end">
+              <div className="relative mb-2 flex justify-center self-center text-center">
+                <div className="border-primary absolute inset-0 top-3 -z-10 -ml-10 size-full w-[120%] border bg-neutral-950 blur-2xl" />
+                <Text
+                  size="7xl"
+                  mono
+                  className="dark:text-foreground mx-auto text-neutral-200"
                 >
-                  <Link target="_blank" to={metadata.contact}>
-                    Apply for Launch
-                  </Link>
-                </Button>
+                  {curator?.name}
+                </Text>
               </div>
-            )}
+            </div>
           </div>
-        )}
-        {!curator && isTabletOrMobile && (
-          <Text size="7xl" mono>
-            Axis
-          </Text>
-        )}
+        </ImageBanner>
       </div>
 
       <ScrollTargetElement name="auctions">
@@ -278,9 +220,7 @@ export default function AuctionListPage({ curator }: AuctionListPageProps) {
                   />
                 ))}
           </div>
-          {totalRows > ROW_LIMIT && (
-            <Pagination className="mt-6" {...pagination} />
-          )}
+          {rows.length > 9 && <Pagination className="mt-6" {...pagination} />}
 
           {!environment.isProduction && (
             <div className="flex flex-col items-center justify-center py-8">

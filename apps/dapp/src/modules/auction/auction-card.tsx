@@ -10,6 +10,7 @@ import { AuctionMetric } from "./auction-metric";
 import { getAuctionPath } from "utils/router";
 import { getLinkUrl } from "./utils/auction-details";
 import { AuctionStatusBadge } from "./auction-status-badge";
+import { useCuratorPage } from "loaders/use-curator-page";
 
 type AuctionCardConditionalProps =
   | { loading: true; auction?: never }
@@ -27,7 +28,7 @@ export function AuctionCard({ auction, ...props }: AuctionCardProps) {
     <Card
       className={cn(
         "border-surface-outline hover:bg-surface-tertiary dark:hover:bg-surface-secondary group size-full overflow-hidden hover:border-neutral-400",
-        props.isGrid ? "relative h-[400px] gap-y-3 lg:min-w-[400px]" : "p-8",
+        props.isGrid ? "relative h-[400px] gap-y-3 lg:min-w-[436px]" : "p-8",
         props.className,
       )}
     >
@@ -66,11 +67,16 @@ function AuctionCardDetails(
   const isEMP = props.auction.auctionType === AuctionType.SEALED_BID;
   const isFPB = props.auction.auctionType === AuctionType.FIXED_PRICE_BATCH;
   const hasCurator = !!props.auction.curator && props.auction.curatorApproved;
+  const { curator, isCuratorPage } = useCuratorPage();
 
   const isRegistrationLaunch = props.auction.status === "registering";
 
-  const detailsPageUrl =
+  let detailsPageUrl =
     getAuctionPath(props.auction) + (isRegistrationLaunch ? "/register" : "");
+
+  detailsPageUrl = isCuratorPage
+    ? `/${curator?.id}${detailsPageUrl}`
+    : detailsPageUrl;
 
   return (
     <div
