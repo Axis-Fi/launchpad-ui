@@ -25,6 +25,7 @@ import { Countdown } from "modules/auction/countdown";
 import AuctionProgressBar from "modules/auction/auction-progress-bar";
 import { getLinkUrl } from "modules/auction/utils/auction-details";
 import { useAccount, useSwitchChain } from "wagmi";
+import { useCuratorPage } from "loaders/use-curator-page";
 
 const statuses: Record<
   AuctionStatus,
@@ -73,6 +74,8 @@ export default function AuctionPage() {
     }
   }, [auction]);
 
+  const { isCuratorPage, curator } = useCuratorPage();
+
   if (isAuctionLoading) return <AuctionPageLoading />;
   if (!auction || !auction.isSecure) return <AuctionPageMissing />;
 
@@ -90,7 +93,9 @@ export default function AuctionPage() {
       <AuctionPageView auction={auction} isAuctionLoading={isAuctionLoading}>
         <PageHeader
           className="relative mt-0 lg:mt-0"
-          backNavigationPath="/#"
+          backNavigationPath={`${
+            isCuratorPage ? `/${curator?.id}/launches` : "/#"
+          }`}
           backNavigationText="Back to Launches"
           toggle={!isUSDQuote}
           toggleSymbol={auction.quoteToken.symbol}
