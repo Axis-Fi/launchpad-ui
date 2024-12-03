@@ -79,10 +79,25 @@ export default function Navbar(props: NavbarProps) {
 
     const _links = props.mobile && !props.showAll ? defaultLinks : desktopLinks;
 
-    return _links.filter(
-      (
-        r, //Disabled for curator specific pages
-      ) => !props.isCuratorPage || !["Curators", "Referrals"].includes(r.label),
+    return (
+      _links
+        //Disabled for curator specific pages
+        .filter(
+          (r) =>
+            !props.isCuratorPage ||
+            !["Curators", "Referrals"].includes(r.label),
+        )
+        .map((l) => {
+          if (isCuratorPage) {
+            if (l.href === "/#") {
+              const curatorLink = { ...l, href: `/${curator?.id}/launches` };
+              return curatorLink;
+            }
+
+            const curatorLink = { ...l, href: `/${curator?.id}${l.href}` };
+            return curatorLink;
+          } else return l;
+        })
     );
   }, [props.links, props.onlyDefault, isCuratorPage]);
 
@@ -94,35 +109,27 @@ export default function Navbar(props: NavbarProps) {
           props.className,
         )}
       >
-        {links
-          .map((l) => {
-            if (l.href === "/#" && isCuratorPage) {
-              const link = { ...l, href: `/${curator?.id}/launches` };
-              return link;
-            }
-            return l;
-          })
-          .map((l) => (
-            <NavigationMenuItem key={l.href}>
-              <NavigationMenuLink asChild>
-                <NavLink to={l.href} target={l.target ?? "_self"}>
-                  {({ isActive }) => (
-                    <Button
-                      variant="link"
-                      onClick={() => props.onNavClick?.()}
-                      className={cn(
-                        "text-foreground px-2 uppercase",
-                        (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
-                          "text-primary",
-                      )}
-                    >
-                      {l.label}
-                    </Button>
-                  )}
-                </NavLink>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          ))}
+        {links.map((l) => (
+          <NavigationMenuItem key={l.href}>
+            <NavigationMenuLink asChild>
+              <NavLink to={l.href} target={l.target ?? "_self"}>
+                {({ isActive }) => (
+                  <Button
+                    variant="link"
+                    onClick={() => props.onNavClick?.()}
+                    className={cn(
+                      "text-foreground px-2 uppercase",
+                      (isActive || (isRoot && l.href === "/auctions")) && //TODO: check if theres a better way with react-router
+                        "text-primary",
+                    )}
+                  >
+                    {l.label}
+                  </Button>
+                )}
+              </NavLink>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        ))}
       </NavigationMenuList>
     </NavigationMenu>
   );
