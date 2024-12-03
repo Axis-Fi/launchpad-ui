@@ -25,11 +25,17 @@ export const allowedCurators: Curator[] = [
     address: "0x63c4fC41B61853997d51b73419a5Cf41C4be1A6F",
     twitter: "ReveloIntel",
     website: "https://revelointel.com/",
-    avatar: "/images/revelo.jpg",
+    avatar:
+      "https://pbs.twimg.com/profile_images/1681300484504842253/gqHUh0io_400x400.png",
+    banner:
+      "https://pbs.twimg.com/profile_banners/1555515751267811328/1679426160/1500x500",
     description:
       "Revelo Intel is a firm that prepares institutional-grade research focusing on DeFi ecosystems, protocols, and narratives. Our comprehensive coverage allows users and investor to do proper due diligence in this fast-paced and complex space.",
     reportURL:
       "https://revelointel.com/wp-content/uploads/2024/08/Aurelius-Finance-Overview-by-Revelo-Intel.pdf",
+    options: {
+      hideName: true,
+    },
   },
 ];
 

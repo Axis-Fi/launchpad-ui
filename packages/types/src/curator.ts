@@ -13,4 +13,7 @@ export type Curator = {
 
   banner?: string;
   bannerMobile?: string;
+  options?: {
+    hideName?: boolean;
+  };
 };
