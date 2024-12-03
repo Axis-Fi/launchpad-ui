@@ -41,10 +41,8 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "deploy", element: <DeployTokenPage /> },
       { path: ":chainId/:lotId/register", element: <AuctionRegistering /> },
       { path: ":chainId/:lotId", element: <AuctionPage /> },
-      {
-        path: "bridge",
-        element: <BridgePage />,
-      },
+      { path: "bridge", element: <BridgePage /> },
+      { path: ":curatorId/bridge", element: <BridgePage /> },
       {
         path: ":curatorId/launches",
         element: <CuratorDedicatedPage />,

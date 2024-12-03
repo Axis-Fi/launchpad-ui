@@ -21,7 +21,8 @@
   "deployments.callbacks.BaselineAllowlist": [],
   "deployments.callbacks.BaselineAllocatedAllowlist": [
     "0xEF818C84cced3e263573b28733A2A0278CE0d985",
-    "0xEF4a387850c288EBDA79c0b4aA3108416644D3b8"
+    "0xEF4a387850c288EBDA79c0b4aA3108416644D3b8",
+    "0xEFd7c237C9936357073793d61afFA90B49Ce2F75"
   ],
   "deployments.callbacks.BaselineCappedAllowlist": [],
   "deployments.callbacks.BaselineTokenAllowlist": []
