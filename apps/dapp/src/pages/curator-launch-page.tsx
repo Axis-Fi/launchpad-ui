@@ -1,6 +1,5 @@
 import {
   Text,
-  Button,
   IconnedInput,
   Pagination,
   ToggleGroup,
@@ -12,11 +11,10 @@ import {
   UsdToggle,
 } from "@repo/ui";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
-import { ArrowRightIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import { PageContainer } from "modules/app/page-container";
 import { AuctionCard } from "modules/auction/auction-card";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { DashboardIcon, RowsIcon } from "@radix-ui/react-icons";
 import { Element as ScrollTargetElement } from "react-scroll";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
@@ -26,7 +24,6 @@ import {
 } from "state/user-settings/auction-list-settings";
 import { useAtom } from "jotai";
 import React from "react";
-import { environment } from "@repo/env";
 import { useMediaQueries } from "loaders/use-media-queries";
 import { Curator } from "@repo/types";
 import { ImageBanner } from "components/image-banner";
@@ -143,7 +140,7 @@ export default function CuratorLaunchPage({ curator }: AuctionListPageProps) {
       </div>
 
       <ScrollTargetElement name="auctions">
-        <PageContainer>
+        <PageContainer className="mb-20">
           <div className="flex items-center justify-between">
             {!isTabletOrMobile && (
               <Tooltip content={"Axis is a modular auction protocol"}>
@@ -221,17 +218,6 @@ export default function CuratorLaunchPage({ curator }: AuctionListPageProps) {
                 ))}
           </div>
           {rows.length > 9 && <Pagination className="mt-6" {...pagination} />}
-
-          {!environment.isProduction && (
-            <div className="flex flex-col items-center justify-center py-8">
-              <p className="pb-2 font-sans">Want to launch a token?</p>
-              <Button variant="ghost" asChild>
-                <Link to="/create/auction">
-                  Launch token <ArrowRightIcon className="w-6 pl-1" />
-                </Link>
-              </Button>
-            </div>
-          )}
         </PageContainer>
       </ScrollTargetElement>
     </div>
