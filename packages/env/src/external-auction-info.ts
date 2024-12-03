@@ -1,4 +1,5 @@
 import { AuctionInfo } from "@repo/types";
+import flappyAllowlist from "./temp/flappy-allowlist";
 
 export const externalAuctionInfo: Record<string, AuctionInfo> = {
   "blast-0xba000055df41da8584e1251bcdf45e91acb61108-1": {
@@ -101,6 +102,6 @@ export const externalAuctionInfo: Record<string, AuctionInfo> = {
         url: "",
       },
     ],
-    allowlist: [],
+    allowlist: flappyAllowlist,
   },
 };
