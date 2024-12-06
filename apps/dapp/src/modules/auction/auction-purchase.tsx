@@ -21,6 +21,7 @@ import {
   PopupTokenWrapper,
   isQuoteAWrappedGasToken,
 } from "modules/token/popup-token-wrapper";
+import ConnectButton from "components/connect-button";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -480,7 +481,14 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
       ) : (
         <Card title="Private Sale">
           <p>This sale is restricted to {criteria}.</p>
-          <p>The connected wallet is not approved to bid.</p>
+          {walletAccount.isConnected ? (
+            <p>The connected wallet is not approved to bid.</p>
+          ) : (
+            <div>
+              <p className="mt-2">Connect a wallet to check eligibility.</p>
+              <ConnectButton className="mt-4" />
+            </div>
+          )}
         </Card>
       )}
     </div>
