@@ -1,16 +1,30 @@
 import { Auction } from "@repo/types";
 import { getPrice } from "./auction-details";
 import { getMinRaiseForAuction, getTargetRaise } from "../auction-metric";
+import { formatUnits } from "viem";
 
 export function calculateAuctionProgress(auction: Auction) {
-  const currentAmount = +auction.purchased;
+  const rawCurrentAmount = auction.bids.reduce((total, b) => {
+    return (total += BigInt(b.rawAmountIn));
+  }, 0n);
+
+  const preSettlementAmount = +formatUnits(
+    rawCurrentAmount,
+    auction.quoteToken.decimals,
+  );
+
+  const isSettled = auction.status === "settled";
+
+  //We need the auction to settle to identify the partial fills
+  //purchased property will be resolved after settlement and carry the correct amount
+  const currentAmount = isSettled ? +auction.purchased : preSettlementAmount;
 
   const minRaise = getMinRaiseForAuction(auction) ?? 0;
   const targetAmount = getTargetRaise(auction, getPrice(auction)) ?? 0;
 
   const minTarget = Math.round((minRaise / targetAmount) * 100);
   const current = Math.min(
-    Math.round((currentAmount / targetAmount) * 100),
+    Math.round((preSettlementAmount / targetAmount) * 100),
     100,
   );
 
