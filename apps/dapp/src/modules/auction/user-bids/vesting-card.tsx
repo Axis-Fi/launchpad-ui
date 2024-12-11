@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
 import { formatUnits } from "viem";
-import type { PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@axis-finance/types";
 import { Badge, Button, Card, formatDate, Metric, Progress } from "@repo/ui";
 import { RequiresChain } from "components/requires-chain";
 import { trimCurrency } from "utils/currency";

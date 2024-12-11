@@ -1,9 +1,9 @@
 import { Avatar, Badge, Button, Card, Link, Text, Tooltip } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { PageContainer } from "modules/app/page-container";
-import { allowedCurators } from "@repo/env";
-import { Curator } from "@repo/types";
-import { contact } from "@repo/env/src/metadata";
+import { allowedCurators } from "modules/app/curators";
+import { Curator } from "@axis-finance/types";
+import { contact } from "modules/app/metadata";
 import { ArrowRightIcon } from "lucide-react";
 
 export default function CuratorListPage() {

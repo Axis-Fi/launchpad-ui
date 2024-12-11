@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
   Button,
 } from "@repo/ui";
-import { environment } from "@repo/env";
+import { environment } from "@axis-finance/env";
 import { ReachOutMessage } from "modules/app/reach-out";
 import { ErrorResponse, Link, useRouteError } from "react-router-dom";
 

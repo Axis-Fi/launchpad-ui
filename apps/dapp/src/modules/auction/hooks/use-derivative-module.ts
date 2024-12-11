@@ -1,4 +1,4 @@
-import { AuctionType } from "@repo/types";
+import { AuctionType } from "@axis-finance/types";
 import { getAuctionHouse } from "utils/contracts";
 import { isAddress } from "viem";
 import { useReadContract } from "wagmi";

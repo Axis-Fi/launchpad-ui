@@ -1,5 +1,5 @@
-import { axisContracts } from "@repo/deployments";
-import { Address, CallbacksType } from "@repo/types";
+import { axisContracts } from "@axis-finance/deployments";
+import { Address, CallbacksType } from "@axis-finance/types";
 import { getCallbacks } from "utils/contracts";
 import { fromBasisPoints } from "utils/number";
 import { useReadContract, useReadContracts } from "wagmi";

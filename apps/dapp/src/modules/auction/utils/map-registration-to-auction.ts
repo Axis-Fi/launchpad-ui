@@ -1,7 +1,7 @@
 import { getAuctionHouse } from "utils/contracts";
 import { getChainById } from "utils";
 import type { Launch } from "@repo/points";
-import { type Auction, AuctionType } from "@repo/types";
+import { type Auction, AuctionType } from "@axis-finance/types";
 import { lowerDashify } from "./format-chain-name";
 
 export const mapRegistrationToAuction = (

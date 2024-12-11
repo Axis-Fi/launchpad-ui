@@ -1,5 +1,5 @@
 import type { Chain } from "viem";
-import type { Address, AuctionId } from "@repo/types";
+import type { Address, AuctionId } from "@axis-finance/types";
 import { getDeploymentByChainId } from "utils/chain";
 import { formatChainName } from "./format-chain-name";
 

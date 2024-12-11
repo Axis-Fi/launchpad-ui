@@ -16,7 +16,7 @@ import { BlockExplorerLink } from "components/blockexplorer-link";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { Address, BaseError } from "viem";
 import { TransactionErrorDialog } from "modules/transaction/transaction-error-dialog";
-import { AuctionType } from "@repo/types";
+import { AuctionType } from "@axis-finance/types";
 import { isNullOrUndefined } from "utils";
 
 type CreateAuctionStatusCardProps = {

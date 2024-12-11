@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { AuctionType, type BatchAuction } from "@repo/types";
+import { AuctionType, type BatchAuction } from "@axis-finance/types";
 
 const getBatchAuctionMock = (
   overrides: Partial<BatchAuction> | undefined = undefined,

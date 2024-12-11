@@ -5,7 +5,7 @@ import {
   useWriteContract,
 } from "wagmi";
 import { toKeycode } from "utils/hex";
-import { AuctionType } from "@repo/types";
+import { AuctionType } from "@axis-finance/types";
 import { fromBasisPoints, toBasisPoints } from "utils/number";
 import { getAuctionHouse } from "utils/contracts";
 import { useGetCuratorFee } from "./use-get-curator-fee";

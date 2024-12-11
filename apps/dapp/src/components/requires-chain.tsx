@@ -1,6 +1,6 @@
 import { useChainId, useSwitchChain } from "wagmi";
 import { RequiresWalletConnection } from "./requires-wallet-connection";
-import { chains } from "@repo/env";
+import { chains } from "@axis-finance/env";
 import { Button, cn } from "@repo/ui";
 
 const activeChains = chains.activeChains;

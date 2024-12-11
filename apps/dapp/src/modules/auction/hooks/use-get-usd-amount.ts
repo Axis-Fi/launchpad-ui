@@ -1,4 +1,4 @@
-import type { Token } from "@repo/types";
+import type { Token } from "@axis-finance/types";
 import { useTokenPrice } from "./use-token-price";
 import { formatUsdValue } from "../utils/format-usd-amount";
 import { formatUnits, parseUnits } from "viem";

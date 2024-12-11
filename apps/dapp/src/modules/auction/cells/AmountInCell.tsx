@@ -1,4 +1,4 @@
-import { Auction, BatchAuctionBid } from "@repo/types";
+import { Auction, BatchAuctionBid } from "@axis-finance/types";
 import { ToggledUsdAmount } from "../toggled-usd-amount";
 import { useToggle } from "@repo/ui";
 

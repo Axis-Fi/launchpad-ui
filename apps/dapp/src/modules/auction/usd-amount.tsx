@@ -1,4 +1,4 @@
-import type { Token } from "@repo/types";
+import type { Token } from "@axis-finance/types";
 import { useUsdAmount } from "./hooks/use-usd-amount";
 
 type UsdAmountProps = {

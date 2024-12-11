@@ -1,11 +1,8 @@
-import type { Address, Auction } from "@repo/types";
+import type { Address, Auction } from "@axis-finance/types";
 import { isAddress, zeroAddress } from "viem";
-import { axisContracts } from "@repo/deployments";
-import {
-  allowedCuratorAddresses,
-  allowedCurators,
-  environment,
-} from "@repo/env";
+import { axisContracts } from "@axis-finance/deployments";
+import { environment } from "@axis-finance/env";
+import { allowedCuratorAddresses, allowedCurators } from "modules/app/curators";
 
 /** Checks if the curator address on an Auction exists in an address list */
 export function isAllowedCurator(auction: AuctionProps) {

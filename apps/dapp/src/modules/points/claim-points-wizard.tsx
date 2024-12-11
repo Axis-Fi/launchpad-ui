@@ -1,5 +1,5 @@
 import { Button } from "@repo/ui";
-import { environment } from "@repo/env";
+import { environment } from "@axis-finance/env";
 import { Wizard, useWizard } from "react-use-wizard";
 import { ConnectStep } from "./claim-steps/connect-step";
 import { CreateProfileStep } from "./claim-steps/create-profile-step";

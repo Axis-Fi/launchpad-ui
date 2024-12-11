@@ -1,6 +1,6 @@
 import { Popover } from "@repo/ui";
 import { TokenWrapper } from "./token-wrapper";
-import { Auction, PropsWithAuction } from "@repo/types";
+import { Auction, PropsWithAuction } from "@axis-finance/types";
 import { getChainById } from "utils/chain";
 
 export function PopupTokenWrapper({ auction }: PropsWithAuction) {

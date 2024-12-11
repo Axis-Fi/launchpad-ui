@@ -1,4 +1,4 @@
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
 
 //TODO: create a preview auction type to avoid mismatches

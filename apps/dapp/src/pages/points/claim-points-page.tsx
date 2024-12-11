@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowLeftIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { metadata } from "@repo/env";
+import { metadata } from "modules/app/metadata";
 import { Text, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { ClaimPointsWizard } from "modules/points/claim-points-wizard";

@@ -1,5 +1,5 @@
 import { Avatar } from "@repo/ui";
-import { chains } from "@repo/env";
+import { chains } from "@axis-finance/env";
 
 const activeChains = chains.activeChains;
 

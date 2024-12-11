@@ -1,5 +1,5 @@
-import { axisContracts } from "@repo/deployments";
-import { Auction } from "@repo/types";
+import { axisContracts } from "@axis-finance/deployments";
+import { Auction } from "@axis-finance/types";
 import React from "react";
 import { useReadContract } from "wagmi";
 
@@ -9,10 +9,9 @@ export function useBidIndex(auction: Auction, bidId: bigint = -1n) {
   const [startingIndex, setStartingIndex] = React.useState(0n);
   const BID_COUNT = 100n;
 
-  // TODO using call to EMP until getNumBids is added to BatchCatalogue
   const numBidsQuery = useReadContract({
-    address: axisContracts.addresses[auction.chainId].encryptedMarginalPrice,
-    abi: axisContracts.abis.encryptedMarginalPrice,
+    address,
+    abi,
     functionName: "getNumBids",
     args: [BigInt(auction.lotId)],
   });

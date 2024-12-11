@@ -1,7 +1,7 @@
 import { zeroAddress, type Chain } from "viem";
-import { AuctionType } from "@repo/types";
-import type { Address, NonNullSubgraphAuction } from "@repo/types";
-import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
+import { AuctionType } from "@axis-finance/types";
+import type { Address, NonNullSubgraphAuction } from "@axis-finance/types";
+import type { GetAuctionLotsQuery } from "@axis-finance/subgraph-client";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { formatChainName } from "modules/auction/utils/format-chain-name";
 import { getAuctionId } from "modules/auction/utils/get-auction-id";

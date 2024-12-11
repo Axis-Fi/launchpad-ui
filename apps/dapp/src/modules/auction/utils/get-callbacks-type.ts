@@ -1,5 +1,5 @@
-import { Auction, CallbacksType } from "@repo/types";
-import { axisContracts } from "@repo/deployments";
+import { Auction, CallbacksType } from "@axis-finance/types";
+import { axisContracts } from "@axis-finance/deployments";
 import { zeroAddress } from "viem";
 
 export function getCallbacksType(auction: Auction): CallbacksType {

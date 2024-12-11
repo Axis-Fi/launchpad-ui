@@ -4,7 +4,7 @@ import {
   Auction,
   PropsWithAuction,
   BatchAuction,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { Button, Card, Chip, DataTable, Text } from "@repo/ui";
 import {

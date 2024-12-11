@@ -1,4 +1,4 @@
-import { type AuctionModuleReference, AuctionType } from "@repo/types";
+import { type AuctionModuleReference, AuctionType } from "@axis-finance/types";
 
 const auctionTypes: Record<AuctionModuleReference, AuctionType> = {
   "01EMPA": AuctionType.SEALED_BID,

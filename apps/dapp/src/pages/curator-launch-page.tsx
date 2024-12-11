@@ -18,7 +18,7 @@ import {
 import { useAtom } from "jotai";
 import React from "react";
 import { useMediaQueries } from "loaders/use-media-queries";
-import { Curator } from "@repo/types";
+import { type Curator } from "@axis-finance/types";
 import { ImageBanner } from "components/image-banner";
 
 type AuctionListPageProps = {

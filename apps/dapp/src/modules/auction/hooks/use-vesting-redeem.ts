@@ -4,8 +4,8 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import type { Address, Auction } from "@repo/types";
-import { abis } from "@repo/abis";
+import type { Address, Auction } from "@axis-finance/types";
+import { abis } from "@axis-finance/abis";
 
 export function useVestingRedeem({
   vestingTokenId,

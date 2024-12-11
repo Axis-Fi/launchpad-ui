@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import type { Auction, AuctionId } from "@repo/types";
+import type { Auction, AuctionId } from "@axis-finance/types";
 import React, { useRef } from "react";
 import { parseUnits, toHex } from "viem";
 import {
@@ -9,7 +9,7 @@ import {
 } from "wagmi";
 import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
 import { getAuctionHouse } from "utils/contracts";
-import { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
+import { GetBatchAuctionLotQuery } from "@axis-finance/subgraph-client";
 import {
   auction as auctionCache,
   optimisticUpdate,
