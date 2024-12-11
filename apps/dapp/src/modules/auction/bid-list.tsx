@@ -283,6 +283,7 @@ export function BidList(props: BidListProps) {
               ? "No bids from this address"
               : "No bids received"
         }
+        /* @ts-expect-error TODO: type */
         columns={columns}
         data={mappedBids}
       />
