@@ -1,4 +1,4 @@
-import { allowedCurators } from "@repo/env";
+import { allowedCurators } from "modules/app/curators";
 import { useParams } from "react-router-dom";
 import CuratorLaunchPage from "./curator-launch-page";
 

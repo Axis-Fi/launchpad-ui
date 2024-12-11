@@ -15,7 +15,8 @@ import { useSafeRefetch } from "./use-safe-refetch";
 import { externalAuctionInfo } from "modules/app/external-auction-info";
 import { featureToggles } from "modules/app/feature-toggles";
 import { useAuctionRegistrations } from "./use-auction-registrations";
-import { Address } from "viem";
+import type { Address } from "viem";
+import { allowedCurators } from "modules/app/curators";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -45,7 +46,7 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   const { activeRegistrations } = useAuctionRegistrations();
 
   const registrationLaunches = featureToggles.REGISTRATION_LAUNCHES
-    ? (activeRegistrations.data ?? [])
+    ? activeRegistrations.data ?? []
     : [];
 
   // Filter out cancelled auctions

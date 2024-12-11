@@ -33,7 +33,7 @@ import React from "react";
 import { environment } from "@axis-finance/env";
 import { metadata } from "modules/app/metadata";
 import { useMediaQueries } from "loaders/use-media-queries";
-import { Curator } from "@repo/types";
+import type { Curator } from "@axis-finance/types";
 
 const options = [
   { value: "registering", label: "Registering" },
