@@ -99,7 +99,6 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
     auction.baseToken.decimals,
     auction.quoteToken.decimals,
   ]);
-
   // Allowlist callback support
   // Handles determining if an allowlist callback is being used
   // and provides variables for displaying on the UI and submitting the bid transaction
@@ -252,7 +251,8 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
     !isValidInput ||
     bid.approveReceipt.isLoading ||
     bid?.bidReceipt?.isLoading ||
-    bid?.bidTx?.isPending;
+    bid?.bidTx?.isPending ||
+    !bid.isSimulationSuccess;
 
   const isWaiting = bid.approveReceipt.isLoading || bid.isWaiting;
   const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
