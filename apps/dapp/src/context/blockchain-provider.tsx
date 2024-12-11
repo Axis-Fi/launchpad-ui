@@ -31,11 +31,11 @@ export function BlockchainProvider({
   disableDevTools?: boolean;
 }) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
         <WalletProvider>{children}</WalletProvider>
         {!disableDevTools && <ReactQueryDevtools />}
-      </WagmiProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }

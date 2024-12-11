@@ -9,7 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "@repo/eslint-config": "workspace:*",
-    "@wagmi/cli": "^2.1.0"
+    "@wagmi/cli": "^2.1.18"
   },
   "scripts": {
     "build": "wagmi generate && prettier --write src"
