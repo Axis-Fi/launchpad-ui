@@ -5,7 +5,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "./context/router.tsx";
 import { ThemeProvider } from "@repo/ui";
-import { environment } from "@repo/env";
+import { environment } from "@axis-finance/env";
 
 // Cypress tests use msw mocked backend
 async function enableBackendMocking() {

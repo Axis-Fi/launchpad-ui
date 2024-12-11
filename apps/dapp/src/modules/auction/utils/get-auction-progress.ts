@@ -1,4 +1,4 @@
-import { Auction } from "@repo/types";
+import { Auction } from "@axis-finance/types";
 import { getPrice } from "./auction-details";
 import { getMinRaiseForAuction, getTargetRaise } from "../auction-metric";
 

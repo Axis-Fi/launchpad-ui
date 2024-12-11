@@ -4,10 +4,13 @@ import { useChainId } from "wagmi";
 import React from "react";
 import { useFees } from "./hooks/use-fees";
 import { parsePercent } from "utils/number";
-import { AuctionType } from "@repo/types";
+import { AuctionType } from "@axis-finance/types";
 import { getAuctionHouse } from "utils/contracts";
-import { activeChains } from "@repo/env/src/chains";
+import { chains } from "@axis-finance/env";
 import { auctionMetadata } from "./metadata";
+import type { Chain } from "@axis-finance/types";
+
+const activeChains = chains.activeChains;
 
 type CuratorFeeManagerProps = {
   chainId?: number;
@@ -24,7 +27,7 @@ export function CuratorFeeManager({
   const ah = getAuctionHouse({ chainId, auctionType });
   const modules = props.modules.map((m) => auctionMetadata[m].label);
 
-  const chain = activeChains.find((c) => c.id === chainId);
+  const chain = activeChains.find((c: Chain) => c.id === chainId);
 
   const {
     data: { maxCuratorFee },

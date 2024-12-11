@@ -1,4 +1,4 @@
-import { Auction, CallbacksType } from "@repo/types";
+import { Auction, CallbacksType } from "@axis-finance/types";
 import { getCallbacksType } from "../utils/get-callbacks-type";
 import { z } from "zod";
 import { useForm } from "react-hook-form";

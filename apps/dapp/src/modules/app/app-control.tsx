@@ -5,7 +5,7 @@ import Navbar, { testnetLinks } from "./navbar";
 import { Button, ThemeSwitcher, Tooltip, cn } from "@repo/ui";
 import React from "react";
 import { useMediaQueries } from "loaders/use-media-queries";
-import { environment } from "@repo/env";
+import { environment } from "@axis-finance/env";
 import { useCurator } from "modules/auction/hooks/use-curator";
 import { NotificationBadge } from "components/notification-badge";
 import { UserProfile } from "./user-profile";

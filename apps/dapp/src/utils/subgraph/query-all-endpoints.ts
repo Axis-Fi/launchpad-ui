@@ -1,11 +1,11 @@
 import { Variables } from "graphql-request";
 import type { QueryKey } from "@tanstack/react-query";
-import { environment } from "@repo/env";
+import { environment } from "@axis-finance/env";
 import {
   type AxisDeployment,
   mainnetDeployments,
   testnetDeployments,
-} from "@repo/deployments";
+} from "@axis-finance/deployments";
 import { request } from "./request";
 import { useIsCacheStale } from "modules/auction/hooks/use-is-cache-stale";
 

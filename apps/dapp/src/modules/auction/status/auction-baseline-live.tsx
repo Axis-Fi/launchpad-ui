@@ -1,4 +1,4 @@
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { AuctionPurchase } from "../auction-purchase";
 
 export function AuctionBaselineLive(props: PropsWithAuction) {

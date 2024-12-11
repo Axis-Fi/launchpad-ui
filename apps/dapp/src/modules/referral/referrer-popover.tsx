@@ -1,4 +1,4 @@
-import { AuctionType, PropsWithAuction } from "@repo/types";
+import { AuctionType, PropsWithAuction } from "@axis-finance/types";
 import {
   Button,
   Text,

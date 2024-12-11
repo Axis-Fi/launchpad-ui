@@ -1,5 +1,5 @@
 import React from "react";
-import type { Token } from "@repo/types";
+import type { Token } from "@axis-finance/types";
 import { Text, Button, cn, NumberInput, NumberInputProps } from "@repo/ui";
 import { UsdAmount } from "modules/auction/usd-amount";
 import { Format } from "./format";

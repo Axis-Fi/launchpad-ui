@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Card, Text } from "@repo/ui";
-import type { PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@axis-finance/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useDecryptBids } from "../hooks/use-decrypt-auction";
 import { RequiresChain } from "components/requires-chain";

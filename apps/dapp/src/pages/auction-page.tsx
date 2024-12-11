@@ -6,7 +6,7 @@ import {
   type AuctionStatus,
   AuctionType,
   Auction,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { PageHeader } from "modules/app/page-header";
 import { ImageBanner } from "components/image-banner";

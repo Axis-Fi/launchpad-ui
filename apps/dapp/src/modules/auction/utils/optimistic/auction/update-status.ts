@@ -1,5 +1,5 @@
-import { type AuctionStatus, AuctionType } from "@repo/types";
-import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
+import { type AuctionStatus, AuctionType } from "@axis-finance/types";
+import type { GetBatchAuctionLotQuery } from "@axis-finance/subgraph-client";
 import { getAuctionType } from "modules/auction/utils/get-auction-type";
 
 const AUCTION_TYPE_PROPERTY_MAP = {

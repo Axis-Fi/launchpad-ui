@@ -7,7 +7,7 @@ import {
 } from "wagmi";
 import { useAuction } from "./use-auction";
 import { useSdk } from "@axis-finance/sdk/react";
-import { Auction } from "@repo/types";
+import { Auction } from "@axis-finance/types";
 
 export function useClaimBids(auction: Auction) {
   const { address: userAddress } = useAccount();

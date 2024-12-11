@@ -1,4 +1,4 @@
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
 
 export function AuctionCreated({ auction }: PropsWithAuction) {

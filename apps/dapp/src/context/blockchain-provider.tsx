@@ -1,6 +1,6 @@
 import { hashFn } from "wagmi/query";
 import { WagmiProvider, createConfig } from "wagmi";
-import { chains } from "@repo/env";
+import { chains } from "@axis-finance/env";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import WalletProvider, { connectors } from "./wallet-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";

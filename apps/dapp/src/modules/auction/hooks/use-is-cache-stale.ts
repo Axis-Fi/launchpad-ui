@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { QueryKey, useQueryClient } from "@tanstack/react-query";
-import type { MaybeOptimistic } from "@repo/types";
+import type { MaybeOptimistic } from "@axis-finance/types";
 import { isCacheStale } from "modules/auction/utils/is-cache-stale";
 
 /**

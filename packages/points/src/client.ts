@@ -1,5 +1,5 @@
 import { zeroAddress } from "viem";
-import { pointsServers } from "@repo/env";
+import { pointsServers } from "./env";
 import {
   AuthenticationApi,
   Configuration,
@@ -10,7 +10,7 @@ import {
   LaunchRegistration,
   LaunchRegistrationRequest,
 } from ".";
-import { environment } from "@repo/env";
+import { environment } from "@axis-finance/env";
 import { Config, signMessage } from "@wagmi/core";
 
 // JWT Token Storage

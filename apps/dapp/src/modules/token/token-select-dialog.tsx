@@ -1,4 +1,4 @@
-import { Token } from "@repo/types";
+import { Token } from "@axis-finance/types";
 import {
   Button,
   DialogContent,

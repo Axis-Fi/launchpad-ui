@@ -1,4 +1,7 @@
-import { AuctionStatus, type NonNullSubgraphAuction } from "@repo/types";
+import {
+  AuctionStatus,
+  type NonNullSubgraphAuction,
+} from "@axis-finance/types";
 
 /**
  * Determines the auction status dynamically.

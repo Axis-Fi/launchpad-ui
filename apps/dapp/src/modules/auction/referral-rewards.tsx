@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAccount } from "wagmi";
-import type { PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@axis-finance/types";
 import { Button, Card, Metric } from "@/components";
 import { useReferralRewards } from "./hooks/use-referral-rewards";
 import { RequiresChain } from "components/requires-chain";

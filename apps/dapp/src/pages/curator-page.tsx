@@ -1,5 +1,5 @@
-import { activeChains } from "@repo/env/src/chains";
-import { AuctionType } from "@repo/types";
+import { chains } from "@axis-finance/env";
+import { AuctionType } from "@axis-finance/types";
 import { Card, Select } from "@repo/ui";
 import { PageContainer } from "modules/app/page-container";
 import { CuratableAuctionList } from "modules/auction/curatable-auction-list";
@@ -8,10 +8,11 @@ import { auctionMetadata } from "modules/auction/metadata";
 import React from "react";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { CuratorCard } from "./curator-list-page";
-import { getCurator } from "@repo/env";
+import { getCurator } from "modules/app/curators";
 
 const auctionModuleOptions = Object.values(auctionMetadata);
 const auctionModules = Object.keys(auctionMetadata) as AuctionType[];
+const activeChains = chains.activeChains;
 
 export function CuratorPage() {
   const { address } = useAccount();

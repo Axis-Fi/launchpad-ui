@@ -1,7 +1,7 @@
-import { useGetBatchAuctionLotQuery } from "@repo/subgraph-client";
+import { useGetBatchAuctionLotQuery } from "@axis-finance/subgraph-client";
 import type { QueryKey } from "@tanstack/react-query";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
-import { AuctionType } from "@repo/types";
+import { AuctionType } from "@axis-finance/types";
 import type {
   Auction,
   AuctionFormattedInfo,
@@ -9,7 +9,7 @@ import type {
   EMPFormattedInfo,
   FPBFormattedInfo,
   AuctionId,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
 import { formatDistanceToNow } from "date-fns";
@@ -21,7 +21,7 @@ import { useIsCacheStale } from "./use-is-cache-stale";
 import { useSafeRefetch } from "./use-safe-refetch";
 import { getAuctionId } from "../utils/get-auction-id";
 import { getAuctionType } from "../utils/get-auction-type";
-import { externalAuctionInfo } from "@repo/env";
+import { externalAuctionInfo } from "modules/app/external-auction-info";
 import { useLaunchQuery } from "@axis-finance/sdk/react";
 
 type AuctionQueryKey = QueryKey &

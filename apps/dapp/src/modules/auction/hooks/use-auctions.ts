@@ -1,4 +1,4 @@
-import type { Auction, Curator, GetAuctionLots } from "@repo/types";
+import type { Auction, Curator, GetAuctionLots } from "@axis-finance/types";
 import { useLaunchesQuery } from "@axis-finance/sdk/react";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
@@ -12,11 +12,8 @@ import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
 import { useSafeRefetch } from "./use-safe-refetch";
-import {
-  allowedCurators,
-  externalAuctionInfo,
-  featureToggles,
-} from "@repo/env";
+import { externalAuctionInfo } from "modules/app/external-auction-info";
+import { featureToggles } from "modules/app/feature-toggles";
 import { useAuctionRegistrations } from "./use-auction-registrations";
 import { Address } from "viem";
 

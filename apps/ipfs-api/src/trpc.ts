@@ -1,21 +1,24 @@
+import { z } from "zod";
 import { initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { storeData } from "./fleek";
 import { AuctionMetadataSchema } from "./types";
 
-// Create express context
-const createContext = ({
-  /* eslint-disable-next-line */
-  req,
-  /* eslint-disable-next-line */
-  res,
-}: trpcExpress.CreateExpressContextOptions) => ({}); // no context
+// eslint-disable-next-line no-empty-pattern
+const createContext = ({}: trpcExpress.CreateExpressContextOptions) => ({});
 type Context = Awaited<ReturnType<typeof createContext>>;
 const t = initTRPC.context<Context>().create();
 
 export const appRouter = t.router({
   storeAuctionInfo: t.procedure
     .input(AuctionMetadataSchema)
+    .output(
+      z.object({
+        hash: z.object({
+          hashV0: z.string(),
+        }),
+      }),
+    )
     .mutation(async (opts) => {
       const {
         input: { key, ...data },
@@ -34,5 +37,7 @@ export const appRouter = t.router({
       };
     }),
 });
+
+export type AppRouter = typeof appRouter;
 
 export const context = createContext;

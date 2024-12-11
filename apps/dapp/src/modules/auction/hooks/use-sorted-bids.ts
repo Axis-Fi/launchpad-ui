@@ -1,4 +1,4 @@
-import type { BatchAuction, BatchAuctionBid, Token } from "@repo/types";
+import type { BatchAuction, BatchAuctionBid, Token } from "@axis-finance/types";
 import { formatUnits } from "viem";
 
 const BID_OUTCOME = {

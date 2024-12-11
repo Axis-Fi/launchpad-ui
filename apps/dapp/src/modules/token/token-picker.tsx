@@ -8,7 +8,7 @@ import {
 } from "@repo/ui";
 import useERC20 from "loaders/use-erc20";
 import React from "react";
-import { Token } from "@repo/types";
+import { Token } from "@axis-finance/types";
 import { Address, formatUnits } from "viem";
 import { useChainId } from "wagmi";
 import { useFormContext, Path } from "react-hook-form";

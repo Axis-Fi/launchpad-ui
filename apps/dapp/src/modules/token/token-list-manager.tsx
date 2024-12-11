@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, Input, Skeleton, Switch } from "@repo/ui";
-import type { TokenList } from "@repo/types";
+import type { TokenList } from "@axis-finance/types";
 import { useTokenLists } from "state/tokenlist";
 import { useGetTokenList } from "loaders/use-get-tokenlist";
 

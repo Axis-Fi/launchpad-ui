@@ -1,4 +1,4 @@
-import type { MaybeOptimistic } from "@repo/types";
+import type { MaybeOptimistic } from "@axis-finance/types";
 
 const STALE_DURATION_AFTER_OPTIMISTIC_UPDATE = 10_000; // 10k ms = 10 seconds
 

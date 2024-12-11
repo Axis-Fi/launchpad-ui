@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { ArrowRightIcon } from "lucide-react";
 
 import { Badge, Button, Card, Metric, Text } from "@repo/ui";
-import type { Auction, PropsWithAuction } from "@repo/types";
+import type { Auction, PropsWithAuction } from "@axis-finance/types";
 import { RequiresChain } from "components/requires-chain";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { shorten } from "utils/number";

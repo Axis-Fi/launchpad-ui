@@ -1,4 +1,4 @@
-import { AuctionType } from "@repo/types";
+import { AuctionType } from "@axis-finance/types";
 import { CreateAuctionForm } from "pages/create-auction-page";
 import { toBasisPoints } from "utils/number";
 import { encodeAbiParameters, parseUnits } from "viem";

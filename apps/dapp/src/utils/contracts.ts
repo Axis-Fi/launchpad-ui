@@ -1,4 +1,4 @@
-import { axisContracts } from "@repo/deployments";
+import { axisContracts } from "@axis-finance/deployments";
 import {
   Auction,
   AuctionType,
@@ -6,7 +6,7 @@ import {
   AxisCallbackNames,
   AxisModuleContractNames,
   CallbacksType,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { Address } from "viem";
 
 const auctionHouseMap = {

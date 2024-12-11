@@ -3,7 +3,7 @@ import { BlockchainProvider } from "./blockchain-provider";
 import { PointsProvider } from "./points-provider";
 import { OriginSdkProvider } from "@axis-finance/sdk/react";
 import { createSdk } from "@axis-finance/sdk";
-import { getCloakServer, getMetadataServer } from "@repo/env";
+import { getCloakServer, getMetadataServer } from "@axis-finance/env";
 import { DialogProvider } from "./dialog-provider";
 
 const sdk = createSdk({

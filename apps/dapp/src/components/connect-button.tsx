@@ -1,5 +1,5 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
-import { featureToggles } from "@repo/env";
+import { featureToggles } from "modules/app/feature-toggles";
 import {
   Avatar,
   Button,

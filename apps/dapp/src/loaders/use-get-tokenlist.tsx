@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { validateTokenlist } from "src/utils/tokenlist";
-import { TokenList } from "@repo/types";
+import { TokenList } from "@axis-finance/types";
 import { z } from "zod";
 import { useTokenLists } from "state/tokenlist";
 

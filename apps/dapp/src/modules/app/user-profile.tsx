@@ -1,5 +1,5 @@
 import { Button, cn } from "@repo/ui";
-import { featureToggles } from "@repo/env";
+import { featureToggles } from "modules/app/feature-toggles";
 import ConnectButton from "../../components/connect-button";
 import { trimCurrency } from "utils/currency";
 import { useProfile } from "modules/points/hooks/use-profile";

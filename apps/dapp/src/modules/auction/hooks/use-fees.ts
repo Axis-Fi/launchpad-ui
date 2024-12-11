@@ -1,7 +1,7 @@
-import { axisContracts } from "@repo/deployments";
+import { axisContracts } from "@axis-finance/deployments";
 import { useReadContract } from "wagmi";
 import { toKeycode } from "utils/hex";
-import { AuctionType } from "@repo/types";
+import { AuctionType } from "@axis-finance/types";
 import { fromBasisPoints } from "utils/number";
 import { Address } from "viem";
 

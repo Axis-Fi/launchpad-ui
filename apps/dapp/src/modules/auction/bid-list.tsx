@@ -4,7 +4,7 @@ import {
   Auction,
   PropsWithAuction,
   BatchAuction,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { Button, Card, Chip, DataTable, Text } from "@repo/ui";
 import {
@@ -283,7 +283,6 @@ export function BidList(props: BidListProps) {
               ? "No bids from this address"
               : "No bids received"
         }
-        /* @ts-expect-error TODO: type */
         columns={columns}
         data={mappedBids}
       />

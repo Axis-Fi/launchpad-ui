@@ -1,7 +1,7 @@
 import {
   GetInstalledModulesDocument,
   GetInstalledModulesQuery,
-} from "@repo/subgraph-client";
+} from "@axis-finance/subgraph-client";
 import { useQueryAll } from "loaders/use-query-all";
 import { fromHex, isHex } from "viem";
 

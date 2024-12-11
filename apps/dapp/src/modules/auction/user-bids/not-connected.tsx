@@ -1,5 +1,5 @@
 import { Badge, Card, Text } from "@repo/ui";
-import type { BatchAuction, PropsWithAuction } from "@repo/types";
+import type { BatchAuction, PropsWithAuction } from "@axis-finance/types";
 import { RequiresChain } from "components/requires-chain";
 
 export function NotConnectedClaimCard({ auction: _auction }: PropsWithAuction) {

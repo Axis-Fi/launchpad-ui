@@ -1,4 +1,4 @@
-import type { PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@axis-finance/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useClaimBids } from "modules/auction/hooks/use-claim-bids";
 

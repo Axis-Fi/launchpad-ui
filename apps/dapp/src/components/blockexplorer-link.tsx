@@ -1,5 +1,5 @@
 import { Link, cn, trimAddress } from "@repo/ui";
-import { chains } from "@repo/env";
+import { chains } from "@axis-finance/env";
 import { ArrowUpRightIcon } from "lucide-react";
 
 import { getBlockExplorer } from "src/utils/chain";

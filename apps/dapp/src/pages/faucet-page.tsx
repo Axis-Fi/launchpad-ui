@@ -7,7 +7,7 @@ import { useMintToken } from "modules/token/use-mint-token";
 import { useTokenLists } from "state/tokenlist";
 import { useChainId } from "wagmi";
 import { trimCurrency } from "utils/currency";
-import { chains } from "@repo/env";
+import { chains } from "@axis-finance/env";
 import {
   arbitrumSepolia,
   blastSepolia,

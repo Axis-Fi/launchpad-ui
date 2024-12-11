@@ -15,7 +15,7 @@ import { useChainId } from "wagmi";
 import useERC20 from "loaders/use-erc20";
 import React from "react";
 import { useMintToken } from "modules/token/use-mint-token";
-import type { Token } from "@repo/types";
+import type { Token } from "@axis-finance/types";
 import { Address, isAddress } from "viem";
 
 const schema = z.object({

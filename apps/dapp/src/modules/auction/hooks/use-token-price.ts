@@ -1,5 +1,5 @@
 import { useSdkQuery } from "@axis-finance/sdk/react";
-import type { Token } from "@repo/types";
+import type { Token } from "@axis-finance/types";
 
 const useTokenPrice = (token: Token, timestamp: number | undefined) => {
   const { data, status, error } = useSdkQuery(
