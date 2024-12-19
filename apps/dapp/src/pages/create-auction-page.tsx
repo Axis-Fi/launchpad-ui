@@ -65,7 +65,7 @@ import {
   isBaselineCallback,
 } from "@axis-finance/types";
 
-import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
+import { storeAuctionInfo } from "modules/app/ipfs-api";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useRef } from "react";
@@ -749,11 +749,11 @@ export default function CreateAuctionPage() {
       };
 
       // Store the auction info
-      const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
+      const auctionInfoIpfsCid = await storeAuctionInfo(auctionInfo);
 
-      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS");
+      if (!auctionInfoIpfsCid) throw new Error("Unable to store info on IPFS");
 
-      return auctionInfoAddress.hashV0;
+      return auctionInfoIpfsCid;
     },
     onError: (error) => console.error("Error during submission:", error),
   });
@@ -777,7 +777,7 @@ export default function CreateAuctionPage() {
   });
 
   const creationHandler = async (values: CreateAuctionForm) => {
-    const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
+    const auctionInfoIpfsCid = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
     const isFPB = auctionType === AuctionType.FIXED_PRICE_BATCH;
@@ -1024,7 +1024,7 @@ export default function CreateAuctionPage() {
             capacity: parseUnits(values.capacity, values.payoutToken.decimals),
             implParams: auctionSpecificParams,
           },
-          auctionInfoAddress,
+          auctionInfoIpfsCid,
         ],
       },
       {

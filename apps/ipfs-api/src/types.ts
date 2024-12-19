@@ -10,3 +10,24 @@ export const AuctionMetadataSchema = z.object({
 });
 
 export type AuctionMetadata = z.infer<typeof AuctionMetadataSchema>;
+
+export const CuratorProfileSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  address: z.string(),
+  links: z.object({
+    banner: z.string().url(),
+    avatar: z.string().url(),
+    website: z.string().url().optional(),
+    discord: z.string().url().optional(),
+    farcaster: z.string().url().optional(),
+  }),
+  options: z
+    .object({
+      hideName: z.boolean().optional(),
+    })
+    .optional(),
+});
+
+export type CuratorProfile = z.infer<typeof CuratorProfileSchema>;
