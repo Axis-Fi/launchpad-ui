@@ -11,6 +11,9 @@ import {
   Textarea,
 } from "@repo/ui";
 import { CuratorBanner } from "./curator-banner";
+import { useVerifyTwitter } from "modules/auction/hooks/use-verify-twitter";
+import { useNavigate } from "react-router-dom";
+import React from "react";
 
 const curatorSchema = z.object({
   name: z.string(),
@@ -24,13 +27,22 @@ const curatorSchema = z.object({
 type CuratorForm = z.infer<typeof curatorSchema>;
 
 export function CuratorProfileForm() {
+  const twitter = useVerifyTwitter();
+  const navigate = useNavigate();
+
   const form = useForm<CuratorForm>({
     resolver: zodResolver(curatorSchema),
     mode: "onChange",
   });
 
   const curator = form.getValues();
-  console.log({ curator });
+
+  React.useEffect(() => {
+    if (!twitter.isLoading && !twitter.isVerified) {
+      navigate("curator-authenticate");
+    }
+  }, [twitter.isLoading, twitter.isVerified]);
+
   return (
     <div className="mx-auto">
       <CuratorBanner curator={curator} />
