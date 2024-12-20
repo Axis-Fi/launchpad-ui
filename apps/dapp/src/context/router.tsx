@@ -18,6 +18,7 @@ import { SignInPage } from "pages/points/sign-in-page";
 import { BridgePage } from "pages/bridge-page";
 import { AuctionRegistering } from "modules/auction/status/auction-registering";
 import { CuratorDedicatedPage } from "pages/curator-dedicated-page";
+import { CuratorProfileForm } from "modules/curator/curator-profile-form";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
@@ -48,6 +49,10 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       {
         path: ":curatorId/:chainId/:lotId",
         element: <AuctionPage />,
+      },
+      {
+        path: "curator/edit",
+        element: <CuratorProfileForm />,
       },
     ],
   },
