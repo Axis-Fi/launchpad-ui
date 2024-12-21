@@ -1,9 +1,9 @@
-import { Avatar, Badge, Button, Card, Link, Text, Tooltip } from "@repo/ui";
+import { Link } from "react-router-dom";
+import { Avatar, Badge, Button, Card, Text, Tooltip } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { PageContainer } from "modules/app/page-container";
 import { allowedCurators } from "modules/app/curators";
 import { Curator } from "@axis-finance/types";
-import { contact } from "modules/app/metadata";
 import { ArrowRightIcon } from "lucide-react";
 
 export default function CuratorListPage() {
@@ -27,7 +27,7 @@ export default function CuratorListPage() {
 
       <div className="flex flex-col items-center justify-center py-8">
         <Button variant="ghost" asChild>
-          <Link href={contact} target="_blank">
+          <Link to="/curator-authenticate">
             Become a curator <ArrowRightIcon className="w-6 pl-1" />
           </Link>
         </Button>

@@ -8,6 +8,7 @@
   "exclude": ["cypress"],
   "compilerOptions": {
     "baseUrl": "./",
+    "resolveJsonModule": true,
     "paths": {
       "components/*": ["src/components/*"],
       "components": ["src/components/index"],

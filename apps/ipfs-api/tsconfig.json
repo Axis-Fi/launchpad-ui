@@ -9,5 +9,5 @@
     "skipLibCheck": true
   },
   "include": ["src"],
-  "files": ["src/express.d.ts", "src/express-session.d.ts"]
+  "files": ["src/express.d.ts"]
 }

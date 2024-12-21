@@ -44,6 +44,7 @@ const statuses: Record<
 /** Displays Auction details and status*/
 export default function AuctionPage() {
   const { chainId, lotId } = useParams();
+  console.log({ chainId, lotId });
   const { isConnected, chainId: connectedChainId } = useAccount();
   const { switchChain } = useSwitchChain();
 
@@ -94,7 +95,7 @@ export default function AuctionPage() {
         <PageHeader
           className="relative mt-0 lg:mt-0"
           backNavigationPath={`${
-            isCuratorPage ? `/${curator?.id}/launches` : "/#"
+            isCuratorPage ? `/curator/${curator?.id}` : "/#"
           }`}
           backNavigationText="Back to Launches"
           toggle={!isUSDQuote}

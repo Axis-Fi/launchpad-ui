@@ -15,7 +15,7 @@ const getCredentials = () => {
 };
 
 const accessTokenService = new PersonalAccessTokenService(getCredentials());
-const fleekSdk = new FleekSdk({ accessTokenService });
+export const fleekSdk = new FleekSdk({ accessTokenService });
 
 export async function storeData(input: {
   data: string;
@@ -27,8 +27,6 @@ export async function storeData(input: {
   });
 
   const result = await fleekSdk.storage().uploadFile({ file });
-
-  console.log({ result }); // TODO: remove
 
   return result.pin.cid;
 }

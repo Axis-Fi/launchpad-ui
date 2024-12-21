@@ -12,7 +12,10 @@ router.get(
 );
 
 router.get("/is-verified", (req, res) => {
-  res.send({ success: req.isAuthenticated && req.isAuthenticated() });
+  res.send({
+    success: req.isAuthenticated && req.isAuthenticated(),
+    user: { id: req.user?.id, name: req.user?.username },
+  });
 });
 
 router.get("/ping", (req, res) => {

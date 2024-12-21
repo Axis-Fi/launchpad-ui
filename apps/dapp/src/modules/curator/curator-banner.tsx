@@ -4,14 +4,17 @@ import { ImageBanner } from "components/image-banner";
 
 export function CuratorBanner({
   curator,
+  className,
 }: {
   curator?: Pick<Curator, "name" | "banner" | "options">;
+  className?: string;
 }) {
   return (
     <div
       className={cn(
         "relative flex w-full items-end justify-center py-3 lg:h-[480px] lg:py-0",
         !curator && "bg-hero-banner",
+        className,
       )}
     >
       <ImageBanner imgUrl={curator?.banner} className="absolute">

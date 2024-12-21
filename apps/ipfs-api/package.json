@@ -21,6 +21,7 @@
     "oauth": "^0.10.0",
     "passport": "^0.7.0",
     "passport-twitter": "^1.0.4",
+    "viem": "^2.17.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {

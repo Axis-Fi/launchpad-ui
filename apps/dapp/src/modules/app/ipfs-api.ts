@@ -23,13 +23,9 @@ const trpc = createTRPCProxyClient<AppRouter>({
 });
 
 export async function storeAuctionInfo(auctionInfo: AuctionMetadata) {
-  const response = await trpc.storeAuctionInfo.mutate(auctionInfo);
-
-  return response.hash;
+  return trpc.storeAuctionInfo.mutate(auctionInfo);
 }
 
 export async function storeCuratorProfile(curatorProfile: CuratorProfile) {
-  const response = await trpc.storeCuratorProfile.mutate(curatorProfile);
-
-  return response.hash;
+  return trpc.storeCuratorProfile.mutate(curatorProfile);
 }

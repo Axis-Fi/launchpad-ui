@@ -61,7 +61,7 @@ export default function CuratorLaunchPage({ curator }: AuctionListPageProps) {
           <div className="flex items-center justify-between">
             {!isTabletOrMobile && (
               <Tooltip content={"Axis is a modular auction protocol"}>
-                <Text size="lg">Token Launches</Text>
+                <Text size="lg">Curated Launches</Text>
               </Tooltip>
             )}
             <div className="ml-6">
@@ -70,7 +70,7 @@ export default function CuratorLaunchPage({ curator }: AuctionListPageProps) {
           </div>
           {!isLoading && !secureAuctions.length && (
             <div className="flex h-[400px] w-full items-center justify-center">
-              <h3>There aren&apos;t any auctions in this state</h3>
+              <h3>No launches curated yet</h3>
             </div>
           )}
           <div
@@ -90,6 +90,7 @@ export default function CuratorLaunchPage({ curator }: AuctionListPageProps) {
                       isGrid={gridView}
                       loading={isLoading}
                       key={i}
+                      mess
                     />
                   ))
               : rows.map((auction) => (

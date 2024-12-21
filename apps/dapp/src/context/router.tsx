@@ -18,7 +18,7 @@ import { SignInPage } from "pages/points/sign-in-page";
 import { BridgePage } from "pages/bridge-page";
 import { AuctionRegistering } from "modules/auction/status/auction-registering";
 import { CuratorDedicatedPage } from "pages/curator-dedicated-page";
-import { CuratorProfileForm } from "modules/curator/curator-profile-form";
+import { CuratorProfilePage } from "modules/curator/curator-profile-page";
 import { CuratorAuthentication } from "modules/curator/curator-authentication";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
@@ -44,7 +44,7 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "bridge", element: <BridgePage /> },
       { path: ":curatorId/bridge", element: <BridgePage /> },
       {
-        path: ":curatorId/launches",
+        path: "curator/:curatorId",
         element: <CuratorDedicatedPage />,
       },
       {
@@ -57,7 +57,7 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       },
       {
         path: "curator-verified",
-        element: <CuratorProfileForm />,
+        element: <CuratorProfilePage />,
       },
     ],
   },

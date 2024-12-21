@@ -1,9 +1,14 @@
 import { z } from "zod";
+import { type Address } from "viem";
 import type { Request, Response } from "express";
 import { initTRPC, TRPCError } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { storeData } from "./fleek";
 import { AuctionMetadataSchema, CuratorProfileSchema } from "./types";
+import { walletClient } from "./wallet";
+import { baseSepolia } from "viem/chains";
+
+const registryContractAddress = "0x75da61536510ba0bca0c9af21311a1fc035dcf4e";
 
 const createContext = ({
   req,
@@ -50,14 +55,20 @@ export const appRouter = t.router({
 
   storeCuratorProfile: twitterVerifiedProcedure
     .input(CuratorProfileSchema)
-    .output(z.string())
+    .output(
+      z.object({
+        ipfsCid: z.string(),
+        signature: z.string(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
       const userTwitter = ctx.req.user?.username;
+      const userTwitterId = Number(ctx.req.user?.id);
 
-      if (!userTwitter) {
+      if (!userTwitter || !Number.isInteger(userTwitterId)) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
-          message: "Failed to get Twitter username from user.",
+          message: "Failed to get Twitter username/id from user.",
         });
       }
 
@@ -75,9 +86,50 @@ export const appRouter = t.router({
         }),
       });
 
-      console.log("Curator profile saved:", input);
+      const xId = BigInt(userTwitterId);
 
-      return ipfsCid;
+      const DOMAIN_TYPE = [
+        { name: "name", type: "string" },
+        { name: "version", type: "string" },
+        { name: "chainId", type: "uint256" },
+        { name: "verifyingContract", type: "address" },
+      ] as const;
+
+      const REGISTRATION_TYPE = [
+        { name: "curator", type: "address" },
+        { name: "xId", type: "uint256" },
+        { name: "ipfsCID", type: "string" },
+      ] as const;
+
+      const domain = {
+        name: "Axis Metadata Registry",
+        version: "v1.0.0",
+        chainId: BigInt(baseSepolia.id),
+        verifyingContract: registryContractAddress as Address,
+      } as const;
+
+      const message = {
+        curator: input.address as Address,
+        xId,
+        ipfsCID: ipfsCid,
+      } as const;
+
+      const signature = (await walletClient.signTypedData({
+        domain,
+        types: {
+          EIP712Domain: DOMAIN_TYPE,
+          CuratorRegistration: REGISTRATION_TYPE,
+        },
+        primaryType: "CuratorRegistration",
+        message,
+      })) as `0x${string}`;
+
+      console.log("Curator profile stored:", ipfsCid, input);
+
+      return {
+        ipfsCid,
+        signature,
+      };
     }),
 });
 
