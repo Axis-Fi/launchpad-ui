@@ -16,6 +16,7 @@ export const CuratorProfileSchema = z.object({
   name: z.string(),
   description: z.string(),
   address: z.string(),
+  twitter: z.string().optional(),
   links: z.object({
     banner: z.string().url(),
     avatar: z.string().url(),

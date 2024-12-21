@@ -90,7 +90,6 @@ export default function CuratorLaunchPage({ curator }: AuctionListPageProps) {
                       isGrid={gridView}
                       loading={isLoading}
                       key={i}
-                      mess
                     />
                   ))
               : rows.map((auction) => (

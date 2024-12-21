@@ -76,7 +76,6 @@ export function CuratorDedicatedPage() {
           avatar: curator!.links.avatar,
           banner: curator!.links.banner,
           description: curator!.description,
-          reportURL: "todo",
           options: curator!.options,
         }
       }

@@ -111,7 +111,7 @@ export function CuratorProfileForm() {
 
   return (
     <div className="mx-auto">
-      <CuratorBanner className="l0px]" curator={curator} />
+      <CuratorBanner curator={curator} />
       <div className="max-w-limit mx-auto mt-5 ">
         <div className="mt-3 grid grid-cols-2 justify-items-center gap-y-4">
           <Form {...form}>
