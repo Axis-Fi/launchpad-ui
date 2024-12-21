@@ -3,11 +3,13 @@
   "include": [
     "src",
     "../../packages/ui/src/components/sort-button.tsx",
-    "../../packages/types"
+    "../../packages/types",
+    "../ipfs-api/src/express.d.ts"
   ],
   "exclude": ["cypress"],
   "compilerOptions": {
     "baseUrl": "./",
+    "resolveJsonModule": true,
     "paths": {
       "components/*": ["src/components/*"],
       "components": ["src/components/index"],

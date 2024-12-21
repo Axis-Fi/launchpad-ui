@@ -94,7 +94,7 @@ export default function AuctionPage() {
         <PageHeader
           className="relative mt-0 lg:mt-0"
           backNavigationPath={`${
-            isCuratorPage ? `/${curator?.id}/launches` : "/#"
+            isCuratorPage ? `/curator/${curator?.id}` : "/#"
           }`}
           backNavigationText="Back to Launches"
           toggle={!isUSDQuote}

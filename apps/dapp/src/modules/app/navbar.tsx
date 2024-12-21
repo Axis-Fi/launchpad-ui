@@ -93,7 +93,7 @@ export default function Navbar(props: NavbarProps) {
         .map((l) => {
           if (isCuratorPage) {
             if (l.href === "/#") {
-              const curatorLink = { ...l, href: `/${curator?.id}/launches` };
+              const curatorLink = { ...l, href: `/curator/${curator?.id}` };
               return curatorLink;
             }
 

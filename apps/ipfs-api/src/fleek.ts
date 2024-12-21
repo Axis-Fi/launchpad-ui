@@ -1,23 +1,32 @@
-import Storage from "@fleekhq/fleek-storage-js";
+import * as dotenv from "dotenv";
+import { FleekSdk, PersonalAccessTokenService } from "@fleek-platform/sdk/node";
 
-/** Stores data and returns the location hash */
-export async function storeData(input: {
-  data: string;
-  key: string;
-}): Promise<Storage.uploadOutput> {
-  const keys = getCredentials();
+dotenv.config();
 
-  return Storage.upload({ ...keys, ...input });
-}
-
-/** Gets the keys required for fleek storage calls */
-function getCredentials() {
-  if (!process.env.FLEEK_KEY || !process.env.FLEEK_SECRET) {
-    throw new Error("Missing Fleek credentials");
+const getCredentials = () => {
+  if (!process.env.FLEEK_PAT || !process.env.FLEEK_PROJECT_ID) {
+    throw new Error("Missing Fleek credentials in .env");
   }
 
   return {
-    apiKey: process.env.FLEEK_KEY!,
-    apiSecret: process.env.FLEEK_SECRET!,
+    personalAccessToken: process.env.FLEEK_PAT!,
+    projectId: process.env.FLEEK_PROJECT_ID!,
   };
+};
+
+const accessTokenService = new PersonalAccessTokenService(getCredentials());
+export const fleekSdk = new FleekSdk({ accessTokenService });
+
+export async function storeData(input: {
+  data: string;
+  key: string;
+}): Promise<string> {
+  const blob = new Blob([input.data], { type: "application/json" });
+  const file = new File([blob], input.key ?? `unknown-${Date.now()}`, {
+    type: "application/json",
+  });
+
+  const result = await fleekSdk.storage().uploadFile({ file });
+
+  return result.pin.cid;
 }

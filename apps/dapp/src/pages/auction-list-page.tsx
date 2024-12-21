@@ -29,7 +29,6 @@ import {
 } from "state/user-settings/auction-list-settings";
 import { useAtom } from "jotai";
 import React from "react";
-//import { useAccount } from "wagmi";
 import { environment } from "@axis-finance/env";
 import { metadata } from "modules/app/metadata";
 import { useMediaQueries } from "loaders/use-media-queries";
