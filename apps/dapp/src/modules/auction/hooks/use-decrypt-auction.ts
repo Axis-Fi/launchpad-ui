@@ -5,7 +5,6 @@ import {
 } from "@tanstack/react-query";
 import type { Auction, AuctionId, BatchAuction } from "@axis-finance/types";
 import { useEffect, useRef } from "react";
-import { cloakClient } from "@axis-finance/cloak";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -19,6 +18,7 @@ import {
   auction as auctionCache,
   optimisticUpdate,
 } from "modules/auction/utils/optimistic";
+import { cloakClient } from "utils/cloak-client";
 
 /** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: BatchAuction) => {
