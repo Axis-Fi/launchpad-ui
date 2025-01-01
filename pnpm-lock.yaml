@@ -54,9 +54,6 @@ importers:
       "@fleek-platform/sdk":
         specifier: ^3.5.1
         version: 3.5.1
-      "@fleekhq/fleek-storage-js":
-        specifier: ^1.0.24
-        version: 1.0.24
       "@helia/verified-fetch":
         specifier: ^2.3.1
         version: 2.3.1(react-native@0.75.3)
@@ -640,7 +637,7 @@ packages:
       viem: ^2.2.0
     dependencies:
       "@axis-finance/deployments": 0.0.1
-      viem: 2.21.7(zod@3.24.1)
+      viem: 2.21.7
     dev: false
 
   /@axis-finance/env@0.0.2(viem@2.17.3):
@@ -6550,20 +6547,6 @@ packages:
       luxon: 3.5.0
       object-traversal: 1.0.1
       parallel-transform-web: 1.0.1
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
-  /@fleekhq/fleek-storage-js@1.0.24:
-    resolution:
-      {
-        integrity: sha512-2XweXT6zvQrSyYw1fXKjsuITm1b96mE52i5PoVqDQokI6l/tSyLE3UxW5uUGfk9t3ueknL1TaSy2WRZGSz2idw==,
-      }
-    dependencies:
-      aws-sdk: 2.1574.0
-      axios: 0.21.4
-      multiformats: 9.9.0
-      s3-streaming-upload: 0.3.4
     transitivePeerDependencies:
       - debug
     dev: false
@@ -17201,7 +17184,7 @@ packages:
       }
     engines: { node: ">=4" }
     dependencies:
-      tslib: 2.7.0
+      tslib: 2.8.1
     dev: false
 
   /ast-types@0.16.1:
@@ -17328,26 +17311,6 @@ packages:
     engines: { node: ">= 0.4" }
     dependencies:
       possible-typed-array-names: 1.0.0
-    dev: false
-
-  /aws-sdk@2.1574.0:
-    resolution:
-      {
-        integrity: sha512-AC3VptGeggp7AFGj66PIt9GrnLyDBo7Owb5TmbGDe2OIvgeHH3nBD4S3wRZQ9u3Ea6iREnalXxQ2n5rflCeG9g==,
-      }
-    engines: { node: ">= 10.0.0" }
-    requiresBuild: true
-    dependencies:
-      buffer: 4.9.2
-      events: 1.1.1
-      ieee754: 1.1.13
-      jmespath: 0.16.0
-      querystring: 0.2.0
-      sax: 1.2.1
-      url: 0.10.3
-      util: 0.12.5
-      uuid: 8.0.0
-      xml2js: 0.6.2
     dev: false
 
   /aws-sign2@0.7.0:
@@ -18006,17 +17969,6 @@ packages:
       {
         integrity: sha512-571s0T7nZWK6vB67HI5dyUF7wXiNcfaPPPTl6zYCNApANjIvYJTg7hlud/+cJpdAhS7dVzqMLmfhfHR3rAcOjQ==,
       }
-    dev: false
-
-  /buffer@4.9.2:
-    resolution:
-      {
-        integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==,
-      }
-    dependencies:
-      base64-js: 1.5.1
-      ieee754: 1.2.1
-      isarray: 1.0.0
     dev: false
 
   /buffer@5.7.1:
@@ -21440,14 +21392,6 @@ packages:
         integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==,
       }
 
-  /events@1.1.1:
-    resolution:
-      {
-        integrity: sha512-kEcvvCBByWXGnZy6JUlgAp2gBIUjfCAV6P6TgT1/aaQKcmuAEC4OZTV1I4EWQLz2gxZw76atuVyvHhTxvi0Flw==,
-      }
-    engines: { node: ">=0.4.x" }
-    dev: false
-
   /events@3.3.0:
     resolution:
       {
@@ -23337,13 +23281,6 @@ packages:
       }
     dev: false
 
-  /ieee754@1.1.13:
-    resolution:
-      {
-        integrity: sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==,
-      }
-    dev: false
-
   /ieee754@1.2.1:
     resolution:
       {
@@ -24871,14 +24808,6 @@ packages:
         integrity: sha512-gFqAIbuKyyso/3G2qhiO2OM6shY6EPP/R0+mkDbyspxKazh8BXDC5FiFsUjlczgdNz/vfra0da2y+aHrusLG/Q==,
       }
     hasBin: true
-
-  /jmespath@0.16.0:
-    resolution:
-      {
-        integrity: sha512-9FzQjJ7MATs1tSpnco1K6ayiYE3figslrXA72G2HQ/n76RzvYlofyi5QM+iX4YRs/pu3yzxlVQSST23+dMDknw==,
-      }
-    engines: { node: ">= 0.6.0" }
-    dev: false
 
   /joi@17.12.2:
     resolution:
@@ -28577,13 +28506,6 @@ packages:
       pump: 2.0.1
     dev: true
 
-  /punycode@1.3.2:
-    resolution:
-      {
-        integrity: sha512-RofWgt/7fL5wP1Y7fxE7/EmTLzQVnB0ycyibJ0OOHIlJqTNzglYFxVwETOcIoJqJmpDXJ9xImDv+Fq34F/d4Dw==,
-      }
-    dev: false
-
   /punycode@1.4.1:
     resolution:
       {
@@ -28711,15 +28633,6 @@ packages:
         integrity: sha512-773xhDQnZBMFobEiztv8LIl70ch5MSF/jUQVlhwFyBILqq96anmoctVIYz+ZRp0qbCKATTn6ev02M3r7Ga5vqA==,
       }
     engines: { node: ">=0.4.x" }
-    dev: false
-
-  /querystring@0.2.0:
-    resolution:
-      {
-        integrity: sha512-X/xY82scca2tau62i9mDyU9K+I+djTMUsvwf7xnUX5GLvVzgJybOJf4Y6o9Zx3oJK/LSXg5tTZBjwzqVPaPO2g==,
-      }
-    engines: { node: ">=0.4.x" }
-    deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
     dev: false
 
   /querystringify@2.2.0:
@@ -29704,7 +29617,7 @@ packages:
       ast-types: 0.15.2
       esprima: 4.0.1
       source-map: 0.6.1
-      tslib: 2.7.0
+      tslib: 2.8.1
     dev: false
 
   /recast@0.23.7:
@@ -30284,17 +30197,6 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /s3-streaming-upload@0.3.4:
-    resolution:
-      {
-        integrity: sha512-mm/OPbV5rUpjGtRFMhFBH158gjguwVgM4/81UcxDGF8jU1uhopjvsQJRt0hvmLqYBqNR6LsP9fdb0ZHkJrwztw==,
-      }
-    engines: { node: ">= 12.13.0" }
-    dependencies:
-      aws-sdk: 2.1574.0
-      readable-stream: 3.6.2
-    dev: false
-
   /safe-array-concat@1.0.1:
     resolution:
       {
@@ -30383,13 +30285,6 @@ packages:
       }
     dependencies:
       truncate-utf8-bytes: 1.0.2
-    dev: false
-
-  /sax@1.2.1:
-    resolution:
-      {
-        integrity: sha512-8I2a3LovHTOpm7NV5yOyO8IHqgVsfK4+UuySrXU8YXkSRX7k6hCV9b3HrkKCr3nMpgj+0bmocaJJWpvp1oc7ZA==,
-      }
     dev: false
 
   /sax@1.3.0:
@@ -33183,16 +33078,6 @@ packages:
       requires-port: 1.0.0
     dev: true
 
-  /url@0.10.3:
-    resolution:
-      {
-        integrity: sha512-hzSUW2q06EqL1gKM/a+obYHLIO6ct2hwPuviqTTOcfFVc61UbfJ2Q32+uGL/HCPxKqrdGB5QUwIe7UqlDgwsOQ==,
-      }
-    dependencies:
-      punycode: 1.3.2
-      querystring: 0.2.0
-    dev: false
-
   /url@0.11.3:
     resolution:
       {
@@ -33382,14 +33267,6 @@ packages:
       }
     engines: { node: ">= 0.4.0" }
 
-  /uuid@8.0.0:
-    resolution:
-      {
-        integrity: sha512-jOXGuXZAWdsTH7eZLtyXMqUb9EcWMGZNbL9YcGBJl4MH4nrxHmZJhEHvyLFrkxo+28uLb/NYRcStH48fnD0Vzw==,
-      }
-    hasBin: true
-    dev: false
-
   /uuid@8.3.2:
     resolution:
       {
@@ -33550,6 +33427,32 @@ packages:
       abitype: 1.0.5(typescript@5.3.3)
       isows: 1.0.4(ws@8.17.1)
       typescript: 5.3.3
+      ws: 8.17.1
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+    dev: false
+
+  /viem@2.21.7:
+    resolution:
+      {
+        integrity: sha512-PFgppakInuHX31wHDx1dzAjhj4t6Po6WrWtutDi33z2vabIT0Wv8qT6tl7DLqfLy2NkTqfN2mdshYLeoI5ZHvQ==,
+      }
+    peerDependencies:
+      typescript: ">=5.0.4"
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      "@adraffy/ens-normalize": 1.10.0
+      "@noble/curves": 1.4.0
+      "@noble/hashes": 1.4.0
+      "@scure/bip32": 1.4.0
+      "@scure/bip39": 1.4.0
+      abitype: 1.0.5(typescript@5.3.3)
+      isows: 1.0.4(ws@8.17.1)
+      webauthn-p256: 0.0.5
       ws: 8.17.1
     transitivePeerDependencies:
       - bufferutil
