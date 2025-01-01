@@ -27,7 +27,7 @@ import { TokenPicker } from "modules/token/token-picker";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cloakClient } from "@axis-finance/cloak";
+import { cloakClient } from "utils/cloak-client";
 import {
   UseWaitForTransactionReceiptReturnType,
   useAccount,
