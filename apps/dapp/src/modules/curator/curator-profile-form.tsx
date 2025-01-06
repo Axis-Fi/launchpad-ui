@@ -42,9 +42,16 @@ export function CuratorProfileForm() {
   const form = useForm<CuratorForm>({
     resolver: zodResolver(curatorSchema),
     mode: "onChange",
+    defaultValues: { name: twitter.user?.name ?? "" },
   });
 
-  const curator = form.getValues();
+  useEffect(() => {
+    if (twitter.user?.name && form.getValues("name") === "") {
+      form.setValue("name", twitter.user.name);
+    }
+  }, [twitter.user]);
+
+  const curator = form.watch();
 
   useEffect(() => {
     if (!twitter.isLoading && !twitter.isVerified) {
