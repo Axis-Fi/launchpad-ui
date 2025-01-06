@@ -1,7 +1,7 @@
 {
   "name": "dapp",
   "private": true,
-  "version": "1.0.22",
+  "version": "1.0.23",
   "type": "module",
   "scripts": {
     "dev": "vite --port ${VITE_APP_PORT-5173}",

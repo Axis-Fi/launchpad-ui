@@ -2,7 +2,7 @@ import type { Address } from "viem";
 import { baseSepolia } from "viem/chains";
 
 const registry =
-  process.env.ENVIRONMENT === "production"
+  process.env.NODE_ENV === "production"
     ? {
         // base mainnet
         address: "0xc94404218178149ebebfc1f47f0df14b5fd881c5" as Address,
