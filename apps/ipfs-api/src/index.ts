@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import passport from "passport";
 import session from "express-session";
 import * as trpcExpress from "@trpc/server/adapters/express";
@@ -49,17 +49,6 @@ app.use(
     createContext: context,
   }),
 );
-
-app.use((err: Error, _: Request, res: Response) => {
-  console.error("Error:", err);
-  res.status(500).json({
-    error:
-      process.env.NODE_ENV === "production"
-        ? "Internal server error"
-        : err.message,
-    stack: process.env.NODE_ENV === "production" ? undefined : err.stack,
-  });
-});
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
