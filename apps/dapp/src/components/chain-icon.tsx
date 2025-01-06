@@ -1,7 +1,9 @@
 import { Avatar } from "@repo/ui";
 import { chains } from "@axis-finance/env";
 
-const activeChains = chains.activeChains;
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 
 type ChainIconProps = {
   chainId: number;

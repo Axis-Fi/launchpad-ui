@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { ipfsServers, environment } from "@axis-finance/env";
+import { ipfsServers } from "@axis-finance/env";
+import { environment } from "utils/environment";
 
 const { url: ipfsUrl } =
   ipfsServers[environment.current] ?? ipfsServers.staging;

@@ -58,12 +58,12 @@ import {
   toBasisPoints,
   getScaledCapacityWithCuratorFee,
 } from "src/utils";
-
 import {
   AuctionType,
   CallbacksType,
   isBaselineCallback,
 } from "@axis-finance/types";
+import type { Chain } from "viem";
 
 import { storeAuctionInfo } from "modules/app/ipfs-api";
 import { addDays, addHours, addMinutes } from "date-fns";
@@ -622,11 +622,10 @@ export default function CreateAuctionPage() {
     baselineAnchorTickWidth: "10",
   };
 
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [isTxDialogOpen, setIsTxDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
-  const { chain } = useAccount();
 
   const [storedConfig, setStoredConfig] = useStoredAuctionConfig();
 
@@ -1550,7 +1549,7 @@ export default function CreateAuctionPage() {
 
     const optimisticAuction = auctionsCache.createOptimisticAuction(
       lotId,
-      chain!,
+      chain! as Chain,
       address!,
       auctionHouseAddress,
       form.getValues(),

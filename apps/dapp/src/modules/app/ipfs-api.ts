@@ -1,8 +1,9 @@
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "@repo/ipfs-api";
 
-import { ipfsServers, environment } from "@axis-finance/env";
+import { ipfsServers } from "@axis-finance/env";
 import type { AuctionMetadata, CuratorProfile } from "@repo/ipfs-api/src/types";
+import { environment } from "utils/environment";
 
 const { url: serverUrl } =
   ipfsServers[environment.current] ?? ipfsServers.staging;

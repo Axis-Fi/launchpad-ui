@@ -1,7 +1,7 @@
 import type { Address, Auction } from "@axis-finance/types";
 import { isAddress, zeroAddress } from "viem";
 import { axisContracts } from "@axis-finance/deployments";
-import { environment } from "@axis-finance/env";
+import { environment } from "utils/environment";
 import { allowedCuratorAddresses, allowedCurators } from "modules/app/curators";
 
 /** Checks if the curator address on an Auction exists in an address list */

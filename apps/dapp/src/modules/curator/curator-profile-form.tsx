@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,8 +18,8 @@ import {
 import { useVerifyTwitter } from "modules/auction/hooks/use-verify-twitter";
 import { CuratorBanner } from "./curator-banner";
 import { storeCuratorProfile } from "modules/app/ipfs-api";
-import { metadataRegistryAbi } from "modules/auction/hooks/axis-metadata-registry";
-import { baseSepolia } from "viem/chains";
+import { curatorRegistryDeployment } from "./deployment";
+import { RequiresChain } from "components/requires-chain";
 
 const curatorSchema = z.object({
   name: z.string(),
@@ -32,13 +32,12 @@ const curatorSchema = z.object({
 
 type CuratorForm = z.infer<typeof curatorSchema>;
 
-const curatorRegistryAddress = "0x75da61536510ba0bca0c9af21311a1fc035dcf4e";
-
 export function CuratorProfileForm() {
   const { toast } = useToast();
   const twitter = useVerifyTwitter();
   const navigate = useNavigate();
   const { writeContract } = useWriteContract();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<CuratorForm>({
     resolver: zodResolver(curatorSchema),
@@ -47,7 +46,7 @@ export function CuratorProfileForm() {
 
   const curator = form.getValues();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!twitter.isLoading && !twitter.isVerified) {
       navigate("/curator-authenticate");
     }
@@ -55,6 +54,8 @@ export function CuratorProfileForm() {
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    setIsPending(true);
 
     const { ipfsCid, signature } = await storeCuratorProfile({
       id: twitter.user!.id,
@@ -70,9 +71,9 @@ export function CuratorProfileForm() {
 
     writeContract(
       {
-        chainId: baseSepolia.id,
-        abi: metadataRegistryAbi,
-        address: curatorRegistryAddress,
+        chainId: curatorRegistryDeployment.chainId,
+        abi: curatorRegistryDeployment.abi,
+        address: curatorRegistryDeployment.address,
         functionName: "registerCurator",
         args: [
           {
@@ -85,6 +86,7 @@ export function CuratorProfileForm() {
       },
       {
         onSuccess: () => {
+          setIsPending(false);
           toast({
             title: (
               <div className="flex items-center gap-x-2">
@@ -96,6 +98,7 @@ export function CuratorProfileForm() {
           navigate(`/curator/${twitter.user!.id}`);
         },
         onError: (e: Error) => {
+          setIsPending(false);
           console.log(e);
           toast({
             title: (
@@ -174,13 +177,18 @@ export function CuratorProfileForm() {
               )}
             />
 
-            <Button
-              className="col-span-2 mt-4"
-              type="submit"
-              onClick={handleSubmit}
-            >
-              Register
-            </Button>
+            <div className="col-span-2 flex w-[300px] justify-center">
+              <RequiresChain chainId={curatorRegistryDeployment.chainId}>
+                <Button
+                  className="col-span-2 mt-4 w-[200px]"
+                  type="submit"
+                  onClick={handleSubmit}
+                  disabled={isPending}
+                >
+                  Register{" "}
+                </Button>
+              </RequiresChain>
+            </div>
           </Form>
         </div>
       </div>

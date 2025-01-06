@@ -16,7 +16,9 @@ import {
 } from "viem/chains";
 import { ArrowUpRightIcon } from "lucide-react";
 
-const activeChains = chains.activeChains;
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 
 const ethFaucets: Record<number, string> = {
   [blastSepolia.id]: "https://faucet.quicknode.com/blast/sepolia",

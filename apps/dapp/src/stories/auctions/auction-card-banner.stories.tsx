@@ -3,7 +3,9 @@ import { AuctionCard } from "modules/auction/auction-card";
 import { AuctionCardBanner } from "modules/auction/auction-card-banner";
 import { chains } from "@axis-finance/env";
 
-const activeChains = chains.activeChains;
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 const chain = activeChains[0];
 
 const meta = {

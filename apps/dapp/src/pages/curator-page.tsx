@@ -12,7 +12,9 @@ import { getCurator } from "modules/app/curators";
 
 const auctionModuleOptions = Object.values(auctionMetadata);
 const auctionModules = Object.keys(auctionMetadata) as AuctionType[];
-const activeChains = chains.activeChains;
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 
 export function CuratorPage() {
   const { address } = useAccount();

@@ -9,8 +9,9 @@ import { getAuctionHouse } from "utils/contracts";
 import { chains } from "@axis-finance/env";
 import { auctionMetadata } from "./metadata";
 import type { Chain } from "@axis-finance/types";
+import { environment } from "utils/environment";
 
-const activeChains = chains.activeChains;
+const activeChains = chains.activeChains(environment.isTestnet);
 
 type CuratorFeeManagerProps = {
   chainId?: number;

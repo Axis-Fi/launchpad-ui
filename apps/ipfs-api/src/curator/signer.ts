@@ -6,7 +6,7 @@ import {
   type Address,
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { baseSepolia } from "viem/chains";
+import { registry } from "./env";
 
 dotenv.config();
 
@@ -19,11 +19,11 @@ const signerKey = process.env.SIGNER_KEY! as Address;
 const walletClient = createWalletClient({
   account: privateKeyToAccount(signerKey),
   transport: http(),
-  chain: baseSepolia,
+  chain: registry.chain,
 });
 
 const publicClient = createPublicClient({
-  chain: baseSepolia,
+  chain: registry.chain,
   transport: http(),
 });
 

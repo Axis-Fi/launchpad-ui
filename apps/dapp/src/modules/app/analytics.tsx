@@ -1,5 +1,5 @@
 import Plausible from "plausible-tracker";
-import { environment } from "@axis-finance/env";
+import { environment } from "utils/environment";
 import { metadata } from "./metadata";
 
 const domain = environment.isProduction

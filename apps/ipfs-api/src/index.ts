@@ -6,8 +6,8 @@ import type { CreateTRPCProxyClient } from "@trpc/client";
 import * as dotenv from "dotenv";
 import cors from "cors";
 import { appRouter, context } from "./trpc";
-import { router as authRoutes } from "./auth";
-import "./passport";
+import { router as authRoutes } from "./curator/auth";
+import "./curator/passport";
 
 // Read .env files
 dotenv.config();

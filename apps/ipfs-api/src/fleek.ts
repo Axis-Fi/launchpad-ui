@@ -15,6 +15,7 @@ const getCredentials = () => {
 };
 
 const accessTokenService = new PersonalAccessTokenService(getCredentials());
+
 export const fleekSdk = new FleekSdk({ accessTokenService });
 
 export async function storeData(input: {
