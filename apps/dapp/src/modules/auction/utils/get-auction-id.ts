@@ -15,7 +15,7 @@ const formatAuctionId = (
 const getAuctionId = (chainId: string | number, lotId: string | number) => {
   const deployment = getDeploymentByChainId(Number(chainId));
   return formatAuctionId(
-    deployment.chain,
+    deployment.chain as Chain,
     deployment.addresses.batchAuctionHouse,
     Number(lotId),
   );

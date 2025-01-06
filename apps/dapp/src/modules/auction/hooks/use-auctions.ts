@@ -17,6 +17,7 @@ import { featureToggles } from "modules/app/feature-toggles";
 import { useAuctionRegistrations } from "./use-auction-registrations";
 import type { Address } from "viem";
 import { allowedCurators } from "modules/app/curators";
+import { environment } from "utils/environment";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -37,6 +38,7 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   const { data, isLoading, isSuccess, isRefetching } =
     useLaunchesQuery<GetAuctionLots>({
       queryKeyFn: getAuctionsQueryKey,
+      isTestnet: environment.isTestnet,
     });
 
   // Refetch auctions if the cache is stale

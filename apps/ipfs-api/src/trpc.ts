@@ -5,10 +5,8 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { storeData } from "./fleek";
 import { AuctionMetadataSchema, CuratorProfileSchema } from "./types";
-import { walletClient } from "./wallet";
-import { baseSepolia } from "viem/chains";
-
-const registryContractAddress = "0x75da61536510ba0bca0c9af21311a1fc035dcf4e";
+import { walletClient } from "./curator/signer";
+import { registry } from "./curator/env";
 
 const createContext = ({
   req,
@@ -104,8 +102,8 @@ export const appRouter = t.router({
       const domain = {
         name: "Axis Metadata Registry",
         version: "v1.0.0",
-        chainId: BigInt(baseSepolia.id),
-        verifyingContract: registryContractAddress as Address,
+        chainId: BigInt(registry.chain.id),
+        verifyingContract: registry.address,
       } as const;
 
       const message = {

@@ -10,7 +10,3 @@ interface ImportMetaEnv {
 
   readonly VITE_WALLETCONNECT_PROJECT_ID: string;
 }
-
-interface Chain {
-  iconUrl: string;
-}

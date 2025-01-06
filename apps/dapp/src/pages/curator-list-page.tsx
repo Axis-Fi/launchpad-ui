@@ -1,13 +1,38 @@
 import { Link } from "react-router-dom";
-import { Avatar, Badge, Button, Card, Text, Tooltip } from "@repo/ui";
+import type { Address } from "viem";
+import { Avatar, Button, Card, Text } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { PageContainer } from "modules/app/page-container";
 import { allowedCurators } from "modules/app/curators";
 import { Curator } from "@axis-finance/types";
 import { ArrowRightIcon } from "lucide-react";
+import { useCurators } from "modules/curator/hooks/use-curators";
+import { CuratorProfile } from "@repo/ipfs-api/src/types";
+import { useMediaQueries } from "loaders/use-media-queries";
+
+// Temporary list of Twitter (X) IDs of curators to show in the dapp
+// TODO: this should be resolved dynamically by looking up the Axis's X account follows
+const visibleCurators: string[] = [];
+
+// TODO: remove concept of "static curators" and just use the curator profiles once they're migrated
+const curatorProfileToCurator = (profile: CuratorProfile): Curator => ({
+  id: profile.id,
+  type: "curator",
+  name: profile.name,
+  description: profile.description,
+  address: profile.address as Address,
+  twitter: profile.twitter,
+  website: profile.links.website,
+  avatar: profile.links.avatar,
+  banner: profile.links.banner,
+});
 
 export default function CuratorListPage() {
-  const [newestCurator, ...curators] = allowedCurators;
+  const [newestStaticCurator, ...staticCurators] = allowedCurators;
+  const curatorsQuery = useCurators()!;
+  const curators = (curatorsQuery.data ?? []).filter((c) =>
+    visibleCurators.includes(c.id),
+  );
 
   return (
     <PageContainer
@@ -15,13 +40,16 @@ export default function CuratorListPage() {
       containerClassName="mt-12 lg:mx-0 items-center"
     >
       <>
+        {curators.map((c: CuratorProfile) => (
+          <CuratorCard key={c.id} curator={curatorProfileToCurator(c)} />
+        ))}
         <CuratorCard
-          key={newestCurator.name}
-          curator={newestCurator}
-          className="gradient-border gradient-border-shift"
+          curator={newestStaticCurator}
+          // className="gradient-border gradient-border-shift"
+          // hideButton
         />
-        {curators.map((c) => (
-          <CuratorCard key={c.name} curator={c} />
+        {staticCurators.map((c: Curator) => (
+          <CuratorCard key={c.name} curator={c} hideButton />
         ))}
       </>
 
@@ -45,6 +73,8 @@ export function CuratorCard({
   hideButton?: boolean;
   className?: string;
 }) {
+  const { isTabletOrMobile } = useMediaQueries();
+
   return (
     <Card className={className}>
       <div className="flex justify-between space-x-6">
@@ -69,26 +99,21 @@ export function CuratorCard({
         </div>
 
         <div className="flex flex-col justify-between">
-          <div className="flex justify-end">
-            <Badge className="w-min justify-end" size="m">
-              {curator.type === "curator" && "Curator"}
-              {curator.type === "platform" && "Platform"}
-            </Badge>
+          <div className="flex justify-end"></div>
+          <div className="m-1 flex flex-row justify-end gap-2 lg:mt-0">
+            <Button
+              variant="primary"
+              size={isTabletOrMobile ? "sm" : "md"}
+              disabled={hideButton}
+            >
+              <>
+                {!hideButton && (
+                  <Link to={`/curator/${curator.id}`}>View Curator</Link>
+                )}
+                {hideButton && "View Curator"}
+              </>
+            </Button>
           </div>
-          {!(hideButton ?? false) && (
-            <div className="m-1 flex flex-row justify-end gap-2 lg:mt-0">
-              <Tooltip content="Coming Soon">
-                <Button variant="secondary" size="md" disabled>
-                  View Profile
-                </Button>
-              </Tooltip>
-              <Tooltip content="Coming Soon">
-                <Button variant="primary" size="md" disabled>
-                  View Launches
-                </Button>
-              </Tooltip>
-            </div>
-          )}
         </div>
       </div>
     </Card>

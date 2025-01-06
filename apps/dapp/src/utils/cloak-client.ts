@@ -1,8 +1,8 @@
 import { Environment, cloakServers } from "@axis-finance/env";
 import { Configuration, createCloakClient } from "@axis-finance/cloak";
+import { environment } from "./environment";
 
-const env =
-  (import.meta.env.VITE_ENVIRONMENT as Environment) || Environment.PRODUCTION;
+const env = environment.current ?? Environment.PRODUCTION;
 
 const cloakClient = createCloakClient(
   new Configuration({

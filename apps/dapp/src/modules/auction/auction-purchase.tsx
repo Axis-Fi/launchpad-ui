@@ -13,7 +13,7 @@ import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React, { useEffect, useState } from "react";
 import { AuctionBidInputSingle } from "./auction-bid-input-single";
-import { useAccount, useChainId } from "wagmi";
+import { UseWriteContractReturnType, useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "./hooks/use-allowlist";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { getDeployment } from "@axis-finance/deployments";
@@ -436,7 +436,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
 
             <TransactionDialog
               open={open}
-              signatureMutation={bid.bidTx}
+              signatureMutation={bid.bidTx as UseWriteContractReturnType}
               error={bid.error}
               onConfirm={handleSubmit}
               mutation={bid.bidReceipt}

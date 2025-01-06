@@ -3,14 +3,11 @@ import { useParams } from "react-router-dom";
 import { useReadContract } from "wagmi";
 import { verifiedFetch } from "@helia/verified-fetch";
 import { allowedCurators } from "modules/app/curators";
-import { baseSepolia } from "viem/chains";
 import { Address } from "viem";
-import { metadataRegistryAbi } from "modules/auction/hooks/axis-metadata-registry";
 import type { CuratorProfile } from "@repo/ipfs-api/src/types";
 import type { Curator } from "@axis-finance/types";
 import CuratorLaunchPage from "./curator-launch-page";
-
-const registryContractAddress = "0x75da61536510ba0bca0c9af21311a1fc035dcf4e";
+import { curatorRegistryDeployment } from "modules/curator/deployment";
 
 export function CuratorDedicatedPage() {
   const params = useParams();
@@ -19,9 +16,9 @@ export function CuratorDedicatedPage() {
   const [staticCurator, setStaticCurator] = useState<Curator | undefined>();
 
   const curatorIpfsCid = useReadContract({
-    chainId: baseSepolia.id,
-    abi: metadataRegistryAbi,
-    address: registryContractAddress,
+    chainId: curatorRegistryDeployment.chainId,
+    abi: curatorRegistryDeployment.abi,
+    address: curatorRegistryDeployment.address,
     functionName: "curatorMetadata",
     args: [
       BigInt(
@@ -60,7 +57,7 @@ export function CuratorDedicatedPage() {
   }
 
   if (!curator && !staticCurator) {
-    return <div>CuratorProfile not found.</div>;
+    return <div>Curator not found.</div>;
   }
 
   return (

@@ -4,14 +4,15 @@ import {
   useWaitForTransactionReceipt,
   useWalletClient,
 } from "wagmi";
-import { Address, Hex, WalletClient } from "viem";
+import type { Address, Hex, Chain, WalletClient } from "viem";
 import { useMutation } from "@tanstack/react-query";
-import { Chain } from "viem";
 import { chains } from "@axis-finance/env";
 import type { TokenConfig } from "pages/deploy-token-page";
 import { testnetERC20 as ERC20 } from "@axis-finance/abis";
 
-const activeChains = chains.activeChains;
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 
 const deploy = (
   walletClient: WalletClient,
@@ -36,7 +37,7 @@ export function useDeployToken() {
 
   const mutation = useMutation({
     mutationFn: (values: TokenConfig) =>
-      deploy(walletClient!, address!, chain!, values),
+      deploy(walletClient! as WalletClient, address!, chain! as Chain, values),
   });
 
   const receipt = useWaitForTransactionReceipt({

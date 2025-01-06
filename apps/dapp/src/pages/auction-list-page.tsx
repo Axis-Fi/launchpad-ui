@@ -29,7 +29,7 @@ import {
 } from "state/user-settings/auction-list-settings";
 import { useAtom } from "jotai";
 import React from "react";
-import { environment } from "@axis-finance/env";
+import { environment } from "utils/environment";
 import { metadata } from "modules/app/metadata";
 import { useMediaQueries } from "loaders/use-media-queries";
 import type { Curator } from "@axis-finance/types";

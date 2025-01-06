@@ -1,6 +1,6 @@
 import { Variables } from "graphql-request";
 import type { QueryKey } from "@tanstack/react-query";
-import { environment } from "@axis-finance/env";
+import { environment } from "utils/environment";
 import {
   type AxisDeployment,
   mainnetDeployments,

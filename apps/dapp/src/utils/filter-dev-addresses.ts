@@ -1,5 +1,5 @@
 import { NonNullSubgraphAuction } from "@axis-finance/types";
-import { environment } from "@axis-finance/env";
+import { environment } from "utils/environment";
 
 const devAddresses = [
   "0xb47c8e4beb28af80ede5e5bf474927b110ef2c0e",

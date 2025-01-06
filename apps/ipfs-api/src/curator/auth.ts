@@ -18,10 +18,6 @@ router.get("/is-verified", (req, res) => {
   });
 });
 
-router.get("/ping", (req, res) => {
-  res.send(`pong, ${req.user ? req.user.username : "unknown"}`);
-});
-
 router.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) {
