@@ -285,26 +285,26 @@ importers:
   apps/dapp:
     dependencies:
       "@axis-finance/abis":
-        specifier: workspace:*
-        version: link:../../../ui-libs/packages/abis
+        specifier: 0.0.2
+        version: 0.0.2
       "@axis-finance/cloak":
-        specifier: workspace:*
-        version: link:../../../ui-libs/packages/cloak
+        specifier: 0.0.3
+        version: 0.0.3(viem@2.17.3)
       "@axis-finance/deployments":
-        specifier: workspace:*
-        version: link:../../../ui-libs/packages/deployments
+        specifier: 0.0.2
+        version: 0.0.2
       "@axis-finance/env":
-        specifier: workspace:*
-        version: link:../../../ui-libs/packages/env
+        specifier: 0.0.3
+        version: 0.0.3(viem@2.17.3)
       "@axis-finance/sdk":
-        specifier: workspace:*
-        version: link:../../../ui-libs/packages/sdk
+        specifier: 0.0.7
+        version: 0.0.7(@tanstack/react-query@5.18.1)(@trpc/server@10.45.1)(postcss@8.4.33)(react@18.3.1)(typescript@5.3.3)(viem@2.17.3)(wagmi@2.5.2)
       "@axis-finance/subgraph-client":
-        specifier: workspace:*
-        version: link:../../../ui-libs/packages/subgraph-client
+        specifier: 0.0.3
+        version: 0.0.3(@tanstack/react-query@5.18.1)(react@18.3.1)
       "@axis-finance/types":
-        specifier: workspace:*
-        version: link:../../../ui-libs/packages/types
+        specifier: 0.0.5
+        version: 0.0.5(@tanstack/react-query@5.18.1)(postcss@8.4.33)(react@18.3.1)(typescript@5.3.3)
       "@fleek-platform/sdk":
         specifier: ^3.5.1
         version: 3.5.1
@@ -905,6 +905,24 @@ packages:
       }
     dev: false
 
+  /@axis-finance/abis@0.0.2:
+    resolution:
+      {
+        integrity: sha512-8pm1GXpMdcihO8dcG3Ui2B/Za8pi1p0F/XUdNUrR1JXR3z0Feh4bCaEe8xfZJmFdznZkKiHVRMItA+W1ICwEsQ==,
+      }
+    dev: false
+
+  /@axis-finance/cloak@0.0.3(viem@2.17.3):
+    resolution:
+      {
+        integrity: sha512-br2aHHS9ij3CKklm3RmRsuvRIvLiTHSox3rpCqHAY3igdMmwrw1Gt2I+wbEidm3xoq5E5pa9UV+F+ydMdgO5IQ==,
+      }
+    dependencies:
+      "@axis-finance/env": 0.0.3(viem@2.17.3)
+    transitivePeerDependencies:
+      - viem
+    dev: false
+
   /@axis-finance/deployments@0.0.1:
     resolution:
       {
@@ -912,6 +930,15 @@ packages:
       }
     dependencies:
       "@axis-finance/abis": 0.0.1
+    dev: false
+
+  /@axis-finance/deployments@0.0.2:
+    resolution:
+      {
+        integrity: sha512-MEVCTS+I7cag1HlIeM6tbPyRX6eUIxj99xtYRUkArZjJ2OplR9FUinPyho+qaxtvyFptZfTjn5EW3N+tOiqkyQ==,
+      }
+    dependencies:
+      "@axis-finance/abis": 0.0.2
     dev: false
 
   /@axis-finance/env@0.0.1(viem@2.17.3):
@@ -924,6 +951,130 @@ packages:
     dependencies:
       "@axis-finance/deployments": 0.0.1
       viem: 2.17.3(typescript@5.7.2)
+    dev: false
+
+  /@axis-finance/env@0.0.3(viem@2.17.3):
+    resolution:
+      {
+        integrity: sha512-xS//8Ud8lQpEgPn9i+bNI40iu1vrkIraE/Zxb9K45lKxa1QZb7BZK77r7qEEtqoTF85411BLW7cZzHQz1MdJdA==,
+      }
+    peerDependencies:
+      viem: 2.17.3
+    dependencies:
+      "@axis-finance/deployments": 0.0.2
+      viem: 2.17.3(typescript@5.3.3)
+    dev: false
+
+  /@axis-finance/eslint-config@0.0.2:
+    resolution:
+      {
+        integrity: sha512-xH6l+o3u+QxBqJRQeO7jQeetQhGSSgqS2VZ0+I5caDVSuMWk0S2w5xUb8qqz7VrAlEmDvoR3MJqC8xzXRPcQZg==,
+      }
+    dev: false
+
+  /@axis-finance/sdk@0.0.7(@tanstack/react-query@5.18.1)(@trpc/server@10.45.1)(postcss@8.4.33)(react@18.3.1)(typescript@5.3.3)(viem@2.17.3)(wagmi@2.5.2):
+    resolution:
+      {
+        integrity: sha512-MyK6rgYe5bcSwIdkdkb6iOSAnxDDJohxQhanVCr/EHA9OhqGASre8JDkyjHOPpLg3YOyUVOZC8+syWJAjJOrsg==,
+      }
+    peerDependencies:
+      "@tanstack/react-query": 5.18.1
+      react: 18.3.1
+      viem: 2.17.3
+      wagmi: 2.5.2
+    dependencies:
+      "@axis-finance/abis": 0.0.2
+      "@axis-finance/cloak": 0.0.3(viem@2.17.3)
+      "@axis-finance/deployments": 0.0.2
+      "@axis-finance/env": 0.0.3(viem@2.17.3)
+      "@axis-finance/subgraph-client": 0.0.3(@tanstack/react-query@5.18.1)(react@18.3.1)
+      "@axis-finance/types": 0.0.5(@tanstack/react-query@5.18.1)(postcss@8.4.33)(react@18.3.1)(typescript@5.3.3)
+      "@tanstack/react-query": 5.18.1(react@18.3.1)
+      "@trpc/client": 10.45.1(@trpc/server@10.45.1)
+      abitype: 1.0.5(typescript@5.3.3)
+      react: 18.3.1
+      valibot: 0.42.1(typescript@5.3.3)
+      viem: 2.17.3(typescript@5.3.3)
+      wagmi: 2.5.2(@tanstack/react-query@5.18.1)(@types/react@18.2.48)(immer@9.0.21)(react-dom@18.2.0)(react-native@0.75.3)(react@18.3.1)(typescript@5.3.3)(viem@2.17.3)
+    transitivePeerDependencies:
+      - "@microsoft/api-extractor"
+      - "@swc/core"
+      - "@trpc/server"
+      - encoding
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+      - zod
+    dev: false
+
+  /@axis-finance/subgraph-client@0.0.3(@tanstack/react-query@5.18.1)(react@18.3.1):
+    resolution:
+      {
+        integrity: sha512-q4B7qvIhtcXSPGIgmWpxYCFsyExu6EsHY7sv3lF/450xsvyn0mvD1jbYWDSUbHBMwkWCtCP3HrpX33owRVl0bw==,
+      }
+    peerDependencies:
+      "@tanstack/react-query": 5.18.1
+      react: 18.3.1
+    dependencies:
+      "@graphql-typed-document-node/core": 3.2.0(graphql@16.8.1)
+      "@tanstack/react-query": 5.18.1(react@18.3.1)
+      graphql: 16.8.1
+      graphql-request: 6.1.0(graphql@16.8.1)
+      react: 18.3.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@axis-finance/tsup-config@0.0.2(postcss@8.4.33)(typescript@5.3.3):
+    resolution:
+      {
+        integrity: sha512-LDMdNxgTocO3l9BJbOIFaRjtMNaMw8wlOeXOs0UXkCw1YCG5Esed1jXz60U7qhxSDyoFlU/wsaKZeEdbZNKU/A==,
+      }
+    dependencies:
+      tsup: 8.3.5(postcss@8.4.33)(typescript@5.3.3)
+    transitivePeerDependencies:
+      - "@microsoft/api-extractor"
+      - "@swc/core"
+      - jiti
+      - postcss
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+    dev: false
+
+  /@axis-finance/types@0.0.5(@tanstack/react-query@5.18.1)(postcss@8.4.33)(react@18.3.1)(typescript@5.3.3):
+    resolution:
+      {
+        integrity: sha512-bJmXGKppREwv72mOkpFWh19oZzybPjCWxvElW58l9JDqyctig//jjgZBBuymUy0bl0icLX2ZFs2zcMpXKYil8w==,
+      }
+    dependencies:
+      "@axis-finance/eslint-config": 0.0.2
+      "@axis-finance/subgraph-client": 0.0.3(@tanstack/react-query@5.18.1)(react@18.3.1)
+      "@axis-finance/tsup-config": 0.0.2(postcss@8.4.33)(typescript@5.3.3)
+      "@axis-finance/typescript-config": 0.0.2
+    transitivePeerDependencies:
+      - "@microsoft/api-extractor"
+      - "@swc/core"
+      - "@tanstack/react-query"
+      - encoding
+      - jiti
+      - postcss
+      - react
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+    dev: false
+
+  /@axis-finance/typescript-config@0.0.2:
+    resolution:
+      {
+        integrity: sha512-6xk5S04dysIinAP4Bp1eeCETwxhNIEW4Qqd3CyiM14YUDViLtD5H4mem54gb7XMH4APidUcI/Q4exc40dPVfZQ==,
+      }
     dev: false
 
   /@babel/code-frame@7.23.5:
@@ -35438,7 +35589,6 @@ packages:
       - supports-color
       - tsx
       - yaml
-    dev: true
 
   /tsup@8.3.5(typescript@5.7.2):
     resolution:
@@ -36518,6 +36668,20 @@ packages:
         integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==,
       }
     dev: true
+
+  /valibot@0.42.1(typescript@5.3.3):
+    resolution:
+      {
+        integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==,
+      }
+    peerDependencies:
+      typescript: ">=5"
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      typescript: 5.3.3
+    dev: false
 
   /valibot@0.42.1(typescript@5.7.2):
     resolution:

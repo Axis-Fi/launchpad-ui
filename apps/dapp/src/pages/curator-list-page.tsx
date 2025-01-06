@@ -12,7 +12,7 @@ import { useMediaQueries } from "loaders/use-media-queries";
 
 // Temporary list of Twitter (X) IDs of curators to show in the dapp
 // TODO: this should be resolved dynamically by looking up the Axis's X account follows
-const visibleCurators: string[] = ["444567658"];
+const visibleCurators: string[] = [];
 
 // TODO: remove concept of "static curators" and just use the curator profiles once they're migrated
 const curatorProfileToCurator = (profile: CuratorProfile): Curator => ({
