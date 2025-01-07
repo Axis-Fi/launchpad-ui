@@ -1579,6 +1579,7 @@ export default function CreateAuctionPage() {
   // Define the options listed in the callback select dropdown
   const callbackOptions = React.useMemo(() => {
     form.resetField("callbacksType");
+
     const existingCallbacks = getExistingCallbacks(chainId);
 
     // Define the Baseline callback options
@@ -1615,7 +1616,7 @@ export default function CreateAuctionPage() {
     });
 
     return existingCallbacks;
-  }, [chainId, form]);
+  }, [chainId]);
 
   const handlePreview = () => {
     form.trigger();
