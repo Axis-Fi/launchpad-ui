@@ -662,6 +662,27 @@ export default function CreateAuctionPage() {
     );
   }
 
+  const watchedValues = React.useMemo(
+    () =>
+      form.watch([
+        "isVested",
+        "payoutToken",
+        "quoteToken",
+        "quoteToken.chainId",
+        "capacity",
+        "auctionType",
+        "callbacksType",
+        "dtlIsVested",
+        "dtlUniV3PoolFee",
+        "start",
+        "deadline",
+        "minBidSize",
+        "minPrice",
+        "curator",
+      ]),
+    [form],
+  );
+
   const [
     isVested,
     payoutToken,
@@ -677,22 +698,7 @@ export default function CreateAuctionPage() {
     minBidSize,
     minPrice,
     curator,
-  ] = form.watch([
-    "isVested",
-    "payoutToken",
-    "quoteToken",
-    "quoteToken.chainId",
-    "capacity",
-    "auctionType",
-    "callbacksType",
-    "dtlIsVested",
-    "dtlUniV3PoolFee",
-    "start",
-    "deadline",
-    "minBidSize",
-    "minPrice",
-    "curator",
-  ]);
+  ] = watchedValues;
 
   const chainId = _chainId ?? connectedChainId;
 
@@ -1269,6 +1275,7 @@ export default function CreateAuctionPage() {
       enabled: isUniV2PoolQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (uniV2Pool && uniV2Pool !== zeroAddress) {
       console.error(
@@ -1281,8 +1288,10 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for UniV2 pool");
-    form.clearErrors("callbacksType");
+    if (form.formState.errors.callbacksType) {
+      console.log("Clearing errors for UniV2 pool");
+      form.clearErrors("callbacksType");
+    }
   }, [uniV2Pool, form, payoutToken?.address, quoteToken?.address]);
 
   // If the auction uses a UniV3 DTL, we need to check if a pool exists for the base/quote token pair and fee tier
@@ -1316,6 +1325,7 @@ export default function CreateAuctionPage() {
       enabled: isUniV3PoolQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (uniV3Pool && uniV3Pool !== zeroAddress) {
       console.error(
@@ -1328,8 +1338,10 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for UniV3 pool");
-    form.clearErrors("callbacksType");
+    if (form.formState.errors.callbacksType) {
+      console.log("Clearing errors for UniV3 pool");
+      form.clearErrors("callbacksType");
+    }
   }, [
     uniV3Pool,
     form,
@@ -1342,6 +1354,7 @@ export default function CreateAuctionPage() {
   const isBaselineQueryEnabled =
     isBaselineCallback(callbacksType) &&
     form.getValues("callbacks") !== undefined;
+
   // Check here if the auction house address is the same as the one in the baseline callbacks
   const { data: baselineAuctionHouse } = useReadContract({
     abi: abis.baseline,
@@ -1351,8 +1364,10 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (
+      isBaselineQueryEnabled &&
       baselineAuctionHouse?.toLowerCase() !== auctionHouseAddress?.toLowerCase()
     ) {
       console.error(
@@ -1365,9 +1380,11 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for Baseline Auction House");
-    form.clearErrors("callbacks");
-  }, [baselineAuctionHouse, auctionHouseAddress, form]);
+    if (form.formState.errors.callbacks) {
+      console.log("Clearing errors for Baseline Auction House");
+      form.clearErrors("callbacks");
+    }
+  }, [baselineAuctionHouse, auctionHouseAddress, isBaselineQueryEnabled]);
 
   // Check here if the payout token is the same as the one in the baseline callbacks
   const { data: baselineBaseToken } = useReadContract({
@@ -1378,6 +1395,7 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (
       isBaselineQueryEnabled &&
@@ -1393,8 +1411,10 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for the payout token");
-    form.clearErrors("payoutToken");
+    if (form.formState.errors.payoutToken) {
+      console.log("Clearing errors for the payout token");
+      form.clearErrors("payoutToken");
+    }
   }, [baselineBaseToken, payoutToken, form, isBaselineQueryEnabled]);
 
   // Check here if the quote token is the same as the one in the baseline callbacks
@@ -1406,6 +1426,7 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (
       isBaselineQueryEnabled &&
@@ -1421,8 +1442,10 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for the quote token");
-    form.clearErrors("quoteToken");
+    if (form.formState.errors.quoteToken) {
+      console.log("Clearing errors for the quote token");
+      form.clearErrors("quoteToken");
+    }
   }, [baselineQuoteToken, quoteToken, form, isBaselineQueryEnabled]);
 
   // Validate that the pool active tick is above or equal to the tick for the auction price
@@ -1443,6 +1466,7 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled && baselinePool !== undefined,
     },
   });
+
   useEffect(() => {
     if (
       !isBaselineQueryEnabled ||
@@ -1464,18 +1488,23 @@ export default function CreateAuctionPage() {
     console.log("Price", auctionPrice);
     console.log("Tick at price", auctionPriceTick);
     console.log("Pool tick", baselinePoolSlot0[1]);
-    // TODO this fires intermittently, need to debug
 
-    if (poolTick < auctionPriceTick) {
+    const hasError = poolTick < auctionPriceTick;
+    const currentError = form.formState.errors.price;
+
+    if (hasError && !currentError) {
       form.setError("price", {
         message:
           "The auction price is greater than the pool tick. Please select a lower price.",
       });
-      return;
+    } else if (!hasError && currentError) {
+      form.clearErrors("price");
     }
 
     console.log("Clearing errors for the price");
-    form.clearErrors("price");
+    if (form.formState.errors.price) {
+      form.clearErrors("price");
+    }
   }, [
     baselinePoolSlot0,
     form,
@@ -1494,10 +1523,13 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled && baselineBaseToken !== undefined,
     },
   });
+
   useEffect(() => {
     if (!isBaselineQueryEnabled || !baselinePoolActiveTS) {
-      console.log("Resetting the upper anchor tick for the Baseline pool");
-      form.setValue("baselineAnchorTickU", undefined);
+      if (form.getFieldState("baselineAnchorTickU").isDirty) {
+        console.log("Resetting the upper anchor tick for the Baseline pool");
+        form.setValue("baselineAnchorTickU", undefined);
+      }
       return;
     }
 
@@ -1525,7 +1557,7 @@ export default function CreateAuctionPage() {
       "payoutTokenBalance",
       formatUnits(payoutTokenBalance ?? BigInt(0), payoutTokenDecimals ?? 0),
     );
-  }, [payoutTokenBalance, payoutTokenDecimals, form]);
+  }, [payoutTokenBalance, payoutTokenDecimals]);
 
   const payoutTokenBalanceDecimal: number =
     payoutTokenBalance && payoutTokenDecimals
@@ -1578,8 +1610,6 @@ export default function CreateAuctionPage() {
 
   // Define the options listed in the callback select dropdown
   const callbackOptions = React.useMemo(() => {
-    form.resetField("callbacksType");
-
     const existingCallbacks = getExistingCallbacks(chainId);
 
     // Define the Baseline callback options
@@ -1640,6 +1670,10 @@ export default function CreateAuctionPage() {
 
     navigator.clipboard.writeText(urlWithData);
   };
+
+  useEffect(() => {
+    console.log("fees.maxReferrerFee", fees.maxReferrerFee, fees);
+  }, [fees.maxReferrerFee]);
 
   return (
     <PageContainer id="__AXIS_CREATE_LAUNCH_PAGE__" key={resetKey.toString()}>
@@ -2051,6 +2085,9 @@ export default function CreateAuctionPage() {
                         >
                           <PercentageSlider
                             field={field}
+                            value={
+                              Array.isArray(field.value) ? field.value : [0]
+                            }
                             defaultValue={
                               auctionDefaultValues.minFillPercent[0]
                             }
@@ -2133,12 +2170,12 @@ export default function CreateAuctionPage() {
                       <FormItemWrapper
                         label="Referrer Fee Percentage"
                         tooltip={
-                          "The percentual amount of referrer fee you're willing to pay"
+                          "The percentage amount of referrer fee you're willing to pay"
                         }
                       >
                         <PercentageSlider
                           field={field}
-                          defaultValue={0}
+                          min={0}
                           max={fees.maxReferrerFee ?? 0}
                         />
                       </FormItemWrapper>
