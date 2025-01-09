@@ -1,13 +1,16 @@
-import { createVerifiedFetch } from "@helia/verified-fetch";
+import { type VerifiedFetch, createVerifiedFetch } from "@helia/verified-fetch";
 
-const verifiedFetch = await createVerifiedFetch({
-  gateways: [
-    "https://ipfs.io",
-    "https://nftstorage.link",
-    "https://gateway.pinata.cloud",
-    "https://w3s.link",
-  ],
-  routers: ["http://delegated-ipfs.dev"],
-});
+let verifiedFetch: VerifiedFetch;
 
-export { verifiedFetch };
+const initializeVerifiedFetch = async () => {
+  verifiedFetch = await createVerifiedFetch({
+    gateways: [
+      "https://ipfs.io",
+      "https://nftstorage.link",
+      "https://gateway.pinata.cloud",
+      "https://w3s.link",
+    ],
+  });
+};
+
+export { verifiedFetch, initializeVerifiedFetch };

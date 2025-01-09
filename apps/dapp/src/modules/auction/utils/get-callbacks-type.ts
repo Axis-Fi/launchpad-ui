@@ -16,7 +16,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
   // Check if the callback address on the auction matches one of the first-party callbacks
   if (
     chainAddresses.merkleAllowlist.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.MERKLE_ALLOWLIST;
@@ -24,7 +24,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.cappedMerkleAllowlist.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.CAPPED_MERKLE_ALLOWLIST;
@@ -32,7 +32,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.allocatedMerkleAllowlist.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
@@ -40,7 +40,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.tokenAllowlist.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.TOKEN_ALLOWLIST;
@@ -48,7 +48,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.uniV2Dtl.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.UNIV2_DTL;
@@ -56,7 +56,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.uniV3Dtl.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.UNIV3_DTL;
@@ -64,7 +64,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.baseline.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.BASELINE;
@@ -72,7 +72,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.baselineAllowlist.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.BASELINE_ALLOWLIST;
@@ -80,7 +80,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.baselineAllocatedAllowlist.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.BASELINE_ALLOCATED_ALLOWLIST;
@@ -88,7 +88,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.baselineCappedAllowlist.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.BASELINE_CAPPED_ALLOWLIST;
@@ -96,7 +96,7 @@ export function getCallbacksType(auction: Auction): CallbacksType {
 
   if (
     chainAddresses.baselineTokenAllowlist.some(
-      (addr) => addr.toLowerCase() === callbacksLower,
+      (addr: string) => addr.toLowerCase() === callbacksLower,
     )
   ) {
     return CallbacksType.BASELINE_TOKEN_ALLOWLIST;

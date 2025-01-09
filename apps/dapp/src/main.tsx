@@ -6,8 +6,9 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "./context/router.tsx";
 import { ThemeProvider } from "@repo/ui";
 import { environment } from "utils/environment";
+import { initializeVerifiedFetch } from "utils/verified-fetch";
 
-// Cypress tests use msw mocked backend
+// Cypress tests run the app with a mock service worker backend (msw)
 async function enableBackendMocking() {
   if (!environment.isMockBackend) {
     return;
@@ -18,7 +19,12 @@ async function enableBackendMocking() {
   return worker.start();
 }
 
-enableBackendMocking().then(() => {
+async function initialize() {
+  await initializeVerifiedFetch();
+  await enableBackendMocking();
+}
+
+initialize().then(() => {
   ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
       <ThemeProvider>
