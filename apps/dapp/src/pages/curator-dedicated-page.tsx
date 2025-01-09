@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useReadContract } from "wagmi";
-import { verifiedFetch } from "@helia/verified-fetch";
+import { verifiedFetch } from "utils/verified-fetch";
 import { allowedCurators } from "modules/app/curators";
 import { Address } from "viem";
 import type { CuratorProfile } from "@repo/ipfs-api/src/types";
@@ -12,6 +12,7 @@ import { curatorRegistryDeployment } from "modules/curator/deployment";
 export function CuratorDedicatedPage() {
   const params = useParams();
 
+  const [isResolvingCurator, setIsResolvingCurator] = useState(false);
   const [curator, setCurator] = useState<CuratorProfile | undefined>();
   const [staticCurator, setStaticCurator] = useState<Curator | undefined>();
 
@@ -37,11 +38,14 @@ export function CuratorDedicatedPage() {
       if (curator != null || curatorIpfsCid.isLoading) return;
 
       if (curatorIpfsCid.data != null) {
+        setIsResolvingCurator(true);
+
         const ipfsCuratorRequest = await verifiedFetch(
           `ipfs://${curatorIpfsCid.data}`,
         );
 
         const ipfsCurator = (await ipfsCuratorRequest.json()) as CuratorProfile;
+        setIsResolvingCurator(false);
         return setCurator(ipfsCurator);
       }
 
@@ -52,7 +56,7 @@ export function CuratorDedicatedPage() {
     resolveCurator();
   }, [curator, curatorIpfsCid, params.curatorId]);
 
-  if (curatorIpfsCid.isLoading) {
+  if (curatorIpfsCid.isLoading || isResolvingCurator) {
     return <div>Loading...</div>;
   }
 

@@ -2,7 +2,7 @@ import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { parseAbiItem } from "viem";
 import { usePublicClient } from "wagmi";
 import { curatorRegistryDeployment } from "../deployment";
-import { verifiedFetch } from "@helia/verified-fetch";
+import { verifiedFetch } from "utils/verified-fetch";
 import type { CuratorProfile } from "@repo/ipfs-api/src/types";
 
 const curatorRegisteredEvent = parseAbiItem(
@@ -49,10 +49,12 @@ const useCurators = (): UseCuratorEventsReturn => {
         latestProfileCid.set(event.args.xId!, event.args.ipfsCID!);
       });
 
-      const profileCids = Array.from(latestProfileCid.entries()).map(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        ([_, ipfsCID]) => ipfsCID,
-      );
+      const profileCids = Array.from(latestProfileCid.entries())
+        .map(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ([_, ipfsCID]) => ipfsCID,
+        )
+        .reverse(); // Order latest to oldest
 
       const ipfsQueries = profileCids.map((cid) =>
         verifiedFetch(`ipfs://${cid}`).then((r) => r.json()),
