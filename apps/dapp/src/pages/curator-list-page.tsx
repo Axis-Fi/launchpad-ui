@@ -10,10 +10,6 @@ import { useCurators } from "modules/curator/hooks/use-curators";
 import { CuratorProfile } from "@repo/ipfs-api/src/types";
 import { useMediaQueries } from "loaders/use-media-queries";
 
-// Temporary list of Twitter (X) IDs of curators to show in the dapp
-// TODO: this should be resolved dynamically by looking up the Axis's X account follows
-const visibleCurators: string[] = [];
-
 // TODO: remove concept of "static curators" and just use the curator profiles once they're migrated
 const curatorProfileToCurator = (profile: CuratorProfile): Curator => ({
   id: profile.id,
@@ -30,9 +26,7 @@ const curatorProfileToCurator = (profile: CuratorProfile): Curator => ({
 export default function CuratorListPage() {
   const [newestStaticCurator, ...staticCurators] = allowedCurators;
   const curatorsQuery = useCurators()!;
-  const curators = (curatorsQuery.data ?? []).filter((c) =>
-    visibleCurators.includes(c.id),
-  );
+  const curators = curatorsQuery.data ?? [];
 
   return (
     <PageContainer
@@ -108,9 +102,9 @@ export function CuratorCard({
             >
               <>
                 {!hideButton && (
-                  <Link to={`/curator/${curator.id}`}>View Curator</Link>
+                  <Link to={`/curator/${curator.id}`}>View Launches</Link>
                 )}
-                {hideButton && "View Curator"}
+                {hideButton && "View Launches"}
               </>
             </Button>
           </div>
