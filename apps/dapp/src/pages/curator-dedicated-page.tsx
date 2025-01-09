@@ -9,6 +9,8 @@ import type { Curator } from "@axis-finance/types";
 import CuratorLaunchPage from "./curator-launch-page";
 import { curatorRegistryDeployment } from "modules/curator/deployment";
 
+const isBigInt = (str: string) => /^-?\d+$/.test(str);
+
 export function CuratorDedicatedPage() {
   const params = useParams();
 
@@ -21,36 +23,37 @@ export function CuratorDedicatedPage() {
     abi: curatorRegistryDeployment.abi,
     address: curatorRegistryDeployment.address,
     functionName: "curatorMetadata",
-    args: [
-      BigInt(
-        Number.isInteger(Number(params.curatorId))
-          ? Number(params.curatorId)
-          : 0,
-      ),
-    ],
+    args: [BigInt(params.curatorId!)],
     query: {
-      enabled: Number.isInteger(Number(params.curatorId)),
+      enabled: isBigInt(params.curatorId ?? ""),
     },
   });
 
   useEffect(() => {
     async function resolveCurator() {
-      if (curator != null || curatorIpfsCid.isLoading) return;
+      try {
+        if (curator != null || curatorIpfsCid.isLoading) return;
 
-      if (curatorIpfsCid.data != null) {
-        setIsResolvingCurator(true);
+        if (curatorIpfsCid.data != null) {
+          setIsResolvingCurator(true);
 
-        const ipfsCuratorRequest = await verifiedFetch(
-          `ipfs://${curatorIpfsCid.data}`,
+          const ipfsCuratorRequest = await verifiedFetch(
+            `ipfs://${curatorIpfsCid.data}`,
+          );
+
+          const ipfsCurator =
+            (await ipfsCuratorRequest.json()) as CuratorProfile;
+          setIsResolvingCurator(false);
+          return setCurator(ipfsCurator);
+        }
+
+        const fromStatic = allowedCurators.find(
+          (c) => c.id === params.curatorId,
         );
-
-        const ipfsCurator = (await ipfsCuratorRequest.json()) as CuratorProfile;
+        setStaticCurator(fromStatic);
+      } catch (e) {
         setIsResolvingCurator(false);
-        return setCurator(ipfsCurator);
       }
-
-      const fromStatic = allowedCurators.find((c) => c.id === params.curatorId);
-      setStaticCurator(fromStatic);
     }
 
     resolveCurator();
