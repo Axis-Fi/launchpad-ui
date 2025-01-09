@@ -61,9 +61,9 @@ export const appRouter = t.router({
     )
     .mutation(async ({ input, ctx }) => {
       const userTwitter = ctx.req.user?.username;
-      const userTwitterId = Number(ctx.req.user?.id);
+      const userTwitterId = BigInt(ctx.req.user?.id ?? 0);
 
-      if (!userTwitter || !Number.isInteger(userTwitterId)) {
+      if (!userTwitter || userTwitterId === 0n) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "Failed to get Twitter username/id from user.",
@@ -83,8 +83,6 @@ export const appRouter = t.router({
           },
         }),
       });
-
-      const xId = BigInt(userTwitterId);
 
       const DOMAIN_TYPE = [
         { name: "name", type: "string" },
@@ -108,7 +106,7 @@ export const appRouter = t.router({
 
       const message = {
         curator: input.address as Address,
-        xId,
+        xId: userTwitterId,
         ipfsCID: ipfsCid,
       } as const;
 

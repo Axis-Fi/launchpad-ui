@@ -40,10 +40,9 @@ export default function CuratorListPage() {
         <CuratorCard
           curator={newestStaticCurator}
           // className="gradient-border gradient-border-shift"
-          // hideButton
         />
         {staticCurators.map((c: Curator) => (
-          <CuratorCard key={c.name} curator={c} hideButton />
+          <CuratorCard key={c.name} curator={c} />
         ))}
       </>
 
@@ -60,11 +59,9 @@ export default function CuratorListPage() {
 
 export function CuratorCard({
   curator,
-  hideButton,
   className,
 }: {
   curator: Curator;
-  hideButton?: boolean;
   className?: string;
 }) {
   const { isTabletOrMobile } = useMediaQueries();
@@ -95,17 +92,8 @@ export function CuratorCard({
         <div className="flex flex-col justify-between">
           <div className="flex justify-end"></div>
           <div className="m-1 flex flex-row justify-end gap-2 lg:mt-0">
-            <Button
-              variant="primary"
-              size={isTabletOrMobile ? "sm" : "md"}
-              disabled={hideButton}
-            >
-              <>
-                {!hideButton && (
-                  <Link to={`/curator/${curator.id}`}>View Launches</Link>
-                )}
-                {hideButton && "View Launches"}
-              </>
+            <Button variant="primary" size={isTabletOrMobile ? "sm" : "md"}>
+              <Link to={`/curator/${curator.id}`}>View Launches</Link>
             </Button>
           </div>
         </div>

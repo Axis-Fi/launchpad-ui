@@ -19,18 +19,18 @@ export const allowedCurators: Curator[] = [
       "Baseline creates tokens with programmatic liquidity and rising floor prices. Their innovative tokenomics system combines automated market-making with built-in protections to ensure sustainable value growth through all market conditions.",
   },
   {
-    id: "revelo",
-    name: "Revelo Intel",
+    id: "alea",
+    name: "Alea Research",
     type: "curator",
     address: "0x63c4fC41B61853997d51b73419a5Cf41C4be1A6F",
-    twitter: "ReveloIntel",
-    website: "https://revelointel.com/",
+    twitter: "AleaResearch",
+    website: "https://alearesearch.io/",
     avatar:
-      "https://pbs.twimg.com/profile_images/1681300484504842253/gqHUh0io_400x400.png",
+      "https://pbs.twimg.com/profile_images/1869342428425326592/iR5wmV-L_400x400.jpg",
     banner:
-      "https://pbs.twimg.com/profile_banners/1555515751267811328/1679426160/1500x500",
+      "https://pbs.twimg.com/profile_banners/1555515751267811328/1734522223/1500x500",
     description:
-      "Revelo Intel is a firm that prepares institutional-grade research focusing on DeFi ecosystems, protocols, and narratives. Our comprehensive coverage allows users and investor to do proper due diligence in this fast-paced and complex space.",
+      "Unbiased research for a decisive edge in crypto. Trusted by 10,000+ serious investors.",
     reportURL:
       "https://revelointel.com/wp-content/uploads/2024/08/Aurelius-Finance-Overview-by-Revelo-Intel.pdf",
     options: {
