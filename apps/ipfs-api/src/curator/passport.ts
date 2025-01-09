@@ -17,6 +17,8 @@ const getCredentials = () => {
     consumerKey: process.env.TWITTER_CONSUMER_KEY!,
     consumerSecret: process.env.TWITTER_CONSUMER_SECRET!,
     callbackURL: process.env.TWITTER_CALLBACK_URL!,
+    userAuthorizationURL: "https://api.x.com/oauth/authorize",
+    requestTokenURL: "https://api.x.com/oauth/request_token",
   };
 };
 
