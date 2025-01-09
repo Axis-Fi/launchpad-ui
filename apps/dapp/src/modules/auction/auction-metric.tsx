@@ -355,7 +355,7 @@ const handlers: MetricHandlers = {
 
       return (
         <Tooltip
-          content={<CuratorCard hideButton curator={curator} />}
+          content={<CuratorCard curator={curator} />}
           contentClassName="max-w-xl"
         >
           <div className="flex items-center gap-x-2">
