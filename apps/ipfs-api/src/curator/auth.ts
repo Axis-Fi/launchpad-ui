@@ -8,7 +8,7 @@ router.get("/verify-twitter-handle", passport.authenticate("twitter"));
 router.get(
   "/twitter-callback",
   passport.authenticate("twitter", { failureRedirect: "/" }),
-  (_, res) => res.redirect(`${process.env.DAPP_URL}/#/curator-verified`),
+  (_, res) => res.redirect(`${process.env.DAPP_URL}/#/curators`),
 );
 
 router.get("/is-verified", (req, res) => {
