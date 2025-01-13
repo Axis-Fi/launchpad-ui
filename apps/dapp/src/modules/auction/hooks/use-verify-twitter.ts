@@ -17,6 +17,16 @@ const fetchVerificationStatus = async () => {
   return response.json();
 };
 
+export type TwitterUser = {
+  id: string;
+  name: string;
+  address: string;
+  banner: string;
+  avatar: string;
+  description: string;
+  website: string;
+};
+
 type UseVerifyTwitter =
   | {
       isVerified: false;
@@ -27,7 +37,7 @@ type UseVerifyTwitter =
     }
   | {
       isVerified: true;
-      user: { id: string; name: string };
+      user: TwitterUser;
       isLoading: false;
       error: Error | null;
       redirectToVerify: () => void;
