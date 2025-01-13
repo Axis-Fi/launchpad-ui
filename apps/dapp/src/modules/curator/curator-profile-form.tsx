@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FormProvider as Form } from "react-hook-form";
-import { useWriteContract } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import { type Address } from "viem";
 import { Check, CircleX } from "lucide-react";
 import {
@@ -33,6 +33,7 @@ const curatorSchema = z.object({
 type CuratorForm = z.infer<typeof curatorSchema>;
 
 export function CuratorProfileForm() {
+  const { address } = useAccount();
   const { toast } = useToast();
   const twitter = useVerifyTwitter();
   const navigate = useNavigate();
@@ -42,13 +43,24 @@ export function CuratorProfileForm() {
   const form = useForm<CuratorForm>({
     resolver: zodResolver(curatorSchema),
     mode: "onChange",
-    defaultValues: { name: twitter.user?.name ?? "" },
+    defaultValues: {
+      name: twitter.user?.name ?? "",
+      address: address ?? "",
+      description: twitter.user?.description ?? "",
+      website: twitter.user?.website ?? "",
+      avatar: twitter.user?.avatar ?? "",
+      banner: twitter.user?.banner ?? "",
+    },
   });
 
   useEffect(() => {
-    if (twitter.user?.name && form.getValues("name") === "") {
-      form.setValue("name", twitter.user.name);
-    }
+    (
+      ["name", "address", "website", "description", "avatar", "banner"] as const
+    ).forEach((key) => {
+      if (twitter.user?.[key] && form.getValues(key) === "") {
+        form.setValue(key, twitter.user[key]);
+      }
+    });
   }, [twitter.user]);
 
   const curator = form.watch();
