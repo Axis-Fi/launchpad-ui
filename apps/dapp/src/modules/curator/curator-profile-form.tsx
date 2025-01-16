@@ -26,7 +26,10 @@ const curatorSchema = z.object({
   address: z.string(),
   banner: z.string(),
   avatar: z.string(),
-  description: z.string(),
+  description: z
+    .string()
+    .min(170, "Must be at least 170 characters")
+    .max(400, "Must be less than 400 characters"),
   website: z.string(),
 });
 
@@ -59,6 +62,7 @@ export function CuratorProfileForm() {
     ).forEach((key) => {
       if (twitter.user?.[key] && form.getValues(key) === "") {
         form.setValue(key, twitter.user[key]);
+        form.trigger(key); // validate the field when its autopopulated
       }
     });
   }, [twitter.user]);
