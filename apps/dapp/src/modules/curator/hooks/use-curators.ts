@@ -4,6 +4,7 @@ import { usePublicClient } from "wagmi";
 import { curatorRegistryDeployment } from "../deployment";
 import { verifiedFetch } from "utils/verified-fetch";
 import type { CuratorProfile } from "@repo/ipfs-api/src/types";
+import { useAxisFollowing } from "./use-axis-following";
 
 const curatorRegisteredEvent = parseAbiItem(
   "event CuratorRegistered(address curator, uint256 xId, string ipfsCID)",
@@ -17,11 +18,12 @@ type UseCuratorEventsReturn = UseQueryResult<CuratorProfile[]> | null;
 
 const useCurators = (): UseCuratorEventsReturn => {
   const publicClient = usePublicClient();
+  const { data: axisFollowing } = useAxisFollowing();
 
   return useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["curators"],
-    enabled: publicClient != null,
+    enabled: publicClient != null && axisFollowing != null,
     queryFn: async () => {
       const [registrations, updates] = await Promise.all([
         publicClient!.getLogs({
@@ -38,18 +40,24 @@ const useCurators = (): UseCuratorEventsReturn => {
         }),
       ]);
 
-      const latestProfileCid = new Map<bigint, string>();
+      const latestIpfsProfileCid = new Map<string, string>(); // <xId, ipfsCid>
 
       registrations.forEach((event) => {
-        latestProfileCid.set(event.args.xId!, event.args.ipfsCID!);
+        const xId = event.args.xId!.toString();
+        if (!axisFollowing!.includes(xId)) return;
+
+        latestIpfsProfileCid.set(xId, event.args.ipfsCID!);
       });
 
       // Handle any profile updates
       updates.forEach((event) => {
-        latestProfileCid.set(event.args.xId!, event.args.ipfsCID!);
+        const xId = event.args.xId!.toString();
+        if (!axisFollowing!.includes(xId)) return;
+
+        latestIpfsProfileCid.set(xId, event.args.ipfsCID!);
       });
 
-      const profileCids = Array.from(latestProfileCid.entries())
+      const profileCids = Array.from(latestIpfsProfileCid.entries())
         .map(
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           ([_, ipfsCID]) => ipfsCID,
@@ -62,7 +70,6 @@ const useCurators = (): UseCuratorEventsReturn => {
 
       return Promise.all(ipfsQueries);
     },
-    refetchInterval: 300000, // refetch every 5 mins
   });
 };
 

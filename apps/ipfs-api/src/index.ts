@@ -2,7 +2,6 @@ import express from "express";
 import passport from "passport";
 import session from "express-session";
 import * as trpcExpress from "@trpc/server/adapters/express";
-import type { CreateTRPCProxyClient } from "@trpc/client";
 import * as dotenv from "dotenv";
 import cors from "cors";
 import { appRouter, context } from "./trpc";
@@ -55,6 +54,3 @@ app.listen(port, () => {
 });
 
 export type AppRouter = typeof appRouter;
-
-// @ts-expect-error TODO: why is AppRouter an issue here?
-export type MetadataClient = CreateTRPCProxyClient<AppRouter>;

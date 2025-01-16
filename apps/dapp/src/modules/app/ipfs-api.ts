@@ -30,3 +30,7 @@ export async function storeAuctionInfo(auctionInfo: AuctionMetadata) {
 export async function storeCuratorProfile(curatorProfile: CuratorProfile) {
   return trpc.storeCuratorProfile.mutate(curatorProfile);
 }
+
+export async function axisTwitterFollowing() {
+  return trpc.axisFollowing.query();
+}
