@@ -35,7 +35,9 @@ const fetchAxisFollowing = async (): Promise<string[]> => {
 
 let followingCache: string[];
 let lastFetchTime = 0;
-const CACHE_TTL = 1 * 60 * 60 * 1000; // 1 hour
+
+// cache axis followings for 24 hours
+const CACHE_TTL = 24 * 60 * 60 * 1000;
 
 const getAxisFollowing = async () => {
   try {
@@ -55,4 +57,15 @@ const getAxisFollowing = async () => {
   }
 };
 
-export { getAxisFollowing };
+const bustCache = async (pwd: string) => {
+  if (pwd !== process.env.AXIS_FOLLOWING_CACHE_BUST_PWD) {
+    console.log("wrong password");
+    return;
+  }
+  console.log("Busting cache", { lastFetchTime });
+  lastFetchTime = 0;
+
+  return "cache busted";
+};
+
+export { getAxisFollowing, bustCache };

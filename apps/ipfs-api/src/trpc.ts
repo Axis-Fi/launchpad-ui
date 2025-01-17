@@ -7,7 +7,7 @@ import { storeData } from "./fleek";
 import { AuctionMetadataSchema, CuratorProfileSchema } from "./types";
 import { walletClient } from "./curator/signer";
 import { registry } from "./curator/env";
-import { getAxisFollowing } from "./curator/axis-following";
+import { bustCache, getAxisFollowing } from "./curator/axis-following";
 
 const createContext = ({
   req,
@@ -35,6 +35,9 @@ const isTwitterVerified = t.middleware(({ ctx, next }) => {
 const twitterVerifiedProcedure = t.procedure.use(isTwitterVerified);
 
 export const appRouter = t.router({
+  bustAxisFollowingCache: t.procedure
+    .input(z.object({ pwd: z.string() }))
+    .query(({ input }) => bustCache(input.pwd)),
   axisFollowing: t.procedure.input(z.void()).query(getAxisFollowing),
   storeAuctionInfo: t.procedure
     .input(AuctionMetadataSchema)
