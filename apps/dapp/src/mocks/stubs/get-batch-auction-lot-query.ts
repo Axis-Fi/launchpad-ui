@@ -1,8 +1,8 @@
 import type {
   BatchAuctionLot,
   GetBatchAuctionLotQuery,
-} from "@repo/subgraph-client";
-import { allowedCurators } from "@repo/env";
+} from "@axis-finance/subgraph-client";
+import { allowedCurators } from "modules/app/curators";
 
 const allowedCurator = allowedCurators[0].address[0];
 

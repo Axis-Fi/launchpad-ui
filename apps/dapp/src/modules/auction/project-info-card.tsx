@@ -1,8 +1,9 @@
 import { Metric, cn } from "@repo/ui";
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { getLinkUrl } from "./utils/auction-details";
 import { AuctionMetric } from "./auction-metric";
-import { getCurator } from "@repo/env";
+import { getCurator } from "modules/app/curators";
+
 import ExternalLink from "components/external-link";
 import { ReferrerPopover } from "modules/referral/referrer-popover";
 import { SocialRow } from "components/social-row";

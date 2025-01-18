@@ -1,5 +1,5 @@
-import { axisContracts } from "@repo/deployments";
-import { Address, CallbacksType } from "@repo/types";
+import { axisContracts } from "@axis-finance/deployments";
+import { Address, CallbacksType } from "@axis-finance/types";
 import { getCallbacks } from "utils/contracts";
 import { fromBasisPoints } from "utils/number";
 import { useReadContract, useReadContracts } from "wagmi";
@@ -23,23 +23,23 @@ export function useBaselineDTLCallback({
   const baselineAddresses = getCallbacks(
     chainId || 0,
     CallbacksType.BASELINE,
-  ).address.map((address) => address.toLowerCase());
+  ).address.map((address: string) => address.toLowerCase());
   const baselineAllowlistAddresses = getCallbacks(
     chainId || 0,
     CallbacksType.BASELINE_ALLOWLIST,
-  ).address.map((address) => address.toLowerCase());
+  ).address.map((address: string) => address.toLowerCase());
   const baselineAllocatedAllowlistAddresses = getCallbacks(
     chainId || 0,
     CallbacksType.BASELINE_ALLOCATED_ALLOWLIST,
-  ).address.map((address) => address.toLowerCase());
+  ).address.map((address: string) => address.toLowerCase());
   const baselineCappedAllowlistAddresses = getCallbacks(
     chainId || 0,
     CallbacksType.BASELINE_CAPPED_ALLOWLIST,
-  ).address.map((address) => address.toLowerCase());
+  ).address.map((address: string) => address.toLowerCase());
   const baselineTokenAllowlistAddresses = getCallbacks(
     chainId || 0,
     CallbacksType.BASELINE_TOKEN_ALLOWLIST,
-  ).address.map((address) => address.toLowerCase());
+  ).address.map((address: string) => address.toLowerCase());
   const isBaselineDTLCallback =
     baselineAddresses.includes(callbackLower) ||
     baselineAllowlistAddresses.includes(callbackLower) ||

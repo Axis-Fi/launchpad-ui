@@ -4,7 +4,7 @@ import {
   CallbacksType,
   type Auction,
   type PropsWithAuction,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { Metric, MetricProps, Tooltip, useToggle } from "@repo/ui";
 import { trimCurrency } from "utils/currency";
 import { shorten, formatPercentage } from "utils/number";
@@ -12,7 +12,7 @@ import { getCallbacksType } from "./utils/get-callbacks-type";
 import { getMinFilled, getPrice, hasDerivative } from "./utils/auction-details";
 import { getDaysBetweenDates } from "utils/date";
 import { Format } from "modules/token/format";
-import { getCurator } from "@repo/env";
+import { getCurator } from "modules/app/curators";
 import { CuratorCard } from "pages/curator-list-page";
 import { InfoIcon } from "lucide-react";
 import { UsdAmount } from "./usd-amount";
@@ -355,7 +355,7 @@ const handlers: MetricHandlers = {
 
       return (
         <Tooltip
-          content={<CuratorCard hideButton curator={curator} />}
+          content={<CuratorCard curator={curator} />}
           contentClassName="max-w-xl"
         >
           <div className="flex items-center gap-x-2">

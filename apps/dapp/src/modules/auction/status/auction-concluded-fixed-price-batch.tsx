@@ -1,5 +1,5 @@
 import { Badge, Button, Card, Text } from "@repo/ui";
-import { type PropsWithAuction } from "@repo/types";
+import { type PropsWithAuction } from "@axis-finance/types";
 import React, { useState } from "react";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { useSettleAuction } from "../hooks/use-settle-auction";

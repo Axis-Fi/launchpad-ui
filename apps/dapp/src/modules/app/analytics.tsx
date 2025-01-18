@@ -1,5 +1,6 @@
 import Plausible from "plausible-tracker";
-import { environment, metadata } from "@repo/env";
+import { environment } from "utils/environment";
+import { metadata } from "./metadata";
 
 const domain = environment.isProduction
   ? metadata.prodURL

@@ -10,6 +10,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   uppercase?: boolean;
+  variant?: "primary" | "secondary" | "ghost" | "link" | "input";
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

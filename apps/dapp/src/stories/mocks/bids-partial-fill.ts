@@ -1,4 +1,4 @@
-import type { BatchAuctionBid } from "@repo/types";
+import type { BatchAuctionBid } from "@axis-finance/types";
 
 const getSettledAuctionPartialFillBidsMock = () =>
   [

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { Check, CircleX } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, FormField, Form, Button, useToast, Metric } from "@repo/ui";
-import type { Auction, PropsWithAuction } from "@repo/types";
+import type { Auction, PropsWithAuction } from "@axis-finance/types";
 import type {
   LaunchRegistration,
   LaunchRegistrationRequest,

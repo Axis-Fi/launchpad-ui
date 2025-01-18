@@ -1,5 +1,5 @@
-import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
-import type { NonNullSubgraphAuction } from "@repo/types";
+import type { GetBatchAuctionLotQuery } from "@axis-finance/subgraph-client";
+import type { NonNullSubgraphAuction } from "@axis-finance/types";
 
 const create = (
   optimisticAuction: NonNullSubgraphAuction,

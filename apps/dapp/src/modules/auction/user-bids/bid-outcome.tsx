@@ -1,6 +1,6 @@
 import { useAccount } from "wagmi";
 import { Metric } from "@repo/ui";
-import type { PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@axis-finance/types";
 import { shorten } from "utils/number";
 
 export function BidOutcome({ auction }: PropsWithAuction) {

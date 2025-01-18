@@ -7,7 +7,7 @@ import { useMintToken } from "modules/token/use-mint-token";
 import { useTokenLists } from "state/tokenlist";
 import { useChainId } from "wagmi";
 import { trimCurrency } from "utils/currency";
-import { chains } from "@repo/env";
+import { chains } from "@axis-finance/env";
 import {
   arbitrumSepolia,
   blastSepolia,
@@ -16,7 +16,9 @@ import {
 } from "viem/chains";
 import { ArrowUpRightIcon } from "lucide-react";
 
-const activeChains = chains.activeChains;
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 
 const ethFaucets: Record<number, string> = {
   [blastSepolia.id]: "https://faucet.quicknode.com/blast/sepolia",

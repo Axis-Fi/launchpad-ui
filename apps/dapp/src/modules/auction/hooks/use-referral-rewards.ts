@@ -1,8 +1,8 @@
 import { formatUnits, type Address } from "viem";
 import { useReadContract } from "wagmi";
 import { getAuctionHouse } from "utils/contracts";
-import type { Auction } from "@repo/types";
-import { abis } from "@repo/abis";
+import type { Auction } from "@axis-finance/types";
+import { abis } from "@axis-finance/abis";
 
 export function useReferralRewards({
   address,

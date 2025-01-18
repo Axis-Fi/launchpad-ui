@@ -1,5 +1,5 @@
-import { getAuctionHouse } from "@repo/deployments";
-import { AuctionType } from "@repo/types";
+import { getAuctionHouse } from "@axis-finance/deployments";
+import { AuctionType } from "@axis-finance/types";
 import { toKeycode } from "utils/hex";
 import { Address } from "viem";
 import { useReadContract } from "wagmi";

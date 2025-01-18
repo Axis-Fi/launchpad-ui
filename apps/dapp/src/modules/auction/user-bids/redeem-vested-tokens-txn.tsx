@@ -1,4 +1,4 @@
-import type { PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@axis-finance/types";
 import { useVestingTokenId } from "modules/auction/hooks/use-vesting-tokenid";
 import { useDerivativeModule } from "modules/auction/hooks/use-derivative-module";
 import { useVestingRedeem } from "modules/auction/hooks/use-vesting-redeem";

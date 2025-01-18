@@ -5,7 +5,7 @@ import {
   type AuctionLinkId,
   AuctionType,
   CallbacksType,
-} from "@repo/types";
+} from "@axis-finance/types";
 
 const getPrice = (auction: BatchAuction): number | undefined => {
   if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {

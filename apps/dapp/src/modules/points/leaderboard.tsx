@@ -1,5 +1,5 @@
 import { DataTable } from "@repo/ui";
-import { createColumnHelper } from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useLeaderboard } from "./hooks/use-leaderboard";
 import { UserProfile } from "@repo/points";
 import { Format } from "modules/token/format";
@@ -35,7 +35,7 @@ const cols = [
     header: "Total",
     cell: ({ row }) => <Format value={row.original.totalPoints ?? 0} />,
   }),
-];
+] as ColumnDef<UserProfile, unknown>[];
 
 export function Leaderboard() {
   const { leaderboard } = useLeaderboard();

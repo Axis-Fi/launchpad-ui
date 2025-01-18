@@ -10,7 +10,7 @@ import {
 } from "@repo/ui";
 import { AuctionPageView } from "./auction-page";
 import { CreateAuctionForm } from "./create-auction-page";
-import { Auction, AuctionType, Token } from "@repo/types";
+import { Auction, AuctionType, Token } from "@axis-finance/types";
 import { AuctionLivePreview } from "modules/auction/status/auction-preview";
 import React from "react";
 import { useFormContext } from "react-hook-form";

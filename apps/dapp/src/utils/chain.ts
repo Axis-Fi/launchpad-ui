@@ -1,8 +1,10 @@
-import { deployments } from "@repo/deployments";
-import { chains } from "@repo/env";
-import { Chain } from "@repo/types";
+import { deployments } from "@axis-finance/deployments";
+import { chains } from "@axis-finance/env";
+import { Chain } from "@axis-finance/types";
 
-const activeChains = chains.activeChains;
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 
 export const getBlockExplorer = (chain: Chain) => {
   return {

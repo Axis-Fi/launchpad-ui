@@ -1,11 +1,8 @@
-import type { Address, Auction } from "@repo/types";
+import type { Address, Auction } from "@axis-finance/types";
 import { isAddress, zeroAddress } from "viem";
-import { axisContracts } from "@repo/deployments";
-import {
-  allowedCuratorAddresses,
-  allowedCurators,
-  environment,
-} from "@repo/env";
+import { axisContracts } from "@axis-finance/deployments";
+import { environment } from "utils/environment";
+import { allowedCuratorAddresses, allowedCurators } from "modules/app/curators";
 
 /** Checks if the curator address on an Auction exists in an address list */
 export function isAllowedCurator(auction: AuctionProps) {
@@ -26,8 +23,10 @@ export function isAxisCallback(auction: AuctionProps) {
     !auction.callbacks ||
     auction.callbacks === zeroAddress ||
     Object.values(axisContracts.addresses[auction.chainId])
-      .map((c) =>
-        typeof c === "string" ? c.toLowerCase() : c.map((c) => c.toLowerCase()),
+      .map((c: unknown) =>
+        typeof c === "string"
+          ? (c as string).toLowerCase()
+          : (c as string[]).map((c) => c.toLowerCase()),
       )
       .includes(auction.callbacks.toLowerCase())
   );

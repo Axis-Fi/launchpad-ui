@@ -7,8 +7,8 @@ import {
   type UseWaitForTransactionReceiptReturnType,
 } from "wagmi";
 import { getAuctionHouse } from "utils/contracts";
-import type { PropsWithAuction } from "@repo/types";
-import { abis } from "@repo/abis";
+import type { PropsWithAuction } from "@axis-finance/types";
+import { abis } from "@axis-finance/abis";
 
 type UseClaimRerralRewardsTxn = {
   transact: () => void;

@@ -1,6 +1,6 @@
 import { FormField, FormItemWrapperSlim } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { trimCurrency } from "utils/currency";
 import { useState } from "react";

@@ -1,11 +1,13 @@
 import { Link, cn, trimAddress } from "@repo/ui";
-import { chains } from "@repo/env";
+import { chains } from "@axis-finance/env";
 import { ArrowUpRightIcon } from "lucide-react";
 
 import { getBlockExplorer } from "src/utils/chain";
 import { Address } from "viem";
 
-const activeChains = chains.activeChains;
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 
 /** Renders a link to an address or transaction hash on a blockexplorer */
 export function BlockExplorerLink({

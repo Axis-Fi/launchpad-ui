@@ -1,4 +1,4 @@
-import type { Chain, PropsWithAuction } from "@repo/types";
+import type { Chain, PropsWithAuction } from "@axis-finance/types";
 import { Badge, cn } from "@repo/ui";
 import { CountdownChip } from "./countdown-chip";
 

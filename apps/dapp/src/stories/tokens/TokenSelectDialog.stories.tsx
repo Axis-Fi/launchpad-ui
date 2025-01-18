@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TokenSelectDialog } from "modules/token/token-select-dialog";
-// import { mainnetDeployments } from "@repo/deployments";
+// import { mainnetDeployments } from "@axis-finance/deployments";
 import { DialogRoot } from "@repo/ui";
 
 const meta = {

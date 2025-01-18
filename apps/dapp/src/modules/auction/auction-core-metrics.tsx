@@ -1,4 +1,8 @@
-import { AuctionType, BatchAuction, PropsWithAuction } from "@repo/types";
+import {
+  AuctionType,
+  BatchAuction,
+  PropsWithAuction,
+} from "@axis-finance/types";
 import { Card, Metric } from "@repo/ui";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { AuctionMetricsContainer } from "./auction-metrics-container";

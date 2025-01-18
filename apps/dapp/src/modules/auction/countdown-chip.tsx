@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { PropsWithAuction } from "@repo/types";
+import type { PropsWithAuction } from "@axis-finance/types";
 import { Badge, Metric } from "@repo/ui";
 import { getCountdown } from "utils";
 import { useMediaQueries } from "loaders/use-media-queries";

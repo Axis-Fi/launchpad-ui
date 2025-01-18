@@ -1,5 +1,5 @@
-import { abis } from "@repo/abis";
-import { Address } from "@repo/types";
+import { abis } from "@axis-finance/abis";
+import { Address } from "@axis-finance/types";
 import { isAddress } from "viem";
 import { useReadContract } from "wagmi";
 

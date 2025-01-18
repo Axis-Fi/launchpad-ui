@@ -1,5 +1,5 @@
-import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
-import { allowedCurators } from "@repo/env";
+import type { GetAuctionLotsQuery } from "@axis-finance/subgraph-client";
+import { allowedCurators } from "modules/app/curators";
 
 const allowedCurator = allowedCurators[0].address[0];
 

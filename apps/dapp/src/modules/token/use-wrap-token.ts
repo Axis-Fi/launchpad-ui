@@ -1,3 +1,4 @@
+import type { Address } from "viem";
 import {
   useAccount,
   useSimulateContract,
@@ -6,7 +7,6 @@ import {
   useEstimateGas,
 } from "wagmi";
 import { abi as wrapperAbi } from "./wrapper-abi";
-import { Address } from "viem";
 
 type UseWrapperContractArgs = {
   /** The wrapper address */
@@ -34,9 +34,10 @@ export default function useWrapperContract({
     query: { enabled: !!contractAddress && isWrapping },
   });
 
+  const { data: wrapHash, ...wrapTx } = useWriteContract();
+
   const { data: gasEstimate } = useEstimateGas(wrapData?.request);
 
-  const { data: wrapHash, ...wrapTx } = useWriteContract();
   const wrapReceipt = useWaitForTransactionReceipt({ hash: wrapHash });
   const wrap = () =>
     wrapData?.request && wrapTx.writeContract(wrapData.request!);

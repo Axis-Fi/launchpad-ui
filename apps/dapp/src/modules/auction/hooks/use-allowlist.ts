@@ -13,13 +13,13 @@ import { StandardMerkleTree } from "@openzeppelin/merkle-tree";
 import {
   GetAuctionAllowlistQuery,
   useGetAuctionAllowlistQuery,
-} from "@repo/subgraph-client";
-import { Auction, CallbacksType } from "@repo/types";
-import { axisContracts, deployments } from "@repo/deployments";
+} from "@axis-finance/subgraph-client";
+import { Auction, CallbacksType } from "@axis-finance/types";
+import { axisContracts, deployments } from "@axis-finance/deployments";
 import { fetchParams } from "utils/fetch";
 import { getCallbacksType } from "../utils/get-callbacks-type";
 import { isAllowlistCallback } from "../utils/auction-details";
-import { externalAuctionInfo } from "@repo/env";
+import { externalAuctionInfo } from "modules/app/external-auction-info";
 
 export type AllowlistResult = {
   canBid: boolean;

@@ -1,11 +1,12 @@
 import { hashFn } from "wagmi/query";
 import { WagmiProvider, createConfig } from "wagmi";
-import { chains } from "@repo/env";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import WalletProvider, { connectors } from "./wallet-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { chains } from "@axis-finance/env";
+import { environment } from "utils/environment";
+import WalletProvider, { connectors } from "./wallet-provider";
 
-const activeConfig = chains.activeConfig;
+const activeConfig = chains.activeConfig(environment.isTestnet);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,11 +32,11 @@ export function BlockchainProvider({
   disableDevTools?: boolean;
 }) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
         <WalletProvider>{children}</WalletProvider>
         {!disableDevTools && <ReactQueryDevtools />}
-      </WagmiProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }

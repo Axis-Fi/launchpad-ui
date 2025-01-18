@@ -6,7 +6,7 @@ import {
   type AuctionStatus,
   AuctionType,
   Auction,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { useAuction } from "modules/auction/hooks/use-auction";
 import { PageHeader } from "modules/app/page-header";
 import { ImageBanner } from "components/image-banner";
@@ -94,7 +94,7 @@ export default function AuctionPage() {
         <PageHeader
           className="relative mt-0 lg:mt-0"
           backNavigationPath={`${
-            isCuratorPage ? `/${curator?.id}/launches` : "/#"
+            isCuratorPage ? `/curator/${curator?.id}` : "/#"
           }`}
           backNavigationText="Back to Launches"
           toggle={!isUSDQuote}

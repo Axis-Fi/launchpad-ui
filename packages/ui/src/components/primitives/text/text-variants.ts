@@ -22,6 +22,7 @@ const weight = {
 
 export type TextSize = keyof typeof size;
 export type TextWeight = keyof typeof weight;
+export type TextColor = "primary" | "secondary" | "tertiary";
 
 export const textVariants = cva("text-sans", {
   variants: {
