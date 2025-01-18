@@ -1,10 +1,11 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
+import type { CuratorProfile } from "@repo/ipfs-api/src/types";
 import { parseAbiItem } from "viem";
 import { usePublicClient } from "wagmi";
-import { curatorRegistryDeployment } from "../deployment";
+import { environment } from "utils/environment";
 import { verifiedFetch } from "utils/verified-fetch";
-import type { CuratorProfile } from "@repo/ipfs-api/src/types";
 import { useAxisFollowing } from "./use-axis-following";
+import { curatorRegistryDeployment } from "../deployment";
 
 const curatorRegisteredEvent = parseAbiItem(
   "event CuratorRegistered(address curator, uint256 xId, string ipfsCID)",
@@ -44,7 +45,7 @@ const useCurators = (): UseCuratorEventsReturn => {
 
       registrations.forEach((event) => {
         const xId = event.args.xId!.toString();
-        if (!axisFollowing!.includes(xId)) return;
+        if (environment.isProduction && !axisFollowing!.includes(xId)) return;
 
         latestIpfsProfileCid.set(xId, event.args.ipfsCID!);
       });
@@ -52,7 +53,7 @@ const useCurators = (): UseCuratorEventsReturn => {
       // Handle any profile updates
       updates.forEach((event) => {
         const xId = event.args.xId!.toString();
-        if (!axisFollowing!.includes(xId)) return;
+        if (environment.isProduction && !axisFollowing!.includes(xId)) return;
 
         latestIpfsProfileCid.set(xId, event.args.ipfsCID!);
       });

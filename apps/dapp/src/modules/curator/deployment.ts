@@ -1,4 +1,4 @@
-import { baseSepolia } from "viem/chains";
+import { baseSepolia, base } from "viem/chains";
 import { environment } from "utils/environment";
 import { Environment } from "@axis-finance/env";
 import type { Address } from "@axis-finance/types";
@@ -14,9 +14,9 @@ const deployments = {
   },
   // TODO: update to base and set address/blockNumber when deployed to mainnet
   production: {
-    chainId: baseSepolia.id,
-    address: "0xc94404218178149ebebfc1f47f0df14b5fd881c5" as Address,
-    blockNumber: 19947467n,
+    chainId: base.id,
+    address: "0xA12307d3cba3F0854cf92faDce07f7bff0B6a2BA" as Address,
+    blockNumber: 25170144n,
     abi: metadataRegistryAbi,
   },
 } as const;
