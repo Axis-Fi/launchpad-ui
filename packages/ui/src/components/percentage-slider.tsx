@@ -10,6 +10,7 @@ type PercentageSliderProps<
   defaultValue?: number;
   min?: number;
   max?: number;
+  value?: number[];
   className?: string;
   inputClassName?: string;
   sliderClassName?: string;
@@ -33,13 +34,14 @@ export function PercentageSlider<
         value={`${field.value?.[0] ?? defaultValue}%`}
       />
       <Slider
-        {...field}
         className={cn("cursor-pointer", props.sliderClassName)}
         min={min}
         max={max}
         defaultValue={[defaultValue ?? 0]}
-        value={field.value}
-        onValueChange={(v) => field.onChange(v)}
+        value={Array.isArray(field.value) ? field.value : [field.value]}
+        onValueChange={(v) => {
+          field.onChange(v);
+        }}
       />
     </div>
   );
