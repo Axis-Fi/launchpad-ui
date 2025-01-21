@@ -4,12 +4,12 @@ import { useReadContract } from "wagmi";
 import { verifiedFetch } from "utils/verified-fetch";
 import { allowedCurators } from "modules/app/curators";
 import { Address } from "viem";
-import type { CuratorProfile } from "@repo/ipfs-api/src/types";
+import type { CuratorProfile } from "@repo/ipfs-api";
 import type { Curator } from "@axis-finance/types";
 import CuratorLaunchPage from "./curator-launch-page";
 import { curatorRegistryDeployment } from "modules/curator/deployment";
 
-const isBigInt = (str: string) => /^-?\d+$/.test(str);
+const isBigInt = (str?: string) => /^-?\d+$/.test(str ?? "");
 
 export function CuratorDedicatedPage() {
   const params = useParams();
@@ -23,9 +23,9 @@ export function CuratorDedicatedPage() {
     abi: curatorRegistryDeployment.abi,
     address: curatorRegistryDeployment.address,
     functionName: "curatorMetadata",
-    args: [BigInt(params.curatorId!)],
+    args: [isBigInt(params.curatorId) ? BigInt(params.curatorId!) : 0n],
     query: {
-      enabled: isBigInt(params.curatorId ?? ""),
+      enabled: isBigInt(params.curatorId),
     },
   });
 
@@ -43,6 +43,7 @@ export function CuratorDedicatedPage() {
 
           const ipfsCurator =
             (await ipfsCuratorRequest.json()) as CuratorProfile;
+
           setIsResolvingCurator(false);
           return setCurator(ipfsCurator);
         }
