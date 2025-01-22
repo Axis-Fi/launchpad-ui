@@ -54,3 +54,4 @@ app.listen(port, () => {
 });
 
 export type AppRouter = typeof appRouter;
+export type * from "./types";
