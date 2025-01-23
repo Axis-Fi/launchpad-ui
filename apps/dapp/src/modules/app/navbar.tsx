@@ -44,11 +44,6 @@ export const defaultLinks = [
 
 export const mobileSideLinks = [
   ...toggledLink(
-    { label: "Referrals", href: "/refer" },
-    "POINTS_PHASE_1",
-    true,
-  ),
-  ...toggledLink(
     { label: "Leaderboard", href: "/leaderboard" },
     "POINTS_PHASE_1",
   ),
