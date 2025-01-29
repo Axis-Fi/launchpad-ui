@@ -10,14 +10,14 @@ if (process.env.TWITTER_RAPID_API_KEY == null) {
 const rapidTwitterApiKey = process.env.TWITTER_RAPID_API_KEY;
 
 const fetchAxisFollowing = async (): Promise<string[]> => {
-  const url =
-    "https://twttrapi.p.rapidapi.com/user-following?username=axis_fi&count=20";
+  const url = "https://twttrapi.p.rapidapi.com/user-following?username=axis_fi";
   const headers = {
     "x-rapidapi-host": "twttrapi.p.rapidapi.com",
     "x-rapidapi-key": rapidTwitterApiKey,
   };
 
   const response = await fetch(url, { method: "GET", headers });
+
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`);
   }

@@ -42,16 +42,11 @@ const useCurators = (): UseCuratorEventsReturn => {
       ]);
 
       const latestIpfsProfileCid = new Map<string, string>(); // <xId, ipfsCid>
+      const sortedEvents = registrations
+        .concat(updates)
+        .sort((a, b) => Number(a.blockNumber - b.blockNumber));
 
-      registrations.forEach((event) => {
-        const xId = event.args.xId!.toString();
-        if (environment.isProduction && !axisFollowing!.includes(xId)) return;
-
-        latestIpfsProfileCid.set(xId, event.args.ipfsCID!);
-      });
-
-      // Handle any profile updates
-      updates.forEach((event) => {
+      sortedEvents.forEach((event) => {
         const xId = event.args.xId!.toString();
         if (environment.isProduction && !axisFollowing!.includes(xId)) return;
 
