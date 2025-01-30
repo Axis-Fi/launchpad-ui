@@ -2,5 +2,3 @@ packages:
   - "apps/*"
   - "packages/*"
   - "config/*"
-  - "../ui-libs/packages/*"
-  - "../ui-libs/config/*"
