@@ -126,7 +126,6 @@ export default function AuctionListPage({ curator }: AuctionListPageProps) {
     });
   }, [pagination.selectedPage]);
 
-  console.log("list-page-auctions", { auctions });
   return (
     <div id="__AXIS_HOME_PAGE__">
       <div

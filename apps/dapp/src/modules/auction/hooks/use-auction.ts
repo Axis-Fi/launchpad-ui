@@ -108,7 +108,6 @@ export function useAuction(
 
   const tokens = formatAuctionTokens(auction, getToken);
 
-  console.log({ metadataQuery });
   if (!auctionType) {
     throw new Error(`Auction type ${auctionType} doesn't exist`);
   }
@@ -120,10 +119,9 @@ export function useAuction(
     ...tokens,
     auctionType,
     formatted,
-    info: metadataQuery.isSuccess ? metadataQuery.data.info : auction.info,
+    info: metadataQuery.isSuccess ? metadataQuery.data?.info : auction.info,
     callbacks: auction.callbacks as `0x${string}`, // Has been checked above
   };
-  console.log({ metadataQuery });
   return {
     refetch,
     result: {
