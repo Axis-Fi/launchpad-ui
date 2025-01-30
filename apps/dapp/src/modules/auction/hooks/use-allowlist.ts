@@ -66,15 +66,16 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   const allowlist =
     externalAllowlist !== undefined
       ? externalAllowlist
-      : auctionWithAllowlist?.batchAuctionLot?.info?.allowlist.map(
+      : (auctionWithAllowlist?.batchAuctionLot?.info?.allowlist.map(
           (list) => list.values,
-        ) ?? [];
+        ) ?? []);
 
   // Check if the callback type is an allowlist, if not return default values
   const isMerkle =
     callbacksType === CallbacksType.MERKLE_ALLOWLIST ||
     callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
     callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST ||
     callbacksType === CallbacksType.BASELINE_ALLOWLIST ||
     callbacksType === CallbacksType.BASELINE_ALLOCATED_ALLOWLIST ||
     callbacksType === CallbacksType.BASELINE_CAPPED_ALLOWLIST;
@@ -245,6 +246,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
           ]);
           break;
         }
+        case CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST:
         case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST:
         case CallbacksType.BASELINE_ALLOCATED_ALLOWLIST: {
           // For allocated allowlists, the user's limit is in the allowlist
