@@ -8,7 +8,6 @@ import { environment } from "utils/environment";
 const { url: serverUrl } =
   ipfsServers[environment.current] ?? ipfsServers.staging;
 
-// @ts-expect-error TODO: appRouter mismatch
 const trpc = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
