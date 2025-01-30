@@ -1,6 +1,7 @@
 import { Auction } from "@axis-finance/types";
 import { verifiedFetch } from "@helia/verified-fetch";
 import { CID } from "multiformats/cid";
+import { formatAuctionInfo } from "utils/format-auction-info";
 
 export async function fetchAuctionMetadata(auction: Auction) {
   if (auction.info) return auction;
@@ -40,21 +41,13 @@ export async function fetchAuctionMetadata(auction: Auction) {
       console.log("Parsing octet-stream...");
       const text = await response.text();
 
-      if (auction.created.infoHash.endsWith("qusuq")) {
-        console.log("HERE", { text });
-      }
-
       try {
         const info = JSON.parse(text);
 
-        if (auction.created.infoHash.endsWith("qusuq")) {
-          console.log("PARSE", { id: auction.id, text, info });
-        }
-        return { ...auction, info };
+        const formattedInfo = formatAuctionInfo(info);
+        console.log({ formattedInfo });
+        return { ...auction, info: formattedInfo };
       } catch (e) {
-        if (auction.created.infoHash.endsWith("qusuq")) {
-          console.log("CATCH", { text }, e);
-        }
         console.warn("Failed to parse octet-stream as JSON:", {
           cid,
           text,

@@ -18,11 +18,8 @@ import { useAuctionRegistrations } from "./use-auction-registrations";
 import type { Address } from "viem";
 import { allowedCurators } from "modules/app/curators";
 import { environment } from "utils/environment";
-import { useQueries, useQuery } from "@tanstack/react-query";
-import {
-  fetchAuctionMetadata,
-  fetchMissingMetadata,
-} from "loaders/use-missing-metadata";
+import { useQueries } from "@tanstack/react-query";
+import { fetchAuctionMetadata } from "loaders/use-missing-metadata";
 
 export type AuctionsResult = {
   data: Auction[];

@@ -1,11 +1,13 @@
 import { Auction } from "@axis-finance/types";
 
 export function formatAuctionInfo({ info }: Pick<Auction, "info">) {
-  const formatted = Object.entries(info?.links).map(([key, value]) => ({
+  console.log({ info });
+  if (!info?.links) return info;
+
+  const links = Object.entries(info?.links).map(([key, value]) => ({
     id: key,
     url: value,
   }));
-  console.log({ formatted });
 
   const result = {
     ...info,
@@ -13,4 +15,5 @@ export function formatAuctionInfo({ info }: Pick<Auction, "info">) {
   };
 
   console.log({ result });
+  return result;
 }

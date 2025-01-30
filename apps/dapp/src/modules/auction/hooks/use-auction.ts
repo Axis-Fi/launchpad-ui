@@ -23,10 +23,7 @@ import { getAuctionId } from "../utils/get-auction-id";
 import { getAuctionType } from "../utils/get-auction-type";
 import { externalAuctionInfo } from "modules/app/external-auction-info";
 import { useLaunchQuery } from "@axis-finance/sdk/react";
-import {
-  fetchAuctionMetadata,
-  fetchMissingMetadata,
-} from "loaders/use-missing-metadata";
+import { fetchAuctionMetadata } from "loaders/use-missing-metadata";
 
 type AuctionQueryKey = QueryKey &
   readonly ["getBatchAuctionLot", { id: AuctionId }];
