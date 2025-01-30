@@ -18,6 +18,11 @@ import { useAuctionRegistrations } from "./use-auction-registrations";
 import type { Address } from "viem";
 import { allowedCurators } from "modules/app/curators";
 import { environment } from "utils/environment";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import {
+  fetchAuctionMetadata,
+  fetchMissingMetadata,
+} from "loaders/use-missing-metadata";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -79,7 +84,6 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
         ...formatAuctionTokens(auction, getToken),
         status: getAuctionStatus(auction),
         chainId,
-
         // Handle external auction data
         info: auction.info ?? externalAuctionInfo[auction.id] ?? null,
       };
@@ -92,8 +96,41 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
     .concat(registrationLaunches)
     .sort(sortAuction);
 
+  console.log({ auctions, data });
+  // const acq = useQuery({
+  //   queryKey: ["auction-metadata", filteredAuctions.length],
+  //   queryFn: async () => fetchMissingMetadata(auctions),
+  //   enabled: isSuccess,
+  // });
+
+  const queries = useQueries({
+    queries: auctions.map((a) => ({
+      queryKey: ["auction-metadata", a.id],
+      queryFn: async () => fetchAuctionMetadata(a),
+    })),
+    combine: (results) => {
+      return {
+        data: results.map((result) => result.data),
+        pending: results.some((result) => result.isPending),
+        errors: results.map((result) => result.error),
+      };
+    },
+  });
+
+  const auctionsWithFallbackData = queries.data;
+
+  console.log({
+    auctionsWithData: auctionsWithFallbackData,
+    filteredAuctions,
+    pending: queries.pending,
+  });
+
+  //console.log({ auctionsWithData, acq });
+
+  //const noLinks = auctionsWithData?.filter((a) => !a.info.links);
+  //console.log({ noLinks });
   return {
-    data: auctions as Auction[],
+    data: (queries.pending ? auctions : auctionsWithFallbackData) as Auction[],
     isLoading,
     refetch,
     isRefetching,
