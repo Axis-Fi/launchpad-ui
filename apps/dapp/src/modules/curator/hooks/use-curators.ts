@@ -1,7 +1,7 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import type { CuratorProfile } from "@repo/ipfs-api/src/types";
 import { parseAbiItem } from "viem";
 import { usePublicClient } from "wagmi";
+import type { CuratorProfile } from "@repo/ipfs-api/src/types";
 import { environment } from "utils/environment";
 import { verifiedFetch } from "utils/verified-fetch";
 import { useAxisFollowing } from "./use-axis-following";
@@ -15,6 +15,10 @@ const curatorUpdatedEvent = parseAbiItem(
   "event CuratorUpdated(uint256 xId, string ipfsCID)",
 );
 
+type CuratorRegisteredOrUpdatedEvent = {
+  args: { xId?: bigint; ipfsCID?: string };
+};
+
 type UseCuratorEventsReturn = UseQueryResult<CuratorProfile[]> | null;
 
 const useCurators = (): UseCuratorEventsReturn => {
@@ -26,27 +30,16 @@ const useCurators = (): UseCuratorEventsReturn => {
     queryKey: ["curators"],
     enabled: publicClient != null && axisFollowing != null,
     queryFn: async () => {
-      const [registrations, updates] = await Promise.all([
-        publicClient!.getLogs({
-          address: curatorRegistryDeployment.address,
-          event: curatorRegisteredEvent,
-          fromBlock: curatorRegistryDeployment.blockNumber,
-          toBlock: "latest",
-        }),
-        publicClient!.getLogs({
-          address: curatorRegistryDeployment.address,
-          event: curatorUpdatedEvent,
-          fromBlock: curatorRegistryDeployment.blockNumber,
-          toBlock: "latest",
-        }),
-      ]);
+      const curatorEvents = await publicClient!.getLogs({
+        address: curatorRegistryDeployment.address,
+        events: [curatorRegisteredEvent, curatorUpdatedEvent],
+        fromBlock: curatorRegistryDeployment.blockNumber,
+        toBlock: "latest",
+      });
 
       const latestIpfsProfileCid = new Map<string, string>(); // <xId, ipfsCid>
-      const sortedEvents = registrations
-        .concat(updates)
-        .sort((a, b) => Number(a.blockNumber - b.blockNumber));
 
-      sortedEvents.forEach((event) => {
+      curatorEvents.forEach((event: CuratorRegisteredOrUpdatedEvent) => {
         const xId = event.args.xId!.toString();
         if (environment.isProduction && !axisFollowing!.includes(xId)) return;
 

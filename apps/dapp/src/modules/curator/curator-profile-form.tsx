@@ -76,7 +76,7 @@ export function CuratorProfileForm() {
 
   // Handle connected wallet address change
   useEffect(() => {
-    if (form.getValues("address") === address) return;
+    if (form.getValues("address") === address || address == null) return;
     form.setValue("address", address);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
