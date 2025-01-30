@@ -47,7 +47,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       : undefined;
 
   const shouldFetchAllowList =
-    externalAllowlist !== undefined &&
+    externalAllowlist === undefined &&
     (isAllowlistCallback(callbacksType) || isCustomCallback);
 
   // Fetch allow list for this auction from the subgraph
@@ -82,6 +82,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
 
   const hasLimit =
     callbacksType === CallbacksType.CAPPED_MERKLE_ALLOWLIST ||
+    callbacksType === CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST ||
     callbacksType === CallbacksType.ALLOCATED_MERKLE_ALLOWLIST;
 
   const hasLimitBaseline =

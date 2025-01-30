@@ -375,6 +375,7 @@ const handlers: MetricHandlers = {
           return "Private";
         case CallbacksType.CAPPED_MERKLE_ALLOWLIST:
           return "Private (Capped)";
+        case CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST:
         case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST:
           return "Private (Allocated)";
         case CallbacksType.TOKEN_ALLOWLIST:
