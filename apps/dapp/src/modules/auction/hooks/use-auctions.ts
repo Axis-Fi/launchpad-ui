@@ -19,7 +19,7 @@ import type { Address } from "viem";
 import { allowedCurators } from "modules/app/curators";
 import { environment } from "utils/environment";
 import { useQueries } from "@tanstack/react-query";
-import { fetchAuctionMetadata } from "loaders/use-missing-metadata";
+import { fetchAuctionMetadata } from "utils/fetch-missing-metadata";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -50,7 +50,7 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   const { activeRegistrations } = useAuctionRegistrations();
 
   const registrationLaunches = featureToggles.REGISTRATION_LAUNCHES
-    ? activeRegistrations.data ?? []
+    ? (activeRegistrations.data ?? [])
     : [];
 
   // Filter out cancelled auctions
@@ -93,14 +93,8 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
     .concat(registrationLaunches)
     .sort(sortAuction);
 
-  console.log({ auctions, data });
-  // const acq = useQuery({
-  //   queryKey: ["auction-metadata", filteredAuctions.length],
-  //   queryFn: async () => fetchMissingMetadata(auctions),
-  //   enabled: isSuccess,
-  // });
-
-  const queries = useQueries({
+  //Fetch missing metadata directly from IPFS gateway
+  const missingMetadataQuery = useQueries({
     queries: auctions.map((a) => ({
       queryKey: ["auction-metadata", a.id],
       queryFn: async () => fetchAuctionMetadata(a),
@@ -110,24 +104,17 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
         data: results.map((result) => result.data),
         pending: results.some((result) => result.isPending),
         errors: results.map((result) => result.error),
+        hasResults: !results.every((result) => result.isPending),
       };
     },
   });
 
-  const auctionsWithFallbackData = queries.data;
+  const auctionsWithFallbackData = missingMetadataQuery.data;
 
-  console.log({
-    auctionsWithData: auctionsWithFallbackData,
-    filteredAuctions,
-    pending: queries.pending,
-  });
-
-  //console.log({ auctionsWithData, acq });
-
-  //const noLinks = auctionsWithData?.filter((a) => !a.info.links);
-  //console.log({ noLinks });
   return {
-    data: (queries.pending ? auctions : auctionsWithFallbackData) as Auction[],
+    data: (missingMetadataQuery.hasResults
+      ? auctionsWithFallbackData.filter((a) => !!a)
+      : auctions) as Auction[],
     isLoading,
     refetch,
     isRefetching,

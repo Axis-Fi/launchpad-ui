@@ -1,18 +1,17 @@
-import { Auction } from "@axis-finance/types";
+import { BatchAuction } from "@axis-finance/types";
 import { verifiedFetch } from "@helia/verified-fetch";
 import { CID } from "multiformats/cid";
 import { formatAuctionInfo } from "utils/format-auction-info";
 
-export async function fetchAuctionMetadata(auction: Auction) {
+export async function fetchAuctionMetadata(auction: BatchAuction) {
   if (auction.info) return auction;
+
+  //Cant fetch if no hash is present
   if (!auction.created.infoHash) {
-    console.log("Auction missing infoHash, skipping...");
-    return {
-      ...auction,
-      info: { links: [] },
-    };
+    return auction;
   }
 
+  //Only V1 hashes (baf...) are support so we need to convert
   const isV0 = auction.created.infoHash.toLowerCase().startsWith("qm");
   const cid = isV0
     ? CID.parse(auction.created.infoHash).toV1().toString()
@@ -20,33 +19,25 @@ export async function fetchAuctionMetadata(auction: Auction) {
 
   try {
     const response = await verifiedFetch(`ipfs://${cid}`);
-    if (auction.created.infoHash.endsWith("qusuq")) {
-      console.log("STARTING");
-    }
 
     const contentType = response.headers.get("content-type") || "";
-    console.log("Response Content-Type:", contentType);
 
     if (contentType.includes("application/json")) {
-      console.log("Parsing JSON response...");
       const info = await response.json();
-      console.log({ info });
       return {
         ...auction,
-        info,
+        info: formatAuctionInfo(info),
       };
     }
 
     if (contentType.includes("application/octet-stream")) {
-      console.log("Parsing octet-stream...");
       const text = await response.text();
 
       try {
-        const info = JSON.parse(text);
+        //Format subgraph info into the expected format
+        const info = formatAuctionInfo(JSON.parse(text));
 
-        const formattedInfo = formatAuctionInfo(info);
-        console.log({ formattedInfo });
-        return { ...auction, info: formattedInfo };
+        return { ...auction, info };
       } catch (e) {
         console.warn("Failed to parse octet-stream as JSON:", {
           cid,
@@ -58,12 +49,9 @@ export async function fetchAuctionMetadata(auction: Auction) {
       }
     }
 
-    console.warn("Skipping unknown content type:", contentType);
     return auction;
   } catch (error) {
     console.error("VERIFIED_FETCH_ERROR:", error, { auction, cid });
     return auction;
-  } finally {
-    console.log("Completed fetch for CID:", cid);
   }
 }

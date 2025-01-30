@@ -23,7 +23,7 @@ import { getAuctionId } from "../utils/get-auction-id";
 import { getAuctionType } from "../utils/get-auction-type";
 import { externalAuctionInfo } from "modules/app/external-auction-info";
 import { useLaunchQuery } from "@axis-finance/sdk/react";
-import { fetchAuctionMetadata } from "loaders/use-missing-metadata";
+import { fetchAuctionMetadata } from "utils/fetch-missing-metadata";
 
 type AuctionQueryKey = QueryKey &
   readonly ["getBatchAuctionLot", { id: AuctionId }];
@@ -74,8 +74,11 @@ export function useAuction(
 
   const auctionType = getAuctionType(rawAuction?.auctionType) as AuctionType;
   const metadataQuery = useQuery({
+    // NOTE: required for the key to match usage on useAuctions
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["auction-metadata", rawAuction?.id],
-    queryFn: async () => fetchAuctionMetadata(rawAuction),
+    //@ts-expect-error TODO: fix type mismatch
+    queryFn: async () => rawAuction && fetchAuctionMetadata(rawAuction),
     enabled: !!rawAuction && !rawAuction?.info,
   });
 
