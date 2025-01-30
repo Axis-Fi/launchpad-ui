@@ -25,9 +25,9 @@
   },
   "dependencies": {
     "@axis-finance/abis": "0.0.2",
-    "@axis-finance/cloak": "0.0.3",
-    "@axis-finance/deployments": "0.0.2",
-    "@axis-finance/env": "0.0.3",
+    "@axis-finance/cloak": "0.0.4",
+    "@axis-finance/deployments": "0.0.3",
+    "@axis-finance/env": "0.0.4",
     "@axis-finance/sdk": "0.0.8",
     "@axis-finance/subgraph-client": "0.0.4",
     "@axis-finance/types": "0.0.6",
