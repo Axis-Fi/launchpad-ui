@@ -166,10 +166,13 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]$/)
       .optional(),
     isVested: z.boolean().optional(),
+
     curator: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-      .optional(),
+      .nullable()
+      .optional()
+      .or(z.literal("")),
     vestingDuration: StringNumberNotNegative.optional(),
     vestingStart: z.date().optional(),
     referrerFee: z.array(z.number()).optional(),
