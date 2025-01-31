@@ -1,5 +1,5 @@
 import { useGetBatchAuctionLotQuery } from "@axis-finance/subgraph-client";
-import type { QueryKey } from "@tanstack/react-query";
+import { useQuery, type QueryKey } from "@tanstack/react-query";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { AuctionType } from "@axis-finance/types";
 import type {
@@ -23,6 +23,7 @@ import { getAuctionId } from "../utils/get-auction-id";
 import { getAuctionType } from "../utils/get-auction-type";
 import { externalAuctionInfo } from "modules/app/external-auction-info";
 import { useLaunchQuery } from "@axis-finance/sdk/react";
+import { fetchAuctionMetadata } from "utils/fetch-missing-metadata";
 
 type AuctionQueryKey = QueryKey &
   readonly ["getBatchAuctionLot", { id: AuctionId }];
@@ -72,6 +73,14 @@ export function useAuction(
   const refetch = useSafeRefetch(queryKey);
 
   const auctionType = getAuctionType(rawAuction?.auctionType) as AuctionType;
+  const metadataQuery = useQuery({
+    // NOTE: required for the key to match usage on useAuctions
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: ["auction-metadata", rawAuction?.id],
+    //@ts-expect-error TODO: fix type mismatch
+    queryFn: async () => rawAuction && fetchAuctionMetadata(rawAuction),
+    enabled: !!rawAuction && !rawAuction?.info,
+  });
 
   if (!rawAuction) {
     return {
@@ -110,9 +119,9 @@ export function useAuction(
     ...tokens,
     auctionType,
     formatted,
+    info: metadataQuery.isSuccess ? metadataQuery.data?.info : auction.info,
     callbacks: auction.callbacks as `0x${string}`, // Has been checked above
   };
-
   return {
     refetch,
     result: {

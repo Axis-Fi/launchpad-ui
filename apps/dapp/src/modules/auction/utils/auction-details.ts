@@ -34,7 +34,7 @@ const getMinFilled = (auction: BatchAuction): number | undefined => {
 type PartialAuction = Pick<Auction, "info">;
 
 const getLinkUrl = (id: AuctionLinkId, auction: PartialAuction) => {
-  return auction?.info?.links?.find((link) => link.linkId === id)?.url;
+  return auction?.info?.links?.find?.((link) => link.linkId === id)?.url;
 };
 
 const hasDerivative = (
