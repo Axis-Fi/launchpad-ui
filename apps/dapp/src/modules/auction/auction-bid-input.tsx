@@ -123,7 +123,7 @@ export function AuctionBidInput({
                   token={auction.quoteToken}
                   message={
                     showAmountOut
-                      ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`
+                      ? `If successful, you will receive at least: ${trimCurrency(minAmountOutFormatted)} ${auction.baseToken.symbol}`
                       : ""
                   }
                   onChange={(e) => {

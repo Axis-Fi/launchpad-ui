@@ -53,7 +53,7 @@ export function AuctionBidInputSingle({
                   label="Spend Amount"
                   message={
                     showAmountOut
-                      ? `You will receive ${formAmountOut} ${auction.baseToken.symbol}`
+                      ? `You will receive ${trimCurrency(formAmountOut)} ${auction.baseToken.symbol}`
                       : ""
                   }
                   balance={formatUnits(balance, auction.quoteToken.decimals)}
