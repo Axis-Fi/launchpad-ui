@@ -665,26 +665,22 @@ export default function CreateAuctionPage() {
     );
   }
 
-  const watchedValues = React.useMemo(
-    () =>
-      form.watch([
-        "isVested",
-        "payoutToken",
-        "quoteToken",
-        "quoteToken.chainId",
-        "capacity",
-        "auctionType",
-        "callbacksType",
-        "dtlIsVested",
-        "dtlUniV3PoolFee",
-        "start",
-        "deadline",
-        "minBidSize",
-        "minPrice",
-        "curator",
-      ]),
-    [form],
-  );
+  const watchedValues = form.watch([
+    "isVested",
+    "payoutToken",
+    "quoteToken",
+    "quoteToken.chainId",
+    "capacity",
+    "auctionType",
+    "callbacksType",
+    "dtlIsVested",
+    "dtlUniV3PoolFee",
+    "start",
+    "deadline",
+    "minBidSize",
+    "minPrice",
+    "curator",
+  ]);
 
   const [
     isVested,
