@@ -1,7 +1,7 @@
 ## IPFS Proxy API
 
-Proxy server to hide API keys using express and TRPC
+Proxy server for storing files on IPFS via [Fleek](https://fleek.xyz/). Fleek requires API keys which we can't expose to the frontend, hence the need for a backend server.
 
-### Currently:
+Make sure you have a valid `.env` file in this package's root directory. See `.env.example` for an example.
 
-IPFS -> Using [Fleek IPFS SDK](https://docs.fleek.co/storage/fleek-storage-js/)
+[Fleek IPFS Storage SDK](https://fleek.xyz/docs/sdk/)

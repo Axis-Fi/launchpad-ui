@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { AuctionType, type Auction } from "@repo/types";
+import { AuctionType, type Auction } from "@axis-finance/types";
 
 const getAuctionMock = (
   overrides: Partial<Auction> | undefined = undefined,

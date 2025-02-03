@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar, { testnetLinks } from "./navbar";
 import { Button, ThemeSwitcher, Tooltip } from "@repo/ui";
 import { useMediaQueries } from "loaders/use-media-queries";
-import { environment } from "@repo/env";
+import { environment } from "utils/environment";
 import { useCurator } from "modules/auction/hooks/use-curator";
 import { NotificationBadge } from "components/notification-badge";
 import { UserProfile } from "./user-profile";

@@ -4,7 +4,7 @@ import {
   type Address,
   type BatchAuction,
   type PropsWithAuction,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { NotConnectedClaimCard } from "./not-connected";
 import { VestingCard } from "./vesting-card";
 import { AuctionFailedCard } from "../auction-failed-card";

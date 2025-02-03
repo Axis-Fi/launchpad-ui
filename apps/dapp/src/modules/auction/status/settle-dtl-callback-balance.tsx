@@ -1,4 +1,4 @@
-import { Address, Auction, CallbacksType } from "@repo/types";
+import { Address, Auction, CallbacksType } from "@axis-finance/types";
 import { getCallbacksType } from "../utils/get-callbacks-type";
 import { useBaseDTLCallback } from "../hooks/use-base-dtl-callback";
 import useERC20Balance from "loaders/use-erc20-balance";

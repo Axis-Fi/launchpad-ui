@@ -1,4 +1,4 @@
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { useBaseDTLCallback } from "./hooks/use-base-dtl-callback";
 import { useBaselineDTLCallback } from "./hooks/use-baseline-dtl-callback";
 

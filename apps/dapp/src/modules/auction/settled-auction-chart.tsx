@@ -13,7 +13,7 @@ import {
   Line,
 } from "recharts";
 import { format } from "date-fns";
-import type { Auction, BatchAuction } from "@repo/types";
+import type { Auction, BatchAuction } from "@axis-finance/types";
 import { shorten } from "utils/number";
 import { formatDate, getTimestamp } from "utils/date";
 import { useGetToggledUsdAmount } from "./hooks/use-get-toggled-usd-amount";

@@ -1,5 +1,5 @@
 import { DataTable, Text } from "@repo/ui";
-import { createColumnHelper } from "@tanstack/react-table";
+import { type ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { formatDistanceToNow } from "date-fns";
 import type { UserProfile } from "@repo/points";
 import { useLeaderboard } from "./hooks/use-leaderboard";
@@ -46,7 +46,7 @@ const cols = [
       );
     },
   }),
-];
+] as ColumnDef<UserProfile, unknown>[];
 
 export function RecentJoins() {
   const { recentJoins } = useLeaderboard();

@@ -1,6 +1,6 @@
-import { deployments } from "@repo/deployments";
+import { deployments } from "@axis-finance/deployments";
 import { callbackLabels, callbackMap } from "utils/contracts";
-import { AxisCallbackNames, CallbacksType } from "@repo/types";
+import { AxisCallbackNames, CallbacksType } from "@axis-finance/types";
 
 const defaultCallbacks = [
   {

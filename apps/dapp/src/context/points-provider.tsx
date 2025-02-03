@@ -7,8 +7,11 @@ import {
   type JWTPair,
   type UserProfile,
   type WalletPoints,
+  Configuration,
 } from "@repo/points";
 import type { Address } from "viem";
+import { pointsServers } from "@repo/points/src/env";
+import { environment } from "utils/environment";
 
 type PointsContext = {
   isUserSignedIn: () => boolean;
@@ -59,7 +62,16 @@ const enforceAddress: (address?: Address) => asserts address is Address = (
 
 export const PointsProvider = ({ children }: { children: React.ReactNode }) => {
   const config = useConfig();
-  const pointsClient = useMemo(() => createPointsClient(config), [config]);
+
+  const pointsClient = useMemo(
+    () =>
+      createPointsClient(
+        config,
+        new Configuration({ basePath: pointsServers[environment.current].url }),
+        environment.isTestnet,
+      ),
+    [config],
+  );
 
   const { address, chainId } = useAccount();
 

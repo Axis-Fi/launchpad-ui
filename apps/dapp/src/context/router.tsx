@@ -4,7 +4,6 @@ import {
 } from "react-router-dom";
 import ErrorPage from "../pages/error-page";
 import AuctionPage from "../pages/auction-page";
-import Dashboard from "pages/dashboard";
 import App from "src/App";
 import CreateAuctionPage from "pages/create-auction-page";
 import AuctionListPage from "pages/auction-list-page";
@@ -19,6 +18,8 @@ import { SignInPage } from "pages/points/sign-in-page";
 import { BridgePage } from "pages/bridge-page";
 import { AuctionRegistering } from "modules/auction/status/auction-registering";
 import { CuratorDedicatedPage } from "pages/curator-dedicated-page";
+import { CuratorProfilePage } from "modules/curator/curator-profile-page";
+import { CuratorAuthentication } from "modules/curator/curator-authentication";
 
 const router: ReturnType<typeof createHashRouter> = createHashRouter([
   {
@@ -32,7 +33,6 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "points/claim", element: <ClaimPointsPage /> },
       { path: "profile/*", element: <ProfilePage /> },
       { path: "leaderboard", element: <LeaderboardPage /> },
-      { path: "dashboard", element: <Dashboard /> },
       { path: "auctions", element: <AuctionListPage /> },
       { path: "create/auction", element: <CreateAuctionPage /> },
       { path: "curator", element: <CuratorPage /> },
@@ -44,12 +44,20 @@ const router: ReturnType<typeof createHashRouter> = createHashRouter([
       { path: "bridge", element: <BridgePage /> },
       { path: ":curatorId/bridge", element: <BridgePage /> },
       {
-        path: ":curatorId/launches",
+        path: "curator/:curatorId",
         element: <CuratorDedicatedPage />,
       },
       {
         path: ":curatorId/:chainId/:lotId",
         element: <AuctionPage />,
+      },
+      {
+        path: "curator-authenticate",
+        element: <CuratorAuthentication />,
+      },
+      {
+        path: "curator-verified",
+        element: <CuratorProfilePage />,
       },
     ],
   },

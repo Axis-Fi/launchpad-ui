@@ -1,6 +1,6 @@
 import { FormField, FormItemWrapperSlim } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { TokenAmountInput } from "modules/token/token-amount-input";
 import { trimCurrency } from "utils/currency";
 import { useState } from "react";
@@ -123,7 +123,7 @@ export function AuctionBidInput({
                   token={auction.quoteToken}
                   message={
                     showAmountOut
-                      ? `If successful, you will receive at least: ${minAmountOutFormatted} ${auction.baseToken.symbol}`
+                      ? `If successful, you will receive at least: ${trimCurrency(minAmountOutFormatted)} ${auction.baseToken.symbol}`
                       : ""
                   }
                   onChange={(e) => {

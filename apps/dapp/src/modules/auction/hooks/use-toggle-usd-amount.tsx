@@ -1,5 +1,5 @@
 import { useToggle } from "@repo/ui";
-import type { Token } from "@repo/types";
+import type { Token } from "@axis-finance/types";
 import { shorten } from "utils/number";
 import { useGetUsdAmount } from "./use-get-usd-amount";
 import { parseUnits } from "viem";

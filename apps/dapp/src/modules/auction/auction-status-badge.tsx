@@ -1,5 +1,5 @@
 import { Badge, cn } from "@repo/ui";
-import { AuctionStatus } from "@repo/types";
+import { AuctionStatus } from "@axis-finance/types";
 
 /** Displays a indicator with the auction's current status */
 export function AuctionStatusBadge({

@@ -1,5 +1,5 @@
 import { zeroAddress } from "viem";
-import { pointsServers } from "@repo/env";
+import { pointsServers } from "./env";
 import {
   AuthenticationApi,
   Configuration,
@@ -10,7 +10,6 @@ import {
   LaunchRegistration,
   LaunchRegistrationRequest,
 } from ".";
-import { environment } from "@repo/env";
 import { Config, signMessage } from "@wagmi/core";
 
 // JWT Token Storage
@@ -47,22 +46,17 @@ function createSIWEMessage(message: {
   return [domain, statement, content].join("\n\n");
 }
 
-const basicMessage = {
-  domain: environment.isDevelopment
-    ? "axis-testnet.eth.limo" // locally we use the testnet environemnt points service
+const basicMessage = (isTestnet?: boolean) => ({
+  domain: isTestnet
+    ? "testnet.axis.finance" // locally we use the testnet environment points service
     : window.location.host,
-  uri: environment.isDevelopment
-    ? "https://axis-testnet.eth.limo"
-    : window.location.origin,
+  uri: isTestnet ? "https://testnet.axis.finance" : window.location.origin,
   version: "1",
-};
+});
 
 // Client setup
-const { url: serverUrl } =
-  pointsServers[environment.current] ?? pointsServers.testing;
-
 const defaultConfig = new Configuration({
-  basePath: serverUrl,
+  basePath: pointsServers.testing.url,
 });
 
 // API Client
@@ -71,8 +65,13 @@ export class PointsClient {
   pointsApi: PointsApi;
   launchesApi: LaunchesApi;
   wagmiConfig: Config;
+  isTestnet: boolean;
 
-  constructor(config: Configuration = defaultConfig, wagmiConfig: Config) {
+  constructor(
+    config: Configuration = defaultConfig,
+    wagmiConfig: Config,
+    isTestnet: boolean,
+  ) {
     const authMiddleware: Middleware = {
       post: this.refreshTokenInterceptor.bind(this),
     };
@@ -85,6 +84,7 @@ export class PointsClient {
     this.pointsApi = new PointsApi(fullConfig);
     this.launchesApi = new LaunchesApi(fullConfig);
     this.wagmiConfig = wagmiConfig;
+    this.isTestnet = isTestnet;
   }
 
   private headers() {
@@ -105,7 +105,7 @@ export class PointsClient {
     const nonce = await this.authApi.nonceGet();
 
     const message = createSIWEMessage({
-      ...basicMessage,
+      ...basicMessage(this.isTestnet),
       statement,
       address,
       chainId,
@@ -319,4 +319,5 @@ export class PointsClient {
 export const createPointsClient = (
   wagmiConfig: Config,
   config?: Configuration,
-) => new PointsClient(config, wagmiConfig);
+  isTestnet: boolean = false,
+) => new PointsClient(config, wagmiConfig, isTestnet);

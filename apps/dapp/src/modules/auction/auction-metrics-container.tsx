@@ -1,4 +1,4 @@
-import type { Auction, PropsWithAuction } from "@repo/types";
+import type { Auction, PropsWithAuction } from "@axis-finance/types";
 import React from "react";
 import { AuctionMetrics } from "./auction-metrics";
 

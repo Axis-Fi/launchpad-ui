@@ -1,10 +1,4 @@
-import { type AuctionModuleReference, AuctionType } from "@repo/types";
-
-const auctionTypes: Record<AuctionModuleReference, AuctionType> = {
-  "01EMPA": AuctionType.SEALED_BID,
-  "01FPBA": AuctionType.FIXED_PRICE_BATCH,
-  "02FPBA": AuctionType.FIXED_PRICE_BATCH,
-};
+import { AuctionType } from "@axis-finance/types";
 
 export const auctionHouseTypes: Record<AuctionType, string> = {
   [AuctionType.SEALED_BID]: "batch",
@@ -13,8 +7,10 @@ export const auctionHouseTypes: Record<AuctionType, string> = {
 
 export function getAuctionType(auctionRef?: string) {
   if (!auctionRef) return;
-  const key = auctionRef as AuctionModuleReference;
-  const type = auctionTypes[key];
+  const key = auctionRef;
+  const type = key.toLowerCase().includes("emp")
+    ? AuctionType.SEALED_BID
+    : AuctionType.FIXED_PRICE_BATCH;
 
   if (!type) {
     throw new Error(

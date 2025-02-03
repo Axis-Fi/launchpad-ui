@@ -1,6 +1,6 @@
 import { FormField, FormItemWrapperSlim } from "@repo/ui";
 import { useFormContext } from "react-hook-form";
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { BidForm } from "./auction-purchase";
 import { formatUnits, parseUnits } from "viem";
 import { TokenAmountInput } from "modules/token/token-amount-input";
@@ -53,7 +53,7 @@ export function AuctionBidInputSingle({
                   label="Spend Amount"
                   message={
                     showAmountOut
-                      ? `You will receive ${formAmountOut} ${auction.baseToken.symbol}`
+                      ? `You will receive ${trimCurrency(formAmountOut)} ${auction.baseToken.symbol}`
                       : ""
                   }
                   balance={formatUnits(balance, auction.quoteToken.decimals)}

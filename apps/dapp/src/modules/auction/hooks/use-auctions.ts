@@ -1,5 +1,5 @@
-import type { Auction, Curator, GetAuctionLots } from "@repo/types";
-import { useLaunches } from "@repo/sdk/react";
+import type { Auction, Curator, GetAuctionLots } from "@axis-finance/types";
+import { useLaunchesQuery } from "@axis-finance/sdk/react";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
 import { formatAuctionTokens } from "modules/auction/utils/format-tokens";
@@ -12,13 +12,14 @@ import { getChainId } from "src/utils/chain";
 import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
 import { useSafeRefetch } from "./use-safe-refetch";
-import {
-  allowedCurators,
-  externalAuctionInfo,
-  featureToggles,
-} from "@repo/env";
+import { externalAuctionInfo } from "modules/app/external-auction-info";
+import { featureToggles } from "modules/app/feature-toggles";
 import { useAuctionRegistrations } from "./use-auction-registrations";
-import { Address } from "viem";
+import type { Address } from "viem";
+import { allowedCurators } from "modules/app/curators";
+import { environment } from "utils/environment";
+import { useQueries } from "@tanstack/react-query";
+import { fetchAuctionMetadata } from "utils/fetch-missing-metadata";
 
 export type AuctionsResult = {
   data: Auction[];
@@ -37,8 +38,9 @@ type UseAuctionsArgs = {
 
 export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   const { data, isLoading, isSuccess, isRefetching } =
-    useLaunches<GetAuctionLots>({
+    useLaunchesQuery<GetAuctionLots>({
       queryKeyFn: getAuctionsQueryKey,
+      isTestnet: environment.isTestnet,
     });
 
   // Refetch auctions if the cache is stale
@@ -48,7 +50,7 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   const { activeRegistrations } = useAuctionRegistrations();
 
   const registrationLaunches = featureToggles.REGISTRATION_LAUNCHES
-    ? activeRegistrations.data ?? []
+    ? (activeRegistrations.data ?? [])
     : [];
 
   // Filter out cancelled auctions
@@ -79,7 +81,6 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
         ...formatAuctionTokens(auction, getToken),
         status: getAuctionStatus(auction),
         chainId,
-
         // Handle external auction data
         info: auction.info ?? externalAuctionInfo[auction.id] ?? null,
       };
@@ -92,8 +93,28 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
     .concat(registrationLaunches)
     .sort(sortAuction);
 
+  //Fetch missing metadata directly from IPFS gateway
+  const missingMetadataQuery = useQueries({
+    queries: auctions.map((a) => ({
+      queryKey: ["auction-metadata", a.id],
+      queryFn: async () => fetchAuctionMetadata(a),
+    })),
+    combine: (results) => {
+      return {
+        data: results.map((result) => result.data),
+        pending: results.some((result) => result.isPending),
+        errors: results.map((result) => result.error),
+        hasResults: !results.every((result) => result.isPending),
+      };
+    },
+  });
+
+  const auctionsWithFallbackData = missingMetadataQuery.data;
+
   return {
-    data: auctions as Auction[],
+    data: (missingMetadataQuery.hasResults
+      ? auctionsWithFallbackData.filter((a) => !!a)
+      : auctions) as Auction[],
     isLoading,
     refetch,
     isRefetching,

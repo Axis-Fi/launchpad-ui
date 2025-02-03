@@ -1,10 +1,10 @@
-import { createColumnHelper } from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import {
   BatchAuctionBid,
   Auction,
   PropsWithAuction,
   BatchAuction,
-} from "@repo/types";
+} from "@axis-finance/types";
 import { BlockExplorerLink } from "components/blockexplorer-link";
 import { Button, Card, Chip, DataTable, Text } from "@repo/ui";
 import {
@@ -283,7 +283,7 @@ export function BidList(props: BidListProps) {
               ? "No bids from this address"
               : "No bids received"
         }
-        columns={columns}
+        columns={columns as ColumnDef<BatchAuctionBid>[]}
         data={mappedBids}
       />
 

@@ -1,7 +1,7 @@
 {
   "name": "dapp",
   "private": true,
-  "version": "1.0.21",
+  "version": "1.0.25",
   "type": "module",
   "scripts": {
     "dev": "vite --port ${VITE_APP_PORT-5173}",
@@ -24,20 +24,21 @@
     "test": "pnpm run test:unit && pnpm /^test:smoke:/"
   },
   "dependencies": {
-    "@fleekhq/fleek-storage-js": "^1.0.24",
+    "@axis-finance/abis": "0.0.3",
+    "@axis-finance/cloak": "0.0.6",
+    "@axis-finance/deployments": "0.0.5",
+    "@axis-finance/env": "0.0.6",
+    "@axis-finance/sdk": "0.0.11",
+    "@axis-finance/subgraph-client": "0.0.4",
+    "@axis-finance/types": "0.0.7",
+    "@fleek-platform/sdk": "^3.5.1",
+    "@helia/verified-fetch": "^2.3.1",
     "@openzeppelin/merkle-tree": "^1.0.6",
     "@rainbow-me/rainbowkit": "^2.0.2",
-    "@repo/abis": "workspace:*",
-    "@repo/cloak": "workspace:*",
-    "@repo/deployments": "workspace:*",
-    "@repo/env": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/ipfs-api": "workspace:*",
     "@repo/points": "workspace:*",
-    "@repo/sdk": "workspace:*",
-    "@repo/subgraph-client": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
-    "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
     "@tanstack/react-query": "5.18.1",
@@ -65,7 +66,7 @@
     "react-use-wizard": "^2.3.0",
     "recharts": "^2.12.0",
     "viem": "^2.17.3",
-    "vite-plugin-node-polyfills": "^0.19.0",
+    "vite-plugin-node-polyfills": "^0.17.0",
     "vite-tsconfig-paths": "^4.3.1",
     "wagmi": "^2.5.2"
   },
@@ -101,7 +102,7 @@
     "storybook": "^8.1.1",
     "storybook-addon-remix-react-router": "^3.0.0",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.2.2",
+    "typescript": "5.2.2",
     "vite": "^5.0.8",
     "vitest": "^1.5.0"
   }

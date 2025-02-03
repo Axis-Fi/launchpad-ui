@@ -1,5 +1,5 @@
-import { axisContracts } from "@repo/deployments";
-import { Address, CallbacksType } from "@repo/types";
+import { axisContracts } from "@axis-finance/deployments";
+import { Address, CallbacksType } from "@axis-finance/types";
 import { getCallbacks } from "utils/contracts";
 import { toBasisPoints } from "utils/number";
 import { formatUnits, parseUnits } from "viem";
@@ -60,13 +60,21 @@ export function useBaseDTLCallback({
   const uniV2Dtl = getCallbacks(
     chainId || 0,
     CallbacksType.UNIV2_DTL,
-  ).address.map((address) => address.toLowerCase());
+  ).address.map((address: string) => address.toLowerCase());
   const uniV3Dtl = getCallbacks(
     chainId || 0,
     CallbacksType.UNIV3_DTL,
-  ).address.map((address) => address.toLowerCase());
+  ).address.map((address: string) => address.toLowerCase());
+
+  const uniV3DtlWithAllowlist = getCallbacks(
+    chainId || 0,
+    CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST,
+  ).address.map((address: string) => address.toLowerCase());
+
   const isBaseDTLCallback =
-    uniV2Dtl.includes(callbackLower) || uniV3Dtl.includes(callbackLower);
+    uniV3DtlWithAllowlist.includes(callbackLower) ||
+    uniV2Dtl.includes(callbackLower) ||
+    uniV3Dtl.includes(callbackLower);
 
   const response = useReadContract({
     abi: axisContracts.abis.uniV2Dtl, // We can use this for all DTL callbacks, since the Uniswap V2 DTL does not have additional parameters

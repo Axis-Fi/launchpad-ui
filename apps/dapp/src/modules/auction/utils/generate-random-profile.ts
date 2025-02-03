@@ -1,4 +1,5 @@
 import blockies from "ethereum-blockies";
+// @ts-expect-error TODO: angry-purple-tiger has no types
 import animalHash from "angry-purple-tiger";
 import { ProfileForm } from "modules/points/hooks/use-profile";
 

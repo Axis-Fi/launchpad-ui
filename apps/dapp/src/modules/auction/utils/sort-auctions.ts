@@ -1,4 +1,4 @@
-import { AuctionStatus, Auction } from "@repo/types";
+import { AuctionStatus, Auction } from "@axis-finance/types";
 
 const status: { [key in AuctionStatus]: number } = {
   registering: 0,

@@ -3,9 +3,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import type { Auction, AuctionId, BatchAuction } from "@repo/types";
+import type { Auction, AuctionId, BatchAuction } from "@axis-finance/types";
 import { useEffect, useRef } from "react";
-import { cloakClient } from "@repo/cloak";
 import {
   useSimulateContract,
   useWaitForTransactionReceipt,
@@ -14,11 +13,12 @@ import {
 import { getAuctionQueryKey } from "modules/auction/hooks/use-auction";
 import { getAuctionHouse, getContractsByModuleType } from "utils/contracts";
 import { Hex } from "viem";
-import type { GetBatchAuctionLotQuery } from "@repo/subgraph-client";
+import type { GetBatchAuctionLotQuery } from "@axis-finance/subgraph-client";
 import {
   auction as auctionCache,
   optimisticUpdate,
 } from "modules/auction/utils/optimistic";
+import { cloakClient } from "utils/cloak-client";
 
 /** Used to manage decrypting the next set of bids */
 export const useDecryptBids = (auction: BatchAuction) => {

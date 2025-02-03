@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Card, Text } from "@repo/ui";
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { useSettleAuction } from "../hooks/use-settle-auction";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { RequiresChain } from "components/requires-chain";

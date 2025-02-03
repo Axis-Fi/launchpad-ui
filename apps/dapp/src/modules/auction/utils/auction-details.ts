@@ -5,7 +5,7 @@ import {
   type AuctionLinkId,
   AuctionType,
   CallbacksType,
-} from "@repo/types";
+} from "@axis-finance/types";
 
 const getPrice = (auction: BatchAuction): number | undefined => {
   if (auction.auctionType === AuctionType.FIXED_PRICE_BATCH) {
@@ -34,7 +34,7 @@ const getMinFilled = (auction: BatchAuction): number | undefined => {
 type PartialAuction = Pick<Auction, "info">;
 
 const getLinkUrl = (id: AuctionLinkId, auction: PartialAuction) => {
-  return auction?.info?.links?.find((link) => link.linkId === id)?.url;
+  return auction?.info?.links?.find?.((link) => link.linkId === id)?.url;
 };
 
 const hasDerivative = (

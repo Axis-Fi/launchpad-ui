@@ -1,4 +1,4 @@
-import { metadata } from "@repo/env";
+import { metadata } from "modules/app/metadata";
 import { Button, Card, Text } from "@repo/ui";
 import { SocialRow } from "components/social-row";
 import { ArrowLeftIcon } from "lucide-react";

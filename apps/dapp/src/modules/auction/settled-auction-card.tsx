@@ -1,4 +1,8 @@
-import type { Token, PropsWithAuction, BatchAuction } from "@repo/types";
+import type {
+  Token,
+  PropsWithAuction,
+  BatchAuction,
+} from "@axis-finance/types";
 import { Card, cn, Metric, type MetricProps, type TextWeight } from "@repo/ui";
 import { SettledAuctionChart } from "./settled-auction-chart";
 import { useToggleUsdAmount } from "./hooks/use-toggle-usd-amount";

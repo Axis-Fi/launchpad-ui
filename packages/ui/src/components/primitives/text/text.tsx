@@ -1,5 +1,5 @@
 import { VariantProps } from "class-variance-authority";
-import { textVariants } from "./text-variants";
+import { type TextColor, textVariants } from "./text-variants";
 import React from "react";
 import { cn } from "@/utils";
 
@@ -24,6 +24,7 @@ export interface TextProps
   uppercase?: boolean;
   spaced?: boolean;
   size?: keyof typeof sizeMap;
+  color?: TextColor;
 }
 
 const Text = React.forwardRef<HTMLParagraphElement, TextProps>(

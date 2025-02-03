@@ -1,4 +1,4 @@
-import { AuctionType, type PropsWithAuction } from "@repo/types";
+import { AuctionType, type PropsWithAuction } from "@axis-finance/types";
 import { SettledAuctionCard } from "modules/auction/settled-auction-card";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
 import { UserBidsCardContainer } from "../user-bids";

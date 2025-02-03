@@ -1,6 +1,6 @@
 import { Button, Link, Tooltip, cn, useTheme } from "@repo/ui";
 import { SocialRow } from "../../components/social-row";
-import { metadata } from "@repo/env";
+import { metadata } from "./metadata";
 import { AppVersion } from "./app-version";
 import { useCuratorPage } from "loaders/use-curator-page";
 import { AxisWordmark } from "./axis-wordmark";

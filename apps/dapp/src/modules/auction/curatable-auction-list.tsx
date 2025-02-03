@@ -2,7 +2,7 @@ import { Button, DataTable, Tooltip, trimAddress } from "@repo/ui";
 import { Link } from "react-router-dom";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
-import { AuctionType, type Auction } from "@repo/types";
+import { AuctionType, type Auction } from "@axis-finance/types";
 import { useAccount } from "wagmi";
 import { AuctionStatusBadge } from "./auction-status-badge";
 import { CheckIcon, XIcon } from "lucide-react";

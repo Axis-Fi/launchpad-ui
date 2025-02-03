@@ -1,4 +1,4 @@
-import { allowedCuratorAddresses } from "@repo/env";
+import { allowedCuratorAddresses } from "modules/app/curators";
 import { useAuctions } from "modules/auction/hooks/use-auctions";
 import { useAccount } from "wagmi";
 

@@ -1,4 +1,4 @@
-import { AuctionType } from "@repo/types";
+import { AuctionType } from "@axis-finance/types";
 
 export const auctionMetadata: Record<
   AuctionType,

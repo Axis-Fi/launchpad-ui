@@ -20,14 +20,14 @@ import {
   trimAddress,
   Tooltip,
 } from "@repo/ui";
-import { abis } from "@repo/abis";
+import { abis } from "@axis-finance/abis";
 import { DevTool } from "@hookform/devtools";
 
 import { TokenPicker } from "modules/token/token-picker";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cloakClient } from "@repo/cloak";
+import { cloakClient } from "utils/cloak-client";
 import {
   UseWaitForTransactionReceiptReturnType,
   useAccount,
@@ -58,10 +58,14 @@ import {
   toBasisPoints,
   getScaledCapacityWithCuratorFee,
 } from "src/utils";
+import {
+  AuctionType,
+  CallbacksType,
+  isBaselineCallback,
+} from "@axis-finance/types";
+import type { Chain } from "viem";
 
-import { AuctionType, CallbacksType, isBaselineCallback } from "@repo/types";
-
-import { storeAuctionInfo } from "modules/auction/hooks/use-auction-info";
+import { storeAuctionInfo } from "modules/app/ipfs-api";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useRef } from "react";
@@ -87,7 +91,7 @@ import { CreateAuctionPreview } from "./create-auction-preview";
 import type { AuctionMetadata } from "@repo/ipfs-api/src/types";
 import { useFees } from "modules/auction/hooks/use-fees";
 import { getAuctionsQueryKey } from "modules/auction/hooks/use-auctions";
-import type { GetAuctionLotsQuery } from "@repo/subgraph-client";
+import type { GetAuctionLotsQuery } from "@axis-finance/subgraph-client";
 import { getAuctionId } from "modules/auction/utils/get-auction-id";
 import {
   auctions as auctionsCache,
@@ -99,7 +103,7 @@ import { useGetCuratorFee } from "modules/auction/hooks/use-get-curator-fee";
 import { getAuctionPath } from "utils/router";
 import getExistingCallbacks from "modules/create-auction/get-existing-callbacks";
 import { useStoredAuctionConfig } from "state/auction-config";
-import type { Token } from "@repo/types";
+import type { Token } from "@axis-finance/types";
 import { DownloadIcon, ShareIcon, TrashIcon } from "lucide-react";
 import { TriggerMessage } from "components/trigger-message";
 import { getTickAtPrice } from "utils/uniswapV3";
@@ -162,10 +166,13 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]$/)
       .optional(),
     isVested: z.boolean().optional(),
+
     curator: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-      .optional(),
+      .nullable()
+      .optional()
+      .or(z.literal("")),
     vestingDuration: StringNumberNotNegative.optional(),
     vestingStart: z.date().optional(),
     referrerFee: z.array(z.number()).optional(),
@@ -618,11 +625,10 @@ export default function CreateAuctionPage() {
     baselineAnchorTickWidth: "10",
   };
 
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
   const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
   const [isTxDialogOpen, setIsTxDialogOpen] = React.useState(false);
   const connectedChainId = useChainId();
-  const { chain } = useAccount();
 
   const [storedConfig, setStoredConfig] = useStoredAuctionConfig();
 
@@ -659,22 +665,7 @@ export default function CreateAuctionPage() {
     );
   }
 
-  const [
-    isVested,
-    payoutToken,
-    quoteToken,
-    _chainId,
-    capacity,
-    _auctionType,
-    callbacksType,
-    dtlIsVested,
-    dtlUniV3PoolFee,
-    start,
-    deadline,
-    minBidSize,
-    minPrice,
-    curator,
-  ] = form.watch([
+  const watchedValues = form.watch([
     "isVested",
     "payoutToken",
     "quoteToken",
@@ -690,6 +681,23 @@ export default function CreateAuctionPage() {
     "minPrice",
     "curator",
   ]);
+
+  const [
+    isVested,
+    payoutToken,
+    quoteToken,
+    _chainId,
+    capacity,
+    _auctionType,
+    callbacksType,
+    dtlIsVested,
+    dtlUniV3PoolFee,
+    start,
+    deadline,
+    minBidSize,
+    minPrice,
+    curator,
+  ] = watchedValues;
 
   const chainId = _chainId ?? connectedChainId;
 
@@ -745,11 +753,11 @@ export default function CreateAuctionPage() {
       };
 
       // Store the auction info
-      const auctionInfoAddress = await storeAuctionInfo(auctionInfo);
+      const auctionInfoIpfsCid = await storeAuctionInfo(auctionInfo);
 
-      if (!auctionInfoAddress) throw new Error("Unable to store info on IPFS");
+      if (!auctionInfoIpfsCid) throw new Error("Unable to store info on IPFS");
 
-      return auctionInfoAddress.hashV0;
+      return auctionInfoIpfsCid;
     },
     onError: (error) => console.error("Error during submission:", error),
   });
@@ -773,7 +781,7 @@ export default function CreateAuctionPage() {
   });
 
   const creationHandler = async (values: CreateAuctionForm) => {
-    const auctionInfoAddress = await auctionInfoMutation.mutateAsync(values);
+    const auctionInfoIpfsCid = await auctionInfoMutation.mutateAsync(values);
     const auctionType = values.auctionType as AuctionType;
     const isEMP = auctionType === AuctionType.SEALED_BID;
     const isFPB = auctionType === AuctionType.FIXED_PRICE_BATCH;
@@ -1020,7 +1028,7 @@ export default function CreateAuctionPage() {
             capacity: parseUnits(values.capacity, values.payoutToken.decimals),
             implParams: auctionSpecificParams,
           },
-          auctionInfoAddress,
+          auctionInfoIpfsCid,
         ],
       },
       {
@@ -1266,6 +1274,7 @@ export default function CreateAuctionPage() {
       enabled: isUniV2PoolQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (uniV2Pool && uniV2Pool !== zeroAddress) {
       console.error(
@@ -1278,8 +1287,10 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for UniV2 pool");
-    form.clearErrors("callbacksType");
+    if (form.formState.errors.callbacksType) {
+      console.log("Clearing errors for UniV2 pool");
+      form.clearErrors("callbacksType");
+    }
   }, [uniV2Pool, form, payoutToken?.address, quoteToken?.address]);
 
   // If the auction uses a UniV3 DTL, we need to check if a pool exists for the base/quote token pair and fee tier
@@ -1313,6 +1324,7 @@ export default function CreateAuctionPage() {
       enabled: isUniV3PoolQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (uniV3Pool && uniV3Pool !== zeroAddress) {
       console.error(
@@ -1325,8 +1337,10 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for UniV3 pool");
-    form.clearErrors("callbacksType");
+    if (form.formState.errors.callbacksType) {
+      console.log("Clearing errors for UniV3 pool");
+      form.clearErrors("callbacksType");
+    }
   }, [
     uniV3Pool,
     form,
@@ -1339,6 +1353,7 @@ export default function CreateAuctionPage() {
   const isBaselineQueryEnabled =
     isBaselineCallback(callbacksType) &&
     form.getValues("callbacks") !== undefined;
+
   // Check here if the auction house address is the same as the one in the baseline callbacks
   const { data: baselineAuctionHouse } = useReadContract({
     abi: abis.baseline,
@@ -1348,8 +1363,10 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (
+      isBaselineQueryEnabled &&
       baselineAuctionHouse?.toLowerCase() !== auctionHouseAddress?.toLowerCase()
     ) {
       console.error(
@@ -1362,9 +1379,11 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for Baseline Auction House");
-    form.clearErrors("callbacks");
-  }, [baselineAuctionHouse, auctionHouseAddress, form]);
+    if (form.formState.errors.callbacks) {
+      console.log("Clearing errors for Baseline Auction House");
+      form.clearErrors("callbacks");
+    }
+  }, [baselineAuctionHouse, auctionHouseAddress, isBaselineQueryEnabled]);
 
   // Check here if the payout token is the same as the one in the baseline callbacks
   const { data: baselineBaseToken } = useReadContract({
@@ -1375,6 +1394,7 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (
       isBaselineQueryEnabled &&
@@ -1390,8 +1410,10 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for the payout token");
-    form.clearErrors("payoutToken");
+    if (form.formState.errors.payoutToken) {
+      console.log("Clearing errors for the payout token");
+      form.clearErrors("payoutToken");
+    }
   }, [baselineBaseToken, payoutToken, form, isBaselineQueryEnabled]);
 
   // Check here if the quote token is the same as the one in the baseline callbacks
@@ -1403,6 +1425,7 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled,
     },
   });
+
   useEffect(() => {
     if (
       isBaselineQueryEnabled &&
@@ -1418,8 +1441,10 @@ export default function CreateAuctionPage() {
       return;
     }
 
-    console.log("Clearing errors for the quote token");
-    form.clearErrors("quoteToken");
+    if (form.formState.errors.quoteToken) {
+      console.log("Clearing errors for the quote token");
+      form.clearErrors("quoteToken");
+    }
   }, [baselineQuoteToken, quoteToken, form, isBaselineQueryEnabled]);
 
   // Validate that the pool active tick is above or equal to the tick for the auction price
@@ -1440,6 +1465,7 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled && baselinePool !== undefined,
     },
   });
+
   useEffect(() => {
     if (
       !isBaselineQueryEnabled ||
@@ -1461,18 +1487,23 @@ export default function CreateAuctionPage() {
     console.log("Price", auctionPrice);
     console.log("Tick at price", auctionPriceTick);
     console.log("Pool tick", baselinePoolSlot0[1]);
-    // TODO this fires intermittently, need to debug
 
-    if (poolTick < auctionPriceTick) {
+    const hasError = poolTick < auctionPriceTick;
+    const currentError = form.formState.errors.price;
+
+    if (hasError && !currentError) {
       form.setError("price", {
         message:
           "The auction price is greater than the pool tick. Please select a lower price.",
       });
-      return;
+    } else if (!hasError && currentError) {
+      form.clearErrors("price");
     }
 
     console.log("Clearing errors for the price");
-    form.clearErrors("price");
+    if (form.formState.errors.price) {
+      form.clearErrors("price");
+    }
   }, [
     baselinePoolSlot0,
     form,
@@ -1491,10 +1522,13 @@ export default function CreateAuctionPage() {
       enabled: isBaselineQueryEnabled && baselineBaseToken !== undefined,
     },
   });
+
   useEffect(() => {
     if (!isBaselineQueryEnabled || !baselinePoolActiveTS) {
-      console.log("Resetting the upper anchor tick for the Baseline pool");
-      form.setValue("baselineAnchorTickU", undefined);
+      if (form.getFieldState("baselineAnchorTickU").isDirty) {
+        console.log("Resetting the upper anchor tick for the Baseline pool");
+        form.setValue("baselineAnchorTickU", undefined);
+      }
       return;
     }
 
@@ -1522,7 +1556,7 @@ export default function CreateAuctionPage() {
       "payoutTokenBalance",
       formatUnits(payoutTokenBalance ?? BigInt(0), payoutTokenDecimals ?? 0),
     );
-  }, [payoutTokenBalance, payoutTokenDecimals, form]);
+  }, [payoutTokenBalance, payoutTokenDecimals]);
 
   const payoutTokenBalanceDecimal: number =
     payoutTokenBalance && payoutTokenDecimals
@@ -1546,7 +1580,7 @@ export default function CreateAuctionPage() {
 
     const optimisticAuction = auctionsCache.createOptimisticAuction(
       lotId,
-      chain!,
+      chain! as Chain,
       address!,
       auctionHouseAddress,
       form.getValues(),
@@ -1575,7 +1609,6 @@ export default function CreateAuctionPage() {
 
   // Define the options listed in the callback select dropdown
   const callbackOptions = React.useMemo(() => {
-    form.resetField("callbacksType");
     const existingCallbacks = getExistingCallbacks(chainId);
 
     // Define the Baseline callback options
@@ -1612,7 +1645,7 @@ export default function CreateAuctionPage() {
     });
 
     return existingCallbacks;
-  }, [chainId, form]);
+  }, [chainId]);
 
   const handlePreview = () => {
     form.trigger();
@@ -1636,6 +1669,10 @@ export default function CreateAuctionPage() {
 
     navigator.clipboard.writeText(urlWithData);
   };
+
+  useEffect(() => {
+    console.log("fees.maxReferrerFee", fees.maxReferrerFee, fees);
+  }, [fees.maxReferrerFee]);
 
   return (
     <PageContainer id="__AXIS_CREATE_LAUNCH_PAGE__" key={resetKey.toString()}>
@@ -2047,6 +2084,9 @@ export default function CreateAuctionPage() {
                         >
                           <PercentageSlider
                             field={field}
+                            value={
+                              Array.isArray(field.value) ? field.value : [0]
+                            }
                             defaultValue={
                               auctionDefaultValues.minFillPercent[0]
                             }
@@ -2129,12 +2169,12 @@ export default function CreateAuctionPage() {
                       <FormItemWrapper
                         label="Referrer Fee Percentage"
                         tooltip={
-                          "The percentual amount of referrer fee you're willing to pay"
+                          "The percentage amount of referrer fee you're willing to pay"
                         }
                       >
                         <PercentageSlider
                           field={field}
-                          defaultValue={0}
+                          min={0}
                           max={fees.maxReferrerFee ?? 0}
                         />
                       </FormItemWrapper>

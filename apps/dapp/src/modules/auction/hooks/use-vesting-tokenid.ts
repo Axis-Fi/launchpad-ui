@@ -1,7 +1,7 @@
 import { encodeAbiParameters, isAddress } from "viem";
 import { useReadContract } from "wagmi";
-import type { Token } from "@repo/types";
-import { abis } from "@repo/abis";
+import type { Token } from "@axis-finance/types";
+import { abis } from "@axis-finance/abis";
 
 export function useVestingTokenId({
   linearVestingStartTimestamp,

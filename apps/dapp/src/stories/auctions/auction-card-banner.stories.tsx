@@ -1,9 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AuctionCard, AuctionCardLoading } from "modules/auction/auction-card";
-import { getBatchAuctionMock } from "../mocks/batch-auction";
+import { AuctionCard } from "modules/auction/auction-card";
 import { AuctionCardBanner } from "modules/auction/auction-card-banner";
-import { activeChains } from "@repo/env/src/chains";
+import { chains } from "@axis-finance/env";
 
+import { environment } from "utils/environment";
+
+const activeChains = chains.activeChains(environment.isTestnet);
 const chain = activeChains[0];
 
 const meta = {

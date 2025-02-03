@@ -2,7 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, IconedLabel, Skeleton, Text, cn } from "@repo/ui";
 import { SocialRow } from "components/social-row";
-import { AuctionType, type Auction, type PropsWithAuction } from "@repo/types";
+import {
+  AuctionType,
+  type Auction,
+  type PropsWithAuction,
+} from "@axis-finance/types";
 import { AuctionCardBanner } from "./auction-card-banner";
 import { getChainById } from "utils";
 import { AuctionMetricsContainer } from "./auction-metrics-container";

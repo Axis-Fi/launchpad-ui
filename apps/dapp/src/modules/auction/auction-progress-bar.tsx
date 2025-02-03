@@ -1,4 +1,4 @@
-import { PropsWithAuction } from "@repo/types";
+import { PropsWithAuction } from "@axis-finance/types";
 import { Progress, Text, cn } from "@repo/ui";
 import { calculateAuctionProgress } from "./utils/get-auction-progress";
 import { ToggledUsdAmount } from "./toggled-usd-amount";

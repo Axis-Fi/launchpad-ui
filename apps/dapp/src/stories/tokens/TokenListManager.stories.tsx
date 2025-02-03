@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TokenListManager } from "modules/token/token-list-manager";
-// import { mainnetDeployments } from "@repo/deployments";
+// import { mainnetDeployments } from "@axis-finance/deployments";
 
 // const tokens = mainnetDeployments[0].tokenList;
 

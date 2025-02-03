@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import { useAccount } from "wagmi";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { Address } from "@repo/types";
+import type { Address } from "@axis-finance/types";
 import { usePoints } from "context/points-provider";
 import { useReferrer } from "state/referral";
 import { useNavigate } from "react-router-dom";

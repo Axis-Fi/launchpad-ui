@@ -1,7 +1,7 @@
 import { Button, Card, Link, Metric, Text, Tooltip, cn } from "@repo/ui";
 import { formatUnits, parseUnits } from "viem";
 import { AuctionBidInput } from "./auction-bid-input";
-import { Auction, AuctionType, PropsWithAuction } from "@repo/types";
+import { Auction, AuctionType, PropsWithAuction } from "@axis-finance/types";
 import { TransactionDialog } from "modules/transaction/transaction-dialog";
 import { LoadingIndicator } from "modules/app/loading-indicator";
 import { ChevronLeft, LockIcon } from "lucide-react";
@@ -13,10 +13,10 @@ import { z } from "zod";
 import { RequiresChain } from "components/requires-chain";
 import React, { useEffect, useState } from "react";
 import { AuctionBidInputSingle } from "./auction-bid-input-single";
-import { useAccount, useChainId } from "wagmi";
+import { UseWriteContractReturnType, useAccount, useChainId } from "wagmi";
 import { useAllowlist } from "./hooks/use-allowlist";
 import useERC20Balance from "loaders/use-erc20-balance";
-import { getDeployment } from "@repo/deployments";
+import { getDeployment } from "@axis-finance/deployments";
 import {
   PopupTokenWrapper,
   isQuoteAWrappedGasToken,
@@ -437,7 +437,7 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
 
             <TransactionDialog
               open={open}
-              signatureMutation={bid.bidTx}
+              signatureMutation={bid.bidTx as UseWriteContractReturnType}
               error={bid.error}
               onConfirm={handleSubmit}
               mutation={bid.bidReceipt}

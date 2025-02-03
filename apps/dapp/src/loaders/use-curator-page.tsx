@@ -1,4 +1,4 @@
-import { allowedCurators } from "@repo/env";
+import { allowedCurators } from "modules/app/curators";
 import { useLocation, useParams } from "react-router-dom";
 const curatorIds = allowedCurators.map((c) => c.id);
 
