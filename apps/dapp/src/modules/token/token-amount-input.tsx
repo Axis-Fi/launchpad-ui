@@ -6,7 +6,7 @@ import { Format } from "./format";
 
 type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** the input's label */
-  label: string;
+  label?: string;
   /** the input's token label, defaults to the token's symbol */
   tokenLabel?: string;
   /** the input's token type */
@@ -32,7 +32,7 @@ type TokenAmountInputProps = React.HTMLProps<HTMLInputElement> & {
   /** the prefix to add to the amount */
   amountPrefix?: string;
 
-  onChange: NumberInputProps["onChange"];
+  onChange?: NumberInputProps["onChange"];
 };
 
 export const TokenAmountInput = React.forwardRef<
@@ -54,6 +54,7 @@ export const TokenAmountInput = React.forwardRef<
       disableMaxButton,
       onClickMaxButton,
       amountPrefix,
+      className,
       ...props
     },
     ref,
@@ -61,9 +62,10 @@ export const TokenAmountInput = React.forwardRef<
     return (
       <div
         className={cn(
-          "hover:bg-surface-secondary border-primary bg-surface-tertiary group rounded border-2 p-4 transition-all",
+          "hover:bg-surface-secondary bg-surface-tertiary group rounded border-2 border-transparent p-4 transition-all",
           error && "border-feedback-alert",
           disabled && "opacity-50",
+          className,
         )}
       >
         <div className="flex">

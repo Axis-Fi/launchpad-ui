@@ -3,7 +3,7 @@ import { Input, InputProps } from "./primitives/input";
 
 export type NumberInputProps = {
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
 } & Omit<InputProps, "value" | "onChange">;
 
 const formatNumber = (value: string) => {
@@ -22,7 +22,7 @@ export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       }
 
       if ((newValue.match(/\./g) || []).length <= 1) {
-        onChange(newValue);
+        onChange?.(newValue);
       }
     };
 
