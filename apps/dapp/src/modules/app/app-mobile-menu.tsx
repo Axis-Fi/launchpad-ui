@@ -1,5 +1,5 @@
 import { CaretUpIcon } from "@radix-ui/react-icons";
-import { environment } from "@repo/env";
+import { environment } from "utils/environment";
 import React from "react";
 import Navbar, { testnetLinks } from "./navbar";
 import { UserProfile } from "./user-profile";
