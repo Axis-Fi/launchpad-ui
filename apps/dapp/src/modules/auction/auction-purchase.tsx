@@ -21,6 +21,7 @@ import {
   PopupTokenWrapper,
   isQuoteAWrappedGasToken,
 } from "modules/token/popup-token-wrapper";
+import ConnectButton from "components/connect-button";
 
 const schema = z.object({
   baseTokenAmount: z.string(),
@@ -98,7 +99,6 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
     auction.baseToken.decimals,
     auction.quoteToken.decimals,
   ]);
-
   // Allowlist callback support
   // Handles determining if an allowlist callback is being used
   // and provides variables for displaying on the UI and submitting the bid transaction
@@ -251,7 +251,8 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
     !isValidInput ||
     bid.approveReceipt.isLoading ||
     bid?.bidReceipt?.isLoading ||
-    bid?.bidTx?.isPending;
+    bid?.bidTx?.isPending ||
+    !bid.isSimulationSuccess;
 
   const isWaiting = bid.approveReceipt.isLoading || bid.isWaiting;
   const isSigningApproval = bid.allowanceUtils.approveTx.isPending;
@@ -480,7 +481,14 @@ export function AuctionPurchase({ auction, ...props }: AuctionPurchaseProps) {
       ) : (
         <Card title="Private Sale">
           <p>This sale is restricted to {criteria}.</p>
-          <p>The connected wallet is not approved to bid.</p>
+          {walletAccount.isConnected ? (
+            <p>The connected wallet is not approved to bid.</p>
+          ) : (
+            <div>
+              <p className="mt-2">Connect a wallet to check eligibility.</p>
+              <ConnectButton className="mt-4" />
+            </div>
+          )}
         </Card>
       )}
     </div>

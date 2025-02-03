@@ -16,11 +16,11 @@ export default function AuctionProgressBar({ auction }: PropsWithAuction) {
       hideMinTarget
       value={current}
       minTarget={minTarget}
-      className="mt-1 flex h-[64px] w-[400px] items-center lg:w-[900px]"
+      className="mt-1 flex h-[64px] w-[320px] items-center lg:w-[900px]"
     >
       <div
         className={cn(
-          "flex w-[400px] justify-between lg:w-[900px] ",
+          "flex w-[320px] justify-between lg:w-[900px] ",
           !showCurrentProgress && "justify-end",
         )}
       >

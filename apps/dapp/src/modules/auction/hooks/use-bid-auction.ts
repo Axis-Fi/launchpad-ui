@@ -38,6 +38,21 @@ export function useBidAuction(
 
   const auctionHouse = getAuctionHouse(auction);
 
+  const {
+    isSufficientAllowance,
+    approveReceipt,
+    execute: approveCapacity,
+    allowance,
+    ...allowanceUtils
+  } = useAllowance({
+    ownerAddress: bidderAddress,
+    spenderAddress: auctionHouse.address,
+    tokenAddress: auction.quoteToken.address as Address,
+    decimals: Number(auction.quoteToken.decimals),
+    chainId: auction.chainId,
+    amount: amountIn,
+  });
+
   const bid = useBid({
     lotId: Number(lotId),
     amountIn,
@@ -71,24 +86,16 @@ export function useBidAuction(
     bid.submit?.();
   };
 
-  const {
-    isSufficientAllowance,
-    approveReceipt,
-    execute: approveCapacity,
-    allowance,
-    ...allowanceUtils
-  } = useAllowance({
-    ownerAddress: bidderAddress,
-    spenderAddress: auctionHouse.address,
-    tokenAddress: auction.quoteToken.address as Address,
-    decimals: Number(auction.quoteToken.decimals),
-    chainId: auction.chainId,
-    amount: amountIn,
-  });
-
   // Store confirmed bids to prevent the React effect running multiple times due to tree rerenders.
   // (bidReceipt.isSuccess will be true until the user dismisses the modal, in that time the react tree can update)
   const confirmedBids = useRef(new Set<string>([]));
+
+  //Ensures the bid tx gets simulated after an approval
+  React.useEffect(() => {
+    if (isSufficientAllowance && bid.simulation.isError) {
+      bid.simulation.refetch();
+    }
+  }, [isSufficientAllowance]);
 
   React.useEffect(() => {
     if (bidReceipt == null || !bidReceipt.isSuccess) return;
@@ -152,6 +159,7 @@ export function useBidAuction(
     bidReceipt,
     bidTx,
     isWaiting: bid.isWaiting,
+    isSimulationSuccess: bid.simulation.isSuccess,
     receipt: bidReceipt,
     error: bid.error,
     allowanceUtils,

@@ -15,7 +15,7 @@ export function UserProfile() {
   const { isTabletOrMobile } = useMediaQueries();
 
   if (!featureToggles.POINTS_PHASE_1) {
-    return <ConnectButton className="hidden md:block" size="md" />;
+    return <ConnectButton className="md:block" size="md" />;
   }
 
   const isLoading = isUserRegistered.isLoading;

@@ -3,8 +3,10 @@ import { SettledAuctionCard } from "modules/auction/settled-auction-card";
 import { AuctionCoreMetrics } from "../auction-core-metrics";
 import { UserBidsCardContainer } from "../user-bids";
 import { ReferralRewards } from "../referral-rewards";
+import { useAccount } from "wagmi";
 
 export function AuctionSettled({ auction }: PropsWithAuction) {
+  const { isConnected } = useAccount();
   const isEMP = auction.auctionType === AuctionType.SEALED_BID;
 
   return (
@@ -15,7 +17,7 @@ export function AuctionSettled({ auction }: PropsWithAuction) {
       </div>
       <div className="mt-4 space-y-4 lg:mt-0 lg:w-1/3">
         <UserBidsCardContainer auction={auction} />
-        <ReferralRewards auction={auction} />
+        {isConnected && <ReferralRewards auction={auction} />}
       </div>
     </div>
   );
