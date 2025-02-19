@@ -22,7 +22,11 @@ const queryClient = new QueryClient({
 });
 
 //@ts-expect-error type mismatch
-const wagmiConfig = createConfig({ ...activeConfig, connectors });
+const wagmiConfig = createConfig({
+  ...activeConfig,
+  connectors,
+  batch: { multicall: false },
+});
 
 export function BlockchainProvider({
   children,

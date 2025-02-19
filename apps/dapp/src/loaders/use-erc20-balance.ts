@@ -11,6 +11,7 @@ export default function useERC20Balance({
   tokenAddress?: Address;
   balanceAddress?: Address;
 }) {
+  console.log("getting balance for", tokenAddress, balanceAddress);
   const balanceResponse = useReadContract({
     query: {
       enabled:

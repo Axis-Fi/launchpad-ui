@@ -45,6 +45,7 @@ const statuses: Record<
 export default function AuctionPage() {
   const { chainId, lotId } = useParams();
   const { isConnected, chainId: connectedChainId } = useAccount();
+
   const { switchChain } = useSwitchChain();
 
   const { result: auction, isLoading: isAuctionLoading } = useAuction(

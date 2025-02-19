@@ -43,6 +43,7 @@ export const useAllowance = (args: UseAllowanceProps) => {
     address: args.tokenAddress!,
     functionName: "approve",
     args: [args.spenderAddress!, amountToApprove],
+    enabled: false,
   });
 
   const execute = () => approveTx.writeContract(approveCall!.request);
