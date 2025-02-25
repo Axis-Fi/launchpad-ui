@@ -1,11 +1,11 @@
-# Axis Frontend
+# Axis launchpad
 
-Monorepo for Axis Finance Frontend Apps using [turbo](https://turbo.build/repo)
+Axis launchpad is a UI kit for bootstrapping your own token launchpad with multichain support. It provides a user interface for enabling the creation of token sales and participation in the sales. It interacts with the [Axis smart contracts](https://github.com/Axis-Fi/axis-core) and the [Axis Subgraph](https://github.com/Axis-Fi/subgraph) for querying token sales data.
 
-## Dev Setup
+## Setup
 
 - run `pnpm install` to install dependencies for all packages
-- Setup `.env` on dapp repo
+- Setup `.env` on dapp repo, see [.env.example](./apps/dapp/.env.example) for an example
 - run `pnpm dev --filter=dapp`
 
 ### Other Useful Commands
@@ -22,15 +22,11 @@ Monorepo for Axis Finance Frontend Apps using [turbo](https://turbo.build/repo)
 
 This Turborepo includes the following packages and applications:
 
-- `apps/dapp`: Decentralized App to interact with Axis contracts
-- `apps/lp`: Static Landing Page for Axis
-- `apps/ipfs-api`: Proxy API for an IPFS gateway
-- `packages/abis`: Protocol's contract abis
-- `packages/deployments`: Metadata and configuration for the protocol's chain deployments
-- `packages/ui`: Primitive React components built using [shadcn](https://ui.shadcn.com/)
-- `packages/subgraph-client`: Subgraph client and queries
+- `apps/dapp`: UI for creating and participating in token sales
 - `packages/brand-assets`: Axis brand images and fonts
-- `packages/types`: Common TS types
+- `packages/ui`: Axis UI component library (shadcn + tailwind)
 - `config/tailwind-config`: Shared TailwindCSS configs
-- `config/typescript-config`: Shared `tsconfig.json`s used throughout the Turborepo
-- `config/eslint-config`: ESLint preset
+
+## Contributing
+
+Thank you for your interest in contributing to Axis `launchpad`! Please read our [CONTRIBUTION.md](./CONTRIBUTING.md) guide to understand our development process and how to contribute effectively.
