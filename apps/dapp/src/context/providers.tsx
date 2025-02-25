@@ -2,20 +2,8 @@ import { ToggleProvider, TooltipProvider } from "@repo/ui";
 import { BlockchainProvider } from "./blockchain-provider";
 import { PointsProvider } from "./points-provider";
 import { OriginSdkProvider } from "@axis-finance/sdk/react";
-import { createSdk } from "@axis-finance/sdk";
-import { getCloakServer, getMetadataServer } from "@axis-finance/env";
 import { DialogProvider } from "./dialog-provider";
-import { environment } from "utils/environment";
-
-const sdk = createSdk({
-  environment: environment.current,
-  cloak: {
-    url: getCloakServer(environment.current).url,
-  },
-  metadata: {
-    url: getMetadataServer(environment.current).url,
-  },
-});
+import { sdk } from "utils/sdk";
 
 type ProviderProps = React.PropsWithChildren<{
   disableDevTools?: boolean;

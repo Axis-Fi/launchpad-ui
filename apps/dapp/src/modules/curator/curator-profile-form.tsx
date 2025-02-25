@@ -44,9 +44,9 @@ const imageUriRegex =
 const getErrorReason = (error: BaseError | Error | unknown): string =>
   typeof error === "string"
     ? error
-    : (error as BaseError)?.metaMessages?.[0] ??
+    : ((error as BaseError)?.metaMessages?.[0] ??
       (error as Error)?.message ??
-      "Unknown error";
+      "Unknown error");
 
 type CuratorForm = z.infer<typeof curatorSchema>;
 
@@ -126,12 +126,14 @@ export function CuratorProfileForm() {
     setIsPending(true);
 
     try {
-      const { ipfsCid, signature } = await storeCuratorProfile({
+      const { signature, ipfsCid } = await storeCuratorProfile({
         id: twitter.user!.id,
         name: curator.name,
+        twitter: twitter.user!.username,
         description: curator.description,
         address: curator.address,
         links: {
+          twitter: `https://x.com/${twitter.user?.username}`,
           banner: curator.banner,
           avatar: curator.avatar,
           website: curator.website,
@@ -151,7 +153,7 @@ export function CuratorProfileForm() {
             {
               curator: curator.address as Address,
               xId: BigInt(twitter.user!.id),
-              ipfsCID: ipfsCid,
+              ipfsCID: ipfsCid!,
             },
             signature as `0x${string}`,
           ],
@@ -167,7 +169,10 @@ export function CuratorProfileForm() {
               ),
             });
 
-            navigate(`/curator/${twitter.user!.id}`);
+            // navigate(`/curator/${twitter.user!.id}`);
+            setTimeout(() => {
+              navigate(`/curators`);
+            }, 1000);
           },
           onError: handleError,
         },
@@ -304,7 +309,7 @@ export function CuratorProfileForm() {
                   className="w-[200px]"
                   type="submit"
                   onClick={handleSubmit}
-                  disabled={isPending}
+                  disabled={isPending || !form.formState.isValid}
                 >
                   Register
                 </Button>

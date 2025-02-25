@@ -7,7 +7,7 @@ import { allowedCurators } from "modules/app/curators";
 import { Curator } from "@axis-finance/types";
 import { ArrowRightIcon } from "lucide-react";
 import { useCurators } from "modules/curator/hooks/use-curators";
-import { CuratorProfile } from "@repo/ipfs-api/src/types";
+import type { CuratorProfile } from "modules/app/ipfs-api";
 import { useMediaQueries } from "loaders/use-media-queries";
 
 // TODO: remove concept of "static curators" and just use the curator profiles once they're migrated

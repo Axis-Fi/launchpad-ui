@@ -36,17 +36,20 @@ importers:
         specifier: 0.0.3
         version: 0.0.3
       "@axis-finance/cloak":
-        specifier: 0.0.6
-        version: 0.0.6(viem@2.17.3)
+        specifier: 0.0.7
+        version: 0.0.7(viem@2.17.3)
+      "@axis-finance/curator-api":
+        specifier: 0.0.7
+        version: 0.0.7(@tanstack/react-query@5.18.1)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)(wagmi@2.5.2)
       "@axis-finance/deployments":
         specifier: 0.0.5
         version: 0.0.5
       "@axis-finance/env":
-        specifier: 0.0.6
-        version: 0.0.6(viem@2.17.3)
+        specifier: 0.0.7
+        version: 0.0.7(viem@2.17.3)
       "@axis-finance/sdk":
-        specifier: 0.0.11
-        version: 0.0.11(@tanstack/react-query@5.18.1)(@trpc/server@10.45.2)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)(wagmi@2.5.2)
+        specifier: 0.0.18
+        version: 0.0.18(@tanstack/react-query@5.18.1)(@trpc/server@10.45.2)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)(wagmi@2.5.2)(zod@3.24.1)
       "@axis-finance/subgraph-client":
         specifier: 0.0.4
         version: 0.0.4(@tanstack/react-query@5.18.1)(react@18.3.1)
@@ -68,9 +71,6 @@ importers:
       "@repo/eslint-config":
         specifier: workspace:*
         version: link:../../config/eslint-config
-      "@repo/ipfs-api":
-        specifier: workspace:*
-        version: link:../ipfs-api
       "@repo/points":
         specifier: workspace:*
         version: link:../../packages/points
@@ -116,9 +116,6 @@ importers:
       ethereum-blockies:
         specifier: ^0.1.1
         version: 0.1.1
-      express:
-        specifier: ^4.18.2
-        version: 4.21.2
       jotai:
         specifier: ^2.7.0
         version: 2.11.1(@types/react@18.2.48)(react@18.3.1)
@@ -157,7 +154,7 @@ importers:
         version: 2.15.1(react-dom@18.3.1)(react@18.3.1)
       viem:
         specifier: 2.17.3
-        version: 2.17.3(typescript@5.2.2)
+        version: 2.17.3(typescript@5.2.2)(zod@3.24.1)
       vite-plugin-node-polyfills:
         specifier: ^0.17.0
         version: 0.17.0(vite@5.4.14)
@@ -270,61 +267,6 @@ importers:
       vitest:
         specifier: ^1.5.0
         version: 1.6.0(@types/node@20.17.16)
-
-  apps/ipfs-api:
-    dependencies:
-      "@fleek-platform/sdk":
-        specifier: ^3.5.1
-        version: 3.5.1
-      "@trpc/server":
-        specifier: ^10.45.1
-        version: 10.45.2
-      cors:
-        specifier: ^2.8.5
-        version: 2.8.5
-      dotenv:
-        specifier: ^16.4.3
-        version: 16.4.7
-      express-session:
-        specifier: ^1.18.1
-        version: 1.18.1
-      oauth:
-        specifier: ^0.10.0
-        version: 0.10.0
-      passport:
-        specifier: ^0.7.0
-        version: 0.7.0
-      passport-twitter:
-        specifier: ^1.0.4
-        version: 1.0.4
-      viem:
-        specifier: 2.17.3
-        version: 2.17.3(zod@3.24.1)
-      zod:
-        specifier: ^3.22.4
-        version: 3.24.1
-    devDependencies:
-      "@repo/eslint-config":
-        specifier: workspace:*
-        version: link:../../config/eslint-config
-      "@types/cors":
-        specifier: ^2.8.17
-        version: 2.8.17
-      "@types/express":
-        specifier: ^4.17.13
-        version: 4.17.21
-      "@types/express-session":
-        specifier: ^1.18.1
-        version: 1.18.1
-      "@types/passport":
-        specifier: ^1.0.17
-        version: 1.0.17
-      "@types/passport-twitter":
-        specifier: ^1.0.40
-        version: 1.0.40
-      tsx:
-        specifier: ^4.7.1
-        version: 4.19.2
 
   config/eslint-config:
     dependencies:
@@ -587,15 +529,50 @@ packages:
       }
     dev: false
 
-  /@axis-finance/cloak@0.0.6(viem@2.17.3):
+  /@axis-finance/cloak@0.0.7(viem@2.17.3):
     resolution:
       {
-        integrity: sha512-RbKEV/JI/naXfX+e7xZxP52PiiN1rtmUuN/Guc8kezSMpth1khWvnErdjgwVmSd5SmO+WWI/cIrLr2xNigC/5A==,
+        integrity: sha512-ifHF/9Dwk19Mi7gKLxb9WXeLvpuJitip8Ea4yGfhCPvnEq7HD+Vgo4HtuH2DdhohCBEReVM92cjnz+EyGRqlBQ==,
       }
     dependencies:
-      "@axis-finance/env": 0.0.6(viem@2.17.3)
+      "@axis-finance/env": 0.0.7(viem@2.17.3)
     transitivePeerDependencies:
       - viem
+    dev: false
+
+  /@axis-finance/curator-api@0.0.7(@tanstack/react-query@5.18.1)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)(wagmi@2.5.2):
+    resolution:
+      {
+        integrity: sha512-YLieotO7PKGXoaHE+l3rE+4OkOBW6AO49juVXOQbLuIGDgRC35YZ2b+Kvc/0Q8a6ROO/hZIOE167jlV0HFZWDg==,
+      }
+    dependencies:
+      "@axis-finance/sdk": 0.0.18(@tanstack/react-query@5.18.1)(@trpc/server@10.45.2)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)(wagmi@2.5.2)(zod@3.24.1)
+      "@trpc/server": 10.45.2
+      cors: 2.8.5
+      dotenv: 16.4.7
+      express: 4.21.2
+      express-session: 1.18.1
+      oauth: 0.10.0
+      passport: 0.7.0
+      passport-twitter: 1.0.4
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - "@microsoft/api-extractor"
+      - "@swc/core"
+      - "@tanstack/react-query"
+      - bufferutil
+      - debug
+      - encoding
+      - jiti
+      - postcss
+      - react
+      - supports-color
+      - tsx
+      - typescript
+      - utf-8-validate
+      - wagmi
+      - yaml
     dev: false
 
   /@axis-finance/deployments@0.0.1:
@@ -625,19 +602,19 @@ packages:
       viem: 2.17.3
     dependencies:
       "@axis-finance/deployments": 0.0.1
-      viem: 2.17.3(zod@3.24.1)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
     dev: false
 
-  /@axis-finance/env@0.0.6(viem@2.17.3):
+  /@axis-finance/env@0.0.7(viem@2.17.3):
     resolution:
       {
-        integrity: sha512-0Sd/RVGd0RhkUMvbhddExcV+23IVYTjJ+oP9YFwk956G5Q/ylUY6gj38EdLwx7oyksfg3zh8/F99arrXkI2THQ==,
+        integrity: sha512-NvDHYBerUmqDxuk5CB52x7tstC0BuhVeoah5cw6EMwcLZQW5Ktej6PeJ8KfSs6x6K6Tsx/6kzN8ekqL2sjcRNw==,
       }
     peerDependencies:
       viem: 2.17.3
     dependencies:
       "@axis-finance/deployments": 0.0.5
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
     dev: false
 
   /@axis-finance/eslint-config@0.0.2:
@@ -647,10 +624,10 @@ packages:
       }
     dev: false
 
-  /@axis-finance/sdk@0.0.11(@tanstack/react-query@5.18.1)(@trpc/server@10.45.2)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)(wagmi@2.5.2):
+  /@axis-finance/sdk@0.0.18(@tanstack/react-query@5.18.1)(@trpc/server@10.45.2)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)(wagmi@2.5.2)(zod@3.24.1):
     resolution:
       {
-        integrity: sha512-YaRvex6goC9QXEMQDbIy7HoHoTpPtX+qyfE7KxYGrUkURImDIMutkbq+4tlVR8XJCa194KluokpBmW/EGTGe2w==,
+        integrity: sha512-T/75JDDkDDFPbSI5YoOc424ZpR3x7sGOpGbxhW6xcMYNzu+JnZh4/dPkjmTf5rDCxwgl7/JE11bT/ERH5VBSNw==,
       }
     peerDependencies:
       "@tanstack/react-query": 5.18.1
@@ -659,22 +636,25 @@ packages:
       wagmi: 2.5.2
     dependencies:
       "@axis-finance/abis": 0.0.3
-      "@axis-finance/cloak": 0.0.6(viem@2.17.3)
+      "@axis-finance/cloak": 0.0.7(viem@2.17.3)
       "@axis-finance/deployments": 0.0.5
-      "@axis-finance/env": 0.0.6(viem@2.17.3)
-      "@axis-finance/subgraph-client": 0.0.4(@tanstack/react-query@5.18.1)(react@18.3.1)
-      "@axis-finance/types": 0.0.7(@tanstack/react-query@5.18.1)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)
+      "@axis-finance/env": 0.0.7(viem@2.17.3)
+      "@axis-finance/subgraph-client": 0.0.6(@tanstack/react-query@5.18.1)(react@18.3.1)
+      "@axis-finance/types": 0.0.9(@tanstack/react-query@5.18.1)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2)
+      "@fleek-platform/sdk": 3.6.2
+      "@openzeppelin/merkle-tree": 1.0.8
       "@tanstack/react-query": 5.18.1(react@18.3.1)
       "@trpc/client": 10.45.2(@trpc/server@10.45.2)
-      abitype: 1.0.8(typescript@5.2.2)
+      abitype: 1.0.8(typescript@5.2.2)(zod@3.24.1)
       react: 18.3.1
       valibot: 0.42.1(typescript@5.2.2)
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
       wagmi: 2.5.2(@tanstack/react-query@5.18.1)(@types/react@18.2.48)(immer@9.0.21)(react-dom@18.3.1)(react-native@0.77.0)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)
     transitivePeerDependencies:
       - "@microsoft/api-extractor"
       - "@swc/core"
       - "@trpc/server"
+      - debug
       - encoding
       - jiti
       - postcss
@@ -689,6 +669,24 @@ packages:
     resolution:
       {
         integrity: sha512-1fEDcw30PMIL65fP+GpsQ/TODo8xXW917ZTzQlg6ZXt4lx274nroSVFCOmy3FJGRoCSCiQLQ0omuAgP1HnsEDw==,
+      }
+    peerDependencies:
+      "@tanstack/react-query": 5.18.1
+      react: 18.3.1
+    dependencies:
+      "@graphql-typed-document-node/core": 3.2.0(graphql@16.8.1)
+      "@tanstack/react-query": 5.18.1(react@18.3.1)
+      graphql: 16.8.1
+      graphql-request: 6.1.0(graphql@16.8.1)
+      react: 18.3.1
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@axis-finance/subgraph-client@0.0.6(@tanstack/react-query@5.18.1)(react@18.3.1):
+    resolution:
+      {
+        integrity: sha512-MCQ7Scx2oCRmOxpyCNqY0tMneKWOkp3Z2zENKuGzZw/ZGzpHqlOF2KfbHjLaoUt3llULhkbr1RoTpE2WGbN2YA==,
       }
     peerDependencies:
       "@tanstack/react-query": 5.18.1
@@ -729,6 +727,30 @@ packages:
     dependencies:
       "@axis-finance/eslint-config": 0.0.2
       "@axis-finance/subgraph-client": 0.0.4(@tanstack/react-query@5.18.1)(react@18.3.1)
+      "@axis-finance/tsup-config": 0.0.2(postcss@8.5.1)(typescript@5.2.2)
+      "@axis-finance/typescript-config": 0.0.2
+    transitivePeerDependencies:
+      - "@microsoft/api-extractor"
+      - "@swc/core"
+      - "@tanstack/react-query"
+      - encoding
+      - jiti
+      - postcss
+      - react
+      - supports-color
+      - tsx
+      - typescript
+      - yaml
+    dev: false
+
+  /@axis-finance/types@0.0.9(@tanstack/react-query@5.18.1)(postcss@8.5.1)(react@18.3.1)(typescript@5.2.2):
+    resolution:
+      {
+        integrity: sha512-j9VfoQmeeK0sFFNf7iddz3/RQS5xz1FnqtGvpFBICMVZThHMT0FidwNsBskX6JeyeAH9rNShoStzBkTcJcHCsQ==,
+      }
+    dependencies:
+      "@axis-finance/eslint-config": 0.0.2
+      "@axis-finance/subgraph-client": 0.0.6(@tanstack/react-query@5.18.1)(react@18.3.1)
       "@axis-finance/tsup-config": 0.0.2(postcss@8.5.1)(typescript@5.2.2)
       "@axis-finance/typescript-config": 0.0.2
     transitivePeerDependencies:
@@ -2576,7 +2598,7 @@ packages:
     dependencies:
       "@binance/w3w-ethereum-provider": 1.1.7
       "@binance/w3w-utils": 1.1.4
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
       wagmi: 2.5.2(@tanstack/react-query@5.18.1)(@types/react@18.2.48)(immer@9.0.21)(react-dom@18.3.1)(react-native@0.77.0)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)
     transitivePeerDependencies:
       - bufferutil
@@ -3004,18 +3026,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/aix-ppc64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-6VhYk1diRqrhBAqpJEdjASR/+WVRtfjpqKuNw11cLiaWpAT/Uu+nokB+UJnevzy/P9C/ty6AOe0dwueMrGh/iQ==,
-      }
-    engines: { node: ">=18" }
-    cpu: [ppc64]
-    os: [aix]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/aix-ppc64@0.24.2:
     resolution:
       {
@@ -3036,18 +3046,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/android-arm64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-xw50ipykXcLstLeWH7WRdQuysJqejuAGPd30vd1i5zSyKK3WE+ijzHmLKxdiCMtH1pHz78rOg0BKSYOSB/2Khw==,
-      }
-    engines: { node: ">=18" }
-    cpu: [arm64]
-    os: [android]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-arm64@0.24.2:
@@ -3072,18 +3070,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/android-arm@0.23.1:
-    resolution:
-      {
-        integrity: sha512-uz6/tEy2IFm9RYOyvKl88zdzZfwEfKZmnX9Cj1BHjeSGNuGLuMD1kR8y5bteYmwqKm1tj8m4cb/aKEorr6fHWQ==,
-      }
-    engines: { node: ">=18" }
-    cpu: [arm]
-    os: [android]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/android-arm@0.24.2:
     resolution:
       {
@@ -3104,18 +3090,6 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/android-x64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-nlN9B69St9BwUoB+jkyU090bru8L0NA3yFvAd7k8dNsVH8bi9a8cUAUSEcEEgTp2z3dbEDGJGfP6VUnkQnlReg==,
-      }
-    engines: { node: ">=18" }
-    cpu: [x64]
-    os: [android]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/android-x64@0.24.2:
@@ -3140,18 +3114,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/darwin-arm64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-YsS2e3Wtgnw7Wq53XXBLcV6JhRsEq8hkfg91ESVadIrzr9wO6jJDMZnCQbHm1Guc5t/CdDiFSSfWP58FNuvT3Q==,
-      }
-    engines: { node: ">=18" }
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/darwin-arm64@0.24.2:
     resolution:
       {
@@ -3172,18 +3134,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/darwin-x64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-aClqdgTDVPSEGgoCS8QDG37Gu8yc9lTHNAQlsztQ6ENetKEO//b8y31MMu2ZaPbn4kVsIABzVLXYLhCGekGDqw==,
-      }
-    engines: { node: ">=18" }
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/darwin-x64@0.24.2:
@@ -3208,18 +3158,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/freebsd-arm64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-h1k6yS8/pN/NHlMl5+v4XPfikhJulk4G+tKGFIOwURBSFzE8bixw1ebjluLOjfwtLqY0kewfjLSrO6tN2MgIhA==,
-      }
-    engines: { node: ">=18" }
-    cpu: [arm64]
-    os: [freebsd]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/freebsd-arm64@0.24.2:
     resolution:
       {
@@ -3240,18 +3178,6 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/freebsd-x64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-lK1eJeyk1ZX8UklqFd/3A60UuZ/6UVfGT2LuGo3Wp4/z7eRTRYY+0xOu2kpClP+vMTi9wKOfXi2vjUpO1Ro76g==,
-      }
-    engines: { node: ">=18" }
-    cpu: [x64]
-    os: [freebsd]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/freebsd-x64@0.24.2:
@@ -3276,18 +3202,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/linux-arm64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-/93bf2yxencYDnItMYV/v116zff6UyTjo4EtEQjUBeGiVpMmffDNUyD9UN2zV+V3LRV3/on4xdZ26NKzn6754g==,
-      }
-    engines: { node: ">=18" }
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/linux-arm64@0.24.2:
     resolution:
       {
@@ -3308,18 +3222,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/linux-arm@0.23.1:
-    resolution:
-      {
-        integrity: sha512-CXXkzgn+dXAPs3WBwE+Kvnrf4WECwBdfjfeYHpMeVxWE0EceB6vhWGShs6wi0IYEqMSIzdOF1XjQ/Mkm5d7ZdQ==,
-      }
-    engines: { node: ">=18" }
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-arm@0.24.2:
@@ -3344,18 +3246,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/linux-ia32@0.23.1:
-    resolution:
-      {
-        integrity: sha512-VTN4EuOHwXEkXzX5nTvVY4s7E/Krz7COC8xkftbbKRYAl96vPiUssGkeMELQMOnLOJ8k3BY1+ZY52tttZnHcXQ==,
-      }
-    engines: { node: ">=18" }
-    cpu: [ia32]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/linux-ia32@0.24.2:
     resolution:
       {
@@ -3376,18 +3266,6 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/linux-loong64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-Vx09LzEoBa5zDnieH8LSMRToj7ir/Jeq0Gu6qJ/1GcBq9GkfoEAoXvLiW1U9J1qE/Y/Oyaq33w5p2ZWrNNHNEw==,
-      }
-    engines: { node: ">=18" }
-    cpu: [loong64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-loong64@0.24.2:
@@ -3412,18 +3290,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/linux-mips64el@0.23.1:
-    resolution:
-      {
-        integrity: sha512-nrFzzMQ7W4WRLNUOU5dlWAqa6yVeI0P78WKGUo7lg2HShq/yx+UYkeNSE0SSfSure0SqgnsxPvmAUu/vu0E+3Q==,
-      }
-    engines: { node: ">=18" }
-    cpu: [mips64el]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/linux-mips64el@0.24.2:
     resolution:
       {
@@ -3444,18 +3310,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/linux-ppc64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-dKN8fgVqd0vUIjxuJI6P/9SSSe/mB9rvA98CSH2sJnlZ/OCZWO1DJvxj8jvKTfYUdGfcq2dDxoKaC6bHuTlgcw==,
-      }
-    engines: { node: ">=18" }
-    cpu: [ppc64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-ppc64@0.24.2:
@@ -3480,18 +3334,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/linux-riscv64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-5AV4Pzp80fhHL83JM6LoA6pTQVWgB1HovMBsLQ9OZWLDqVY8MVobBXNSmAJi//Csh6tcY7e7Lny2Hg1tElMjIA==,
-      }
-    engines: { node: ">=18" }
-    cpu: [riscv64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/linux-riscv64@0.24.2:
     resolution:
       {
@@ -3514,18 +3356,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/linux-s390x@0.23.1:
-    resolution:
-      {
-        integrity: sha512-9ygs73tuFCe6f6m/Tb+9LtYxWR4c9yg7zjt2cYkjDbDpV/xVn+68cQxMXCjUpYwEkze2RcU/rMnfIXNRFmSoDw==,
-      }
-    engines: { node: ">=18" }
-    cpu: [s390x]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/linux-s390x@0.24.2:
     resolution:
       {
@@ -3546,18 +3376,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/linux-x64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-EV6+ovTsEXCPAp58g2dD68LxoP/wK5pRvgy0J/HxPGB009omFPv3Yet0HiaqvrIrgPTBuC6wCH1LTOY91EO5hQ==,
-      }
-    engines: { node: ">=18" }
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/linux-x64@0.24.2:
@@ -3593,18 +3411,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/netbsd-x64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-aevEkCNu7KlPRpYLjwmdcuNz6bDFiE7Z8XC4CPqExjTvrHugh28QzUXVOZtiYghciKUacNktqxdpymplil1beA==,
-      }
-    engines: { node: ">=18" }
-    cpu: [x64]
-    os: [netbsd]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/netbsd-x64@0.24.2:
     resolution:
       {
@@ -3614,18 +3420,6 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/openbsd-arm64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-3x37szhLexNA4bXhLrCC/LImN/YtWis6WXr1VESlfVtVeoFJBRINPJ3f0a/6LV8zpikqoUg4hyXw0sFBt5Cr+Q==,
-      }
-    engines: { node: ">=18" }
-    cpu: [arm64]
-    os: [openbsd]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/openbsd-arm64@0.24.2:
@@ -3650,18 +3444,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/openbsd-x64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-aY2gMmKmPhxfU+0EdnN+XNtGbjfQgwZj43k8G3fyrDM/UdZww6xrWxmDkuz2eCZchqVeABjV5BpildOrUbBTqA==,
-      }
-    engines: { node: ">=18" }
-    cpu: [x64]
-    os: [openbsd]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/openbsd-x64@0.24.2:
     resolution:
       {
@@ -3682,18 +3464,6 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/sunos-x64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-RBRT2gqEl0IKQABT4XTj78tpk9v7ehp+mazn2HbUeZl1YMdaGAQqhapjGTCe7uw7y0frDi4gS0uHzhvpFuI1sA==,
-      }
-    engines: { node: ">=18" }
-    cpu: [x64]
-    os: [sunos]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/sunos-x64@0.24.2:
@@ -3718,18 +3488,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/win32-arm64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-4O+gPR5rEBe2FpKOVyiJ7wNDPA8nGzDuJ6gN4okSA1gEOYZ67N8JPk58tkWtdtPeLz7lBnY6I5L3jdsr3S+A6A==,
-      }
-    engines: { node: ">=18" }
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/win32-arm64@0.24.2:
     resolution:
       {
@@ -3752,18 +3510,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /@esbuild/win32-ia32@0.23.1:
-    resolution:
-      {
-        integrity: sha512-BcaL0Vn6QwCwre3Y717nVHZbAa4UBEigzFm6VdsVdT/MbZ38xoj1X9HPkZhbmaBGUD1W8vxAfffbDe8bA6AKnQ==,
-      }
-    engines: { node: ">=18" }
-    cpu: [ia32]
-    os: [win32]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   /@esbuild/win32-ia32@0.24.2:
     resolution:
       {
@@ -3784,18 +3530,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    optional: true
-
-  /@esbuild/win32-x64@0.23.1:
-    resolution:
-      {
-        integrity: sha512-BHpFFeslkWrXWyUPnbKm+xYYVYruCinGcftSBaa8zoF9hZO4BcSCFUvHVTtzpIY6YzUnYtuEhZ+C9iEXjxnasg==,
-      }
-    engines: { node: ">=18" }
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    dev: true
     optional: true
 
   /@esbuild/win32-x64@0.24.2:
@@ -4315,6 +4049,27 @@ packages:
     resolution:
       {
         integrity: sha512-Jtg9m73AjaUrmGCQNZGQQzYOby4wWm3GOJJ8eS6fmW/N+i+Gbf7uIzxjPPZaCrD0W6yUCgIzFea1V5BBRTMPzw==,
+      }
+    engines: { node: ">=18.18.2" }
+    dependencies:
+      "@noble/hashes": 1.7.1
+      "@web-std/file": 3.0.3
+      "@web-std/form-data": 3.1.0
+      axios: 1.7.9(debug@4.4.0)
+      dotenv: 16.4.7
+      files-from-path: 1.1.1
+      lodash: 4.17.21
+      luxon: 3.5.0
+      object-traversal: 1.0.1
+      parallel-transform-web: 1.0.1
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /@fleek-platform/sdk@3.6.2:
+    resolution:
+      {
+        integrity: sha512-glgRTdEoEA+/6Jiyt2G6QKh9Fqh278xr1qjEii5GHedZ0SQ9fGoWq0MTgP/XspYBk6rBkexmjiWzfYJ0Yp+B9w==,
       }
     engines: { node: ">=18.18.2" }
     dependencies:
@@ -5694,6 +5449,19 @@ packages:
       react: 18.3.1
     dev: true
 
+  /@metamask/abi-utils@2.0.4:
+    resolution:
+      {
+        integrity: sha512-StnIgUB75x7a7AgUhiaUZDpCsqGp7VkNnZh2XivXkJ6mPkE83U8ARGQj5MbRis7VJY8BC5V1AbB1fjdh0hupPQ==,
+      }
+    engines: { node: ">=16.0.0" }
+    dependencies:
+      "@metamask/superstruct": 3.1.0
+      "@metamask/utils": 9.3.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@metamask/eth-json-rpc-provider@1.0.1:
     resolution:
       {
@@ -6783,6 +6551,18 @@ packages:
       "@ethersproject/bytes": 5.7.0
       "@ethersproject/constants": 5.7.0
       "@ethersproject/keccak256": 5.7.0
+    dev: false
+
+  /@openzeppelin/merkle-tree@1.0.8:
+    resolution:
+      {
+        integrity: sha512-E2c9/Y3vjZXwVvPZKqCKUn7upnvam1P1ZhowJyZVQSkzZm5WhumtaRr+wkUXrZVfkIc7Gfrl7xzabElqDL09ow==,
+      }
+    dependencies:
+      "@metamask/abi-utils": 2.0.4
+      ethereum-cryptography: 3.1.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@paulmillr/qr@0.2.1:
@@ -8581,7 +8361,7 @@ packages:
       react-dom: 18.3.1(react@18.3.1)
       react-remove-scroll: 2.5.7(@types/react@18.2.48)(react@18.3.1)
       ua-parser-js: 1.0.40
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
       wagmi: 2.5.2(@tanstack/react-query@5.18.1)(@types/react@18.2.48)(immer@9.0.21)(react-dom@18.3.1)(react-native@0.77.0)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)
     transitivePeerDependencies:
       - "@types/react"
@@ -9092,7 +8872,7 @@ packages:
       }
     dependencies:
       "@safe-global/safe-gateway-typescript-sdk": 3.22.9
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
     transitivePeerDependencies:
       - bufferutil
       - typescript
@@ -9107,7 +8887,7 @@ packages:
       }
     dependencies:
       "@safe-global/safe-gateway-typescript-sdk": 3.22.9
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
     transitivePeerDependencies:
       - bufferutil
       - typescript
@@ -9159,6 +8939,17 @@ packages:
       "@scure/base": 1.1.9
     dev: false
 
+  /@scure/bip32@1.6.2:
+    resolution:
+      {
+        integrity: sha512-t96EPDMbtGgtb7onKKqxRLfE5g05k7uHnHRM2xdE6BP/ZmxaLtPek4J4KfVn/90IQNrU1IOAqMgiDtUdtbe3nw==,
+      }
+    dependencies:
+      "@noble/curves": 1.8.1
+      "@noble/hashes": 1.7.1
+      "@scure/base": 1.2.4
+    dev: false
+
   /@scure/bip39@1.1.1:
     resolution:
       {
@@ -9177,6 +8968,16 @@ packages:
     dependencies:
       "@noble/hashes": 1.4.0
       "@scure/base": 1.1.9
+    dev: false
+
+  /@scure/bip39@1.5.4:
+    resolution:
+      {
+        integrity: sha512-TFM4ni0vKvCfBpohoh+/lY05i9gRbSwXWngAsF4CABQxoaOHijxuaZ2R6cStDQ5CHtHO9aGJTr4ksVJASRRyMA==,
+      }
+    dependencies:
+      "@noble/hashes": 1.7.1
+      "@scure/base": 1.2.4
     dev: false
 
   /@sentry-internal/feedback@7.120.3:
@@ -10375,16 +10176,6 @@ packages:
       "@types/node": 20.17.16
     dev: false
 
-  /@types/body-parser@1.19.5:
-    resolution:
-      {
-        integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==,
-      }
-    dependencies:
-      "@types/connect": 3.4.38
-      "@types/node": 20.17.16
-    dev: true
-
   /@types/chrome@0.0.136:
     resolution:
       {
@@ -10395,29 +10186,11 @@ packages:
       "@types/har-format": 1.2.16
     dev: false
 
-  /@types/connect@3.4.38:
-    resolution:
-      {
-        integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==,
-      }
-    dependencies:
-      "@types/node": 20.17.16
-    dev: true
-
   /@types/cookie@0.6.0:
     resolution:
       {
         integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==,
       }
-    dev: true
-
-  /@types/cors@2.8.17:
-    resolution:
-      {
-        integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==,
-      }
-    dependencies:
-      "@types/node": 20.17.16
     dev: true
 
   /@types/d3-array@3.2.1:
@@ -10534,39 +10307,6 @@ packages:
       }
     dev: true
 
-  /@types/express-serve-static-core@4.19.6:
-    resolution:
-      {
-        integrity: sha512-N4LZ2xG7DatVqhCZzOGb1Yi5lMbXSZcmdLDe9EzSndPV2HpWYWzRbaerl2n27irrm94EPpprqa8KpskPT085+A==,
-      }
-    dependencies:
-      "@types/node": 20.17.16
-      "@types/qs": 6.9.18
-      "@types/range-parser": 1.2.7
-      "@types/send": 0.17.4
-    dev: true
-
-  /@types/express-session@1.18.1:
-    resolution:
-      {
-        integrity: sha512-S6TkD/lljxDlQ2u/4A70luD8/ZxZcrU5pQwI1rVXCiaVIywoFgbA+PIUNDjPhQpPdK0dGleLtYc/y7XWBfclBg==,
-      }
-    dependencies:
-      "@types/express": 4.17.21
-    dev: true
-
-  /@types/express@4.17.21:
-    resolution:
-      {
-        integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==,
-      }
-    dependencies:
-      "@types/body-parser": 1.19.5
-      "@types/express-serve-static-core": 4.19.6
-      "@types/qs": 6.9.18
-      "@types/serve-static": 1.15.7
-    dev: true
-
   /@types/filesystem@0.0.36:
     resolution:
       {
@@ -10598,13 +10338,6 @@ packages:
         integrity: sha512-fluxdy7ryD3MV6h8pTfTYpy/xQzCFC7m89nOH9y94cNqJ1mDIDPut7MnRHI3F6qRmh/cT2fUjG1MLdCNb4hE9A==,
       }
     dev: false
-
-  /@types/http-errors@2.0.4:
-    resolution:
-      {
-        integrity: sha512-D0CFMMtydbJAegzOyHjtiKPLlvnm3iTZyZRSZoLq2mRhDdmLfIWOCYPfQJ4cu2erKghU++QvjcUjp/5h7hESpA==,
-      }
-    dev: true
 
   /@types/istanbul-lib-coverage@2.0.6:
     resolution:
@@ -10665,13 +10398,6 @@ packages:
       }
     dev: true
 
-  /@types/mime@1.3.5:
-    resolution:
-      {
-        integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==,
-      }
-    dev: true
-
   /@types/ms@2.1.0:
     resolution:
       {
@@ -10728,25 +10454,6 @@ packages:
         integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==,
       }
 
-  /@types/passport-twitter@1.0.40:
-    resolution:
-      {
-        integrity: sha512-5Yxm+P/x6XEYvANANmjkVnRpMlRpORODZYYplBKH+BFTHQ8kGt3FgMm6eMgIzrGA4WvZo6TKH4IvYug+31mX4w==,
-      }
-    dependencies:
-      "@types/express": 4.17.21
-      "@types/passport": 1.0.17
-    dev: true
-
-  /@types/passport@1.0.17:
-    resolution:
-      {
-        integrity: sha512-aciLyx+wDwT2t2/kJGJR2AEeBz0nJU4WuRX04Wu9Dqc5lSUtwu0WERPHYsLhF9PtseiAMPBGNUOtFjxZ56prsg==,
-      }
-    dependencies:
-      "@types/express": 4.17.21
-    dev: true
-
   /@types/pbkdf2@3.1.2:
     resolution:
       {
@@ -10761,20 +10468,6 @@ packages:
       {
         integrity: sha512-gNMvNH49DJ7OJYv+KAKn0Xp45p8PLl6zo2YnvDIbTd4J6MER2BmWN49TG7n9LvkyihINxeKW8+3bfS2yDC9dzQ==,
       }
-
-  /@types/qs@6.9.18:
-    resolution:
-      {
-        integrity: sha512-kK7dgTYDyGqS+e2Q4aK9X3D7q234CIZ1Bv0q/7Z5IwRDoADNU81xXJK/YVyLbLTZCoIwUoDoffFeF+p/eIklAA==,
-      }
-    dev: true
-
-  /@types/range-parser@1.2.7:
-    resolution:
-      {
-        integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==,
-      }
-    dev: true
 
   /@types/react-csv@1.1.10:
     resolution:
@@ -10855,27 +10548,6 @@ packages:
       {
         integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==,
       }
-
-  /@types/send@0.17.4:
-    resolution:
-      {
-        integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==,
-      }
-    dependencies:
-      "@types/mime": 1.3.5
-      "@types/node": 20.17.16
-    dev: true
-
-  /@types/serve-static@1.15.7:
-    resolution:
-      {
-        integrity: sha512-W8Ym+h8nhuRwaKPaDw34QUkwsGi6Rc4yYqvKFo5rm2FUEhCFbzVWrxXUxuKK8TASjWsysJY0nsmNCGhCOIsrOw==,
-      }
-    dependencies:
-      "@types/http-errors": 2.0.4
-      "@types/node": 20.17.16
-      "@types/send": 0.17.4
-    dev: true
 
   /@types/sinon@17.0.3:
     resolution:
@@ -11606,7 +11278,7 @@ packages:
       "@walletconnect/ethereum-provider": 2.11.0(@types/react@18.2.48)(react@18.3.1)
       "@walletconnect/modal": 2.6.2(@types/react@18.2.48)(react@18.3.1)
       typescript: 5.2.2
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
     transitivePeerDependencies:
       - "@azure/app-configuration"
       - "@azure/cosmos"
@@ -11660,7 +11332,7 @@ packages:
       "@walletconnect/ethereum-provider": 2.17.0(@types/react@18.2.48)(react@18.3.1)
       cbw-sdk: /@coinbase/wallet-sdk@3.9.3
       typescript: 5.2.2
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
     transitivePeerDependencies:
       - "@azure/app-configuration"
       - "@azure/cosmos"
@@ -11707,7 +11379,7 @@ packages:
       eventemitter3: 5.0.1
       mipd: 0.0.7(typescript@5.2.2)
       typescript: 5.2.2
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
       zustand: 5.0.0(@types/react@18.2.48)(immer@9.0.21)(react@18.3.1)
     transitivePeerDependencies:
       - "@types/react"
@@ -11734,7 +11406,7 @@ packages:
       eventemitter3: 5.0.1
       mipd: 0.0.5(typescript@5.2.2)
       typescript: 5.2.2
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
       zustand: 4.4.1(@types/react@18.2.48)(immer@9.0.21)(react@18.3.1)
     transitivePeerDependencies:
       - "@types/react"
@@ -13036,7 +12708,7 @@ packages:
       "@web3modal/wallet": 5.1.11
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
       wagmi: 2.5.2(@tanstack/react-query@5.18.1)(@types/react@18.2.48)(immer@9.0.21)(react-dom@18.3.1)(react-native@0.77.0)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)
     transitivePeerDependencies:
       - "@azure/app-configuration"
@@ -13157,7 +12829,7 @@ packages:
       typescript: 5.2.2
       use-debounce: 10.0.4(react@18.3.1)
       use-immer: 0.8.1(immer@9.0.21)(react@18.3.1)
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
       wagmi: 2.5.2(@tanstack/react-query@5.18.1)(@types/react@18.2.48)(immer@9.0.21)(react-dom@18.3.1)(react-native@0.77.0)(react@18.3.1)(typescript@5.2.2)(viem@2.17.3)
       ws: 8.18.0
       xstate: 5.19.2
@@ -13203,7 +12875,7 @@ packages:
     dev: false
     optional: true
 
-  /abitype@1.0.5(typescript@5.2.2):
+  /abitype@1.0.5(typescript@5.2.2)(zod@3.24.1):
     resolution:
       {
         integrity: sha512-YzDhti7cjlfaBhHutMaboYB21Ha3rXR9QTkNJFzYC4kC8YclaiwPBBBJY8ejFdu2wnJeZCVZSMlQJ7fi8S6hsw==,
@@ -13218,26 +12890,10 @@ packages:
         optional: true
     dependencies:
       typescript: 5.2.2
-    dev: false
-
-  /abitype@1.0.5(zod@3.24.1):
-    resolution:
-      {
-        integrity: sha512-YzDhti7cjlfaBhHutMaboYB21Ha3rXR9QTkNJFzYC4kC8YclaiwPBBBJY8ejFdu2wnJeZCVZSMlQJ7fi8S6hsw==,
-      }
-    peerDependencies:
-      typescript: ">=5.0.4"
-      zod: ^3 >=3.22.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-      zod:
-        optional: true
-    dependencies:
       zod: 3.24.1
     dev: false
 
-  /abitype@1.0.8(typescript@5.2.2):
+  /abitype@1.0.8(typescript@5.2.2)(zod@3.24.1):
     resolution:
       {
         integrity: sha512-ZeiI6h3GnW06uYDLx0etQtX/p8E24UaHHBj57RSjK7YBFe7iuVn07EDpOeP451D06sF27VOz9JJPlIKJmXgkEg==,
@@ -13252,6 +12908,7 @@ packages:
         optional: true
     dependencies:
       typescript: 5.2.2
+      zod: 3.24.1
     dev: false
 
   /abort-controller@3.0.0:
@@ -16793,41 +16450,6 @@ packages:
       "@esbuild/win32-ia32": 0.21.5
       "@esbuild/win32-x64": 0.21.5
 
-  /esbuild@0.23.1:
-    resolution:
-      {
-        integrity: sha512-VVNz/9Sa0bs5SELtn3f7qhJCDPCF5oMEl5cO9/SSinpE9hbPVvxbd572HH5AKiP7WD8INO53GgfDDhRjkylHEg==,
-      }
-    engines: { node: ">=18" }
-    hasBin: true
-    requiresBuild: true
-    optionalDependencies:
-      "@esbuild/aix-ppc64": 0.23.1
-      "@esbuild/android-arm": 0.23.1
-      "@esbuild/android-arm64": 0.23.1
-      "@esbuild/android-x64": 0.23.1
-      "@esbuild/darwin-arm64": 0.23.1
-      "@esbuild/darwin-x64": 0.23.1
-      "@esbuild/freebsd-arm64": 0.23.1
-      "@esbuild/freebsd-x64": 0.23.1
-      "@esbuild/linux-arm": 0.23.1
-      "@esbuild/linux-arm64": 0.23.1
-      "@esbuild/linux-ia32": 0.23.1
-      "@esbuild/linux-loong64": 0.23.1
-      "@esbuild/linux-mips64el": 0.23.1
-      "@esbuild/linux-ppc64": 0.23.1
-      "@esbuild/linux-riscv64": 0.23.1
-      "@esbuild/linux-s390x": 0.23.1
-      "@esbuild/linux-x64": 0.23.1
-      "@esbuild/netbsd-x64": 0.23.1
-      "@esbuild/openbsd-arm64": 0.23.1
-      "@esbuild/openbsd-x64": 0.23.1
-      "@esbuild/sunos-x64": 0.23.1
-      "@esbuild/win32-arm64": 0.23.1
-      "@esbuild/win32-ia32": 0.23.1
-      "@esbuild/win32-x64": 0.23.1
-    dev: true
-
   /esbuild@0.24.2:
     resolution:
       {
@@ -17258,6 +16880,20 @@ packages:
       "@noble/hashes": 1.4.0
       "@scure/bip32": 1.4.0
       "@scure/bip39": 1.3.0
+    dev: false
+
+  /ethereum-cryptography@3.1.0:
+    resolution:
+      {
+        integrity: sha512-ZqHd92eOIH9RExpBUOgzpAgflyFv9/+Ca39G8V+oCjJPGjJUihQcG/Gl67I/Xn2HGS87dgnrCG3kb1jNClLi6g==,
+      }
+    engines: { node: ^14.21.3 || >=16, npm: ">=9" }
+    dependencies:
+      "@noble/ciphers": 1.2.1
+      "@noble/curves": 1.8.1
+      "@noble/hashes": 1.7.1
+      "@scure/bip32": 1.6.2
+      "@scure/bip39": 1.5.4
     dev: false
 
   /ethereumjs-abi@0.6.8:
@@ -18242,15 +17878,6 @@ packages:
       es-errors: 1.3.0
       get-intrinsic: 1.2.7
     dev: false
-
-  /get-tsconfig@4.10.0:
-    resolution:
-      {
-        integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==,
-      }
-    dependencies:
-      resolve-pkg-maps: 1.0.0
-    dev: true
 
   /getos@3.2.1:
     resolution:
@@ -21659,7 +21286,7 @@ packages:
         optional: true
     dependencies:
       typescript: 5.2.2
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -24702,13 +24329,6 @@ packages:
       }
     engines: { node: ">=8" }
 
-  /resolve-pkg-maps@1.0.0:
-    resolution:
-      {
-        integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==,
-      }
-    dev: true
-
   /resolve@1.17.0:
     resolution:
       {
@@ -26755,20 +26375,6 @@ packages:
       tslib: 1.14.1
       typescript: 5.2.2
 
-  /tsx@4.19.2:
-    resolution:
-      {
-        integrity: sha512-pOUl6Vo2LUq/bSa8S5q7b91cgNSjctn9ugq/+Mvow99qW6x/UZYwzxy/3NmqoT66eHYfCVvFvACC58UBPFf28g==,
-      }
-    engines: { node: ">=18.0.0" }
-    hasBin: true
-    dependencies:
-      esbuild: 0.23.1
-      get-tsconfig: 4.10.0
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: true
-
   /tsyringe@4.8.0:
     resolution:
       {
@@ -27699,7 +27305,7 @@ packages:
       d3-timer: 3.0.1
     dev: false
 
-  /viem@2.17.3(typescript@5.2.2):
+  /viem@2.17.3(typescript@5.2.2)(zod@3.24.1):
     resolution:
       {
         integrity: sha512-FY/1uBQWfko4Esy8mU1RamvL64TLy91LZwFyQJ20E6AI3vTTEOctWfSn0pkMKa3okq4Gxs5dJE7q1hmWOQ7xcw==,
@@ -27715,34 +27321,9 @@ packages:
       "@noble/hashes": 1.4.0
       "@scure/bip32": 1.4.0
       "@scure/bip39": 1.3.0
-      abitype: 1.0.5(typescript@5.2.2)
+      abitype: 1.0.5(typescript@5.2.2)(zod@3.24.1)
       isows: 1.0.4(ws@8.17.1)
       typescript: 5.2.2
-      ws: 8.17.1(bufferutil@4.0.9)(utf-8-validate@6.0.5)
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-      - zod
-    dev: false
-
-  /viem@2.17.3(zod@3.24.1):
-    resolution:
-      {
-        integrity: sha512-FY/1uBQWfko4Esy8mU1RamvL64TLy91LZwFyQJ20E6AI3vTTEOctWfSn0pkMKa3okq4Gxs5dJE7q1hmWOQ7xcw==,
-      }
-    peerDependencies:
-      typescript: ">=5.0.4"
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-    dependencies:
-      "@adraffy/ens-normalize": 1.10.0
-      "@noble/curves": 1.4.0
-      "@noble/hashes": 1.4.0
-      "@scure/bip32": 1.4.0
-      "@scure/bip39": 1.3.0
-      abitype: 1.0.5(zod@3.24.1)
-      isows: 1.0.4(ws@8.17.1)
       ws: 8.17.1(bufferutil@4.0.9)(utf-8-validate@6.0.5)
     transitivePeerDependencies:
       - bufferutil
@@ -27955,7 +27536,7 @@ packages:
       react: 18.3.1
       typescript: 5.2.2
       use-sync-external-store: 1.2.0(react@18.3.1)
-      viem: 2.17.3(typescript@5.2.2)
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.1)
     transitivePeerDependencies:
       - "@azure/app-configuration"
       - "@azure/cosmos"
