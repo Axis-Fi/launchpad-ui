@@ -73,10 +73,7 @@ function AuctionCardDetails(
   const hasCurator = !!props.auction.curator && props.auction.curatorApproved;
   const { curator, isCuratorPage } = useCuratorPage();
 
-  const isRegistrationLaunch = props.auction.status === "registering";
-
-  let detailsPageUrl =
-    getAuctionPath(props.auction) + (isRegistrationLaunch ? "/register" : "");
+  let detailsPageUrl = getAuctionPath(props.auction);
 
   detailsPageUrl = isCuratorPage
     ? `/${curator?.id}${detailsPageUrl}`
@@ -168,9 +165,7 @@ function AuctionCardDetails(
                 "absolute bottom-0 right-0 mb-3 mr-3 opacity-0 group-hover:opacity-100",
             )}
           >
-            {props.auction.status === "registering"
-              ? "Register now"
-              : "View Launch"}
+            View Launch
           </Button>
         </Link>
       </div>

@@ -8,8 +8,6 @@ import { allowedCuratorAddresses, allowedCurators } from "modules/app/curators";
 export function isAllowedCurator(auction: AuctionProps) {
   const curator = auction.curator;
 
-  if (auction.status === "registering") return true;
-
   return (
     curator &&
     isAddress(curator) &&

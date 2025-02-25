@@ -1,5 +1,4 @@
 import { ConnectButton as RKConnectButton } from "@rainbow-me/rainbowkit";
-import { featureToggles } from "modules/app/feature-toggles";
 import {
   Avatar,
   Button,
@@ -12,8 +11,6 @@ import {
   DropdownMenuItem,
 } from "@repo/ui";
 import { useMediaQueries } from "loaders/use-media-queries";
-import { useProfile } from "modules/points/hooks/use-profile";
-import { useNavigate } from "react-router-dom";
 import { useDisconnect } from "wagmi";
 
 export default function ConnectButton({
@@ -24,11 +21,7 @@ export default function ConnectButton({
   size?: ButtonProps["size"];
 }) {
   const { isTabletOrMobile } = useMediaQueries();
-  const { isUserRegistered, isUserSignedIn, profile, signOut } = useProfile();
-  const navigate = useNavigate();
   const { disconnect } = useDisconnect();
-
-  const isPointsFeatureEnabled = featureToggles.POINTS_PHASE_1;
 
   return (
     <RKConnectButton.Custom>
@@ -74,30 +67,11 @@ export default function ConnectButton({
               }
 
               return (
-                <div
-                  className={cn(
-                    "flex items-center gap-x-1 ",
-                    isUserSignedIn && "gap-x-2",
-                  )}
-                >
+                <div className={cn("flex items-center gap-x-1 ")}>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="flex items-center gap-x-1">
-                        {isUserSignedIn && profile?.profileImageUrl && (
-                          <img
-                            className="size-[48px]"
-                            src={profile?.profileImageUrl}
-                          />
-                        )}
                         <div className="space-y-1">
-                          {isUserSignedIn && (
-                            <Text
-                              className="text-foreground-highlight text-left leading-none"
-                              size="lg"
-                            >
-                              {profile?.username}
-                            </Text>
-                          )}
                           <Text className="leading-none">
                             {account.ensName ?? account.displayName}
                           </Text>
@@ -106,37 +80,12 @@ export default function ConnectButton({
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="px-md gap-y-xs bg-surface shadow-3xl flex max-w-[200px] flex-col rounded-none border-none font-mono uppercase">
-                      {isPointsFeatureEnabled && isUserRegistered.data && (
-                        <>
-                          <DropdownMenuItem
-                            onClick={() => navigate("/profile")}
-                          >
-                            Axis points
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => navigate("/profile/edit")}
-                          >
-                            Edit profile
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => navigate("/profile/link-wallet")}
-                          >
-                            {profile?.wallets?.length ?? 0} Linked wallets
-                          </DropdownMenuItem>
-                        </>
-                      )}
-
                       <DropdownMenuItem onClick={openChainModal}>
                         Switch Chain
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => disconnect()}>
                         Disconnect
                       </DropdownMenuItem>
-                      {isPointsFeatureEnabled && isUserSignedIn && (
-                        <DropdownMenuItem onClick={signOut}>
-                          Sign out
-                        </DropdownMenuItem>
-                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
 

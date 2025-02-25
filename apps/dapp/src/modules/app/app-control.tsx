@@ -6,7 +6,6 @@ import { useMediaQueries } from "loaders/use-media-queries";
 import { environment } from "utils/environment";
 import { useCurator } from "modules/auction/hooks/use-curator";
 import { NotificationBadge } from "components/notification-badge";
-import { UserProfile } from "./user-profile";
 import { useCuratorPage } from "loaders/use-curator-page";
 import { AppMobileMenu } from "./app-mobile-menu";
 import { NavigationIcon } from "./navigation-icon";
@@ -54,7 +53,6 @@ export function AppControl() {
               </Button>
             </div>
           )}
-          {!isTabletOrMobile && <UserProfile />}
           {isTabletOrMobile && <AppMobileMenu />}
           {!isTabletOrMobile && (
             <div className="w-1/6">

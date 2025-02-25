@@ -27,21 +27,10 @@ export function useReferralLink(address?: Address) {
     return navigator.clipboard.writeText(link);
   }
 
-  function getTweetUrl() {
-    if (address == null) return;
-
-    const link = generateReferrerLink(address);
-    const tweet = encodeURIComponent(
-      `I just claimed my Axis points for taking part in a token launch!\n\nSee if you're eligible for points at ${link}`,
-    );
-    return `https://x.com/intent/tweet?text=${tweet}`;
-  }
-
   return {
     generateAndCopyLink,
     generateLink,
     copyLink,
-    getTweetUrl,
     link,
   };
 }
