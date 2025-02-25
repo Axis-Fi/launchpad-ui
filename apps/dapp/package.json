@@ -35,10 +35,8 @@
     "@helia/verified-fetch": "^2.3.1",
     "@openzeppelin/merkle-tree": "^1.0.6",
     "@rainbow-me/rainbowkit": "^2.0.2",
-    "@repo/eslint-config": "workspace:*",
     "@repo/points": "workspace:*",
     "@repo/tailwind-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
     "@repo/ui": "workspace:*",
     "@tanstack/react-query": "5.18.1",
     "@tanstack/react-query-devtools": "^5.18.1",
@@ -69,6 +67,8 @@
     "wagmi": "^2.5.2"
   },
   "devDependencies": {
+    "@axis-finance/eslint-config": "0.0.2",
+    "@axis-finance/typescript-config": "0.0.2",
     "@chromatic-com/storybook": "^1.4.0",
     "@dotenvx/dotenvx": "^1.7.0",
     "@hookform/devtools": "^4.3.1",

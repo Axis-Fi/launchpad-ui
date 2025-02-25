@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "main": "./src/index.ts",
   "dependencies": {
-    "@axis-finance/env": "0.0.1",
-    "@repo/typescript-config": "workspace:*",
-    "@repo/eslint-config": "workspace:*"
+    "@axis-finance/env": "0.0.1"
   },
   "devDependencies": {
+    "@axis-finance/typescript-config": "0.0.2",
+    "@axis-finance/eslint-config": "0.0.2",
     "@openapitools/openapi-generator-cli": "2.9.0"
   },
   "publishConfig": {
