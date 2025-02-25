@@ -1,7 +1,7 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { parseAbiItem } from "viem";
 import { usePublicClient } from "wagmi";
-import type { CuratorProfile } from "@repo/ipfs-api/src/types";
+import type { CuratorProfile } from "modules/app/ipfs-api";
 import { environment } from "utils/environment";
 import { verifiedFetch } from "utils/verified-fetch";
 import { useAxisFollowing } from "./use-axis-following";
@@ -22,13 +22,19 @@ type CuratorRegisteredOrUpdatedEvent = {
 type UseCuratorEventsReturn = UseQueryResult<CuratorProfile[]> | null;
 
 const useCurators = (): UseCuratorEventsReturn => {
-  const publicClient = usePublicClient();
-  const { data: axisFollowing } = useAxisFollowing();
+  const publicClient = usePublicClient({
+    chainId: curatorRegistryDeployment.chainId,
+  });
+  const shouldRestrictCurators = environment.isProduction;
+
+  const { data: axisFollowing } = useAxisFollowing(shouldRestrictCurators);
 
   return useQuery({
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["curators"],
-    enabled: publicClient != null && axisFollowing != null,
+    enabled:
+      (publicClient != null && axisFollowing != null) ||
+      (publicClient != null && !shouldRestrictCurators),
     queryFn: async () => {
       const curatorEvents = await publicClient!.getLogs({
         address: curatorRegistryDeployment.address,
@@ -41,7 +47,7 @@ const useCurators = (): UseCuratorEventsReturn => {
 
       curatorEvents.forEach((event: CuratorRegisteredOrUpdatedEvent) => {
         const xId = event.args.xId!.toString();
-        if (environment.isProduction && !axisFollowing!.includes(xId)) return;
+        if (shouldRestrictCurators && !axisFollowing!.includes(xId)) return;
 
         latestIpfsProfileCid.set(xId, event.args.ipfsCID!);
       });

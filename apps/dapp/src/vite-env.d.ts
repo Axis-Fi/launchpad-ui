@@ -9,4 +9,6 @@ interface ImportMetaEnv {
   readonly VITE_TESTNET: string;
 
   readonly VITE_WALLETCONNECT_PROJECT_ID: string;
+
+  readonly VITE_FLEEK_APPLICATION_CLIENT_ID: string;
 }

@@ -21,6 +21,7 @@ const fetchVerificationStatus = async () => {
 export type TwitterUser = {
   id: string;
   name: string;
+  username: string;
   address: string;
   banner: string;
   avatar: string;
