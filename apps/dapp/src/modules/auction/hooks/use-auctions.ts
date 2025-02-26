@@ -13,8 +13,6 @@ import { useTokenLists } from "state/tokenlist";
 import { useQueryAll } from "loaders/use-query-all";
 import { useSafeRefetch } from "./use-safe-refetch";
 import { externalAuctionInfo } from "modules/app/external-auction-info";
-import { featureToggles } from "modules/app/feature-toggles";
-import { useAuctionRegistrations } from "./use-auction-registrations";
 import type { Address } from "viem";
 import { allowedCurators } from "modules/app/curators";
 import { environment } from "utils/environment";
@@ -46,12 +44,6 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   // Refetch auctions if the cache is stale
   const refetch = useSafeRefetch(["auctions"]);
   const targetCurator = allowedCurators.find((c) => c.id === curator);
-
-  const { activeRegistrations } = useAuctionRegistrations();
-
-  const registrationLaunches = featureToggles.REGISTRATION_LAUNCHES
-    ? (activeRegistrations.data ?? [])
-    : [];
 
   // Filter out cancelled auctions
   const filteredAuctions = data.filter(
@@ -90,7 +82,6 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
         isSecure: isSecureAuction(preparedAuction),
       } as Auction;
     })
-    .concat(registrationLaunches)
     .sort(sortAuction);
 
   //Fetch missing metadata directly from IPFS gateway

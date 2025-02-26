@@ -9,25 +9,11 @@ import {
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useCuratorPage } from "loaders/use-curator-page";
-import {
-  featureToggles,
-  type FeatureToggle,
-} from "modules/app/feature-toggles";
 
 type LinkConfig = {
   label: string;
   href: string;
   target?: React.HTMLProps<HTMLAnchorElement>["target"];
-};
-
-const toggledLink = (
-  link: LinkConfig,
-  toggle: FeatureToggle,
-  notEnabled: boolean = false,
-): [LinkConfig] | [] => {
-  return (notEnabled ? !featureToggles[toggle] : featureToggles[toggle])
-    ? [link]
-    : [];
 };
 
 export const testnetLinks = [
@@ -38,15 +24,10 @@ export const testnetLinks = [
 
 export const defaultLinks = [
   { label: "Launches", href: "/#" },
-  ...toggledLink({ label: "Points", href: "/points" }, "POINTS_PHASE_1"),
   { label: "Curators", href: "/curators" },
 ] satisfies LinkConfig[];
 
 export const mobileSideLinks = [
-  ...toggledLink(
-    { label: "Leaderboard", href: "/leaderboard" },
-    "POINTS_PHASE_1",
-  ),
   { label: "Bridge", href: "/bridge" },
   {
     label: "Docs",
