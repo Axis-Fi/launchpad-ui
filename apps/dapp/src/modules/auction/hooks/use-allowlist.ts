@@ -38,13 +38,11 @@ export function useAllowlist(auction: Auction): AllowlistResult {
   // If the auction has a custom callback it could be an allowlist so give it the benefit of the doubt
   const callbacksType = getCallbacksType(auction);
   const isCustomCallback = callbacksType === CallbacksType.CUSTOM;
+
   // Determine if the allowlist is defined in the external data
-  const externalAllowlist: string[][] | undefined =
-    externalAuctionInfo[auction.id!] &&
-    externalAuctionInfo[auction.id!].allowlist !== undefined &&
-    externalAuctionInfo[auction.id!].allowlist!.length > 0
-      ? externalAuctionInfo[auction.id!].allowlist
-      : undefined;
+  const externalAllowlist = externalAuctionInfo[auction.id!]?.allowlist?.map(
+    (l) => l.values,
+  );
 
   const shouldFetchAllowList =
     externalAllowlist === undefined &&
@@ -63,6 +61,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
       enabled: !!auction?.chainId && !!auction?.id && shouldFetchAllowList,
     },
   );
+
   const allowlist =
     externalAllowlist !== undefined
       ? externalAllowlist
@@ -113,6 +112,7 @@ export function useAllowlist(auction: Auction): AllowlistResult {
     args: [],
     query: { enabled: isBaseline },
   });
+
   const baselineLotIdMatches = baselineLotId == parseUnits(auction.lotId, 0);
 
   // Query the amount the user has already spent from the contract

@@ -9,6 +9,7 @@ import { NotificationBadge } from "components/notification-badge";
 import { useCuratorPage } from "loaders/use-curator-page";
 import { AppMobileMenu } from "./app-mobile-menu";
 import { NavigationIcon } from "./navigation-icon";
+import ConnectButton from "components/connect-button";
 
 export function AppControl() {
   const { isTabletOrMobile } = useMediaQueries();
@@ -53,6 +54,7 @@ export function AppControl() {
               </Button>
             </div>
           )}
+          {!isTabletOrMobile && <ConnectButton />}
           {isTabletOrMobile && <AppMobileMenu />}
           {!isTabletOrMobile && (
             <div className="w-1/6">

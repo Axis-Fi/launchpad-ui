@@ -1,5 +1,4 @@
 import type { AuctionInfo } from "@axis-finance/types";
-import flappyAllowlist from "./temp/flappy-allowlist";
 
 export const externalAuctionInfo: Record<string, AuctionInfo> = {
   "blast-0xba000055df41da8584e1251bcdf45e91acb61108-1": {
@@ -102,9 +101,7 @@ export const externalAuctionInfo: Record<string, AuctionInfo> = {
         url: "",
       },
     ],
-    allowlist: flappyAllowlist,
   },
-
   "base-sepolia-0xba0000c28179ce533233a943d432eddd154e62a3-8": {
     key: "base-sepolia-0xba0000c28179ce533233a943d432eddd154e62a3-8",
     name: "MotherDAO",
@@ -112,14 +109,18 @@ export const externalAuctionInfo: Record<string, AuctionInfo> = {
       "An AI agent launchpad for the Ethereum ecosystem and EVM chains, designed to deploy sustainable agents that automate processes, sustain protocols, and drive innovation.",
     tagline: "Guiding the convergence of AI and humanity",
     allowlist: [
-      [
-        "0x5Ce7D83f7Aaac17a0Ad40540B37fC7a0b688FF44",
-        "500000000000000000000000000000000000000",
-      ],
-      [
-        "0x7A69C24C9f2cb6FDbe8cca906371645a1B5CC4B2",
-        "500000000000000000000000000000000000000",
-      ],
+      {
+        values: [
+          "0x5Ce7D83f7Aaac17a0Ad40540B37fC7a0b688FF44",
+          "500000000000000000000000000000000000000",
+        ],
+      },
+      {
+        values: [
+          "0x7A69C24C9f2cb6FDbe8cca906371645a1B5CC4B2",
+          "500000000000000000000000000000000000000",
+        ],
+      },
     ],
     links: [
       {
@@ -160,14 +161,18 @@ export const externalAuctionInfo: Record<string, AuctionInfo> = {
       "An AI agent launchpad for the Ethereum ecosystem and EVM chains, designed to deploy sustainable agents that automate processes, sustain protocols, and drive innovation.",
     tagline: "Guiding the convergence of AI and humanity",
     allowlist: [
-      [
-        "0x5Ce7D83f7Aaac17a0Ad40540B37fC7a0b688FF44",
-        "500000000000000000000000000000000000000",
-      ],
-      [
-        "0x7A69C24C9f2cb6FDbe8cca906371645a1B5CC4B2",
-        "500000000000000000000000000000000000000",
-      ],
+      {
+        values: [
+          "0x5Ce7D83f7Aaac17a0Ad40540B37fC7a0b688FF44",
+          "500000000000000000000000000000000000000",
+        ],
+      },
+      {
+        values: [
+          "0x7A69C24C9f2cb6FDbe8cca906371645a1B5CC4B2",
+          "500000000000000000000000000000000000000",
+        ],
+      },
     ],
     links: [
       {
