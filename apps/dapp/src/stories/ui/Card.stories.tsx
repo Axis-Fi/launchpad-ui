@@ -11,7 +11,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: {
-    children: <div className="">i'm content inside a card</div>,
+    children: <div className="">content inside a card</div>,
   },
 };
 

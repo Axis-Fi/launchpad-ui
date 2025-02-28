@@ -163,6 +163,7 @@ function deriveAuctionFromCreationParams(params: CreateAuctionForm): Auction {
       name: params.name,
       description: params.description,
       tagline: params.tagline,
+      allowlist: [],
       links: [
         { linkId: "payoutTokenLogo", url: params.payoutToken.logoURI || "" },
         { linkId: "projectLogo", url: params.projectLogo || "" },

@@ -54,6 +54,7 @@ const createOptimisticAuction = (
     start: Math.floor(start.getTime() / 1000).toString(),
     info: {
       key: null,
+      allowlist: [],
       name,
       description,
       tagline,

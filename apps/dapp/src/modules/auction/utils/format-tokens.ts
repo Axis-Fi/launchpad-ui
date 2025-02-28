@@ -2,17 +2,18 @@ import type { Address, Auction, Token, TokenBase } from "@axis-finance/types";
 import { Token as SubgraphToken } from "@axis-finance/subgraph-client";
 import { getChainId } from "utils/chain";
 import { formatUnits } from "viem";
-import { getLinkUrl } from "./auction-details";
+import { HasLinks, getLinkUrl } from "./auction-details";
 
 type InputToken = Omit<SubgraphToken, "id" | "decimals" | "totalSupply"> & {
   decimals: number | string;
   totalSupply?: bigint | string | undefined;
 };
 
-type PartialAuction = Pick<Auction, "info" | "chain"> & {
-  quoteToken?: InputToken;
-  baseToken?: InputToken;
-};
+type PartialAuction = Pick<Auction, "chain"> &
+  HasLinks & {
+    quoteToken?: InputToken;
+    baseToken?: InputToken;
+  };
 
 export function formatAuctionTokens(
   auction: PartialAuction,

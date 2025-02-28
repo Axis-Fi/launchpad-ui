@@ -9,7 +9,7 @@ import {
  * we need to derive this on the frontend.
  */
 export function getAuctionStatus(
-  auction: NonNullSubgraphAuction,
+  auction: Omit<NonNullSubgraphAuction, "info">,
 ): AuctionStatus {
   const subgraphAuction = auction as NonNullSubgraphAuction;
 
