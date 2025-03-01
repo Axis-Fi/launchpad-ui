@@ -24,42 +24,44 @@ export const stubGetAuctionLotsQuery = (
           "0x2ebbd4610b702225fe47949345cbd43d4e0a432cba1365008908d1a2ab50b919",
         capacityInitial: "1111",
         start: "1720790700",
-        info: {
-          key: null,
-          name: `${chain} dao 1`,
-          description: "We are the 1st dao",
-          tagline: "First the best, second the worst.",
-          links: [
-            {
-              linkId: "discord",
-              url: "https://google.com",
-            },
-            {
-              linkId: "farcaster",
-              url: "https://google.com",
-            },
-            {
-              linkId: "payoutTokenLogo",
-              url: "http://google.com",
-            },
-            {
-              linkId: "projectBanner",
-              url: "https://blog.adobe.com/en/publish/2021/08/17/media_1faf68d6c67e20f5e45d65217e0d013dcfe537263.png?width=750&format=png&optimize=medium",
-            },
-            {
-              linkId: "projectLogo",
-              url: "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_gradient_48px-512.png",
-            },
-            {
-              linkId: "twitter",
-              url: "https://google.com",
-            },
-            {
-              linkId: "website",
-              url: "https://google.com",
-            },
-          ],
-        },
+        info: [
+          {
+            key: null,
+            name: `${chain} dao 1`,
+            description: "We are the 1st dao",
+            tagline: "First the best, second the worst.",
+            links: [
+              {
+                linkId: "discord",
+                url: "https://google.com",
+              },
+              {
+                linkId: "farcaster",
+                url: "https://google.com",
+              },
+              {
+                linkId: "payoutTokenLogo",
+                url: "http://google.com",
+              },
+              {
+                linkId: "projectBanner",
+                url: "https://blog.adobe.com/en/publish/2021/08/17/media_1faf68d6c67e20f5e45d65217e0d013dcfe537263.png?width=750&format=png&optimize=medium",
+              },
+              {
+                linkId: "projectLogo",
+                url: "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_gradient_48px-512.png",
+              },
+              {
+                linkId: "twitter",
+                url: "https://google.com",
+              },
+              {
+                linkId: "website",
+                url: "https://google.com",
+              },
+            ],
+          },
+        ],
         conclusion: "3000000000",
         auctionType: "01EMPA",
         seller: "0xc4a209cf95b9d6aca011aa37b5cfd6f40d29890f",
@@ -136,42 +138,44 @@ export const stubGetAuctionLotsQuery = (
           "0x4117463a5bdb4401244c0fb41a01eacffa9811ed2f9f6c8217026acf76db44d1",
         capacityInitial: "111",
         start: "1720805024",
-        info: {
-          key: null,
-          name: `${chain} dao 2`,
-          description: "We are the 2nd dao",
-          tagline: "First the worst, second the best.",
-          links: [
-            {
-              linkId: "discord",
-              url: "https://google.com",
-            },
-            {
-              linkId: "farcaster",
-              url: "https://google.com",
-            },
-            {
-              linkId: "payoutTokenLogo",
-              url: "https://google.com",
-            },
-            {
-              linkId: "projectBanner",
-              url: "https://blog.adobe.com/en/publish/2021/08/17/media_1faf68d6c67e20f5e45d65217e0d013dcfe537263.png?width=750&format=png&optimize=medium",
-            },
-            {
-              linkId: "projectLogo",
-              url: "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_gradient_48px-512.png",
-            },
-            {
-              linkId: "twitter",
-              url: "https://google.com",
-            },
-            {
-              linkId: "website",
-              url: "https://google.com",
-            },
-          ],
-        },
+        info: [
+          {
+            key: null,
+            name: `${chain} dao 2`,
+            description: "We are the 2nd dao",
+            tagline: "First the worst, second the best.",
+            links: [
+              {
+                linkId: "discord",
+                url: "https://google.com",
+              },
+              {
+                linkId: "farcaster",
+                url: "https://google.com",
+              },
+              {
+                linkId: "payoutTokenLogo",
+                url: "https://google.com",
+              },
+              {
+                linkId: "projectBanner",
+                url: "https://blog.adobe.com/en/publish/2021/08/17/media_1faf68d6c67e20f5e45d65217e0d013dcfe537263.png?width=750&format=png&optimize=medium",
+              },
+              {
+                linkId: "projectLogo",
+                url: "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_gradient_48px-512.png",
+              },
+              {
+                linkId: "twitter",
+                url: "https://google.com",
+              },
+              {
+                linkId: "website",
+                url: "https://google.com",
+              },
+            ],
+          },
+        ],
         conclusion: "3000000000",
         auctionType: "01FPBA",
         seller: "0xc4a209cf95b9d6aca011aa37b5cfd6f40d29890f",

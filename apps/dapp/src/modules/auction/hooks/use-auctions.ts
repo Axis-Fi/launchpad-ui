@@ -1,4 +1,4 @@
-import type { Auction, Curator, GetAuctionLots } from "@axis-finance/types";
+import type { Auction, Curator } from "@axis-finance/types";
 import { useLaunchesQuery } from "@axis-finance/sdk/react";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { sortAuction } from "modules/auction/utils/sort-auctions";
@@ -35,11 +35,10 @@ type UseAuctionsArgs = {
 };
 
 export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
-  const { data, isLoading, isSuccess, isRefetching } =
-    useLaunchesQuery<GetAuctionLots>({
-      queryKeyFn: getAuctionsQueryKey,
-      isTestnet: environment.isTestnet,
-    });
+  const { data, isLoading, isSuccess, isRefetching } = useLaunchesQuery({
+    queryKeyFn: getAuctionsQueryKey,
+    isTestnet: environment.isTestnet,
+  });
 
   // Refetch auctions if the cache is stale
   const refetch = useSafeRefetch(["auctions"]);
@@ -87,8 +86,12 @@ export function useAuctions({ curator }: UseAuctionsArgs = {}): AuctionsResult {
   //Fetch missing metadata directly from IPFS gateway
   const missingMetadataQuery = useQueries({
     queries: auctions.map((a) => ({
+      // eslint-disable-next-line @tanstack/query/exhaustive-deps
       queryKey: ["auction-metadata", a.id],
-      queryFn: async () => fetchAuctionMetadata(a),
+      queryFn: async () => {
+        if (a.info != null || isLoading) return a;
+        return fetchAuctionMetadata(a);
+      },
     })),
     combine: (results) => {
       return {

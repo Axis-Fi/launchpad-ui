@@ -30,7 +30,7 @@ const getMinFilled = (auction: BatchAuction): number | undefined => {
   return undefined;
 };
 
-export type HasLinks = {
+export type AuctionLinks = {
   info?: {
     links?: Array<{
       linkId: string;
@@ -38,7 +38,8 @@ export type HasLinks = {
     }> | null;
   } | null;
 };
-const getLinkUrl = (id: AuctionLinkId, auction: HasLinks) => {
+
+const getLinkUrl = (id: AuctionLinkId, auction: AuctionLinks) => {
   return auction?.info?.links?.find?.((link) => link.linkId === id)?.url;
 };
 

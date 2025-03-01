@@ -52,23 +52,25 @@ const createOptimisticAuction = (
     createdTransactionHash: "0xUnknown",
     capacityInitial: capacity,
     start: Math.floor(start.getTime() / 1000).toString(),
-    info: {
-      key: null,
-      allowlist: [],
-      name,
-      description,
-      tagline,
-      links: [
-        {
-          linkId: "payoutTokenLogo",
-          url: payoutToken.logoURI!,
-        },
-        {
-          linkId: "projectBanner",
-          url: projectBanner,
-        },
-      ],
-    },
+    info: [
+      {
+        key: null,
+        allowlist: [],
+        name,
+        description,
+        tagline,
+        links: [
+          {
+            linkId: "payoutTokenLogo",
+            url: payoutToken.logoURI!,
+          },
+          {
+            linkId: "projectBanner",
+            url: projectBanner,
+          },
+        ],
+      },
+    ],
     conclusion: Math.floor(deadline.getTime() / 1000).toString(),
     auctionType: `01${auctionType}`,
     seller,

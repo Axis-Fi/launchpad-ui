@@ -1,9 +1,11 @@
-import { BatchAuction } from "@axis-finance/types";
+import type { Auction, UseLaunchQueryReturn } from "@axis-finance/types";
 import { verifiedFetch } from "@helia/verified-fetch";
 import { CID } from "multiformats/cid";
 import { formatAuctionInfo } from "utils/format-auction-info";
 
-export async function fetchAuctionMetadata(auction: BatchAuction) {
+export async function fetchAuctionMetadata(
+  auction: UseLaunchQueryReturn | Auction,
+) {
   if (auction.info) return auction;
 
   //Cant fetch if no hash is present
