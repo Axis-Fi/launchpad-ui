@@ -2,7 +2,6 @@ import { CaretUpIcon } from "@radix-ui/react-icons";
 import { environment } from "utils/environment";
 import React from "react";
 import Navbar, { testnetLinks } from "./navbar";
-import { UserProfile } from "./user-profile";
 import { cn } from "@repo/ui";
 
 export function AppMobileMenu() {
@@ -27,7 +26,6 @@ export function AppMobileMenu() {
           />
         )}
         <Navbar mobile showAll onNavClick={handleCloseMenu} />
-        <UserProfile />
       </div>
       <CaretUpIcon
         className={cn("mr-3 size-8 transition-all ", open && "-rotate-90")}

@@ -3,12 +3,12 @@ import { useQuery, type QueryKey } from "@tanstack/react-query";
 import { getAuctionStatus } from "modules/auction/utils/get-auction-status";
 import { AuctionType } from "@axis-finance/types";
 import type {
-  Auction,
   AuctionFormattedInfo,
-  BatchSubgraphAuction,
   EMPFormattedInfo,
   FPBFormattedInfo,
   AuctionId,
+  Auction,
+  UseLaunchQueryReturn,
 } from "@axis-finance/types";
 import { formatUnits } from "viem";
 import { formatDate } from "@repo/ui";
@@ -73,13 +73,16 @@ export function useAuction(
   const refetch = useSafeRefetch(queryKey);
 
   const auctionType = getAuctionType(rawAuction?.auctionType) as AuctionType;
+
   const metadataQuery = useQuery({
     // NOTE: required for the key to match usage on useAuctions
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey: ["auction-metadata", rawAuction?.id],
-    //@ts-expect-error TODO: fix type mismatch
-    queryFn: async () => rawAuction && fetchAuctionMetadata(rawAuction),
-    enabled: !!rawAuction && !rawAuction?.info,
+    queryKey: ["auction-list-metadata", rawAuction?.id],
+    queryFn: async () => {
+      if (rawAuction?.info == null) return fetchAuctionMetadata(rawAuction!);
+      return rawAuction;
+    },
+    enabled: rawAuction != null && !isLoading && rawAuction?.info == null,
   });
 
   if (!rawAuction) {
@@ -98,30 +101,31 @@ export function useAuction(
   }
 
   const status = getAuctionStatus(rawAuction);
+  const tokens = formatAuctionTokens(rawAuction, getToken);
 
   const auction = {
     ...rawAuction,
     chainId,
     status,
     info: rawAuction.info ?? externalAuctionInfo[id],
+    ...tokens,
   };
-
-  const tokens = formatAuctionTokens(auction, getToken);
 
   if (!auctionType) {
     throw new Error(`Auction type ${auctionType} doesn't exist`);
   }
 
-  const formatted = formatAuction(auction, auctionType);
+  const formatted = formatAuction(rawAuction, auctionType);
+
   const preparedAuction = {
     ...auction,
     bids: auction.bids.sort((a, b) => +b.blockTimestamp - +a.blockTimestamp), //Sort by time descending
-    ...tokens,
     auctionType,
     formatted,
     info: metadataQuery.isSuccess ? metadataQuery.data?.info : auction.info,
     callbacks: auction.callbacks as `0x${string}`, // Has been checked above
   };
+
   return {
     refetch,
     result: {
@@ -136,7 +140,7 @@ export function useAuction(
 
 /** Formats Auction information for displaying purposes */
 export function formatAuction(
-  auction: BatchSubgraphAuction,
+  auction: UseLaunchQueryReturn,
   auctionType: AuctionType,
 ): AuctionFormattedInfo {
   if (!auction) throw new Error("No Auction provided to formatAuction");
@@ -169,7 +173,7 @@ export function formatAuction(
     capacity: trimCurrency(auction.capacity),
     totalSupply: trimCurrency(
       formatUnits(
-        BigInt(auction.baseToken.totalSupply),
+        BigInt(auction.baseToken?.totalSupply ?? 0),
         Number(auction.baseToken.decimals),
       ),
     ),
@@ -178,7 +182,7 @@ export function formatAuction(
   };
 }
 
-function addEMPFields(auction: BatchSubgraphAuction): EMPFormattedInfo {
+function addEMPFields(auction: UseLaunchQueryReturn): EMPFormattedInfo {
   const minPrice = Number(auction.encryptedMarginalPrice?.minPrice);
   const minBidSize = Number(auction.encryptedMarginalPrice?.minBidSize);
   const marginalPrice = Number(auction.encryptedMarginalPrice?.marginalPrice);
@@ -220,7 +224,7 @@ function addEMPFields(auction: BatchSubgraphAuction): EMPFormattedInfo {
   };
 }
 
-function addFPBFields(auction: BatchSubgraphAuction): FPBFormattedInfo {
+function addFPBFields(auction: UseLaunchQueryReturn): FPBFormattedInfo {
   const totalBids = auction.bids.length;
   const totalBidsClaimed = auction.bids.filter(
     (b) => b.status === "claimed",

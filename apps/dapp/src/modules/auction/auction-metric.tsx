@@ -466,7 +466,6 @@ export function AuctionMetric(props: AuctionMetricProps) {
 
   if (!props.auction) throw new Error("No auction provided");
   if (!element) throw new Error(`No auction metric found for ${props.id}`);
-  if (props.auction.status === "registering") return null;
 
   const value = element.handler(props.auction);
 

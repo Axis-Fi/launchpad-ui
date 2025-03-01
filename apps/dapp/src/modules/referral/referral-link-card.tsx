@@ -6,14 +6,11 @@ import {
   Button,
   Input,
   LabelWrapper,
-  Select,
-  SelectData,
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
 } from "@repo/ui";
-import { useProfile } from "modules/points/hooks/use-profile";
 import { useReferralLink } from "./use-referral-link";
 import { ShareRefLinkButton } from "./share-ref-link-button";
 
@@ -23,36 +20,20 @@ export function ReferralLinkCard() {
     connectedAddress,
   );
 
-  const { profile, isUserSignedIn } = useProfile();
-
   const { generateAndCopyLink, link } = useReferralLink(address);
 
   React.useEffect(() => {
     setAddress(connectedAddress);
   }, [connectedAddress]);
 
-  const walletOptions: SelectData[] = isUserSignedIn
-    ? profile?.wallets
-        ?.filter((w) => !!w?.address)
-        .map((lw) => ({
-          label: lw.address!,
-          value: lw.address!,
-        })) ?? []
-    : [];
-
-  const defaultAddress = profile?.wallets?.[0].address ?? connectedAddress;
-
   return (
     <div className="flex max-w-lg flex-col items-center justify-center gap-6">
       <Tabs
-        defaultValue={isUserSignedIn ? "linkedWallets" : "address"}
+        defaultValue={"address"}
         className="flex w-full flex-col items-center"
       >
-        <TabsList defaultValue={isUserSignedIn ? "linkedWallets" : "address"}>
+        <TabsList defaultValue={"address"}>
           <TabsTrigger value="address">Current Wallet</TabsTrigger>
-          {isUserSignedIn && (
-            <TabsTrigger value="linkedWallets">Linked Wallets</TabsTrigger>
-          )}
         </TabsList>
 
         <LabelWrapper
@@ -66,14 +47,6 @@ export function ReferralLinkCard() {
               onChange={(e) =>
                 isAddress(e.target.value) && setAddress(e.target.value)
               }
-            />
-          </TabsContent>
-          <TabsContent value="linkedWallets">
-            <Select
-              options={walletOptions}
-              defaultValue={defaultAddress}
-              onChange={(value) => setAddress(value as Address)}
-              itemClassName="font-mono"
             />
           </TabsContent>
         </LabelWrapper>

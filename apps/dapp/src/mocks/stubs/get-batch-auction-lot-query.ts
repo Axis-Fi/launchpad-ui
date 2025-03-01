@@ -26,42 +26,44 @@ export const stubGetBatchAuctionLotQuery = (
         "0x0638a2a2dce4de91bbe0572bc0ed8189900e72d6286fb0a5b909724886c7b9c9",
       capacityInitial: "1111",
       start: "1723821300",
-      info: {
-        key: null,
-        name: "DingDAO",
-        description: "The sound we know and love",
-        tagline: "Ding ding ding",
-        links: [
-          {
-            linkId: "discord",
-            url: "https://google.com",
-          },
-          {
-            linkId: "farcaster",
-            url: "https://google.com",
-          },
-          {
-            linkId: "payoutTokenLogo",
-            url: "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_gradient_48px-512.png",
-          },
-          {
-            linkId: "projectBanner",
-            url: "https://blog.adobe.com/en/publish/2021/08/17/media_1faf68d6c67e20f5e45d65217e0d013dcfe537263.png?width=750&format=png&optimize=medium",
-          },
-          {
-            linkId: "projectLogo",
-            url: "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_gradient_48px-512.png",
-          },
-          {
-            linkId: "twitter",
-            url: "https://google.com",
-          },
-          {
-            linkId: "website",
-            url: "https://google.com",
-          },
-        ],
-      },
+      info: [
+        {
+          key: null,
+          name: "DingDAO",
+          description: "The sound we know and love",
+          tagline: "Ding ding ding",
+          links: [
+            {
+              linkId: "discord",
+              url: "https://google.com",
+            },
+            {
+              linkId: "farcaster",
+              url: "https://google.com",
+            },
+            {
+              linkId: "payoutTokenLogo",
+              url: "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_gradient_48px-512.png",
+            },
+            {
+              linkId: "projectBanner",
+              url: "https://blog.adobe.com/en/publish/2021/08/17/media_1faf68d6c67e20f5e45d65217e0d013dcfe537263.png?width=750&format=png&optimize=medium",
+            },
+            {
+              linkId: "projectLogo",
+              url: "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_gradient_48px-512.png",
+            },
+            {
+              linkId: "twitter",
+              url: "https://google.com",
+            },
+            {
+              linkId: "website",
+              url: "https://google.com",
+            },
+          ],
+        },
+      ],
       conclusion: "3000000000",
       auctionType: "01EMPA",
       seller: "0xc4a209cf95b9d6aca011aa37b5cfd6f40d29890f",

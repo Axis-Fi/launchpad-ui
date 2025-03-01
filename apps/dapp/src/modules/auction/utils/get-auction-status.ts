@@ -1,19 +1,19 @@
-import {
-  AuctionStatus,
-  type NonNullSubgraphAuction,
-} from "@axis-finance/types";
+import type { AuctionStatus, Auction } from "@axis-finance/types";
 
 /**
  * Determines the auction status dynamically.
  * The subgraph doesn't receive an event when an auction starts or concludes, so
  * we need to derive this on the frontend.
  */
-export function getAuctionStatus(
-  auction: NonNullSubgraphAuction,
-): AuctionStatus {
-  const subgraphAuction = auction as NonNullSubgraphAuction;
+type AuctionLike = Partial<
+  Pick<
+    Auction,
+    "start" | "conclusion" | "encryptedMarginalPrice" | "fixedPrice"
+  >
+>;
 
-  const { start, conclusion } = subgraphAuction;
+export function getAuctionStatus(auction: AuctionLike): AuctionStatus {
+  const { start, conclusion } = auction;
 
   const isConcluded =
     Date.now() > new Date(Number(conclusion) * 1000).getTime();
@@ -22,8 +22,7 @@ export function getAuctionStatus(
     !isConcluded && Date.now() > new Date(Number(start) * 1000).getTime();
 
   const subgraphStatus = (
-    subgraphAuction?.encryptedMarginalPrice?.status ||
-    subgraphAuction?.fixedPrice?.status
+    auction?.encryptedMarginalPrice?.status || auction?.fixedPrice?.status
   )?.toLowerCase();
 
   // All auctions are "live" once their start time has passed

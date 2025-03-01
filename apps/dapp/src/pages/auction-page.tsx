@@ -31,7 +31,6 @@ const statuses: Record<
   AuctionStatus,
   (props: PropsWithAuction) => React.ReactNode
 > = {
-  registering: () => null, // Registration state is not handled in this component, but in auction-registering.tsx
   created: AuctionCreated,
   live: AuctionLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,
