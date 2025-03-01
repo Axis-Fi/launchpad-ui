@@ -78,8 +78,10 @@ export function useAuction(
     // NOTE: required for the key to match usage on useAuctions
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ["auction-list-metadata", rawAuction?.id],
-    queryFn: async () =>
-      rawAuction?.info == null && fetchAuctionMetadata(rawAuction!),
+    queryFn: async () => {
+      if (rawAuction?.info == null) return fetchAuctionMetadata(rawAuction!);
+      return rawAuction;
+    },
     enabled: rawAuction != null && !isLoading && rawAuction?.info == null,
   });
 
