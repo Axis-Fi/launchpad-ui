@@ -65,7 +65,7 @@ import {
 } from "@axis-finance/types";
 import type { Chain } from "viem";
 
-import { storeAuctionInfo } from "modules/app/ipfs-api";
+import { AuctionMetadata, storeAuctionInfo } from "modules/app/ipfs-api";
 import { addDays, addHours, addMinutes } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
 import React, { useEffect, useRef } from "react";
@@ -88,7 +88,6 @@ import { PageContainer } from "modules/app/page-container";
 import { PageHeader } from "modules/app/page-header";
 import useERC20Balance from "loaders/use-erc20-balance";
 import { CreateAuctionPreview } from "./create-auction-preview";
-import type { AuctionMetadata } from "@repo/ipfs-api/src/types";
 import { useFees } from "modules/auction/hooks/use-fees";
 import { getAuctionsQueryKey } from "modules/auction/hooks/use-auctions";
 import type { GetAuctionLotsQuery } from "@axis-finance/subgraph-client";
@@ -166,10 +165,13 @@ const schema = z
       .regex(/^(0x)?[0-9a-fA-F]$/)
       .optional(),
     isVested: z.boolean().optional(),
+
     curator: z
       .string()
       .regex(/^(0x)?[0-9a-fA-F]{40}$/)
-      .optional(),
+      .nullable()
+      .optional()
+      .or(z.literal("")),
     vestingDuration: StringNumberNotNegative.optional(),
     vestingStart: z.date().optional(),
     referrerFee: z.array(z.number()).optional(),
@@ -662,26 +664,22 @@ export default function CreateAuctionPage() {
     );
   }
 
-  const watchedValues = React.useMemo(
-    () =>
-      form.watch([
-        "isVested",
-        "payoutToken",
-        "quoteToken",
-        "quoteToken.chainId",
-        "capacity",
-        "auctionType",
-        "callbacksType",
-        "dtlIsVested",
-        "dtlUniV3PoolFee",
-        "start",
-        "deadline",
-        "minBidSize",
-        "minPrice",
-        "curator",
-      ]),
-    [form],
-  );
+  const watchedValues = form.watch([
+    "isVested",
+    "payoutToken",
+    "quoteToken",
+    "quoteToken.chainId",
+    "capacity",
+    "auctionType",
+    "callbacksType",
+    "dtlIsVested",
+    "dtlUniV3PoolFee",
+    "start",
+    "deadline",
+    "minBidSize",
+    "minPrice",
+    "curator",
+  ]);
 
   const [
     isVested,

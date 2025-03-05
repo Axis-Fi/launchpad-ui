@@ -7,15 +7,10 @@ import { useMediaQueries } from "loaders/use-media-queries";
 export function CountdownChip({ auction }: PropsWithAuction) {
   const { isTabletOrMobile } = useMediaQueries();
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
-  const isRegistrationLaunch = auction.status === "registering";
 
-  const startDate = isRegistrationLaunch
-    ? new Date(Date.now())
-    : new Date(Number(auction.start) * 1000);
+  const startDate = new Date(Number(auction.start) * 1000);
 
-  const endDate = isRegistrationLaunch
-    ? auction.registrationDeadline!
-    : new Date(Number(auction.conclusion) * 1000);
+  const endDate = new Date(Number(auction.conclusion) * 1000);
 
   const now = new Date();
 
@@ -25,8 +20,7 @@ export function CountdownChip({ auction }: PropsWithAuction) {
 
   const inProgress = hasntStarted || isOngoing;
 
-  const targetDate =
-    hasntStarted && !isRegistrationLaunch ? startDate : endDate;
+  const targetDate = hasntStarted ? startDate : endDate;
 
   // Immediately set the countdown if the auction is ongoing
   useEffect(() => {

@@ -63,6 +63,14 @@ export function getCallbacksType(auction: Auction): CallbacksType {
   }
 
   if (
+    chainAddresses.uniswapV3DtlWithAllocatedMerkleAllowlist.some(
+      (addr: string) => addr.toLowerCase() === callbacksLower,
+    )
+  ) {
+    return CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST;
+  }
+
+  if (
     chainAddresses.baseline.some(
       (addr: string) => addr.toLowerCase() === callbacksLower,
     )

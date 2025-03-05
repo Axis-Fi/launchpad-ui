@@ -68,6 +68,8 @@ export const callbackMap: Record<CallbacksType, string> = {
   [CallbacksType.BASELINE_ALLOCATED_ALLOWLIST]: "baselineAllocatedAllowlist",
   [CallbacksType.BASELINE_CAPPED_ALLOWLIST]: "baselineCappedAllowlist",
   [CallbacksType.BASELINE_TOKEN_ALLOWLIST]: "baselineTokenAllowlist",
+  [CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST]:
+    "uniV3DtlWithAllocatedAllowlist",
 };
 
 /** Labels for callback contract options */
@@ -90,6 +92,8 @@ export const callbackLabels: Record<CallbacksType, string> = {
     "Deposit to Baseline Market with Capped Allowlist",
   [CallbacksType.BASELINE_TOKEN_ALLOWLIST]:
     "Deposit to Baseline Market with Token Allowlist",
+  [CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST]:
+    "Deposit to Uniswap V3 Pool with Allocated Allowlist",
 };
 
 /**

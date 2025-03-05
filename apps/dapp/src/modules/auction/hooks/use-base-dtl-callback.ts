@@ -65,8 +65,16 @@ export function useBaseDTLCallback({
     chainId || 0,
     CallbacksType.UNIV3_DTL,
   ).address.map((address: string) => address.toLowerCase());
+
+  const uniV3DtlWithAllowlist = getCallbacks(
+    chainId || 0,
+    CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST,
+  ).address.map((address: string) => address.toLowerCase());
+
   const isBaseDTLCallback =
-    uniV2Dtl.includes(callbackLower) || uniV3Dtl.includes(callbackLower);
+    uniV3DtlWithAllowlist.includes(callbackLower) ||
+    uniV2Dtl.includes(callbackLower) ||
+    uniV3Dtl.includes(callbackLower);
 
   const response = useReadContract({
     abi: axisContracts.abis.uniV2Dtl, // We can use this for all DTL callbacks, since the Uniswap V2 DTL does not have additional parameters

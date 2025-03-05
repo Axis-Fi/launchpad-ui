@@ -375,6 +375,7 @@ const handlers: MetricHandlers = {
           return "Private";
         case CallbacksType.CAPPED_MERKLE_ALLOWLIST:
           return "Private (Capped)";
+        case CallbacksType.UNIV3_DTL_WITH_ALLOCATED_ALLOWLIST:
         case CallbacksType.ALLOCATED_MERKLE_ALLOWLIST:
           return "Private (Allocated)";
         case CallbacksType.TOKEN_ALLOWLIST:
@@ -465,7 +466,6 @@ export function AuctionMetric(props: AuctionMetricProps) {
 
   if (!props.auction) throw new Error("No auction provided");
   if (!element) throw new Error(`No auction metric found for ${props.id}`);
-  if (props.auction.status === "registering") return null;
 
   const value = element.handler(props.auction);
 

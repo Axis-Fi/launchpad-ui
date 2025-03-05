@@ -98,10 +98,11 @@ export const useDecryptBids = (auction: BatchAuction) => {
       (cachedAuction: GetBatchAuctionLotQuery) =>
         auctionCache.updateStatus(cachedAuction, "decrypted"),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     decryptReceipt.isSuccess,
-    hintsQuery,
-    privateKeyQuery,
+    hintsQuery.isRefetching,
+    hintsQuery.refetch,
     queryClient,
     queryKey,
   ]);

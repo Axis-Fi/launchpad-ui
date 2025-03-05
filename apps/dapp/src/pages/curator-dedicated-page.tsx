@@ -4,7 +4,7 @@ import { useReadContract } from "wagmi";
 import { verifiedFetch } from "utils/verified-fetch";
 import { allowedCurators } from "modules/app/curators";
 import { Address } from "viem";
-import type { CuratorProfile } from "@repo/ipfs-api";
+import type { CuratorProfile } from "modules/app/ipfs-api";
 import type { Curator } from "@axis-finance/types";
 import CuratorLaunchPage from "./curator-launch-page";
 import { curatorRegistryDeployment } from "modules/curator/deployment";

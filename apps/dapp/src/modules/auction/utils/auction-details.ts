@@ -1,6 +1,5 @@
 import {
   type BatchAuction,
-  type Auction,
   type AuctionDerivativeTypes,
   type AuctionLinkId,
   AuctionType,
@@ -31,10 +30,17 @@ const getMinFilled = (auction: BatchAuction): number | undefined => {
   return undefined;
 };
 
-type PartialAuction = Pick<Auction, "info">;
+export type AuctionLinks = {
+  info?: {
+    links?: Array<{
+      linkId: string;
+      url: string;
+    }> | null;
+  } | null;
+};
 
-const getLinkUrl = (id: AuctionLinkId, auction: PartialAuction) => {
-  return auction?.info?.links?.find((link) => link.linkId === id)?.url;
+const getLinkUrl = (id: AuctionLinkId, auction: AuctionLinks) => {
+  return auction?.info?.links?.find?.((link) => link.linkId === id)?.url;
 };
 
 const hasDerivative = (

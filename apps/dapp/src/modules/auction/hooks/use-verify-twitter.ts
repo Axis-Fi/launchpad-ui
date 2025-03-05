@@ -8,6 +8,7 @@ const { url: ipfsUrl } =
 const fetchVerificationStatus = async () => {
   const response = await fetch(`${ipfsUrl}/auth/is-verified`, {
     credentials: "include",
+    mode: "cors",
   });
 
   if (!response.ok) {
@@ -20,6 +21,7 @@ const fetchVerificationStatus = async () => {
 export type TwitterUser = {
   id: string;
   name: string;
+  username: string;
   address: string;
   banner: string;
   avatar: string;
@@ -34,6 +36,7 @@ type UseVerifyTwitter =
       isLoading: boolean;
       error: Error | null;
       redirectToVerify: () => void;
+      signOut: () => void;
     }
   | {
       isVerified: true;
@@ -41,6 +44,7 @@ type UseVerifyTwitter =
       isLoading: false;
       error: Error | null;
       redirectToVerify: () => void;
+      signOut: () => void;
     };
 
 const useVerifyTwitter = (): UseVerifyTwitter => {
@@ -53,12 +57,17 @@ const useVerifyTwitter = (): UseVerifyTwitter => {
     window.location.href = `${ipfsUrl}/auth/verify-twitter-handle`;
   };
 
+  const signOut = () => {
+    window.location.href = `${ipfsUrl}/auth/sign-out`;
+  };
+
   return {
     isVerified: data?.success,
     user: data?.user,
     isLoading,
     error,
     redirectToVerify,
+    signOut,
   };
 };
 

@@ -2,7 +2,7 @@
 module.exports = {
   root: true,
   extends: [
-    "@repo/eslint-config/react.js",
+    "@axis-finance/eslint-config/react",
     "plugin:storybook/recommended",
     "plugin:@tanstack/eslint-plugin-query/recommended",
   ],
@@ -18,6 +18,5 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/ban-ts-comment": 1,
-    // "@typescript-eslint/strict-boolean-expressions": "error",
   },
 };

@@ -35,7 +35,6 @@ import { useMediaQueries } from "loaders/use-media-queries";
 import type { Curator } from "@axis-finance/types";
 
 const options = [
-  { value: "registering", label: "Registering" },
   { value: "created", label: "Created" },
   { value: "live", label: "Live" },
   { value: "concluded", label: "Concluded" },
