@@ -35,7 +35,7 @@ const statuses: Record<
   live: AuctionLive,
   concluded: EncryptedMarginalPriceAuctionConcluded,
   decrypted: AuctionDecrypted,
-  settled: AuctionSettled,
+  settled: AuctionLive,
   aborted: AuctionSettled,
   cancelled: AuctionSettled,
 };

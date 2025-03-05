@@ -28,6 +28,8 @@ export function calculateAuctionProgress(auction: Auction) {
     100,
   );
 
+  console.log({ auction });
+
   return {
     /** The current percentual progress of an auction's raise*/
     current,
