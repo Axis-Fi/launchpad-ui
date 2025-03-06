@@ -1,12 +1,9 @@
 import { hashFn } from "wagmi/query";
-import { WagmiProvider, createConfig } from "wagmi";
+import { WagmiProvider } from "wagmi";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { chains } from "@axis-finance/env";
-import { environment } from "utils/environment";
-import WalletProvider, { connectors } from "./wallet-provider";
-
-const activeConfig = chains.activeConfig(environment.isTestnet);
+import WalletProvider from "./wallet-provider";
+import { getWagmiConfig } from "utils/get-wagmi-config";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,8 +18,7 @@ const queryClient = new QueryClient({
   },
 });
 
-//@ts-expect-error type mismatch
-const wagmiConfig = createConfig({ ...activeConfig, connectors });
+const wagmiConfig = getWagmiConfig();
 
 export function BlockchainProvider({
   children,

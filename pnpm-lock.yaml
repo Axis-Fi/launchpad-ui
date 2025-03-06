@@ -35,6 +35,9 @@ importers:
       "@axis-finance/abis":
         specifier: 0.0.3
         version: 0.0.3
+      "@axis-finance/auto-signer-provider":
+        specifier: ^0.0.1
+        version: 0.0.1(typescript@5.2.2)(viem@2.17.3)
       "@axis-finance/cloak":
         specifier: 0.0.8
         version: 0.0.8(viem@2.17.3)
@@ -492,6 +495,19 @@ packages:
       {
         integrity: sha512-x+ymMtsxutsVxhRn49c6jNJz6mP+njhlPEuIZjmOodsZ02oF8qnMl0ir6GmyDTGHgFKgJgPmLlsOlRaMAcPxCA==,
       }
+    dev: false
+
+  /@axis-finance/auto-signer-provider@0.0.1(typescript@5.2.2)(viem@2.17.3):
+    resolution:
+      {
+        integrity: sha512-HQK4Drxcq1nFz3t1dt5JjLpk7+IZxQwrK29g+Z4R4mr8QdNHD7rzlrK1AWzZDtUymm4X+2EDfw+qz52M0KSuDw==,
+      }
+    peerDependencies:
+      typescript: ">=5.0.4"
+      viem: 2.17.3
+    dependencies:
+      typescript: 5.2.2
+      viem: 2.17.3(typescript@5.2.2)(zod@3.24.2)
     dev: false
 
   /@axis-finance/cloak@0.0.8(viem@2.17.3):
@@ -17236,7 +17252,7 @@ packages:
     engines: { node: ">=12.0.0" }
     dependencies:
       readable-stream: 3.6.2
-      webextension-polyfill: 0.10.0
+      webextension-polyfill: 0.12.0
     dev: false
 
   /external-editor@3.1.0:

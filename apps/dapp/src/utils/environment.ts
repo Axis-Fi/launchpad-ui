@@ -2,7 +2,7 @@ import { Environment } from "@axis-finance/env";
 
 const env = import.meta.env.VITE_ENVIRONMENT;
 const testnet = import.meta.env.VITE_TESTNET;
-const mockBackend = import.meta.env.VITE_MOCK_BACKEND;
+const mockBackend = import.meta.env.VITE_ENABLE_MOCK_SUBGRAPH;
 
 const environment = Object.freeze({
   isProduction: env === Environment.PRODUCTION,
