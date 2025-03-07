@@ -46,6 +46,7 @@ export default function ConnectButton({
               if (!connected) {
                 return (
                   <Button
+                    data-testid="connect-wallet"
                     size={size}
                     className={"w-full"}
                     onClick={openConnectModal}

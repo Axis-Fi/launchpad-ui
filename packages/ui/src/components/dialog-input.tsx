@@ -21,6 +21,7 @@ export type DialogInputProps<T> = Omit<DialogProps, "onSubmit"> & {
   disabled?: boolean;
   value?: T;
   displayFormatter?: (value: T) => InputValueDisplay;
+  "data-testid"?: string;
 };
 
 export type DialogInputChangeHandler<T> = (
@@ -80,6 +81,7 @@ export function DialogInput<T>({
       }}
       triggerElement={
         <Button
+          data-testid={props["data-testid"]}
           variant="input"
           className="bg-surface-tertiary hover:bg-surface-secondary flex w-full justify-start text-sm normal-case"
         >

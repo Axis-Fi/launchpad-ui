@@ -66,6 +66,7 @@ export function TokenPicker<
           render={({ field }) => (
             <FormItemWrapper label="Token Address">
               <Input
+                data-testid="token-picker-address"
                 placeholder="0x000...000"
                 {...field}
                 value={field.value as string}
@@ -99,6 +100,7 @@ export function TokenPicker<
           render={({ field }) => (
             <FormItemWrapper label="Token Logo" className="mt-6">
               <Input
+                data-testid="token-picker-logo"
                 placeholder="http://yourdao.link/token.jpeg"
                 {...field}
                 value={field.value as string}

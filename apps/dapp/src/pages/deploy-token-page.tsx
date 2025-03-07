@@ -58,7 +58,7 @@ export function DeployTokenPage() {
                 name="name"
                 render={({ field }) => (
                   <FormItemWrapper label="Name">
-                    <Input {...field} />
+                    <Input data-testid="deploy-token-name" {...field} />
                   </FormItemWrapper>
                 )}
               />
@@ -67,12 +67,16 @@ export function DeployTokenPage() {
                 name="symbol"
                 render={({ field }) => (
                   <FormItemWrapper label="Symbol">
-                    <Input {...field} />
+                    <Input data-testid="deploy-token-symbol" {...field} />
                   </FormItemWrapper>
                 )}
               />
 
-              <Button type="submit" className="mx-auto mt-4 flex max-w-sm">
+              <Button
+                type="submit"
+                className="mx-auto mt-4 flex max-w-sm"
+                data-testid="deploy-button"
+              >
                 DEPLOY
               </Button>
             </form>
@@ -119,7 +123,9 @@ export function DeployTokenPage() {
 
           {deploy.receipt.isSuccess && (
             <div>
-              <p>Token Deployed at address</p>
+              <p data-testid="deploy-success-message">
+                Token Deployed at address
+              </p>
               <BlockExplorerLink address={deployedAddress} chainId={chainId} />
             </div>
           )}
