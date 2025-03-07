@@ -18,6 +18,7 @@ export type DatePickerProps = {
   onChange?: (date?: Date) => void;
   onBlur?: () => void;
   value?: Date;
+  "data-testid"?: string;
 };
 
 export function DatePicker({
@@ -27,6 +28,7 @@ export function DatePicker({
 }: DatePickerProps) {
   const [date, setDate] = React.useState<Date | undefined>(props.value);
   const { matcher, time, setTime } = useTimeInput();
+  const testId = props["data-testid"];
 
   React.useEffect(() => {
     if (!props.time) return;
@@ -79,6 +81,7 @@ export function DatePicker({
         />
         {props.time && (
           <Input
+            data-testid={`${testId}-date-picker-time`}
             className="pb-4 text-center text-2xl"
             variant="lg"
             placeholder={

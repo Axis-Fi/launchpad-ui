@@ -36,6 +36,8 @@ export function BlockExplorerLink({
 
   return (
     <Link
+      data-testid="block-explorer-link"
+      data-token-address={address}
       className={cn("text-md inline-flex items-center leading-none", className)}
       href={blockExplorer.url + path + target}
     >

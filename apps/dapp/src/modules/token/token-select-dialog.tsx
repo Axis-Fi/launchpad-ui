@@ -77,6 +77,7 @@ export function TokenSelectDialog(props: TokenSelectDialogProps) {
                 .map((t, i) => (
                   <Button
                     key={i}
+                    data-testid={`token-select-dialog-token-${t.symbol}`}
                     variant="secondary"
                     size="lg"
                     className="block w-full rounded-none border-x border-b-0 border-t px-2 first:rounded-t-sm last:rounded-b-sm last:border-b"
