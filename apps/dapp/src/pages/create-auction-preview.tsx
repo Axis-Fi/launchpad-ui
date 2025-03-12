@@ -110,6 +110,7 @@ export function CreateAuctionPreview(props: CreateAuctionPreviewProps) {
           </Button>
           <Button
             size="lg"
+            data-testid="create-launch-create-button"
             onClick={(e) => {
               e.preventDefault();
               props.onOpenChange(false);

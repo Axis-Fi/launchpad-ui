@@ -1727,7 +1727,12 @@ export default function CreateAuctionPage() {
                       label="Name"
                       tooltip="The project or auction name"
                     >
-                      <Input placeholder="YourDAO" type="text" {...field} />
+                      <Input
+                        data-testid="create-launch-name"
+                        placeholder="YourDAO"
+                        type="text"
+                        {...field}
+                      />
                     </FormItemWrapper>
                   )}
                 />
@@ -1740,6 +1745,7 @@ export default function CreateAuctionPage() {
                       tooltip="A brief tagline about your project"
                     >
                       <Input
+                        data-testid="create-launch-tagline"
                         placeholder={"We're the future of France"}
                         {...field}
                       />
@@ -1756,6 +1762,7 @@ export default function CreateAuctionPage() {
                       className="mt-6"
                     >
                       <Input
+                        data-testid="create-launch-project-logo"
                         placeholder="https://your-dao.link/tokenjpeg.svg"
                         type="url"
                         {...field}
@@ -1773,6 +1780,7 @@ export default function CreateAuctionPage() {
                       className="mt-6"
                     >
                       <Input
+                        data-testid="create-launch-project-banner"
                         placeholder="https://your-dao.link/banner.svg"
                         type="url"
                         {...field}
@@ -1787,6 +1795,7 @@ export default function CreateAuctionPage() {
                   render={({ field }) => (
                     <FormItemWrapper className="mt-6" label="Website">
                       <Input
+                        data-testid="create-launch-website"
                         type="url"
                         placeholder="https://your-dao.link"
                         {...field}
@@ -1800,6 +1809,7 @@ export default function CreateAuctionPage() {
                   render={({ field }) => (
                     <FormItemWrapper className="mt-6" label="Discord">
                       <Input
+                        data-testid="create-launch-discord"
                         type="url"
                         placeholder="https://discord.gg/your-dao"
                         {...field}
@@ -1814,6 +1824,7 @@ export default function CreateAuctionPage() {
                   render={({ field }) => (
                     <FormItemWrapper className="mt-6" label="Twitter">
                       <Input
+                        data-testid="create-launch-twitter"
                         placeholder="https://x.com/your-dao"
                         type="url"
                         {...field}
@@ -1827,6 +1838,7 @@ export default function CreateAuctionPage() {
                   render={({ field }) => (
                     <FormItemWrapper className="mt-6" label="Warpcast">
                       <Input
+                        data-testid="create-launch-farcaster"
                         type="url"
                         placeholder="https://warpcast.com/your-dao"
                         {...field}
@@ -1844,6 +1856,7 @@ export default function CreateAuctionPage() {
                       label="Project description"
                     >
                       <Textarea
+                        data-testid="create-launch-description"
                         placeholder="A short description of your project"
                         className="placeholder:text-foreground/50"
                         {...field}
@@ -1865,6 +1878,7 @@ export default function CreateAuctionPage() {
                     >
                       <DialogInput
                         {...field}
+                        data-testid="create-launch-payout-token"
                         title="Select Payout Token"
                         triggerContent={"Select token"}
                         disabled={payoutModalInvalid}
@@ -1885,6 +1899,7 @@ export default function CreateAuctionPage() {
                     >
                       <DialogInput
                         {...field}
+                        data-testid="create-launch-quote-token"
                         externalDialog
                         title="Select Quote Token"
                         triggerContent={"Select token"}
@@ -1908,6 +1923,7 @@ export default function CreateAuctionPage() {
                       tooltip="The minimum marginal price required for the auction lot to settle"
                     >
                       <Select
+                        data-testid="create-launch-auction-type"
                         defaultValue={AuctionType.SEALED_BID}
                         options={[
                           {
@@ -1935,6 +1951,7 @@ export default function CreateAuctionPage() {
                       >
                         <Input
                           {...field}
+                          data-testid="create-launch-capacity"
                           placeholder="1,000,000"
                           type="number"
                         />
@@ -1968,7 +1985,12 @@ export default function CreateAuctionPage() {
                           label="Minimum Payout Token Price"
                           tooltip="The minimum number of quote tokens to receive per payout token."
                         >
-                          <Input placeholder="1" type="number" {...field} />
+                          <Input
+                            data-testid="create-launch-min-price"
+                            placeholder="1"
+                            type="number"
+                            {...field}
+                          />
                         </FormItemWrapper>
                       )}
                     />
@@ -2005,6 +2027,7 @@ export default function CreateAuctionPage() {
                           <div className="relative">
                             <Input
                               {...field}
+                              data-testid="create-launch-min-bid-size"
                               disabled={disableMinBidSize}
                               placeholder="1"
                               type="number"
@@ -2069,7 +2092,12 @@ export default function CreateAuctionPage() {
                           label="Price"
                           tooltip="The amount of quote tokens per payout token"
                         >
-                          <Input placeholder="1" type="number" {...field} />
+                          <Input
+                            data-testid="create-launch-price"
+                            placeholder="1"
+                            type="number"
+                            {...field}
+                          />
                         </FormItemWrapper>
                       )}
                     />
@@ -2110,6 +2138,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
+                        data-testid="create-launch-start"
                         placeholderDate={addMinutes(new Date(), 5)}
                         content={formatDate.fullLocal(new Date())}
                         minDate={new Date()}
@@ -2129,6 +2158,7 @@ export default function CreateAuctionPage() {
                     >
                       <DatePicker
                         time
+                        data-testid="create-launch-deadline"
                         placeholderDate={addDays(addHours(new Date(), 1), 7)}
                         content={formatDate.fullLocal(
                           addDays(start ? (start as Date) : new Date(), 7),
@@ -2157,6 +2187,7 @@ export default function CreateAuctionPage() {
                       >
                         <Input
                           {...field}
+                          data-testid="create-launch-curator"
                           placeholder={trimAddress("0x0000000")}
                         />
                       </FormItemWrapper>
@@ -2186,6 +2217,7 @@ export default function CreateAuctionPage() {
                         <FormItemWrapper className="mt-4 w-min">
                           <div className="flex items-center gap-x-2">
                             <Switch
+                              data-testid="create-launch-is-vested"
                               checked={field.value}
                               onCheckedChange={field.onChange}
                             />
@@ -2200,6 +2232,7 @@ export default function CreateAuctionPage() {
                       render={({ field }) => (
                         <FormItemWrapper label="Vesting Days">
                           <Input
+                            data-testid="create-launch-vesting-duration"
                             type="number"
                             placeholder="7"
                             disabled={!isVested}
@@ -2219,6 +2252,7 @@ export default function CreateAuctionPage() {
                         tooltip="The start date/time of the vesting"
                       >
                         <DatePicker
+                          data-testid="create-launch-vesting-start"
                           time
                           placeholderDate={addMinutes(new Date(), 5)}
                           content={formatDate.fullLocal(new Date())}
@@ -2249,6 +2283,7 @@ export default function CreateAuctionPage() {
                           }
                         >
                           <Select
+                            data-testid="create-launch-callbacks-type"
                             defaultValue={CallbacksType.NONE}
                             options={callbackOptions ?? []}
                             disabled={callbackOptions.length === 1}
@@ -2624,6 +2659,7 @@ export default function CreateAuctionPage() {
           <div className="mt-10 flex justify-center">
             <RequiresChain chainId={chainId} className="mt-4 w-fit">
               <Button
+                data-testid="create-launch-deploy-button"
                 onClick={(e) => {
                   e.preventDefault();
                   handlePreview();

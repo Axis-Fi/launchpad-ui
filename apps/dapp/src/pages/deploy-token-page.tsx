@@ -58,7 +58,7 @@ export function DeployTokenPage() {
                 name="name"
                 render={({ field }) => (
                   <FormItemWrapper label="Name">
-                    <Input {...field} />
+                    <Input data-testid="deploy-token-name" {...field} />
                   </FormItemWrapper>
                 )}
               />
@@ -67,12 +67,16 @@ export function DeployTokenPage() {
                 name="symbol"
                 render={({ field }) => (
                   <FormItemWrapper label="Symbol">
-                    <Input {...field} />
+                    <Input data-testid="deploy-token-symbol" {...field} />
                   </FormItemWrapper>
                 )}
               />
 
-              <Button type="submit" className="mx-auto mt-4 flex max-w-sm">
+              <Button
+                type="submit"
+                className="mx-auto mt-4 flex max-w-sm"
+                data-testid="deploy-button"
+              >
                 DEPLOY
               </Button>
             </form>
@@ -89,9 +93,14 @@ export function DeployTokenPage() {
             />
           </LabelWrapper>
           <LabelWrapper content="Amount" className="mt-1">
-            <Input value={amount} onChange={(e) => setAmount(e.target.value)} />
+            <Input
+              data-testid="mint-amount"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
           </LabelWrapper>
           <Button
+            data-testid="mint-button"
             disabled={disabled}
             className="mt-4 uppercase"
             onClick={mint.handleMint}
@@ -119,7 +128,9 @@ export function DeployTokenPage() {
 
           {deploy.receipt.isSuccess && (
             <div>
-              <p>Token Deployed at address</p>
+              <p data-testid="deploy-success-message">
+                Token Deployed at address
+              </p>
               <BlockExplorerLink address={deployedAddress} chainId={chainId} />
             </div>
           )}
@@ -130,14 +141,14 @@ export function DeployTokenPage() {
         <div className="text-right">
           <h4>Mint Status</h4>
           {mint.mintTx.isSuccess && (
-            <>
+            <p data-testid="mint-success-message">
               View transaction on&nbsp;
               <BlockExplorerLink
                 showName
                 hash={mint.mintTx.data}
                 chainId={chainId}
               />
-            </>
+            </p>
           )}
           {mint.mintTx.isPending && <p>Waiting for signature...</p>}
           {mint.mintReceipt.isLoading && <p>Waiting for confirmation...</p>}

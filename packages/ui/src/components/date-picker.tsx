@@ -8,6 +8,7 @@ import { Calendar } from "./primitives";
 import { PopoverRoot, PopoverContent, PopoverTrigger } from "./primitives";
 import { useTimeInput } from "..";
 import { addTimeToDate, formatDate } from "../helpers";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 export type DatePickerProps = {
   content?: string;
@@ -18,6 +19,7 @@ export type DatePickerProps = {
   onChange?: (date?: Date) => void;
   onBlur?: () => void;
   value?: Date;
+  "data-testid"?: string;
 };
 
 export function DatePicker({
@@ -53,6 +55,7 @@ export function DatePicker({
     <PopoverRoot onOpenChange={(open) => !open && props.onBlur?.()}>
       <PopoverTrigger asChild>
         <Button
+          data-testid={props["data-testid"]}
           variant="input"
           className={cn(
             "bg-surface-tertiary hover:bg-surface-secondary w-full max-w-sm justify-start text-left font-normal",
@@ -79,6 +82,7 @@ export function DatePicker({
         />
         {props.time && (
           <Input
+            data-testid={`date-picker-time`}
             className="pb-4 text-center text-2xl"
             variant="lg"
             placeholder={
@@ -88,6 +92,14 @@ export function DatePicker({
             onChange={setTime}
           />
         )}
+        {/* this component is only used for e2e testing as a way of dismissing the date picker */}
+        <PopoverClose asChild>
+          <Button
+            data-testid="date-picker-confirm"
+            className="absolute h-1 w-1 overflow-hidden opacity-0"
+            onClick={props?.onBlur}
+          />
+        </PopoverClose>
       </PopoverContent>
     </PopoverRoot>
   );

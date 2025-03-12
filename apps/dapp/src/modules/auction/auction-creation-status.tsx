@@ -255,6 +255,7 @@ export function AuctionCreationStatus({
             }
           >
             <Button
+              data-testid="create-launch-success-button"
               disabled={isNullOrUndefined(props.lotId)}
               onClick={() => props.onSuccess()}
               className="mt-3"
@@ -272,7 +273,10 @@ export function AuctionCreationStatus({
       )}
       <div className="mt-4 flex justify-center">
         {(isIdle || error) && (
-          <Button onClick={handleSubmit}>
+          <Button
+            data-testid="create-launch-submit-button"
+            onClick={handleSubmit}
+          >
             {error
               ? "RETRY"
               : (requiresAuctionHouseApproval &&

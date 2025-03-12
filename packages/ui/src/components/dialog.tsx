@@ -91,6 +91,7 @@ export function Dialog(props: DialogProps) {
             )}
 
             <Button
+              data-testid="dialog-submit"
               className="w-1/2"
               onClick={() => handleSubmit()}
               type="submit"
