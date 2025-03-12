@@ -25,6 +25,11 @@ jobs:
           node-version: "21.6.0"
           cache: "pnpm"
 
+      - name: Clean up potential stale Xvfb locks (Cypress e2e tests)
+        run: |
+          sudo rm -f /tmp/.X*-lock
+          sudo rm -f /tmp/.X11-unix/X*
+
       - name: Install Cypress dependencies
         run: |
           sudo apt-get update
