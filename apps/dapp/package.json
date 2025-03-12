@@ -9,6 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist",
+    "postinstall": "node scripts/postinstall.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "storybook:visual-tests": "source .env && chromatic --project-token=$STORYBOOK_CHROMATIC_PROJECT_TOKEN",
@@ -22,7 +23,8 @@
     "test:smoke:mainnet": "pnpm env:mainnet-mock -- pnpm cy:smoke",
     "test:smoke:testnet": "pnpm env:testnet-mock -- pnpm cy:smoke",
     "test:unit": "vitest run",
-    "test": "pnpm run test:unit && pnpm /^test:smoke:/"
+    "test": "pnpm run test:unit && pnpm /^test:smoke:/",
+    "local-rpc": "bash scripts/local-rpc.sh"
   },
   "dependencies": {
     "@axis-finance/abis": "0.0.3",
@@ -103,6 +105,7 @@
     "eslint-plugin-storybook": "^0.6.15",
     "msw": "^2.3.5",
     "postcss": "^8.4.33",
+    "prool": "^0.0.23",
     "start-server-and-test": "^2.0.5",
     "storybook": "^8.1.1",
     "storybook-addon-remix-react-router": "^3.0.0",

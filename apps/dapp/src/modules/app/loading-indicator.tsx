@@ -1,11 +1,12 @@
 import { SVGProps } from "react";
 import { cn } from "@repo/ui";
 
-export function LoadingIndicator(
-  props: SVGProps<SVGSVGElement> & { rootClassName?: string },
-) {
+export function LoadingIndicator({
+  rootClassName,
+  ...props
+}: SVGProps<SVGSVGElement> & { rootClassName?: string }) {
   return (
-    <div className={cn("loading-indicator", props.rootClassName)}>
+    <div className={cn("loading-indicator", rootClassName)}>
       <svg
         xmlnsXlink="http://www.w3.org/2000/svg"
         width="78"

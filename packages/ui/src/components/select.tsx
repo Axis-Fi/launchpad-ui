@@ -27,6 +27,7 @@ export type SelectProps = {
   triggerClassName?: string;
   itemClassName?: string;
   disabled?: boolean;
+  "data-testid"?: string;
 };
 
 /** Dropdown selector */
@@ -51,6 +52,7 @@ export function Select(props: SelectProps) {
       }}
     >
       <SelectTrigger
+        data-testid={props["data-testid"]}
         id={props.id}
         disabled={props.disabled}
         className={cn(
@@ -63,6 +65,7 @@ export function Select(props: SelectProps) {
       <SelectContent>
         {props.options?.map(({ label, value, imgURL }) => (
           <SelectItem
+            data-testid={`select-item-${label}`}
             key={label}
             value={value}
             className={props.itemClassName}
